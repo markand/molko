@@ -21,12 +21,15 @@
 CC=             clang
 CFLAGS=         -O3 -DNDEBUG -std=c99 -Wall -Wextra
 CPPFLAGS=       -MMD
-SRCS=           src/main.c src/window.c
+SRCS=           src/image.c \
+                src/main.c \
+                src/texture.c \
+                src/window.c
 OBJS=           ${SRCS:.c=.o}
 DEPS=           ${SRCS:.c=.d}
 
-SDL_CFLAGS=     `pkg-config --cflags sdl2`
-SDL_LDFLAGS=    `pkg-config --libs sdl2`
+SDL_CFLAGS=     `pkg-config --cflags SDL2 SDL2_image`
+SDL_LDFLAGS=    `pkg-config --libs SDL2 SDL2_image`
 
 .SUFFIXES:
 .SUFFIXES: .c .o

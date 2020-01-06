@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * image.h -- basic image management
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,31 +16,37 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
+#ifndef MOLKO_IMAGE_H
+#define MOLKO_IMAGE_H
 
-#include "window.h"
-#include "image.h"
-#include "texture.h"
+/**
+ * \file image.h
+ * \brief Basic image management.
+ */
 
-int
-main(int argc, char **argv)
-{
-	(void)argc;
-	(void)argv;
+#include <stddef.h>
 
-	struct texture *logo;
+struct texture;
 
-	window_init("Molko's Adventure", 640, 480);
-	window_set_color(0x667788ff);
-	window_clear();
-	window_set_color(0xffffffff);
-	window_draw_line(50, 50, 100, 100);
-	window_draw_point(60, 60);
-	window_draw_rectangle(true, 20, 20, 70, 10);
-	logo = image_openf("E:\\dev\\molko\\logo.png");
-	texture_draw_ex(logo, 0, 0, 500, 500, 200, 200, 32, 32, 90);
-	window_present();
-	SDL_Delay(5000);
+/**
+ * Open a file from a path.
+ *
+ * \pre path != NULL
+ * \param path the path to the file
+ * \return the texture or NULL on error
+ */
+struct texture *
+image_openf(const char *path);
 
-	return 0;
-}
+/**
+ * Open a file from a memory buffer.
+ *
+ * \pre buffer != NULL
+ * \param the memory buffer
+ * \return size the memory size
+ * \return the texture or NULL on error
+ */
+struct texture *
+image_openb(const char *buffer, size_t size);
+
+#endif /* !MOLKO_IMAGE_H */

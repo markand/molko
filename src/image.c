@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * image.c -- basic image management
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,31 +16,25 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
+#include <stdbool.h>
 
-#include "window.h"
-#include "image.h"
-#include "texture.h"
+#include <SDL_image.h>
 
-int
-main(int argc, char **argv)
+#include "texture_p.h"
+
+struct texture *
+image_openf(const char *path)
 {
-	(void)argc;
-	(void)argv;
+	return texture_from_surface(IMG_Load(path));
+}
 
-	struct texture *logo;
+struct texture *
+image_openb(const char *buffer, size_t size)
+{
+	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
 
-	window_init("Molko's Adventure", 640, 480);
-	window_set_color(0x667788ff);
-	window_clear();
-	window_set_color(0xffffffff);
-	window_draw_line(50, 50, 100, 100);
-	window_draw_point(60, 60);
-	window_draw_rectangle(true, 20, 20, 70, 10);
-	logo = image_openf("E:\\dev\\molko\\logo.png");
-	texture_draw_ex(logo, 0, 0, 500, 500, 200, 200, 32, 32, 90);
-	window_present();
-	SDL_Delay(5000);
+	if (!ops)
+		return NULL;
 
-	return 0;
+	return texture_from_surface(IMG_Load_RW(ops, true));
 }
