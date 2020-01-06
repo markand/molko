@@ -21,7 +21,8 @@
 CC=             clang
 CFLAGS=         -O3 -DNDEBUG -std=c99 -Wall -Wextra
 CPPFLAGS=       -MMD
-SRCS=           src/image.c \
+SRCS=           src/clock.c \
+                src/image.c \
                 src/main.c \
                 src/sprite.c \
                 src/texture.c \
