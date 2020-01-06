@@ -16,17 +16,26 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stdio.h>
+
 #include "window.h"
 
 int
 main(int argc, char **argv)
 {
-        (void)argc;
-        (void)argv;
+	(void)argc;
+	(void)argv;
 
-        struct window *w = window_init("Molko's Adventure", 640, 480);
+	struct window *w = window_init("Molko's Adventure", 640, 480);
 
-        SDL_Delay(5000);
+	window_set_color(w, 0x667788ff);
+	window_clear(w);
+	window_set_color(w, 0xffffffff);
+	window_draw_line(w, 50, 50, 100, 100);
+	window_draw_point(w, 60, 60);
+	window_draw_rectangle(w, true, 20, 20, 70, 10);
+	window_present(w);
+	SDL_Delay(5000);
 
-        return 0;
+	return 0;
 }
