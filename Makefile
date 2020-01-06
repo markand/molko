@@ -21,6 +21,7 @@
 CC=             clang
 CFLAGS=         -O3 -DNDEBUG -std=c99 -Wall -Wextra
 CPPFLAGS=       -MMD
+PROG=           molko
 SRCS=           src/animation.c \
                 src/clock.c \
                 src/image.c \
@@ -37,17 +38,17 @@ SDL_LDFLAGS=    `pkg-config --libs SDL2 SDL2_image`
 .SUFFIXES:
 .SUFFIXES: .c .o
 
-all: molko
+all: ${PROG}
 
 -include ${DEPS}
 
 .c.o:
 	${CC} ${SDL_CFLAGS} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
 
-molko: ${OBJS}
+${PROG}: ${OBJS}
 	${CC} -o $@ ${OBJS} ${SDL_LDFLAGS} ${LDFLAGS}
 
 clean:
-	rm -f hello ${OBJS}
+	rm -f molko ${OBJS} ${DEPS}
 
 .PHONY: clean
