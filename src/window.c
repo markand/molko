@@ -86,8 +86,6 @@ window_draw_rectangle(bool fill, int x, int y, unsigned width, unsigned height)
 		.y = y
 	};
 
-	assert(w);
-
 	if (fill)
 		SDL_RenderFillRect(win.renderer, &rect);
 	else

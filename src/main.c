@@ -18,10 +18,12 @@
 
 #include <stdio.h>
 
-#include "window.h"
+#include "animation.h"
+#include "clock.h"
 #include "image.h"
-#include "texture.h"
 #include "sprite.h"
+#include "texture.h"
+#include "window.h"
 
 #include <SDL.h>
 
@@ -33,10 +35,46 @@ main(int argc, char **argv)
 
 	struct texture *logo;
 	struct sprite sprite;
+	struct clock clock;
+	struct animation animation;
 
 	window_init("Molko's Adventure", 640, 480);
 	window_set_color(0x667788ff);
-	window_clear();
+
+	clock_start(&clock);
+
+	logo = image_openf("E:\\dev\\molko\\explosion.png");
+
+	if (!logo)
+		exit(1);
+
+	sprite_init(&sprite, logo, 256, 256);
+	animation_init(&animation, &sprite, 20);
+	setvbuf(stdout, NULL, _IONBF, 0);
+
+	for (;;) {
+		uint64_t ticks = clock_elapsed(&clock);
+
+		clock_start(&clock);
+
+		SDL_Event ev;
+		while (SDL_PollEvent(&ev)) {
+			switch (ev.type) {
+			case SDL_QUIT:
+				return 0;
+			}
+		}
+
+		//animation_update(&animation, ticks);
+		window_clear();
+		sprite_draw(&sprite, 4, 0, 10, 10);
+		//animation_draw(&animation, 10, 10);
+		window_present();
+		printf("%llu\n", ticks);
+		SDL_Delay(50);
+	}
+
+#if 0
 	window_set_color(0xffffffff);
 	window_draw_line(50, 50, 100, 100);
 	window_draw_point(60, 60);
@@ -44,9 +82,7 @@ main(int argc, char **argv)
 	logo = image_openf("E:\\Charactervector.png");
 	sprite_init(&sprite, logo, 65, 100);
 	sprite_draw(&sprite, 1, 2, 400, 400);
-
-	window_present();
-	SDL_Delay(5000);
+#endif
 
 	return 0;
 }

@@ -33,8 +33,11 @@ struct texture;
  */
 struct sprite {
 	struct texture *texture;        /* Texture to access (RO) */
-	uint8_t cellw;                  /* Width per cell (RW) */
-	uint8_t cellh;                  /* Hieight per cell (RW) */
+	uint16_t cellw;                 /* Width per cell (RW) */
+	uint16_t cellh;                 /* Height per cell (RW) */
+	uint16_t nrows;                 /* Number of rows (RW) */
+	uint16_t ncols;                 /* Number of columns (RW) */
+
 };
 
 /**
@@ -46,6 +49,9 @@ struct sprite {
  * This function is only provided as convenience, user may initialize the
  * sprite by itself if wanted.
  *
+ * The fields `nrows' and `ncols' will be determined automatically from the
+ * texture size.
+ *
  * \pre sprite != NULL
  * \pre tex != NULL
  * \param sprite the sprite to initialize
@@ -56,8 +62,8 @@ struct sprite {
 void
 sprite_init(struct sprite *sprite,
             struct texture *tex,
-            uint8_t cellw,
-            uint8_t cellh);
+            uint16_t cellw,
+            uint16_t cellh);
 
 /**
  * Draw the sprite component from row `r' and column `c'.
@@ -70,6 +76,6 @@ sprite_init(struct sprite *sprite,
  * \warning No bounds checking
  */
 void
-sprite_draw(struct sprite *sprite, unsigned r, unsigned c, int x, int y);
+sprite_draw(struct sprite *sprite, uint16_t r, uint16_t c, int x, int y);
 
 #endif /* !MOLKO_SPRITE_H */

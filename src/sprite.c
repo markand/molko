@@ -23,25 +23,32 @@
 #include "texture.h"
 
 void
-sprite_init(struct sprite *sprite, struct texture *tex, uint8_t cellw, uint8_t cellh)
+sprite_init(struct sprite *sprite, struct texture *tex, uint16_t cellw, uint16_t cellh)
 {
+	int w = 0;
+	int h = 0;
+
 	assert(sprite);
 	assert(tex);
+
+	SDL_QueryTexture(tex->handle, NULL, NULL, &w, &h);
 
 	sprite->texture = tex;
 	sprite->cellw = cellw;
 	sprite->cellh = cellh;
+	sprite->nrows = h / cellh;
+	sprite->ncols = w / cellw;
 }
 
 void
-sprite_draw(struct sprite *sprite, unsigned r, unsigned c, int x, int y)
+sprite_draw(struct sprite *sprite, uint16_t r, uint16_t c, int x, int y)
 {
 	assert(sprite);
 
 	texture_draw_ex(
 		sprite->texture,
-		r * sprite->cellw,      /* src x */
-		c * sprite->cellh,      /* src y */
+		c * sprite->cellw,      /* src y */
+		r * sprite->cellh,      /* src x */
 		sprite->cellw,          /* src width */
 		sprite->cellh,          /* src height */
 		x,                      /* dst x */
