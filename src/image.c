@@ -16,6 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include <stdbool.h>
 
 #include <SDL_image.h>
@@ -25,12 +26,16 @@
 struct texture *
 image_openf(const char *path)
 {
+	assert(path);
+
 	return texture_from_surface(IMG_Load(path));
 }
 
 struct texture *
 image_openb(const char *buffer, size_t size)
 {
+	assert(buffer);
+
 	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
 
 	if (!ops)

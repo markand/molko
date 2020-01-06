@@ -23,6 +23,7 @@ CFLAGS=         -O3 -DNDEBUG -std=c99 -Wall -Wextra
 CPPFLAGS=       -MMD
 SRCS=           src/image.c \
                 src/main.c \
+                src/sprite.c \
                 src/texture.c \
                 src/window.c
 OBJS=           ${SRCS:.c=.o}

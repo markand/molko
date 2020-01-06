@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * sprite.c -- image sprites
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,37 +16,38 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
+#include <assert.h>
 
-#include "window.h"
-#include "image.h"
-#include "texture.h"
 #include "sprite.h"
+#include "texture_p.h"
+#include "texture.h"
 
-#include <SDL.h>
-
-int
-main(int argc, char **argv)
+void
+sprite_init(struct sprite *sprite, struct texture *tex, uint8_t cellw, uint8_t cellh)
 {
-	(void)argc;
-	(void)argv;
+	assert(sprite);
+	assert(tex);
 
-	struct texture *logo;
-	struct sprite sprite;
+	sprite->texture = tex;
+	sprite->cellw = cellw;
+	sprite->cellh = cellh;
+}
 
-	window_init("Molko's Adventure", 640, 480);
-	window_set_color(0x667788ff);
-	window_clear();
-	window_set_color(0xffffffff);
-	window_draw_line(50, 50, 100, 100);
-	window_draw_point(60, 60);
-	window_draw_rectangle(true, 20, 20, 70, 10);
-	logo = image_openf("E:\\Charactervector.png");
-	sprite_init(&sprite, logo, 65, 100);
-	sprite_draw(&sprite, 1, 2, 400, 400);
+void
+sprite_draw(struct sprite *sprite, unsigned r, unsigned c, int x, int y)
+{
+	assert(sprite);
 
-	window_present();
-	SDL_Delay(5000);
-
-	return 0;
+	texture_draw_ex(
+		sprite->texture,
+		r * sprite->cellw,      /* src x */
+		c * sprite->cellh,      /* src y */
+		sprite->cellw,          /* src width */
+		sprite->cellh,          /* src height */
+		x,                      /* dst x */
+		y,                      /* dst y */
+		sprite->cellw,          /* dst width */
+		sprite->cellh,          /* dst height */
+		0.0                     /* angle */
+	);
 }
