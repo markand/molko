@@ -22,14 +22,15 @@ CC=             clang
 CFLAGS=         -O3 -DNDEBUG -D_XOPEN_SOURCE=700 -std=c99 -Wall -Wextra
 CPPFLAGS=       -MMD
 PROG=           molko
+LIB=            libmolko.a
 SRCS=           src/animation.c \
                 src/clock.c \
                 src/font.c \
                 src/image.c \
-                src/main.c \
                 src/sprite.c \
                 src/texture.c \
                 src/window.c
+TESTS=          tests/test-color.c
 OBJS=           ${SRCS:.c=.o}
 DEPS=           ${SRCS:.c=.d}
 
@@ -46,10 +47,19 @@ all: ${PROG}
 .c.o:
 	${CC} ${SDL_CFLAGS} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
 
-${PROG}: ${OBJS}
-	${CC} -o $@ ${OBJS} ${SDL_LDFLAGS} ${LDFLAGS}
+.c:
+	${CC} -I extern/libgreatest -I src -o $@ ${CPPFLAGS} ${CFLAGS} $< ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
+
+${LIB}: ${OBJS}
+	${AR} -rcs $@ ${OBJS}
+
+${PROG}: ${LIB} src/main.o
+	${CC} -o $@ src/main.o ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 
 clean:
 	rm -f molko ${OBJS} ${DEPS}
+
+tests: ${TESTS:.c=}
+	for t in $?; do ./$$t; done
 
 .PHONY: clean
