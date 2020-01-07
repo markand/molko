@@ -19,6 +19,7 @@
 #include <stdio.h>
 
 #include "animation.h"
+#include "font.h"
 #include "clock.h"
 #include "image.h"
 #include "sprite.h"
@@ -26,16 +27,22 @@
 #include "window.h"
 
 #include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
 
 int
 main(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
+	SDL_Init(SDL_INIT_VIDEO);
+	TTF_Init();
+	IMG_Init(IMG_INIT_PNG);
 
-	struct texture *logo;
+	struct texture *logo, *label;
 	struct sprite sprite;
 	struct clock clock;
+	struct font *font;
 	struct animation animation;
 
 	window_init("Molko's Adventure", 640, 480);
@@ -44,15 +51,20 @@ main(int argc, char **argv)
 	clock_start(&clock);
 
 	logo = image_openf("E:\\dev\\molko\\explosion.png");
+	font = font_openf("E:\\dev\\molko\\DejaVuSans.ttf", 10);
 
-	if (!logo)
+	if (!logo || !font) {
+		printf("%s\n", SDL_GetError());
 		exit(1);
+	}
 
+	label = font_render(font, "Hello World", 0xffffffff);
 	sprite_init(&sprite, logo, 256, 256);
 	animation_init(&animation, &sprite, 20);
+
 	setvbuf(stdout, NULL, _IONBF, 0);
 
-	for (;;) {
+	while (!animation_is_complete(&animation)) {
 		uint64_t ticks = clock_elapsed(&clock);
 
 		clock_start(&clock);
@@ -65,12 +77,11 @@ main(int argc, char **argv)
 			}
 		}
 
-		//animation_update(&animation, ticks);
+		animation_update(&animation, ticks);
 		window_clear();
-		sprite_draw(&sprite, 4, 0, 10, 10);
-		//animation_draw(&animation, 10, 10);
+		texture_draw(label, 30, 30);
+		animation_draw(&animation, 10, 10);
 		window_present();
-		printf("%llu\n", ticks);
 		SDL_Delay(50);
 	}
 

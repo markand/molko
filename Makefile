@@ -19,11 +19,12 @@
 .POSIX:
 
 CC=             clang
-CFLAGS=         -O3 -DNDEBUG -std=c99 -Wall -Wextra
+CFLAGS=         -O3 -DNDEBUG -D_XOPEN_SOURCE=700 -std=c99 -Wall -Wextra
 CPPFLAGS=       -MMD
 PROG=           molko
 SRCS=           src/animation.c \
                 src/clock.c \
+                src/font.c \
                 src/image.c \
                 src/main.c \
                 src/sprite.c \
@@ -32,8 +33,8 @@ SRCS=           src/animation.c \
 OBJS=           ${SRCS:.c=.o}
 DEPS=           ${SRCS:.c=.d}
 
-SDL_CFLAGS=     `pkg-config --cflags SDL2 SDL2_image`
-SDL_LDFLAGS=    `pkg-config --libs SDL2 SDL2_image`
+SDL_CFLAGS=     `pkg-config --cflags sdl2 SDL2_image SDL2_ttf`
+SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_ttf`
 
 .SUFFIXES:
 .SUFFIXES: .c .o
