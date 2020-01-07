@@ -9,6 +9,8 @@
 \.DS_Store$
 
 # object files.
+^libmolko\.a$
 ^molko$
+^tests/test-color$
 \.d$
 \.o$
