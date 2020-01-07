@@ -64,14 +64,16 @@ animation_update(struct animation *an, unsigned ticks)
 	if (an->elapsed < an->delay)
 		return;
 
-	an->elapsed = 0;
-	an->column += 1;
-
-	if (an->column >= an->sprite->ncols) {
-		an->column = 0;
-
+	/* Increment column first */
+	if (++an->column >= an->sprite->ncols) {
+		/*
+		 * Increment row, if we reach the last row it means we are
+		 * at the last frame.
+		 */
 		if (++an->row >= an->sprite->nrows)
-			an->row = 0;
+			an->row = an->sprite->nrows;
+		else
+			an->column = 0;
 	}
 }
 
