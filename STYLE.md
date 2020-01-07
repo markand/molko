@@ -17,32 +17,11 @@ to keep code clean, you must align content with spaces only *within* a line.
 
 Note: we recommend 8 columns to avoid high number of indentations.
 
-Example (show whitespace in your editor)
-
-```cpp
-class foo {
-public:
-	enum type {
-		dummy_value,            // dummy comment
-		other_value             // other comment
-	};
-
-	void long_function_name(very_long_type x1,
-	                        very_long_type x2)
-	{
-		const map<string, string> m{
-			{ "hostname",   "127.0.0.1"     },
-			{ "port",       "6667"          }
-		};
-	}
-};
-```
-
 As a rule of thumb, tabs must always be all length.
 
 Example of incorrect usage:
 
-```cpp
+```c
 	{ "hostname",	"127.0.0.1"	},
 	{ "port",	"6667"		}
 ```
