@@ -19,8 +19,7 @@
 .POSIX:
 
 CC=             clang
-CFLAGS=         -O3 -DNDEBUG -D_XOPEN_SOURCE=700 -std=c99 -Wall -Wextra
-CPPFLAGS=       -MMD
+CFLAGS=         -MMD -O3 -DNDEBUG -D_XOPEN_SOURCE=700 -std=c99 -Wall -Wextra
 PROG=           molko
 LIB=            libmolko.a
 SRCS=           src/animation.c \
@@ -30,25 +29,37 @@ SRCS=           src/animation.c \
                 src/sprite.c \
                 src/texture.c \
                 src/window.c
-TESTS=          tests/test-color.c
 OBJS=           ${SRCS:.c=.o}
 DEPS=           ${SRCS:.c=.d}
 
 SDL_CFLAGS=     `pkg-config --cflags sdl2 SDL2_image SDL2_ttf`
 SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_ttf`
 
+EXPAT_CFLAGS=   `pkg-config --cflags expat`
+EXPAT_LDFLAGS=  `pkg-config --libs expat`
+
+TESTS=          tests/test-color.c
+TESTS_INCS=     -I extern/libgreatest -I src ${SDL_CFLAGS}
+TESTS_LIBS=     ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
+TESTS_OBJS=     ${TESTS:.c=}
+TESTS_DEPS=     ${TESTS:.c=.d}
+
+TOOLS=          tools/molko-map.c
+TOOLS_OBJS=     ${TOOLS:.c=}
+TOOLS_DEPS=     ${TOOLS:.c=.d}
+
 .SUFFIXES:
 .SUFFIXES: .c .o
 
 all: ${PROG}
 
--include ${DEPS}
+-include ${DEPS} ${TESTS_DEPS} ${TOOLS_DEPS}
 
 .c.o:
-	${CC} ${SDL_CFLAGS} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
+	${CC} ${SDL_CFLAGS} ${CFLAGS} -c $< -o $@
 
 .c:
-	${CC} -I extern/libgreatest -I src -o $@ ${CPPFLAGS} ${CFLAGS} $< ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
+	${CC} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS}
 
 ${LIB}: ${OBJS}
 	${AR} -rcs $@ ${OBJS}
@@ -56,10 +67,19 @@ ${LIB}: ${OBJS}
 ${PROG}: ${LIB} src/main.o
 	${CC} -o $@ src/main.o ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 
-clean:
-	rm -f molko ${OBJS} ${DEPS}
+${TESTS_OBJS}: ${LIB}
 
-tests: ${TESTS:.c=}
+tests: ${TESTS_OBJS}
 	for t in $?; do ./$$t; done
 
-.PHONY: clean
+tools: ${TOOLS_OBJS}
+
+tools/molko-map: tools/molko-map.c
+	${CC} -o $@ $< ${CFLAGS} ${EXPAT_CFLAGS} ${EXPAT_LDFLAGS}
+
+clean:
+	rm -f molko ${LIB} ${OBJS} ${DEPS}
+	rm -f ${TESTS_OBJS} ${TESTS_DEPS}
+	rm -f ${TOOLS_OBJS} ${TOOLS_DEPS}
+
+.PHONY: clean tests tools

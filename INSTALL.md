@@ -8,6 +8,7 @@ Requirements
 
 - C99 compliant compiler,
 - POSIX system (make, ar, shell),
+- [Expat][], XML parsing library,
 - [SDL2][], Multimedia library,
 - [SDL2_image][], Image loading addon for SDL2,
 - [SDL2_ttf][], Fonts addon for SDL2,
@@ -37,6 +38,7 @@ appropriate MinGW shell prior to the chapter above.
 
 - *make*
 - *mingw-w64-x86_64-gcc*
+- *mingw-w64-x86_64-expat*
 - *mingw-w64-x86_64-SDL2*
 - *mingw-w64-x86_64-SDL2_image*
 - *mingw-w64-x86_64-SDL2_mixer*
@@ -44,6 +46,7 @@ appropriate MinGW shell prior to the chapter above.
 
 Note: replace `x86_64` with `i686` if you have a deprecated system.
 
+[Expat][]: https://libexpat.github.io
 [SDL2]: http://libsdl.org
 [SDL2_image]: https://www.libsdl.org/projects/SDL_image
 [SDL2_ttf]: https://www.libsdl.org/projects/SDL_ttf
