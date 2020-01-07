@@ -20,6 +20,7 @@
 
 #include <SDL.h>
 
+#include "color.h"
 #include "window.h"
 #include "window_p.h"
 
@@ -50,18 +51,19 @@ window_get_color(void)
 
 	SDL_GetRenderDrawColor(win.renderer, &r, &g, &b, &a);
 
-	return r << 24 | g << 16 | b << 8 | a;
+	return COLOR_HEX(r, g, b, a);
 }
 
 void
 window_set_color(uint32_t color)
 {
-	const Uint8 r = color >> 24 & 0xff;
-	const Uint8 g = color >> 16 & 0xff;
-	const Uint8 b = color >> 8  & 0xff;
-	const Uint8 a = color       & 0xff;
-
-	SDL_SetRenderDrawColor(win.renderer, r, g, b, a);
+	SDL_SetRenderDrawColor(
+		win.renderer,
+		COLOR_R(color),
+		COLOR_G(color),
+		COLOR_B(color),
+		COLOR_A(color)
+	);
 }
 
 void

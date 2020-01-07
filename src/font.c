@@ -22,6 +22,7 @@
 
 #include <SDL_ttf.h>
 
+#include "color.h"
 #include "font.h"
 #include "texture_p.h"
 
@@ -78,10 +79,10 @@ font_render(struct font *font, const char *text, uint32_t color)
 
 	/* TODO: refactor this with window.c */
 	SDL_Color fg = {
-		.r = color >> 24 & 0xff,
-		.g = color >> 16 & 0xff,
-		.b = color >> 8  & 0xff,
-		.a = color       & 0xff
+		.r = COLOR_R(color),
+		.g = COLOR_G(color),
+		.b = COLOR_B(color),
+		.a = COLOR_A(color)
 	};
 
 	return texture_from_surface(TTF_RenderUTF8_Blended(font->handle, text, fg));
