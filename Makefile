@@ -24,6 +24,7 @@ PROG=           molko
 LIB=            libmolko.a
 SRCS=           src/animation.c \
                 src/clock.c \
+                src/event.c \
                 src/font.c \
                 src/image.c \
                 src/sprite.c \

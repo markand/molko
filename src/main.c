@@ -19,8 +19,9 @@
 #include <stdio.h>
 
 #include "animation.h"
-#include "font.h"
 #include "clock.h"
+#include "event.h"
+#include "font.h"
 #include "image.h"
 #include "sprite.h"
 #include "texture.h"
@@ -35,65 +36,36 @@ main(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
+
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
 	IMG_Init(IMG_INIT_PNG);
 
-	struct texture *logo, *label;
-	struct sprite sprite;
-	struct clock clock;
-	struct font *font;
-	struct animation animation;
-
 	window_init("Molko's Adventure", 640, 480);
 	window_set_color(0x667788ff);
 
-	clock_start(&clock);
+	for (;;) {
+		union event ev;
 
-	logo = image_openf("E:\\dev\\molko\\explosion.png");
-	font = font_openf("E:\\dev\\molko\\DejaVuSans.ttf", 10);
-
-	if (!logo || !font) {
-		printf("%s\n", SDL_GetError());
-		exit(1);
-	}
-
-	label = font_render(font, "Hello World", 0xffffffff);
-	sprite_init(&sprite, logo, 256, 256);
-	animation_init(&animation, &sprite, 20);
-
-	setvbuf(stdout, NULL, _IONBF, 0);
-
-	while (!animation_is_complete(&animation)) {
-		uint64_t ticks = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		SDL_Event ev;
-		while (SDL_PollEvent(&ev)) {
+		while (event_poll(&ev)) {
 			switch (ev.type) {
-			case SDL_QUIT:
+			case EVENT_QUIT:
 				return 0;
+			case EVENT_MOUSE:
+				printf("mouse moved to %d, %d, state: %d\n", ev.mouse.x, ev.mouse.y, ev.mouse.buttons);
+				break;
+			case EVENT_CLICKDOWN:
+				printf("mouse click on %d, %d, which: %d\n", ev.click.x, ev.click.y, ev.click.button);
+				break;
+			default:
+				break;
 			}
 		}
 
-		animation_update(&animation, ticks);
 		window_clear();
-		texture_draw(label, 30, 30);
-		animation_draw(&animation, 10, 10);
 		window_present();
 		SDL_Delay(50);
 	}
-
-#if 0
-	window_set_color(0xffffffff);
-	window_draw_line(50, 50, 100, 100);
-	window_draw_point(60, 60);
-	window_draw_rectangle(true, 20, 20, 70, 10);
-	logo = image_openf("E:\\Charactervector.png");
-	sprite_init(&sprite, logo, 65, 100);
-	sprite_draw(&sprite, 1, 2, 400, 400);
-#endif
 
 	return 0;
 }
