@@ -19,7 +19,7 @@
 .POSIX:
 
 CC=             clang
-CFLAGS=         -MMD -O3 -DNDEBUG -D_XOPEN_SOURCE=700 -std=c99 -Wall -Wextra
+CFLAGS=         -MMD -O3 -DNDEBUG -std=c18 -Wall -Wextra
 PROG=           molko
 LIB=            libmolko.a
 SRCS=           src/animation.c \
