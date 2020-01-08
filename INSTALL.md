@@ -38,7 +38,7 @@ appropriate MinGW shell prior to the chapter above.
 
 - *make*
 - *mingw-w64-x86_64-gcc*
-- *mingw-w64-x86_64-expat*
+- *mingw-w64-x86_64-expat* (only for molko-map tool)
 - *mingw-w64-x86_64-SDL2*
 - *mingw-w64-x86_64-SDL2_image*
 - *mingw-w64-x86_64-SDL2_mixer*

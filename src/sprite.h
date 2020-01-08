@@ -37,7 +37,6 @@ struct sprite {
 	uint16_t cellh;                 /* Height per cell (RW) */
 	uint16_t nrows;                 /* Number of rows (RW) */
 	uint16_t ncols;                 /* Number of columns (RW) */
-
 };
 
 /**

@@ -16,6 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef MOLKO_TEXTURE_H
+#define MOLKO_TEXTURE_H
+
 struct texture;
 
 /**
@@ -71,3 +74,5 @@ texture_draw_ex(struct texture *tex,
  */
 void
 texture_close(struct texture *tex);
+
+#endif /* !MOLKO_TEXTURE_H */
