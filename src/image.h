@@ -42,8 +42,8 @@ image_openf(const char *path);
  * Open a file from a memory buffer.
  *
  * \pre buffer != NULL
- * \param the memory buffer
- * \return size the memory size
+ * \param buffer the memory buffer
+ * \param size the memory size
  * \return the texture or NULL on error
  */
 struct texture *

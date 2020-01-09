@@ -32,11 +32,11 @@ struct texture;
  * \brief Sprite structure.
  */
 struct sprite {
-	struct texture *texture;        /* Texture to access (RO) */
-	uint16_t cellw;                 /* Width per cell (RW) */
-	uint16_t cellh;                 /* Height per cell (RW) */
-	uint16_t nrows;                 /* Number of rows (RW) */
-	uint16_t ncols;                 /* Number of columns (RW) */
+	struct texture *texture;        /*!< Texture to access (RO) */
+	uint16_t cellw;                 /*!< Width per cell (RW) */
+	uint16_t cellh;                 /*!< Height per cell (RW) */
+	uint16_t nrows;                 /*!< Number of rows (RW) */
+	uint16_t ncols;                 /*!< Number of columns (RW) */
 };
 
 /**
@@ -68,6 +68,7 @@ sprite_init(struct sprite *sprite,
  * Draw the sprite component from row `r' and column `c'.
  *
  * \pre sprite != NULL
+ * \param sprite the sprite to draw
  * \param r the row number
  * \param c the column number
  * \param x the X destination

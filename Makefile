@@ -78,10 +78,13 @@ tools: ${TOOLS_OBJS}
 tools/molko-map: tools/molko-map.c
 	${CC} -o $@ $< ${CFLAGS} ${EXPAT_CFLAGS} ${EXPAT_LDFLAGS}
 
+doxygen:
+	doxygen doxygen/Doxyfile
+
 clean:
 	rm -f ${PROG} src/main.o src/main.d
 	rm -f ${LIB} ${OBJS} ${DEPS}
 	rm -f ${TESTS_OBJS} ${TESTS_DEPS}
 	rm -f ${TOOLS_OBJS} ${TOOLS_DEPS}
 
-.PHONY: clean tests tools
+.PHONY: clean doxygen tests tools

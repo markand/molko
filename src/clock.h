@@ -30,7 +30,7 @@
  * \brief Clock structure.
  */
 struct clock {
-	uint64_t ticks;         /* time point on initialization */
+	uint64_t ticks;         /*!< time point on initialization */
 };
 
 /**

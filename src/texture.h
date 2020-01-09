@@ -52,12 +52,12 @@ texture_draw(struct texture *tex, int x, int y);
  * \param tex the texture
  * \param src_x the source rectangle X coordinate
  * \param src_y the source rectangle Y coordinate
- * \param src_width the source rectangle width
- * \param src_height the source rectangle height
+ * \param src_w the source rectangle width
+ * \param src_h the source rectangle height
  * \param dst_x the destination rectangle X coordinate
  * \param dst_y the destination rectangle Y coordinate
- * \param dst_width the destination rectangle width
- * \param dst_height the destination rectangle height
+ * \param dst_w the destination rectangle width
+ * \param dst_h the destination rectangle height
  * \param angle the angle
  */
 void
