@@ -19,14 +19,20 @@
 #ifndef MOLKO_TEXTURE_H
 #define MOLKO_TEXTURE_H
 
-struct texture;
-
 /**
  * \file texture.h
  * \brief Basic texture management.
  *
  * See also \a image.h for usage of textures.
  */
+
+/**
+ * \brief Texture object.
+ *
+ * This object is not publicly defined because it contains
+ * implementation-defined data.
+ */
+struct texture;
 
 /**
  * Simple texture drawing.

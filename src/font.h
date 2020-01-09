@@ -27,6 +27,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/**
+ * \brief Font object.
+ *
+ * This object is not publicly defined because it contains
+ * implementation-defined data.
+ */
 struct font;
 struct texture;
 

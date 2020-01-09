@@ -47,6 +47,6 @@ image_openf(const char *path);
  * \return the texture or NULL on error
  */
 struct texture *
-image_openb(const char *buffer, size_t size);
+image_openb(const void *buffer, size_t size);
 
 #endif /* !MOLKO_IMAGE_H */

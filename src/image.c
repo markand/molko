@@ -32,7 +32,7 @@ image_openf(const char *path)
 }
 
 struct texture *
-image_openb(const char *buffer, size_t size)
+image_openb(const void *buffer, size_t size)
 {
 	assert(buffer);
 

@@ -100,8 +100,7 @@ void
 window_present(void);
 
 /**
- * Close the window and destroy associated resources, do not use pointer
- * afterwards.
+ * Close the window and destroy associated resources.
  */
 void
 window_close(void);
