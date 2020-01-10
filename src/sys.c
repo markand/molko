@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * sys.c -- system routines
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,49 +16,33 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 
-#include "animation.h"
-#include "clock.h"
-#include "event.h"
-#include "font.h"
-#include "image.h"
-#include "sprite.h"
-#include "texture.h"
-#include "window.h"
 #include "sys.h"
 
-int
-main(int argc, char **argv)
+bool
+sys_init(void)
 {
-	(void)argc;
-	(void)argv;
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+		return false;
+	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
+		return false;
+	if (TTF_Init() < 0)
+		return false;
+	if (Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG)
+		return false;
 
-	sys_init();
-	window_init("Molko's Adventure", 1280, 720);
-	window_set_color(0x667788ff);
+	return true;
+}
 
-	for (;;) {
-		for (union event ev; event_poll(&ev); ) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				return 0;
-			case EVENT_MOUSE:
-				printf("mouse moved to %d, %d, state: %d\n", ev.mouse.x, ev.mouse.y, ev.mouse.buttons);
-				break;
-			case EVENT_CLICKDOWN:
-				printf("mouse click on %d, %d, which: %d\n", ev.click.x, ev.click.y, ev.click.button);
-				break;
-			default:
-				break;
-			}
-		}
-
-		window_clear();
-		window_present();
-	}
-
-	sys_close();
-
-	return 0;
+void
+sys_close(void)
+{
+	Mix_Quit();
+	TTF_Quit();
+	IMG_Quit();
+	SDL_Quit();
 }

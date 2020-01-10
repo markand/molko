@@ -28,13 +28,14 @@ SRCS=           src/animation.c \
                 src/font.c \
                 src/image.c \
                 src/sprite.c \
+                src/sys.c \
                 src/texture.c \
                 src/window.c
 OBJS=           ${SRCS:.c=.o}
 DEPS=           ${SRCS:.c=.d}
 
-SDL_CFLAGS=     `pkg-config --cflags sdl2 SDL2_image SDL2_ttf`
-SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_ttf`
+SDL_CFLAGS=     `pkg-config --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf`
+SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 
 EXPAT_CFLAGS=   `pkg-config --cflags expat`
 EXPAT_LDFLAGS=  `pkg-config --libs expat`
