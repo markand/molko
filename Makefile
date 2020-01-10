@@ -26,6 +26,7 @@ SRCS=           src/animation.c \
                 src/clock.c \
                 src/event.c \
                 src/font.c \
+                src/message.c \
                 src/image.c \
                 src/sprite.c \
                 src/sys.c \

@@ -17,16 +17,18 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "animation.h"
 #include "clock.h"
 #include "event.h"
 #include "font.h"
 #include "image.h"
+#include "message.h"
 #include "sprite.h"
+#include "sys.h"
 #include "texture.h"
 #include "window.h"
-#include "sys.h"
 
 int
 main(int argc, char **argv)
@@ -34,11 +36,29 @@ main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 
+	struct font *font;
+
 	sys_init();
 	window_init("Molko's Adventure", 1280, 720);
-	window_set_color(0x667788ff);
+
+	if (!(font = font_openf("assets/fonts/DejaVuSerifCondensed.ttf", 12)))
+		exit(1);
+
+	struct message welcome = {
+		.text = {
+			"Welcome to this adventure Molko.",
+			"I'm pretty proud of you.",
+			"Now get of my house."
+		},
+		.font = font
+	};
+	struct clock clock;
 
 	for (;;) {
+		uint64_t elapsed = clock_elapsed(&clock);
+
+		clock_start(&clock);
+
 		for (union event ev; event_poll(&ev); ) {
 			switch (ev.type) {
 			case EVENT_QUIT:
@@ -54,7 +74,10 @@ main(int argc, char **argv)
 			}
 		}
 
+		window_set_color(0x667788ff);
 		window_clear();
+		message_update(&welcome, elapsed);
+		message_draw(&welcome);
 		window_present();
 	}
 
