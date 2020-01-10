@@ -1,5 +1,5 @@
 /*
- * molko-map.c -- convert tiled .tmx into custom files
+ * molko-map.c -- convert tiled tiled JSON files into custom files
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -21,303 +21,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdnoreturn.h>
 #include <string.h>
 
-#include <expat.h>
-
-enum state {
-	STATE_ROOT,             /* no tag read yet */
-	STATE_MAP,              /* top <map> */
-	STATE_MAP_PROPERTIES,   /* <map><properties> */
-	STATE_TILESET,          /* <tileset> */
-	STATE_TILESET_IMAGE,    /* <tileset><image> */
-	STATE_LAYER,            /* <layer> */
-	STATE_LAYER_DATA,       /* <layer><data> */
-};
-
-enum layer {
-	LAYER_NONE,
-	LAYER_BACKGROUND,
-	LAYER_FOREGROUND
-};
-
-struct context {
-	enum state state;
-	enum layer layer;
-};
-
-static const int layer_indices[] = {
-	[LAYER_NONE] = -1,
-	[LAYER_BACKGROUND] = 0,
-	[LAYER_FOREGROUND] = 1
-};
-
-static void on_data(struct context *, const char *, const char **);
-static void on_image(struct context *, const char *, const char **);
-static void on_layer(struct context *, const char *, const char **);
-static void on_map(struct context *, const char *, const char **);
-static void on_properties(struct context *, const char *, const char **);
-static void on_property(struct context *, const char *, const char **);
-static void on_tile(struct context *, const char *, const char **);
-static void on_tileset(struct context *, const char *, const char **);
-static void die(const char *, ...);
-
-static const struct {
-	const char *name;
-	void (*begin)(struct context *, const char *, const char **);
-	void (*end)(struct context *, const char *);
-} handlers[] = {
-	{ "data",       on_data,        NULL    },
-	{ "image",      on_image,       NULL    },
-	{ "layer",      on_layer,       NULL    },
-	{ "map",        on_map,         NULL    },
-	{ "properties", on_properties,  NULL    },
-	{ "property",   on_property,    NULL    },
-	{ "tile",       on_tile,        NULL    },
-	{ "tileset",    on_tileset,     NULL    },
-	{ NULL,         NULL,           NULL    },
-};
-
-static bool
-is_known_map_property(const char *name)
-{
-	static const char *known[] = {
-		"title",
-		NULL
-	};
-
-	for (size_t i = 0; known[i]; ++i)
-		if (strcmp(known[i], name) == 0)
-			return true;
-
-	return false;
-}
-
-static void
-write_map_property(const char **attrs)
-{
-	/*
-	 * This is how <map><properties> are defined:
-	 *
-	 *             0         1          2          3
-	 * <property name="PROPERTY NAME" value="PROPERTY VALUE">
-	 */
-	for (size_t i = 0; attrs[i]; i += 4) {
-		if (is_known_map_property(attrs[i + 1]))
-			printf("%s|%s\n", attrs[i + 1], attrs[i + 3]);
-		else
-			die("unsupported map property: %s\n", attrs[i + 1]);
-	}
-}
-
-static const char *
-find_attr(const char **attrs, const char *key)
-{
-	for (size_t i = 0; attrs[i]; i += 2)
-		if (strcmp(attrs[i], key) == 0)
-			return attrs[i + 1];
-
-	return NULL;
-}
-
-static void
-on_map(struct context *ctx, const char *name, const char **attrs)
-{
-	(void)ctx;
-	(void)name;
-	(void)attrs;
-
-	ctx->state = STATE_MAP;
-}
-
-static void
-on_properties(struct context *ctx, const char *name, const char **attrs)
-{
-	(void)name;
-	(void)attrs;
-
-	/*
-	 * <properties> exist in different parent tags
-	 */
-	switch (ctx->state) {
-	case STATE_MAP:
-		ctx->state = STATE_MAP_PROPERTIES;
-		break;
-	default:
-		fprintf(stderr, "warning: unsupported <properties>\n");
-		break;
-	}
-}
-
-static void
-on_property(struct context *ctx, const char *name, const char **attrs)
-{
-	(void)name;
-	(void)attrs;
-
-	switch (ctx->state) {
-	case STATE_MAP_PROPERTIES:
-		write_map_property(attrs);
-		break;
-	default:
-		break;
-	}
-}
-
-static void
-on_layer(struct context *ctx, const char *name, const char **attrs)
-{
-	(void)name;
-
-	/*
-	 * The layer is defined like this:
-	 *
-	 * Values of attrs:
-	 *          0       1       IGNORED
-	 * <layer name="background" width="10" height="10">
-	 */
-	const char *layername = find_attr(attrs, "name");
-
-	if (!layername)
-		die("layer is missing 'name' attribute\n");
-
-	if (strcmp(layername, "background") == 0)
-		ctx->layer = LAYER_BACKGROUND;
-	else
-		die("invalid '%s' value for 'name' property\n", layername);
-
-	ctx->state = STATE_LAYER;
-}
-
-static void
-on_data(struct context *ctx, const char *name, const char **attrs)
-{
-	(void)name;
-	(void)attrs;
-
-	if (ctx->state != STATE_LAYER)
-		die("reading <data> outside a <layer> node\n");
-
-	ctx->state = STATE_LAYER_DATA;
-}
-
-static void
-on_tile(struct context *ctx, const char *name, const char **attrs)
-{
-	(void)name;
-
-	/* TODO: add more layer */
-	if (ctx->state != STATE_LAYER_DATA)
-		die("reading <tile> outside a <data> node\n");
-
-	/*
-	 * The tile is defined as following:
-	 *
-	 * Values of attrs:
-	 *        0   1
-	 * <tile gid="1" />
-	 */
-	const char *gid = find_attr(attrs, "gid");
-
-	if (!gid)
-		die("missing 'gid' attribute in <tile> node\n");
-
-	printf("tile|%d|%s\n", layer_indices[ctx->layer], gid);
-}
-
-static void
-on_tileset(struct context *ctx, const char *name, const char **attrs)
-{
-	(void)ctx;
-	(void)name;
-	(void)attrs;
-
-	ctx->state = STATE_TILESET;
-}
-
-static void
-on_image(struct context *ctx, const char *name, const char **attrs)
-{
-	(void)name;
-
-	if (ctx->state != STATE_TILESET)
-		die("reading <image> outside a <tileset> node\n");
-
-	/**
-	 * The tile is defined as following:
-	 *
-	 * Values of attrs:
-	 *        0   1
-	 * <image source="name.png" ... />
-	 */
-	const char *src = find_attr(attrs, "source");
-
-	if (!src)
-		die("missing 'source' attribute in <image> node\n");
-
-	printf("tileset|%s\n", src);
-}
-
-static void
-on_start_element(struct context *ctx, const char *name, const char **attrs)
-{
-	assert(ctx);
-	assert(name);
-	assert(attrs);
-
-	size_t i;
-
-	for (i = 0; handlers[i].name; ++i) {
-		if (strcmp(name, handlers[i].name) == 0) {
-			handlers[i].begin(ctx, name, attrs);
-			break;
-		}
-	}
-
-	if (!handlers[i].name)
-		fprintf(stderr, "unsupported <%s> tag\n", name);
-}
-
-static void
-on_end_element(void *data, const char *name)
-{
-	(void)data;
-	(void)name;
-#if 0
-	size_t i;
-
-	for (i = 0; handlers[i].name; ++i) {
-		if (strcmp(name, handlers[i].name) == 0) {
-			handlers[i].end(ctx, name, attrs);
-			break;
-		}
-	}
-
-	if (!handlers[i].name)
-		fprintf(stderr, "unsupported <%s> tag\n", name);
-#endif
-}
-
-static void
-run(XML_Parser parser)
-{
-	char buffer[BUFSIZ];
-	size_t nbread;
-	struct context ctx = {0};
-
-	XML_SetUserData(parser, &ctx);
-
-	while ((nbread = fread(buffer, 1, sizeof (buffer), stdin)) > 0) {
-		bool done = nbread < sizeof (buffer);
-
-		if (XML_Parse(parser, buffer, nbread, done) == XML_STATUS_ERROR) {
-			fprintf(stderr, "%lu: %s\n",
-			    XML_GetCurrentLineNumber(parser),
-			    XML_ErrorString(XML_GetErrorCode(parser)));
-			exit(1);
-		}
-	}
-}
+#include <jansson.h>
 
 static void
 die(const char *fmt, ...)
@@ -332,16 +39,223 @@ die(const char *fmt, ...)
 	exit(1);
 }
 
+static bool
+is_layer(const char *name)
+{
+	return strcmp(name, "background") == 0 ||
+	       strcmp(name, "foreground") == 0 ||
+	       strcmp(name, "objects") == 0;
+}
+
+static void
+write_properties(const json_t *props)
+{
+	size_t index;
+	json_t *prop, *name, *type, *value;
+
+	if (!json_is_array(props))
+		return;
+
+	json_array_foreach(props, index, prop) {
+		name = json_object_get(prop, "name");
+		type = json_object_get(prop, "type");
+		value = json_object_get(prop, "value");
+
+		if (!json_is_object(prop) ||
+		    !json_is_string(name) ||
+		    !json_is_string(type) ||
+		    !json_is_string(value))
+			die("invalid property\n");
+
+		printf("%s|%s\n", json_string_value(name),
+		    json_string_value(value));
+	}
+}
+
+static void
+write_metadata(const json_t *document)
+{
+	json_t *height = json_object_get(document, "height");
+	json_t *width = json_object_get(document, "width");
+
+	if (!height || !json_is_integer(height))
+		die("missing 'height' property\n");
+	if (!width || !json_is_integer(width))
+		die("missing 'width' property\n");
+
+	printf("width|%lld\n", json_integer_value(width));
+	printf("height|%lld\n", json_integer_value(height));
+}
+
+static void
+write_object_property(int id, const json_t *property)
+{
+	assert(json_is_object(property));
+
+	json_t *name = json_object_get(property, "name");
+	json_t *type = json_object_get(property, "type");
+	json_t *value = json_object_get(property, "value");
+
+	if (!name || !json_is_string(name))
+		die("invalid 'name' property in object");
+	if (!type || !json_is_string(type))
+		die("invalid 'type' property in object");
+	if (!value || !json_is_string(value))
+		die("invalid 'value' property in object");
+
+	printf("object-property|%d|%s|%s\n",
+	    id,
+	    json_string_value(name),
+	    json_string_value(value)
+	);
+}
+
+static void
+write_object(const json_t *object)
+{
+	assert(json_is_object(object));
+
+	json_t *id = json_object_get(object, "id");
+	json_t *x = json_object_get(object, "x");
+	json_t *y = json_object_get(object, "y");
+	json_t *width = json_object_get(object, "width");
+	json_t *height = json_object_get(object, "height");
+	json_t *type = json_object_get(object, "type");
+	json_t *props = json_object_get(object, "properties");
+
+	if (!id || !json_is_integer(id))
+		die("invalid 'id' property in object\n");
+	if (!x || !json_is_real(x))
+		die("invalid 'x' property in object\n");
+	if (!y || !json_is_real(y))
+		die("invalid 'y' property in object\n");
+	if (!width || !json_is_real(width))
+		die("invalid 'width' property in object\n");
+	if (!height || !json_is_real(height))
+		die("invalid 'height' property in object\n");
+	if (!type || !json_is_string(type))
+		die("invalid 'type' property in object\n");
+
+	/* In tiled, those properties are float but we only use ints in MA */
+	printf("object|%lld|%s|%d|%d|%d|%d\n",
+	    json_integer_value(id),
+	    json_string_value(type),
+	    (int)json_real_value(x),
+	    (int)json_real_value(y),
+	    (int)json_real_value(width),
+	    (int)json_real_value(height)
+	);
+
+	if (json_is_array(props)) {
+		json_t *prop;
+		size_t index;
+
+		json_array_foreach(props, index, prop) {
+			if (!json_is_object(prop))
+				die("invalid property in object\n");
+
+			write_object_property(json_integer_value(id), prop);
+		}
+	}
+}
+
+static void
+write_layer(const json_t *layer)
+{
+	json_t *objects = json_object_get(layer, "objects");
+	json_t *data = json_object_get(layer, "data");
+	json_t *name = json_object_get(layer, "name");
+	json_t *tile, *object;
+	size_t index;
+
+	if (!name || !json_is_string(name))
+		die("invalid 'name' property in layer");
+	if (!is_layer(json_string_value(name)))
+		die("invalid 'name' layer: %s\n", json_string_value(name));
+
+	printf("layer|%s\n", json_string_value(name));
+
+	/* Only foreground/background have 'data' property */
+	if (json_is_array(data)) {
+		json_array_foreach(data, index, tile) {
+			if (!json_is_integer(tile))
+				die("invalid 'data' property in layer\n");
+
+			printf("%lld\n", json_integer_value(tile));
+		}
+	}
+
+	/* Only objects has 'objects' property */
+	if (json_is_array(objects)) {
+		json_array_foreach(objects, index, object) {
+			if (!json_is_object(object))
+				die("invalid 'objects' property in layer\n");
+
+			write_object(object);
+		}
+	}
+}
+
+static void
+write_layers(const json_t *layers)
+{
+	size_t index;
+	json_t *layer;
+
+	if (!layers)
+		return;
+
+	json_array_foreach(layers, index, layer) {
+		if (!json_is_object(layer))
+			die("layer is not an object\n");
+
+		write_layer(layer);
+	}
+}
+
+static void
+write_tileset(const json_t *tileset)
+{
+	json_t *image = json_object_get(tileset, "image");
+
+	if (!image || !json_is_string(image))
+		die("invalid 'image' property in tileset");
+
+	printf("tileset|%s\n", json_string_value(image));
+}
+
+static void
+write_tilesets(const json_t *tilesets)
+{
+	json_t *tileset;
+	size_t index;
+
+	if (!json_is_array(tilesets))
+		die("invalid 'tilesets' property");
+
+	json_array_foreach(tilesets, index, tileset) {
+		if (!json_is_object(tileset))
+			die("invalid tileset");
+
+		write_tileset(tileset);
+	}
+}
+
 int
 main(void)
 {
-	XML_Parser parser;
+	json_t *document;
+	json_error_t error;
 
-	parser = XML_ParserCreate(NULL);
-	XML_SetElementHandler(parser,
-		(XML_StartElementHandler)on_start_element, on_end_element);
+	document = json_loadf(stdin, 0, &error);
 
-	run(parser);
+	if (!document)
+		die("%d:%d: %s\n", error.line, error.column, error.text);
 
-	XML_ParserFree(parser);
+	write_properties(json_object_get(document, "properties"));
+	write_metadata(document);
+	write_layers(json_object_get(document, "layers"));
+	write_tilesets(json_object_get(document, "tilesets"));
+
+	json_decref(document);
 }

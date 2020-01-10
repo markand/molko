@@ -8,7 +8,7 @@ Requirements
 
 - C99 compliant compiler,
 - POSIX system (make, ar, shell),
-- [Expat][], XML parsing library,
+- [Jansson][], JSON parsing library,
 - [SDL2][], Multimedia library,
 - [SDL2_image][], Image loading addon for SDL2,
 - [SDL2_ttf][], Fonts addon for SDL2,
@@ -46,7 +46,7 @@ appropriate MinGW shell prior to the chapter above.
 
 Note: replace `x86_64` with `i686` if you have a deprecated system.
 
-[Expat][]: https://libexpat.github.io
+[Jansson][]: http://www.digip.org/jansson
 [SDL2]: http://libsdl.org
 [SDL2_image]: https://www.libsdl.org/projects/SDL_image
 [SDL2_ttf]: https://www.libsdl.org/projects/SDL_ttf

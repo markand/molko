@@ -41,7 +41,7 @@ main(int argc, char **argv)
 	sys_init();
 	window_init("Molko's Adventure", 1280, 720);
 
-	if (!(font = font_openf("assets/fonts/DejaVuSerifCondensed.ttf", 12)))
+	if (!(font = font_openf("assets/fonts/DejaVuSansCondensed.ttf", 12)))
 		exit(1);
 
 	struct message welcome = {

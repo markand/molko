@@ -38,8 +38,8 @@ DEPS=           ${SRCS:.c=.d}
 SDL_CFLAGS=     `pkg-config --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 
-EXPAT_CFLAGS=   `pkg-config --cflags expat`
-EXPAT_LDFLAGS=  `pkg-config --libs expat`
+JANSSON_CFLAGS= `pkg-config --cflags jansson`
+JANSSON_LDFLAGS=`pkg-config --libs jansson`
 
 TESTS=          tests/test-color.c
 TESTS_INCS=     -I extern/libgreatest -I src ${SDL_CFLAGS}
@@ -78,7 +78,7 @@ tests: ${TESTS_OBJS}
 tools: ${TOOLS_OBJS}
 
 tools/molko-map: tools/molko-map.c
-	${CC} -o $@ $< ${CFLAGS} ${EXPAT_CFLAGS} ${EXPAT_LDFLAGS}
+	${CC} -o $@ $< ${CFLAGS} ${JANSSON_CFLAGS} ${JANSSON_LDFLAGS}
 
 doxygen:
 	doxygen doxygen/Doxyfile

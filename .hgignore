@@ -9,11 +9,12 @@
 \.DS_Store$
 
 # object files.
+\.d$
+\.o$
 ^libmolko\.a$
 ^molko$
 ^tests/test-color$
-\.d$
-\.o$
+^tools/molko-map$
 
 # doxygen stuff.
 ^doxygen/html$
