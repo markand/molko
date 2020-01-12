@@ -75,16 +75,24 @@ write_properties(const json_t *props)
 static void
 write_metadata(const json_t *document)
 {
-	json_t *height = json_object_get(document, "height");
 	json_t *width = json_object_get(document, "width");
+	json_t *height = json_object_get(document, "height");
+	json_t *tilewidth = json_object_get(document, "tilewidth");
+	json_t *tileheight = json_object_get(document, "tileheight");
 
-	if (!height || !json_is_integer(height))
-		die("missing 'height' property\n");
 	if (!width || !json_is_integer(width))
 		die("missing 'width' property\n");
+	if (!height || !json_is_integer(height))
+		die("missing 'height' property\n");
+	if (!tilewidth || !json_is_integer(tilewidth))
+		die("missing 'tilewidth' property\n");
+	if (!tileheight || !json_is_integer(tileheight))
+		die("missing 'tileheight' property\n");
 
 	printf("width|%lld\n", json_integer_value(width));
 	printf("height|%lld\n", json_integer_value(height));
+	printf("tilewidth|%lld\n", json_integer_value(tilewidth));
+	printf("tileheight|%lld\n", json_integer_value(tileheight));
 }
 
 static void

@@ -18,14 +18,15 @@
 
 .POSIX:
 
-CC=             clang
-CFLAGS=         -MMD -O3 -DNDEBUG -std=c18 -Wall -Wextra
+CC=             gcc
+CFLAGS=         -MMD -O3 -DNDEBUG -std=c18 -Wall -Wextra -g
 PROG=           molko
 LIB=            libmolko.a
 SRCS=           src/animation.c \
                 src/clock.c \
                 src/event.c \
                 src/font.c \
+                src/map.c \
                 src/message.c \
                 src/image.c \
                 src/sprite.c \

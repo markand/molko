@@ -24,11 +24,14 @@
 #include "event.h"
 #include "font.h"
 #include "image.h"
+#include "map.h"
 #include "message.h"
 #include "sprite.h"
 #include "sys.h"
 #include "texture.h"
 #include "window.h"
+
+#include <SDL.h>
 
 int
 main(int argc, char **argv)
@@ -36,10 +39,17 @@ main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 
+	struct map map;
 	struct font *font;
 
 	sys_init();
-	window_init("Molko's Adventure", 1280, 720);
+	if (!window_init("Molko's Adventure", 1280, 720)) {
+		printf("%s\n", SDL_GetError());
+		exit(1);
+	}
+
+	if (!map_open(&map, "default.map"))
+		exit(1);
 
 	if (!(font = font_openf("assets/fonts/DejaVuSansCondensed.ttf", 12)))
 		exit(1);
@@ -76,12 +86,17 @@ main(int argc, char **argv)
 
 		window_set_color(0x667788ff);
 		window_clear();
+#if 0
 		message_update(&welcome, elapsed);
 		message_draw(&welcome);
+#endif
+		map_draw(&map);
 		window_present();
 	}
 
 	sys_close();
+	map_close(&map);
+	font_close(font);
 
 	return 0;
 }

@@ -33,8 +33,8 @@ struct texture;
  */
 struct sprite {
 	struct texture *texture;        /*!< Texture to access (RO) */
-	uint16_t cellw;                 /*!< Width per cell (RW) */
-	uint16_t cellh;                 /*!< Height per cell (RW) */
+	uint8_t cellw;                 /*!< Width per cell (RW) */
+	uint8_t cellh;                 /*!< Height per cell (RW) */
 	uint16_t nrows;                 /*!< Number of rows (RW) */
 	uint16_t ncols;                 /*!< Number of columns (RW) */
 };
@@ -61,8 +61,8 @@ struct sprite {
 void
 sprite_init(struct sprite *sprite,
             struct texture *tex,
-            uint16_t cellw,
-            uint16_t cellh);
+            uint8_t cellw,
+            uint8_t cellh);
 
 /**
  * Draw the sprite component from row `r' and column `c'.

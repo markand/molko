@@ -23,7 +23,7 @@
 #include "texture.h"
 
 void
-sprite_init(struct sprite *sprite, struct texture *tex, uint16_t cellw, uint16_t cellh)
+sprite_init(struct sprite *sprite, struct texture *tex, uint8_t cellw, uint8_t cellh)
 {
 	int w = 0;
 	int h = 0;
