@@ -22,6 +22,25 @@
 #include "texture_p.h"
 #include "window_p.h"
 
+bool
+texture_get_size(struct texture *tex, uint16_t *w, uint16_t *h)
+{
+	assert(tex);
+
+	int rw, rh;
+
+	if (SDL_QueryTexture(tex->handle, NULL, NULL, &rw, &rh) < 0) {
+		*w = 0;
+		*h = 0;
+		return false;
+	}
+
+	*w = rw;
+	*h = rh;
+
+	return true;
+}
+
 void
 texture_draw(struct texture *tex, int x, int y)
 {

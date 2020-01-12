@@ -26,6 +26,9 @@
  * See also \a image.h for usage of textures.
  */
 
+#include <stdbool.h>
+#include <stdint.h>
+
 /**
  * \brief Texture object.
  *
@@ -33,6 +36,17 @@
  * implementation-defined data.
  */
 struct texture;
+
+/**
+ * Get texture size.
+ *
+ * \pre tex != NULL
+ * \param tex the texture
+ * \param w the width
+ * \param h the height
+ */
+bool
+texture_get_size(struct texture *tex, uint16_t *w, uint16_t *h);
 
 /**
  * Simple texture drawing.
