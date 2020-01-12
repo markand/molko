@@ -33,6 +33,14 @@ bool
 sys_init(void);
 
 /**
+ * Get the base system directory path.
+ *
+ * \return the path
+ */
+const char *
+sys_datadir(void);
+
+/**
  * Close the system.
  */
 void

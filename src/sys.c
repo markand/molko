@@ -38,6 +38,23 @@ sys_init(void)
 	return true;
 }
 
+const char *
+sys_datadir(void)
+{
+#if 0
+	static char path[1024] = { 0 };
+
+	if (path[0] == '\0') {
+		char *prefix = SDL_GetBasePath();
+		printf("%s\n", prefix);
+		SDL_free(prefix);
+	}
+
+	return path;
+#endif
+	return NULL;
+}
+
 void
 sys_close(void)
 {
