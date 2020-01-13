@@ -49,6 +49,9 @@ main(int argc, char **argv)
 		exit(1);
 	}
 
+	printf("----> [%s]\n", sys_datapath("default.map"));
+	exit(0);
+
 	if (!map_open(&map, "default.map"))
 		exit(1);
 

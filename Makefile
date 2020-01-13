@@ -37,6 +37,10 @@ SRCS=           src/animation.c \
 OBJS=           ${SRCS:.c=.o}
 DEPS=           ${SRCS:.c=.d}
 
+PREFIX=         /usr/local
+BINDIR=         ${PREFIX}/bin
+SHAREDIR=       ${PREFIX}/share
+
 SDL_CFLAGS=     `pkg-config --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 
@@ -61,7 +65,7 @@ all: ${PROG}
 -include ${DEPS} ${TESTS_DEPS} ${TOOLS_DEPS}
 
 .c.o:
-	${CC} ${SDL_CFLAGS} ${CFLAGS} -c $< -o $@
+	${CC} -DPREFIX=\""${PREFIX}"\" -DBINDIR=\""${BINDIR}"\" -DSHAREDIR=\""${SHAREDIR}"\" ${SDL_CFLAGS} ${CFLAGS} -c $< -o $@
 
 .c:
 	${CC} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS}
@@ -84,6 +88,13 @@ tools/molko-map: tools/molko-map.c
 
 doxygen:
 	doxygen doxygen/Doxyfile
+
+install:
+	mkdir -p ${DESTDIR}${BINDIR}
+	cp molko ${DESTDIR}${BINDIR}
+	chmod 755 ${DESTDIR}${BINDIR}/molko
+	mkdir -p ${DESTDIR}${SHAREDIR}/molko
+	cp -R assets/* ${DESTDIR}${SHAREDIR}/molko
 
 clean:
 	rm -f ${PROG} src/main.o src/main.d

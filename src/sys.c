@@ -16,12 +16,73 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 
+#if defined(_WIN32)
+#	error "TODO"
+#else                           /* Assuming POSIX */
+#	include <sys/types.h>
+#	include <dirent.h>
+#endif
+
 #include "sys.h"
+
+#if defined(_WIN32)
+#	error "TODO"
+#else                           /* Assuming POSIX */
+
+static bool
+is_absolute(const char *path)
+{
+        assert(path);
+
+        return path[0] == '/';
+}
+
+static void
+determine(char path[], size_t pathlen)
+{
+        char localassets[FILENAME_MAX];
+        char *base = SDL_GetBasePath();
+        DIR *dp;
+
+        /* Try assets directory where executable lives. */
+        snprintf(localassets, sizeof (localassets), "%sassets", base);
+
+        if ((dp = opendir(localassets))) {
+                snprintf(path, pathlen, "%sassets", base);
+                closedir(dp);
+        } else {
+                /* We are not in the project source directory. */
+                if (is_absolute(SHAREDIR)) {
+                        /* SHAREDIR is absolute */
+                        snprintf(path, pathlen, "%s/molko", SHAREDIR);
+                } else if (is_absolute(BINDIR)) {
+                        /* SHAREDIR is relative but BINDIR is absolute */
+                        snprintf(path, pathlen, "%s/%s/molko", PREFIX, SHAREDIR);
+                } else {
+                        /* SHAREDIR, BINDIR are both relative */
+                        char *ptr = strstr(base, BINDIR);
+
+                        if (ptr) {
+                                *ptr = '\0';
+                                snprintf(path, pathlen, "%s%s/molko", base, SHAREDIR);
+                        } else {
+                                /* Unable to determine. */
+                                snprintf(path, pathlen, ".");
+                        }
+                }
+        }
+
+        SDL_free(base);
+}
+
+#endif
 
 bool
 sys_init(void)
@@ -41,18 +102,37 @@ sys_init(void)
 const char *
 sys_datadir(void)
 {
-#if 0
-	static char path[1024] = { 0 };
+	static char path[1024];
 
-	if (path[0] == '\0') {
-		char *prefix = SDL_GetBasePath();
-		printf("%s\n", prefix);
-		SDL_free(prefix);
-	}
+	if (path[0] == '\0')
+		determine(path, sizeof (path));
 
 	return path;
-#endif
-	return NULL;
+}
+
+const char *
+sys_datapath(const char *fmt, ...)
+{
+        const char *ret;
+        va_list ap;
+
+        va_start(ap, fmt);
+        ret = sys_datapathv(fmt, ap);
+        va_end(ap);
+
+        return ret;
+}
+
+const char *
+sys_datapathv(const char *fmt, va_list ap)
+{
+        static char path[2048];
+        char filename[FILENAME_MAX];
+
+        vsnprintf(filename, sizeof (filename), fmt, ap);
+        snprintf(path, sizeof (path), "%s/%s", sys_datadir(), filename);
+
+        return path;
 }
 
 void

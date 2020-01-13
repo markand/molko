@@ -24,6 +24,7 @@
  * \brief System routines.
  */
 
+#include <stdarg.h>
 #include <stdbool.h>
 
 /**
@@ -35,10 +36,31 @@ sys_init(void);
 /**
  * Get the base system directory path.
  *
- * \return the path
+ * \return the path where the executable lives
  */
 const char *
 sys_datadir(void);
+
+/**
+ * Construct path to assets directory using printf-like format.
+ *
+ * \param fmt the format string
+ * \return the path to the file
+ * \note This function returns pointer to static string.
+ */
+const char *
+sys_datapath(const char *fmt, ...);
+
+/**
+ * Similar to \a sys_datapath.
+ *
+ * \param fmt the format string
+ * \param ap the variadic arguments pointer
+ * \return the path to the file
+ * \note This function returns pointer to static string.
+ */
+const char *
+sys_datapathv(const char *fmt, va_list ap);
 
 /**
  * Close the system.
