@@ -12,7 +12,7 @@
 \.d$
 \.o$
 ^libmolko\.a$
-^molko$
+^molko(\.exe)?$
 ^tests/test-color$
 ^tools/molko-map$
 
