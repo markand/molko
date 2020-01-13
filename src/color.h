@@ -66,9 +66,9 @@
  * \return the hexadecimal color
  */
 #define COLOR_HEX(r, g, b, a)   \
-        (r << 24 & 0xff000000 | \
-         g << 16 & 0x00ff0000 | \
-         b << 8  & 0x0000ff00 | \
-         a       & 0x000000ff)
+        ((r << 24 & 0xff000000) | \
+         (g << 16 & 0x00ff0000) | \
+         (b << 8  & 0x0000ff00) | \
+         (a       & 0x000000ff))
 
 #endif /* !MOLKO_COLOR_H */
