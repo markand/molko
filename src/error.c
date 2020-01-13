@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * error.c -- error routines
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,11 +16,48 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int
-main(int argc, char **argv)
-{
-	(void)argc;
-	(void)argv;
+#include <stdio.h>
+#include <stdlib.h>
 
-	return 0;
+#include "error.h"
+
+static char buffer[2048];
+
+const char *
+error(void)
+{
+	return buffer;
+}
+
+void
+error_printf(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	error_vprintf(fmt, ap);
+	va_end(ap);
+}
+
+void
+error_vprintf(const char *fmt, va_list ap)
+{
+	vsnprintf(buffer, sizeof (buffer), fmt, ap);
+}
+
+noreturn void
+error_fatalf(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	error_vfatalf(fmt, ap);
+	va_end(ap);
+}
+
+noreturn void
+error_vfatalf(const char *fmt, va_list ap)
+{
+	error_vprintf(fmt, ap);
+	exit(1);
 }

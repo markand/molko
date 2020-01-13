@@ -25,6 +25,7 @@ LIB=            libmolko.a
 SRCS=           src/animation.c \
                 src/clock.c \
                 src/event.c \
+                src/error.c \
                 src/font.c \
                 src/map.c \
                 src/message.c \
@@ -47,7 +48,8 @@ SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 JANSSON_CFLAGS= `pkg-config --cflags jansson`
 JANSSON_LDFLAGS=`pkg-config --libs jansson`
 
-TESTS=          tests/test-color.c
+TESTS=          tests/test-color.c \
+                tests/test-error.c
 TESTS_INCS=     -I extern/libgreatest -I src ${SDL_CFLAGS}
 TESTS_LIBS=     ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 TESTS_OBJS=     ${TESTS:.c=}

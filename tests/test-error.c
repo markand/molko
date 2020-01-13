@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * test-error.c -- test error routines
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,11 +16,29 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <greatest.h>
+
+#include <error.h>
+
+TEST
+simple(void)
+{
+	error_printf("Failed: %d", 123);
+	ASSERT_STR_EQ("Failed: 123", error());
+	PASS();
+}
+
+SUITE(errors)
+{
+	RUN_TEST(simple);
+}
+
+GREATEST_MAIN_DEFS();
+
 int
 main(int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
-
-	return 0;
+	GREATEST_MAIN_BEGIN();
+	RUN_SUITE(errors);
+	GREATEST_MAIN_END();
 }
