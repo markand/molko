@@ -23,9 +23,7 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 
-#if defined(_WIN32)
-#	error "TODO"
-#else                           /* Assuming POSIX */
+#if !defined(_WIN32)            /* Assuming POSIX */
 #	include <sys/types.h>
 #	include <dirent.h>
 #endif
@@ -33,7 +31,17 @@
 #include "sys.h"
 
 #if defined(_WIN32)
-#	error "TODO"
+
+static void
+determine(char path[], size_t pathlen)
+{
+        char *base = SDL_GetBasePath();
+
+	/* On Windows, the data hierarchy is the same as the project. */
+        snprintf(path, pathlen, "%sassets", base);
+	SDL_free(base);
+}
+
 #else                           /* Assuming POSIX */
 
 static bool
