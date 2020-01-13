@@ -98,6 +98,7 @@ install:
 
 clean:
 	rm -f ${PROG} src/main.o src/main.d
+	rm -rf doxygen/html doxygen/man
 	rm -f ${LIB} ${OBJS} ${DEPS}
 	rm -f ${TESTS_OBJS} ${TESTS_DEPS}
 	rm -f ${TOOLS_OBJS} ${TOOLS_DEPS}
