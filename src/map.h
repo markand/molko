@@ -29,31 +29,61 @@
 
 #include "sprite.h"
 
+/**
+ * \brief Max title length for a map.
+ */
 #define MAP_TITLE_MAX   32
 
 struct texture;
 
+/**
+ * \brief Map layer.
+ */
 struct map_layer {
-	uint16_t *tiles;
+	uint16_t *tiles;                /*!< Array of tiles, depending on the map size. */
 };
 
+/**
+ * \brief Map object.
+ */
 struct map {
-	char title[MAP_TITLE_MAX];
-	struct texture *tileset;
-	struct sprite sprite;
-	uint16_t width;
-	uint16_t height;
-	uint8_t tilewidth;
-	uint8_t tileheight;
-	struct map_layer layers[2];
+	char title[MAP_TITLE_MAX];      /*!< (RW) The map title */
+	struct texture *tileset;        /*!< (RW) Tileset to use */
+	struct sprite sprite;           /*!< (RO) Sprite to render */
+	uint16_t width;                 /*!< (RO) Map width in cells */
+	uint16_t height;                /*!< (RO) Map height in cells */
+	uint8_t tilewidth;              /*!< (RO) Pixels per cell (width) */
+	uint8_t tileheight;             /*!< (RO) Pixels per cell (height) */
+	struct map_layer layers[2];     /*!< (RO) Layers (background, foreground) */
 };
 
+/**
+ * Open a map.
+ *
+ * \pre map != NULL
+ * \pre path != NULL
+ * \param map the map to fill
+ * \param path the path to the map
+ * \return true if successfully loaded
+ */
 bool
 map_open(struct map *map, const char *path);
 
+/**
+ * Render a map.
+ *
+ * \pre map != NULL
+ * \param map the map to render
+ */
 void
 map_draw(struct map *map);
 
+/**
+ * Close the map and its resources.
+ *
+ * \pre map != NULL
+ * \param map the map to render
+ */
 void
 map_close(struct map *map);
 
