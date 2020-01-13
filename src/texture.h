@@ -38,6 +38,16 @@
 struct texture;
 
 /**
+ * Create a new texture.
+ *
+ * \param w the width
+ * \param h the height
+ * \return the texture or NULL on error
+ */
+struct texture *
+texture_new(uint16_t w, uint16_t h);
+
+/**
  * Get texture size.
  *
  * \pre tex != NULL

@@ -31,6 +31,7 @@ SRCS=           src/animation.c \
                 src/image.c \
                 src/sprite.c \
                 src/sys.c \
+                src/painter.c \
                 src/texture.c \
                 src/window.c
 OBJS=           ${SRCS:.c=.o}

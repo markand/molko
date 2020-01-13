@@ -25,7 +25,6 @@
  */
 
 #include <stdbool.h>
-#include <stdint.h>
 
 /**
  * Initialize window.
@@ -38,66 +37,6 @@
  */
 bool
 window_init(const char *title, unsigned width, unsigned height);
-
-/**
- * Get the current drawing color.
- *
- * \return the color in RRGGBBAA format
- */
-uint32_t
-window_get_color(void);
-
-/**
- * Set the rendering drawing color.
- *
- * \param color in RRGGBBAA format
- */
-void
-window_set_color(uint32_t color);
-
-/**
- * Draw a line.
- *
- * \param x1 first X coordinate
- * \param y1 first Y coordinate
- * \param x2 second X coordinate
- * \param y2 second Y coordinate
- */
-void
-window_draw_line(int x1, int y1, int x2, int y2);
-
-/**
- * Draw a pixel point.
- *
- * \param x the X coordinate
- * \param y the Y coordinate
- */
-void
-window_draw_point(int x, int y);
-
-/**
- * Draw a rectangle
- *
- * \param fill set to true to fill the rectangle
- * \param x the X coordinate
- * \param y the Y coordinate
- * \param w the rectangle width
- * \param h the rectangle height
- */
-void
-window_draw_rectangle(bool fill, int x, int y, unsigned w, unsigned h);
-
-/**
- * Clear the window.
- */
-void
-window_clear(void);
-
-/**
- * Present the window, only call this function one time in the main loop.
- */
-void
-window_present(void);
 
 /**
  * Close the window and destroy associated resources.

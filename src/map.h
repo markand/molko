@@ -52,6 +52,9 @@ bool
 map_open(struct map *map, const char *path);
 
 void
+map_draw(struct map *map);
+
+void
 map_close(struct map *map);
 
 #endif /* !MOLKO_MAP_H */

@@ -19,10 +19,10 @@
 #include <assert.h>
 
 #include "font.h"
-#include "texture.h"
 #include "message.h"
+#include "painter.h"
 #include "sprite.h"
-#include "window.h"
+#include "texture.h"
 
 #define MESSAGE_SPEED   1000    /* Time delay for animations */
 #define MESSAGE_TIMEOUT 5000    /* Time for auto-closing */
@@ -69,8 +69,8 @@ message_draw(struct message *msg)
 	int x = 160;
 	int y = 80;
 
-	window_set_color(0xff0000ff);
-	window_draw_rectangle(true, x, y, 960, 160);
+	painter_set_color(0xff0000ff);
+	painter_draw_rectangle(true, x, y, 960, 160);
 
 	for (int i = 0; msg->text[i]; ++i) {
 		lines[i] = font_render(msg->font, msg->text[i], 0xffffffff);

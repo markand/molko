@@ -22,6 +22,22 @@
 #include "texture_p.h"
 #include "window_p.h"
 
+struct texture *
+texture_new(uint16_t w, uint16_t h)
+{
+	struct texture *tex;
+
+	if (!(tex = malloc(sizeof (struct texture))))
+		return NULL;
+	if (!(tex->handle = SDL_CreateTexture(win.renderer,
+	    SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h))) {
+		free(tex);
+		return NULL;
+	}
+
+	return tex;
+}
+
 bool
 texture_get_size(struct texture *tex, uint16_t *w, uint16_t *h)
 {

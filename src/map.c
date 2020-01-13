@@ -148,8 +148,8 @@ map_open(struct map *map, const char *path)
 void
 map_draw(struct map *map)
 {
-	draw(map, &map->layers[0]);
-	draw(map, &map->layers[1]);
+	draw_layer(map, &map->layers[0]);
+	draw_layer(map, &map->layers[1]);
 }
 
 void

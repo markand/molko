@@ -30,6 +30,7 @@
 #include "sys.h"
 #include "texture.h"
 #include "window.h"
+#include "painter.h"
 
 #include <SDL.h>
 
@@ -84,14 +85,14 @@ main(int argc, char **argv)
 			}
 		}
 
-		window_set_color(0x667788ff);
-		window_clear();
+		painter_set_color(0x667788ff);
+		painter_clear();
 #if 0
 		message_update(&welcome, elapsed);
 		message_draw(&welcome);
 #endif
 		map_draw(&map);
-		window_present();
+		painter_present();
 	}
 
 	sys_close();

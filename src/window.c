@@ -20,7 +20,6 @@
 
 #include <SDL.h>
 
-#include "color.h"
 #include "window.h"
 #include "window_p.h"
 
@@ -42,68 +41,6 @@ window_init(const char *title, unsigned width, unsigned height)
 	SDL_SetWindowTitle(win.win, title);
 
 	return true;
-}
-
-uint32_t
-window_get_color(void)
-{
-	Uint8 r = 0, g = 0, b = 0, a = 0;
-
-	SDL_GetRenderDrawColor(win.renderer, &r, &g, &b, &a);
-
-	return COLOR_HEX(r, g, b, a);
-}
-
-void
-window_set_color(uint32_t color)
-{
-	SDL_SetRenderDrawColor(
-		win.renderer,
-		COLOR_R(color),
-		COLOR_G(color),
-		COLOR_B(color),
-		COLOR_A(color)
-	);
-}
-
-void
-window_draw_line(int x1, int y1, int x2, int y2)
-{
-	SDL_RenderDrawLine(win.renderer, x1, y1, x2, y2);
-}
-
-void
-window_draw_point(int x1, int y1)
-{
-	SDL_RenderDrawPoint(win.renderer, x1, y1);
-}
-
-void
-window_draw_rectangle(bool fill, int x, int y, unsigned width, unsigned height)
-{
-	const SDL_Rect rect = {
-		.w = width,
-		.h = height,
-		.x = x,
-		.y = y
-	};
-
-	if (fill)
-		SDL_RenderFillRect(win.renderer, &rect);
-	else
-		SDL_RenderDrawRect(win.renderer, &rect);
-}
-
-void
-window_clear(void)
-{
-	SDL_RenderClear(win.renderer);
-}
-
-void
-window_present(void)
-{
-	SDL_RenderPresent(win.renderer);
 }
 
 void
