@@ -37,10 +37,10 @@
 static void
 determine(char path[], size_t pathlen)
 {
-        char *base = SDL_GetBasePath();
+	char *base = SDL_GetBasePath();
 
 	/* On Windows, the data hierarchy is the same as the project. */
-        snprintf(path, pathlen, "%sassets", base);
+	snprintf(path, pathlen, "%sassets", base);
 	SDL_free(base);
 }
 
@@ -49,47 +49,47 @@ determine(char path[], size_t pathlen)
 static bool
 is_absolute(const char *path)
 {
-        assert(path);
+	assert(path);
 
-        return path[0] == '/';
+	return path[0] == '/';
 }
 
 static void
 determine(char path[], size_t pathlen)
 {
-        char localassets[FILENAME_MAX];
-        char *base = SDL_GetBasePath();
-        DIR *dp;
+	char localassets[FILENAME_MAX];
+	char *base = SDL_GetBasePath();
+	DIR *dp;
 
-        /* Try assets directory where executable lives. */
-        snprintf(localassets, sizeof (localassets), "%sassets", base);
+	/* Try assets directory where executable lives. */
+	snprintf(localassets, sizeof (localassets), "%sassets", base);
 
-        if ((dp = opendir(localassets))) {
-                snprintf(path, pathlen, "%sassets", base);
-                closedir(dp);
-        } else {
-                /* We are not in the project source directory. */
-                if (is_absolute(SHAREDIR)) {
-                        /* SHAREDIR is absolute */
-                        snprintf(path, pathlen, "%s/molko", SHAREDIR);
-                } else if (is_absolute(BINDIR)) {
-                        /* SHAREDIR is relative but BINDIR is absolute */
-                        snprintf(path, pathlen, "%s/%s/molko", PREFIX, SHAREDIR);
-                } else {
-                        /* SHAREDIR, BINDIR are both relative */
-                        char *ptr = strstr(base, BINDIR);
+	if ((dp = opendir(localassets))) {
+		snprintf(path, pathlen, "%sassets", base);
+		closedir(dp);
+	} else {
+		/* We are not in the project source directory. */
+		if (is_absolute(SHAREDIR)) {
+			/* SHAREDIR is absolute */
+			snprintf(path, pathlen, "%s/molko", SHAREDIR);
+		} else if (is_absolute(BINDIR)) {
+			/* SHAREDIR is relative but BINDIR is absolute */
+			snprintf(path, pathlen, "%s/%s/molko", PREFIX, SHAREDIR);
+		} else {
+			/* SHAREDIR, BINDIR are both relative */
+			char *ptr = strstr(base, BINDIR);
 
-                        if (ptr) {
-                                *ptr = '\0';
-                                snprintf(path, pathlen, "%s%s/molko", base, SHAREDIR);
-                        } else {
-                                /* Unable to determine. */
-                                snprintf(path, pathlen, ".");
-                        }
-                }
-        }
+			if (ptr) {
+				*ptr = '\0';
+				snprintf(path, pathlen, "%s%s/molko", base, SHAREDIR);
+			} else {
+				/* Unable to determine. */
+				snprintf(path, pathlen, ".");
+			}
+		}
+	}
 
-        SDL_free(base);
+	SDL_free(base);
 }
 
 #endif
@@ -123,26 +123,26 @@ sys_datadir(void)
 const char *
 sys_datapath(const char *fmt, ...)
 {
-        const char *ret;
-        va_list ap;
+	const char *ret;
+	va_list ap;
 
-        va_start(ap, fmt);
-        ret = sys_datapathv(fmt, ap);
-        va_end(ap);
+	va_start(ap, fmt);
+	ret = sys_datapathv(fmt, ap);
+	va_end(ap);
 
-        return ret;
+	return ret;
 }
 
 const char *
 sys_datapathv(const char *fmt, va_list ap)
 {
-        static char path[2048];
-        char filename[FILENAME_MAX];
+	static char path[2048];
+	char filename[FILENAME_MAX];
 
-        vsnprintf(filename, sizeof (filename), fmt, ap);
-        snprintf(path, sizeof (path), "%s/%s", sys_datadir(), filename);
+	vsnprintf(filename, sizeof (filename), fmt, ap);
+	snprintf(path, sizeof (path), "%s/%s", sys_datadir(), filename);
 
-        return path;
+	return path;
 }
 
 void

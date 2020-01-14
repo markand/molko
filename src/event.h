@@ -48,17 +48,17 @@ enum event_type {
 union event {
 	enum event_type type;                   /*!< Which kind of event */
 
-        /**
-         * Store key down/up event.
-         */
+	/**
+	 * Store key down/up event.
+	 */
 	struct {
 		enum event_type type;           /*!< EVENT_KEYDOWN or EVENT_KEYUP */
 		enum key key;                   /*!< Which key */
 	} key;
 
-        /**
-         * Store mouse motion event.
-         */
+	/**
+	 * Store mouse motion event.
+	 */
 	struct {
 		enum event_type type;           /*!< EVENT_MOUSE */
 		enum mouse_button buttons;      /*!< OR'ed buttons that are pressed */
@@ -66,9 +66,9 @@ union event {
 		int32_t y;                      /*!< Mouse position in y */
 	} mouse;
 
-        /**
-         * Store mouse click event.
-         */
+	/**
+	 * Store mouse click event.
+	 */
 	struct {
 		enum event_type type;           /*!< EVENT_CLICKDOWN or EVENT_CLICKUP */
 		enum mouse_button button;       /*!< Unique button that was pressed */
