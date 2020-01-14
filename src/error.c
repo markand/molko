@@ -16,10 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "error.h"
+#include "error_p.h"
+
+#include <SDL.h>
 
 static char buffer[2048];
 
@@ -29,7 +34,15 @@ error(void)
 	return buffer;
 }
 
-void
+bool
+error_errno(void)
+{
+	error_printf("%s", strerror(errno));
+
+	return false;
+}
+
+bool
 error_printf(const char *fmt, ...)
 {
 	va_list ap;
@@ -37,12 +50,23 @@ error_printf(const char *fmt, ...)
 	va_start(ap, fmt);
 	error_vprintf(fmt, ap);
 	va_end(ap);
+
+	return false;
 }
 
-void
+bool
 error_vprintf(const char *fmt, va_list ap)
 {
 	vsnprintf(buffer, sizeof (buffer), fmt, ap);
+
+	return false;
+}
+
+noreturn void
+error_fatal(void)
+{
+	fprintf(stderr, "%s\n", buffer);
+	exit(1);
 }
 
 noreturn void
@@ -58,6 +82,16 @@ error_fatalf(const char *fmt, ...)
 noreturn void
 error_vfatalf(const char *fmt, va_list ap)
 {
-	error_vprintf(fmt, ap);
+	fprintf(stderr, fmt, ap);
 	exit(1);
+}
+
+/* private: error_p.h */
+
+bool
+error_sdl(void)
+{
+	error_printf("%s", SDL_GetError());
+
+	return false;
 }

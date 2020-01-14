@@ -28,6 +28,8 @@
 #	include <dirent.h>
 #endif
 
+#include "error.h"
+#include "error_p.h"
 #include "sys.h"
 
 #if defined(_WIN32)
@@ -96,13 +98,13 @@ bool
 sys_init(void)
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
-		return false;
+		return error_sdl();
 	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
-		return false;
+		return error_sdl();
 	if (TTF_Init() < 0)
-		return false;
+		return error_sdl();
 	if (Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG)
-		return false;
+		return error_sdl();
 
 	return true;
 }

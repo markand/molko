@@ -23,8 +23,11 @@
 #include <SDL_ttf.h>
 
 #include "color.h"
+#include "error.h"
+#include "error_p.h"
 #include "font.h"
 #include "texture_p.h"
+#include "util.h"
 
 struct font {
 	TTF_Font *handle;
@@ -37,9 +40,10 @@ font_openf(const char *path, unsigned size)
 
 	struct font *f;
 
-	if (!(f = calloc(1, sizeof (struct font))))
-		return NULL;
+	f = ecalloc(1, sizeof (struct font));
+
 	if (!(f->handle = TTF_OpenFont(path, size))) {
+		error_sdl();
 		free(f);
 		return NULL;
 	}
@@ -50,25 +54,21 @@ font_openf(const char *path, unsigned size)
 struct font *
 font_openb(const void *buffer, size_t buflen, unsigned size)
 {
+	assert(buffer);
+
 	struct font *f;
 	SDL_RWops *ops;
 
-	assert(buffer);
+	f = ecalloc(1, sizeof (struct font));
 
-	if (!(f = calloc(1, sizeof (struct font))))
-		return NULL;
-
-	if (!(ops = SDL_RWFromConstMem(buffer, buflen))) {
+	if (!(ops = SDL_RWFromConstMem(buffer, buflen)) ||
+	   (!(f->handle = TTF_OpenFontRW(ops, true, size)))) {
+		error_sdl();
 		free(f);
 		return NULL;
 	}
 
-	if (!(f->handle = TTF_OpenFontRW(ops, true, size))) {
-		free(f);
-		return NULL;
-	}
-
-	return NULL;
+	return f;
 }
 
 struct texture *
@@ -77,7 +77,6 @@ font_render(struct font *font, const char *text, uint32_t color)
 	assert(font);
 	assert(text);
 
-	/* TODO: refactor this with window.c */
 	SDL_Color fg = {
 		.r = COLOR_R(color),
 		.g = COLOR_G(color),
@@ -85,12 +84,21 @@ font_render(struct font *font, const char *text, uint32_t color)
 		.a = COLOR_A(color)
 	};
 
-	return texture_from_surface(TTF_RenderUTF8_Blended(font->handle, text, fg));
+	SDL_Surface *surface;
+
+	if (!(surface = TTF_RenderUTF8_Blended(font->handle, text, fg))) {
+		error_sdl();
+		return NULL;
+	}
+
+	return texture_from_surface(surface);
 }
 
 void
 font_close(struct font *font)
 {
+	assert(font);
+
 	TTF_CloseFont(font->handle);
 	free(font);
 }

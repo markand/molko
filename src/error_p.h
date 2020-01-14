@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * error.h -- (PRIVATE) error routines
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,49 +16,18 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef MOLKO_ERROR_P_H
+#define MOLKO_ERROR_P_H
 
-#include "clock.h"
-#include "error.h"
-#include "event.h"
-#include "painter.h"
-#include "sys.h"
-#include "window.h"
-#include "util.h"
+#include <stdbool.h>
 
-int
-main(int argc, char **argv)
-{
-	(void)argc;
-	(void)argv;
+/**
+ * Convenient handler that sets the game error to the last SDL error and then
+ * return false.
+ *
+ * \return false
+ */
+bool
+error_sdl(void);
 
-	struct clock clock;
-
-	if (!sys_init())
-		error_fatal();
-	if (!window_init("Molko's Adventure", 1024, 576))
-		error_fatal();
-
-	clock_start(&clock);
-
-	for (;;) {
-		/*uint64_t elapsed = clock_elapsed(&clock);*/
-		union event ev;
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				return 0;
-			default:
-				break;
-			}
-		}
-
-		painter_clear();
-		painter_present();
-		delay(50);
-	}
-
-	return 0;
-}
+#endif /* !MOLKO_ERROR_P_H */

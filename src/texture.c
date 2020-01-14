@@ -18,19 +18,21 @@
 
 #include <assert.h>
 
+#include "error.h"
+#include "error_p.h"
 #include "texture.h"
 #include "texture_p.h"
+#include "util.h"
 #include "window_p.h"
 
 struct texture *
 texture_new(uint16_t w, uint16_t h)
 {
-	struct texture *tex;
+	struct texture *tex = emalloc(sizeof (struct texture));
 
-	if (!(tex = malloc(sizeof (struct texture))))
-		return NULL;
 	if (!(tex->handle = SDL_CreateTexture(win.renderer,
 	    SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h))) {
+		error_sdl();
 		free(tex);
 		return NULL;
 	}
@@ -46,6 +48,7 @@ texture_get_size(struct texture *tex, uint16_t *w, uint16_t *h)
 	int rw, rh;
 
 	if (SDL_QueryTexture(tex->handle, NULL, NULL, &rw, &rh) < 0) {
+		error_sdl();
 		*w = 0;
 		*h = 0;
 		return false;
@@ -116,11 +119,12 @@ texture_close(struct texture *tex)
 struct texture *
 texture_from_surface(SDL_Surface *surface)
 {
-	struct texture *texture;
+	assert(surface);
 
-	if (!(texture = calloc(1, sizeof (struct texture))))
-		return NULL;
+	struct texture *texture = ecalloc(1, sizeof (struct texture));
+
 	if (!(texture->handle = SDL_CreateTextureFromSurface(win.renderer, surface))) {
+		error_sdl();
 		free(texture);
 		return NULL;
 	}

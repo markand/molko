@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * util.c -- utilities
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,49 +16,39 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "clock.h"
-#include "error.h"
-#include "event.h"
-#include "painter.h"
-#include "sys.h"
-#include "window.h"
+#include <SDL.h>
+
 #include "util.h"
+#include "error.h"
 
-int
-main(int argc, char **argv)
+void *
+emalloc(size_t size)
 {
-	(void)argc;
-	(void)argv;
+	void *mem;
 
-	struct clock clock;
+	if (!(mem = malloc(size)))
+		error_fatalf("%s\n", strerror(errno));
 
-	if (!sys_init())
-		error_fatal();
-	if (!window_init("Molko's Adventure", 1024, 576))
-		error_fatal();
+	return mem;
+}
 
-	clock_start(&clock);
+void *
+ecalloc(size_t n, size_t size)
+{
+	void *mem;
 
-	for (;;) {
-		/*uint64_t elapsed = clock_elapsed(&clock);*/
-		union event ev;
+	if (!(mem = calloc(n, size)))
+		error_fatalf("%s\n", strerror(errno));
 
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				return 0;
-			default:
-				break;
-			}
-		}
+	return mem;
+}
 
-		painter_clear();
-		painter_present();
-		delay(50);
-	}
-
-	return 0;
+void
+delay(unsigned int ms)
+{
+	SDL_Delay(ms);
 }

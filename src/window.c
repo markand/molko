@@ -20,6 +20,7 @@
 
 #include <SDL.h>
 
+#include "error_p.h"
 #include "window.h"
 #include "window_p.h"
 
@@ -36,7 +37,7 @@ window_init(const char *title, unsigned width, unsigned height)
 
 	if (SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_OPENGL,
 	    &win.win, &win.renderer) < 0)
-		return false;
+		return error_sdl();
 
 	SDL_SetWindowTitle(win.win, title);
 

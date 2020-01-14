@@ -21,6 +21,7 @@
 
 #include <SDL_image.h>
 
+#include "error_p.h"
 #include "texture_p.h"
 
 struct texture *
@@ -28,7 +29,14 @@ image_openf(const char *path)
 {
 	assert(path);
 
-	return texture_from_surface(IMG_Load(path));
+	SDL_Surface *surface = IMG_Load(path);
+
+	if (!surface) {
+		error_sdl();
+		return NULL;
+	}
+
+	return texture_from_surface(surface);
 }
 
 struct texture *
@@ -37,9 +45,12 @@ image_openb(const void *buffer, size_t size)
 	assert(buffer);
 
 	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
+	SDL_Surface *surface;
 
-	if (!ops)
+	if (!ops || !(surface = IMG_Load_RW(ops, true))) {
+		error_sdl();
 		return NULL;
+	}
 
-	return texture_from_surface(IMG_Load_RW(ops, true));
+	return texture_from_surface(surface);
 }

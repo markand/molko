@@ -25,6 +25,7 @@
  */
 
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdnoreturn.h>
 
 /**
@@ -36,24 +37,41 @@ const char *
 error(void);
 
 /**
+ * Convenient handler that sets last error from global C errno and then return
+ * false.
+ *
+ * \return false
+ */
+bool
+error_errno(void);
+
+/**
  * Set the game error with a printf-like format.
  *
  * \param fmt the format string
+ * \return false
  */
-void
+bool
 error_printf(const char *fmt, ...);
 
 /**
- * \Similar to \a error_printf.
+ * Similar to \a error_printf.
  *
  * \param fmt the format stinrg
  * \param ap the variadic arguments pointer
+ * \return false
  */
-void
+bool
 error_vprintf(const char *fmt, va_list ap);
 
 /**
- * Similar to \a error_printf but close the application.
+ * Print last registered error and exit with code 1.
+ */
+noreturn void
+error_fatal(void);
+
+/**
+ * Prints an error to stderr and exit.
  *
  * \param fmt the format string
  */

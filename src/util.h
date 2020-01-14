@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * util.h -- utilities
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,49 +16,38 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef MOLKO_UTIL_H
+#define MOLKO_UTIL_H
 
-#include "clock.h"
-#include "error.h"
-#include "event.h"
-#include "painter.h"
-#include "sys.h"
-#include "window.h"
-#include "util.h"
+#include <stddef.h>
 
-int
-main(int argc, char **argv)
-{
-	(void)argc;
-	(void)argv;
+/**
+ * Wrapper around malloc(3) that exits on allocation failure.
+ *
+ * \param size the size
+ * \return a pointer
+ * \post returned pointer will never be NULL
+ */
+void *
+emalloc(size_t size);
 
-	struct clock clock;
+/**
+ * Wrapper around calloc(3) that exits on allocation failure.
+ *
+ * \param n the number of objects to allocate
+ * \param size the size per n
+ * \return a pointer
+ * \post returned pointer will never be NULL
+ */
+void *
+ecalloc(size_t n, size_t size);
 
-	if (!sys_init())
-		error_fatal();
-	if (!window_init("Molko's Adventure", 1024, 576))
-		error_fatal();
+/**
+ * Put the thread to sleep for a given amount of milliseconds.
+ *
+ * \param ms the number of milliseconds to wait
+ */
+void
+delay(unsigned int ms);
 
-	clock_start(&clock);
-
-	for (;;) {
-		/*uint64_t elapsed = clock_elapsed(&clock);*/
-		union event ev;
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				return 0;
-			default:
-				break;
-			}
-		}
-
-		painter_clear();
-		painter_present();
-		delay(50);
-	}
-
-	return 0;
-}
+#endif /* !MOLKO_UTIL_H */
