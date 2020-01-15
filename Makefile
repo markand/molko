@@ -35,6 +35,7 @@ SRCS=           src/animation.c \
                 src/sys.c \
                 src/texture.c \
                 src/util.c \
+                src/walksprite.c \
                 src/window.c
 OBJS=           ${SRCS:.c=.o}
 DEPS=           ${SRCS:.c=.d}

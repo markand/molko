@@ -21,9 +21,18 @@
 #include "texture_p.h"
 #include "window_p.h"
 
-void
-painter_use(struct texture *tex)
+static struct texture *renderer;
+
+struct texture *
+painter_get_target(void)
 {
+	return renderer;
+}
+
+void
+painter_set_target(struct texture *tex)
+{
+	renderer = tex;
 	SDL_SetRenderTarget(win.renderer, tex ? tex->handle : NULL);
 }
 

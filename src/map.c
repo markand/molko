@@ -21,10 +21,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "error.h"
+#include "error_p.h"
 #include "map.h"
 #include "image.h"
 #include "texture.h"
 #include "sprite.h"
+#include "painter.h"
 
 #include <SDL.h>
 
@@ -143,14 +146,56 @@ map_open(struct map *map, const char *path)
 
 	fclose(fp);
 
+	if (map->width == 0 || map->tilewidth == 0)
+		return error_printf("map width is null");
+	if (map->height == 0 || map->tileheight == 0)
+		return error_printf("map height is null");
+
+	size_t pw = map->width * map->tilewidth;
+	size_t ph = map->height * map->tileheight;
+
+	if (!(map->picture = texture_new(pw, ph)))
+		return error_sdl();
+
 	return true;
 }
 
 void
 map_draw(struct map *map)
 {
+	/* TODO: coordinates here */
+	/* TODO: remove window size here */
+	texture_draw_ex(
+		map->picture,
+		map->x,
+		map->y,
+		1024,
+		576,
+		0,
+		0,
+		1024,
+		576,
+		0
+	);
+}
+
+void
+map_repaint(struct map *map)
+{
+	struct texture *old;
+
+	old = painter_get_target();
+	painter_set_target(map->picture);
 	draw_layer(map, &map->layers[0]);
 	draw_layer(map, &map->layers[1]);
+	painter_set_target(old);
+}
+
+void
+map_view(struct map *map, uint64_t x, uint64_t y)
+{
+	map->x = x;
+	map->y = y;
 }
 
 void
@@ -160,6 +205,8 @@ map_close(struct map *map)
 
 	if (map->tileset)
 		texture_close(map->tileset);
+	if (map->picture)
+		texture_close(map->picture);
 
 	free(map->layers[0].tiles);
 	free(map->layers[1].tiles);

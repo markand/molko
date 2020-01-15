@@ -30,14 +30,27 @@
 struct texture;
 
 /**
+ * Give the current texture being used for rendering, maybe NULL if the
+ * rendering is on root.
+ *
+ * \return texture or NULL
+ */
+struct texture *
+painter_get_target(void);
+
+/**
  * Set the rendering context to the given texture.
+ *
+ * Since this function change an internal global variable it is strongly
+ * encouraged to store a local backup of the current texture using \a
+ * painter_get_target and call this function with it afterwards.
  *
  * If texture is NULL, use default context aka the window.
  *
  * \param tex the texture
  */
 void
-painter_use(struct texture *tex);
+painter_set_target(struct texture *tex);
 
 /**
  * Get the current drawing color.
