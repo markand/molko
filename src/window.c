@@ -44,6 +44,26 @@ window_init(const char *title, unsigned width, unsigned height)
 	return true;
 }
 
+unsigned
+window_width(void)
+{
+	int width;
+
+	SDL_GetWindowSize(win.win, &width, NULL);
+
+	return width;
+}
+
+unsigned
+window_height(void)
+{
+	int height;
+
+	SDL_GetWindowSize(win.win, NULL, &height);
+
+	return height;
+}
+
 void
 window_close(void)
 {

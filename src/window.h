@@ -39,6 +39,22 @@ bool
 window_init(const char *title, unsigned width, unsigned height);
 
 /**
+ * Get the current window's width.
+ *
+ * \return the width
+ */
+unsigned
+window_width(void);
+
+/**
+ * Get the current window's height.
+ *
+ * \return the height
+ */
+unsigned
+window_height(void);
+
+/**
  * Close the window and destroy associated resources.
  */
 void

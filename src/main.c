@@ -17,9 +17,10 @@
  */
 
 #include "clock.h"
-#include "game.h"
 #include "error.h"
 #include "event.h"
+#include "game.h"
+#include "splashscreen.h"
 #include "sys.h"
 #include "window.h"
 
@@ -33,6 +34,9 @@ init(void)
 		error_fatal();
 	if (!window_init("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
 		error_fatal();
+
+	/* Default state is splash screen */
+	game_switch(&splashscreen_state);
 }
 
 static void

@@ -1,5 +1,5 @@
 /*
- * game.c -- main game object
+ * splashscreen.h -- splash screen state
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,53 +16,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
-#include <stddef.h>
+#ifndef MOLKO_SPLASHSCREEN_H
+#define MOLKO_SPLASHSCREEN_H
 
-#include "game.h"
-#include "state.h"
+/**
+ * \file splashscreen.h
+ * \brief Splash screen state.
+ */
 
-struct game game = {
-	.state = NULL,
-	.state_next = NULL
-};
+/**
+ * \brief Splash screen state.
+ */
+extern struct state splashscreen_state;
 
-void
-game_switch(struct state *state)
-{
-	assert(state);
-
-	game.state_next = state;
-}
-
-void
-game_handle(const union event *event)
-{
-	if (game.state)
-		game.state->handle(event);
-}
-
-void
-game_update(unsigned int ticks)
-{
-	/* Change state if any. */
-	if (game.state_next) {
-		/* Inform the current state we're gonna leave it. */
-		if (game.state)
-			game.state->leave();
-
-		game.state = game.state_next;
-		game.state->enter();
-		game.state_next = NULL;
-	}
-
-	if (game.state)
-		game.state->update(ticks);
-}
-
-void
-game_draw(void)
-{
-	if (game.state)
-		game.state->draw();
-}
+#endif /* !MOLKO_SPLASHSCREEN_H */

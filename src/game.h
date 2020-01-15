@@ -43,6 +43,17 @@ struct game {
 extern struct game game;
 
 /**
+ * Request to change state.
+ *
+ * This function will only update state after the next \a game_update call.
+ *
+ * \pre state != NULL
+ * \param state the new state
+ */
+void
+game_switch(struct state *state);
+
+/**
  * Handle input event.
  *
  * \param event the event
