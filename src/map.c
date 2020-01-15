@@ -28,13 +28,14 @@
 
 #include <SDL.h>
 
-#define MAXLEN(v) STRINGIFY(v)
-#define STRINGIFY(v) "%" #v "s"
+/* Create %<v>c string literal for scanf */
+#define MAX_F(v) MAX_F_(v)
+#define MAX_F_(v) "%" #v "c"
 
 static void
 parse_layer(struct map *map, const char *line, FILE *fp)
 {
-	char layer_name[32];
+	char layer_name[32 + 1] = { 0 };
 	struct map_layer *layer;
 	size_t amount, current;
 
@@ -80,7 +81,7 @@ static void
 parse(struct map *map, const char *line, FILE *fp)
 {
 	if (strncmp(line, "title", 5) == 0)
-		sscanf(line, "title|" MAXLEN(MAP_TITLE_MAX), map->title);
+		sscanf(line, "title|" MAX_F(MAP_TITLE_MAX), map->title);
 	else if (strncmp(line, "width", 5) == 0)
 		sscanf(line, "width|%hu", &map->width);
 	else if (strncmp(line, "height", 6) == 0)
