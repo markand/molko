@@ -1,5 +1,5 @@
 /*
- * main.c -- Molko's Adventure
+ * game.c -- main game object
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,67 +16,43 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "clock.h"
+#include <stddef.h>
+
 #include "game.h"
-#include "error.h"
-#include "event.h"
-#include "sys.h"
-#include "window.h"
+#include "state.h"
 
-#define WINDOW_WIDTH 1280
-#define WINDOW_HEIGHT 720
+struct game game = {
+	.state = NULL,
+	.state_next = NULL
+};
 
-static void
-init(void)
+void
+game_handle(const union event *event)
 {
-	if (!sys_init())
-		error_fatal();
-	if (!window_init("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
-		error_fatal();
+	if (game.state)
+		game.state->handle(event);
 }
 
-static void
-run(void)
+void
+game_update(unsigned int ticks)
 {
-	union event ev;
-	struct clock clock;
+	/* Change state if any. */
+	if (game.state_next) {
+		/* Inform the current state we're gonna leave it. */
+		if (game.state)
+			game.state->leave();
 
-	clock_start(&clock);
-
-	for (;;) {
-		uint64_t elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			/* TODO: this must be handled by states. */
-			if (ev.type == EVENT_QUIT)
-				return;
-
-			game_handle(&ev);
-		}
-
-		game_update(elapsed);
-		game_draw();
+		game.state = game.state_next;
+		game.state->enter();
 	}
+
+	if (game.state)
+		game.state->update(ticks);
 }
 
-static void
-close(void)
+void
+game_draw(void)
 {
-	window_close();
-	sys_close();
-}
-
-int
-main(int argc, char **argv)
-{
-	(void)argc;
-	(void)argv;
-
-	init();
-	run();
-	close();
-
-	return 0;
+	if (game.state)
+		game.state->draw();
 }

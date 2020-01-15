@@ -27,6 +27,7 @@ SRCS=           src/animation.c \
                 src/error.c \
                 src/event.c \
                 src/font.c \
+                src/game.c \
                 src/image.c \
                 src/map.c \
                 src/message.c \
