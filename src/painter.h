@@ -48,6 +48,8 @@ painter_get_target(void);
  * If texture is NULL, use default context aka the window.
  *
  * \param tex the texture
+ * \see PAINTER_BEGIN
+ * \see PAINTER_END
  */
 void
 painter_set_target(struct texture *tex);
@@ -111,5 +113,29 @@ painter_clear(void);
  */
 void
 painter_present(void);
+
+/**
+ * Use this macro to start painting on the texture to store the current
+ * rendering context and put it back afterwards.
+ *
+ * \pre tex != NULL
+ * \param tex the texture to use
+ * \see PAINTER_END
+ */
+#define PAINTER_BEGIN(tex    )                                          \
+do {                                                                    \
+        struct texture *__current_texture__;                            \
+                                                                        \
+        __current_texture__ = painter_get_target();                     \
+        painter_set_target((tex))
+
+/**
+ * Use this macro at the end of rendering into a given texture.
+ *
+ * \see PAINTER_BEGIN
+ */
+#define PAINTER_END()                                                   \
+        painter_set_target(__current_texture__);                        \
+} while (0)
 
 #endif /* !MOLKO_PAINTER_H */

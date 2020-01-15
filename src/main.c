@@ -29,12 +29,34 @@
 #include "walksprite.h"
 #include "window.h"
 #include "util.h"
+#include "texture.h"
 
 int
 main(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
+
+	struct texture *tex;
+
+	if (!sys_init())
+		error_fatal();
+	if (!window_init("Molko's Adventure", 1024, 576))
+		error_fatal();
+	if (!(tex = texture_new(100, 100)))
+		error_fatal();
+
+	painter_set_color(0xffffffff);
+	painter_clear();
+
+	PAINTER_BEGIN(tex);
+	painter_set_color(0xff0000ff);
+	painter_clear();
+	PAINTER_END();
+
+	texture_draw(tex, 10, 10);
+	painter_present();
+	delay(5000);
 
 #if 0
 

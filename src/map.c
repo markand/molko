@@ -200,13 +200,10 @@ map_draw(struct map *map, int srcx, int srcy)
 void
 map_repaint(struct map *map)
 {
-	struct texture *old;
-
-	old = painter_get_target();
-	painter_set_target(map->picture);
+	PAINTER_BEGIN(map->picture);
 	draw_layer(map, &map->layers[0]);
 	draw_layer(map, &map->layers[1]);
-	painter_set_target(old);
+	PAINTER_END();
 }
 
 void
