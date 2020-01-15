@@ -24,13 +24,11 @@
  * \brief Track elapsed time.
  */
 
-#include <stdint.h>
-
 /**
  * \brief Clock structure.
  */
 struct clock {
-	uint64_t ticks;         /*!< time point on initialization */
+	unsigned int ticks;     /*!< time point on initialization */
 };
 
 /**
@@ -49,7 +47,7 @@ clock_start(struct clock *clock);
  * \param clock the clock
  * \return the elapsed time in milliseconds
  */
-uint64_t
+unsigned int
 clock_elapsed(const struct clock *clock);
 
 #endif /* !MOLKO_CLOCK_H */

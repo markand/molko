@@ -24,8 +24,6 @@
  * \brief Sprite designed for walking entities.
  */
 
-#include <stdint.h>
-
 struct sprite;
 
 /**
@@ -60,9 +58,9 @@ struct sprite;
  */
 struct walksprite {
 	struct sprite *sprite;  /*!< (RW) The sprite to use */
-	uint16_t delay;         /*!< (RW) The delay between frames */
-	uint8_t index;          /*!< (RO) Current column index */
-	uint16_t elapsed;       /*!< (RO) Elapsed time since last frame */
+	unsigned int delay;     /*!< (RW) The delay between frames */
+	unsigned int index;     /*!< (RO) Current column index */
+	unsigned int elapsed;   /*!< (RO) Elapsed time since last frame */
 };
 
 /**
@@ -75,7 +73,7 @@ struct walksprite {
  * \param delay the delay between sprites
  */
 void
-walksprite_init(struct walksprite *ws, struct sprite *sprite, uint16_t delay);
+walksprite_init(struct walksprite *ws, struct sprite *sprite, unsigned int delay);
 
 /**
  * Update the walking sprite
@@ -85,7 +83,7 @@ walksprite_init(struct walksprite *ws, struct sprite *sprite, uint16_t delay);
  * \param ticks the number of milliseconds between last frame
  */
 void
-walksprite_update(struct walksprite *ws, unsigned ticks);
+walksprite_update(struct walksprite *ws, unsigned int ticks);
 
 /**
  * Draw the appropriate sprite cell to the screen according to the orientation
@@ -99,6 +97,6 @@ walksprite_update(struct walksprite *ws, unsigned ticks);
  * \param y the y coordinate
  */
 void
-walksprite_draw(struct walksprite *ws, uint8_t orientation, int x, int y);
+walksprite_draw(struct walksprite *ws, unsigned int orientation, int x, int y);
 
 #endif /* !MOLKO_WALKSPRITE_H */

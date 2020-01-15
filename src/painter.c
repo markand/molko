@@ -36,7 +36,7 @@ painter_set_target(struct texture *tex)
 	SDL_SetRenderTarget(win.renderer, tex ? tex->handle : NULL);
 }
 
-uint32_t
+unsigned long
 painter_get_color(void)
 {
 	Uint8 r = 0, g = 0, b = 0, a = 0;
@@ -47,7 +47,7 @@ painter_get_color(void)
 }
 
 void
-painter_set_color(uint32_t color)
+painter_set_color(unsigned long color)
 {
 	SDL_SetRenderDrawColor(
 		win.renderer,
@@ -71,7 +71,7 @@ painter_draw_point(int x1, int y1)
 }
 
 void
-painter_draw_rectangle(bool fill, int x, int y, unsigned width, unsigned height)
+painter_draw_rectangle(bool fill, int x, int y, unsigned int width, unsigned int height)
 {
 	const SDL_Rect rect = {
 		.w = width,
@@ -97,4 +97,3 @@ painter_present(void)
 {
 	SDL_RenderPresent(win.renderer);
 }
-

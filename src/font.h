@@ -25,7 +25,6 @@
  */
 
 #include <stddef.h>
-#include <stdint.h>
 
 /**
  * \brief Font object.
@@ -45,7 +44,7 @@ struct texture;
  * \return the font or NULL on error
  */
 struct font *
-font_openf(const char *path, unsigned size);
+font_openf(const char *path, unsigned int size);
 
 /**
  * Open font from memory buffer.
@@ -58,7 +57,7 @@ font_openf(const char *path, unsigned size);
  * \return the font or NULL on error
  */
 struct font *
-font_openb(const void *buffer, size_t buflen, unsigned size);
+font_openb(const void *buffer, size_t buflen, unsigned int size);
 
 /**
  * Render a text.
@@ -70,7 +69,7 @@ font_openb(const void *buffer, size_t buflen, unsigned size);
  * \param color the color
  */
 struct texture *
-font_render(struct font *font, const char *text, uint32_t color);
+font_render(struct font *font, const char *text, unsigned long color);
 
 /**
  * Close the font.

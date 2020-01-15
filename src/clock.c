@@ -26,7 +26,7 @@ clock_start(struct clock *clock)
 	clock->ticks = SDL_GetTicks();
 }
 
-uint64_t
+unsigned int
 clock_elapsed(const struct clock *clock)
 {
 	return SDL_GetTicks() - clock->ticks;

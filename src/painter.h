@@ -25,7 +25,6 @@
  */
 
 #include <stdbool.h>
-#include <stdint.h>
 
 struct texture;
 
@@ -59,7 +58,7 @@ painter_set_target(struct texture *tex);
  *
  * \return the color in RRGGBBAA format
  */
-uint32_t
+unsigned long
 painter_get_color(void);
 
 /**
@@ -68,7 +67,7 @@ painter_get_color(void);
  * \param color in RRGGBBAA format
  */
 void
-painter_set_color(uint32_t color);
+painter_set_color(unsigned long color);
 
 /**
  * Draw a line.
@@ -100,7 +99,7 @@ painter_draw_point(int x, int y);
  * \param h the rectangle height
  */
 void
-painter_draw_rectangle(bool fill, int x, int y, unsigned w, unsigned h);
+painter_draw_rectangle(bool fill, int x, int y, unsigned int w, unsigned int h);
 
 /**
  * Clear the window.

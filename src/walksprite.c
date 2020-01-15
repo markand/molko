@@ -23,7 +23,7 @@
 #include "sprite.h"
 
 void
-walksprite_init(struct walksprite *ws, struct sprite *sprite, uint16_t delay)
+walksprite_init(struct walksprite *ws, struct sprite *sprite, unsigned int delay)
 {
 	assert(ws);
 	assert(sprite);
@@ -34,7 +34,7 @@ walksprite_init(struct walksprite *ws, struct sprite *sprite, uint16_t delay)
 }
 
 void
-walksprite_update(struct walksprite *ws, unsigned ticks)
+walksprite_update(struct walksprite *ws, unsigned int ticks)
 {
 	assert(ws);
 
@@ -51,7 +51,7 @@ walksprite_update(struct walksprite *ws, unsigned ticks)
 }
 
 void
-walksprite_draw(struct walksprite *ws, uint8_t orientation, int x, int y)
+walksprite_draw(struct walksprite *ws, unsigned int orientation, int x, int y)
 {
 	assert(ws);
 	assert(orientation < 8);

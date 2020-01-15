@@ -24,8 +24,6 @@
  * \brief Image sprites.
  */
 
-#include <stdint.h>
-
 struct texture;
 
 /**
@@ -33,10 +31,10 @@ struct texture;
  */
 struct sprite {
 	struct texture *texture;        /*!< Texture to access (RO) */
-	uint8_t cellw;                 /*!< Width per cell (RW) */
-	uint8_t cellh;                 /*!< Height per cell (RW) */
-	uint16_t nrows;                 /*!< Number of rows (RW) */
-	uint16_t ncols;                 /*!< Number of columns (RW) */
+	unsigned int cellw;             /*!< Width per cell (RW) */
+	unsigned int cellh;             /*!< Height per cell (RW) */
+	unsigned int nrows;             /*!< Number of rows (RW) */
+	unsigned int ncols;             /*!< Number of columns (RW) */
 };
 
 /**
@@ -61,8 +59,8 @@ struct sprite {
 void
 sprite_init(struct sprite *sprite,
             struct texture *tex,
-            uint8_t cellw,
-            uint8_t cellh);
+            unsigned int cellw,
+            unsigned int cellh);
 
 /**
  * Draw the sprite component from row `r' and column `c'.
@@ -76,6 +74,6 @@ sprite_init(struct sprite *sprite,
  * \warning No bounds checking
  */
 void
-sprite_draw(struct sprite *sprite, uint16_t r, uint16_t c, int x, int y);
+sprite_draw(struct sprite *sprite, unsigned int r, unsigned int c, int x, int y);
 
 #endif /* !MOLKO_SPRITE_H */

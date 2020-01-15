@@ -22,7 +22,7 @@
 #include "sprite.h"
 
 void
-animation_init(struct animation *an, struct sprite *sprite, uint16_t delay)
+animation_init(struct animation *an, struct sprite *sprite, unsigned int delay)
 {
 	assert(an);
 	assert(sprite);
@@ -55,7 +55,7 @@ animation_start(struct animation *an)
 }
 
 void
-animation_update(struct animation *an, unsigned ticks)
+animation_update(struct animation *an, unsigned int ticks)
 {
 	assert(an);
 

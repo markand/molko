@@ -25,7 +25,6 @@
  */
 
 #include <stdbool.h>
-#include <stdint.h>
 
 #include "sprite.h"
 
@@ -40,7 +39,7 @@ struct texture;
  * \brief Map layer.
  */
 struct map_layer {
-	uint16_t *tiles;                /*!< Array of tiles, depending on the map size. */
+	unsigned short *tiles;          /*!< (RO) Array of tiles, depending on the map size. */
 };
 
 /**
@@ -51,10 +50,10 @@ struct map {
 	struct texture *tileset;        /*!< (RW) Tileset to use */
 	struct texture *picture;        /*!< (RO) Map drawn into a picture */
 	struct sprite sprite;           /*!< (RO) Sprite to render */
-	uint16_t width;                 /*!< (RO) Map width in cells */
-	uint16_t height;                /*!< (RO) Map height in cells */
-	uint8_t tilewidth;              /*!< (RO) Pixels per cell (width) */
-	uint8_t tileheight;             /*!< (RO) Pixels per cell (height) */
+	unsigned int width;             /*!< (RO) Map width in cells */
+	unsigned int height;            /*!< (RO) Map height in cells */
+	unsigned short tilewidth;       /*!< (RO) Pixels per cell (width) */
+	unsigned short tileheight;      /*!< (RO) Pixels per cell (height) */
 	struct map_layer layers[2];     /*!< (RO) Layers (background, foreground) */
 };
 

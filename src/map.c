@@ -60,7 +60,7 @@ parse_layer(struct map *map, const char *line, FILE *fp)
 	amount = map->width * map->height;
 	current = 0;
 
-	if (!(layer->tiles = calloc(amount, sizeof (uint16_t))))
+	if (!(layer->tiles = calloc(amount, sizeof (unsigned short))))
 		return;
 
 	for (int tile; fscanf(fp, "%d", &tile) && current < amount; ++current)
@@ -88,13 +88,13 @@ parse(struct map *map, const char *line, FILE *fp)
 	if (strncmp(line, "title", 5) == 0)
 		sscanf(line, "title|" MAX_F(MAP_TITLE_MAX), map->title);
 	else if (strncmp(line, "width", 5) == 0)
-		sscanf(line, "width|%hu", &map->width);
+		sscanf(line, "width|%u", &map->width);
 	else if (strncmp(line, "height", 6) == 0)
-		sscanf(line, "height|%hu", &map->height);
+		sscanf(line, "height|%u", &map->height);
 	else if (strncmp(line, "tilewidth", 9) == 0)
-		sscanf(line, "tilewidth|%hhu", &map->tilewidth);
+		sscanf(line, "tilewidth|%hu", &map->tilewidth);
 	else if (strncmp(line, "tileheight", 10) == 0)
-		sscanf(line, "tileheight|%hhu", &map->tileheight);
+		sscanf(line, "tileheight|%hu", &map->tileheight);
 	else if (strncmp(line, "tileset", 7) == 0)
 		parse_tileset(map, line);
 	else if (strncmp(line, "layer", 5) == 0)
@@ -124,13 +124,13 @@ draw_layer(struct map *map, const struct map_layer *layer)
 	assert(map);
 	assert(layer);
 
-	int16_t x = 0, y = 0;
+	int x = 0, y = 0;
 
-	for (uint16_t r = 0; r < map->width; ++r) {
-		for (uint16_t c = 0; c < map->height; ++c) {
-			size_t si = r * map->width + c;
-			size_t sr = (layer->tiles[si] - 1) / map->sprite.ncols;
-			size_t sc = (layer->tiles[si] - 1) % map->sprite.nrows;
+	for (unsigned int r = 0; r < map->width; ++r) {
+		for (unsigned int c = 0; c < map->height; ++c) {
+			unsigned int si = r * map->width + c;
+			unsigned int sr = (layer->tiles[si] - 1) / map->sprite.ncols;
+			unsigned int sc = (layer->tiles[si] - 1) % map->sprite.nrows;
 
 			if (layer->tiles[si] != 0)
 				sprite_draw(&map->sprite, sr, sc, x, y);

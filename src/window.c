@@ -31,7 +31,7 @@ struct window win = {
 };
 
 bool
-window_init(const char *title, unsigned width, unsigned height)
+window_init(const char *title, unsigned int width, unsigned int height)
 {
 	assert(title);
 
@@ -44,7 +44,7 @@ window_init(const char *title, unsigned width, unsigned height)
 	return true;
 }
 
-unsigned
+unsigned int
 window_width(void)
 {
 	int width;
@@ -54,7 +54,7 @@ window_width(void)
 	return width;
 }
 
-unsigned
+unsigned int
 window_height(void)
 {
 	int height;

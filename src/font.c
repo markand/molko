@@ -34,7 +34,7 @@ struct font {
 };
 
 struct font *
-font_openf(const char *path, unsigned size)
+font_openf(const char *path, unsigned int size)
 {
 	assert(path);
 
@@ -52,7 +52,7 @@ font_openf(const char *path, unsigned size)
 }
 
 struct font *
-font_openb(const void *buffer, size_t buflen, unsigned size)
+font_openb(const void *buffer, size_t buflen, unsigned int size)
 {
 	assert(buffer);
 
@@ -72,7 +72,7 @@ font_openb(const void *buffer, size_t buflen, unsigned size)
 }
 
 struct texture *
-font_render(struct font *font, const char *text, uint32_t color)
+font_render(struct font *font, const char *text, unsigned long color)
 {
 	assert(font);
 	assert(text);

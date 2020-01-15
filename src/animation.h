@@ -25,7 +25,6 @@
  */
 
 #include <stdbool.h>
-#include <stdint.h>
 
 struct sprite;
 
@@ -34,10 +33,10 @@ struct sprite;
  */
 struct animation {
 	struct sprite *sprite;  /*!< Sprite to use (RW) */
-	uint16_t row;           /*!< current row (RO) */
-	uint16_t column;        /*!< current column (RO) */
-	uint16_t delay;         /*!< delay between frames (RW) */
-	uint16_t elapsed;       /*!< elapsed time since last frame (RO) */
+	unsigned int row;       /*!< current row (RO) */
+	unsigned int column;    /*!< current column (RO) */
+	unsigned int delay;     /*!< delay between frames (RW) */
+	unsigned int elapsed;   /*!< elapsed time since last frame (RO) */
 };
 
 /**
@@ -53,7 +52,7 @@ struct animation {
  * \param delay the delay between frames in milliseconds
  */
 void
-animation_init(struct animation *an, struct sprite *sprite, uint16_t delay);
+animation_init(struct animation *an, struct sprite *sprite, unsigned int delay);
 
 /**
  * Tells if the animation is complete.
@@ -85,7 +84,7 @@ animation_start(struct animation *an);
  * \param ticks the elapsed ticks since the last call
  */
 void
-animation_update(struct animation *an, unsigned ticks);
+animation_update(struct animation *an, unsigned int ticks);
 
 /**
  * Draw the animation.

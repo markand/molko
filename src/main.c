@@ -48,7 +48,7 @@ run(void)
 	clock_start(&clock);
 
 	for (;;) {
-		uint64_t elapsed = clock_elapsed(&clock);
+		unsigned int elapsed = clock_elapsed(&clock);
 
 		clock_start(&clock);
 

@@ -45,8 +45,8 @@ enter(void)
 		error_fatal();
 
 	/* Compute position. */
-	uint16_t w = 0;
-	uint16_t h = 0;
+	unsigned int w = 0;
+	unsigned int h = 0;
 
 	if (!texture_get_size(text, &w, &h))
 		error_fatal();

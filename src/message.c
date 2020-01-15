@@ -37,7 +37,7 @@ message_start(struct message *msg)
 }
 
 void
-message_update(struct message *msg, unsigned ticks)
+message_update(struct message *msg, unsigned int ticks)
 {
 	assert(msg);
 

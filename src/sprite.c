@@ -23,7 +23,10 @@
 #include "texture.h"
 
 void
-sprite_init(struct sprite *sprite, struct texture *tex, uint8_t cellw, uint8_t cellh)
+sprite_init(struct sprite *sprite,
+            struct texture *tex,
+            unsigned int cellw,
+            unsigned int cellh)
 {
 	int w = 0;
 	int h = 0;
@@ -31,6 +34,7 @@ sprite_init(struct sprite *sprite, struct texture *tex, uint8_t cellw, uint8_t c
 	assert(sprite);
 	assert(tex);
 
+	/* TODO: use texture_get_size */
 	SDL_QueryTexture(tex->handle, NULL, NULL, &w, &h);
 
 	sprite->texture = tex;
@@ -41,7 +45,7 @@ sprite_init(struct sprite *sprite, struct texture *tex, uint8_t cellw, uint8_t c
 }
 
 void
-sprite_draw(struct sprite *sprite, uint16_t r, uint16_t c, int x, int y)
+sprite_draw(struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
 {
 	assert(sprite);
 

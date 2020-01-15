@@ -25,7 +25,6 @@
  */
 
 #include <stdbool.h>
-#include <stdint.h>
 
 #include "key.h"
 #include "mouse.h"
@@ -62,8 +61,8 @@ union event {
 	struct {
 		enum event_type type;           /*!< EVENT_MOUSE */
 		enum mouse_button buttons;      /*!< OR'ed buttons that are pressed */
-		int32_t x;                      /*!< Mouse position in x */
-		int32_t y;                      /*!< Mouse position in y */
+		int x;                          /*!< Mouse position in x */
+		int y;                          /*!< Mouse position in y */
 	} mouse;
 
 	/**
@@ -72,8 +71,8 @@ union event {
 	struct {
 		enum event_type type;           /*!< EVENT_CLICKDOWN or EVENT_CLICKUP */
 		enum mouse_button button;       /*!< Unique button that was pressed */
-		int32_t x;                      /*!< Mouse position in x */
-		int32_t y;                      /*!< Mouse position in y */
+		int x;                          /*!< Mouse position in x */
+		int y;                          /*!< Mouse position in y */
 	} click;
 };
 

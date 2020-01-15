@@ -36,14 +36,14 @@
  * \return true on success
  */
 bool
-window_init(const char *title, unsigned width, unsigned height);
+window_init(const char *title, unsigned int width, unsigned int height);
 
 /**
  * Get the current window's width.
  *
  * \return the width
  */
-unsigned
+unsigned int
 window_width(void);
 
 /**
@@ -51,7 +51,7 @@ window_width(void);
  *
  * \return the height
  */
-unsigned
+unsigned int
 window_height(void);
 
 /**

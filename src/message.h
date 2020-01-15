@@ -25,7 +25,6 @@
  */
 
 #include <stdbool.h>
-#include <stdint.h>
 
 struct sprite;
 struct font;
@@ -53,10 +52,10 @@ struct message {
 	const char *text[3];            /*!< (RW) lines of text to show */
 	struct sprite *theme;           /*!< (RW) sprite to use for the frame */
 	struct texture *avatar;         /*!< (RW) optional avatar */
-        struct font *font;              /*!< (RW) font to use */
+	struct font *font;              /*!< (RW) font to use */
 	enum message_flags flags;       /*!< (RW) message flags */
 	enum message_state state;       /*!< (RO) current state */
-	uint16_t elapsed;               /*!< (RW) elapsed time while displaying */
+	unsigned int elapsed;           /*!< (RW) elapsed time while displaying */
 };
 
 /**
@@ -77,7 +76,7 @@ message_start(struct message *msg);
  * \param ticks the elapsed delay since last frame
  */
 void
-message_update(struct message *msg, unsigned ticks);
+message_update(struct message *msg, unsigned int ticks);
 
 /**
  * Draw the message into the screen.

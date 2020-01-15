@@ -27,7 +27,6 @@
  */
 
 #include <stdbool.h>
-#include <stdint.h>
 
 /**
  * \brief Texture object.
@@ -45,7 +44,7 @@ struct texture;
  * \return the texture or NULL on error
  */
 struct texture *
-texture_new(uint16_t w, uint16_t h);
+texture_new(unsigned int w, unsigned int h);
 
 /**
  * Get texture size.
@@ -56,7 +55,7 @@ texture_new(uint16_t w, uint16_t h);
  * \param h the height
  */
 bool
-texture_get_size(struct texture *tex, uint16_t *w, uint16_t *h);
+texture_get_size(struct texture *tex, unsigned int *w, unsigned int *h);
 
 /**
  * Simple texture drawing.

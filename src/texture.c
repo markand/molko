@@ -26,7 +26,7 @@
 #include "window_p.h"
 
 struct texture *
-texture_new(uint16_t w, uint16_t h)
+texture_new(unsigned int w, unsigned int h)
 {
 	struct texture *tex = emalloc(sizeof (struct texture));
 
@@ -41,7 +41,7 @@ texture_new(uint16_t w, uint16_t h)
 }
 
 bool
-texture_get_size(struct texture *tex, uint16_t *w, uint16_t *h)
+texture_get_size(struct texture *tex, unsigned int *w, unsigned int *h)
 {
 	assert(tex);
 
