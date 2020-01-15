@@ -36,6 +36,8 @@ main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 
+#if 0
+
 	struct clock clock;
 	struct map map;
 	struct texture *guy;
@@ -120,7 +122,6 @@ main(int argc, char **argv)
 			}
 		}
 
-		map_move(&map, map.x + dx, map.y + dy);
 		walksprite_update(&ws, elapsed);
 		painter_clear();
 		map_draw(&map);
@@ -128,6 +129,7 @@ main(int argc, char **argv)
 		painter_present();
 		delay(50);
 	}
+#endif
 
 	return 0;
 }

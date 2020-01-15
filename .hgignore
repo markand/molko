@@ -13,8 +13,9 @@
 \.o$
 ^libmolko\.a$
 ^molko(\.exe)?$
-^tests/test-color$
-^tests/test-error$
+^tests/test-color(\.exe)?$
+^tests/test-error(\.exe)?$
+^tests/test-map(\.exe)?$
 ^tools/molko-map$
 
 # doxygen stuff.

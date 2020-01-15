@@ -51,8 +51,6 @@ struct map {
 	struct texture *tileset;        /*!< (RW) Tileset to use */
 	struct texture *picture;        /*!< (RO) Map drawn into a picture */
 	struct sprite sprite;           /*!< (RO) Sprite to render */
-	uint64_t x;
-	uint64_t y;
 	uint16_t width;                 /*!< (RO) Map width in cells */
 	uint16_t height;                /*!< (RO) Map height in cells */
 	uint8_t tilewidth;              /*!< (RO) Pixels per cell (width) */
@@ -77,9 +75,11 @@ map_open(struct map *map, const char *path);
  *
  * \pre map != NULL
  * \param map the map to render
+ * \param srcx the x coordinate region
+ * \param srcy the y coordinate region
  */
 void
-map_draw(struct map *map);
+map_draw(struct map *map, int srcx, int srcy);
 
 /**
  * Force map repaint on its texture.
@@ -90,17 +90,6 @@ map_draw(struct map *map);
  */
 void
 map_repaint(struct map *map);
-
-/**
- * Move the origin of the picture rect to view.
- *
- * \param map the map
- * \param x the x coordinate
- * \param y the y coordinate
- * \note This function may adjust the coordinates if needed
- */
-void
-map_view(struct map *map, uint64_t x, uint64_t y);
 
 /**
  * Close the map and its resources.

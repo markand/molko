@@ -1,0 +1,15 @@
+title|This map lacks width
+height|2
+tilewidth|32
+tileheight|16
+tileset|sample-map.png
+layer|background
+0
+1
+2
+3
+layer|foreground
+4
+5
+6
+7

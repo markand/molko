@@ -51,7 +51,8 @@ JANSSON_CFLAGS= `pkg-config --cflags jansson`
 JANSSON_LDFLAGS=`pkg-config --libs jansson`
 
 TESTS=          tests/test-color.c \
-                tests/test-error.c
+                tests/test-error.c \
+                tests/test-map.c
 TESTS_INCS=     -I extern/libgreatest -I src ${SDL_CFLAGS}
 TESTS_LIBS=     ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 TESTS_OBJS=     ${TESTS:.c=}
