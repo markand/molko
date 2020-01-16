@@ -37,6 +37,7 @@ SRCS=           src/animation.c \
                 src/sys.c \
                 src/texture.c \
                 src/util.c \
+                src/property.c \
                 src/splashscreen.c \
                 src/walksprite.c \
                 src/window.c
@@ -55,7 +56,8 @@ JANSSON_LDFLAGS=`pkg-config --libs jansson`
 
 TESTS=          tests/test-color.c \
                 tests/test-error.c \
-                tests/test-map.c
+                tests/test-map.c \
+                tests/test-property.c
 TESTS_INCS=     -I extern/libgreatest -I src ${SDL_CFLAGS}
 TESTS_LIBS=     ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 TESTS_OBJS=     ${TESTS:.c=}
