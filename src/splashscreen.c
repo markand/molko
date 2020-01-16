@@ -16,19 +16,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h> // TODO: temporary
-
 #include "error.h"
 #include "font.h"
 #include "painter.h"
 #include "splashscreen.h"
+#include "map_state.h"
+#include "image.h"
 #include "state.h"
 #include "sys.h"
 #include "texture.h"
 #include "window.h"
+#include "map.h"
 
-#define DELAY 5000
+#define DELAY 3000
 
 static unsigned int elapsed;
 static struct font *font;
@@ -39,17 +39,14 @@ static int y;
 static void
 enter(void)
 {
-	if (!(font = font_openf(sys_datapath("fonts/knights-quest.ttf"), 100)))
+	if (!(font = font_openf(sys_datapath("fonts/knights-quest.ttf"), 160)))
 		error_fatal();
 	if (!(text = font_render(font, "Molko's Adventure", 0x000000ff)))
 		error_fatal();
 
 	/* Compute position. */
-	unsigned int w = 0;
-	unsigned int h = 0;
-
-	if (!texture_get_size(text, &w, &h))
-		error_fatal();
+	const unsigned int w = texture_width(text);
+	const unsigned int h = texture_height(text);
 
 	x = (window_width() / 2) - (w / 2);
 	y = (window_height() / 2) - (h / 2) - 100;
@@ -74,8 +71,18 @@ update(unsigned int ticks)
 
 	/* TODO: change this once map is done. */
 	if (elapsed >= DELAY) {
-		printf("splash finished!");
-		exit(0);
+		/* TODO: this will be removed too. */
+		static struct map map;
+		static struct texture *player_texture;
+		static struct sprite player_sprite;
+
+		if (!map_open(&map, sys_datapath("maps/test.map")))
+			error_fatal();
+		if (!(player_texture = image_openf(sys_datapath("sprites/test-walk.png"))))
+			error_fatal();
+
+		sprite_init(&player_sprite, player_texture, 48, 48);
+		map_state_start(&map, &player_sprite);
 	}
 }
 

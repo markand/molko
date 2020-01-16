@@ -30,6 +30,7 @@ SRCS=           src/animation.c \
                 src/game.c \
                 src/image.c \
                 src/map.c \
+                src/map_state.c \
                 src/message.c \
                 src/painter.c \
                 src/sprite.c \

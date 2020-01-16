@@ -47,15 +47,24 @@ struct texture *
 texture_new(unsigned int w, unsigned int h);
 
 /**
- * Get texture size.
+ * Get texture width.
  *
  * \pre tex != NULL
  * \param tex the texture
- * \param w the width
- * \param h the height
+ * \return the width
  */
-bool
-texture_get_size(struct texture *tex, unsigned int *w, unsigned int *h);
+unsigned int
+texture_width(struct texture *tex);
+
+/**
+ * Get texture height.
+ *
+ * \pre tex != NULL
+ * \param tex the texture
+ * \return the height
+ */
+unsigned int
+texture_height(struct texture *tex);
 
 /**
  * Simple texture drawing.

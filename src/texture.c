@@ -40,24 +40,30 @@ texture_new(unsigned int w, unsigned int h)
 	return tex;
 }
 
-bool
-texture_get_size(struct texture *tex, unsigned int *w, unsigned int *h)
+unsigned int
+texture_width(struct texture *tex)
 {
 	assert(tex);
 
-	int rw, rh;
+	int width;
 
-	if (SDL_QueryTexture(tex->handle, NULL, NULL, &rw, &rh) < 0) {
-		error_sdl();
-		*w = 0;
-		*h = 0;
-		return false;
-	}
+	if (SDL_QueryTexture(tex->handle, NULL, NULL, &width, NULL) < 0)
+		return 0;
 
-	*w = rw;
-	*h = rh;
+	return width;
+}
 
-	return true;
+unsigned int
+texture_height(struct texture *tex)
+{
+	assert(tex);
+
+	int height;
+
+	if (SDL_QueryTexture(tex->handle, NULL, NULL, NULL, &height) < 0)
+		return 0;
+
+	return height;
 }
 
 void

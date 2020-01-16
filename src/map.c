@@ -23,12 +23,13 @@
 
 #include "error.h"
 #include "error_p.h"
-#include "map.h"
 #include "image.h"
-#include "texture.h"
+#include "map.h"
+#include "painter.h"
 #include "sprite.h"
 #include "sys.h"
-#include "painter.h"
+#include "texture.h"
+#include "window.h"
 
 #include <SDL.h>
 
@@ -182,17 +183,16 @@ map_open(struct map *map, const char *path)
 void
 map_draw(struct map *map, int srcx, int srcy)
 {
-	/* TODO: remove window size here */
 	texture_draw_ex(
 		map->picture,
 		srcx,
 		srcy,
-		1024,
-		576,
+		window_width(),
+		window_height(),
 		0,
 		0,
-		1024,
-		576,
+		window_width(),
+		window_height(),
 		0
 	);
 }
@@ -219,5 +219,5 @@ map_close(struct map *map)
 	free(map->layers[0].tiles);
 	free(map->layers[1].tiles);
 
-	memset(&map, 0, sizeof (struct map));
+	memset(map, 0, sizeof (struct map));
 }

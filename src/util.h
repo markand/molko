@@ -22,6 +22,14 @@
 #include <stddef.h>
 
 /**
+ * Get the number of elements in a static array.
+ *
+ * \param x the array
+ * \return the number of elements
+ */
+#define nelem(x) sizeof ((x)) / sizeof ((x)[0])
+
+/**
  * Wrapper around malloc(3) that exits on allocation failure.
  *
  * \param size the size

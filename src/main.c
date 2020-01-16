@@ -20,8 +20,13 @@
 #include "error.h"
 #include "event.h"
 #include "game.h"
+#include "image.h"
+#include "map.h"
+#include "map_state.h"
 #include "splashscreen.h"
+#include "sprite.h"
 #include "sys.h"
+#include "util.h"
 #include "window.h"
 
 #define WINDOW_WIDTH 1280
@@ -30,6 +35,8 @@
 static void
 init(void)
 {
+	struct map map;
+
 	if (!sys_init())
 		error_fatal();
 	if (!window_init("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -62,6 +69,9 @@ run(void)
 
 		game_update(elapsed);
 		game_draw();
+
+		if ((elapsed = clock_elapsed(&clock)) < 20)
+			delay(20 - elapsed);
 	}
 }
 
