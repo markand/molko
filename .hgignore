@@ -16,8 +16,7 @@
 ^tests/test-color(\.exe)?$
 ^tests/test-error(\.exe)?$
 ^tests/test-map(\.exe)?$
-^tests/test-property(\.exe)?$
-^tools/molko-map(\.exe)?$
+^tools/molko-map$
 
 # doxygen stuff.
 ^doxygen/html$
