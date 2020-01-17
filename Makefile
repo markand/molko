@@ -19,7 +19,7 @@
 .POSIX:
 
 CC=             gcc
-CFLAGS=         -MMD -O3 -DNDEBUG -std=c18 -Wall -Wextra -g
+CFLAGS=         -MMD -O0 -DNDEBUG -std=c18 -Wall -Wextra -g
 PROG=           molko
 LIB=            libmolko.a
 SRCS=           src/animation.c \

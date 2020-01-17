@@ -96,6 +96,8 @@ parse(struct map *map, const char *line, FILE *fp)
 		sscanf(line, "tilewidth|%hu", &map->tilewidth);
 	else if (strncmp(line, "tileheight", 10) == 0)
 		sscanf(line, "tileheight|%hu", &map->tileheight);
+	else if (strncmp(line, "origin", 6) == 0)
+		sscanf(line, "origin|%d|%d", &map->origin_x, &map->origin_y);
 	else if (strncmp(line, "tileset", 7) == 0)
 		parse_tileset(map, line);
 	else if (strncmp(line, "layer", 5) == 0)

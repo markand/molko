@@ -44,12 +44,17 @@ struct map_layer {
 
 /**
  * \brief Map object.
+ *
+ * This structure only defines the map characteristics. It does not have any
+ * logic and is left for game state.
  */
 struct map {
 	char title[MAP_TITLE_MAX];      /*!< (RW) The map title */
 	struct texture *tileset;        /*!< (RW) Tileset to use */
 	struct texture *picture;        /*!< (RO) Map drawn into a picture */
 	struct sprite sprite;           /*!< (RO) Sprite to render */
+	int origin_x;                   /*!< (RO) Where the player starts in X */
+	int origin_y;                   /*!< (RO) Where the player starts in Y */
 	unsigned int width;             /*!< (RO) Map width in cells */
 	unsigned int height;            /*!< (RO) Map height in cells */
 	unsigned short tilewidth;       /*!< (RO) Pixels per cell (width) */

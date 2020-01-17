@@ -192,7 +192,7 @@ move(unsigned int ticks)
 				data.view_x = map_w - view_w;
 		}
 
-		if (data.player_x > map_w - 48)
+		if (data.player_x > (int)map_w - 48)
 			data.player_x = map_w - 48;
 	} else if (dx < 0) {
 		data.player_x -= delta;
@@ -218,7 +218,7 @@ move(unsigned int ticks)
 				data.view_y = map_h - view_h;
 		}
 
-		if (data.player_y > map_h - 48)
+		if (data.player_y > (int)map_h - 48)
 			data.player_y = map_h - 48;
 	} else if (dy < 0) {
 		data.player_y -= delta;
@@ -269,11 +269,38 @@ draw(void)
 	painter_present();
 }
 
+static void
+center(void)
+{
+	/* This is map size. */
+	const unsigned int win_w = window_width();
+	const unsigned int win_h = window_height();
+	const unsigned int map_w = texture_width(data.map.picture);
+	const unsigned int map_h = texture_height(data.map.picture);
+
+	data.view_x = data.player_x - (win_w / 2);
+	data.view_y = data.player_y - (win_h / 2);
+
+	if (data.view_x < 0)
+		data.view_x = 0;
+	else if (data.view_x > (int)(map_w - win_w))
+		data.view_x = map_w - win_w;
+
+	if (data.view_y < 0)
+		data.view_y = 0;
+	else if (data.view_y > (int)(map_h - win_h))
+		data.view_y = map_h - win_h;
+}
+
 void
 map_state_start(struct map *map, struct sprite *s)
 {
+	/* Copy essential. */
 	data.map = *map;
+	data.player_x = map->origin_x;
+	data.player_y = map->origin_y;
 
+	center();
 	walksprite_init(&data.player_sprite, s, 250);
 	game_switch(&map_state);
 }

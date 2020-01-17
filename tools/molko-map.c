@@ -47,29 +47,64 @@ is_layer(const char *name)
 	       strcmp(name, "objects") == 0;
 }
 
+const json_t *
+find_property(const json_t *props, const char *which)
+{
+	json_t *value;
+	size_t index;
+
+	json_array_foreach(props, index, value) {
+		if (!json_is_object(value))
+			continue;
+
+		const json_t *key = json_object_get(value, "name");
+
+		if (json_is_string(key) && strcmp(json_string_value(key), which) == 0)
+			return value;
+	}
+
+	return NULL;
+}
+
+static void
+write_title(const json_t *props)
+{
+	const json_t *prop_title = find_property(props, "title");
+
+	if (!prop_title)
+		return;
+
+	const json_t *title = json_object_get(prop_title, "value");
+
+	if (title && json_is_string(title))
+		printf("title|%s\n", json_string_value(title));
+}
+
+static void
+write_origin(const json_t *props)
+{
+	const json_t *prop_origin_x = find_property(props, "origin-x");
+	const json_t *prop_origin_y = find_property(props, "origin-y");
+
+	if (!prop_origin_x || !prop_origin_y)
+		return;
+
+	const json_t *origin_x = json_object_get(prop_origin_x, "value");
+	const json_t *origin_y = json_object_get(prop_origin_y, "value");
+
+	if (!origin_x || !json_is_integer(origin_x) ||
+	    !origin_y || !json_is_integer(origin_y))
+		return;
+
+	printf("origin|%lld|%lld\n", json_integer_value(origin_x),
+	    json_integer_value(origin_y));
+}
+
 static void
 write_properties(const json_t *props)
 {
-	size_t index;
-	json_t *prop, *name, *type, *value;
-
-	if (!json_is_array(props))
-		return;
-
-	json_array_foreach(props, index, prop) {
-		name = json_object_get(prop, "name");
-		type = json_object_get(prop, "type");
-		value = json_object_get(prop, "value");
-
-		if (!json_is_object(prop) ||
-		    !json_is_string(name) ||
-		    !json_is_string(type) ||
-		    !json_is_string(value))
-			die("invalid property\n");
-
-		printf("%s|%s\n", json_string_value(name),
-		    json_string_value(value));
-	}
+	write_title(props);
+	write_origin(props);
 }
 
 static void
