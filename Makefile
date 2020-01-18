@@ -67,6 +67,10 @@ TOOLS=          tools/molko-map.c
 TOOLS_OBJS=     ${TOOLS:.c=}
 TOOLS_DEPS=     ${TOOLS:.c=.d}
 
+DEFINES=        -DPREFIX=\""${PREFIX}"\" \
+                -DBINDIR=\""${BINDIR}"\" \
+                -DSHAREDIR=\""${SHAREDIR}"\"
+
 .SUFFIXES:
 .SUFFIXES: .c .o
 
@@ -75,7 +79,7 @@ all: ${PROG}
 -include ${DEPS} ${TESTS_DEPS} ${TOOLS_DEPS}
 
 .c.o:
-	${CC} -DPREFIX=\""${PREFIX}"\" -DBINDIR=\""${BINDIR}"\" -DSHAREDIR=\""${SHAREDIR}"\" ${SDL_CFLAGS} ${CFLAGS} -c $< -o $@
+	${CC} ${DEFINES} ${SDL_CFLAGS} ${CFLAGS} -c $< -o $@
 
 .c:
 	${CC} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS}
