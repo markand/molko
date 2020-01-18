@@ -19,7 +19,9 @@
 .POSIX:
 
 CC=             gcc
-CFLAGS=         -MMD -O0 -DNDEBUG -std=c18 -Wall -Wextra -g
+CFLAGS=         -MMD -O0 -std=c18 -Wall -Wextra -g
+# Use this instead to build a release.
+# CFLAGS=         -MMD -O3 -DNDEBUG -std=c18 -Wall -Wextra
 PROG=           molko
 LIB=            libmolko.a
 SRCS=           src/animation.c \
