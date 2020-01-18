@@ -111,4 +111,4 @@ clean:
 	rm -f ${TESTS_OBJS} ${TESTS_DEPS}
 	rm -f ${TOOLS_OBJS} ${TOOLS_DEPS}
 
-.PHONY: clean doxygen tests tools
+.PHONY: all clean doxygen tests tools
