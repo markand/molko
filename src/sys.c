@@ -136,7 +136,7 @@ sys_datapath(const char *fmt, ...)
 const char *
 sys_datapathv(const char *fmt, va_list ap)
 {
-	static char path[2048];
+	static char path[2048 + FILENAME_MAX];
 	char filename[FILENAME_MAX];
 
 	vsnprintf(filename, sizeof (filename), fmt, ap);

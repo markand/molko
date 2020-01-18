@@ -35,8 +35,6 @@
 static void
 init(void)
 {
-	struct map map;
-
 	if (!sys_init())
 		error_fatal();
 	if (!window_init("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
