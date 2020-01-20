@@ -24,23 +24,51 @@
  * \brief State when player is on a map.
  */
 
-struct map;
-struct sprite;
+#include "map.h"
+#include "sprite.h"
+
+/**
+ * \brief Data for the state.
+ *
+ * Update this structure before switching to this state.
+ */
+extern struct map_state_data {
+	/**
+	 * Map properties.
+	 */
+	struct {
+		struct map map;         /*!< (RO) The map definition */
+		unsigned int w;         /*!< (RO) Map width */
+		unsigned int h;         /*!< (RO) Map height */
+	} map;
+
+	/**
+	 * Player position.
+	 *
+	 * If you adjust this structure, it is strictly encouraged to update
+	 * the view as well.
+	 */
+	struct {
+		struct sprite sprite;   /*!< (RW) The sprite to use */
+		int x;                  /*!< (RO) Player position in x */
+		int y;                  /*!< (RO) Player position in y */
+		int angle;              /*!< (RO) Player angle (see walksprite) */
+	} player;
+
+	/**
+	 * Position and size of the view.
+	 */
+	struct {
+		int x;                  /*!< (RW) Position in x */
+		int y;                  /*!< (RW) Position in y */
+		unsigned int w;         /*!< (RO) View width */
+		unsigned int h;         /*!< (RO) View height */
+	} view;
+} map_state_data; /*!< Access to data. */
 
 /**
  * \brief State when player is on a map.
  */
 extern struct state map_state;
-
-/**
- * Convenient function that switch game state with the given map.
- *
- * \pre map != NULL
- * \pre sprite != NULL
- * \param map the map to use (will take ownership)
- * \param sprite the player sprite
- */
-void
-map_state_start(struct map *map, struct sprite *s);
 
 #endif /* !MOLKO_MAP_STATE_H */

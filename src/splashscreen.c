@@ -82,7 +82,7 @@ update(unsigned int ticks)
 			error_fatal();
 
 		sprite_init(&player_sprite, player_texture, 48, 48);
-		map_state_start(&map, &player_sprite);
+		//map_state_start(&map, &player_sprite);
 	}
 }
 

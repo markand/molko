@@ -35,13 +35,25 @@
 static void
 init(void)
 {
+	struct texture *image;
+
 	if (!sys_init())
 		error_fatal();
 	if (!window_init("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
 		error_fatal();
 
+	image = image_openf(sys_datapath("sprites/test-walk.png"));
+
+	if (!image)
+		error_fatal();
+	if (!map_open(&map_state_data.map.map, sys_datapath("maps/test.map")))
+		error_fatal();
+
+	sprite_init(&map_state_data.player.sprite, image, 48, 48);
+	game_switch(&map_state);
+
 	/* Default state is splash screen */
-	game_switch(&splashscreen_state);
+	//game_switch(&splashscreen_state);
 }
 
 static void

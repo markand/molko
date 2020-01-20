@@ -81,20 +81,66 @@ static unsigned int orientations[16] = {
 	[0xC] = 5
 };
 
+/*
+ * Additional data that is not necessary to expose in map_state_data.
+ */
 static struct {
-	struct map map;
-	struct walksprite player_sprite;
-	int player_x;
-	int player_y;
-	int player_orientation;
-	int view_x;
-	int view_y;
-	enum movement moving;
-} data;
+	struct {
+		enum movement moving;
+		struct walksprite ws;
+	} player;
+
+	struct {
+		int x;
+		int y;
+		unsigned int w;
+		unsigned int h;
+	} margin;
+} cache;
+
+static void
+center(void)
+{
+	map_state_data.view.x = map_state_data.player.x - (map_state_data.view.w / 2);
+	map_state_data.view.y = map_state_data.player.y - (map_state_data.view.h / 2);
+
+	if (map_state_data.view.x < 0)
+		map_state_data.view.x = 0;
+	else if ((unsigned int)map_state_data.view.x > map_state_data.map.w - map_state_data.view.w)
+		map_state_data.view.x = map_state_data.map.w - map_state_data.view.w;
+
+	if (map_state_data.view.y < 0)
+		map_state_data.view.y = 0;
+	else if ((unsigned int)map_state_data.view.y > map_state_data.map.h - map_state_data.view.h)
+		map_state_data.view.y = map_state_data.map.h - map_state_data.view.h;
+}
 
 static void
 enter(void)
 {
+	/* Adjust map properties. */
+	struct map *m = &map_state_data.map.map;
+
+	if (!m->picture)
+		map_repaint(m);
+
+	map_repaint(m);
+	map_state_data.map.w = texture_width(m->picture);
+	map_state_data.map.h = texture_height(m->picture);
+
+	/* Adjust view. */
+	map_state_data.view.w = window_width();
+	map_state_data.view.h = window_height();
+
+	/* Adjust margin. */
+	cache.margin.w = map_state_data.view.w - (MARGIN_WIDTH * 2);
+	cache.margin.h = map_state_data.view.h - (MARGIN_HEIGHT * 2);
+
+	/* Center the view by default. */
+	center();
+
+	/* Final bits. */
+	walksprite_init(&cache.player.ws, &map_state_data.player.sprite, 300);
 }
 
 static void
@@ -107,22 +153,22 @@ handle_keydown(const union event *event)
 {
 	switch (event->key.key) {
 	case KEY_UP:
-		data.moving |= MOVING_UP;
+		cache.player.moving |= MOVING_UP;
 		break;
 	case KEY_RIGHT:
-		data.moving |= MOVING_RIGHT;
+		cache.player.moving |= MOVING_RIGHT;
 		break;
 	case KEY_DOWN:
-		data.moving |= MOVING_DOWN;
+		cache.player.moving |= MOVING_DOWN;
 		break;
 	case KEY_LEFT:
-		data.moving |= MOVING_LEFT;
+		cache.player.moving |= MOVING_LEFT;
 		break;
 	default:
 		break;
 	}
 
-	data.player_orientation = orientations[data.moving];
+	map_state_data.player.angle = orientations[cache.player.moving];
 }
 
 static void
@@ -130,20 +176,84 @@ handle_keyup(const union event *event)
 {
 	switch (event->key.key) {
 	case KEY_UP:
-		data.moving &= ~(MOVING_UP);
+		cache.player.moving &= ~(MOVING_UP);
 		break;
 	case KEY_RIGHT:
-		data.moving &= ~(MOVING_RIGHT);
+		cache.player.moving &= ~(MOVING_RIGHT);
 		break;
 	case KEY_DOWN:
-		data.moving &= ~(MOVING_DOWN);
+		cache.player.moving &= ~(MOVING_DOWN);
 		break;
 	case KEY_LEFT:
-		data.moving &= ~(MOVING_LEFT);
+		cache.player.moving &= ~(MOVING_LEFT);
 		break;
 	default:
 		break;
 	}
+}
+
+static void
+move_right(unsigned int delta)
+{
+	map_state_data.player.x += delta;
+
+	if (map_state_data.player.x > (int)(cache.margin.x + cache.margin.w)) {
+		map_state_data.view.x = (map_state_data.player.x - map_state_data.view.w) + MARGIN_WIDTH;
+
+		if (map_state_data.view.x >= (int)(map_state_data.map.w - map_state_data.view.w))
+			map_state_data.view.x = map_state_data.map.w - map_state_data.view.w;
+	}
+
+	if (map_state_data.player.x > (int)map_state_data.map.w - 48)
+		map_state_data.player.x = map_state_data.map.w - 48;
+}
+
+static void
+move_left(unsigned int delta)
+{
+	map_state_data.player.x -= delta;
+
+	if (map_state_data.player.x < cache.margin.x) {
+		map_state_data.view.x = map_state_data.player.x - MARGIN_WIDTH;
+
+		if (map_state_data.view.x < 0)
+			map_state_data.view.x = 0;
+	}
+
+	if (map_state_data.player.x < 0)
+		map_state_data.player.x = 0;
+}
+
+static void
+move_down(unsigned int delta)
+{
+	map_state_data.player.y += delta;
+
+	if (map_state_data.player.y > (int)(cache.margin.y + cache.margin.h)) {
+		map_state_data.view.y = (map_state_data.player.y - map_state_data.view.h) + MARGIN_HEIGHT;
+
+		if (map_state_data.view.y >= (int)(map_state_data.map.h - map_state_data.view.h))
+			map_state_data.view.y = map_state_data.map.h - map_state_data.view.h;
+	}
+
+	if (map_state_data.player.y > (int)map_state_data.map.h - 48)
+		map_state_data.player.y = map_state_data.map.h - 48;
+}
+
+static void
+move_up(unsigned int delta)
+{
+	map_state_data.player.y -= delta;
+
+	if (map_state_data.player.y < cache.margin.y) {
+		map_state_data.view.y = map_state_data.player.y - MARGIN_HEIGHT;
+
+		if (map_state_data.view.y < 0)
+			map_state_data.view.y = 0;
+	}
+
+	if (map_state_data.player.y < 0)
+		map_state_data.player.y = 0;
 }
 
 static void
@@ -152,89 +262,37 @@ move(unsigned int ticks)
 	/* This is the amount of pixels the player must move. */
 	const int delta = SPEED * ticks / SEC;
 
-	/* This is the view width which simply equals to the screen. */
-	const unsigned int view_w = window_width();
-	const unsigned int view_h = window_height();
-
 	/* This is the rectangle within the view where users must be. */
-	const int margin_x = data.view_x + MARGIN_WIDTH;
-	const int margin_y = data.view_y + MARGIN_HEIGHT;
-	const unsigned int margin_w = window_width() - (MARGIN_WIDTH * 2);
-	const unsigned int margin_h = window_height() - (MARGIN_HEIGHT * 2);
-
-	/* This is map size. */
-	const unsigned int map_w = texture_width(data.map.picture);
-	const unsigned int map_h = texture_height(data.map.picture);
+	cache.margin.x = map_state_data.view.x + MARGIN_WIDTH;
+	cache.margin.y = map_state_data.view.y + MARGIN_HEIGHT;
 
 	int dx = 0;
 	int dy = 0;
 
-	if (data.moving == 0)
+	if (cache.player.moving == 0)
 		return;
 
-	if (data.moving & MOVING_UP)
+	if (cache.player.moving & MOVING_UP)
 		dy = -1;
-	if (data.moving & MOVING_DOWN)
+	if (cache.player.moving & MOVING_DOWN)
 		dy = 1;
-	if (data.moving & MOVING_LEFT)
+	if (cache.player.moving & MOVING_LEFT)
 		dx = -1;
-	if (data.moving & MOVING_RIGHT)
+	if (cache.player.moving & MOVING_RIGHT)
 		dx = 1;
 
 	/* Move the player and adjust view if needed. */
-	if (dx > 0) {
-		data.player_x += delta;
+	if (dx > 0)
+		move_right(delta);
+	else if (dx < 0)
+		move_left(delta);
 
-		if (data.player_x > (int)(margin_x + margin_w)) {
-			data.view_x = (data.player_x - view_w) + MARGIN_WIDTH;
+	if (dy > 0)
+		move_down(delta);
+	else if (dy < 0)
+		move_up(delta);
 
-			if (data.view_x >= (int)(map_w - view_w))
-				data.view_x = map_w - view_w;
-		}
-
-		if (data.player_x > (int)map_w - 48)
-			data.player_x = map_w - 48;
-	} else if (dx < 0) {
-		data.player_x -= delta;
-
-		if (data.player_x < margin_x) {
-			data.view_x = data.player_x - MARGIN_WIDTH;
-
-			if (data.view_x < 0)
-				data.view_x = 0;
-		}
-
-		if (data.player_x < 0)
-			data.player_x = 0;
-	}
-
-	if (dy > 0) {
-		data.player_y += delta;
-
-		if (data.player_y > (int)(margin_y + margin_h)) {
-			data.view_y = (data.player_y - view_h) + MARGIN_HEIGHT;
-
-			if (data.view_y >= (int)(map_h - view_h))
-				data.view_y = map_h - view_h;
-		}
-
-		if (data.player_y > (int)map_h - 48)
-			data.player_y = map_h - 48;
-	} else if (dy < 0) {
-		data.player_y -= delta;
-
-		if (data.player_y < margin_y) {
-			data.view_y = data.player_y - MARGIN_HEIGHT;
-
-			if (data.view_y < 0)
-				data.view_y = 0;
-		}
-
-		if (data.player_y < 0)
-			data.player_y = 0;
-	}
-
-	walksprite_update(&data.player_sprite, ticks);
+	walksprite_update(&cache.player.ws, ticks);
 }
 
 static void
@@ -263,47 +321,16 @@ draw(void)
 {
 	painter_set_color(0x000000ff);
 	painter_clear();
-	map_repaint(&data.map);
-	map_draw(&data.map, data.view_x, data.view_y);
-	walksprite_draw(&data.player_sprite, data.player_orientation, data.player_x - data.view_x, data.player_y - data.view_y);
+	map_draw(&map_state_data.map.map, map_state_data.view.x, map_state_data.view.y);
+	walksprite_draw(
+		&cache.player.ws,
+		map_state_data.player.angle,
+		map_state_data.player.x - map_state_data.view.x,
+		map_state_data.player.y - map_state_data.view.y);
 	painter_present();
 }
 
-static void
-center(void)
-{
-	/* This is map size. */
-	const unsigned int win_w = window_width();
-	const unsigned int win_h = window_height();
-	const unsigned int map_w = texture_width(data.map.picture);
-	const unsigned int map_h = texture_height(data.map.picture);
-
-	data.view_x = data.player_x - (win_w / 2);
-	data.view_y = data.player_y - (win_h / 2);
-
-	if (data.view_x < 0)
-		data.view_x = 0;
-	else if (data.view_x > (int)(map_w - win_w))
-		data.view_x = map_w - win_w;
-
-	if (data.view_y < 0)
-		data.view_y = 0;
-	else if (data.view_y > (int)(map_h - win_h))
-		data.view_y = map_h - win_h;
-}
-
-void
-map_state_start(struct map *map, struct sprite *s)
-{
-	/* Copy essential. */
-	data.map = *map;
-	data.player_x = map->origin_x;
-	data.player_y = map->origin_y;
-
-	center();
-	walksprite_init(&data.player_sprite, s, 250);
-	game_switch(&map_state);
-}
+struct map_state_data map_state_data;
 
 struct state map_state = {
 	.enter = enter,
