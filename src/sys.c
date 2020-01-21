@@ -17,6 +17,8 @@
  */
 
 #include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -97,6 +99,11 @@ determine(char path[], size_t pathlen)
 bool
 sys_init(void)
 {
+#if defined(__MINGW64__)
+	/* On MinGW buffering leads to painful debugging. */
+	setvbuf(stdout, NULL, _IONBF, 0);
+#endif
+
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 		return error_sdl();
 	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
