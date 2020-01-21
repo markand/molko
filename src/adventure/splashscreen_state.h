@@ -1,5 +1,5 @@
 /*
- * splashscreen.h -- splash screen state
+ * splashscreen_state.h -- splash screen state
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_SPLASHSCREEN_H
-#define MOLKO_SPLASHSCREEN_H
+#ifndef MOLKO_SPLASHSCREEN_ADVENTURE_H
+#define MOLKO_SPLASHSCREEN_ADVENTURE_H
 
 /**
  * \file splashscreen.h
@@ -29,4 +29,4 @@
  */
 extern struct state splashscreen_state;
 
-#endif /* !MOLKO_SPLASHSCREEN_H */
+#endif /* !MOLKO_SPLASHSCREEN_ADVENTURE_H */

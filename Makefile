@@ -24,26 +24,31 @@ CFLAGS=         -MMD -O0 -std=c18 -Wall -Wextra -g
 # CFLAGS=         -MMD -O3 -DNDEBUG -std=c18 -Wall -Wextra
 PROG=           molko
 LIB=            libmolko.a
-SRCS=           src/animation.c \
-                src/clock.c \
-                src/error.c \
-                src/event.c \
-                src/font.c \
-                src/game.c \
-                src/image.c \
-                src/map.c \
-                src/map_state.c \
-                src/message.c \
-                src/painter.c \
-                src/sprite.c \
-                src/sys.c \
-                src/texture.c \
-                src/util.c \
-                src/splashscreen.c \
-                src/walksprite.c \
-                src/window.c
-OBJS=           ${SRCS:.c=.o}
-DEPS=           ${SRCS:.c=.d}
+
+CORE_SRCS=      src/core/animation.c \
+                src/core/clock.c \
+                src/core/error.c \
+                src/core/event.c \
+                src/core/font.c \
+                src/core/game.c \
+                src/core/image.c \
+                src/core/map.c \
+                src/core/map_state.c \
+                src/core/message.c \
+                src/core/painter.c \
+                src/core/sprite.c \
+                src/core/sys.c \
+                src/core/texture.c \
+                src/core/util.c \
+                src/core/walksprite.c \
+                src/core/window.c
+CORE_OBJS=      ${CORE_SRCS:.c=.o}
+CORE_DEPS=      ${CORE_SRCS:.c=.d}
+
+ADV_SRCS=       src/adventure/main.c \
+                src/adventure/splashscreen_state.c
+ADV_OBJS=       ${ADV_SRCS:.c=.o}
+ADV_DEPS=       ${ADV_SRCS:.c=.d}
 
 PREFIX=         /usr/local
 BINDIR=         ${PREFIX}/bin
@@ -58,7 +63,7 @@ JANSSON_LDFLAGS=`pkg-config --libs jansson`
 TESTS=          tests/test-color.c \
                 tests/test-error.c \
                 tests/test-map.c
-TESTS_INCS=     -I extern/libgreatest -I src ${SDL_CFLAGS}
+TESTS_INCS=     -I extern/libgreatest -I src/core ${SDL_CFLAGS}
 TESTS_LIBS=     ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 TESTS_OBJS=     ${TESTS:.c=}
 TESTS_DEPS=     ${TESTS:.c=.d}
@@ -70,25 +75,26 @@ TOOLS_DEPS=     ${TOOLS:.c=.d}
 DEFINES=        -DPREFIX=\""${PREFIX}"\" \
                 -DBINDIR=\""${BINDIR}"\" \
                 -DSHAREDIR=\""${SHAREDIR}"\"
+INCLUDES=       -I src/core -I src/adventure
 
 .SUFFIXES:
 .SUFFIXES: .c .o
 
 all: ${PROG}
 
--include ${DEPS} ${TESTS_DEPS} ${TOOLS_DEPS}
+-include ${CORE_DEPS} ${ADV_DEPS} ${TESTS_DEPS} ${TOOLS_DEPS}
 
 .c.o:
-	${CC} ${DEFINES} ${SDL_CFLAGS} ${CFLAGS} -c $< -o $@
+	${CC} ${DEFINES} ${INCLUDES} ${SDL_CFLAGS} ${CFLAGS} -c $< -o $@
 
 .c:
 	${CC} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS}
 
-${LIB}: ${OBJS}
-	${AR} -rcs $@ ${OBJS}
+${LIB}: ${CORE_OBJS}
+	${AR} -rcs $@ ${CORE_OBJS}
 
-${PROG}: ${LIB} src/main.o
-	${CC} -o $@ src/main.o ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
+${PROG}: ${LIB} ${ADV_OBJS}
+	${CC} -o $@ ${ADV_OBJS} ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 
 ${TESTS_OBJS}: ${LIB}
 
@@ -111,9 +117,10 @@ install:
 	cp -R assets/* ${DESTDIR}${SHAREDIR}/molko
 
 clean:
-	rm -f ${PROG} src/main.o src/main.d
 	rm -rf doxygen/html doxygen/man
-	rm -f ${LIB} ${OBJS} ${DEPS}
+	rm -f ${LIB} ${PROG}
+	rm -f ${CORE_OBJS} ${CORE_DEPS}
+	rm -f ${ADV_OBJS} ${ADV_DEPS}
 	rm -f ${TESTS_OBJS} ${TESTS_DEPS}
 	rm -f ${TOOLS_OBJS} ${TOOLS_DEPS}
 

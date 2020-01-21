@@ -25,7 +25,7 @@
 #include "image.h"
 #include "map.h"
 #include "map_state.h"
-#include "splashscreen.h"
+#include "splashscreen_state.h"
 #include "sprite.h"
 #include "sys.h"
 #include "util.h"

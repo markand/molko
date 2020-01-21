@@ -1,5 +1,5 @@
 /*
- * splashscreen.c -- splash screen state
+ * splashscreen_state.c -- splash screen state
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -23,7 +23,7 @@
 #include "map.h"
 #include "map_state.h"
 #include "painter.h"
-#include "splashscreen.h"
+#include "splashscreen_state.h"
 #include "state.h"
 #include "sys.h"
 #include "texture.h"
