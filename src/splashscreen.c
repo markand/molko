@@ -18,15 +18,16 @@
 
 #include "error.h"
 #include "font.h"
+#include "game.h"
+#include "image.h"
+#include "map.h"
+#include "map_state.h"
 #include "painter.h"
 #include "splashscreen.h"
-#include "map_state.h"
-#include "image.h"
 #include "state.h"
 #include "sys.h"
 #include "texture.h"
 #include "window.h"
-#include "map.h"
 
 #define DELAY 3000
 
@@ -72,17 +73,15 @@ update(unsigned int ticks)
 	/* TODO: change this once map is done. */
 	if (elapsed >= DELAY) {
 		/* TODO: this will be removed too. */
-		static struct map map;
-		static struct texture *player_texture;
-		static struct sprite player_sprite;
+		static struct texture *image;
 
-		if (!map_open(&map, sys_datapath("maps/test.map")))
+		if (!map_open(&map_state_data.map.map, sys_datapath("maps/test.map")))
 			error_fatal();
-		if (!(player_texture = image_openf(sys_datapath("sprites/test-walk.png"))))
+		if (!(image = image_openf(sys_datapath("sprites/test-walk.png"))))
 			error_fatal();
 
-		sprite_init(&player_sprite, player_texture, 48, 48);
-		//map_state_start(&map, &player_sprite);
+		sprite_init(&map_state_data.player.sprite, image, 48, 48);
+		game_switch(&map_state, false);
 	}
 }
 

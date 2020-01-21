@@ -24,6 +24,15 @@
  * \brief Main game object.
  */
 
+#include <stdbool.h>
+
+#include "action.h"
+
+/**
+ * \brief Max number of actions allowed at the same time.
+ */
+#define GAME_ACTIONS_MAX 32
+
 struct state;
 
 union event;
@@ -32,9 +41,12 @@ union event;
  * \brief Main game object.
  */
 struct game {
-	/* Game states */
+	/* Game states. */
 	struct state *state;            /*!< (RO) Current state  */
 	struct state *state_next;       /*!< (RO) Next state */
+
+	/** Array of actions. */
+	struct action actions[GAME_ACTIONS_MAX];
 };
 
 /**
@@ -47,11 +59,14 @@ extern struct game game;
  *
  * This function will only update state after the next \a game_update call.
  *
+ * If quick is true, change state immediately.
+ *
  * \pre state != NULL
  * \param state the new state
+ * \param quick quickly change the state
  */
 void
-game_switch(struct state *state);
+game_switch(struct state *state, bool quick);
 
 /**
  * Handle input event.
@@ -74,5 +89,17 @@ game_update(unsigned int ticks);
  */
 void
 game_draw(void);
+
+/**
+ * Add an action to the game.
+ *
+ * If there are no room for the action, action is discarded. Make sure to not
+ * exceed the limit GAME_ACTIONS_MAX.
+ *
+ * \pre action != NULL
+ * \param action the action to copy
+ */
+void
+game_add_action(const struct action *action);
 
 #endif /* !MOLKO_GAME_H */
