@@ -82,6 +82,15 @@ update_actions(unsigned int ticks)
 	}
 }
 
+static void
+draw_actions(void)
+{
+	for (size_t i = 0; i < GAME_ACTIONS_MAX; ++i)
+		if (game.actions[i].draw)
+			game.actions[i].draw(&game.actions[i]);
+}
+
+
 void
 game_switch(struct state *state, bool quick)
 {
@@ -133,6 +142,8 @@ game_draw(void)
 {
 	if (game.state)
 		game.state->draw();
+
+	draw_actions();
 }
 
 void
