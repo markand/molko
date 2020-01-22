@@ -22,6 +22,7 @@
 
 #include "game.h"
 #include "state.h"
+#include "painter.h"
 
 struct game game = {
 	.state = NULL,
@@ -144,6 +145,7 @@ game_draw(void)
 		game.state->draw();
 
 	draw_actions();
+	painter_present();
 }
 
 void

@@ -327,7 +327,6 @@ draw(void)
 		map_state_data.player.angle,
 		map_state_data.player.x - map_state_data.view.x,
 		map_state_data.player.y - map_state_data.view.y);
-	painter_present();
 }
 
 struct map_state_data map_state_data;
