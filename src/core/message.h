@@ -74,8 +74,9 @@ message_start(struct message *msg);
  * \pre msg != NULL
  * \param msg the message
  * \param ticks the elapsed delay since last frame
+ * \return true if it has finished
  */
-void
+bool
 message_update(struct message *msg, unsigned int ticks);
 
 /**
@@ -97,14 +98,5 @@ message_draw(struct message *msg);
  */
 void
 message_hide(struct message *msg);
-
-/**
- * Tells if the message is complete.
- *
- * \pre msg != NULL
- * \param msg the message
- */
-bool
-message_is_complete(struct message *msg);
 
 #endif /* !MOLKO_MESSAGE_H */

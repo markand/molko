@@ -36,7 +36,7 @@ message_start(struct message *msg)
 	msg->state = MESSAGE_OPENING;
 }
 
-void
+bool
 message_update(struct message *msg, unsigned int ticks)
 {
 	assert(msg);
@@ -57,6 +57,8 @@ message_update(struct message *msg, unsigned int ticks)
 	default:
 		break;
 	}
+
+	return msg->state == MESSAGE_HIDING && msg->elapsed >= MESSAGE_SPEED;
 }
 
 void
@@ -64,6 +66,7 @@ message_draw(struct message *msg)
 {
 	assert(msg);
 
+	/* TODO: draw states! */
 	/* TODO: more constant variables. */
 	struct texture *lines[3];
 	int x = 160;
@@ -90,12 +93,4 @@ message_hide(struct message *msg)
 	assert(msg);
 
 	msg->elapsed = 0;
-}
-
-bool
-message_is_complete(struct message *msg)
-{
-	assert(msg);
-
-	return msg->state == MESSAGE_HIDING && msg->elapsed >= MESSAGE_SPEED;
 }
