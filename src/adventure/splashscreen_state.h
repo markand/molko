@@ -20,7 +20,7 @@
 #define MOLKO_SPLASHSCREEN_ADVENTURE_H
 
 /**
- * \file splashscreen.h
+ * \file splashscreen_state.h
  * \brief Splash screen state.
  */
 
