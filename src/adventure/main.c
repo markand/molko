@@ -16,8 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
-
 #include "clock.h"
 #include "error.h"
 #include "event.h"
@@ -57,25 +55,24 @@ run(void)
 	struct font *font;
 	struct texture *frame;
 
-	if (!(font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 14)))
+	if (!(font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 15)))
 		error_fatal();
 	if (!(frame = image_openf(sys_datapath("images/message.png"))))
 		error_fatal();
 
 	struct message msg = {
 		.text = {
-			"Hello Molko.",
-			"This is your unique adventure, you must listen to me.",
-			"Do not give up, please be brave.",
-			"Feel free to come back if you need assistance.",
-			"But be sure to take a look at the manual pages.",
-			"And don't forget to update."
+			"Flip a coin.",
+			"Try your best my friend."
 		},
-		.color = 0xd9caddff,
+		.colors = {
+			0xd9caddff,
+			0x94d5ffff
+		},
 		.font = font,
-		.frame = frame
+		.frame = frame,
+		.flags = MESSAGE_QUESTION
 	};
-
 
 	clock_start(&clock);
 	message_start(&msg);
@@ -90,11 +87,13 @@ run(void)
 			if (ev.type == EVENT_QUIT)
 				return;
 
-			if (msg.state)
-				message_update(&msg, elapsed);
 			//game_handle(&ev);
+			message_handle(&msg, &ev);
 		}
-	
+
+		if (msg.state)
+			message_update(&msg, elapsed);
+
 		painter_set_color(0xffffffff);
 		painter_clear();
 

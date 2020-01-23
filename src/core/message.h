@@ -29,21 +29,24 @@
 struct texture;
 struct font;
 
+union event;
+
 /**
  * \brief Message flags.
  */
 enum message_flags {
-	MESSAGE_AUTOMATIC = (1 << 0)    /*!< Message will automatically close */
+	MESSAGE_AUTOMATIC       = (1 << 0),     /*!< Will automatically change state by itself. */
+	MESSAGE_QUESTION        = (1 << 1)      /*!< The message is a question. */
 };
 
 /**
  * \brief Message state.
  */
 enum message_state {
-	MESSAGE_NONE,                   /*!< Message hasn't start yet or is finished */
-	MESSAGE_OPENING,                /*!< Message animation is opening */
-	MESSAGE_SHOWING,                /*!< Message is displaying */
-	MESSAGE_HIDING                  /*!< Message animation for hiding */
+	MESSAGE_NONE,           /*!< Message hasn't start yet or is finished */
+	MESSAGE_OPENING,        /*!< Message animation is opening */
+	MESSAGE_SHOWING,        /*!< Message is displaying */
+	MESSAGE_HIDING          /*!< Message animation for hiding */
 };
 
 /**
@@ -57,15 +60,18 @@ struct message {
 	struct texture *frame;          /*!< (RW) Frame to use */
 	struct texture *avatar;         /*!< (RW) Optional avatar */
 	struct font *font;              /*!< (RW) Font to use */
-	unsigned long color;            /*!< (RW) Font color to use */
+	unsigned long colors[2];        /*!< (RW) Normal/selected colors */
+	unsigned int index;             /*!< (RW) Line selected */
 	enum message_flags flags;       /*!< (RW) Message flags */
 	enum message_state state;       /*!< (RO) Current state */
 
-	/* PRIVATE */
-	struct texture *ttext[6];       /*!< (RW) Textures for every lines */
-	struct texture *stext[6];       /*!< (RW) Textures for every lines */
-	unsigned int elapsed;           /*!< (RW) Elapsed time while displaying */
-	unsigned int alpha;             /*!< (RO) Alpha progression */
+	/*! \cond PRIVATE */
+
+	struct texture *textures[12];
+	unsigned int elapsed;
+	int height[2];
+
+	/*! \endcond */
 };
 
 /**
@@ -77,6 +83,20 @@ struct message {
  */
 void
 message_start(struct message *msg);
+
+/**
+ * Handle input events.
+ *
+ * This function will alter state of the message and change its selection in
+ * case of question.
+ *
+ * \pre msg != NULL
+ * \pre ev != NULL
+ * \param msg the message
+ * \param ev the event which occured
+ */
+void
+message_handle(struct message *msg, const union event *ev);
 
 /**
  * Update the message state and elapsed time..

@@ -18,6 +18,7 @@
 
 #include <assert.h>
 
+#include "event.h"
 #include "font.h"
 #include "message.h"
 #include "painter.h"
@@ -25,19 +26,19 @@
 #include "texture.h"
 #include "window.h"
 
-#define MESSAGE_SPEED   1000    /* Time delay for animations */
+#define MESSAGE_SPEED   150     /* Time delay for animations */
 #define MESSAGE_TIMEOUT 5000    /* Time for auto-closing */
 
 static unsigned int
-average_height(const struct message *msg)
+average(const struct message *msg)
 {
 	unsigned int n = 0;
 	unsigned int total = 0;
 
 	for (int i = 0; i < 6; ++i) {
-		if (msg->ttext[i]) {
+		if (msg->textures[i]) {
 			n += 1;
-			total += texture_height(msg->ttext[i]);
+			total += texture_height(msg->textures[i]);
 		}
 	}
 
@@ -45,15 +46,44 @@ average_height(const struct message *msg)
 }
 
 static void
+clear(struct message *msg)
+{
+	for (unsigned int i = 0; i < 12; ++i) {
+		if (msg->textures[i]) {
+			texture_close(msg->textures[i]);
+			msg->textures[i] = NULL;
+		}
+	}
+}
+
+static void
 redraw(struct message *msg)
 {
+	clear(msg);
+
 	/* Generate textures if not already done. */
-	for (int i = 0; i < 6; ++i) {
-		if (!msg->text[i] || msg->ttext[i] || msg->stext[i])
+	for (unsigned int i = 0; i < 6; ++i) {
+		if (!msg->text[i])
 			continue;
 
-		msg->stext[i] = font_render(msg->font, msg->text[i], 0x000000ff);
-		msg->ttext[i] = font_render(msg->font, msg->text[i], msg->color);
+		/* Normal lines of text. */
+		unsigned long color = msg->colors[0];
+
+		if (msg->flags & MESSAGE_QUESTION && msg->index == i)
+			color = msg->colors[1];
+
+		if (!msg->textures[i])
+			msg->textures[i] = font_render(
+			    msg->font,
+			    msg->text[i],
+			    color
+			);
+		if (!msg->textures[i + 6])
+			msg->textures[i + 6] = font_render(
+			    msg->font,
+			    msg->text[i],
+			    0x000000ff
+			);
 	}
 }
 
@@ -63,8 +93,40 @@ message_start(struct message *msg)
 	assert(msg);
 
 	msg->elapsed = 0;
-	msg->alpha = 0;
 	msg->state = MESSAGE_OPENING;
+	msg->height[0] = texture_height(msg->frame);
+	msg->height[1] = 0;
+
+	redraw(msg);
+}
+
+void
+message_handle(struct message *msg, const union event *ev)
+{
+	assert(msg);
+	assert(ev);
+
+	if (ev->type != EVENT_KEYDOWN || msg->state == MESSAGE_NONE)
+		return;
+
+	switch (ev->key.key) {
+	case KEY_UP:
+		if (msg->index > 0)
+			msg->index--;
+		break;
+	case KEY_DOWN:
+		if (msg->index < 5 && msg->text[msg->index + 1])
+			msg->index++;
+		break;
+	case KEY_ENTER:
+		msg->state = MESSAGE_HIDING;
+		msg->elapsed = 0;
+		break;
+	default:
+		break;
+	}
+
+	redraw(msg);
 }
 
 bool
@@ -76,10 +138,10 @@ message_update(struct message *msg, unsigned int ticks)
 
 	switch (msg->state) {
 	case MESSAGE_OPENING:
-		msg->alpha += 255 * ticks / MESSAGE_SPEED;
+		msg->height[1] += texture_height(msg->frame) * ticks / MESSAGE_SPEED;
 
-		if (msg->alpha > 255)
-			msg->alpha = 255;
+		if (msg->height[1] > msg->height[0])
+			msg->height[1] = msg->height[0];
 		if (msg->elapsed >= MESSAGE_SPEED) {
 			msg->state = MESSAGE_SHOWING;
 			msg->elapsed = 0;
@@ -95,6 +157,8 @@ message_update(struct message *msg, unsigned int ticks)
 
 		break;
 	case MESSAGE_HIDING:
+		msg->height[1] -= texture_height(msg->frame) * ticks / MESSAGE_SPEED;
+
 		if (msg->elapsed >= MESSAGE_SPEED) {
 			msg->state = MESSAGE_NONE;
 			msg->elapsed = 0;
@@ -118,23 +182,31 @@ message_draw(struct message *msg)
 	const unsigned int h = texture_height(msg->frame);
 	const unsigned int x = (window_width() / 2) - (w / 2);
 	const unsigned int y = 80;
-	const unsigned int avgh = average_height(msg);
+	const unsigned int avgh = average(msg);
 	const unsigned int gapy = (h - (avgh * 6)) / 7;
 
-	/* TODO: handle state */
-	redraw(msg);
-	texture_draw(msg->frame, x, y);
+	switch (msg->state) {
+	case MESSAGE_OPENING:
+	case MESSAGE_HIDING:
+		texture_draw_ex(msg->frame, 0, 0, w, msg->height[1], x, y, w, msg->height[1], 0);
+		break;
+	case MESSAGE_SHOWING:
+		texture_draw(msg->frame, x, y);
 
-	for (int i = 0; i < 6; ++i) {
-		/* TODO: avatar handling */
-		const int real_x = x + 20;
-		const int real_y = y + ((i + 1) * gapy) + (i * avgh);
+		for (int i = 0; i < 6; ++i) {
+			/* TODO: avatar handling */
+			const int real_x = x + 20;
+			const int real_y = y + ((i + 1) * gapy) + (i * avgh);
 
-		if (!msg->ttext[i])
-			continue;
+			if (!msg->textures[i])
+				continue;
 
-		texture_draw(msg->stext[i], real_x + 2, real_y + 2);
-		texture_draw(msg->ttext[i], real_x, real_y);
+			texture_draw(msg->textures[i + 6], real_x + 2, real_y + 2);
+			texture_draw(msg->textures[i], real_x, real_y);
+		}
+		break;
+	default:
+		break;
 	}
 }
 
@@ -152,14 +224,5 @@ message_close(struct message *msg)
 {
 	assert(msg);
 
-	for (int i = 0; i < 6; ++i) {
-		if (msg->ttext[i]) {
-			texture_close(msg->ttext[i]);
-			msg->ttext[i] = NULL;
-		}
-		if (msg->stext[i]) {
-			texture_close(msg->stext[i]);
-			msg->stext[i] = NULL;
-		}
-	}
+	clear(msg);
 }
