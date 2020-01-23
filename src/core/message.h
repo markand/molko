@@ -26,7 +26,7 @@
 
 #include <stdbool.h>
 
-struct sprite;
+struct texture;
 struct font;
 
 /**
@@ -40,6 +40,7 @@ enum message_flags {
  * \brief Message state.
  */
 enum message_state {
+	MESSAGE_NONE,                   /*!< Message hasn't start yet or is finished */
 	MESSAGE_OPENING,                /*!< Message animation is opening */
 	MESSAGE_SHOWING,                /*!< Message is displaying */
 	MESSAGE_HIDING                  /*!< Message animation for hiding */
@@ -47,15 +48,24 @@ enum message_state {
 
 /**
  * \brief Message object.
+ *
+ * This structure is used to display a message into the screen. It does not own
+ * any user properties and therefore must exist while using it.
  */
 struct message {
-	const char *text[3];            /*!< (RW) lines of text to show */
-	struct sprite *theme;           /*!< (RW) sprite to use for the frame */
-	struct texture *avatar;         /*!< (RW) optional avatar */
-	struct font *font;              /*!< (RW) font to use */
-	enum message_flags flags;       /*!< (RW) message flags */
-	enum message_state state;       /*!< (RO) current state */
-	unsigned int elapsed;           /*!< (RW) elapsed time while displaying */
+	const char *text[6];            /*!< (RW) Lines of text to show */
+	struct texture *frame;          /*!< (RW) Frame to use */
+	struct texture *avatar;         /*!< (RW) Optional avatar */
+	struct font *font;              /*!< (RW) Font to use */
+	unsigned long color;            /*!< (RW) Font color to use */
+	enum message_flags flags;       /*!< (RW) Message flags */
+	enum message_state state;       /*!< (RO) Current state */
+
+	/* PRIVATE */
+	struct texture *ttext[6];       /*!< (RW) Textures for every lines */
+	struct texture *stext[6];       /*!< (RW) Textures for every lines */
+	unsigned int elapsed;           /*!< (RW) Elapsed time while displaying */
+	unsigned int alpha;             /*!< (RO) Alpha progression */
 };
 
 /**
@@ -98,5 +108,14 @@ message_draw(struct message *msg);
  */
 void
 message_hide(struct message *msg);
+
+/**
+ * Destroy owned resources.
+ *
+ * \pre msg != NULL
+ * \param msg the message
+ */
+void
+message_finish(struct message *msg);
 
 #endif /* !MOLKO_MESSAGE_H */

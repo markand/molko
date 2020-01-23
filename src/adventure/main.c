@@ -21,10 +21,13 @@
 #include "clock.h"
 #include "error.h"
 #include "event.h"
+#include "font.h"
 #include "game.h"
 #include "image.h"
 #include "map.h"
 #include "map_state.h"
+#include "message.h"
+#include "painter.h"
 #include "splashscreen_state.h"
 #include "sprite.h"
 #include "sys.h"
@@ -51,8 +54,31 @@ run(void)
 {
 	union event ev;
 	struct clock clock;
+	struct font *font;
+	struct texture *frame;
+
+	if (!(font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 14)))
+		error_fatal();
+	if (!(frame = image_openf(sys_datapath("images/message.png"))))
+		error_fatal();
+
+	struct message msg = {
+		.text = {
+			"Hello Molko.",
+			"This is your unique adventure, you must listen to me.",
+			"Do not give up, please be brave.",
+			"Feel free to come back if you need assistance.",
+			"But be sure to take a look at the manual pages.",
+			"And don't forget to update."
+		},
+		.color = 0xd9caddff,
+		.font = font,
+		.frame = frame
+	};
+
 
 	clock_start(&clock);
+	message_start(&msg);
 
 	for (;;) {
 		unsigned int elapsed = clock_elapsed(&clock);
@@ -64,11 +90,20 @@ run(void)
 			if (ev.type == EVENT_QUIT)
 				return;
 
-			game_handle(&ev);
+			if (msg.state)
+				message_update(&msg, elapsed);
+			//game_handle(&ev);
 		}
+	
+		painter_set_color(0xffffffff);
+		painter_clear();
 
-		game_update(elapsed);
-		game_draw();
+		if (msg.state)
+			message_draw(&msg);
+		//game_update(elapsed);
+		//game_draw();
+
+		painter_present();
 
 		if ((elapsed = clock_elapsed(&clock)) < 20)
 			delay(20 - elapsed);

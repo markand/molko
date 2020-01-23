@@ -23,9 +23,39 @@
 #include "painter.h"
 #include "sprite.h"
 #include "texture.h"
+#include "window.h"
 
 #define MESSAGE_SPEED   1000    /* Time delay for animations */
 #define MESSAGE_TIMEOUT 5000    /* Time for auto-closing */
+
+static unsigned int
+average_height(const struct message *msg)
+{
+	unsigned int n = 0;
+	unsigned int total = 0;
+
+	for (int i = 0; i < 6; ++i) {
+		if (msg->ttext[i]) {
+			n += 1;
+			total += texture_height(msg->ttext[i]);
+		}
+	}
+
+	return n > 0 ? total / n : 0;
+}
+
+static void
+redraw(struct message *msg)
+{
+	/* Generate textures if not already done. */
+	for (int i = 0; i < 6; ++i) {
+		if (!msg->text[i] || msg->ttext[i] || msg->stext[i])
+			continue;
+
+		msg->stext[i] = font_render(msg->font, msg->text[i], 0x000000ff);
+		msg->ttext[i] = font_render(msg->font, msg->text[i], msg->color);
+	}
+}
 
 void
 message_start(struct message *msg)
@@ -33,6 +63,7 @@ message_start(struct message *msg)
 	assert(msg);
 
 	msg->elapsed = 0;
+	msg->alpha = 0;
 	msg->state = MESSAGE_OPENING;
 }
 
@@ -45,45 +76,65 @@ message_update(struct message *msg, unsigned int ticks)
 
 	switch (msg->state) {
 	case MESSAGE_OPENING:
-		if (msg->elapsed >= MESSAGE_SPEED)
+		msg->alpha += 255 * ticks / MESSAGE_SPEED;
+
+		if (msg->alpha > 255)
+			msg->alpha = 255;
+		if (msg->elapsed >= MESSAGE_SPEED) {
 			msg->state = MESSAGE_SHOWING;
+			msg->elapsed = 0;
+		}
+
 		break;
 	case MESSAGE_SHOWING:
 		/* Do automatically switch state if requested by the user. */
-		if (msg->flags & MESSAGE_AUTOMATIC && msg->elapsed >= MESSAGE_TIMEOUT)
+		if (msg->flags & MESSAGE_AUTOMATIC && msg->elapsed >= MESSAGE_TIMEOUT) {
 			msg->state = MESSAGE_HIDING;
+			msg->elapsed = 0;
+		}
+
+		break;
+	case MESSAGE_HIDING:
+		if (msg->elapsed >= MESSAGE_SPEED) {
+			msg->state = MESSAGE_NONE;
+			msg->elapsed = 0;
+		}
 
 		break;
 	default:
 		break;
 	}
 
-	return msg->state == MESSAGE_HIDING && msg->elapsed >= MESSAGE_SPEED;
+	return msg->state == MESSAGE_NONE;
 }
 
 void
 message_draw(struct message *msg)
 {
 	assert(msg);
+	assert(msg->frame);
 
-	/* TODO: draw states! */
-	/* TODO: more constant variables. */
-	struct texture *lines[3];
-	int x = 160;
-	int y = 80;
+	const unsigned int w = texture_width(msg->frame);
+	const unsigned int h = texture_height(msg->frame);
+	const unsigned int x = (window_width() / 2) - (w / 2);
+	const unsigned int y = 80;
+	const unsigned int avgh = average_height(msg);
+	const unsigned int gapy = (h - (avgh * 6)) / 7;
 
-	painter_set_color(0xff0000ff);
-	painter_draw_rectangle(true, x, y, 960, 160);
+	/* TODO: handle state */
+	redraw(msg);
+	texture_draw(msg->frame, x, y);
 
-	for (int i = 0; msg->text[i]; ++i) {
-		lines[i] = font_render(msg->font, msg->text[i], 0xffffffff);
+	for (int i = 0; i < 6; ++i) {
+		/* TODO: avatar handling */
+		const int real_x = x + 20;
+		const int real_y = y + ((i + 1) * gapy) + (i * avgh);
 
-		if (!lines[i])
+		if (!msg->ttext[i])
 			continue;
 
-		texture_draw(lines[i], x, y);
-		texture_close(lines[i]);
-		y += 53;
+		texture_draw(msg->stext[i], real_x + 2, real_y + 2);
+		texture_draw(msg->ttext[i], real_x, real_y);
 	}
 }
 
@@ -92,5 +143,23 @@ message_hide(struct message *msg)
 {
 	assert(msg);
 
+	msg->state = MESSAGE_HIDING;
 	msg->elapsed = 0;
+}
+
+void
+message_close(struct message *msg)
+{
+	assert(msg);
+
+	for (int i = 0; i < 6; ++i) {
+		if (msg->ttext[i]) {
+			texture_close(msg->ttext[i]);
+			msg->ttext[i] = NULL;
+		}
+		if (msg->stext[i]) {
+			texture_close(msg->stext[i]);
+			msg->stext[i] = NULL;
+		}
+	}
 }
