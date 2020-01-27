@@ -75,6 +75,8 @@ update_actions(unsigned int ticks)
 			continue;
 
 		if (a->update(a, ticks)) {
+			if (a->end)
+				a->end(a);
 			if (a->finish)
 				a->finish(a);
 

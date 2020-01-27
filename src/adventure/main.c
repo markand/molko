@@ -34,6 +34,7 @@
 #include "sprite.h"
 #include "sys.h"
 #include "util.h"
+#include "wait.h"
 #include "window.h"
 #include "script.h"
 
@@ -53,12 +54,22 @@ init(void)
 }
 
 static void
+myresult(struct action *a)
+{
+	struct message *msg = a->data;
+
+	printf("selected: %d\n", msg->index);
+}
+
+static void
 run(void)
 {
 	union event ev;
 	struct clock clock;
 	struct font *font;
 	struct texture *frame;
+	struct script sc;
+	struct action ac;
 
 	if (!(font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 15)))
 		error_fatal();
@@ -80,7 +91,23 @@ run(void)
 	};
 
 	clock_start(&clock);
+	script_init(&sc);
+
+	/* Wait first. */
+	struct wait w = { .delay = 5000 };
+
+	wait_action(&w, &ac);
+	script_append(&sc, &ac);
+
 	message_start(&msg);
+	message_action(&msg, &ac);
+	ac.end = myresult;
+
+	script_append(&sc, &ac);
+	script_start(&sc);
+	script_action(&sc, &ac);
+
+	game_add_action(&ac);
 
 	for (;;) {
 		unsigned int elapsed = clock_elapsed(&clock);
@@ -92,21 +119,14 @@ run(void)
 			if (ev.type == EVENT_QUIT)
 				return;
 
-			//game_handle(&ev);
-			if (msg.state)
-				message_handle(&msg, &ev);
+			game_handle(&ev);
 		}
-
-		if (msg.state)
-			message_update(&msg, elapsed);
 
 		painter_set_color(0xffffffff);
 		painter_clear();
 
-		if (msg.state)
-			message_draw(&msg);
-		//game_update(elapsed);
-		//game_draw();
+		game_update(elapsed);
+		game_draw();
 
 		painter_present();
 

@@ -80,9 +80,20 @@ struct action {
 	/**
 	 * (RW)
 	 *
+	 * Called when the action was completed.
+	 *
+	 * This callback is mostly provided to allow the user doing something
+	 * else once an action is complete. Predefined actions should not use
+	 * this callback by themselves.
+	 */
+	void (*end)(struct action *a);
+
+	/**
+	 * (RW)
+	 *
 	 * Close the action before removal.
 	 */
 	void (*finish)(struct action *);
 };
 
-#endif /* !ACTION_H*/
+#endif /* !ACTION_H */

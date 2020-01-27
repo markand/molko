@@ -103,9 +103,16 @@ script_update(struct script *s, unsigned int ticks)
 {
 	assert(s);
 
-	if (s->iter && s->iter->action.update(&s->iter->action, ticks)) {
-		if (s->iter->action.finish)
-			s->iter->action.finish(&s->iter->action);
+	if (!s->iter)
+		return true;
+
+	struct action *a = &s->iter->action;
+
+	if (a->update(a, ticks)) {
+		if (a->end)
+			a->end(a);
+		if (a->finish)
+			a->finish(a);
 
 		s->iter = s->iter->next;
 	}
