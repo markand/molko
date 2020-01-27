@@ -17,17 +17,55 @@
  */
 
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 
+#include "action.h"
 #include "event.h"
 #include "font.h"
 #include "message.h"
 #include "painter.h"
 #include "sprite.h"
 #include "texture.h"
+#include "util.h"
 #include "window.h"
 
 #define MESSAGE_SPEED   200     /* Time delay for animations */
 #define MESSAGE_TIMEOUT 5000    /* Time for auto-closing */
+
+static void
+action_handle(struct action *action, const union event *ev)
+{
+	assert(action);
+	assert(ev);
+
+	message_handle(action->data, ev);
+}
+
+static bool
+action_update(struct action *action, unsigned int ticks)
+{
+	assert(action);
+
+	return message_update(action->data, ticks);
+}
+
+static void
+action_draw(struct action *action)
+{
+	assert(action);
+
+	message_draw(action->data);
+}
+
+static void
+action_finish(struct action *action)
+{
+	assert(action);
+
+	message_finish(action->data);
+	free(action->data);
+}
 
 static unsigned int
 average(const struct message *msg)
@@ -220,9 +258,23 @@ message_hide(struct message *msg)
 }
 
 void
-message_close(struct message *msg)
+message_finish(struct message *msg)
 {
 	assert(msg);
 
 	clear(msg);
+}
+
+void
+message_action(const struct message *msg, struct action *action)
+{
+	assert(msg);
+	assert(action);
+
+	memset(action, 0, sizeof (struct action));
+	action->data = ememdup(msg, sizeof (struct message));
+	action->handle = action_handle;
+	action->update = action_update;
+	action->draw = action_draw;
+	action->finish = action_finish;
 }

@@ -26,8 +26,9 @@
 
 #include <stdbool.h>
 
-struct texture;
+struct action;
 struct font;
+struct texture;
 
 union event;
 
@@ -137,5 +138,16 @@ message_hide(struct message *msg);
  */
 void
 message_finish(struct message *msg);
+
+/**
+ * Convert message into an action.
+ *
+ * \pre msg != NULL
+ * \pre action != NULL
+ * \param msg the message to copy from
+ * \param action the action to fill
+ */
+void
+message_action(const struct message *msg, struct action *action);
 
 #endif /* !MOLKO_MESSAGE_H */
