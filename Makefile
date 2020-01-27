@@ -42,6 +42,7 @@ CORE_SRCS=      src/core/animation.c \
                 src/core/texture.c \
                 src/core/util.c \
                 src/core/walksprite.c \
+                src/core/wait.c \
                 src/core/window.c
 CORE_OBJS=      ${CORE_SRCS:.c=.o}
 CORE_DEPS=      ${CORE_SRCS:.c=.d}
