@@ -19,6 +19,16 @@
 #ifndef MOLKO_UTIL_H
 #define MOLKO_UTIL_H
 
+/**
+ * \file util.h
+ * \brief Utilities.
+ *
+ * This file contains several utilities.
+ *
+ * \note In contrast to other files, identifiers are not prefixed with `util_`
+ *       for convenience.
+ */
+
 #include <stddef.h>
 
 /**
@@ -27,7 +37,7 @@
  * \param x the array
  * \return the number of elements
  */
-#define nelem(x) sizeof ((x)) / sizeof ((x)[0])
+#define NELEM(x) sizeof ((x)) / sizeof ((x)[0])
 
 /**
  * Wrapper around malloc(3) that exits on allocation failure.

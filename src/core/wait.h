@@ -22,6 +22,30 @@
 /**
  * \file wait.h
  * \brief Wait action.
+ * \ingroup actions
+ *
+ * This module is meant to create a delayed action.
+ *
+ * Combined with \ref script.h, you can create a sequence of actions with
+ * delays between each.
+ *
+ * \code
+ * struct script script;
+ * struct action action;
+ *
+ * // Prepare the script.
+ * script_init(&script);
+ *
+ * // Add some actions to script using script_append.
+ * // ...
+ *
+ * // Wait one second delay before next action.
+ * wait_action(&(struct wait) { .delay = 1000 }, &action);
+ * script_append(&script, &action);
+ *
+ * // Add more actions after this delay.
+ * // ...
+ * \endcode
  */
 
 #include <stdbool.h>
@@ -32,14 +56,14 @@ struct action;
  * \brief Wait action.
  */
 struct wait {
-	unsigned int delay;             /*!< (RW) Time to wait */
+	unsigned int delay;             /*!< (RW) Time to wait in milliseconds */
 	unsigned int elapsed;           /*!< (RO) Elapsed time */
 };
 
 /**
  * Start the wait action.
  *
- * This function is equivalent to w->elapsed = 0;
+ * This function is equivalent to `w->elapsed = 0`;
  *
  * \pre w != NULL
  * \param w the wait object

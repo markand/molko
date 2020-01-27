@@ -22,6 +22,44 @@
 /**
  * \file message.h
  * \brief Message dialog.
+ * \ingroup actions
+ *
+ * This module's purpose is to show a dialog box into the screen to show text
+ * and optionally ask the user a question.
+ *
+ * By itself, it is very low level and does not prevent other parts of the game
+ * to use the input so you probably need to inhibit input if your dialog is
+ * meant to be displayed on a map.
+ *
+ * To use it use the following procedure:
+ *
+ * 1. Create a struct message object and set required properties,
+ * 2. Call \ref message_start to reset the state,
+ * 3. Call \ref message_handle and \ref message_update with appropriate values,
+ * 4. Call \ref message_draw to render the dialog.
+ *
+ * Depending on message flags or user input, step 3 may return true in this
+ * case you should stop using the message as it has completed rendering.
+ *
+ * \note All properties must exist until the object is no longer used.
+ *
+ * \code
+ * struct message msg = {
+ * 	// You can show up to 6 lines.
+ * 	.text = {
+ * 		"Hello, what's up?"
+ * 	},
+ * 	// This image will be shown on the left as user face.
+ * 	.avatar = mysuperavatar,
+ * 	// This should point to a image that is used as background.
+ * 	.frame = mysuperframe,
+ * 	// The first color is normal text, the second is for selected text
+ * 	// in case of question.
+ * 	.colors = { 0xffffffff, 0x0000ffff },
+ * 	// This indicates this message is a question.
+ * 	.flags = MESSAGE_QUESTION
+ * };
+ * \endcode
  */
 
 #include <stdbool.h>
@@ -59,7 +97,7 @@ enum message_state {
 struct message {
 	const char *text[6];            /*!< (RW) Lines of text to show */
 	struct texture *frame;          /*!< (RW) Frame to use */
-	struct texture *avatar;         /*!< (RW) Optional avatar */
+	struct texture *avatar;         /*!< (RW) Avatar face (optional) */
 	struct font *font;              /*!< (RW) Font to use */
 	unsigned long colors[2];        /*!< (RW) Normal/selected colors */
 	unsigned int index;             /*!< (RW) Line selected */

@@ -22,6 +22,7 @@
 /**
  * \file script.h
  * \brief Convenient sequence of actions.
+ * \ingroup actions
  *
  * Those routines wrap individual actions into a sequence of actions into an
  * action itself.
@@ -31,10 +32,12 @@
  *
  * In a nutshell, to write a scenario you should:
  *
- * 1. Create a script with see script_init,
- * 2. Create one or more actions and append with script_append,
- * 3. Start the action using script_start,
- * 4. Put the script into the game using game_add_action.
+ * 1. Create a script with see \ref script_init,
+ * 2. Create one or more actions and append with \ref script_append,
+ * 3. Start the action using \ref script_start,
+ * 4. Put the script into the game using \ref game_add_action.
+ *
+ * \warning You must always call \ref script_init before using this object.
  */
 
 #include <stdbool.h>
@@ -132,6 +135,9 @@ script_draw(struct script *s);
 
 /**
  * Create an action from the script for use into the game.
+ *
+ * This function is meant to transform the script into an action itself and be
+ * added to the game using \ref game_add_action.
  *
  * \pre s != NULL
  * \pre dst != NULL

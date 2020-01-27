@@ -22,6 +22,12 @@
 /**
  * \file action.h
  * \brief Action states.
+ * \ingroup actions
+ */
+
+/**
+ * \defgroup actions Actions
+ * \brief Predefined actions.
  */
 
 #include <stdbool.h>
