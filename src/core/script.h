@@ -47,8 +47,8 @@ union event;
  * \brief Single-linked list of actions.
  */
 struct script_action {
-	struct action action;
-	struct script_action *next;
+	struct action action;           /*!< (RW) Action to use */
+	struct script_action *next;     /*!< (RO) Pointer to next action */
 };
 
 /**
