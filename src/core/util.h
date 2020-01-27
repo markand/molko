@@ -51,6 +51,18 @@ void *
 ecalloc(size_t n, size_t size);
 
 /**
+ * Copy the region specified by ptr.
+ *
+ * \pre ptr != NULL
+ * \param ptr the pointer
+ * \param size the size of the memory to copy
+ * \return a pointer
+ * \post returned pointer will never be NULL
+ */
+void *
+ememdup(const void *ptr, size_t size);
+
+/**
  * Put the thread to sleep for a given amount of milliseconds.
  *
  * \param ms the number of milliseconds to wait

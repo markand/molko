@@ -47,6 +47,17 @@ ecalloc(size_t n, size_t size)
 	return mem;
 }
 
+void *
+ememdup(const void *ptr, size_t size)
+{
+	void *mem;
+
+	if (!(mem = malloc(size)))
+		error_fatalf("%s\n", strerror(errno));
+
+	return memcpy(mem, ptr, size);
+}
+
 void
 delay(unsigned int ms)
 {

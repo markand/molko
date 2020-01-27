@@ -16,6 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "clock.h"
 #include "error.h"
 #include "event.h"
@@ -31,6 +35,7 @@
 #include "sys.h"
 #include "util.h"
 #include "window.h"
+#include "script.h"
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
@@ -88,7 +93,8 @@ run(void)
 				return;
 
 			//game_handle(&ev);
-			message_handle(&msg, &ev);
+			if (msg.state)
+				message_handle(&msg, &ev);
 		}
 
 		if (msg.state)

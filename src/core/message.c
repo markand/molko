@@ -26,7 +26,7 @@
 #include "texture.h"
 #include "window.h"
 
-#define MESSAGE_SPEED   150     /* Time delay for animations */
+#define MESSAGE_SPEED   200     /* Time delay for animations */
 #define MESSAGE_TIMEOUT 5000    /* Time for auto-closing */
 
 static unsigned int

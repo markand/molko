@@ -36,6 +36,7 @@ CORE_SRCS=      src/core/animation.c \
                 src/core/map_state.c \
                 src/core/message.c \
                 src/core/painter.c \
+                src/core/script.c \
                 src/core/sprite.c \
                 src/core/sys.c \
                 src/core/texture.c \
@@ -62,7 +63,8 @@ JANSSON_LDFLAGS=`pkg-config --libs jansson`
 
 TESTS=          tests/test-color.c \
                 tests/test-error.c \
-                tests/test-map.c
+                tests/test-map.c \
+                tests/test-script.c
 TESTS_INCS=     -I extern/libgreatest -I src/core ${SDL_CFLAGS}
 TESTS_LIBS=     ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 TESTS_OBJS=     ${TESTS:.c=}
