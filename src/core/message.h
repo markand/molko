@@ -75,7 +75,8 @@ union event;
  */
 enum message_flags {
 	MESSAGE_AUTOMATIC       = (1 << 0),     /*!< Will automatically change state by itself. */
-	MESSAGE_QUESTION        = (1 << 1)      /*!< The message is a question. */
+	MESSAGE_QUESTION        = (1 << 1),     /*!< The message is a question. */
+	MESSAGE_QUICK           = (1 << 2),     /*!< Avoid animations. */
 };
 
 /**

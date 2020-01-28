@@ -131,7 +131,7 @@ message_start(struct message *msg)
 	assert(msg);
 
 	msg->elapsed = 0;
-	msg->state = MESSAGE_OPENING;
+	msg->state = msg->flags & MESSAGE_QUICK ? MESSAGE_SHOWING : MESSAGE_OPENING;
 	msg->height[0] = texture_height(msg->frame);
 	msg->height[1] = 0;
 
@@ -157,7 +157,7 @@ message_handle(struct message *msg, const union event *ev)
 			msg->index++;
 		break;
 	case KEY_ENTER:
-		msg->state = MESSAGE_HIDING;
+		msg->state = msg->flags & MESSAGE_QUICK ? MESSAGE_HIDING : MESSAGE_NONE;
 		msg->elapsed = 0;
 		break;
 	default:
@@ -189,7 +189,7 @@ message_update(struct message *msg, unsigned int ticks)
 	case MESSAGE_SHOWING:
 		/* Do automatically switch state if requested by the user. */
 		if (msg->flags & MESSAGE_AUTOMATIC && msg->elapsed >= MESSAGE_TIMEOUT) {
-			msg->state = MESSAGE_HIDING;
+			msg->state = msg->flags & MESSAGE_QUICK ? MESSAGE_NONE : MESSAGE_HIDING;
 			msg->elapsed = 0;
 		}
 
