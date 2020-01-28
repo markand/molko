@@ -22,6 +22,7 @@
 /**
  * \file window.h
  * \brief Basic window management.
+ * \ingroup drawing
  */
 
 #include <stdbool.h>

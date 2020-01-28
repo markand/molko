@@ -22,6 +22,7 @@
 /**
  * \file event.h
  * \brief Event management.
+ * \ingroup input
  */
 
 #include <stdbool.h>

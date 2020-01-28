@@ -22,6 +22,7 @@
 /**
  * \file clock.h
  * \brief Track elapsed time.
+ * \ingroup basics
  */
 
 /**

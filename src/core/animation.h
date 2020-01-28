@@ -22,6 +22,7 @@
 /**
  * \file animation.h
  * \brief Basic animations.
+ * \ingroup drawing
  */
 
 #include <stdbool.h>

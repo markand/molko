@@ -22,6 +22,7 @@
 /**
  * \file painter.h
  * \brief Basic drawing routines.
+ * \ingroup drawing
  */
 
 #include <stdbool.h>

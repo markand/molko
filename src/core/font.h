@@ -22,6 +22,7 @@
 /**
  * \file font.h
  * \brief Basic font management.
+ * \ingroup drawing
  */
 
 #include <stddef.h>

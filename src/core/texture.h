@@ -22,6 +22,7 @@
 /**
  * \file texture.h
  * \brief Basic texture management.
+ * \ingroup drawing
  *
  * See also \a image.h for usage of textures.
  */

@@ -22,6 +22,7 @@
 /**
  * \file map_state.h
  * \brief State when player is on a map.
+ * \ingroup states
  */
 
 #include "map.h"

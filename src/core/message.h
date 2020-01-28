@@ -23,6 +23,7 @@
  * \file message.h
  * \brief Message dialog.
  * \ingroup actions
+ * \ingroup drawing
  *
  * This module's purpose is to show a dialog box into the screen to show text
  * and optionally ask the user a question.

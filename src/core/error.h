@@ -22,6 +22,7 @@
 /**
  * \file error.h
  * \brief Error routines.
+ * \ingroup basics
  */
 
 #include <stdarg.h>

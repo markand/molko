@@ -22,6 +22,7 @@
 /**
  * \file util.h
  * \brief Utilities.
+ * \ingroup basics
  *
  * This file contains several utilities.
  *

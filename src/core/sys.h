@@ -22,6 +22,7 @@
 /**
  * \file sys.h
  * \brief System routines.
+ * \ingroup basics
  */
 
 #include <stdarg.h>

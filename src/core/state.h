@@ -22,6 +22,7 @@
 /**
  * \file state.h
  * \brief Abstract state.
+ * \ingroup states
  */
 
 union event;

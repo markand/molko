@@ -22,6 +22,7 @@
 /**
  * \file key.h
  * \brief Keyboard definitions.
+ * \ingroup input
  */
 
 /**

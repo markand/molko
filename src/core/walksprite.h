@@ -22,6 +22,7 @@
 /**
  * \file walksprite.h
  * \brief Sprite designed for walking entities.
+ * \ingroup drawing
  */
 
 struct sprite;

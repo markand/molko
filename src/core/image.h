@@ -22,6 +22,7 @@
 /**
  * \file image.h
  * \brief Basic image management.
+ * \ingroup drawing
  */
 
 #include <stddef.h>

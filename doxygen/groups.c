@@ -1,5 +1,5 @@
 /*
- * mouse.h -- mouse definitions
+ * groups.c -- describe "Modules" in Doxygen
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,28 +16,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_MOUSE_H
-#define MOLKO_MOUSE_H
-
 /**
- * \file mouse.h
- * \brief Mouse definitions.
- * \ingroup input
+ * \defgroup actions Actions
+ * \brief Predefined actions.
  */
 
 /**
- * \brief Buttons from mouse.
- *
- * This enumeration is used as both flags or constants. For example when the
- * user press one button on the mouse it generates one constant event. On the
- * other hand, while moving the mouse the user may have one or more buttons
- * pressed, thus the OR'ed combination.
+ * \defgroup states States
+ * \brief Predefined states.
  */
-enum mouse_button {
-	MOUSE_BUTTON_UNKNOWN    = 0,            /*!< No buttons pressed */
-	MOUSE_BUTTON_LEFT       = (1 << 0),     /*!< Left button pressed */
-	MOUSE_BUTTON_MIDDLE     = (1 << 1),     /*!< Middle button pressed */
-	MOUSE_BUTTON_RIGHT      = (1 << 2)      /*!< Right button pressed */
-};
 
-#endif /* !MOLKO_MOUSE_H */
+/**
+ * \defgroup basics Basics
+ * \brief Basics utilities.
+ */
+
+/**
+ * \defgroup drawing Drawing
+ * \brief Modules for rendering on the screen.
+ */
+
+/**
+ * \defgroup input Input and events
+ * \brief Input and event handling.
+ */

@@ -22,6 +22,7 @@
 /**
  * \file sprite.h
  * \brief Image sprites.
+ * \ingroup drawing
  */
 
 struct texture;
