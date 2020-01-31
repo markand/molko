@@ -34,47 +34,50 @@
  * \brief Kind of event.
  */
 enum event_type {
-	EVENT_CLICKDOWN,        /*!< Mouse click down */
-	EVENT_CLICKUP,          /*!< Mouse click released */
-	EVENT_KEYDOWN,          /*!< Single key down */
-	EVENT_KEYUP,            /*!< Single key released */
-	EVENT_MOUSE,            /*!< Mouse moved */
+	EVENT_CLICKDOWN,        /*!< Mouse click down (\ref event_click) */
+	EVENT_CLICKUP,          /*!< Mouse click released (\ref event_click) */
+	EVENT_KEYDOWN,          /*!< Single key down (\ref event_key) */
+	EVENT_KEYUP,            /*!< Single key released (\ref event_key) */
+	EVENT_MOUSE,            /*!< Mouse moved (\ref event_mouse) */
 	EVENT_QUIT,             /*!< Quit request */
+};
+
+/**
+ * \brief Key event.
+ */
+struct event_key {
+	enum event_type type;           /*!< EVENT_KEYDOWN or EVENT_KEYUP */
+	enum key key;                   /*!< Which key */
+};
+
+/**
+ * \brief Mouse motion event.
+ */
+struct event_mouse {
+	enum event_type type;           /*!< EVENT_MOUSE */
+	enum mouse_button buttons;      /*!< OR'ed buttons that are pressed */
+	int x;                          /*!< Mouse position in x */
+	int y;                          /*!< Mouse position in y */
+};
+
+/**
+ * \brief Mouse click event.
+ */
+struct event_click {
+	enum event_type type;           /*!< EVENT_CLICKDOWN or EVENT_CLICKUP */
+	enum mouse_button button;       /*!< Unique button that was pressed */
+	int x;                          /*!< Mouse position in x */
+	int y;                          /*!< Mouse position in y */
 };
 
 /**
  * \brief Store events.
  */
 union event {
-	enum event_type type;                   /*!< Which kind of event */
-
-	/**
-	 * Store key down/up event.
-	 */
-	struct {
-		enum event_type type;           /*!< EVENT_KEYDOWN or EVENT_KEYUP */
-		enum key key;                   /*!< Which key */
-	} key;
-
-	/**
-	 * Store mouse motion event.
-	 */
-	struct {
-		enum event_type type;           /*!< EVENT_MOUSE */
-		enum mouse_button buttons;      /*!< OR'ed buttons that are pressed */
-		int x;                          /*!< Mouse position in x */
-		int y;                          /*!< Mouse position in y */
-	} mouse;
-
-	/**
-	 * Store mouse click event.
-	 */
-	struct {
-		enum event_type type;           /*!< EVENT_CLICKDOWN or EVENT_CLICKUP */
-		enum mouse_button button;       /*!< Unique button that was pressed */
-		int x;                          /*!< Mouse position in x */
-		int y;                          /*!< Mouse position in y */
-	} click;
+	enum event_type type;           /*!< Which kind of event */
+	struct event_key key;           /*!< Key event */
+	struct event_mouse mouse;       /*!< Mouse motion event */
+	struct event_click click;       /*!< Mouse click event */
 };
 
 /**

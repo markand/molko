@@ -38,7 +38,7 @@ const char *
 error(void);
 
 /**
- * Convenient handler that sets last error from global C errno and then return
+ * Convenient helper that sets last error from global C errno and then return
  * false.
  *
  * \return false
@@ -56,7 +56,7 @@ bool
 error_printf(const char *fmt, ...);
 
 /**
- * Similar to \a error_printf.
+ * Similar to \ref error_printf.
  *
  * \param fmt the format stinrg
  * \param ap the variadic arguments pointer
@@ -72,7 +72,7 @@ noreturn void
 error_fatal(void);
 
 /**
- * Prints an error to stderr and exit.
+ * Prints an error to stderr and exit with code 1.
  *
  * \param fmt the format string
  */
@@ -80,7 +80,7 @@ noreturn void
 error_fatalf(const char *fmt, ...);
 
 /**
- * Similar to \a error_fatalf
+ * Similar to \ref error_fatalf.
  *
  * \param fmt the format string
  * \param ap the variadic arguments pointer
