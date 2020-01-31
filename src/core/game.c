@@ -70,7 +70,6 @@ update_actions(unsigned int ticks)
 			continue;
 
 		if (a->update(a, ticks)) {
-			puts("HERE ACTION HAS FINISHED");
 			if (a->end)
 				a->end(a);
 			if (a->finish)
