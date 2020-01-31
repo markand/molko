@@ -32,6 +32,7 @@ CORE_SRCS=      src/core/animation.c \
                 src/core/font.c \
                 src/core/game.c \
                 src/core/image.c \
+                src/core/inhibit.c \
                 src/core/map.c \
                 src/core/map_state.c \
                 src/core/message.c \

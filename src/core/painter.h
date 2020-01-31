@@ -48,8 +48,8 @@ painter_get_target(void);
  * If texture is NULL, use default context aka the window.
  *
  * \param tex the texture
- * \see PAINTER_BEGIN
- * \see PAINTER_END
+ * \see \ref PAINTER_BEGIN
+ * \see \ref PAINTER_END
  */
 void
 painter_set_target(struct texture *tex);
@@ -120,7 +120,7 @@ painter_present(void);
  *
  * \pre tex != NULL
  * \param tex the texture to use
- * \see PAINTER_END
+ * \see \ref PAINTER_END
  */
 #define PAINTER_BEGIN(tex    )                                          \
 do {                                                                    \
@@ -132,7 +132,7 @@ do {                                                                    \
 /**
  * Use this macro at the end of rendering into a given texture.
  *
- * \see PAINTER_BEGIN
+ * \see \ref PAINTER_BEGIN
  */
 #define PAINTER_END()                                                   \
         painter_set_target(__current_texture__);                        \

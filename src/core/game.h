@@ -27,11 +27,12 @@
 #include <stdbool.h>
 
 #include "action.h"
+#include "inhibit.h"
 
 /**
  * \brief Max number of actions allowed at the same time.
  */
-#define GAME_ACTIONS_MAX 32
+#define GAME_ACTIONS_MAX 128
 
 struct state;
 
@@ -41,6 +42,9 @@ union event;
  * \brief Main game object.
  */
 struct game {
+	/* Inhibition */
+	enum inhibit inhibit;           /*!< (RW) What to disable. */
+
 	/* Game states. */
 	struct state *state;            /*!< (RO) Current state  */
 	struct state *state_next;       /*!< (RO) Next state */
@@ -57,9 +61,8 @@ extern struct game game;
 /**
  * Request to change state.
  *
- * This function will only update state after the next \a game_update call.
- *
- * If quick is true, change state immediately.
+ * This function will only update state after the next \ref  game_update call
+ * unless quick is set to true.
  *
  * \pre state != NULL
  * \param state the new state
@@ -98,6 +101,7 @@ game_draw(void);
  *
  * \pre action != NULL
  * \param action the action to copy
+ * \note The core API **never** add actions by itself.
  */
 void
 game_add_action(const struct action *action);

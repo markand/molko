@@ -26,6 +26,7 @@
 #include "font.h"
 #include "game.h"
 #include "image.h"
+#include "inhibit.h"
 #include "map.h"
 #include "map_state.h"
 #include "message.h"
@@ -99,11 +100,19 @@ run(void)
 	wait_action(&w, &ac);
 	script_append(&sc, &ac);
 
+	/* Inhibit input. */
+	inhibit_action(INHIBIT_STATE_INPUT, &ac);
+	script_append(&sc, &ac);
+
 	message_start(&msg);
 	message_action(&msg, &ac);
 	ac.end = myresult;
-
 	script_append(&sc, &ac);
+
+	/* Put it back. */
+	inhibit_action(INHIBIT_NONE, &ac);
+	script_append(&sc, &ac);
+
 	script_start(&sc);
 	script_action(&sc, &ac);
 

@@ -24,10 +24,7 @@
 #include "state.h"
 #include "painter.h"
 
-struct game game = {
-	.state = NULL,
-	.state_next = NULL
-};
+struct game game;
 
 static struct action *
 find_empty_action(void)
@@ -73,6 +70,7 @@ update_actions(unsigned int ticks)
 			continue;
 
 		if (a->update(a, ticks)) {
+			puts("HERE ACTION HAS FINISHED");
 			if (a->end)
 				a->end(a);
 			if (a->finish)
@@ -109,7 +107,7 @@ game_handle(const union event *event)
 {
 	assert(event);
 
-	if (game.state)
+	if (game.state && !(game.inhibit & INHIBIT_STATE_INPUT))
 		game.state->handle(event);
 
 	handle_actions(event);
@@ -118,22 +116,24 @@ game_handle(const union event *event)
 void
 game_update(unsigned int ticks)
 {
-	/* Change state if any. */
-	if (game.state_next) {
-		/* Inform the current state we're gonna leave it. */
+	if (!(game.inhibit & INHIBIT_STATE_UPDATE)) {
+		/* Change state if any. */
+		if (game.state_next) {
+			/* Inform the current state we're gonna leave it. */
+			if (game.state)
+				game.state->leave();
+
+			game.state = game.state_next;
+			game.state->enter();
+			game.state_next = NULL;
+
+			/* Remove any actions that must be deleted. */
+			clear_actions();
+		}
+
 		if (game.state)
-			game.state->leave();
-
-		game.state = game.state_next;
-		game.state->enter();
-		game.state_next = NULL;
-
-		/* Remove any actions that must be deleted. */
-		clear_actions();
+			game.state->update(ticks);
 	}
-
-	if (game.state)
-		game.state->update(ticks);
 
 	update_actions(ticks);
 }
@@ -141,7 +141,7 @@ game_update(unsigned int ticks)
 void
 game_draw(void)
 {
-	if (game.state)
+	if (game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
 		game.state->draw();
 
 	draw_actions();
