@@ -56,16 +56,6 @@ void
 animation_init(struct animation *an, struct sprite *sprite, unsigned int delay);
 
 /**
- * Tells if the animation is complete.
- *
- * \pre an != NULL
- * \param an the animation
- * \return true if the animation has completed
- */
-bool
-animation_is_complete(const struct animation *an);
-
-/**
  * Start an animation.
  *
  * \pre an != NULL
