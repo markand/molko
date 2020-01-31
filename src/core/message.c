@@ -157,7 +157,7 @@ message_handle(struct message *msg, const union event *ev)
 			msg->index++;
 		break;
 	case KEY_ENTER:
-		msg->state = msg->flags & MESSAGE_QUICK ? MESSAGE_HIDING : MESSAGE_NONE;
+		msg->state = msg->flags & MESSAGE_QUICK ? MESSAGE_NONE : MESSAGE_HIDING;
 		msg->elapsed = 0;
 		break;
 	default:
