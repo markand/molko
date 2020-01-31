@@ -34,9 +34,9 @@ find_empty_action(void)
 {
 	static struct action null;
 
-	for (size_t i = 0; i < GAME_ACTIONS_MAX; ++i)
-		if (memcmp(&game.actions[i], &null, sizeof (struct action)) == 0)
-			return &game.actions[i];
+	for (struct action *a = game.actions; a != &game.actions[GAME_ACTIONS_MAX]; ++a)
+		if (memcmp(a, &null, sizeof (struct action)) == 0)
+			return a;
 
 	return NULL;
 }
@@ -44,9 +44,7 @@ find_empty_action(void)
 static void
 clear_actions(void)
 {
-	for (size_t i = 0; i < GAME_ACTIONS_MAX; ++i) {
-		struct action *a = &game.actions[i];
-
+	for (struct action *a = game.actions; a != &game.actions[GAME_ACTIONS_MAX]; ++a) {
 		/* These actions are removed on state change. */
 		if (a->flags & ACTION_AUTO_LEAVE) {
 			if (a->finish)
@@ -60,9 +58,9 @@ clear_actions(void)
 static void
 handle_actions(const union event *event)
 {
-	for (size_t i = 0; i < GAME_ACTIONS_MAX; ++i)
-		if (game.actions[i].handle)
-			game.actions[i].handle(&game.actions[i], event);
+	for (struct action *a = game.actions; a != &game.actions[GAME_ACTIONS_MAX]; ++a)
+		if (a->handle)
+			a->handle(a, event);
 }
 
 static void

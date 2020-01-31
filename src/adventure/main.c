@@ -128,8 +128,6 @@ run(void)
 		game_update(elapsed);
 		game_draw();
 
-		painter_present();
-
 		if ((elapsed = clock_elapsed(&clock)) < 20)
 			delay(20 - elapsed);
 	}

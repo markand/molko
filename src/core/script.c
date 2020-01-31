@@ -94,7 +94,7 @@ script_handle(struct script *s, const union event *ev)
 	assert(s);
 	assert(ev);
 
-	if (s->iter)
+	if (s->iter && s->iter->action.handle)
 		s->iter->action.handle(&s->iter->action, ev);
 }
 

@@ -319,8 +319,6 @@ update(unsigned int ticks)
 static void
 draw(void)
 {
-	painter_set_color(0x000000ff);
-	painter_clear();
 	map_draw(&map_state_data.map.map, map_state_data.view.x, map_state_data.view.y);
 	walksprite_draw(
 		&cache.player.ws,
