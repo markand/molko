@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 
+#include "debug.h"
 #include "event.h"
 #include "game.h"
 #include "map.h"
@@ -319,12 +320,19 @@ update(unsigned int ticks)
 static void
 draw(void)
 {
+	struct debug_report report = DEBUG_INIT_DEFAULTS;
+
 	map_draw(&map_state_data.map.map, map_state_data.view.x, map_state_data.view.y);
 	walksprite_draw(
 		&cache.player.ws,
 		map_state_data.player.angle,
 		map_state_data.player.x - map_state_data.view.x,
 		map_state_data.player.y - map_state_data.view.y);
+
+	debug_printf(&report, "position: %d, %d", map_state_data.player.x,
+	    map_state_data.player.y);
+	debug_printf(&report, "view: %d, %d", map_state_data.view.x,
+	    map_state_data.view.y);
 }
 
 struct map_state_data map_state_data;

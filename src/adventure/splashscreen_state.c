@@ -91,7 +91,6 @@ draw(void)
 	painter_set_color(0xffffffff);
 	painter_clear();
 	texture_draw(text, x, y);
-	painter_present();
 }
 
 struct state splashscreen_state = {

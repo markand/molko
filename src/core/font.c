@@ -74,6 +74,15 @@ font_openb(const void *buffer, size_t buflen, unsigned int size)
 struct texture *
 font_render(struct font *font, const char *text, unsigned long color)
 {
+	return font_render_ex(font, text, color, FONT_STYLE_ANTIALIASED);
+}
+
+struct texture *
+font_render_ex(struct font *font,
+               const char *text,
+               unsigned long color,
+               enum font_style style)
+{
 	assert(font);
 	assert(text);
 
@@ -83,15 +92,30 @@ font_render(struct font *font, const char *text, unsigned long color)
 		.b = COLOR_B(color),
 		.a = COLOR_A(color)
 	};
-
 	SDL_Surface *surface;
+	SDL_Surface *(*func)(TTF_Font *, const char *, SDL_Color);
 
-	if (!(surface = TTF_RenderUTF8_Blended(font->handle, text, fg))) {
+	switch (style) {
+	case FONT_STYLE_ANTIALIASED:
+		func = TTF_RenderUTF8_Blended;
+		break;
+	default:
+		func = TTF_RenderUTF8_Solid;
+		break;
+	}
+
+	if (!(surface = func(font->handle, text, fg))) {
 		error_sdl();
 		return NULL;
 	}
 
 	return texture_from_surface(surface);
+}
+
+unsigned int
+font_height(const struct font *font)
+{
+	return TTF_FontHeight(font->handle);
 }
 
 void

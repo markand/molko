@@ -23,6 +23,7 @@
 #include "clock.h"
 #include "error.h"
 #include "event.h"
+#include "debug.h"
 #include "font.h"
 #include "game.h"
 #include "image.h"
@@ -74,6 +75,8 @@ run(void)
 
 	if (!(font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 15)))
 		error_fatal();
+	if (!(debug_options.default_font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 10)))
+		error_fatal();
 	if (!(frame = image_openf(sys_datapath("images/message.png"))))
 		error_fatal();
 
@@ -90,6 +93,8 @@ run(void)
 		.frame = frame,
 		.flags = MESSAGE_QUESTION
 	};
+
+	debug_options.enable = true;
 
 	clock_start(&clock);
 	script_init(&sc);

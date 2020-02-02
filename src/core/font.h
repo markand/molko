@@ -37,6 +37,14 @@ struct font;
 struct texture;
 
 /**
+ * \brief Font style for rendering.
+ */
+enum font_style {
+	FONT_STYLE_NONE,                /*!< No antialiasing. */
+	FONT_STYLE_ANTIALIASED          /*!< Pretty antialiasing looking. */
+};
+
+/**
  * Open font from path file.
  *
  * \pre path != NULL
@@ -61,6 +69,12 @@ struct font *
 font_openb(const void *buffer, size_t buflen, unsigned int size);
 
 /**
+ * Similar to \ref font_render_ex with predefined convenient values.
+ */
+struct texture *
+font_render(struct font *font, const char *text, unsigned long color);
+
+/**
  * Render a text.
  *
  * \pre font != NULL
@@ -68,9 +82,23 @@ font_openb(const void *buffer, size_t buflen, unsigned int size);
  * \param font the font handle
  * \param text the text in UTF-8
  * \param color the color
+ * \param style the font style
  */
 struct texture *
-font_render(struct font *font, const char *text, unsigned long color);
+font_render_ex(struct font *font,
+               const char *text,
+               unsigned long color,
+               enum font_style style);
+
+/**
+ * Get the maximum height for all glyphs.
+ *
+ * \pre font != NULL
+ * \param font the font handle
+ * \return the height in pixels
+ */
+unsigned int
+font_height(const struct font *font);
 
 /**
  * Close the font.
