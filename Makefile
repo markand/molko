@@ -50,7 +50,8 @@ CORE_OBJS=      ${CORE_SRCS:.c=.o}
 CORE_DEPS=      ${CORE_SRCS:.c=.d}
 
 ADV_SRCS=       src/adventure/main.c \
-                src/adventure/splashscreen_state.c
+                src/adventure/splashscreen_state.c \
+                src/adventure/mainmenu_state.c
 ADV_OBJS=       ${ADV_SRCS:.c=.o}
 ADV_DEPS=       ${ADV_SRCS:.c=.d}
 

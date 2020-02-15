@@ -38,7 +38,7 @@ extern struct map_state_data {
 	 * Map properties.
 	 */
 	struct {
-		struct map map;         /*!< (RO) The map definition */
+		struct map map;         /*!< (RW) The map definition */
 		unsigned int w;         /*!< (RO) Map width */
 		unsigned int h;         /*!< (RO) Map height */
 	} map;

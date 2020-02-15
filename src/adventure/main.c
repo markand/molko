@@ -56,22 +56,12 @@ init(void)
 }
 
 static void
-myresult(struct action *a)
-{
-	struct message *msg = a->data;
-
-	printf("selected: %d\n", msg->index);
-}
-
-static void
 run(void)
 {
 	union event ev;
 	struct clock clock;
 	struct font *font;
 	struct texture *frame;
-	struct script sc;
-	struct action ac;
 
 	if (!(font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 15)))
 		error_fatal();
@@ -80,50 +70,11 @@ run(void)
 	if (!(frame = image_openf(sys_datapath("images/message.png"))))
 		error_fatal();
 
-	struct message msg = {
-		.text = {
-			"Flip a coin.",
-			"Try your best my friend."
-		},
-		.colors = {
-			0xd9caddff,
-			0x94d5ffff
-		},
-		.font = font,
-		.frame = frame,
-		.flags = MESSAGE_QUESTION
-	};
-
 	debug_options.enable = true;
 
 	clock_start(&clock);
-	script_init(&sc);
 
-	/* Wait first. */
-	struct wait w = { .delay = 5000 };
-
-	wait_action(&w, &ac);
-	script_append(&sc, &ac);
-
-	/* Inhibit input. */
-	inhibit_action(INHIBIT_STATE_INPUT, &ac);
-	script_append(&sc, &ac);
-
-	message_start(&msg);
-	message_action(&msg, &ac);
-	ac.end = myresult;
-	script_append(&sc, &ac);
-
-	/* Put it back. */
-	inhibit_action(INHIBIT_NONE, &ac);
-	script_append(&sc, &ac);
-
-	script_start(&sc);
-	script_action(&sc, &ac);
-
-	game_add_action(&ac);
-
-	for (;;) {
+	while (game.state) {
 		unsigned int elapsed = clock_elapsed(&clock);
 
 		clock_start(&clock);

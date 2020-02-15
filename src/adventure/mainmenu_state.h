@@ -1,5 +1,5 @@
 /*
- * splashscreen_state.h -- splash screen state
+ * mainmenu_state.h -- game main menu
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,29 +16,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_SPLASHSCREEN_ADVENTURE_H
-#define MOLKO_SPLASHSCREEN_ADVENTURE_H
+#ifndef MOLKO_MAINMENU_STATE_H
+#define MOLKO_MAINMENU_STATE_H
 
 /**
- * \file splashscreen_state.h
- * \brief Splash screen state.
+ * \file mainmenu_state.h
+ * \brief Game main menu.
  */
-
-struct texture;
 
 /**
- * \brief Data for splashscreen.
+ * \brief Main menu state.
  */
-extern struct splashscreen_state_data {
-	struct texture *text;           /*!< (RW) Texture for the text. */
-	int x;                          /*!< (RW) Position in x. */
-	int y;                          /*!< (RW) Position in y. */
-	unsigned int elapsed;           /*!< (RW) Time elapsed. */
-} splashscreen_state_data;              /*!< (RW) Global state data. */
+extern struct state mainmenu_state;
 
-/**
- * \brief Splash screen state.
- */
-extern struct state splashscreen_state;
-
-#endif /* !MOLKO_SPLASHSCREEN_ADVENTURE_H */
+#endif /* !MOLKO_MAINMENU_STATE_H */

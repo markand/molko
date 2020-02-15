@@ -23,40 +23,42 @@
 #include "map.h"
 #include "map_state.h"
 #include "painter.h"
-#include "splashscreen_state.h"
 #include "state.h"
 #include "sys.h"
 #include "texture.h"
 #include "window.h"
 
-#define DELAY 3000
+#include "splashscreen_state.h"
+#include "mainmenu_state.h"
 
-static unsigned int elapsed;
-static struct font *font;
-static struct texture *text;
-static int x;
-static int y;
+#define DELAY 2000
+
+struct splashscreen_state_data splashscreen_state_data;
 
 static void
 enter(void)
 {
-	if (!(font = font_openf(sys_datapath("fonts/knights-quest.ttf"), 160)))
+	struct font *font;
+
+	if (!(font = font_openf(sys_datapath("fonts/teutonic1.ttf"), 130)))
 		error_fatal();
-	if (!(text = font_render(font, "Molko's Adventure", 0x000000ff)))
+	if (!(splashscreen_state_data.text = font_render(font, "Molko's Adventure", 0x000000ff)))
 		error_fatal();
 
 	/* Compute position. */
-	const unsigned int w = texture_width(text);
-	const unsigned int h = texture_height(text);
+	const unsigned int w = texture_width(splashscreen_state_data.text);
+	const unsigned int h = texture_height(splashscreen_state_data.text);
 
-	x = (window_width() / 2) - (w / 2);
-	y = (window_height() / 2) - (h / 2) - 100;
+	splashscreen_state_data.x = (window_width() / 2) - (w / 2);
+	splashscreen_state_data.y = (window_height() / 2) - (h / 2);
+
+	font_close(font);
 }
 
 static void
 leave(void)
 {
-	font_close(font);
+	/* We don't delete the texture because it is used by mainmenu_state. */
 }
 
 static void
@@ -68,21 +70,10 @@ handle(const union event *event)
 static void
 update(unsigned int ticks)
 {
-	elapsed += ticks;
+	splashscreen_state_data.elapsed += ticks;
 
-	/* TODO: change this once map is done. */
-	if (elapsed >= DELAY) {
-		/* TODO: this will be removed too. */
-		static struct texture *image;
-
-		if (!map_open(&map_state_data.map.map, sys_datapath("maps/test.map")))
-			error_fatal();
-		if (!(image = image_openf(sys_datapath("sprites/test-walk.png"))))
-			error_fatal();
-
-		sprite_init(&map_state_data.player.sprite, image, 48, 48);
-		game_switch(&map_state, false);
-	}
+	if (splashscreen_state_data.elapsed >= DELAY)
+		game_switch(&mainmenu_state, false);
 }
 
 static void
@@ -90,7 +81,9 @@ draw(void)
 {
 	painter_set_color(0xffffffff);
 	painter_clear();
-	texture_draw(text, x, y);
+	texture_draw(splashscreen_state_data.text,
+		splashscreen_state_data.x,
+		splashscreen_state_data.y);
 }
 
 struct state splashscreen_state = {

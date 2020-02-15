@@ -106,4 +106,13 @@ game_draw(void);
 void
 game_add_action(const struct action *action);
 
+/**
+ * Stop the game.
+ *
+ * This will effectively stop the current state but the main loop may continue
+ * until it has completed.
+ */
+void
+game_quit(void);
+
 #endif /* !MOLKO_GAME_H */

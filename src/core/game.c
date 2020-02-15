@@ -157,3 +157,12 @@ game_add_action(const struct action *action)
 	if ((pos = find_empty_action()))
 		memcpy(pos, action, sizeof (struct action));
 }
+
+void
+game_quit(void)
+{
+	if (game.state && game.state->leave)
+		game.state->leave();
+
+	game.state = NULL;
+}
