@@ -11,7 +11,7 @@
 # object files.
 \.d$
 \.o$
-^libmolko\.a$
+\.a$
 ^molko(\.exe)?$
 ^tests/test-color(\.exe)?$
 ^tests/test-error(\.exe)?$

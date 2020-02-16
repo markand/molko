@@ -24,6 +24,14 @@ CFLAGS=         -MMD -O0 -std=c11 -Wall -Wextra -g -Wall -Wextra
 PROG=           molko
 LIB=            libmolko.a
 
+SQLITE_SRC=     extern/libsqlite/sqlite3.c
+SQLITE_OBJ=     extern/libsqlite/sqlite3.o
+SQLITE_LIB=     extern/libsqlite/libsqlite3.a
+SQLITE_FLAGS=   -DSQLITE_THREADSAFE=0 \
+                -DSQLITE_OMIT_LOAD_EXTENSION \
+                -DSQLITE_OMIT_DEPRECATED \
+                -DSQLITE_DEFAULT_FOREIGN_KEYS=1
+
 CORE_SRCS=      src/core/animation.c \
                 src/core/clock.c \
                 src/core/debug.c \
@@ -90,15 +98,21 @@ all: ${PROG}
 -include ${CORE_DEPS} ${ADV_DEPS} ${TESTS_DEPS} ${TOOLS_DEPS}
 
 .c.o:
-	${CC} ${DEFINES} ${INCLUDES} ${SDL_CFLAGS} ${CFLAGS} -c $< -o $@
+	${CC} ${DEFINES} ${INCLUDES} ${SDL_CFLAGS} ${CFLAGS} -MMD -c $< -o $@
 
 .c:
 	${CC} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS}
 
+${SQLITE_OBJ}: ${SQLITE_SRC}
+	${CC} ${CFLAGS} ${SQLITE_FLAGS} -c ${SQLITE_SRC} -o $@
+
+${SQLITE_LIB}: ${SQLITE_OBJ}
+	${AR} -rc $@ ${SQLITE_OBJ}
+
 ${LIB}: ${CORE_OBJS}
 	${AR} -rcs $@ ${CORE_OBJS}
 
-${PROG}: ${LIB} ${ADV_OBJS}
+${PROG}: ${LIB} ${ADV_OBJS} ${SQLITE_LIB}
 	${CC} -o $@ ${ADV_OBJS} ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 
 ${TESTS_OBJS}: ${LIB}
@@ -123,6 +137,7 @@ install:
 
 clean:
 	rm -rf doxygen/html doxygen/man
+	rm -f ${SQLITE_OBJ} ${SQLITE_LIB}
 	rm -f ${LIB} ${PROG}
 	rm -f ${CORE_OBJS} ${CORE_DEPS}
 	rm -f ${ADV_OBJS} ${ADV_DEPS}
