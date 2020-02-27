@@ -19,9 +19,9 @@
 .POSIX:
 
 CC=             gcc
-CFLAGS=         -MMD -O0 -std=c18 -Wall -Wextra -g -Wall -Wextra
+CFLAGS=         -MMD -O0 -std=c11 -Wall -Wextra -g -Wall -Wextra
 # Use this instead to build a release.
-# CFLAGS=         -MMD -O3 -DNDEBUG -std=c18 -Wall -Wextra
+# CFLAGS=         -MMD -O3 -DNDEBUG -std=c11 -Wall -Wextra
 PROG=           molko
 LIB=            libmolko.a
 
