@@ -64,6 +64,17 @@ const char *
 sys_datapathv(const char *fmt, va_list ap);
 
 /**
+ * Compute the path to the save file for the given game state.
+ *
+ * \param idx the save number
+ * \return the path to the database file
+ * \note This only compute the path, it does not check the presence of the file
+ * \post The returned value will never be NULL
+ */
+const char *
+sys_savepath(unsigned int idx);
+
+/**
  * Close the system.
  */
 void

@@ -45,6 +45,7 @@ CORE_SRCS=      src/core/animation.c \
                 src/core/map_state.c \
                 src/core/message.c \
                 src/core/painter.c \
+                src/core/save.c \
                 src/core/script.c \
                 src/core/sprite.c \
                 src/core/sys.c \
@@ -75,6 +76,7 @@ JANSSON_LDFLAGS=`pkg-config --libs jansson`
 TESTS=          tests/test-color.c \
                 tests/test-error.c \
                 tests/test-map.c \
+                tests/test-save.c \
                 tests/test-script.c
 TESTS_INCS=     -I extern/libgreatest -I src/core ${SDL_CFLAGS}
 TESTS_LIBS=     ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
@@ -88,7 +90,7 @@ TOOLS_DEPS=     ${TOOLS:.c=.d}
 DEFINES=        -DPREFIX=\""${PREFIX}"\" \
                 -DBINDIR=\""${BINDIR}"\" \
                 -DSHAREDIR=\""${SHAREDIR}"\"
-INCLUDES=       -I src/core -I src/adventure
+INCLUDES=       -I extern/libsqlite -I src/core -I src/adventure
 
 .SUFFIXES:
 .SUFFIXES: .c .o
@@ -101,7 +103,7 @@ all: ${PROG}
 	${CC} ${DEFINES} ${INCLUDES} ${SDL_CFLAGS} ${CFLAGS} -MMD -c $< -o $@
 
 .c:
-	${CC} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS}
+	${CC} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS} ${SQLITE_LIB}
 
 ${SQLITE_OBJ}: ${SQLITE_SRC}
 	${CC} ${CFLAGS} ${SQLITE_FLAGS} -c ${SQLITE_SRC} -o $@
@@ -110,10 +112,10 @@ ${SQLITE_LIB}: ${SQLITE_OBJ}
 	${AR} -rc $@ ${SQLITE_OBJ}
 
 ${LIB}: ${CORE_OBJS}
-	${AR} -rcs $@ ${CORE_OBJS}
+	${AR} -rc $@ ${CORE_OBJS}
 
 ${PROG}: ${LIB} ${ADV_OBJS} ${SQLITE_LIB}
-	${CC} -o $@ ${ADV_OBJS} ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
+	${CC} -o $@ ${ADV_OBJS} ${LIB} ${SQLITE_LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 
 ${TESTS_OBJS}: ${LIB}
 

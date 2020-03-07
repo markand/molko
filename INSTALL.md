@@ -6,8 +6,8 @@ Installation instructions.
 Requirements
 ------------
 
-- C99 compliant compiler,
-- POSIX system (make, ar, shell),
+- C11 compliant compiler,
+- POSIX system (make, ar, shell, some POSIX functions),
 - [Jansson][], JSON parsing library,
 - [SDL2][], Multimedia library,
 - [SDL2_image][], Image loading addon for SDL2,

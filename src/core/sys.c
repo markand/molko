@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -59,7 +60,7 @@ is_absolute(const char *path)
 static void
 determine(char path[], size_t pathlen)
 {
-	char localassets[FILENAME_MAX];
+	char localassets[PATH_MAX];
 	char *base = SDL_GetBasePath();
 	DIR *dp;
 
@@ -101,7 +102,8 @@ sys_init(void)
 {
 #if defined(__MINGW64__)
 	/* On MinGW buffering leads to painful debugging. */
-	setvbuf(stdout, NULL, _IONBF, 0);
+	setbuf(stderr, NULL);
+	setbuf(stdout, NULL);
 #endif
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
@@ -119,7 +121,7 @@ sys_init(void)
 const char *
 sys_datadir(void)
 {
-	static char path[1024];
+	static char path[PATH_MAX];
 
 	if (path[0] == '\0')
 		determine(path, sizeof (path));
@@ -143,11 +145,26 @@ sys_datapath(const char *fmt, ...)
 const char *
 sys_datapathv(const char *fmt, va_list ap)
 {
-	static char path[2048 + FILENAME_MAX];
+	static char path[PATH_MAX];
 	char filename[FILENAME_MAX];
 
 	vsnprintf(filename, sizeof (filename), fmt, ap);
 	snprintf(path, sizeof (path), "%s/%s", sys_datadir(), filename);
+
+	return path;
+}
+
+const char *
+sys_savepath(unsigned int idx)
+{
+	static char path[PATH_MAX];
+	char *pref;
+
+	if ((pref = SDL_GetPrefPath("malikania", "molko"))) {
+		snprintf(path, sizeof (path), "%ssave-%u", idx);
+		SDL_free(pref);
+	} else
+		snprintf(path, sizeof (path), "save-%u", idx);
 
 	return path;
 }

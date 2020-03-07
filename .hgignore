@@ -17,6 +17,7 @@
 ^tests/test-error(\.exe)?$
 ^tests/test-map(\.exe)?$
 ^tests/test-script(\.exe)?$
+^tests/test-save(\.exe)?$
 ^tools/molko-map(\.exe)?$
 
 # doxygen stuff.
