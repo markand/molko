@@ -18,6 +18,7 @@
 
 .POSIX:
 
+CC=             cc
 CFLAGS=         -MMD -O0 -std=c11 -Wall -Wextra -g -Wall -Wextra
 # Use this instead to build a release.
 # CFLAGS=         -MMD -O3 -DNDEBUG -std=c11 -Wall -Wextra
