@@ -15,9 +15,10 @@
 ^molko(\.exe)?$
 ^tests/test-color(\.exe)?$
 ^tests/test-error(\.exe)?$
+^tests/test-inventory(\.exe)?$
 ^tests/test-map(\.exe)?$
-^tests/test-script(\.exe)?$
 ^tests/test-save(\.exe)?$
+^tests/test-script(\.exe)?$
 ^tools/molko-map(\.exe)?$
 
 # doxygen stuff.

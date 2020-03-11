@@ -41,6 +41,7 @@ CORE_SRCS=      src/core/animation.c \
                 src/core/game.c \
                 src/core/image.c \
                 src/core/inhibit.c \
+                src/core/inventory.c \
                 src/core/map.c \
                 src/core/map_state.c \
                 src/core/message.c \
@@ -75,6 +76,7 @@ JANSSON_LDFLAGS=`pkg-config --libs jansson`
 
 TESTS=          tests/test-color.c \
                 tests/test-error.c \
+                tests/test-inventory.c \
                 tests/test-map.c \
                 tests/test-save.c \
                 tests/test-script.c
@@ -117,7 +119,7 @@ ${LIB}: ${CORE_OBJS}
 ${PROG}: ${LIB} ${ADV_OBJS} ${SQLITE_LIB}
 	${CC} -o $@ ${ADV_OBJS} ${LIB} ${SQLITE_LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 
-${TESTS_OBJS}: ${LIB}
+${TESTS_OBJS}: ${LIB} ${SQLITE_LIB}
 
 tests: ${TESTS_OBJS}
 	for t in $?; do ./$$t; done
