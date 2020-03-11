@@ -90,6 +90,7 @@ TOOLS=          tools/molko-map.c
 TOOLS_OBJS=     ${TOOLS:.c=}
 TOOLS_DEPS=     ${TOOLS:.c=.d}
 
+FLAGS=          -MMD -D_XOPEN_SOURCE=700
 DEFINES=        -DPREFIX=\""${PREFIX}"\" \
                 -DBINDIR=\""${BINDIR}"\" \
                 -DSHAREDIR=\""${SHAREDIR}"\"
@@ -103,10 +104,10 @@ all: ${PROG}
 -include ${CORE_DEPS} ${ADV_DEPS} ${TESTS_DEPS} ${TOOLS_DEPS}
 
 .c.o:
-	${CC} ${DEFINES} ${INCLUDES} ${SDL_CFLAGS} ${CFLAGS} -MMD -c $< -o $@
+	${CC} ${FLAGS} ${DEFINES} ${INCLUDES} ${SDL_CFLAGS} ${CFLAGS} -MMD -c $< -o $@
 
 .c:
-	${CC} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS} ${SQLITE_LIB}
+	${CC} ${FLAGS} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS} ${SQLITE_LIB}
 
 ${SQLITE_OBJ}: ${SQLITE_SRC}
 	${CC} ${CFLAGS} ${SQLITE_FLAGS} -c ${SQLITE_SRC} -o $@

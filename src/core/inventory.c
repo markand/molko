@@ -49,8 +49,6 @@ find(struct inventory *iv, const struct item *item)
 	assert(iv);
 	assert(item);
 
-	struct inventory_slot *slot = NULL;
-
 	/* First pass: find an entry with the same item. */
 	for (unsigned int r = 0; r < INVENTORY_ROWS_MAX; ++r)
 		for (unsigned int c = 0; c < INVENTORY_COLS_MAX; ++c)
@@ -108,7 +106,6 @@ inventory_push(struct inventory *iv, struct item *item, unsigned int amount)
 
 	while (amount) {
 		struct inventory_slot *slot;
-		unsigned int avail;
 
 		if (!(slot = find(iv, item)))
 			break;

@@ -161,7 +161,7 @@ sys_savepath(unsigned int idx)
 	char *pref;
 
 	if ((pref = SDL_GetPrefPath("malikania", "molko"))) {
-		snprintf(path, sizeof (path), "%ssave-%u", idx);
+		snprintf(path, sizeof (path), "%ssave-%u", pref, idx);
 		SDL_free(pref);
 	} else
 		snprintf(path, sizeof (path), "save-%u", idx);
