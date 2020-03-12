@@ -19,9 +19,9 @@
 .POSIX:
 
 CC=             cc
-CFLAGS=         -MMD -O0 -std=c11 -Wall -Wextra -g -Wall -Wextra
+CFLAGS=         -O0 -std=c11 -Wall -Wextra -g -ggdb
 # Use this instead to build a release.
-# CFLAGS=         -MMD -O3 -DNDEBUG -std=c11 -Wall -Wextra
+# CFLAGS=         -O3 -DNDEBUG -std=c11 -Wall -Wextra
 PROG=           molko
 LIB=            libmolko.a
 
@@ -61,6 +61,7 @@ CORE_OBJS=      ${CORE_SRCS:.c=.o}
 CORE_DEPS=      ${CORE_SRCS:.c=.d}
 
 ADV_SRCS=       src/adventure/main.c \
+                src/adventure/panic_state.c \
                 src/adventure/splashscreen_state.c \
                 src/adventure/mainmenu_state.c
 ADV_OBJS=       ${ADV_SRCS:.c=.o}

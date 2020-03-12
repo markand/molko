@@ -16,14 +16,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <setjmp.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdnoreturn.h>
 #include <string.h>
 
 #include "clock.h"
+#include "debug.h"
 #include "error.h"
 #include "event.h"
-#include "debug.h"
 #include "font.h"
 #include "game.h"
 #include "image.h"
@@ -32,16 +34,26 @@
 #include "map_state.h"
 #include "message.h"
 #include "painter.h"
+#include "panic.h"
+#include "panic_state.h"
+#include "script.h"
 #include "splashscreen_state.h"
 #include "sprite.h"
 #include "sys.h"
 #include "util.h"
 #include "wait.h"
 #include "window.h"
-#include "script.h"
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
+
+static jmp_buf panic_buf;
+
+static noreturn void
+unrecoverable(void)
+{
+	longjmp(panic_buf, 1);
+}
 
 static void
 init(void)
@@ -50,6 +62,10 @@ init(void)
 		error_fatal();
 	if (!window_init("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
 		error_fatal();
+
+	/* Init unrecoverable panic state. */
+	panic_state_init();
+	panic_handler = unrecoverable;
 
 	/* Default state is splash screen */
 	game_switch(&splashscreen_state, true);
@@ -83,6 +99,8 @@ run(void)
 			/* TODO: this must be handled by states. */
 			if (ev.type == EVENT_QUIT)
 				return;
+			if (ev.type == EVENT_KEYDOWN)
+				panic("test");
 
 			game_handle(&ev);
 		}
@@ -112,7 +130,19 @@ main(int argc, char **argv)
 	(void)argv;
 
 	init();
-	run();
+
+	if (setjmp(panic_buf) == 0)
+		/* Initial game run. */
+		run();
+	else {
+		/* Clear event queue to avoid accidental key presses. */
+		for (union event ev; event_poll(&ev); )
+			continue;
+
+		game_switch(&panic_state, true);
+		run();
+	}
+
 	close();
 
 	return 0;
