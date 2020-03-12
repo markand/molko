@@ -19,7 +19,8 @@
 .POSIX:
 
 CC=             cc
-CFLAGS=         -O0 -std=c11 -Wall -Wextra -g -ggdb
+AR=             ar
+CFLAGS=         -O0 -std=c11 -g
 # Use this instead to build a release.
 # CFLAGS=         -O3 -DNDEBUG -std=c11 -Wall -Wextra
 PROG=           molko
@@ -33,36 +34,36 @@ SQLITE_FLAGS=   -DSQLITE_THREADSAFE=0 \
                 -DSQLITE_OMIT_DEPRECATED \
                 -DSQLITE_DEFAULT_FOREIGN_KEYS=1
 
-CORE_SRCS=      src/core/animation.c \
-                src/core/clock.c \
-                src/core/debug.c \
-                src/core/error.c \
-                src/core/event.c \
-                src/core/font.c \
-                src/core/game.c \
-                src/core/image.c \
-                src/core/inhibit.c \
-                src/core/inventory.c \
-                src/core/map.c \
-                src/core/map_state.c \
-                src/core/message.c \
-                src/core/painter.c \
-                src/core/panic.c \
-                src/core/save.c \
-                src/core/script.c \
-                src/core/sprite.c \
-                src/core/sys.c \
-                src/core/texture.c \
-                src/core/util.c \
-                src/core/walksprite.c \
-                src/core/wait.c \
+CORE_SRCS=      src/core/animation.c                    \
+                src/core/clock.c                        \
+                src/core/debug.c                        \
+                src/core/error.c                        \
+                src/core/event.c                        \
+                src/core/font.c                         \
+                src/core/game.c                         \
+                src/core/image.c                        \
+                src/core/inhibit.c                      \
+                src/core/inventory.c                    \
+                src/core/map.c                          \
+                src/core/map_state.c                    \
+                src/core/message.c                      \
+                src/core/painter.c                      \
+                src/core/panic.c                        \
+                src/core/save.c                         \
+                src/core/script.c                       \
+                src/core/sprite.c                       \
+                src/core/sys.c                          \
+                src/core/texture.c                      \
+                src/core/util.c                         \
+                src/core/walksprite.c                   \
+                src/core/wait.c                         \
                 src/core/window.c
 CORE_OBJS=      ${CORE_SRCS:.c=.o}
 CORE_DEPS=      ${CORE_SRCS:.c=.d}
 
-ADV_SRCS=       src/adventure/main.c \
-                src/adventure/panic_state.c \
-                src/adventure/splashscreen_state.c \
+ADV_SRCS=       src/adventure/main.c                    \
+                src/adventure/panic_state.c             \
+                src/adventure/splashscreen_state.c      \
                 src/adventure/mainmenu_state.c
 ADV_OBJS=       ${ADV_SRCS:.c=.o}
 ADV_DEPS=       ${ADV_SRCS:.c=.d}
@@ -77,40 +78,46 @@ SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 JANSSON_CFLAGS= `pkg-config --cflags jansson`
 JANSSON_LDFLAGS=`pkg-config --libs jansson`
 
-TESTS=          tests/test-color.c \
-                tests/test-error.c \
-                tests/test-inventory.c \
-                tests/test-map.c \
-                tests/test-panic.c \
-                tests/test-save.c \
+TESTS=          tests/test-color.c                      \
+                tests/test-error.c                      \
+                tests/test-inventory.c                  \
+                tests/test-map.c                        \
+                tests/test-panic.c                      \
+                tests/test-save.c                       \
                 tests/test-script.c
 TESTS_INCS=     -I extern/libgreatest -I src/core ${SDL_CFLAGS}
-TESTS_LIBS=     ${LIB} ${SDL_LDFLAGS} ${LDFLAGS}
-TESTS_OBJS=     ${TESTS:.c=}
+TESTS_PRGS=     ${TESTS:.c=}
+TESTS_OBJS=     ${TESTS:.c=.o}
 TESTS_DEPS=     ${TESTS:.c=.d}
 
 TOOLS=          tools/molko-map.c
-TOOLS_OBJS=     ${TOOLS:.c=}
+TOOLS_PRGS=     ${TOOLS:.c=}
 TOOLS_DEPS=     ${TOOLS:.c=.d}
 
-FLAGS=          -MMD -D_XOPEN_SOURCE=700
-DEFINES=        -DPREFIX=\""${PREFIX}"\" \
+MY_CFLAGS=      -D_XOPEN_SOURCE=700 \
+                -DPREFIX=\""${PREFIX}"\" \
                 -DBINDIR=\""${BINDIR}"\" \
-                -DSHAREDIR=\""${SHAREDIR}"\"
-INCLUDES=       -I extern/libsqlite -I src/core -I src/adventure
+                -DSHAREDIR=\""${SHAREDIR}"\" \
+                -Iextern/libsqlite \
+                -Iextern/libgreatest \
+                -Isrc/core \
+                -Isrc/adventure
 
 .SUFFIXES:
-.SUFFIXES: .c .o
+.SUFFIXES: .o .c
 
 all: ${PROG}
 
 -include ${CORE_DEPS} ${ADV_DEPS} ${TESTS_DEPS} ${TOOLS_DEPS}
 
 .c.o:
-	${CC} ${FLAGS} ${DEFINES} ${INCLUDES} ${SDL_CFLAGS} ${CFLAGS} -MMD -c $< -o $@
+	${CC} ${MY_CFLAGS} ${SDL_CFLAGS} ${CFLAGS} -MMD -c $< -o $@
 
 .c:
-	${CC} ${FLAGS} ${TESTS_INCS} -o $@ ${CFLAGS} $< ${TESTS_LIBS} ${SQLITE_LIB}
+	${CC} ${MY_CFLAGS} -o $@ ${CFLAGS} $< ${LIB} ${SQLITE_LIB} ${SDL_LDFLAGS} ${LDFLAGS}
+
+.o:
+	${CC} -o $@ $< ${LIB} ${SQLITE_LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 
 ${SQLITE_OBJ}: ${SQLITE_SRC}
 	${CC} ${CFLAGS} ${SQLITE_FLAGS} -c ${SQLITE_SRC} -o $@
@@ -118,24 +125,27 @@ ${SQLITE_OBJ}: ${SQLITE_SRC}
 ${SQLITE_LIB}: ${SQLITE_OBJ}
 	${AR} -rc $@ ${SQLITE_OBJ}
 
-${LIB}: ${CORE_OBJS}
+${LIB}: ${CORE_OBJS} ${SQLITE_LIB}
 	${AR} -rc $@ ${CORE_OBJS}
 
-${PROG}: ${LIB} ${ADV_OBJS} ${SQLITE_LIB}
+${PROG}: ${LIB} ${ADV_OBJS}
 	${CC} -o $@ ${ADV_OBJS} ${LIB} ${SQLITE_LIB} ${SDL_LDFLAGS} ${LDFLAGS}
 
-${TESTS_OBJS}: ${LIB} ${SQLITE_LIB}
+${TESTS_OBJS}: ${LIB}
 
-tests: ${TESTS_OBJS}
-	for t in $?; do ./$$t; done
+tests: ${TESTS_PRGS}
+	for t in ${TESTS_PRGS}; do ./$$t; done
 
-tools: ${TOOLS_OBJS}
+tools: ${TOOLS_PRGS}
 
+# Custom rule: does not depend on anything else than jansson.
 tools/molko-map: tools/molko-map.c
-	${CC} -o $@ $< ${CFLAGS} ${JANSSON_CFLAGS} ${JANSSON_LDFLAGS}
+	${CC} ${MY_CFLAGS} -o $@ $< ${CFLAGS} ${JANSSON_CFLAGS} ${JANSSON_LDFLAGS}
 
 doxygen:
 	doxygen doxygen/Doxyfile
+
+everything: ${PROG} ${TOOLS_PRGS} ${TESTS_PRGS}
 
 install:
 	mkdir -p ${DESTDIR}${BINDIR}
@@ -150,7 +160,7 @@ clean:
 	rm -f ${LIB} ${PROG}
 	rm -f ${CORE_OBJS} ${CORE_DEPS}
 	rm -f ${ADV_OBJS} ${ADV_DEPS}
-	rm -f ${TESTS_OBJS} ${TESTS_DEPS}
-	rm -f ${TOOLS_OBJS} ${TOOLS_DEPS}
+	rm -f ${TESTS_PRGS} ${TESTS_OBJS} ${TESTS_DEPS}
+	rm -f ${TOOLS_PRGS} ${TOOLS_DEPS}
 
-.PHONY: all clean doxygen tests tools
+.PHONY: all clean doxygen everything tests tools

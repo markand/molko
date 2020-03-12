@@ -26,6 +26,13 @@ Quick install.
 	# sudo make install
 	$ molko
 
+Available general make targets:
+
+- `all`: (default): build only molko,
+- `tools`: build tools (e.g. molko-map),
+- `tests`: build tests and run them,
+- `everything`: build molko, tools and tests without running them.
+
 Platform: Windows
 -----------------
 
