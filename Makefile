@@ -47,6 +47,7 @@ CORE_SRCS=      src/core/animation.c \
                 src/core/map_state.c \
                 src/core/message.c \
                 src/core/painter.c \
+                src/core/panic.c \
                 src/core/save.c \
                 src/core/script.c \
                 src/core/sprite.c \
@@ -79,6 +80,7 @@ TESTS=          tests/test-color.c \
                 tests/test-error.c \
                 tests/test-inventory.c \
                 tests/test-map.c \
+                tests/test-panic.c \
                 tests/test-save.c \
                 tests/test-script.c
 TESTS_INCS=     -I extern/libgreatest -I src/core ${SDL_CFLAGS}

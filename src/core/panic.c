@@ -1,5 +1,5 @@
 /*
- * util.c -- utilities
+ * panic.c -- unrecoverable error handling
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,50 +16,31 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
+#include <assert.h>
 
-#include <SDL.h>
-
+#include "error.h"
 #include "panic.h"
-#include "util.h"
 
-void *
-emalloc(size_t size)
+void (*panic_handler)(void) = error_fatal;
+
+void
+panic(const char *fmt, ...)
 {
-	void *mem;
+	assert(fmt);
 
-	if (!(mem = malloc(size)))
-		panic("%s\n", strerror(errno));
+	va_list ap;
 
-	return mem;
-}
-
-void *
-ecalloc(size_t n, size_t size)
-{
-	void *mem;
-
-	if (!(mem = calloc(n, size)))
-		panic("%s\n", strerror(errno));
-
-	return mem;
-}
-
-void *
-ememdup(const void *ptr, size_t size)
-{
-	void *mem;
-
-	if (!(mem = malloc(size)))
-		panic("%s\n", strerror(errno));
-
-	return memcpy(mem, ptr, size);
+	va_start(ap, fmt);
+	panicv(fmt, ap);
+	va_end(ap);
 }
 
 void
-delay(unsigned int ms)
+panicv(const char *fmt, va_list ap)
 {
-	SDL_Delay(ms);
+	assert(fmt);
+	assert(panic_handler);
+
+	error_vprintf(fmt, ap);
+	panic_handler();
 }

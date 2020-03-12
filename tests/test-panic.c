@@ -1,5 +1,5 @@
 /*
- * util.c -- utilities
+ * test-panic.c -- test panic routines
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,50 +16,45 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdbool.h>
 
-#include <SDL.h>
+#define GREATEST_USE_ABBREVS 0
+#include <greatest.h>
 
-#include "panic.h"
-#include "util.h"
+#include <error.h>
+#include <panic.h>
 
-void *
-emalloc(size_t size)
+static bool handler_called;
+
+static void
+handler(void)
 {
-	void *mem;
-
-	if (!(mem = malloc(size)))
-		panic("%s\n", strerror(errno));
-
-	return mem;
+	handler_called = true;
 }
 
-void *
-ecalloc(size_t n, size_t size)
+GREATEST_TEST
+basics_simple(void)
 {
-	void *mem;
+	panic_handler = handler;
+	handler_called = false;
 
-	if (!(mem = calloc(n, size)))
-		panic("%s\n", strerror(errno));
-
-	return mem;
+	panic("this is an error");
+	GREATEST_ASSERT(handler_called);
+	GREATEST_ASSERT_STR_EQ(error(), "this is an error");
+	GREATEST_PASS();
 }
 
-void *
-ememdup(const void *ptr, size_t size)
+GREATEST_SUITE(basics)
 {
-	void *mem;
-
-	if (!(mem = malloc(size)))
-		panic("%s\n", strerror(errno));
-
-	return memcpy(mem, ptr, size);
+	GREATEST_RUN_TEST(basics_simple);
 }
 
-void
-delay(unsigned int ms)
+GREATEST_MAIN_DEFS();
+
+int
+main(int argc, char **argv)
 {
-	SDL_Delay(ms);
+	GREATEST_MAIN_BEGIN();
+	GREATEST_RUN_SUITE(basics);
+	GREATEST_MAIN_END();
 }
