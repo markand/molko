@@ -78,6 +78,7 @@ run(void)
 	struct clock clock;
 	struct font *font;
 	struct texture *frame;
+	int panic_trigger = 0;
 
 	if (!(font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 15)))
 		error_fatal();
@@ -99,8 +100,16 @@ run(void)
 			/* TODO: this must be handled by states. */
 			if (ev.type == EVENT_QUIT)
 				return;
-			if (ev.type == EVENT_KEYDOWN)
-				panic("test");
+
+			/*
+			 * TODO: user panic request.
+			 */
+			if (game.state != &panic_state &&
+			    ev.type == EVENT_KEYDOWN &&
+			    ev.key.key == KEY_F12) {
+				if (++panic_trigger == 3)
+					panic("User panic request.");
+			}
 
 			game_handle(&ev);
 		}

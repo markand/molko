@@ -16,13 +16,20 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <error.h>
+#include <event.h>
 #include <font.h>
+#include <game.h>
 #include <painter.h>
 #include <sys.h>
 #include <texture.h>
 #include <util.h>
 #include <window.h>
+#include <map_state.h>
 
 #include "panic_state.h"
 
@@ -31,6 +38,10 @@
 
 #define FONT "fonts/Lato-Regular.ttf"
 #define FONT_SZ 16
+
+#define PADDING 20
+
+#define OUT "molko-adventure.txt"
 
 struct label {
 	const char *text;
@@ -51,27 +62,87 @@ static struct label bottom[] = {
 	{ "Press <q> to quit without saving information.", NULL }
 };
 
+static struct label lerror;
+
 static void
 enter(void)
 {
 }
 
 static void
+dump(void)
+{
+	FILE *fp;
+
+	if (!(fp = fopen(OUT, "w")))
+		goto dump;
+
+	/* Print various information. */
+	fprintf(fp, "Molko's Adventure crash dump report\n");
+	fprintf(fp, "== state map dump ==\n");
+	fprintf(fp, "map:\n");
+	fprintf(fp, "  w     %u\n", map_state_data.map.w);
+	fprintf(fp, "  h     %u\n", map_state_data.map.h);
+	fprintf(fp, "player:\n");
+	fprintf(fp, "  x:    %u\n", map_state_data.player.x);
+	fprintf(fp, "  y:    %u\n", map_state_data.player.y);
+	fprintf(fp, "view:\n");
+	fprintf(fp, "  w:    %u\n", map_state_data.view.w);
+	fprintf(fp, "  h:    %u\n", map_state_data.view.h);
+	fprintf(fp, "  x:    %u\n", map_state_data.view.x);
+	fprintf(fp, "  y:    %u\n", map_state_data.view.y);
+
+dump:
+	if (fp)
+		fclose(fp);
+
+	abort();
+}
+
+static void
+handle_keydown(const struct event_key *ev)
+{
+	assert(ev);
+
+	switch (ev->key) {
+	case KEY_q:
+		game_quit();
+		break;
+	case KEY_s:
+		dump();
+		break;
+	default:
+		break;
+	}
+}
+
+static void
 handle(const union event *ev)
 {
-	(void)ev;
+	assert(ev);
+
+	switch (ev->type) {
+	case EVENT_KEYDOWN:
+		handle_keydown(&ev->key);
+		break;
+	default:
+		break;
+	}
 }
 
 static void
 generate(struct label labels[], size_t labelsz)
 {
-	for (size_t i = 0; i < labelsz; ++i) {
-		if (!labels[i].texture) {
-			labels[i].texture = font_render(data.font, labels[i].text, FOREGROUND);
+	assert(labels);
 
-			if (!labels[i].texture)
-				error_fatal();
-		}
+	for (size_t i = 0; i < labelsz; ++i) {
+		if (labels[i].texture)
+			continue;
+
+		labels[i].texture = font_render(data.font, labels[i].text, FOREGROUND);
+
+		if (!labels[i].texture)
+			error_fatal();
 	}
 }
 
@@ -80,14 +151,17 @@ update(unsigned int ticks)
 {
 	(void)ticks;
 
+	lerror.text = error();
+
 	generate(headers, NELEM(headers));
+	generate(&lerror, 1);
 	generate(bottom, NELEM(bottom));
 }
 
 static void
 draw(void)
 {
-	int y = 10;
+	int y = PADDING;
 
 	painter_set_target(NULL);
 	painter_set_color(BACKGROUND);
@@ -95,16 +169,19 @@ draw(void)
 
 	/* Header. */
 	for (size_t i = 0; i < NELEM(headers); ++i) {
-		texture_draw(headers[i].texture, 10, y);
+		texture_draw(headers[i].texture, PADDING, y);
 		y += texture_height(headers[i].texture) + 2;
 	}
 
+	/* Error message. */
+	texture_draw(lerror.texture, PADDING, y + PADDING);
+
 	/* Bottom. */
-	y = window_height() - 10;
+	y = window_height() - PADDING;
 	y -= texture_height(bottom[0].texture);
 
 	for (size_t i = 0; i < NELEM(bottom); ++i) {
-		texture_draw(bottom[i].texture, 10, y);
+		texture_draw(bottom[i].texture, PADDING, y);
 		y -= texture_height(bottom[i].texture) + 2;
 	}
 }
