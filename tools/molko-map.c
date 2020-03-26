@@ -47,7 +47,7 @@ is_layer(const char *name)
 	       strcmp(name, "objects") == 0;
 }
 
-const json_t *
+static const json_t *
 find_property(const json_t *props, const char *which)
 {
 	json_t *value;

@@ -140,7 +140,7 @@ tools: ${TOOLS_PRGS}
 
 # Custom rule: does not depend on anything else than jansson.
 tools/molko-map: tools/molko-map.c
-	${CC} ${MY_CFLAGS} -o $@ $< ${CFLAGS} ${JANSSON_CFLAGS} ${JANSSON_LDFLAGS}
+	${CC} ${MY_CFLAGS} -o $@ tools/molko-map.c ${CFLAGS} ${JANSSON_CFLAGS} ${JANSSON_LDFLAGS}
 
 doxygen:
 	doxygen doxygen/Doxyfile
