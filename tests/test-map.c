@@ -20,6 +20,7 @@
 
 #include <error.h>
 #include <map.h>
+#include <panic.h>
 #include <sys.h>
 #include <window.h>
 

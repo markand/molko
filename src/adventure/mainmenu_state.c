@@ -20,13 +20,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <error.h>
 #include <event.h>
 #include <font.h>
 #include <game.h>
 #include <image.h>
 #include <map_state.h>
 #include <painter.h>
+#include <panic.h>
 #include <state.h>
 #include <sys.h>
 #include <texture.h>
@@ -186,7 +186,7 @@ draw(void)
 
 		/* TODO: a sword here. */
 		painter_set_color(0x000000ff);
-		painter_draw_rectangle(true, items[selection].x - 30,
+		painter_draw_rectangle(items[selection].x - 30,
 		    items[selection].y + 11, 15, 15);
 	}
 }

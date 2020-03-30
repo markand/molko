@@ -71,7 +71,7 @@ painter_draw_point(int x1, int y1)
 }
 
 void
-painter_draw_rectangle(bool fill, int x, int y, unsigned int width, unsigned int height)
+painter_draw_rectangle(int x, int y, unsigned int width, unsigned int height)
 {
 	const SDL_Rect rect = {
 		.w = width,
@@ -80,10 +80,7 @@ painter_draw_rectangle(bool fill, int x, int y, unsigned int width, unsigned int
 		.y = y
 	};
 
-	if (fill)
-		SDL_RenderFillRect(win.renderer, &rect);
-	else
-		SDL_RenderDrawRect(win.renderer, &rect);
+	SDL_RenderFillRect(win.renderer, &rect);
 }
 
 void

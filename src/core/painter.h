@@ -33,7 +33,7 @@ struct texture;
  * Give the current texture being used for rendering, maybe NULL if the
  * rendering is on root.
  *
- * \return texture or NULL
+ * \return Texture or NULL.
  */
 struct texture *
 painter_get_target(void);
@@ -93,14 +93,13 @@ painter_draw_point(int x, int y);
 /**
  * Draw a rectangle
  *
- * \param fill set to true to fill the rectangle
  * \param x the X coordinate
  * \param y the Y coordinate
  * \param w the rectangle width
  * \param h the rectangle height
  */
 void
-painter_draw_rectangle(bool fill, int x, int y, unsigned int w, unsigned int h);
+painter_draw_rectangle(int x, int y, unsigned int w, unsigned int h);
 
 /**
  * Clear the window.
