@@ -69,6 +69,7 @@
 
 struct action;
 struct font;
+struct theme;
 
 union event;
 
@@ -98,22 +99,14 @@ enum message_state {
  * any user properties and therefore must exist while using it.
  */
 struct message {
-	const char *text[6];            /*!< (RW) Lines of text to show */
-	struct texture *frame;          /*!< (RW, ref) Frame to use */
-	struct texture *avatar;         /*!< (RW, ref, optional) Avatar face (optional) */
-	struct font *font;              /*!< (RW, ref) Font to use */
-	unsigned long colors[2];        /*!< (RW) Normal/selected colors */
+	const char *text[6];            /*!< (RW) Lines of text to show. */
+	struct texture *frame;          /*!< (RW, ref) Frame to use. */
+	struct texture *avatar;         /*!< (RW, ref, optional) Avatar face. */
 	unsigned int index;             /*!< (RW) Line selected */
 	enum message_flags flags;       /*!< (RW) Message flags */
 	enum message_state state;       /*!< (RO) Current state */
-
-	/*! \cond PRIVATE */
-
-	struct texture textures[12];
-	unsigned int elapsed;
-	int height[2];
-
-	/*! \endcond */
+	struct theme *theme;            /*!< (RW, ref, optional) Theme to use. */
+	unsigned int elapsed;           /*!< (RO) Time elapsed. */
 };
 
 /**
@@ -170,15 +163,6 @@ message_draw(struct message *msg);
  */
 void
 message_hide(struct message *msg);
-
-/**
- * Destroy owned resources.
- *
- * \pre msg != NULL
- * \param msg the message
- */
-void
-message_finish(struct message *msg);
 
 /**
  * Convert message into an action.

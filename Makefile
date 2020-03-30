@@ -35,17 +35,21 @@ SQLITE_FLAGS=   -DSQLITE_THREADSAFE=0 \
                 -DSQLITE_DEFAULT_FOREIGN_KEYS=1
 
 CORE_SRCS=      src/core/animation.c                    \
+                src/core/button.c                       \
                 src/core/clock.c                        \
                 src/core/debug.c                        \
                 src/core/error.c                        \
                 src/core/event.c                        \
                 src/core/font.c                         \
+                src/core/frame.c                        \
                 src/core/game.c                         \
                 src/core/image.c                        \
                 src/core/inhibit.c                      \
                 src/core/inventory.c                    \
+                src/core/label.c                        \
                 src/core/map.c                          \
                 src/core/map_state.c                    \
+                src/core/math.c                         \
                 src/core/message.c                      \
                 src/core/painter.c                      \
                 src/core/panic.c                        \
@@ -54,6 +58,7 @@ CORE_SRCS=      src/core/animation.c                    \
                 src/core/sprite.c                       \
                 src/core/sys.c                          \
                 src/core/texture.c                      \
+                src/core/theme.c                        \
                 src/core/util.c                         \
                 src/core/walksprite.c                   \
                 src/core/wait.c                         \
@@ -77,6 +82,11 @@ SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 
 JANSSON_CFLAGS= `pkg-config --cflags jansson`
 JANSSON_LDFLAGS=`pkg-config --libs jansson`
+
+EXAMPLES=       examples/example-message.c
+EXAMPLES_PRGS=  ${EXAMPLES:.c=}
+EXAMPLES_OBJS=  ${EXAMPLES:.c=.o}
+EXAMPLES_DEPS=  ${EXAMPLES:.c=.d}
 
 TESTS=          tests/test-color.c                      \
                 tests/test-error.c                      \
@@ -133,6 +143,10 @@ ${PROG}: ${LIB} ${ADV_OBJS}
 
 ${TESTS_OBJS}: ${LIB}
 
+${EXAMPLES_OBJS}: ${LIB}
+
+examples: ${EXAMPLES_PRGS}
+
 tests: ${TESTS_PRGS}
 	for t in ${TESTS_PRGS}; do ./$$t; done
 
@@ -161,6 +175,7 @@ clean:
 	rm -f ${CORE_OBJS} ${CORE_DEPS}
 	rm -f ${ADV_OBJS} ${ADV_DEPS}
 	rm -f ${TESTS_PRGS} ${TESTS_OBJS} ${TESTS_DEPS}
+	rm -f ${EXAMPLES_PRGS} ${EXAMPLES_OBJS} ${EXAMPLES_DEPS}
 	rm -f ${TOOLS_PRGS} ${TOOLS_DEPS}
 
 .PHONY: all clean doxygen everything tests tools

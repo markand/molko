@@ -22,14 +22,18 @@
 #include <stdnoreturn.h>
 #include <string.h>
 
+#include "button.h"
 #include "clock.h"
 #include "debug.h"
 #include "error.h"
 #include "event.h"
 #include "font.h"
+#include "frame.h"
 #include "game.h"
 #include "image.h"
 #include "inhibit.h"
+#include "label.h"
+#include "label.h"
 #include "map.h"
 #include "map_state.h"
 #include "message.h"
@@ -40,6 +44,7 @@
 #include "splashscreen_state.h"
 #include "sprite.h"
 #include "sys.h"
+#include "theme.h"
 #include "util.h"
 #include "wait.h"
 #include "window.h"
@@ -63,6 +68,8 @@ init(void)
 		panic();
 	if (!window_init("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
 		panic();
+	if (!theme_init())
+		panic();
 
 	/* Init unrecoverable panic state. */
 	panic_state_init();
@@ -75,6 +82,51 @@ init(void)
 static void
 run(void)
 {
+	struct clock clock = { 0 };
+	struct button button = {
+		.text = "click me",
+		.x = 10,
+		.y = 40,
+		.w = 100,
+		.h = 30
+	};
+
+	for (;;) {
+		unsigned int elapsed = clock_elapsed(&clock);
+
+		clock_start(&clock);
+
+		for (union event ev; event_poll(&ev); ) {
+			switch (ev.type) {
+			case EVENT_QUIT:
+				return;
+			default:
+				button_handle(&button, &ev);
+
+				if (button.state == BUTTON_STATE_ACTIVATED) {
+					puts("CLICKED!!!");
+					button_reset(&button);
+				}
+
+				break;
+			}
+		}
+
+		printf("%d\n", button.state);
+
+		painter_set_color(0xffffffff);
+		painter_clear();
+
+		theme_draw_frame(NULL, &(const struct frame){ .x=10, .y=10, .w=500, .h=500 });
+		label_draw(&(const struct label){ .text = "Hello for this quest.", .x=20, .y=20, .w=100, .h=100 });
+		button_draw(&button);
+
+		painter_present();
+
+		if ((elapsed = clock_elapsed(&clock)) < 20)
+			delay(20 - elapsed);
+	}
+#if 0
 	union event ev;
 	struct clock clock;
 	struct font font;
@@ -125,6 +177,7 @@ run(void)
 		if ((elapsed = clock_elapsed(&clock)) < 20)
 			delay(20 - elapsed);
 	}
+#endif
 }
 
 static void
