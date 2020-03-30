@@ -24,33 +24,30 @@
 #include "error_p.h"
 #include "texture_p.h"
 
-struct texture *
-image_openf(const char *path)
+bool
+image_open(struct texture *tex, const char *path)
 {
+	assert(tex);
 	assert(path);
 
 	SDL_Surface *surface = IMG_Load(path);
 
-	if (!surface) {
-		error_sdl();
-		return NULL;
-	}
+	if (!surface)
+		return error_sdl();
 
-	return texture_from_surface(surface);
+	return texture_from_surface(tex, surface);
 }
 
-struct texture *
-image_openb(const void *buffer, size_t size)
+bool
+image_openmem(struct texture *tex, const void *buffer, size_t size)
 {
 	assert(buffer);
 
 	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
 	SDL_Surface *surface;
 
-	if (!ops || !(surface = IMG_Load_RW(ops, true))) {
-		error_sdl();
-		return NULL;
-	}
+	if (!ops || !(surface = IMG_Load_RW(ops, true)))
+		return error_sdl();
 
-	return texture_from_surface(surface);
+	return texture_from_surface(tex, surface);
 }

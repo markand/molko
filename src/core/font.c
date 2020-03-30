@@ -29,73 +29,57 @@
 #include "texture_p.h"
 #include "util.h"
 
-struct font {
-	TTF_Font *handle;
-};
-
-struct font *
-font_openf(const char *path, unsigned int size)
+bool
+font_open(struct font *font, const char *path, unsigned int size)
 {
+	assert(font);
 	assert(path);
 
-	struct font *f;
+	if (!(font->handle = TTF_OpenFont(path, size)))
+		return error_sdl();
 
-	f = ecalloc(1, sizeof (struct font));
-
-	if (!(f->handle = TTF_OpenFont(path, size))) {
-		error_sdl();
-		free(f);
-		return NULL;
-	}
-
-	return f;
+	return true;
 }
 
-struct font *
-font_openb(const void *buffer, size_t buflen, unsigned int size)
+bool
+font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size)
 {
+	assert(font);
 	assert(buffer);
 
-	struct font *f;
 	SDL_RWops *ops;
 
-	f = ecalloc(1, sizeof (struct font));
-
 	if (!(ops = SDL_RWFromConstMem(buffer, buflen)) ||
-	   (!(f->handle = TTF_OpenFontRW(ops, true, size)))) {
-		error_sdl();
-		free(f);
-		return NULL;
-	}
+	   (!(font->handle = TTF_OpenFontRW(ops, true, size))))
+		return error_sdl();
 
-	return f;
+	return true;
 }
 
-struct texture *
-font_render(struct font *font, const char *text, unsigned long color)
+bool
+font_ok(const struct font *font)
 {
-	return font_render_ex(font, text, color, FONT_STYLE_ANTIALIASED);
+	assert(font);
+
+	return font->handle;
 }
 
-struct texture *
-font_render_ex(struct font *font,
-               const char *text,
-               unsigned long color,
-               enum font_style style)
+bool
+font_render(struct font *font, struct texture *tex, const char *text)
 {
 	assert(font);
 	assert(text);
 
 	SDL_Color fg = {
-		.r = COLOR_R(color),
-		.g = COLOR_G(color),
-		.b = COLOR_B(color),
-		.a = COLOR_A(color)
+		.r = COLOR_R(font->color),
+		.g = COLOR_G(font->color),
+		.b = COLOR_B(font->color),
+		.a = COLOR_A(font->color)
 	};
 	SDL_Surface *surface;
 	SDL_Surface *(*func)(TTF_Font *, const char *, SDL_Color);
 
-	switch (style) {
+	switch (font->style) {
 	case FONT_STYLE_ANTIALIASED:
 		func = TTF_RenderUTF8_Blended;
 		break;
@@ -104,25 +88,25 @@ font_render_ex(struct font *font,
 		break;
 	}
 
-	if (!(surface = func(font->handle, text, fg))) {
-		error_sdl();
-		return NULL;
-	}
+	if (!(surface = func(font->handle, text, fg)))
+		return error_sdl();
 
-	return texture_from_surface(surface);
+	return texture_from_surface(tex, surface);
 }
 
 unsigned int
 font_height(const struct font *font)
 {
+	assert(font);
+
 	return TTF_FontHeight(font->handle);
 }
 
 void
-font_close(struct font *font)
+font_finish(struct font *font)
 {
 	assert(font);
 
-	TTF_CloseFont(font->handle);
-	free(font);
+	if (font->handle)
+		TTF_CloseFont(font->handle);
 }

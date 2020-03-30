@@ -45,21 +45,21 @@
 
 struct label {
 	const char *text;
-	struct texture *texture;
+	struct texture texture;
 };
 
 static struct {
-	struct font *font;
+	struct font font;
 } data;
 
 static struct label headers[] = {
-	{ "An unrecoverable error occured and the game cannot continue.", NULL },
-	{ "Please report the detailed error as provided below.", NULL },
+	{ "An unrecoverable error occured and the game cannot continue.", 0 },
+	{ "Please report the detailed error as provided below.", 0 },
 };
 
 static struct label bottom[] = {
-	{ "Press <s> to save information and generate a core dump.", NULL },
-	{ "Press <q> to quit without saving information.", NULL }
+	{ "Press <s> to save information and generate a core dump.", 0 },
+	{ "Press <q> to quit without saving information.", 0 }
 };
 
 static struct label lerror;
@@ -136,12 +136,13 @@ generate(struct label labels[], size_t labelsz)
 	assert(labels);
 
 	for (size_t i = 0; i < labelsz; ++i) {
-		if (labels[i].texture)
+		if (texture_ok(&labels[i].texture))
 			continue;
 
-		labels[i].texture = font_render(data.font, labels[i].text, FOREGROUND);
+		data.font.color = FOREGROUND;
+		font_render(&data.font, &labels[i].texture, labels[i].text);
 
-		if (!labels[i].texture)
+		if (!texture_ok(&labels[i].texture))
 			error_fatal();
 	}
 }
@@ -169,20 +170,20 @@ draw(void)
 
 	/* Header. */
 	for (size_t i = 0; i < NELEM(headers); ++i) {
-		texture_draw(headers[i].texture, PADDING, y);
-		y += texture_height(headers[i].texture) + 2;
+		texture_draw(&headers[i].texture, PADDING, y);
+		y += headers[i].texture.h + 2;
 	}
 
 	/* Error message. */
-	texture_draw(lerror.texture, PADDING, y + PADDING);
+	texture_draw(&lerror.texture, PADDING, y + PADDING);
 
 	/* Bottom. */
 	y = window_height() - PADDING;
-	y -= texture_height(bottom[0].texture);
+	y -= bottom[0].texture.h;
 
 	for (size_t i = 0; i < NELEM(bottom); ++i) {
-		texture_draw(bottom[i].texture, PADDING, y);
-		y -= texture_height(bottom[i].texture) + 2;
+		texture_draw(&bottom[i].texture, PADDING, y);
+		y -= bottom[i].texture.h + 2;
 	}
 }
 
@@ -207,6 +208,6 @@ panic_state_init(void)
 	 * useful information to the screen so as last resort print them
 	 * on the console.
 	 */
-	if (!(data.font = font_openf(sys_datapath(FONT), FONT_SZ)))
+	if (!(font_open(&data.font, sys_datapath(FONT), FONT_SZ)))
 		error_fatal();
 }

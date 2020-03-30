@@ -122,12 +122,9 @@ enter(void)
 	/* Adjust map properties. */
 	struct map *m = &map_state_data.map.map;
 
-	if (!m->picture)
-		map_repaint(m);
-
 	map_repaint(m);
-	map_state_data.map.w = texture_width(m->picture);
-	map_state_data.map.h = texture_height(m->picture);
+	map_state_data.map.w = m->picture.w;
+	map_state_data.map.h = m->picture.h;
 
 	/* Adjust view. */
 	map_state_data.view.w = window_width();

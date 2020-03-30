@@ -65,9 +65,10 @@
 
 #include <stdbool.h>
 
+#include "texture.h"
+
 struct action;
 struct font;
-struct texture;
 
 union event;
 
@@ -98,9 +99,9 @@ enum message_state {
  */
 struct message {
 	const char *text[6];            /*!< (RW) Lines of text to show */
-	struct texture *frame;          /*!< (RW) Frame to use */
-	struct texture *avatar;         /*!< (RW) Avatar face (optional) */
-	struct font *font;              /*!< (RW) Font to use */
+	struct texture *frame;          /*!< (RW, ref) Frame to use */
+	struct texture *avatar;         /*!< (RW, ref, optional) Avatar face (optional) */
+	struct font *font;              /*!< (RW, ref) Font to use */
 	unsigned long colors[2];        /*!< (RW) Normal/selected colors */
 	unsigned int index;             /*!< (RW) Line selected */
 	enum message_flags flags;       /*!< (RW) Message flags */
@@ -108,7 +109,7 @@ struct message {
 
 	/*! \cond PRIVATE */
 
-	struct texture *textures[12];
+	struct texture textures[12];
 	unsigned int elapsed;
 	int height[2];
 

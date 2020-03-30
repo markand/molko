@@ -31,41 +31,37 @@
 
 /**
  * \brief Texture object.
- *
- * This object is not publicly defined because it contains
- * implementation-defined data.
  */
-struct texture;
+struct texture {
+	unsigned int w;         /*!< (RO) Texture width. */
+	unsigned int h;         /*!< (RO) Texture height. */
+	void *handle;           /*!< (RO) Native handle. */
+};
 
 /**
  * Create a new texture.
  *
+ * \pre tex != NULL
+ * \param tex the texture to initialize
  * \param w the width
  * \param h the height
- * \return the texture or NULL on error
+ * \return False on error.
  */
-struct texture *
-texture_new(unsigned int w, unsigned int h);
+bool
+texture_new(struct texture *tex, unsigned int w, unsigned int h);
 
 /**
- * Get texture width.
+ * Check if the texture is valid.
+ *
+ * This function simply checks if the texture is initialized and has non-null
+ * dimensions.
  *
  * \pre tex != NULL
- * \param tex the texture
- * \return the width
+ * \param tex the texture to check
+ * \return True if the texture is initialized
  */
-unsigned int
-texture_width(struct texture *tex);
-
-/**
- * Get texture height.
- *
- * \pre tex != NULL
- * \param tex the texture
- * \return the height
- */
-unsigned int
-texture_height(struct texture *tex);
+bool
+texture_ok(const struct texture *tex);
 
 /**
  * Simple texture drawing.
@@ -94,16 +90,16 @@ texture_draw(struct texture *tex, int x, int y);
  * \param angle the angle
  */
 void
-texture_draw_ex(struct texture *tex,
-                int src_x,
-                int src_y,
-                unsigned src_w,
-                unsigned src_h,
-                int dst_x,
-                int dst_y,
-                unsigned dst_w,
-                unsigned dst_h,
-                double angle);
+texture_scale(struct texture *tex,
+              int src_x,
+              int src_y,
+              unsigned src_w,
+              unsigned src_h,
+              int dst_x,
+              int dst_y,
+              unsigned dst_w,
+              unsigned dst_h,
+              double angle);
 
 /**
  * Close the texture, do not use afterwards.
@@ -112,6 +108,6 @@ texture_draw_ex(struct texture *tex,
  * \param tex the texture
  */
 void
-texture_close(struct texture *tex);
+texture_finish(struct texture *tex);
 
 #endif /* !MOLKO_TEXTURE_H */

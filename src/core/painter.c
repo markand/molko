@@ -18,7 +18,7 @@
 
 #include "color.h"
 #include "painter.h"
-#include "texture_p.h"
+#include "texture.h"
 #include "window_p.h"
 
 static struct texture *renderer;

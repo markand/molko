@@ -26,14 +26,12 @@
 
 #include <stdbool.h>
 
-#include "sprite.h"
+#include "texture.h"
 
 /**
  * \brief Max title length for a map.
  */
 #define MAP_TITLE_MAX   32
-
-struct texture;
 
 /**
  * \brief Map layer.
@@ -50,9 +48,8 @@ struct map_layer {
  */
 struct map {
 	char title[MAP_TITLE_MAX];      /*!< (RW) The map title */
-	struct texture *tileset;        /*!< (RW) Tileset to use */
-	struct texture *picture;        /*!< (RO) Map drawn into a picture */
-	struct sprite sprite;           /*!< (RO) Sprite to render */
+	struct texture tileset;         /*!< (RW) Tileset to use */
+	struct texture picture;         /*!< (RO) Map drawn into a picture */
 	int origin_x;                   /*!< (RO) Where the player starts in X */
 	int origin_y;                   /*!< (RO) Where the player starts in Y */
 	unsigned int width;             /*!< (RO) Map width in cells */
@@ -102,6 +99,6 @@ map_repaint(struct map *map);
  * \param map the map to render
  */
 void
-map_close(struct map *map);
+map_finish(struct map *map);
 
 #endif /* !MOLKO_MAP_H */

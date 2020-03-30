@@ -24,13 +24,13 @@
  * \brief Splash screen state.
  */
 
-struct texture;
+#include "texture.h"
 
 /**
  * \brief Data for splashscreen.
  */
 extern struct splashscreen_state_data {
-	struct texture *text;           /*!< (RW) Texture for the text. */
+	struct texture text;            /*!< (RW) Texture for the text. */
 	int x;                          /*!< (RW) Position in x. */
 	int y;                          /*!< (RW) Position in y. */
 	unsigned int elapsed;           /*!< (RW) Time elapsed. */

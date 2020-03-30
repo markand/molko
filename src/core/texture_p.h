@@ -19,13 +19,13 @@
 #ifndef MOLKO_TEXTURE_P_H
 #define MOLKO_TEXTURE_P_H
 
+#include <stdbool.h>
+
 #include <SDL.h>
 
-struct texture {
-	SDL_Texture *handle;
-};
+struct texture;
 
-struct texture *
-texture_from_surface(SDL_Surface *surface);
+bool
+texture_from_surface(struct texture *tex, SDL_Surface *surface);
 
 #endif /* !MOLKO_TEXTURE_P_H */

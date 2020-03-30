@@ -19,7 +19,6 @@
 #include <assert.h>
 
 #include "sprite.h"
-#include "texture_p.h"
 #include "texture.h"
 
 void
@@ -28,20 +27,14 @@ sprite_init(struct sprite *sprite,
             unsigned int cellw,
             unsigned int cellh)
 {
-	int w = 0;
-	int h = 0;
-
 	assert(sprite);
-	assert(tex);
-
-	/* TODO: use texture_get_size */
-	SDL_QueryTexture(tex->handle, NULL, NULL, &w, &h);
+	assert(tex && texture_ok(tex));
 
 	sprite->texture = tex;
 	sprite->cellw = cellw;
 	sprite->cellh = cellh;
-	sprite->nrows = h / cellh;
-	sprite->ncols = w / cellw;
+	sprite->nrows = tex->h / cellh;
+	sprite->ncols = tex->w / cellw;
 }
 
 void
@@ -49,7 +42,7 @@ sprite_draw(struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
 {
 	assert(sprite);
 
-	texture_draw_ex(
+	texture_scale(
 		sprite->texture,
 		c * sprite->cellw,      /* src y */
 		r * sprite->cellh,      /* src x */

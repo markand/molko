@@ -25,75 +25,59 @@
 #include "util.h"
 #include "window_p.h"
 
-struct texture *
-texture_new(unsigned int w, unsigned int h)
+bool
+texture_new(struct texture *tex, unsigned int w, unsigned int h)
 {
-	struct texture *tex = emalloc(sizeof (struct texture));
+	assert(tex);
 
-	if (!(tex->handle = SDL_CreateTexture(win.renderer,
-	    SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h))) {
-		error_sdl();
-		free(tex);
-		return NULL;
+	tex->handle = SDL_CreateTexture(win.renderer,
+	    SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
+
+	if (!tex->handle) {
+		tex->w = tex->h = 0;
+		return error_sdl();
 	}
 
-	return tex;
+	tex->w = w;
+	tex->h = h;
+
+	return true;
 }
 
-unsigned int
-texture_width(struct texture *tex)
+bool
+texture_ok(const struct texture *tex)
 {
 	assert(tex);
 
-	int width;
-
-	if (SDL_QueryTexture(tex->handle, NULL, NULL, &width, NULL) < 0)
-		return 0;
-
-	return width;
-}
-
-unsigned int
-texture_height(struct texture *tex)
-{
-	assert(tex);
-
-	int height;
-
-	if (SDL_QueryTexture(tex->handle, NULL, NULL, NULL, &height) < 0)
-		return 0;
-
-	return height;
+	return tex->handle && tex->w && tex->h;
 }
 
 void
 texture_draw(struct texture *tex, int x, int y)
 {
+	assert(tex);
+
 	SDL_Rect dst = {
 		.x = x,
 		.y = y,
-		.w = 0,
-		.h = 0
+		.w = tex->w,
+		.h = tex->h
 	};
 
-	assert(tex);
-
-	/* We need to determine size */
-	SDL_QueryTexture(tex->handle, NULL, NULL, &dst.w, &dst.h);
 	SDL_RenderCopy(win.renderer, tex->handle, NULL, &dst);
 }
 
 void
-texture_draw_ex(struct texture *tex,
-                int src_x,
-                int src_y,
-                unsigned src_w,
-                unsigned src_h,
-                int dst_x,
-                int dst_y,
-                unsigned dst_w,
-                unsigned dst_h,
-                double angle)
+texture_scale(struct texture *tex,
+              int src_x,
+              int src_y,
+              unsigned src_w,
+              unsigned src_h,
+              int dst_x,
+              int dst_y,
+              unsigned dst_w,
+              unsigned dst_h,
+              double angle)
 {
 	const SDL_Rect src = {
 		.x = src_x,
@@ -112,28 +96,31 @@ texture_draw_ex(struct texture *tex,
 }
 
 void
-texture_close(struct texture *tex)
+texture_finish(struct texture *tex)
 {
 	assert(tex);
 
-	SDL_DestroyTexture(tex->handle);
-	free(tex);
+	if (tex->handle)
+		SDL_DestroyTexture(tex->handle);
+
+	memset(tex, 0, sizeof (*tex));
 }
 
 /* private */
 
-struct texture *
-texture_from_surface(SDL_Surface *surface)
+bool
+texture_from_surface(struct texture *tex, SDL_Surface *surface)
 {
+	assert(tex);
 	assert(surface);
 
-	struct texture *texture = ecalloc(1, sizeof (struct texture));
-
-	if (!(texture->handle = SDL_CreateTextureFromSurface(win.renderer, surface))) {
-		error_sdl();
-		free(texture);
-		return NULL;
+	if (!(tex->handle = SDL_CreateTextureFromSurface(win.renderer, surface))) {
+		tex->w = tex->h = 0;
+		return error_sdl();
 	}
 
-	return texture;
+	tex->w = surface->w;
+	tex->h = surface->h;
+
+	return true;
 }

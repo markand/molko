@@ -51,7 +51,7 @@ struct sprite {
  * texture size.
  *
  * \pre sprite != NULL
- * \pre tex != NULL
+ * \pre tex != NULL && texture_ok(tex)
  * \param sprite the sprite to initialize
  * \param tex the texture
  * \param cellw the width per cell in pixels

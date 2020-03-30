@@ -48,6 +48,7 @@
 #define WINDOW_HEIGHT 720
 
 static jmp_buf panic_buf;
+static struct font debug_font;
 
 static noreturn void
 unrecoverable(void)
@@ -76,17 +77,18 @@ run(void)
 {
 	union event ev;
 	struct clock clock;
-	struct font *font;
-	struct texture *frame;
+	struct font font;
+	struct texture frame;
 	int panic_trigger = 0;
 
-	if (!(font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 15)))
+	if (!(font_open(&font, sys_datapath("fonts/DejaVuSans.ttf"), 15)))
 		error_fatal();
-	if (!(debug_options.default_font = font_openf(sys_datapath("fonts/DejaVuSans.ttf"), 10)))
+	if (!(font_open(&debug_font, sys_datapath("fonts/DejaVuSans.ttf"), 10)))
 		error_fatal();
-	if (!(frame = image_openf(sys_datapath("images/message.png"))))
+	if (!(image_open(&frame, sys_datapath("images/message.png"))))
 		error_fatal();
 
+	debug_options.default_font = &debug_font;
 	debug_options.enable = true;
 
 	clock_start(&clock);

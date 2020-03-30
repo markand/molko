@@ -74,9 +74,9 @@ average(const struct message *msg)
 	unsigned int total = 0;
 
 	for (int i = 0; i < 6; ++i) {
-		if (msg->textures[i]) {
+		if (msg->textures[i].w) {
 			n += 1;
-			total += texture_height(msg->textures[i]);
+			total += msg->textures[i].h;
 		}
 	}
 
@@ -86,12 +86,8 @@ average(const struct message *msg)
 static void
 clear(struct message *msg)
 {
-	for (unsigned int i = 0; i < 12; ++i) {
-		if (msg->textures[i]) {
-			texture_close(msg->textures[i]);
-			msg->textures[i] = NULL;
-		}
-	}
+	for (unsigned int i = 0; i < 12; ++i)
+		texture_finish(&msg->textures[i]);
 }
 
 static void
@@ -105,23 +101,26 @@ redraw(struct message *msg)
 			continue;
 
 		/* Normal lines of text. */
-		unsigned long color = msg->colors[0];
+		msg->font->color = msg->colors[0];
 
 		if (msg->flags & MESSAGE_QUESTION && msg->index == i)
-			color = msg->colors[1];
+			msg->font->color = msg->colors[1];
 
-		if (!msg->textures[i])
-			msg->textures[i] = font_render(
+		if (!texture_ok(&msg->textures[i]))
+			font_render(
 			    msg->font,
-			    msg->text[i],
-			    color
+			    &msg->textures[i],
+			    msg->text[i]
 			);
-		if (!msg->textures[i + 6])
-			msg->textures[i + 6] = font_render(
+		if (!texture_ok(&msg->textures[i + 6])) {
+			msg->font->color = 0x000000ff;
+
+			font_render(
 			    msg->font,
-			    msg->text[i],
-			    0x000000ff
+			    &msg->textures[i + 6],
+			    msg->text[i]
 			);
+		}
 	}
 }
 
@@ -132,7 +131,7 @@ message_start(struct message *msg)
 
 	msg->elapsed = 0;
 	msg->state = msg->flags & MESSAGE_QUICK ? MESSAGE_SHOWING : MESSAGE_OPENING;
-	msg->height[0] = texture_height(msg->frame);
+	msg->height[0] = msg->frame->h;
 	msg->height[1] = 0;
 
 	redraw(msg);
@@ -176,7 +175,7 @@ message_update(struct message *msg, unsigned int ticks)
 
 	switch (msg->state) {
 	case MESSAGE_OPENING:
-		msg->height[1] += texture_height(msg->frame) * ticks / MESSAGE_SPEED;
+		msg->height[1] += msg->frame->h * ticks / MESSAGE_SPEED;
 
 		if (msg->height[1] > msg->height[0])
 			msg->height[1] = msg->height[0];
@@ -195,7 +194,7 @@ message_update(struct message *msg, unsigned int ticks)
 
 		break;
 	case MESSAGE_HIDING:
-		msg->height[1] -= texture_height(msg->frame) * ticks / MESSAGE_SPEED;
+		msg->height[1] -= msg->frame->h * ticks / MESSAGE_SPEED;
 
 		if (msg->elapsed >= MESSAGE_SPEED) {
 			msg->state = MESSAGE_NONE;
@@ -216,8 +215,8 @@ message_draw(struct message *msg)
 	assert(msg);
 	assert(msg->frame);
 
-	const unsigned int w = texture_width(msg->frame);
-	const unsigned int h = texture_height(msg->frame);
+	const unsigned int w = msg->frame->w;
+	const unsigned int h = msg->frame->h;
 	const unsigned int x = (window_width() / 2) - (w / 2);
 	const unsigned int y = 80;
 	const unsigned int avgh = average(msg);
@@ -226,7 +225,7 @@ message_draw(struct message *msg)
 	switch (msg->state) {
 	case MESSAGE_OPENING:
 	case MESSAGE_HIDING:
-		texture_draw_ex(msg->frame, 0, 0, w, msg->height[1], x, y, w, msg->height[1], 0);
+		texture_scale(msg->frame, 0, 0, w, msg->height[1], x, y, w, msg->height[1], 0);
 		break;
 	case MESSAGE_SHOWING:
 		texture_draw(msg->frame, x, y);
@@ -236,11 +235,11 @@ message_draw(struct message *msg)
 			const int real_x = x + 20;
 			const int real_y = y + ((i + 1) * gapy) + (i * avgh);
 
-			if (!msg->textures[i])
+			if (!texture_ok(&msg->textures[i]))
 				continue;
 
-			texture_draw(msg->textures[i + 6], real_x + 2, real_y + 2);
-			texture_draw(msg->textures[i], real_x, real_y);
+			texture_draw(&msg->textures[i + 6], real_x + 2, real_y + 2);
+			texture_draw(&msg->textures[i], real_x, real_y);
 		}
 		break;
 	default:

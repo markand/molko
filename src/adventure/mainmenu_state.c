@@ -48,10 +48,11 @@ static int y;
 static unsigned int selection;
 static int destination;
 static enum substate substate;
+static struct texture image;
 
 /* Menu items. */
 static struct {
-	struct texture *texture;
+	struct texture texture;
 	int x;
 	int y;
 } items[3];
@@ -59,9 +60,9 @@ static struct {
 static void
 enter(void)
 {
-	struct font *font = font_openf(sys_datapath("fonts/pirata-one.ttf"), 30);
+	struct font font = { 0 };
 
-	if (!font)
+	if (!font_open(&font, sys_datapath("fonts/pirata-one.ttf"), 30))
 		error_fatal();
 
 	substate = SUBSTATE_MOVING;
@@ -70,36 +71,33 @@ enter(void)
 	destination = window_height() / 4;
 
 	/* TODO: change continue color if no game exists. */
-	items[0].texture = font_render(font, "New game", 0x000000ff);
-	items[0].x = (window_width() / 2) - (texture_width(items[0].texture) / 2);
+	font_render(&font, &items[0].texture, "New game");
+	items[0].x = (window_width() / 2) - (items[0].texture.w / 2);
 	items[0].y = window_height() * 0.75;
 
-	items[1].texture = font_render(font, "Continue", 0x000000ff);
+	font_render(&font, &items[1].texture, "Continue");
 	items[1].x = items[0].x;
-	items[1].y = items[0].y + texture_height(items[0].texture);
+	items[1].y = items[0].y + items[0].texture.h;
 
-	items[2].texture = font_render(font, "Quit", 0x000000ff);
+	font_render(&font, &items[2].texture, "Quit");
 	items[2].x = items[0].x;
-	items[2].y = items[1].y + texture_height(items[1].texture);
+	items[2].y = items[1].y + items[1].texture.h;
+
+	font_finish(&font);
 }
 
 static void
 new(void)
 {
-	struct map map;
-	struct texture *image;
-
 	/* Prepare map. */
-	if (!map_open(&map, sys_datapath("maps/test.map")))
+	if (!map_open(&map_state_data.map.map, sys_datapath("maps/test.map")))
 		error_fatal();
-
-	memcpy(&map_state_data.map.map, &map, sizeof (map));
 
 	/* Prepare image and sprite. */
-	if (!(image = image_openf(sys_datapath("sprites/test-walk.png"))))
+	if (!(image_open(&image, sys_datapath("sprites/test-walk.png"))))
 		error_fatal();
 
-	sprite_init(&map_state_data.player.sprite, image, 48, 48);
+	sprite_init(&map_state_data.player.sprite, &image, 48, 48);
 	game_switch(&map_state, false);
 }
 
@@ -177,12 +175,12 @@ draw(void)
 {
 	painter_set_color(0xffffffff);
 	painter_clear();
-	texture_draw(splashscreen_state_data.text, x, y);
+	texture_draw(&splashscreen_state_data.text, x, y);
 
 	if (substate == SUBSTATE_WAITING) {
-		texture_draw(items[0].texture, items[0].x, items[0].y);
-		texture_draw(items[1].texture, items[1].x, items[1].y);
-		texture_draw(items[2].texture, items[2].x, items[2].y);
+		texture_draw(&items[0].texture, items[0].x, items[0].y);
+		texture_draw(&items[1].texture, items[1].x, items[1].y);
+		texture_draw(&items[2].texture, items[2].x, items[2].y);
 
 		/* Selection cursor. */
 
@@ -196,8 +194,8 @@ draw(void)
 static void
 leave(void)
 {
-	texture_close(items[0].texture);
-	texture_close(items[1].texture);
+	texture_finish(&items[0].texture);
+	texture_finish(&items[1].texture);
 	memset(items, 0, sizeof (items));
 }
 

@@ -38,21 +38,23 @@ struct splashscreen_state_data splashscreen_state_data;
 static void
 enter(void)
 {
-	struct font *font;
+	struct font font = {
+		.color = 0x000000ff
+	};
 
-	if (!(font = font_openf(sys_datapath("fonts/teutonic1.ttf"), 130)))
+	if (!(font_open(&font, sys_datapath("fonts/teutonic1.ttf"), 130)))
 		error_fatal();
-	if (!(splashscreen_state_data.text = font_render(font, "Molko's Adventure", 0x000000ff)))
+	if (!(font_render(&font, &splashscreen_state_data.text, "Molko's Adventure")))
 		error_fatal();
 
 	/* Compute position. */
-	const unsigned int w = texture_width(splashscreen_state_data.text);
-	const unsigned int h = texture_height(splashscreen_state_data.text);
+	const unsigned int w = splashscreen_state_data.text.w;
+	const unsigned int h = splashscreen_state_data.text.h;
 
 	splashscreen_state_data.x = (window_width() / 2) - (w / 2);
 	splashscreen_state_data.y = (window_height() / 2) - (h / 2);
 
-	font_close(font);
+	font_finish(&font);
 }
 
 static void
@@ -81,7 +83,7 @@ draw(void)
 {
 	painter_set_color(0xffffffff);
 	painter_clear();
-	texture_draw(splashscreen_state_data.text,
+	texture_draw(&splashscreen_state_data.text,
 		splashscreen_state_data.x,
 		splashscreen_state_data.y);
 }

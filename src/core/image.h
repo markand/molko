@@ -32,22 +32,28 @@ struct texture;
 /**
  * Open a file from a path.
  *
+ * \pre tex != NULL
  * \pre path != NULL
+ * \param tex the texture to initialize
  * \param path the path to the file
- * \return the texture or NULL on error
+ * \return False on errors.
  */
-struct texture *
-image_openf(const char *path);
+bool
+image_open(struct texture *tex, const char *path);
 
 /**
  * Open a file from a memory buffer.
  *
+ * The buffer must be valid until the image is no longer used.
+ *
+ * \pre tex != NULL
  * \pre buffer != NULL
+ * \param tex the texture to initialize
  * \param buffer the memory buffer
  * \param size the memory size
- * \return the texture or NULL on error
+ * \return False on errors.
  */
-struct texture *
-image_openb(const void *buffer, size_t size);
+bool
+image_openmem(struct texture *tex, const void *buffer, size_t size);
 
 #endif /* !MOLKO_IMAGE_H */

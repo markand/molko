@@ -51,21 +51,23 @@ debug_vprintf(struct debug_report *report, const char *fmt, va_list ap)
 	assert(fmt);
 
 	char line[DEBUG_LINE_MAX];
-	struct texture *tex;
+	struct texture tex;
 	struct font *font;
 	unsigned int gapy;
 
 	vsnprintf(line, sizeof (line), fmt, ap);
-	font = report->font ? report->font : debug_options.default_font;
-	tex = font_render_ex(font, line, report->color, report->style);
 
-	if (!tex)
+	font = report->font ? report->font : debug_options.default_font;
+	font->color = report->color;
+	font->style = report->style;
+
+	if (!font_render(font, &tex, line))
 		return;
 
 	gapy = (PADDING_Y * (report->count)) +
 	    (font_height(font) * (report->count));
 	report->count++;
 
-	texture_draw(tex, PADDING_X, gapy);
-	texture_close(tex);
+	texture_draw(&tex, PADDING_X, gapy);
+	texture_finish(&tex);
 }
