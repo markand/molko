@@ -89,8 +89,12 @@ enter(void)
 static void
 new(void)
 {
+	/* TODO: convenient map_state_start function? */
+
 	/* Prepare map. */
-	if (!map_open(&map_state_data.map.map, sys_datapath("maps/test.map")))
+	if (!map_data_open(&map_state_data.map.data, sys_datapath("maps/test.map")))
+		panic();
+	if (!map_init(&map_state_data.map.map, &map_state_data.map.data))
 		panic();
 
 	/* Prepare image and sprite. */

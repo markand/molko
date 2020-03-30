@@ -31,14 +31,12 @@
 #include "texture.h"
 #include "window.h"
 
-#include <SDL.h>
-
 /* Create %<v>c string literal for scanf */
 #define MAX_F(v) MAX_F_(v)
 #define MAX_F_(v) "%" #v "c"
 
 static void
-parse_layer(struct map *map, const char *line, FILE *fp)
+parse_layer(struct map_data *data, const char *line, FILE *fp)
 {
 	char layer_name[32 + 1] = { 0 };
 	struct map_layer *layer;
@@ -48,17 +46,17 @@ parse_layer(struct map *map, const char *line, FILE *fp)
 	if (sscanf(line, "layer|%32s", layer_name) <= 0)
 		return;
 	if (strcmp(layer_name, "background") == 0)
-		layer = &map->layers[0];
+		layer = &data->layers[0];
 	else if (strcmp(layer_name, "foreground") == 0)
-		layer = &map->layers[1];
+		layer = &data->layers[1];
 	else
 		return;
 
 	/* Check if weight/height has been specified. */
-	if (map->width == 0 || map->height == 0)
+	if (data->w == 0 || data->h == 0)
 		return;
 
-	amount = map->width * map->height;
+	amount = data->w * data->h;
 	current = 0;
 
 	if (!(layer->tiles = calloc(amount, sizeof (unsigned short))))
@@ -69,51 +67,36 @@ parse_layer(struct map *map, const char *line, FILE *fp)
 }
 
 static void
-parse_tileset(struct map *map, const char *line)
-{
-	char filename[128 + 1] = { 0 };
-
-	sscanf(line, "tileset|%128s", filename);
-
-	if (map->tilewidth == 0 || map->tileheight == 0)
-		return;
-	if (!(image_open(&map->tileset, sys_datapath("tilesets/%s", filename))))
-		return;
-}
-
-static void
-parse(struct map *map, const char *line, FILE *fp)
+parse(struct map_data *data, const char *line, FILE *fp)
 {
 	if (strncmp(line, "title", 5) == 0)
-		sscanf(line, "title|" MAX_F(MAP_TITLE_MAX), map->title);
+		sscanf(line, "title|" MAX_F(MAP_TITLE_MAX), data->title);
 	else if (strncmp(line, "width", 5) == 0)
-		sscanf(line, "width|%u", &map->width);
+		sscanf(line, "width|%u", &data->w);
 	else if (strncmp(line, "height", 6) == 0)
-		sscanf(line, "height|%u", &map->height);
+		sscanf(line, "height|%u", &data->h);
 	else if (strncmp(line, "tilewidth", 9) == 0)
-		sscanf(line, "tilewidth|%hu", &map->tilewidth);
+		sscanf(line, "tilewidth|%hu", &data->tile_w);
 	else if (strncmp(line, "tileheight", 10) == 0)
-		sscanf(line, "tileheight|%hu", &map->tileheight);
+		sscanf(line, "tileheight|%hu", &data->tile_h);
 	else if (strncmp(line, "origin", 6) == 0)
-		sscanf(line, "origin|%d|%d", &map->origin_x, &map->origin_y);
+		sscanf(line, "origin|%d|%d", &data->origin_x, &data->origin_y);
 	else if (strncmp(line, "tileset", 7) == 0)
-		parse_tileset(map, line);
+		sscanf(line, "tileset|" MAX_F(MAP_TILESET_MAX), data->tileset);
 	else if (strncmp(line, "layer", 5) == 0)
-		parse_layer(map, line, fp);
+		parse_layer(data, line, fp);
 }
 
 static bool
-check(struct map *map)
+check(struct map_data *data)
 {
-	if (strlen(map->title) == 0)
-		return error_printf("map has no title");
-	if (!map->tileset.w || !map->tileset.h)
-		return error_printf("unable to open tileset");
-	if (map->width == 0 || map->height == 0)
-		return error_printf("map has null sizes");
-	if (map->tilewidth == 0 || map->tileheight == 0)
-		return error_printf("map has null tile sizes");
-	if (!map->layers[0].tiles || !map->layers[1].tiles)
+	if (strlen(data->title) == 0)
+		return error_printf("data has no title");
+	if (data->w == 0 || data->h == 0)
+		return error_printf("data has null sizes");
+	if (data->tile_w == 0 || data->tile_h == 0)
+		return error_printf("data has null tile sizes");
+	if (!data->layers[0].tiles || !data->layers[1].tiles)
 		return error_printf("could not allocate data");
 
 	return true;
@@ -128,32 +111,32 @@ draw_layer(struct map *map, const struct map_layer *layer)
 	struct sprite sprite;
 	int x = 0, y = 0;
 
-	sprite_init(&sprite, &map->tileset, map->tilewidth, map->tileheight);
+	sprite_init(&sprite, &map->tileset, map->data->tile_w, map->data->tile_h);
 
-	for (unsigned int r = 0; r < map->width; ++r) {
-		for (unsigned int c = 0; c < map->height; ++c) {
-			unsigned int si = r * map->width + c;
+	for (unsigned int r = 0; r < map->data->w; ++r) {
+		for (unsigned int c = 0; c < map->data->h; ++c) {
+			unsigned int si = r * map->data->w + c;
 			unsigned int sr = (layer->tiles[si] - 1) / sprite.ncols;
 			unsigned int sc = (layer->tiles[si] - 1) % sprite.nrows;
 
 			if (layer->tiles[si] != 0)
 				sprite_draw(&sprite, sr, sc, x, y);
 
-			x += map->tilewidth;
+			x += map->data->tile_w;
 		}
 
 		x = 0;
-		y += map->tileheight;
+		y += map->data->tile_h;
 	}
 }
 
 bool
-map_open(struct map *map, const char *path)
+map_data_open(struct map_data *data, const char *path)
 {
-	assert(map);
+	assert(data);
 	assert(path);
 
-	memset(map, 0, sizeof (struct map));
+	memset(data, 0, sizeof (*data));
 
 	FILE *fp = fopen(path, "r");
 	char line[BUFSIZ];
@@ -164,48 +147,69 @@ map_open(struct map *map, const char *path)
 	while (fgets(line, sizeof (line), fp)) {
 		/* Remove \n if any */
 		line[strcspn(line, "\n")] = '\0';
-		parse(map, line, fp);
+		parse(data, line, fp);
 	}
 
 	fclose(fp);
 
-	if (!check(map)) {
-		map_finish(map);
+	if (!check(data)) {
+		map_data_finish(data);
 		return false;
 	}
 
-	size_t pw = map->width * map->tilewidth;
-	size_t ph = map->height * map->tileheight;
-
-	if (!(texture_new(&map->picture, pw, ph)))
-		return error_sdl();
+	/* Compute real size. */
+	data->real_w = data->w * data->tile_w;
+	data->real_h = data->h * data->tile_h;
 
 	return true;
 }
 
 void
+map_data_finish(struct map_data *data)
+{
+	assert(data);
+
+	free(data->layers[0].tiles);
+	free(data->layers[1].tiles);
+
+	memset(data, 0, sizeof (*data));
+}
+
+bool
+map_init(struct map *map, struct map_data *data)
+{
+	assert(map);
+	assert(data);
+
+	if (!(image_open(&map->tileset, sys_datapath("tilesets/%s", data->tileset))))
+		goto failure;
+	if (!(texture_new(&map->picture, data->real_w, data->real_h)))
+		goto failure;
+
+	map->data = data;
+	map_repaint(map);
+
+	return true;
+
+failure:
+	map_data_finish(data);
+
+	return false;
+}
+
+void
 map_draw(struct map *map, int srcx, int srcy)
 {
-	texture_scale(
-		&map->picture,
-		srcx,
-		srcy,
-		window.w,
-		window.h,
-		0,
-		0,
-		window.w,
-		window.h,
-		0
-	);
+	texture_scale(&map->picture, srcx, srcy, window.w, window.h,
+	    0, 0, window.w, window.h, 0.0);
 }
 
 void
 map_repaint(struct map *map)
 {
 	PAINTER_BEGIN(&map->picture);
-	draw_layer(map, &map->layers[0]);
-	draw_layer(map, &map->layers[1]);
+	draw_layer(map, &map->data->layers[0]);
+	draw_layer(map, &map->data->layers[1]);
 	PAINTER_END();
 }
 
@@ -217,8 +221,5 @@ map_finish(struct map *map)
 	texture_finish(&map->tileset);
 	texture_finish(&map->picture);
 
-	free(map->layers[0].tiles);
-	free(map->layers[1].tiles);
-
-	memset(map, 0, sizeof (struct map));
+	memset(map, 0, sizeof (*map));
 }

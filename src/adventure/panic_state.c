@@ -95,8 +95,8 @@ dump(void)
 	fprintf(fp, "Molko's Adventure crash dump report\n");
 	fprintf(fp, "== state map dump ==\n");
 	fprintf(fp, "map:\n");
-	fprintf(fp, "  w     %u\n", map_state_data.map.w);
-	fprintf(fp, "  h     %u\n", map_state_data.map.h);
+	fprintf(fp, "  w     %u\n", map_state_data.map.data.w);
+	fprintf(fp, "  h     %u\n", map_state_data.map.data.h);
 	fprintf(fp, "player:\n");
 	fprintf(fp, "  x:    %u\n", map_state_data.player.x);
 	fprintf(fp, "  y:    %u\n", map_state_data.player.y);

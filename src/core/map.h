@@ -25,6 +25,7 @@
  */
 
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "texture.h"
 
@@ -34,6 +35,11 @@
 #define MAP_TITLE_MAX   32
 
 /**
+ * \brief Max filename for tilesets.
+ */
+#define MAP_TILESET_MAX FILENAME_MAX
+
+/**
  * \brief Map layer.
  */
 struct map_layer {
@@ -41,35 +47,68 @@ struct map_layer {
 };
 
 /**
- * \brief Map object.
+ * \brief Map definition structure.
  *
  * This structure only defines the map characteristics. It does not have any
  * logic and is left for game state.
  */
-struct map {
-	char title[MAP_TITLE_MAX];      /*!< (RW) The map title */
-	struct texture tileset;         /*!< (RW) Tileset to use */
-	struct texture picture;         /*!< (RO) Map drawn into a picture */
-	int origin_x;                   /*!< (RO) Where the player starts in X */
-	int origin_y;                   /*!< (RO) Where the player starts in Y */
-	unsigned int width;             /*!< (RO) Map width in cells */
-	unsigned int height;            /*!< (RO) Map height in cells */
-	unsigned short tilewidth;       /*!< (RO) Pixels per cell (width) */
-	unsigned short tileheight;      /*!< (RO) Pixels per cell (height) */
-	struct map_layer layers[2];     /*!< (RO) Layers (background, foreground) */
+struct map_data {
+	char title[MAP_TITLE_MAX];      /*!< (RW) The map title. */
+	char tileset[MAP_TILESET_MAX];  /*!< (RO) Name of tileset to use. */
+	int origin_x;                   /*!< (RO) Where the player starts in X. */
+	int origin_y;                   /*!< (RO) Where the player starts in Y. */
+	unsigned int real_w;            /*!< (RO) Real width in pixels. */
+	unsigned int real_h;            /*!< (RO) Real height in pixels. */
+	unsigned int w;                 /*!< (RO) Map width in cells. */
+	unsigned int h;                 /*!< (RO) Map height in cells. */
+	unsigned short tile_w;          /*!< (RO) Pixels per cell (width). */
+	unsigned short tile_h;          /*!< (RO) Pixels per cell (height). */
+	struct map_layer layers[2];     /*!< (RO) Layers (background, foreground). */
 };
 
 /**
- * Open a map.
+ * \brief High level map object.
  *
- * \pre map != NULL
+ * This structure reference a map and perform drawing operations.
+ */
+struct map {
+	struct map_data *data;          /*!< (RW, ref) Map data. */
+	struct texture tileset;         /*!< (RW) Tileset to use. */
+	struct texture picture;         /*!< (RO) Map drawn into a picture. */
+};
+
+/**
+ * Open a map defintion
+ *
+ * \pre data != NULL
  * \pre path != NULL
- * \param map the map to fill
+ * \param data the map defintion to fill
  * \param path the path to the map
- * \return true if successfully loaded
+ * \return True if successfully loaded.
  */
 bool
-map_open(struct map *map, const char *path);
+map_data_open(struct map_data *data, const char *path);
+
+/**
+ * Dispose the map definition data.
+ *
+ * \pre data != NULL
+ * \param data the map definition
+ */
+void
+map_data_finish(struct map_data *data);
+
+/**
+ * Initialize this map.
+ *
+ * \pre map != NULL
+ * \pre data != NULL
+ * \param map the map to initialize
+ * \param data the definition to reference
+ * \return False on errors.
+ */
+bool
+map_init(struct map *map, struct map_data *data);
 
 /**
  * Render a map.
@@ -87,16 +126,16 @@ map_draw(struct map *map, int srcx, int srcy);
  *
  * \pre map != NULL
  * \param map the map to repaint
- * \warning This function does not render anything on the screen
+ * \warning This function does not render anything on the screen.
  */
 void
 map_repaint(struct map *map);
 
 /**
- * Close the map and its resources.
+ * Dispose map resources.
  *
  * \pre map != NULL
- * \param map the map to render
+ * \param map the map to close
  */
 void
 map_finish(struct map *map);

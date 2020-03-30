@@ -46,6 +46,13 @@
 #define MARGIN_HEIGHT   80
 
 /*
+ * Convenient macros to access the state data.
+ */
+#define MAP()           (&map_state_data.map)
+#define PLAYER()        (&map_state_data.player)
+#define VIEW()          (&map_state_data.view)
+
+/*
  * This structure defines the possible movement of the player as flags since
  * it's possible to make diagonal movements.
  */
@@ -102,18 +109,18 @@ static struct {
 static void
 center(void)
 {
-	map_state_data.view.x = map_state_data.player.x - (map_state_data.view.w / 2);
-	map_state_data.view.y = map_state_data.player.y - (map_state_data.view.h / 2);
+	VIEW()->x = PLAYER()->x - (VIEW()->w / 2);
+	VIEW()->y = PLAYER()->y - (VIEW()->h / 2);
 
-	if (map_state_data.view.x < 0)
-		map_state_data.view.x = 0;
-	else if ((unsigned int)map_state_data.view.x > map_state_data.map.w - map_state_data.view.w)
-		map_state_data.view.x = map_state_data.map.w - map_state_data.view.w;
+	if (VIEW()->x < 0)
+		VIEW()->x = 0;
+	else if ((unsigned int)VIEW()->x > MAP()->data.real_w - VIEW()->w)
+		VIEW()->x = MAP()->data.real_w - VIEW()->w;
 
-	if (map_state_data.view.y < 0)
-		map_state_data.view.y = 0;
-	else if ((unsigned int)map_state_data.view.y > map_state_data.map.h - map_state_data.view.h)
-		map_state_data.view.y = map_state_data.map.h - map_state_data.view.h;
+	if (VIEW()->y < 0)
+		VIEW()->y = 0;
+	else if ((unsigned int)VIEW()->y > MAP()->data.real_h - VIEW()->h)
+		VIEW()->y = MAP()->data.real_h - VIEW()->h;
 }
 
 static void
@@ -123,22 +130,22 @@ enter(void)
 	struct map *m = &map_state_data.map.map;
 
 	map_repaint(m);
-	map_state_data.map.w = m->picture.w;
-	map_state_data.map.h = m->picture.h;
+	MAP()->data.real_w = m->picture.w;
+	MAP()->data.real_h = m->picture.h;
 
 	/* Adjust view. */
-	map_state_data.view.w = window.w;
-	map_state_data.view.h = window.h;
+	VIEW()->w = window.w;
+	VIEW()->h = window.h;
 
 	/* Adjust margin. */
-	cache.margin.w = map_state_data.view.w - (MARGIN_WIDTH * 2);
-	cache.margin.h = map_state_data.view.h - (MARGIN_HEIGHT * 2);
+	cache.margin.w = VIEW()->w - (MARGIN_WIDTH * 2);
+	cache.margin.h = VIEW()->h - (MARGIN_HEIGHT * 2);
 
 	/* Center the view by default. */
 	center();
 
 	/* Final bits. */
-	walksprite_init(&cache.player.ws, &map_state_data.player.sprite, 300);
+	walksprite_init(&cache.player.ws, &PLAYER()->sprite, 300);
 }
 
 static void
@@ -166,7 +173,7 @@ handle_keydown(const union event *event)
 		break;
 	}
 
-	map_state_data.player.angle = orientations[cache.player.moving];
+	PLAYER()->angle = orientations[cache.player.moving];
 }
 
 static void
@@ -193,65 +200,65 @@ handle_keyup(const union event *event)
 static void
 move_right(unsigned int delta)
 {
-	map_state_data.player.x += delta;
+	PLAYER()->x += delta;
 
-	if (map_state_data.player.x > (int)(cache.margin.x + cache.margin.w)) {
-		map_state_data.view.x = (map_state_data.player.x - map_state_data.view.w) + MARGIN_WIDTH;
+	if (PLAYER()->x > (int)(cache.margin.x + cache.margin.w)) {
+		VIEW()->x = (PLAYER()->x - VIEW()->w) + MARGIN_WIDTH;
 
-		if (map_state_data.view.x >= (int)(map_state_data.map.w - map_state_data.view.w))
-			map_state_data.view.x = map_state_data.map.w - map_state_data.view.w;
+		if (VIEW()->x >= (int)(MAP()->data.real_w - VIEW()->w))
+			VIEW()->x = MAP()->data.real_w - VIEW()->w;
 	}
 
-	if (map_state_data.player.x > (int)map_state_data.map.w - 48)
-		map_state_data.player.x = map_state_data.map.w - 48;
+	if (PLAYER()->x > (int)MAP()->data.real_w - 48)
+		PLAYER()->x = MAP()->data.real_w - 48;
 }
 
 static void
 move_left(unsigned int delta)
 {
-	map_state_data.player.x -= delta;
+	PLAYER()->x -= delta;
 
-	if (map_state_data.player.x < cache.margin.x) {
-		map_state_data.view.x = map_state_data.player.x - MARGIN_WIDTH;
+	if (PLAYER()->x < cache.margin.x) {
+		VIEW()->x = PLAYER()->x - MARGIN_WIDTH;
 
-		if (map_state_data.view.x < 0)
-			map_state_data.view.x = 0;
+		if (VIEW()->x < 0)
+			VIEW()->x = 0;
 	}
 
-	if (map_state_data.player.x < 0)
-		map_state_data.player.x = 0;
+	if (PLAYER()->x < 0)
+		PLAYER()->x = 0;
 }
 
 static void
 move_down(unsigned int delta)
 {
-	map_state_data.player.y += delta;
+	PLAYER()->y += delta;
 
-	if (map_state_data.player.y > (int)(cache.margin.y + cache.margin.h)) {
-		map_state_data.view.y = (map_state_data.player.y - map_state_data.view.h) + MARGIN_HEIGHT;
+	if (PLAYER()->y > (int)(cache.margin.y + cache.margin.h)) {
+		VIEW()->y = (PLAYER()->y - VIEW()->h) + MARGIN_HEIGHT;
 
-		if (map_state_data.view.y >= (int)(map_state_data.map.h - map_state_data.view.h))
-			map_state_data.view.y = map_state_data.map.h - map_state_data.view.h;
+		if (VIEW()->y >= (int)(MAP()->data.real_h - VIEW()->h))
+			VIEW()->y = MAP()->data.real_h - VIEW()->h;
 	}
 
-	if (map_state_data.player.y > (int)map_state_data.map.h - 48)
-		map_state_data.player.y = map_state_data.map.h - 48;
+	if (PLAYER()->y > (int)MAP()->data.real_h - 48)
+		PLAYER()->y = MAP()->data.real_h - 48;
 }
 
 static void
 move_up(unsigned int delta)
 {
-	map_state_data.player.y -= delta;
+	PLAYER()->y -= delta;
 
-	if (map_state_data.player.y < cache.margin.y) {
-		map_state_data.view.y = map_state_data.player.y - MARGIN_HEIGHT;
+	if (PLAYER()->y < cache.margin.y) {
+		VIEW()->y = PLAYER()->y - MARGIN_HEIGHT;
 
-		if (map_state_data.view.y < 0)
-			map_state_data.view.y = 0;
+		if (VIEW()->y < 0)
+			VIEW()->y = 0;
 	}
 
-	if (map_state_data.player.y < 0)
-		map_state_data.player.y = 0;
+	if (PLAYER()->y < 0)
+		PLAYER()->y = 0;
 }
 
 static void
@@ -261,8 +268,8 @@ move(unsigned int ticks)
 	const int delta = SPEED * ticks / SEC;
 
 	/* This is the rectangle within the view where users must be. */
-	cache.margin.x = map_state_data.view.x + MARGIN_WIDTH;
-	cache.margin.y = map_state_data.view.y + MARGIN_HEIGHT;
+	cache.margin.x = VIEW()->x + MARGIN_WIDTH;
+	cache.margin.y = VIEW()->y + MARGIN_HEIGHT;
 
 	int dx = 0;
 	int dy = 0;
@@ -319,17 +326,17 @@ draw(void)
 {
 	struct debug_report report = DEBUG_INIT_DEFAULTS;
 
-	map_draw(&map_state_data.map.map, map_state_data.view.x, map_state_data.view.y);
+	map_draw(&map_state_data.map.map, VIEW()->x, VIEW()->y);
 	walksprite_draw(
 		&cache.player.ws,
-		map_state_data.player.angle,
-		map_state_data.player.x - map_state_data.view.x,
-		map_state_data.player.y - map_state_data.view.y);
+		PLAYER()->angle,
+		PLAYER()->x - VIEW()->x,
+		PLAYER()->y - VIEW()->y);
 
-	debug_printf(&report, "position: %d, %d", map_state_data.player.x,
-	    map_state_data.player.y);
-	debug_printf(&report, "view: %d, %d", map_state_data.view.x,
-	    map_state_data.view.y);
+	debug_printf(&report, "position: %d, %d", PLAYER()->x,
+	    PLAYER()->y);
+	debug_printf(&report, "view: %d, %d", VIEW()->x,
+	    VIEW()->y);
 }
 
 struct map_state_data map_state_data;

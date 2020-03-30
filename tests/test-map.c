@@ -24,37 +24,17 @@
 #include <sys.h>
 #include <window.h>
 
-static void
-setup(void *data)
-{
-	(void)data;
-
-	if (!sys_init())
-		panic();
-	if (!window_init("Test map", 100, 100))
-		panic();
-}
-
-static void
-teardown(void *data)
-{
-	(void)data;
-
-	window_finish();
-	sys_finish();
-}
-
 TEST
 sample(void)
 {
-	struct map map;
+	struct map_data map;
 
-	ASSERT(map_open(&map, sys_datapath("maps/sample-map.map")));
+	ASSERT(map_data_open(&map, sys_datapath("maps/sample-map.map")));
 	ASSERT_STR_EQ("This is a test map", map.title);
-	ASSERT_EQ(2, map.width);
-	ASSERT_EQ(2, map.height);
-	ASSERT_EQ(32, map.tilewidth);
-	ASSERT_EQ(16, map.tileheight);
+	ASSERT_EQ(2, map.w);
+	ASSERT_EQ(2, map.h);
+	ASSERT_EQ(32, map.tile_w);
+	ASSERT_EQ(16, map.tile_h);
 	ASSERT_EQ(0, map.layers[0].tiles[0]);
 	ASSERT_EQ(1, map.layers[0].tiles[1]);
 	ASSERT_EQ(2, map.layers[0].tiles[2]);
@@ -69,59 +49,55 @@ sample(void)
 TEST
 error_title(void)
 {
-	struct map map;
+	struct map_data map;
 
-	ASSERT(!map_open(&map, sys_datapath("maps/error-title.map")));
+	ASSERT(!map_data_open(&map, sys_datapath("maps/error-title.map")));
 	PASS();
 }
 
 TEST
 error_width(void)
 {
-	struct map map;
+	struct map_data map;
 
-	ASSERT(!map_open(&map, sys_datapath("maps/error-width.map")));
+	ASSERT(!map_data_open(&map, sys_datapath("maps/error-width.map")));
 	PASS();
 }
 
 TEST
 error_height(void)
 {
-	struct map map;
+	struct map_data map;
 
-	ASSERT(!map_open(&map, sys_datapath("maps/error-height.map")));
+	ASSERT(!map_data_open(&map, sys_datapath("maps/error-height.map")));
 	PASS();
 }
 
 TEST
 error_tilewidth(void)
 {
-	struct map map;
+	struct map_data map;
 
-	ASSERT(!map_open(&map, sys_datapath("maps/error-tilewidth.map")));
+	ASSERT(!map_data_open(&map, sys_datapath("maps/error-tilewidth.map")));
 	PASS();
 }
 
 TEST
 error_tileheight(void)
 {
-	struct map map;
+	struct map_data map;
 
-	ASSERT(!map_open(&map, sys_datapath("maps/error-tileheight.map")));
+	ASSERT(!map_data_open(&map, sys_datapath("maps/error-tileheight.map")));
 	PASS();
 }
 
 SUITE(basics)
 {
-	SET_SETUP(setup, NULL);
-	SET_TEARDOWN(teardown, NULL);
 	RUN_TEST(sample);
 }
 
 SUITE(errors)
 {
-	SET_SETUP(setup, NULL);
-	SET_TEARDOWN(teardown, NULL);
 	RUN_TEST(error_title);
 	RUN_TEST(error_width);
 	RUN_TEST(error_height);
