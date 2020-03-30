@@ -60,9 +60,9 @@ static void
 init(void)
 {
 	if (!sys_init())
-		error_fatal();
+		panic();
 	if (!window_init("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
-		error_fatal();
+		panic();
 
 	/* Init unrecoverable panic state. */
 	panic_state_init();
@@ -82,11 +82,11 @@ run(void)
 	int panic_trigger = 0;
 
 	if (!(font_open(&font, sys_datapath("fonts/DejaVuSans.ttf"), 15)))
-		error_fatal();
+		panic();
 	if (!(font_open(&debug_font, sys_datapath("fonts/DejaVuSans.ttf"), 10)))
-		error_fatal();
+		panic();
 	if (!(image_open(&frame, sys_datapath("images/message.png"))))
-		error_fatal();
+		panic();
 
 	debug_options.default_font = &debug_font;
 	debug_options.enable = true;
@@ -110,7 +110,7 @@ run(void)
 			    ev.type == EVENT_KEYDOWN &&
 			    ev.key.key == KEY_F12) {
 				if (++panic_trigger == 3)
-					panic("User panic request.");
+					panicf("User panic request.");
 			}
 
 			game_handle(&ev);

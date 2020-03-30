@@ -27,12 +27,13 @@
 
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdnoreturn.h>
+
+#include "plat.h"
 
 /**
  * Get the last error returned.
  *
- * \return the error string
+ * \return The error string.
  */
 const char *
 error(void);
@@ -41,7 +42,7 @@ error(void);
  * Convenient helper that sets last error from global C errno and then return
  * false.
  *
- * \return false
+ * \return Always false.
  */
 bool
 error_errno(void);
@@ -49,43 +50,22 @@ error_errno(void);
 /**
  * Set the game error with a printf-like format.
  *
+ * \pre fmt != NULL
  * \param fmt the format string
- * \return false
+ * \return Always false.
  */
 bool
-error_printf(const char *fmt, ...);
+error_printf(const char *fmt, ...) PLAT_PRINTF(1, 2);
 
 /**
  * Similar to \ref error_printf.
  *
+ * \pre fmt != NULL
  * \param fmt the format stinrg
  * \param ap the variadic arguments pointer
- * \return false
+ * \return Always false.
  */
 bool
-error_vprintf(const char *fmt, va_list ap);
-
-/**
- * Print last registered error and exit with code 1.
- */
-noreturn void
-error_fatal(void);
-
-/**
- * Prints an error to stderr and exit with code 1.
- *
- * \param fmt the format string
- */
-noreturn void
-error_fatalf(const char *fmt, ...);
-
-/**
- * Similar to \ref error_fatalf.
- *
- * \param fmt the format string
- * \param ap the variadic arguments pointer
- */
-noreturn void
-error_vfatalf(const char *fmt, va_list ap);
+error_vprintf(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
 
 #endif /* !MOLKO_ERROR_H */

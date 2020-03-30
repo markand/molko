@@ -65,6 +65,20 @@ static struct label bottom[] = {
 static struct label lerror;
 
 static void
+die(const char *fmt, ...)
+{
+	assert(fmt);
+
+	va_list ap;
+
+	va_start(ap, fmt);
+	fprintf(stderr, "abort: ");
+	vfprintf(stderr, fmt, ap);
+	va_end(ap);
+	exit(1);
+}
+
+static void
 enter(void)
 {
 }
@@ -143,7 +157,7 @@ generate(struct label labels[], size_t labelsz)
 		font_render(&data.font, &labels[i].texture, labels[i].text);
 
 		if (!texture_ok(&labels[i].texture))
-			error_fatal();
+			die("%s\n", error());
 	}
 }
 
@@ -209,5 +223,5 @@ panic_state_init(void)
 	 * on the console.
 	 */
 	if (!(font_open(&data.font, sys_datapath(FONT), FONT_SZ)))
-		error_fatal();
+		die("%s", error());
 }

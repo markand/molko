@@ -63,7 +63,7 @@ enter(void)
 	struct font font = { 0 };
 
 	if (!font_open(&font, sys_datapath("fonts/pirata-one.ttf"), 30))
-		error_fatal();
+		panic();
 
 	substate = SUBSTATE_MOVING;
 	x = splashscreen_state_data.x;
@@ -91,11 +91,11 @@ new(void)
 {
 	/* Prepare map. */
 	if (!map_open(&map_state_data.map.map, sys_datapath("maps/test.map")))
-		error_fatal();
+		panic();
 
 	/* Prepare image and sprite. */
 	if (!(image_open(&image, sys_datapath("sprites/test-walk.png"))))
-		error_fatal();
+		panic();
 
 	sprite_init(&map_state_data.player.sprite, &image, 48, 48);
 	game_switch(&map_state, false);

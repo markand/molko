@@ -30,7 +30,10 @@
  *       for convenience.
  */
 
+#include <stdarg.h>
 #include <stddef.h>
+
+#include "plat.h"
 
 /**
  * Get the number of elements in a static array.
@@ -72,6 +75,24 @@ ecalloc(size_t n, size_t size);
  */
 void *
 ememdup(const void *ptr, size_t size);
+
+/**
+ * Create a dynamically allocated string in the printf(3) format string.
+ *
+ * \pre fmt != NULL
+ * \return The heap allocated string.
+ * \post Returned string will never be NULL.
+ */
+char *
+eprintf(const char *fmt, ...) PLAT_PRINTF(1, 2);
+
+/**
+ * Similar to \ref eprintf with arguments pointer.
+ *
+ * \copydoc eprintf
+ */
+char *
+evprintf(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
 
 /**
  * Put the thread to sleep for a given amount of milliseconds.

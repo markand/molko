@@ -38,7 +38,7 @@ basics_simple(void)
 	panic_handler = handler;
 	handler_called = false;
 
-	panic("this is an error");
+	panicf("this is an error");
 	GREATEST_ASSERT(handler_called);
 	GREATEST_ASSERT_STR_EQ(error(), "this is an error");
 	GREATEST_PASS();

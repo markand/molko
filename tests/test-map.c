@@ -29,9 +29,9 @@ setup(void *data)
 	(void)data;
 
 	if (!sys_init())
-		error_fatal();
+		panic();
 	if (!window_init("Test map", 100, 100))
-		error_fatal();
+		panic();
 }
 
 static void

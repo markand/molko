@@ -16,6 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +32,7 @@ emalloc(size_t size)
 	void *mem;
 
 	if (!(mem = malloc(size)))
-		panic("%s\n", strerror(errno));
+		panicf("%s", strerror(errno));
 
 	return mem;
 }
@@ -42,7 +43,7 @@ ecalloc(size_t n, size_t size)
 	void *mem;
 
 	if (!(mem = calloc(n, size)))
-		panic("%s\n", strerror(errno));
+		panicf("%s", strerror(errno));
 
 	return mem;
 }
@@ -53,9 +54,51 @@ ememdup(const void *ptr, size_t size)
 	void *mem;
 
 	if (!(mem = malloc(size)))
-		panic("%s\n", strerror(errno));
+		panicf("%s", strerror(errno));
 
 	return memcpy(mem, ptr, size);
+}
+
+char *
+eprintf(const char *fmt, ...)
+{
+	assert(fmt);
+
+	va_list ap;
+	char *ret;
+
+	va_start(ap, fmt);
+	ret = evprintf(fmt, ap);
+	va_end(ap);
+
+	return ret;
+}
+
+char *
+evprintf(const char *fmt, va_list args)
+{
+	assert(fmt);
+
+	va_list ap;
+	int size;
+	char *ret;
+
+	/* Count number of bytes required. */
+	va_copy(ap, args);
+
+	if ((size = vsnprintf(NULL, 0, fmt, ap)) < 0)
+		panicf("%s", strerror(errno));
+
+	/* Do actual copy. */
+	ret = emalloc(size + 1);
+	va_copy(ap, args);
+
+	if (vsnprintf(ret, size, fmt, ap) != size) {
+		free(ret);
+		panicf("%s", strerror(errno));
+	}
+
+	return ret;
 }
 
 void

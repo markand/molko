@@ -39,11 +39,19 @@
  */
 
 #include <stdarg.h>
+#include <stdnoreturn.h>
+
+#include "plat.h"
 
 /**
  * \brief Global panic handler.
  *
- * The default implementation shows the last error and exit with code 1.
+ * The default implementation shows the last error and exit with code 1. The
+ * function must not return so you have to implement a setjmp/longjmp or a
+ * exception to be thrown.
+ *
+ * If the user defined function returns, panic routines will finally exit with
+ * code 1.
  */
 extern void (*panic_handler)(void);
 
@@ -56,17 +64,24 @@ extern void (*panic_handler)(void);
  * \pre fmt != NULL
  * \param fmt the printf(3) format string
  */
-void
-panic(const char *fmt, ...);
+noreturn void
+panicf(const char *fmt, ...) PLAT_PRINTF(1, 2);
 
 /**
- * Similar to \ref panic but with a va_list argument instead.
+ * Similar to \ref panicf but with a arguments pointer.
  *
  * \pre fmt != NULL
  * \param fmt the printf(3) format string
  * \param ap the arguments pointer
  */
-void
-panicv(const char *fmt, va_list ap);
+noreturn void
+vpanicf(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
+
+/**
+ * Similar to \ref panicf but use last error stored using \ref error.h
+ * routines.
+ */
+noreturn void
+panic(void);
 
 #endif /* !MOLKO_PANIC_H */

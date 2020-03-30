@@ -28,12 +28,12 @@
  * \section example Example
  *
  * Init the core and create a window of Full HD resolution. The function \ref
- * error_fatal will print the error and exit if needed.
+ * panic will all the panic handler.
  *
  * \code
  * if (!sys_init())
- * 	error_fatal();
+ * 	panic();
  * if (!window_init("My Awesome Game", 1920, 1080))
- * 	error_fatal();
+ * 	panic();
  * \endcode
  */

@@ -16,17 +16,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "error.h"
-#include "font.h"
-#include "game.h"
-#include "image.h"
-#include "map.h"
-#include "map_state.h"
-#include "painter.h"
-#include "state.h"
-#include "sys.h"
-#include "texture.h"
-#include "window.h"
+#include <font.h>
+#include <game.h>
+#include <image.h>
+#include <map.h>
+#include <map_state.h>
+#include <painter.h>
+#include <panic.h>
+#include <state.h>
+#include <sys.h>
+#include <texture.h>
+#include <window.h>
 
 #include "splashscreen_state.h"
 #include "mainmenu_state.h"
@@ -43,9 +43,9 @@ enter(void)
 	};
 
 	if (!(font_open(&font, sys_datapath("fonts/teutonic1.ttf"), 130)))
-		error_fatal();
+		panic();
 	if (!(font_render(&font, &splashscreen_state_data.text, "Molko's Adventure")))
-		error_fatal();
+		panic();
 
 	/* Compute position. */
 	const unsigned int w = splashscreen_state_data.text.w;

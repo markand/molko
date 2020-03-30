@@ -1,5 +1,5 @@
 /*
- * error.c -- error routines
+ * plat.h -- non-portable platform specific code
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,63 +16,34 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef MOLKO_PLAT_H
+#define MOLKO_PLAT_H
 
-#include "error.h"
-#include "error_p.h"
+/**
+ * \file plat.h
+ * \brief Non-portable platform specific code.
+ */
 
-#include <SDL.h>
+/*
+ * This block is used for doxygen documentation, the macros here are never
+ * exposed.
+ */
+#if defined(DOXYGEN)
 
-static char buffer[2048];
+/**
+ * Printf specifier for function supporting the printf(3) syntax. This is
+ * currently only supported on GCC/Clang
+ */
+#define PLAT_PRINTF(p1, p2)
 
-const char *
-error(void)
-{
-	return buffer;
-}
+#else
 
-bool
-error_errno(void)
-{
-	error_printf("%s", strerror(errno));
+#if defined(__GNUC__)
+#define PLAT_PRINTF(p1, p2) __attribute__ ((format (printf, p1, p2)))
+#else
+#define PLAT_PRINTF(p1, p2)
+#endif
 
-	return false;
-}
+#endif /* !DOXYGEN  */
 
-bool
-error_printf(const char *fmt, ...)
-{
-	assert(fmt);
-
-	va_list ap;
-
-	va_start(ap, fmt);
-	error_vprintf(fmt, ap);
-	va_end(ap);
-
-	return false;
-}
-
-bool
-error_vprintf(const char *fmt, va_list ap)
-{
-	assert(fmt);
-
-	vsnprintf(buffer, sizeof (buffer), fmt, ap);
-
-	return false;
-}
-
-/* private: error_p.h */
-
-bool
-error_sdl(void)
-{
-	error_printf("%s", SDL_GetError());
-
-	return false;
-}
+#endif /* !MOLKO_PLAT_H */

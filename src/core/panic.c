@@ -17,30 +17,60 @@
  */
 
 #include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "error.h"
 #include "panic.h"
 
-void (*panic_handler)(void) = error_fatal;
+static noreturn void
+terminate(void)
+{
+	fprintf(stderr, "%s", error());
+	exit(1);
+}
 
-void
-panic(const char *fmt, ...)
+void (*panic_handler)(void) = terminate;
+
+noreturn void
+panicf(const char *fmt, ...)
 {
 	assert(fmt);
 
 	va_list ap;
 
+	/*
+	 * Store the error before calling panic because va_end would not be
+	 * called.
+	 */
 	va_start(ap, fmt);
-	panicv(fmt, ap);
+	error_vprintf(fmt, ap);
 	va_end(ap);
+
+	panic();
 }
 
-void
-panicv(const char *fmt, va_list ap)
+noreturn void
+vpanicf(const char *fmt, va_list ap)
 {
 	assert(fmt);
 	assert(panic_handler);
 
 	error_vprintf(fmt, ap);
+	panic();
+}
+
+noreturn void
+panic(void)
+{
+	assert(panic_handler);
+
 	panic_handler();
+
+	/*
+	 * This should not happen, if it does it means the user did not fully
+	 * satisfied the constraint of panic_handler.
+	 */
+	fprintf(stderr, "abort: panic handler returned");
+	exit(1);
 }
