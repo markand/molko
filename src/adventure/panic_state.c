@@ -192,7 +192,7 @@ draw(void)
 	texture_draw(&lerror.texture, PADDING, y + PADDING);
 
 	/* Bottom. */
-	y = window_height() - PADDING;
+	y = window.h - PADDING;
 	y -= bottom[0].texture.h;
 
 	for (size_t i = 0; i < NELEM(bottom); ++i) {

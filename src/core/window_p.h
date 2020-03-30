@@ -21,12 +21,13 @@
 
 #include <SDL.h>
 
-struct window {
+struct window_handle {
 	SDL_Window *win;
 	SDL_Renderer *renderer;
 };
 
-/* Global window object */
-extern struct window win;
+/* Convenient macros to access the native handle from global window object. */
+#define WINDOW()        (((struct window_handle *)window.handle)->win)
+#define RENDERER()      (((struct window_handle *)window.handle)->renderer)
 
 #endif /* !MOLKO_WINDOW_P_H */

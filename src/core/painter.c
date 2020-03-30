@@ -19,8 +19,10 @@
 #include "color.h"
 #include "painter.h"
 #include "texture.h"
+#include "window.h"
 #include "window_p.h"
 
+/* Current texture renderer. */
 static struct texture *renderer;
 
 struct texture *
@@ -33,7 +35,7 @@ void
 painter_set_target(struct texture *tex)
 {
 	renderer = tex;
-	SDL_SetRenderTarget(win.renderer, tex ? tex->handle : NULL);
+	SDL_SetRenderTarget(RENDERER(), tex ? tex->handle : NULL);
 }
 
 unsigned long
@@ -41,7 +43,7 @@ painter_get_color(void)
 {
 	Uint8 r = 0, g = 0, b = 0, a = 0;
 
-	SDL_GetRenderDrawColor(win.renderer, &r, &g, &b, &a);
+	SDL_GetRenderDrawColor(RENDERER(), &r, &g, &b, &a);
 
 	return COLOR_HEX(r, g, b, a);
 }
@@ -50,7 +52,7 @@ void
 painter_set_color(unsigned long color)
 {
 	SDL_SetRenderDrawColor(
-		win.renderer,
+		RENDERER(),
 		COLOR_R(color),
 		COLOR_G(color),
 		COLOR_B(color),
@@ -61,13 +63,13 @@ painter_set_color(unsigned long color)
 void
 painter_draw_line(int x1, int y1, int x2, int y2)
 {
-	SDL_RenderDrawLine(win.renderer, x1, y1, x2, y2);
+	SDL_RenderDrawLine(RENDERER(), x1, y1, x2, y2);
 }
 
 void
 painter_draw_point(int x1, int y1)
 {
-	SDL_RenderDrawPoint(win.renderer, x1, y1);
+	SDL_RenderDrawPoint(RENDERER(), x1, y1);
 }
 
 void
@@ -80,17 +82,17 @@ painter_draw_rectangle(int x, int y, unsigned int width, unsigned int height)
 		.y = y
 	};
 
-	SDL_RenderFillRect(win.renderer, &rect);
+	SDL_RenderFillRect(RENDERER(), &rect);
 }
 
 void
 painter_clear(void)
 {
-	SDL_RenderClear(win.renderer);
+	SDL_RenderClear(RENDERER());
 }
 
 void
 painter_present(void)
 {
-	SDL_RenderPresent(win.renderer);
+	SDL_RenderPresent(RENDERER());
 }

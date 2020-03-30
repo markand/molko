@@ -24,49 +24,37 @@
 #include "window.h"
 #include "window_p.h"
 
-/* global object, used by textures */
-struct window win = {
+static struct window_handle handle = {
 	.win = NULL,
 	.renderer = NULL
 };
 
+struct window window = {
+	.handle = &handle
+};
+
 bool
-window_init(const char *title, unsigned int width, unsigned int height)
+window_init(const char *title, unsigned int w, unsigned int h)
 {
 	assert(title);
 
-	if (SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_OPENGL,
-	    &win.win, &win.renderer) < 0)
+	if (SDL_CreateWindowAndRenderer(w, h, SDL_WINDOW_OPENGL,
+	    &handle.win, &handle.renderer) < 0)
 		return error_sdl();
 
-	SDL_SetWindowTitle(win.win, title);
+	SDL_SetWindowTitle(handle.win, title);
+
+	window.w = w;
+	window.h = h;
 
 	return true;
 }
 
-unsigned int
-window_width(void)
-{
-	int width;
-
-	SDL_GetWindowSize(win.win, &width, NULL);
-
-	return width;
-}
-
-unsigned int
-window_height(void)
-{
-	int height;
-
-	SDL_GetWindowSize(win.win, NULL, &height);
-
-	return height;
-}
-
 void
-window_close(void)
+window_finish(void)
 {
-	SDL_DestroyRenderer(win.renderer);
-	SDL_DestroyWindow(win.win);
+	if (handle.renderer)
+		SDL_DestroyRenderer(handle.renderer);
+	if (handle.win)
+		SDL_DestroyWindow(handle.win);
 }

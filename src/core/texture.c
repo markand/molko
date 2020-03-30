@@ -23,6 +23,7 @@
 #include "texture.h"
 #include "texture_p.h"
 #include "util.h"
+#include "window.h"
 #include "window_p.h"
 
 bool
@@ -30,7 +31,7 @@ texture_new(struct texture *tex, unsigned int w, unsigned int h)
 {
 	assert(tex);
 
-	tex->handle = SDL_CreateTexture(win.renderer,
+	tex->handle = SDL_CreateTexture(RENDERER(),
 	    SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
 
 	if (!tex->handle) {
@@ -64,7 +65,7 @@ texture_draw(struct texture *tex, int x, int y)
 		.h = tex->h
 	};
 
-	SDL_RenderCopy(win.renderer, tex->handle, NULL, &dst);
+	SDL_RenderCopy(RENDERER(), tex->handle, NULL, &dst);
 }
 
 void
@@ -92,7 +93,7 @@ texture_scale(struct texture *tex,
 		.h = dst_h
 	};
 
-	SDL_RenderCopyEx(win.renderer, tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE);
 }
 
 void
@@ -114,7 +115,7 @@ texture_from_surface(struct texture *tex, SDL_Surface *surface)
 	assert(tex);
 	assert(surface);
 
-	if (!(tex->handle = SDL_CreateTextureFromSurface(win.renderer, surface))) {
+	if (!(tex->handle = SDL_CreateTextureFromSurface(RENDERER(), surface))) {
 		tex->w = tex->h = 0;
 		return error_sdl();
 	}

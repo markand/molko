@@ -190,12 +190,12 @@ map_draw(struct map *map, int srcx, int srcy)
 		&map->picture,
 		srcx,
 		srcy,
-		window_width(),
-		window_height(),
+		window.w,
+		window.h,
 		0,
 		0,
-		window_width(),
-		window_height(),
+		window.w,
+		window.h,
 		0
 	);
 }

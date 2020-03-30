@@ -68,12 +68,12 @@ enter(void)
 	substate = SUBSTATE_MOVING;
 	x = splashscreen_state_data.x;
 	y = splashscreen_state_data.y;
-	destination = window_height() / 4;
+	destination = window.h / 4;
 
 	/* TODO: change continue color if no game exists. */
 	font_render(&font, &items[0].texture, "New game");
-	items[0].x = (window_width() / 2) - (items[0].texture.w / 2);
-	items[0].y = window_height() * 0.75;
+	items[0].x = (window.w / 2) - (items[0].texture.w / 2);
+	items[0].y = window.h * 0.75;
 
 	font_render(&font, &items[1].texture, "Continue");
 	items[1].x = items[0].x;

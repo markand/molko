@@ -28,6 +28,20 @@
 #include <stdbool.h>
 
 /**
+ * \brief Global exposed window structure.
+ */
+struct window {
+	unsigned int w;         /*!< (RO) Window width. */
+	unsigned int h;         /*!< (RO) Window height. */
+	void *handle;           /*!< (RO) Native handle. */
+};
+
+/**
+ * \brief Access to global window structure.
+ */
+extern struct window window;
+
+/**
  * Initialize window.
  *
  * \pre title != NULL
@@ -40,25 +54,9 @@ bool
 window_init(const char *title, unsigned int width, unsigned int height);
 
 /**
- * Get the current window's width.
- *
- * \return the width
- */
-unsigned int
-window_width(void);
-
-/**
- * Get the current window's height.
- *
- * \return the height
- */
-unsigned int
-window_height(void);
-
-/**
  * Close the window and destroy associated resources.
  */
 void
-window_close(void);
+window_finish(void);
 
 #endif /* !MOLKO_WINDOW_H */

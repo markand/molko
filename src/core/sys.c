@@ -170,7 +170,7 @@ sys_savepath(unsigned int idx)
 }
 
 void
-sys_close(void)
+sys_finish(void)
 {
 	Mix_Quit();
 	TTF_Quit();

@@ -130,8 +130,8 @@ run(void)
 static void
 close(void)
 {
-	window_close();
-	sys_close();
+	window_finish();
+	sys_finish();
 }
 
 int

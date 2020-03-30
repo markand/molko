@@ -17,10 +17,10 @@
  * The following table summarize the functions to be used at the beginning and
  * the end of your game.
  *
- * | System  | Init function    | Close function    | Remarks                |
- * |---------|------------------|-------------------|------------------------|
- * | General | \ref sys_init    | \ref sys_close    | Required for most API  |
- * | Window  | \ref window_init | \ref window_close | Required by some parts |
+ * | System  | Init function    | Close function     | Remarks                |
+ * |---------|------------------|--------------------|------------------------|
+ * | General | \ref sys_init    | \ref sys_finish    | Required for most API  |
+ * | Window  | \ref window_init | \ref window_finish | Required by some parts |
  *
  * All init functions set an error code if any and you're encouraged to test the
  * result and check the error if any.

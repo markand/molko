@@ -127,8 +127,8 @@ enter(void)
 	map_state_data.map.h = m->picture.h;
 
 	/* Adjust view. */
-	map_state_data.view.w = window_width();
-	map_state_data.view.h = window_height();
+	map_state_data.view.w = window.w;
+	map_state_data.view.h = window.h;
 
 	/* Adjust margin. */
 	cache.margin.w = map_state_data.view.w - (MARGIN_WIDTH * 2);

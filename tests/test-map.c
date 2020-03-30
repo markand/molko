@@ -40,8 +40,8 @@ teardown(void *data)
 {
 	(void)data;
 
-	window_close();
-	sys_close();
+	window_finish();
+	sys_finish();
 }
 
 TEST

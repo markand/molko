@@ -217,7 +217,7 @@ message_draw(struct message *msg)
 
 	const unsigned int w = msg->frame->w;
 	const unsigned int h = msg->frame->h;
-	const unsigned int x = (window_width() / 2) - (w / 2);
+	const unsigned int x = (window.w / 2) - (w / 2);
 	const unsigned int y = 80;
 	const unsigned int avgh = average(msg);
 	const unsigned int gapy = (h - (avgh * 6)) / 7;

@@ -51,8 +51,8 @@ enter(void)
 	const unsigned int w = splashscreen_state_data.text.w;
 	const unsigned int h = splashscreen_state_data.text.h;
 
-	splashscreen_state_data.x = (window_width() / 2) - (w / 2);
-	splashscreen_state_data.y = (window_height() / 2) - (h / 2);
+	splashscreen_state_data.x = (window.w / 2) - (w / 2);
+	splashscreen_state_data.y = (window.h / 2) - (h / 2);
 
 	font_finish(&font);
 }

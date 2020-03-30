@@ -78,6 +78,6 @@ sys_savepath(unsigned int idx);
  * Close the system.
  */
 void
-sys_close(void);
+sys_finish(void);
 
 #endif /* !MOLKO_SYS_H */
