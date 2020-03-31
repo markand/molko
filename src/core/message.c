@@ -201,9 +201,7 @@ draw_lines(const struct message *msg)
 		 * THEME_FONT_INTERFACE so update its color if needed.
 		 */
 		if (msg->flags & MESSAGE_QUESTION && msg->index == i)
-			font->color = THEME(msg)->colors[THEME_COLOR_SELECTED];
-		else
-			font->color = THEME(msg)->colors[THEME_COLOR_NORMAL];
+			label.color = THEME(msg)->colors[THEME_COLOR_SELECTED];
 
 		label_draw(&label);
 	}

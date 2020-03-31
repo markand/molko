@@ -2999,6 +2999,22 @@ draw_label(struct theme *t, const struct label *label)
 {
 	struct texture tex;
 
+	/* Shadow text, only if enabled. */
+	if (!(label->flags & LABEL_NO_SHADOW)) {
+		t->fonts[THEME_FONT_INTERFACE]->color = t->colors[THEME_COLOR_SHADOW];
+
+		if (!font_render(t->fonts[THEME_FONT_INTERFACE], &tex, label->text))
+			panic();
+
+		texture_draw(&tex, label->x + 1, label->y + 1);
+		texture_finish(&tex);
+	}
+
+	/* Normal text. */
+	t->fonts[THEME_FONT_INTERFACE]->color = label->color
+		? label->color
+		: t->colors[THEME_COLOR_NORMAL];
+
 	if (!font_render(t->fonts[THEME_FONT_INTERFACE], &tex, label->text))
 		panic();
 

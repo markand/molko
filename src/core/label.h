@@ -27,6 +27,14 @@
 struct theme;
 
 /**
+ * \brief Label flags.
+ */
+enum label_flags {
+	LABEL_NONE,             /*!< No flags. */
+	LABEL_NO_SHADOW         /*!< Disable shadow. */
+};
+
+/**
  * \brief GUI label.
  */
 struct label {
@@ -35,6 +43,8 @@ struct label {
 	unsigned int w;         /*!< (RW) Width. */
 	unsigned int h;         /*!< (RW) Height. */
 	const char *text;       /*!< (RW, ref) Text to show. */
+	enum label_flags flags; /*!< (RW) Optional flags. */
+	unsigned long color;    /*!< (RW) Color to use (0 = use theme). */
 	struct theme *theme;    /*!< (RW, ref, optional) Theme to use. */
 };
 
