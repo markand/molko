@@ -192,8 +192,10 @@ draw_lines(const struct message *msg)
 		struct label label = {
 			.x = 10,
 			.y = 10 + (i * lineh),
+			.h = lineh,
 			.theme = msg->theme,
-			.text = msg->text[i]
+			.text = msg->text[i],
+			.flags = LABEL_NO_HCENTER
 		};
 
 		/*
