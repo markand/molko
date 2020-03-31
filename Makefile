@@ -56,6 +56,7 @@ CORE_SRCS=      src/core/animation.c                    \
                 src/core/panic.c                        \
                 src/core/save.c                         \
                 src/core/script.c                       \
+                src/core/sound.c                        \
                 src/core/sprite.c                       \
                 src/core/sys.c                          \
                 src/core/texture.c                      \
@@ -85,7 +86,8 @@ JANSSON_CFLAGS= `pkg-config --cflags jansson`
 JANSSON_LDFLAGS=`pkg-config --libs jansson`
 
 EXAMPLES=       examples/example-message.c              \
-                examples/example-inventory.c
+                examples/example-inventory.c            \
+                examples/example-sound.c
 EXAMPLES_PRGS=  ${EXAMPLES:.c=}
 EXAMPLES_OBJS=  ${EXAMPLES:.c=.o}
 EXAMPLES_DEPS=  ${EXAMPLES:.c=.d}

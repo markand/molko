@@ -15,6 +15,7 @@
 ^molko(\.exe)?$
 ^examples/example-inventory(\.exe)?$
 ^examples/example-message(\.exe)?$
+^examples/example-sound(\.exe)?$
 ^tests/test-color(\.exe)?$
 ^tests/test-error(\.exe)?$
 ^tests/test-inventory(\.exe)?$

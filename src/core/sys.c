@@ -114,6 +114,8 @@ sys_init(void)
 		return error_sdl();
 	if (Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG)
 		return error_sdl();
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+		return error_sdl();
 
 	return true;
 }
