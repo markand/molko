@@ -414,7 +414,9 @@ basic(void)
 {
 	struct inventory inv = { 0 };
 	struct inventory_dialog dlg = {
-		.inv = &inv
+		.inv = &inv,
+		.x = 60,
+		.y = 60
 	};
 
 	inventory_push(&inv, &items[0].item, 10);     /* Potion */

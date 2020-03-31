@@ -34,12 +34,16 @@ enum inventory_dialog_state {
 };
 
 struct inventory_dialog {
+	int x;                                  /*!< (RO) Position in x. */
+	int y;                                  /*!< (RO) Position in y. */
 	struct inventory *inv;                  /*!< (RW, ref) Inventory to use. */
 	struct theme *theme;                    /*!< (RW, ref, optional) Theme to use. */
-	struct label ldesc;                     /*!< (RO) Label containing current description. */
 	struct button bsort;                    /*!< (RO) Button sort. */
 	struct frame fgrid;                     /*!< (RO) Grid frame. */
-	struct frame flabel;                    /*!< (RO) Label frame. */
+	struct frame fname;                     /*!< (RO) Frame for name. */
+	struct frame fdesc;                     /*!< (RO) Frame for description. */
+	struct label lname;                     /*!< (RO) Label for name. */
+	struct label ldesc;                     /*!< (RO) Label for description. */
 	enum inventory_dialog_state state;      /*!< (RO) Current dialog state. */
 	unsigned int selrow;                    /*!< (RO) Current selected row. */
 	unsigned int selcol;                    /*!< (RO) Current selected column. */
@@ -53,6 +57,9 @@ inventory_dialog_handle(struct inventory_dialog *dlg, const union event *event);
 
 void
 inventory_dialog_update(struct inventory_dialog *dlg, unsigned int ticks);
+
+void
+inventory_dialog_move(struct inventory_dialog *dlg, int x, int y);
 
 void
 inventory_dialog_draw(struct inventory_dialog *dlg);

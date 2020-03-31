@@ -20,11 +20,13 @@
 #include <stdio.h>
 
 #include "button.h"
+#include "event.h"
 #include "frame.h"
 #include "game.h"
 #include "inventory.h"
 #include "inventory_dialog.h"
 #include "item.h"
+#include "math.h"
 #include "painter.h"
 #include "texture.h"
 #include "window.h"
@@ -38,7 +40,7 @@
                         ((INVENTORY_ROWS_MAX + 1) * ITEM_PADDING))
 
 #define LABEL_WIDTH     (GRID_WIDTH)
-#define LABEL_HEIGHT    (32)
+#define LABEL_HEIGHT    (64)
 
 #define BUTTON_HEIGHT   (32)
 #define BUTTON_WIDTH    ((GRID_WIDTH) / 4)
@@ -51,6 +53,7 @@
  * | [] [] [] [] [] [] [] [] [] |
  * | [] [] [] [] [] [] [] [] [] |
  * +----------------------------+
+ * | Item name                  |
  * | Item description           |
  * +----------------------------+
  *                       [ Sort ]
@@ -68,6 +71,17 @@ static unsigned int
 total_height(void)
 {
 	return GRID_HEIGHT + LABEL_HEIGHT + BUTTON_HEIGHT;
+}
+
+static void
+compute_box_position(const struct inventory_dialog *dlg, int r, int c, int *x, int *y)
+{
+	assert(dlg);
+	assert(x);
+	assert(y);
+
+	*x = dlg->fgrid.x + ((c * ITEM_SIZE) + ((c + 1) * ITEM_PADDING));
+	*y = dlg->fgrid.y + ((r * ITEM_SIZE) + ((r + 1) * ITEM_PADDING));
 }
 
 static void
@@ -93,7 +107,7 @@ draw_grid_item_icon(struct item *item, int x, int y)
 }
 
 static void
-draw_grid_item_label(struct inventory_slot *slot, int x, int y)
+draw_grid_item_amount(struct inventory_slot *slot, int x, int y)
 {
 	char nstr[16];
 	struct label label = {
@@ -108,33 +122,34 @@ draw_grid_item_label(struct inventory_slot *slot, int x, int y)
 }
 
 static void
-draw_grid_item(struct inventory_slot *slot, int x, int y)
+draw_grid_item(struct inventory_slot *slot, int x, int y, bool selected)
 {
 	draw_grid_item_frame(x, y);
 
 	if (slot->item) {
 		draw_grid_item_icon(slot->item, x, y);
-		draw_grid_item_label(slot, x, y);
+		draw_grid_item_amount(slot, x, y);
+	}
+
+	if (selected) {
+		x -= 16 + 8;
+		y += (ITEM_SIZE / 2) - 8;
+		painter_draw_rectangle(x, y, 16, 16);
 	}
 }
 
 static void
 draw_grid_items(const struct inventory_dialog *dlg)
 {
-	int x;
-	int y;
-
-	y = ITEM_PADDING;
+	int x, y;
+	bool selected;
 
 	for (int r = 0; r < INVENTORY_ROWS_MAX; ++r) {
-		x = dlg->fgrid.x + ITEM_PADDING;
-
 		for (int c = 0; c < INVENTORY_COLS_MAX; ++c) {
-			draw_grid_item(&dlg->inv->items[r][c], x, y);
-			x += ITEM_SIZE + ITEM_PADDING;
+			selected = r == dlg->selrow && c == dlg->selcol;
+			compute_box_position(dlg, r, c, &x, &y);
+			draw_grid_item(&dlg->inv->items[r][c], x, y, selected);
 		}
-
-		y += ITEM_SIZE + ITEM_PADDING;
 	}
 }
 
@@ -145,10 +160,13 @@ draw_label(struct inventory_dialog *dlg)
 
 	struct item *item = dlg->inv->items[dlg->selrow][dlg->selcol].item;
 
-	frame_draw(&dlg->flabel);
+	frame_draw(&dlg->fname);
+	frame_draw(&dlg->fdesc);
 
 	if (item) {
+		dlg->lname.text = item->name;
 		dlg->ldesc.text = item->summary;
+		label_draw(&dlg->lname);
 		label_draw(&dlg->ldesc);
 	}
 }
@@ -169,29 +187,97 @@ inventory_dialog_open(struct inventory_dialog *dlg)
 	/* Grid frame position. */
 	dlg->fgrid.w = GRID_WIDTH;
 	dlg->fgrid.h = GRID_HEIGHT;
-	dlg->fgrid.x = 0; /* TODO */
-	dlg->fgrid.y = 0;
+	dlg->fgrid.x = dlg->x;
+	dlg->fgrid.y = dlg->y;
 
-	/* Label frame position. */
-	dlg->flabel.w = dlg->ldesc.w = LABEL_WIDTH;
-	dlg->flabel.h = dlg->ldesc.h = LABEL_HEIGHT;
-	dlg->flabel.x = dlg->ldesc.x = 0; /* TODO */
-	dlg->flabel.y = dlg->ldesc.y = GRID_HEIGHT;
+	/* Name label. */
+	dlg->fname.w = dlg->lname.w = LABEL_WIDTH;
+	dlg->fname.h = dlg->lname.h = LABEL_HEIGHT / 2;
+	dlg->fname.x = dlg->lname.x = dlg->x;
+	dlg->fname.y = dlg->lname.y = dlg->y + GRID_HEIGHT;
+	dlg->lname.x += ITEM_PADDING;
+	dlg->lname.flags = LABEL_NO_HCENTER;
+
+	/* Description label. */
+	dlg->fdesc.w = dlg->ldesc.w = LABEL_WIDTH;
+	dlg->fdesc.h = dlg->ldesc.h = LABEL_HEIGHT / 2;
+	dlg->fdesc.x = dlg->ldesc.x = dlg->y;
+	dlg->fdesc.y = dlg->ldesc.y = dlg->y + GRID_HEIGHT + (LABEL_HEIGHT / 2);
 	dlg->ldesc.x += ITEM_PADDING;
 	dlg->ldesc.flags = LABEL_NO_HCENTER;
 
 	/* Button sort. */
-	dlg->bsort.x = 0;
-	dlg->bsort.y = GRID_HEIGHT + LABEL_HEIGHT;
+	dlg->bsort.x = dlg->x;
+	dlg->bsort.y = dlg->y + GRID_HEIGHT + LABEL_HEIGHT;
 	dlg->bsort.w = BUTTON_WIDTH;
 	dlg->bsort.h = BUTTON_HEIGHT;
 	dlg->bsort.text = "Sort";
+}
+
+static void
+handle_keydown(struct inventory_dialog *dlg, const struct event_key *ev)
+{
+	assert(ev && ev->type == EVENT_KEYDOWN);
+
+	switch (ev->key) {
+	case KEY_LEFT:
+		if (dlg->selcol == 0)
+			dlg->selcol = INVENTORY_COLS_MAX - 1;
+		else
+			dlg->selcol--;
+		break;
+	case KEY_RIGHT:
+		dlg->selcol = (dlg->selcol + 1) % INVENTORY_COLS_MAX;
+		break;
+	case KEY_UP:
+		if (dlg->selrow == 0)
+			dlg->selrow = INVENTORY_ROWS_MAX - 1;
+		else
+			dlg->selrow--;
+		break;
+	case KEY_DOWN:
+		dlg->selrow = (dlg->selrow + 1) % INVENTORY_ROWS_MAX;
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+handle_clickdown(struct inventory_dialog *dlg, const struct event_click *ev)
+{
+	assert(dlg);
+	assert(ev && ev->type == EVENT_CLICKDOWN);
+
+	int x, y;
+
+	for (int r = 0; r < INVENTORY_ROWS_MAX; ++r) {
+		for (int c = 0; c < INVENTORY_COLS_MAX; ++c) {
+			compute_box_position(dlg, r, c, &x, &y);
+
+			if (math_is_boxed(x, y, ITEM_SIZE, ITEM_SIZE, ev->x, ev->y)) {
+				dlg->selrow = r;
+				dlg->selcol = c;
+			}
+		}
+	}
 }
 
 void
 inventory_dialog_handle(struct inventory_dialog *dlg, const union event *event)
 {
 	assert(event);
+
+	switch (event->type) {
+	case EVENT_KEYDOWN:
+		handle_keydown(dlg, &event->key);
+		break;
+	case EVENT_CLICKDOWN:
+		handle_clickdown(dlg, &event->click);
+		break;
+	default:
+		break;
+	}
 
 #if 0
 	button_handle(&data.sort, event);
@@ -209,6 +295,12 @@ inventory_dialog_update(struct inventory_dialog *dlg, unsigned int ticks)
 	assert(dlg);
 
 	(void)ticks;
+}
+
+void
+inventory_dialog_move(struct inventory_dialog *dlg, int x, int y)
+{
+	assert(dlg);
 }
 
 void

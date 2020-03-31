@@ -15089,6 +15089,18 @@ static unsigned char default_interface_font[] = {
 static struct font default_font;
 
 static void
+box(int x, int y, unsigned int w, unsigned int h)
+{
+	/* Some basic outlines. */
+	painter_set_color(0x4d3533ff);
+
+	painter_draw_line(x, y, x + w, y);
+	painter_draw_line(x, y + h, x + w, y + h);
+	painter_draw_line(x, y, x, y + h);
+	painter_draw_line(x + w, y, x + w, y + h);
+}
+
+static void
 draw_frame(struct theme *t, const struct frame *frame)
 {
 	if (frame->style == FRAME_STYLE_BOX)
@@ -15097,6 +15109,7 @@ draw_frame(struct theme *t, const struct frame *frame)
 		painter_set_color(0xce9248ff);
 
 	painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
+	box(frame->x, frame->y, frame->w, frame->h);
 }
 
 static void
@@ -15155,6 +15168,8 @@ draw_button(struct theme *t, const struct button *button)
 	painter_draw_rectangle(button->x, button->y, button->w, button->h);
 
 	label_draw(&label);
+
+	box(button->x, button->y, button->w, button->h);
 }
 
 /* Default theme. */
