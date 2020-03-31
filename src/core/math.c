@@ -16,8 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
-
 #include "math.h"
 
 bool
@@ -39,9 +37,8 @@ math_centerize(int *x,
                unsigned int pw,
                unsigned int ph)
 {
-	assert(x);
-	assert(y);
-
-	*x = px + (pw / 2) - (w / 2);
-	*y = py + (ph / 2) - (h / 2);
+	if (x)
+		*x = px + (pw / 2) - (w / 2);
+	if (y)
+		*y = py + (ph / 2) - (h / 2);
 }

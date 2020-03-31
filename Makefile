@@ -46,6 +46,7 @@ CORE_SRCS=      src/core/animation.c                    \
                 src/core/image.c                        \
                 src/core/inhibit.c                      \
                 src/core/inventory.c                    \
+                src/core/inventory_dialog.c             \
                 src/core/label.c                        \
                 src/core/map.c                          \
                 src/core/map_state.c                    \
@@ -83,7 +84,8 @@ SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 JANSSON_CFLAGS= `pkg-config --cflags jansson`
 JANSSON_LDFLAGS=`pkg-config --libs jansson`
 
-EXAMPLES=       examples/example-message.c
+EXAMPLES=       examples/example-message.c              \
+                examples/example-inventory.c
 EXAMPLES_PRGS=  ${EXAMPLES:.c=}
 EXAMPLES_OBJS=  ${EXAMPLES:.c=.o}
 EXAMPLES_DEPS=  ${EXAMPLES:.c=.d}
@@ -159,7 +161,7 @@ tools/molko-map: tools/molko-map.c
 doxygen:
 	doxygen doxygen/Doxyfile
 
-everything: ${PROG} ${EXAMPLES} ${TOOLS_PRGS} ${TESTS_PRGS}
+everything: ${PROG} ${EXAMPLES_PRGS} ${TOOLS_PRGS} ${TESTS_PRGS}
 
 install:
 	mkdir -p ${DESTDIR}${BINDIR}

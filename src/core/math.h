@@ -43,6 +43,9 @@ math_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py);
 /**
  * Update x, y to be centered into a parent region.
  *
+ * You can select to ignore horizontal/vertical centering by passing NULL to x
+ * or y respectively.
+ *
  * \param x the pointer to x coordinate to modify
  * \param y the pointer yo y coordinate to modify
  * \param w the object width

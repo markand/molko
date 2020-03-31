@@ -27,11 +27,6 @@
 #include <stdbool.h>
 
 /**
- * \brief Maximum name length.
- */
-#define ITEM_NAME_MAX   32
-
-/**
  * \brief Maximum count of an item into a stack.
  */
 #define ITEM_STACK_MAX  64
@@ -43,7 +38,8 @@ struct texture;
  * \brief Inventory items.
  */
 struct item {
-	char name[ITEM_NAME_MAX];       /*!< (RW) Name of item. */
+	const char *name;               /*!< (RW) Name of item. */
+	const char *summary;            /*!< (RW) Summary description. */
 	struct texture *icon;           /*!< (RW, ref) Icon to show. */
 	unsigned int stackable;         /*!< (RW) Stack count allowed. */
 

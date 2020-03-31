@@ -13,6 +13,7 @@
 \.o$
 \.a$
 ^molko(\.exe)?$
+^examples/example-inventory(\.exe)?$
 ^examples/example-message(\.exe)?$
 ^tests/test-color(\.exe)?$
 ^tests/test-error(\.exe)?$

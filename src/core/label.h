@@ -30,8 +30,10 @@ struct theme;
  * \brief Label flags.
  */
 enum label_flags {
-	LABEL_NONE,             /*!< No flags. */
-	LABEL_NO_SHADOW         /*!< Disable shadow. */
+	LABEL_NONE,                             /*!< No flags. */
+	LABEL_NO_SHADOW         = (1 << 0),     /*!< Disable shadow. */
+	LABEL_NO_VCENTER        = (1 << 1),     /*!< Disable vertical centering. */
+	LABEL_NO_HCENTER        = (1 << 2)      /*!< Disable horizontal centering. */
 };
 
 /**

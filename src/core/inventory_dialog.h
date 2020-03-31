@@ -19,24 +19,45 @@
 #ifndef INVENTORY_DIALOG_H
 #define INVENTORY_DIALOG_H
 
+#include "button.h"
+#include "label.h"
+#include "frame.h"
+
 union event;
 
 struct inventory;
+struct theme;
+
+enum inventory_dialog_state {
+	INVENTORY_DIALOG_NONE,
+	INVENTORY_DIALOG_SHOWING
+};
 
 struct inventory_dialog {
-	struct font *font;
+	struct inventory *inv;                  /*!< (RW, ref) Inventory to use. */
+	struct theme *theme;                    /*!< (RW, ref, optional) Theme to use. */
+	struct label ldesc;                     /*!< (RO) Label containing current description. */
+	struct button bsort;                    /*!< (RO) Button sort. */
+	struct frame fgrid;                     /*!< (RO) Grid frame. */
+	struct frame flabel;                    /*!< (RO) Label frame. */
+	enum inventory_dialog_state state;      /*!< (RO) Current dialog state. */
+	unsigned int selrow;                    /*!< (RO) Current selected row. */
+	unsigned int selcol;                    /*!< (RO) Current selected column. */
 };
 
 void
-inventory_dialog_open(struct inventory *inv);
+inventory_dialog_open(struct inventory_dialog *dlg);
 
 void
-inventory_dialog_handle(const union event *event);
+inventory_dialog_handle(struct inventory_dialog *dlg, const union event *event);
 
 void
-inventory_dialog_update(unsigned int ticks);
+inventory_dialog_update(struct inventory_dialog *dlg, unsigned int ticks);
 
 void
-inventory_dialog_draw(void);
+inventory_dialog_draw(struct inventory_dialog *dlg);
+
+void
+inventory_dialog_finish(struct inventory_dialog *dlg);
 
 #endif /* !INVENTORY_DIALOG_H */
