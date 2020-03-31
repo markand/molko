@@ -22,6 +22,7 @@
 #include <painter.h>
 #include <panic.h>
 #include <sys.h>
+#include <util.h>
 #include <theme.h>
 #include <window.h>
 
@@ -51,6 +52,7 @@ run(struct message *msg)
 	struct clock clock = {0};
 
 	message_start(msg);
+	clock_start(&clock);
 
 	while (msg->state) {
 		union event ev;
@@ -74,6 +76,9 @@ run(struct message *msg)
 		painter_clear();
 		message_draw(msg);
 		painter_present();
+
+		if ((elapsed = clock_elapsed(&clock)) < 20)
+			delay(20 - elapsed);
 	}
 }
 

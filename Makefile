@@ -159,7 +159,7 @@ tools/molko-map: tools/molko-map.c
 doxygen:
 	doxygen doxygen/Doxyfile
 
-everything: ${PROG} ${TOOLS_PRGS} ${TESTS_PRGS}
+everything: ${PROG} ${EXAMPLES} ${TOOLS_PRGS} ${TESTS_PRGS}
 
 install:
 	mkdir -p ${DESTDIR}${BINDIR}
@@ -178,4 +178,4 @@ clean:
 	rm -f ${EXAMPLES_PRGS} ${EXAMPLES_OBJS} ${EXAMPLES_DEPS}
 	rm -f ${TOOLS_PRGS} ${TOOLS_DEPS}
 
-.PHONY: all clean doxygen everything tests tools
+.PHONY: all clean doxygen everything examples tests tools

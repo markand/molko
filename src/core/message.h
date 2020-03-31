@@ -107,6 +107,7 @@ struct message {
 	enum message_state state;       /*!< (RO) Current state */
 	struct theme *theme;            /*!< (RW, ref, optional) Theme to use. */
 	unsigned int elapsed;           /*!< (RO) Time elapsed. */
+	double scale;                   /*!< (RO) Current scale [0-1]. */
 };
 
 /**
