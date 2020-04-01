@@ -18,14 +18,29 @@
 
 .POSIX:
 
+#
+# User options begin here.
+# -------------------------------------------------------------------
+#
+# CC:           C compiler
+# AR:           Archiver
+# CFLAGS:       General C flags
+# LDFLAGS:      General linker flags
+#
+# PREFIX:       Installation prefix
+# BINDIR:       Where to install binaries
+# SHAREDIR:     Where to install resources
+#
+
 CC=             cc
 AR=             ar
 CFLAGS=         -O0 -std=c11 -g
-LDFLAGS=        -lm
-# Use this instead to build a release.
-# CFLAGS=         -O3 -DNDEBUG -std=c11 -Wall -Wextra
-PROG=           molko
-LIB=            libmolko.a
+
+PREFIX=         /usr/local
+BINDIR=         ${PREFIX}/bin
+SHAREDIR=       ${PREFIX}/share
+
+# End of user options.
 
 SQLITE_SRC=     extern/libsqlite/sqlite3.c
 SQLITE_OBJ=     extern/libsqlite/sqlite3.o
@@ -76,10 +91,6 @@ ADV_SRCS=       src/adventure/main.c                    \
 ADV_OBJS=       ${ADV_SRCS:.c=.o}
 ADV_DEPS=       ${ADV_SRCS:.c=.d}
 
-PREFIX=         /usr/local
-BINDIR=         ${PREFIX}/bin
-SHAREDIR=       ${PREFIX}/share
-
 SDL_CFLAGS=     `pkg-config --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 SDL_LDFLAGS=    `pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf`
 
@@ -105,7 +116,8 @@ TESTS_PRGS=     ${TESTS:.c=}
 TESTS_OBJS=     ${TESTS:.c=.o}
 TESTS_DEPS=     ${TESTS:.c=.d}
 
-TOOLS=          tools/molko-map.c
+TOOLS=          tools/molko-map.c                       \
+                tools/molko-bcc.c
 TOOLS_PRGS=     ${TOOLS:.c=}
 TOOLS_DEPS=     ${TOOLS:.c=.d}
 
@@ -117,11 +129,12 @@ MY_CFLAGS=      -D_XOPEN_SOURCE=700 \
                 -Iextern/libgreatest \
                 -Isrc/core \
                 -Isrc/adventure
+MY_LDFLAGS=     -lm
 
 .SUFFIXES:
 .SUFFIXES: .o .c
 
-all: ${PROG}
+all: molko
 
 -include ${CORE_DEPS} ${ADV_DEPS} ${TESTS_DEPS} ${TOOLS_DEPS}
 
@@ -129,10 +142,12 @@ all: ${PROG}
 	${CC} ${MY_CFLAGS} ${SDL_CFLAGS} ${CFLAGS} -MMD -c $< -o $@
 
 .c:
-	${CC} ${MY_CFLAGS} -o $@ ${CFLAGS} $< ${LIB} ${SQLITE_LIB} ${SDL_LDFLAGS} ${LDFLAGS}
+	${CC} ${MY_CFLAGS} -o $@ ${CFLAGS} $< libmolko.a ${SQLITE_LIB} ${SDL_LDFLAGS} ${MY_LDFLAGS} ${LDFLAGS}
 
 .o:
-	${CC} -o $@ $< ${LIB} ${SQLITE_LIB} ${SDL_LDFLAGS} ${LDFLAGS}
+	${CC} -o $@ $< libmolko.a ${SQLITE_LIB} ${SDL_LDFLAGS} ${MY_LDFLAGS} ${LDFLAGS}
+
+# {{{ Core
 
 ${SQLITE_OBJ}: ${SQLITE_SRC}
 	${CC} ${CFLAGS} ${SQLITE_FLAGS} -c ${SQLITE_SRC} -o $@
@@ -140,31 +155,59 @@ ${SQLITE_OBJ}: ${SQLITE_SRC}
 ${SQLITE_LIB}: ${SQLITE_OBJ}
 	${AR} -rc $@ ${SQLITE_OBJ}
 
-${LIB}: ${CORE_OBJS} ${SQLITE_LIB}
+libmolko.a: ${CORE_OBJS} ${SQLITE_LIB}
 	${AR} -rc $@ ${CORE_OBJS}
 
-${PROG}: ${LIB} ${ADV_OBJS}
-	${CC} -o $@ ${ADV_OBJS} ${LIB} ${SQLITE_LIB} ${SDL_LDFLAGS} ${LDFLAGS}
+# }}}
 
-${TESTS_OBJS}: ${LIB}
+# {{{ Molko's Adventure
 
-${EXAMPLES_OBJS}: ${LIB}
+molko: libmolko.a ${ADV_OBJS}
+	${CC} -o $@ ${ADV_OBJS} libmolko.a ${SQLITE_LIB} ${SDL_LDFLAGS} ${MY_LDFLAGS} ${LDFLAGS}
+
+# }}}
+
+# {{{ Examples
+
+${EXAMPLES_OBJS}: libmolko.a
 
 examples: ${EXAMPLES_PRGS}
 
+# }}}
+
+# {{{ Tests
+
+${TESTS_OBJS}: libmolko.a
+
 tests: ${TESTS_PRGS}
 	for t in ${TESTS_PRGS}; do ./$$t; done
+
+# }}}
+
+# {{{ Tools
 
 tools: ${TOOLS_PRGS}
 
 # Custom rule: does not depend on anything else than jansson.
 tools/molko-map: tools/molko-map.c
-	${CC} ${MY_CFLAGS} -o $@ tools/molko-map.c ${CFLAGS} ${JANSSON_CFLAGS} ${JANSSON_LDFLAGS}
+	${CC} ${MY_CFLAGS} -o $@ tools/molko-map.c ${CFLAGS} ${JANSSON_CFLAGS} ${JANSSON_LDFLAGS} ${LDFLAGS}
+
+# Custom rule: does not depend on anything.
+tools/molko-bcc: tools/molko-bcc.c
+	${CC} ${MY_CFLAGS} -o $@ tools/molko-bcc.c ${LDFLAGS}
+
+# }}}
+
+# {{{ Docs
 
 doxygen:
 	doxygen doxygen/Doxyfile
 
-everything: ${PROG} ${EXAMPLES_PRGS} ${TOOLS_PRGS} ${TESTS_PRGS}
+# }}}
+
+# {{{ Misc
+
+everything: molko ${EXAMPLES_PRGS} ${TOOLS_PRGS} ${TESTS_PRGS}
 
 install:
 	mkdir -p ${DESTDIR}${BINDIR}
@@ -173,14 +216,44 @@ install:
 	mkdir -p ${DESTDIR}${SHAREDIR}/molko
 	cp -R assets/* ${DESTDIR}${SHAREDIR}/molko
 
-clean:
-	rm -rf doxygen/html doxygen/man
+clean-core:
 	rm -f ${SQLITE_OBJ} ${SQLITE_LIB}
-	rm -f ${LIB} ${PROG}
+	rm -f libmolko.a
 	rm -f ${CORE_OBJS} ${CORE_DEPS}
-	rm -f ${ADV_OBJS} ${ADV_DEPS}
-	rm -f ${TESTS_PRGS} ${TESTS_OBJS} ${TESTS_DEPS}
+
+clean-doxygen:
+	rm -rf doxygen/html doxygen/man
+
+clean-examples:
 	rm -f ${EXAMPLES_PRGS} ${EXAMPLES_OBJS} ${EXAMPLES_DEPS}
+
+clean-molko:
+	rm -f molko ${ADV_OBJS} ${ADV_DEPS}
+
+clean-tests:
+	rm -f ${TESTS_PRGS} ${TESTS_OBJS} ${TESTS_DEPS}
+
+clean-tools:
 	rm -f ${TOOLS_PRGS} ${TOOLS_DEPS}
 
-.PHONY: all clean doxygen everything examples tests tools
+clean: clean-core \
+       clean-doxygen \
+       clean-examples \
+       clean-molko \
+       clean-tests \
+       clean-tools
+
+# }}}
+
+.PHONY: all \
+        clean-core \
+        clean-doxygen \
+        clean-examples \
+        clean-molko \
+        clean-tests \
+        clean-tools \
+        doxygen \
+        everything \
+        examples \
+        tests \
+        tools

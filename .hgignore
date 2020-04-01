@@ -12,10 +12,10 @@
 \.d$
 \.o$
 \.a$
-^molko(\.exe)?$
 ^examples/example-inventory(\.exe)?$
 ^examples/example-message(\.exe)?$
 ^examples/example-sound(\.exe)?$
+^molko(\.exe)?$
 ^tests/test-color(\.exe)?$
 ^tests/test-error(\.exe)?$
 ^tests/test-inventory(\.exe)?$
@@ -23,6 +23,7 @@
 ^tests/test-panic(\.exe)?$
 ^tests/test-save(\.exe)?$
 ^tests/test-script(\.exe)?$
+^tools/molko-bcc(\.exe)?$
 ^tools/molko-map(\.exe)?$
 
 # doxygen stuff.

@@ -23,7 +23,7 @@
 #include "font.h"
 #include "frame.h"
 #include "label.h"
-#include "math.h"
+#include "maths.h"
 #include "painter.h"
 #include "panic.h"
 #include "texture.h"
