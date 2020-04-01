@@ -12,9 +12,11 @@
 \.d$
 \.o$
 \.a$
+^assets/.*\.h$
 ^examples/example-inventory(\.exe)?$
 ^examples/example-message(\.exe)?$
 ^examples/example-sound(\.exe)?$
+^examples/assets/.*\.h$
 ^molko(\.exe)?$
 ^tests/test-color(\.exe)?$
 ^tests/test-error(\.exe)?$

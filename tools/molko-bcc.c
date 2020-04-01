@@ -25,6 +25,7 @@
 #include <string.h>
 #include <unistd.h>
 
+static const char *charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 static bool fstatic;
 
 noreturn static void
@@ -44,6 +45,23 @@ die(const char *fmt, ...)
 	vfprintf(stderr, fmt, ap);
 	va_end(ap);
 	exit(1);
+}
+
+static char *
+mangle(char *variable)
+{
+	char *p;
+	size_t pos;
+
+	/* Remove extension. */
+	if ((p = strrchr(variable, '.')))
+		*p = '\0';
+
+	/* Remove disallowed characters. */
+	while ((pos = strspn(variable, charset)) != strlen(variable))
+		variable[pos] = '_';
+
+	return variable;
 }
 
 static void
@@ -105,5 +123,5 @@ main(int argc, char **argv)
 	if (argc < 2)
 		usage();
 
-	process(argv[0], argv[1]);
+	process(argv[0], mangle(argv[1]));
 }

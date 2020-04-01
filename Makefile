@@ -83,6 +83,7 @@ CORE_SRCS=      src/core/animation.c                    \
                 src/core/window.c
 CORE_OBJS=      ${CORE_SRCS:.c=.o}
 CORE_DEPS=      ${CORE_SRCS:.c=.d}
+CORE_ASTS=      assets/fonts/ComicNeue-Regular.h
 
 ADV_SRCS=       src/adventure/main.c                    \
                 src/adventure/panic_state.c             \
@@ -103,6 +104,10 @@ EXAMPLES=       examples/example-message.c              \
 EXAMPLES_PRGS=  ${EXAMPLES:.c=}
 EXAMPLES_OBJS=  ${EXAMPLES:.c=.o}
 EXAMPLES_DEPS=  ${EXAMPLES:.c=.d}
+EXAMPLES_ASTS=  examples/assets/sounds/vabsounds-romance.h \
+                examples/assets/images/fish.h \
+                examples/assets/images/potion.h \
+                examples/assets/images/sword.h
 
 TESTS=          tests/test-color.c                      \
                 tests/test-error.c                      \
@@ -125,6 +130,7 @@ MY_CFLAGS=      -D_XOPEN_SOURCE=700 \
                 -DPREFIX=\""${PREFIX}"\" \
                 -DBINDIR=\""${BINDIR}"\" \
                 -DSHAREDIR=\""${SHAREDIR}"\" \
+                -I. \
                 -Iextern/libsqlite \
                 -Iextern/libgreatest \
                 -Isrc/core \
@@ -132,7 +138,7 @@ MY_CFLAGS=      -D_XOPEN_SOURCE=700 \
 MY_LDFLAGS=     -lm
 
 .SUFFIXES:
-.SUFFIXES: .o .c
+.SUFFIXES: .o .c .h .ogg .png .ttf
 
 all: molko
 
@@ -147,7 +153,12 @@ all: molko
 .o:
 	${CC} -o $@ $< libmolko.a ${SQLITE_LIB} ${SDL_LDFLAGS} ${MY_LDFLAGS} ${LDFLAGS}
 
+.ogg.h .png.h .ttf.h:
+	tools/molko-bcc -s $< ${<F} > $@
+
 # {{{ Core
+
+${CORE_OBJS}: tools/molko-bcc ${CORE_ASTS}
 
 ${SQLITE_OBJ}: ${SQLITE_SRC}
 	${CC} ${CFLAGS} ${SQLITE_FLAGS} -c ${SQLITE_SRC} -o $@
@@ -169,7 +180,7 @@ molko: libmolko.a ${ADV_OBJS}
 
 # {{{ Examples
 
-${EXAMPLES_OBJS}: libmolko.a
+${EXAMPLES_OBJS}: libmolko.a ${EXAMPLES_ASTS}
 
 examples: ${EXAMPLES_PRGS}
 
@@ -219,13 +230,13 @@ install:
 clean-core:
 	rm -f ${SQLITE_OBJ} ${SQLITE_LIB}
 	rm -f libmolko.a
-	rm -f ${CORE_OBJS} ${CORE_DEPS}
+	rm -f ${CORE_OBJS} ${CORE_DEPS} ${CORE_ASTS}
 
 clean-doxygen:
 	rm -rf doxygen/html doxygen/man
 
 clean-examples:
-	rm -f ${EXAMPLES_PRGS} ${EXAMPLES_OBJS} ${EXAMPLES_DEPS}
+	rm -f ${EXAMPLES_PRGS} ${EXAMPLES_OBJS} ${EXAMPLES_DEPS} ${EXAMPLES_ASTS}
 
 clean-molko:
 	rm -f molko ${ADV_OBJS} ${ADV_DEPS}
