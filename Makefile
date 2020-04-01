@@ -21,6 +21,7 @@
 CC=             cc
 AR=             ar
 CFLAGS=         -O0 -std=c11 -g
+LDFLAGS=        -lm
 # Use this instead to build a release.
 # CFLAGS=         -O3 -DNDEBUG -std=c11 -Wall -Wextra
 PROG=           molko
@@ -50,7 +51,7 @@ CORE_SRCS=      src/core/animation.c                    \
                 src/core/label.c                        \
                 src/core/map.c                          \
                 src/core/map_state.c                    \
-                src/core/math.c                         \
+                src/core/maths.c                        \
                 src/core/message.c                      \
                 src/core/painter.c                      \
                 src/core/panic.c                        \

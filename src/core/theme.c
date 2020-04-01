@@ -15131,7 +15131,7 @@ draw_label(struct theme *t, const struct label *label)
 		if (!font_render(t->fonts[THEME_FONT_INTERFACE], &tex, label->text))
 			panic();
 
-		math_centerize(px, py, tex.w, tex.h,
+		maths_centerize(px, py, tex.w, tex.h,
 		    label->x, label->y, label->w, label->h);
 
 		texture_draw(&tex, x + 1, y + 1);
@@ -15146,7 +15146,7 @@ draw_label(struct theme *t, const struct label *label)
 	if (!font_render(t->fonts[THEME_FONT_INTERFACE], &tex, label->text))
 		panic();
 
-	math_centerize(px, py, tex.w, tex.h,
+	maths_centerize(px, py, tex.w, tex.h,
 	    label->x, label->y, label->w, label->h);
 
 	texture_draw(&tex, x, y);

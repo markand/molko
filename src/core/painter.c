@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <math.h>
+
 #include "color.h"
 #include "painter.h"
 #include "texture.h"
@@ -83,6 +85,25 @@ painter_draw_rectangle(int x, int y, unsigned int width, unsigned int height)
 	};
 
 	SDL_RenderFillRect(RENDERER(), &rect);
+}
+
+void
+painter_draw_circle(int x, int y, int radius)
+{
+	// Note that there is more to altering the bitrate of this 
+	// method than just changing this value.  See how pixels are
+	// altered at the following web page for tips:
+	//   http://www.libsdl.org/intro.en/usingvideo.html
+	static const int BPP = 4;
+
+	//double ra = (double)radius;
+
+	for (double dy = 1; dy <= radius; dy += 1.0) {
+		double dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
+
+		SDL_RenderDrawLine(RENDERER(), x - dx, y + dy - radius, x + dx, y + dy - radius);
+		SDL_RenderDrawLine(RENDERER(), x - dx, y - dy + radius, x + dx, y - dy + radius);
+	}
 }
 
 void

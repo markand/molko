@@ -26,7 +26,7 @@
 #include "inventory.h"
 #include "inventory_dialog.h"
 #include "item.h"
-#include "math.h"
+#include "maths.h"
 #include "painter.h"
 #include "texture.h"
 #include "window.h"
@@ -132,9 +132,9 @@ draw_grid_item(struct inventory_slot *slot, int x, int y, bool selected)
 	}
 
 	if (selected) {
-		x -= 16 + 8;
-		y += (ITEM_SIZE / 2) - 8;
-		painter_draw_rectangle(x, y, 16, 16);
+		x -= 16;
+		y += (ITEM_SIZE / 2) - 4;
+		painter_draw_circle(x, y, 8);
 	}
 }
 
@@ -255,7 +255,7 @@ handle_clickdown(struct inventory_dialog *dlg, const struct event_click *ev)
 		for (int c = 0; c < INVENTORY_COLS_MAX; ++c) {
 			compute_box_position(dlg, r, c, &x, &y);
 
-			if (math_is_boxed(x, y, ITEM_SIZE, ITEM_SIZE, ev->x, ev->y)) {
+			if (maths_is_boxed(x, y, ITEM_SIZE, ITEM_SIZE, ev->x, ev->y)) {
 				dlg->selrow = r;
 				dlg->selcol = c;
 			}

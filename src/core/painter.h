@@ -101,6 +101,9 @@ painter_draw_point(int x, int y);
 void
 painter_draw_rectangle(int x, int y, unsigned int w, unsigned int h);
 
+void
+painter_draw_circle(int x, int y, int radius);
+
 /**
  * Clear the window.
  */

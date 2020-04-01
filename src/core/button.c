@@ -20,7 +20,7 @@
 
 #include "button.h"
 #include "event.h"
-#include "math.h"
+#include "maths.h"
 #include "theme.h"
 
 static bool
@@ -30,7 +30,7 @@ is_boxed(const struct button *button, const struct event_click *click)
 	assert(click);
 	assert(click->type == EVENT_CLICKDOWN || click->type == EVENT_CLICKUP);
 
-	return math_is_boxed(button->x, button->y, button->w, button->h,
+	return maths_is_boxed(button->x, button->y, button->w, button->h,
 	    click->x, click->y);
 }
 

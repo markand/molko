@@ -1,5 +1,5 @@
 /*
- * math.c -- basic maths
+ * maths.c -- basic maths
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,10 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "math.h"
+#include "maths.h"
 
 bool
-math_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
+maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
 {
 	return px >= x &&
 	       py >= y &&
@@ -28,7 +28,7 @@ math_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
 }
 
 void
-math_centerize(int *x,
+maths_centerize(int *x,
                int *y,
                unsigned int w,
                unsigned int h,

@@ -1,5 +1,5 @@
 /*
- * math.h -- basic maths
+ * maths.h -- basic maths
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,13 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_MATH_H
-#define MOLKO_MATH_H
+#ifndef MOLKO_MATHS_H
+#define MOLKO_MATHS_H
 
 #include <stdbool.h>
 
 /**
- * \file math.h
+ * \file maths.h
  * \brief Basic maths.
  */
 
@@ -38,7 +38,7 @@
  * \return True if within the region
  */
 bool
-math_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py);
+maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py);
 
 /**
  * Update x, y to be centered into a parent region.
@@ -56,13 +56,13 @@ math_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py);
  * \param ph the parent region height
  */
 void
-math_centerize(int *x,
-               int *y,
-               unsigned int w,
-               unsigned int h,
-               int px,
-               int py,
-               unsigned int pw,
-               unsigned int ph);
+maths_centerize(int *x,
+                int *y,
+                unsigned int w,
+                unsigned int h,
+                int px,
+                int py,
+                unsigned int pw,
+                unsigned int ph);
 
-#endif /* !MOLKO_MATH_H */
+#endif /* !MOLKO_MATHS_H */
