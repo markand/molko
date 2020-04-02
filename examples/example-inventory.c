@@ -77,7 +77,7 @@ static void
 init(void)
 {
 	if (!sys_init() ||
-	    !window_init("Example - Message", W, H) ||
+	    !window_init("Example - Inventory", W, H) ||
 	    !theme_init())
 		panic();
 

@@ -35,6 +35,7 @@ INPUT                  = doxygen/groups.c \
                          doxygen/mainpage.c \
                          doxygen/page-howto-initialization.c \
                          doxygen/page-faq.c \
+                         doxygen/page-examples.c \
                          src
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h
@@ -43,3 +44,4 @@ EXCLUDE_PATTERNS       = *_p.h
 GENERATE_LATEX         = NO
 GENERATE_MAN           = YES
 MAX_INITIALIZER_LINES  = 0
+EXAMPLE_PATH           = examples
