@@ -279,14 +279,12 @@ inventory_dialog_handle(struct inventory_dialog *dlg, const union event *event)
 		break;
 	}
 
-#if 0
-	button_handle(&data.sort, event);
+	button_handle(&dlg->bsort, event);
 
-	if (data.sort.state == BUTTON_STATE_ACTIVATED) {
-		inventory_sort(data.inv);
-		button_reset(&data.sort);
+	if (dlg->bsort.state == BUTTON_STATE_ACTIVATED) {
+		inventory_sort(dlg->inv);
+		button_reset(&dlg->bsort);
 	}
-#endif
 }
 
 void

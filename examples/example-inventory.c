@@ -143,9 +143,21 @@ basic(void)
 		.y = 60
 	};
 
-	inventory_push(&inv, &items[0].item, 10);     /* Potion */
-	inventory_push(&inv, &items[1].item, 4);      /* Fish */
-	inventory_push(&inv, &items[2].item, 1);      /* Sword */
+	/* Add items manually to be able to sort. */
+	inv.items[1][5].item = &items[0].item;
+	inv.items[1][5].amount = 12;
+
+	inv.items[1][2].item = &items[0].item;
+	inv.items[1][2].amount = 9;
+
+	inv.items[2][7].item = &items[1].item;
+	inv.items[2][7].amount = 9;
+
+	inv.items[2][8].item = &items[1].item;
+	inv.items[2][8].amount = 3;
+
+	inv.items[2][4].item = &items[2].item;
+	inv.items[2][4].amount = 1;
 
 	run(&dlg);
 }

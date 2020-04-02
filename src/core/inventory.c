@@ -18,10 +18,13 @@
 
 #include <assert.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "inventory.h"
 #include "item.h"
+
+#define INVENTORY_TOTAL (INVENTORY_ROWS_MAX * INVENTORY_COLS_MAX)
 
 static bool
 can_be_used(struct inventory_slot *slot, const struct item *item)
@@ -98,6 +101,47 @@ provide(struct inventory_slot *slot, struct item *item, unsigned int amount)
 	return amount;
 }
 
+static bool
+merge(struct inventory_slot *slot, struct inventory_slot *other)
+{
+	assert(slot);
+	assert(slot->item);
+	assert(other);
+
+	/* Not compatible, return false to let the sorting continue. */
+	if (slot->item != other->item)
+		return false;
+
+	while (slot->amount < slot->item->stackable && other->amount) {
+		slot->amount++;
+		other->amount--;
+	}
+
+	/* No more amount in the other slot, empty it. */
+	if (other->amount == 0U)
+		memset(other, 0, sizeof (*other));
+
+	return slot->amount >= slot->item->stackable;
+}
+
+static void
+sort(struct inventory *iv, struct inventory_slot *slot, int r, int c)
+{
+	assert(slot);
+	assert(slot->item);
+
+	/* Merge until the end of thiw row. */
+	for (c = c + 1; c < INVENTORY_COLS_MAX; ++c)
+		if (merge(slot, &iv->items[r][c]))
+			return;
+
+	/* Merge the next rows. */
+	for (r = r + 1; r < INVENTORY_ROWS_MAX; ++r)
+		for (c = 0; c < INVENTORY_COLS_MAX; ++c)
+			if (merge(slot, &iv->items[r][c]))
+				return;
+}
+
 unsigned int
 inventory_push(struct inventory *iv, struct item *item, unsigned int amount)
 {
@@ -115,6 +159,46 @@ inventory_push(struct inventory *iv, struct item *item, unsigned int amount)
 	}
 
 	return amount;
+}
+
+static int
+compare_slot(const void *v1, const void *v2)
+{
+	const struct inventory_slot *slot1 = v1;
+	const struct inventory_slot *slot2 = v2;
+	int cmp;
+
+	/* Two null slots compare equal. */
+	if (!slot1->item && !slot2->item)
+		return 0;
+
+	/* Null left should be moved after. */
+	if (!slot1->item)
+		return 1;
+
+	/* Null right slots should be moved after. */
+	if (!slot2->item)
+		return -1;
+
+	/* If they are identical, use amount to sort. */
+	if ((cmp = strcmp(slot1->item->name, slot2->item->name)) == 0)
+		return (long long int)slot2->amount - (long long int)slot1->amount;
+
+	return cmp;
+}
+
+void
+inventory_sort(struct inventory *iv)
+{
+	assert(iv);
+
+	for (int r = 0; r < INVENTORY_ROWS_MAX; ++r)
+		for (int c = 0; c < INVENTORY_COLS_MAX; ++c)
+			if (iv->items[r][c].item)
+				sort(iv, &iv->items[r][c], r, c);
+
+	/* Sort by names AND by amount. */
+	qsort(iv->items, INVENTORY_TOTAL, sizeof (struct inventory_slot), compare_slot);
 }
 
 void

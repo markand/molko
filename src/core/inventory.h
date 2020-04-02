@@ -73,6 +73,16 @@ unsigned int
 inventory_push(struct inventory *iv, struct item *item, unsigned int amount);
 
 /**
+ * Sort the inventory.
+ *
+ * \pre iv != NULL
+ * \pre item != NULL
+ * \param iv the inventory
+ */
+void
+inventory_sort(struct inventory *iv);
+
+/**
  * Clears the inventory.
  *
  * \pre iv != NULL
