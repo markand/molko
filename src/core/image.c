@@ -22,7 +22,9 @@
 #include <SDL_image.h>
 
 #include "error_p.h"
-#include "texture_p.h"
+#include "texture.h"
+#include "window.h"
+#include "window_p.h"
 
 bool
 image_open(struct texture *tex, const char *path)
@@ -30,12 +32,10 @@ image_open(struct texture *tex, const char *path)
 	assert(tex);
 	assert(path);
 
-	SDL_Surface *surface = IMG_Load(path);
-
-	if (!surface)
+	if (!(tex->handle = IMG_LoadTexture(RENDERER(), path)))
 		return error_sdl();
 
-	return texture_from_surface(tex, surface);
+	return true;
 }
 
 bool
@@ -44,10 +44,9 @@ image_openmem(struct texture *tex, const void *buffer, size_t size)
 	assert(buffer);
 
 	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
-	SDL_Surface *surface;
 
-	if (!ops || !(surface = IMG_Load_RW(ops, true)))
+	if (!ops || !(tex->handle = IMG_LoadTexture_RW(RENDERER(), ops, true)))
 		return error_sdl();
 
-	return texture_from_surface(tex, surface);
+	return true;
 }

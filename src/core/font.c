@@ -26,7 +26,6 @@
 #include "error.h"
 #include "error_p.h"
 #include "font.h"
-#include "texture_p.h"
 #include "util.h"
 
 bool
