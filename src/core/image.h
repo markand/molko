@@ -25,6 +25,7 @@
  * \ingroup drawing
  */
 
+#include <stdbool.h>
 #include <stddef.h>
 
 struct texture;

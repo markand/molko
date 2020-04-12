@@ -26,6 +26,19 @@
 #include "window.h"
 #include "window_p.h"
 
+static void
+dimensions(struct texture *tex)
+{
+	int w, h;
+
+	if (SDL_QueryTexture(tex->handle, NULL, NULL, &w, &h) < 0)
+		tex->w = tex->h = 0;
+	else {
+		tex->w = w;
+		tex->h = h;
+	}
+}
+
 bool
 image_open(struct texture *tex, const char *path)
 {
@@ -34,6 +47,8 @@ image_open(struct texture *tex, const char *path)
 
 	if (!(tex->handle = IMG_LoadTexture(RENDERER(), path)))
 		return error_sdl();
+
+	dimensions(tex);
 
 	return true;
 }
@@ -47,6 +62,8 @@ image_openmem(struct texture *tex, const void *buffer, size_t size)
 
 	if (!ops || !(tex->handle = IMG_LoadTexture_RW(RENDERER(), ops, true)))
 		return error_sdl();
+
+	dimensions(tex);
 
 	return true;
 }
