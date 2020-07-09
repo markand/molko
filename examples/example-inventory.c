@@ -35,8 +35,8 @@
 #include "assets/images/potion.h"
 #include "assets/images/sword.h"
 
-#define W 1920
-#define H 1080
+#define W 1280
+#define H 720
 
 static struct {
 	const unsigned char *data;

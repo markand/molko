@@ -30,8 +30,8 @@
 /* https://freesound.org/people/VABsounds/sounds/423658 */
 #include "assets/sounds/vabsounds-romance.h"
 
-#define W 1920
-#define H 1080
+#define W 1280
+#define H 720
 
 static struct sound sound;
 static struct label label = {

@@ -26,8 +26,8 @@
 #include <theme.h>
 #include <window.h>
 
-#define W 1920
-#define H 1080
+#define W 1280
+#define H 720
 
 static void
 init(void)
