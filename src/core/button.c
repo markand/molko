@@ -40,7 +40,6 @@ button_handle(struct button *button, const union event *ev)
 	assert(button);
 	assert(ev);
 
-
 	switch (ev->type) {
 	case EVENT_CLICKDOWN:
 		if (is_boxed(button, &ev->click))

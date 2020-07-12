@@ -38,7 +38,7 @@ static struct label label = {
 	.text = "Keys: <s> start, <p> pause, <r> resume, <q> stop, <l> loop",
 	.x = 10,
 	.y = 10,
-	.w = 1920,
+	.w = W,
 	.h = 32,
 	.flags = LABEL_NO_HCENTER
 };

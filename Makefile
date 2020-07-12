@@ -52,6 +52,7 @@ SQLITE_FLAGS=   -DSQLITE_THREADSAFE=0 \
 
 CORE_SRCS=      src/core/animation.c                    \
                 src/core/button.c                       \
+                src/core/checkbox.c                     \
                 src/core/clock.c                        \
                 src/core/debug.c                        \
                 src/core/error.c                        \

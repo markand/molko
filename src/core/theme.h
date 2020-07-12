@@ -26,6 +26,7 @@
 
 #include <stdbool.h>
 
+struct checkbox;
 struct button;
 struct font;
 struct frame;
@@ -64,6 +65,11 @@ struct theme {
 	unsigned long colors[THEME_COLOR_LAST];
 
 	/**
+	 * (RW) Padding between GUI elements.
+	 */
+	unsigned int padding;
+
+	/**
 	 * Draw a frame.
 	 *
 	 * This function is used to draw a box usually as a container where UI
@@ -86,6 +92,13 @@ struct theme {
 	 * \see \ref theme_draw_button
 	 */
 	void (*draw_button)(struct theme *, const struct button *);
+
+	/**
+	 * Draw a checkbox.
+	 *
+	 * \see \ref theme_draw_button
+	 */
+	void (*draw_checkbox)(struct theme *t, const struct checkbox *);
 };
 
 /**
@@ -104,6 +117,15 @@ theme_init(void);
  */
 struct theme *
 theme_default(void);
+
+/**
+ * Get the desired padding between GUI elements.
+ *
+ * \param t the theme to use (may be NULL)
+ * \return the padding in pixels
+ */
+unsigned int
+theme_padding(const struct theme *t);
 
 /**
  * Draw a frame.
@@ -134,6 +156,15 @@ theme_draw_label(struct theme *t, const struct label *label);
  */
 void
 theme_draw_button(struct theme *t, const struct button *button);
+
+/**
+ * Draw a checkbox.
+ *
+ * \param t the theme to use (may be NULL)
+ * \param cb the checkbox
+ */
+void
+theme_draw_checkbox(struct theme *t, const struct checkbox *cb);
 
 /**
  * Close associated resources.

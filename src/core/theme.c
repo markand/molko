@@ -20,6 +20,7 @@
 #include <stddef.h>
 
 #include "button.h"
+#include "checkbox.h"
 #include "font.h"
 #include "frame.h"
 #include "label.h"
@@ -34,6 +35,10 @@
 
 #define THEME(t) (t ? t : &default_theme)
 
+#define CHECKBOX_W 16
+#define CHECKBOX_H 16
+#define CHECKBOX_RAD 6
+
 static struct font default_font;
 
 static void
@@ -47,6 +52,7 @@ box(int x, int y, unsigned int w, unsigned int h)
 	painter_draw_line(x, y, x, y + h);
 	painter_draw_line(x + w, y, x + w, y + h);
 }
+
 
 static void
 draw_frame(struct theme *t, const struct frame *frame)
@@ -120,6 +126,31 @@ draw_button(struct theme *t, const struct button *button)
 	box(button->x, button->y, button->w, button->h);
 }
 
+static void
+draw_checkbox(struct theme *t, const struct checkbox *cb)
+{
+	box(cb->x, cb->y, CHECKBOX_W, CHECKBOX_H);
+
+	if (cb->checked)
+		painter_draw_rectangle(cb->x + 5, cb->y + 5, CHECKBOX_W - 9, CHECKBOX_H - 9);
+
+	if (cb->label) {
+		const unsigned int w = cb->w - (t->padding * 2) - CHECKBOX_W;
+		const int x = cb->x + (t->padding * 2) + CHECKBOX_W;
+
+		struct label label = {
+			.text = cb->label,
+			.flags = LABEL_NO_HCENTER,
+			.x = x,
+			.y = cb->y,
+			.w = w,
+			.h = cb->h
+		};
+
+		draw_label(t, &label);
+	}
+}
+
 /* Default theme. */
 static struct theme default_theme = {
 	.colors = {
@@ -127,9 +158,11 @@ static struct theme default_theme = {
 		[THEME_COLOR_SELECTED]  = 0x006554ff,
 		[THEME_COLOR_SHADOW]    = 0x000000ff
 	},
+	.padding = 10,
 	.draw_frame = draw_frame,
 	.draw_label = draw_label,
-	.draw_button = draw_button
+	.draw_button = draw_button,
+	.draw_checkbox = draw_checkbox
 };
 
 /* Default font catalog. */
@@ -174,6 +207,12 @@ theme_default(void)
 	return &default_theme;
 }
 
+unsigned int
+theme_padding(const struct theme *t)
+{
+	return THEME(t)->padding;
+}
+
 void
 theme_draw_frame(struct theme *t, const struct frame *frame)
 {
@@ -196,6 +235,14 @@ theme_draw_button(struct theme *t, const struct button *button)
 	assert(button);
 
 	THEME(t)->draw_button(THEME(t), button);
+}
+
+void
+theme_draw_checkbox(struct theme *t, const struct checkbox *cb)
+{
+	assert(cb);
+
+	THEME(t)->draw_checkbox(THEME(t), cb);
 }
 
 void

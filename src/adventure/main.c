@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "button.h"
+#include "checkbox.h"
 #include "clock.h"
 #include "debug.h"
 #include "error.h"
@@ -83,12 +84,18 @@ static void
 run(void)
 {
 	struct clock clock = { 0 };
-	struct button button = {
-		.text = "click me",
+	struct frame mainmenu = {
 		.x = 10,
-		.y = 40,
-		.w = 100,
-		.h = 30
+		.y = 10,
+		.w = 200,
+		.h = 64
+	};
+	struct checkbox cb = {
+		.label = "Play hard mode",
+		.x = 20,
+		.y = 20,
+		.w = 200,
+		.h = 16
 	};
 
 	for (;;) {
@@ -101,25 +108,16 @@ run(void)
 			case EVENT_QUIT:
 				return;
 			default:
-				button_handle(&button, &ev);
-
-				if (button.state == BUTTON_STATE_ACTIVATED) {
-					puts("CLICKED!!!");
-					button_reset(&button);
-				}
-
+				checkbox_handle(&cb, &ev);
 				break;
 			}
 		}
-
-		printf("%d\n", button.state);
 
 		painter_set_color(0xffffffff);
 		painter_clear();
 
 		theme_draw_frame(NULL, &(const struct frame){ .x=10, .y=10, .w=500, .h=500 });
-		label_draw(&(const struct label){ .text = "Hello for this quest.", .x=20, .y=20, .w=100, .h=100 });
-		button_draw(&button);
+		checkbox_draw(&cb);
 
 		painter_present();
 
