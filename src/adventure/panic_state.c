@@ -31,14 +31,14 @@
 #include <window.h>
 #include <map_state.h>
 
+#include <assets/fonts/Lato-Regular.h>
+
 #include "panic_state.h"
 
 #define BACKGROUND 0x4f5070ff
 #define FOREGROUND 0xffffffff
 
-#define FONT "fonts/Lato-Regular.ttf"
-#define FONT_SZ 16
-
+#define SIZE 16
 #define PADDING 20
 
 #define OUT "molko-adventure.txt"
@@ -222,6 +222,6 @@ panic_state_init(void)
 	 * useful information to the screen so as last resort print them
 	 * on the console.
 	 */
-	if (!(font_open(&data.font, sys_datapath(FONT), FONT_SZ)))
+	if (!(font_openmem(&data.font, Lato_Regular, sizeof (Lato_Regular), SIZE)))
 		die("%s", error());
 }

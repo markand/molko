@@ -88,7 +88,6 @@ draw_actions(void)
 			game.actions[i].draw(&game.actions[i]);
 }
 
-
 void
 game_switch(struct state *state, bool quick)
 {
