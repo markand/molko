@@ -53,7 +53,6 @@ box(int x, int y, unsigned int w, unsigned int h)
 	painter_draw_line(x + w, y, x + w, y + h);
 }
 
-
 static void
 draw_frame(struct theme *t, const struct frame *frame)
 {

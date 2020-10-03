@@ -7,28 +7,3 @@
 
 # macOS specific.
 \.DS_Store$
-
-# object files.
-\.d$
-\.o$
-\.a$
-^assets/.*\.h$
-^examples/example-inventory(\.exe)?$
-^examples/example-message(\.exe)?$
-^examples/example-sound(\.exe)?$
-^examples/assets/.*\.h$
-^molko(\.exe)?$
-^tests/test-color(\.exe)?$
-^tests/test-error(\.exe)?$
-^tests/test-inventory(\.exe)?$
-^tests/test-map(\.exe)?$
-^tests/test-panic(\.exe)?$
-^tests/test-save(\.exe)?$
-^tests/test-script(\.exe)?$
-^tools/molko-bcc(\.exe)?$
-^tools/molko-map(\.exe)?$
-
-# doxygen stuff.
-^doxygen/html$
-^doxygen/man$
-^doxygen/doxygen_sqlite3\.db$
