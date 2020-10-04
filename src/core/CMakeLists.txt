@@ -19,6 +19,21 @@
 project(libcore)
 
 set(
+	ASSETS
+	${libcore_SOURCE_DIR}/assets/maps/test.map
+	${libcore_SOURCE_DIR}/assets/images/message.png
+	${libcore_SOURCE_DIR}/assets/sprites/test-walk.png
+	${libcore_SOURCE_DIR}/assets/fonts/DejaVuSansCondensed.ttf
+	${libcore_SOURCE_DIR}/assets/fonts/DejaVuSans.ttf
+	${libcore_SOURCE_DIR}/assets/fonts/Lato-Regular.ttf
+	${libcore_SOURCE_DIR}/assets/fonts/ComicNeue-Regular.ttf
+	${libcore_SOURCE_DIR}/assets/fonts/pirata-one.ttf
+	${libcore_SOURCE_DIR}/assets/fonts/teutonic1.ttf
+	${libcore_SOURCE_DIR}/assets/fonts/knights-quest.ttf
+	${libcore_SOURCE_DIR}/assets/tilesets/test.png
+)
+
+set(
 	SOURCES
 	${libcore_SOURCE_DIR}/action.h
 	${libcore_SOURCE_DIR}/animation.c
@@ -96,26 +111,21 @@ set(
 	${libcore_SOURCE_DIR}/window_p.h
 )
 
-add_library(libcore ${SOURCES})
-target_link_libraries(
-	libcore
-	libassets
-	SDL2::SDL2
-	SDL2::image
-	SDL2::mixer
-	SDL2::ttf
-)
-target_compile_definitions(
-	libcore
-	PRIVATE
+molko_define_library(
+	TARGET libcore
+	SOURCES ${SOURCES}
+	ASSETS ${ASSETS}
+	LIBRARIES
+		SDL2::SDL2
+		SDL2::image
+		SDL2::mixer
+		SDL2::ttf
+	PRIVATE_FLAGS
 		BINDIR="${CMAKE_INSTALL_BINDIR}"
 		PREFIX="${CMAKE_INSTALL_PREFIX}"
 		SHAREDIR="${CMAKE_INSTALL_DATADIR}"
-	PUBLIC
+	PUBLIC_FLAGS
 		_XOPEN_SOURCE=700
-)
-target_include_directories(
-	libcore
-	PUBLIC
+	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libcore_SOURCE_DIR}>
 )

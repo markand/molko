@@ -21,6 +21,9 @@ project(molko)
 
 include(GNUInstallDirs)
 
+include(cmake/MolkoBuildAssets.cmake)
+include(cmake/MolkoDefineLibrary.cmake)
+
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS Off)
@@ -36,8 +39,6 @@ add_subdirectory(doxygen)
 
 add_subdirectory(tools/bcc)
 add_subdirectory(tools/map)
-
-add_subdirectory(assets)
 
 add_subdirectory(src/core)
 add_subdirectory(src/adventure)

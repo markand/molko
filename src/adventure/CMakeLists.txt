@@ -20,18 +20,18 @@ project(libadventure)
 
 set(
 	SOURCES
-	${libadventure_SOURCE_DIR}/mainmenu_state.c 
-	${libadventure_SOURCE_DIR}/mainmenu_state.h 
-	${libadventure_SOURCE_DIR}/panic_state.c 
-	${libadventure_SOURCE_DIR}/panic_state.h 
-	${libadventure_SOURCE_DIR}/splashscreen_state.c 
-	${libadventure_SOURCE_DIR}/splashscreen_state.h 
+	${libadventure_SOURCE_DIR}/mainmenu_state.c
+	${libadventure_SOURCE_DIR}/mainmenu_state.h
+	${libadventure_SOURCE_DIR}/panic_state.c
+	${libadventure_SOURCE_DIR}/panic_state.h
+	${libadventure_SOURCE_DIR}/splashscreen_state.c
+	${libadventure_SOURCE_DIR}/splashscreen_state.h
 )
 
-add_library(libadventure ${SOURCES})
-target_link_libraries(libadventure libcore)
-target_include_directories(
-	libadventure
-	PUBLIC
+molko_define_library(
+	TARGET libadventure
+	SOURCES ${SOURCES}
+	LIBRARIES libcore
+	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libadventure_SOURCE_DIR}>
 )

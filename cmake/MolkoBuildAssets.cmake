@@ -1,5 +1,5 @@
 #
-# CMakeLists.txt -- CMake build system for libsqlite
+# MolkoBuildAssets.cmake -- CMake build system for molko
 #
 # Copyright (c) 2020 David Demelier <markand@malikania.fr>
 #
@@ -16,12 +16,25 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(libsqlite)
+macro(molko_build_assets assets outputs)
+	set(${outputs})
 
-molko_define_library(
-	TARGET libsqlite
-	SOURCES sqlite3.c sqlite3.h
-	PUBLIC_INCLUDES
-		$<BUILD_INTERFACE:${libsqlite_SOURCE_DIR}>
-		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
+	foreach (a ${assets})
+		file(RELATIVE_PATH basename ${CMAKE_CURRENT_SOURCE_DIR} ${a})
+		string(REGEX REPLACE "\\..*$" ".h" output ${basename})
+		set(output ${CMAKE_CURRENT_BINARY_DIR}/${output})
+		get_filename_component(outputdir ${output} DIRECTORY)
+		get_filename_component(name ${basename} NAME_WE)
+
+		file(MAKE_DIRECTORY ${outputdir})
+
+		add_custom_command(
+			OUTPUT ${output}
+			COMMAND $<TARGET_FILE:bcc> -s ${a} ${name} > ${output}
+			DEPENDS $<TARGET_FILE:bcc>
+			COMMENT "Generate header file for ${basename}"
+		)
+
+		list(APPEND ${outputs} ${output})
+	endforeach ()
+endmacro()
