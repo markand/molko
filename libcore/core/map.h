@@ -78,7 +78,7 @@ struct map {
 };
 
 /**
- * Open a map defintion
+ * Open a map defintion.
  *
  * \pre data != NULL
  * \pre path != NULL
@@ -88,6 +88,18 @@ struct map {
  */
 bool
 map_data_open(struct map_data *data, const char *path);
+
+/**
+ * Open map data definition from memory.
+ *
+ *\pre data != NULL
+ *\pre buf != NULL
+ *\param data the map definition to fill
+ *\param buf the source buffer
+ *\param bufsz the source buffer size
+ */
+bool
+map_data_openmem(struct map_data *data, const void *buf, size_t bufsz);
 
 /**
  * Dispose the map definition data.

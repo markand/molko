@@ -21,10 +21,17 @@ project(tests)
 molko_define_test(TARGET color SOURCES test-color.c)
 molko_define_test(TARGET error SOURCES test-error.c)
 molko_define_test(TARGET inventory SOURCES test-inventory.c)
-#
-# Maps will be revamped.
-# molko_define_test(TARGET map SOURCES test-map.c ASSETS ${tests_SOURCE_DIR}/)
-#
+molko_define_test(
+	TARGET map
+	SOURCES test-map.c
+	ASSETS
+		${tests_SOURCE_DIR}/assets/maps/error-height.map
+		${tests_SOURCE_DIR}/assets/maps/error-tileheight.map
+		${tests_SOURCE_DIR}/assets/maps/error-tilewidth.map
+		${tests_SOURCE_DIR}/assets/maps/error-title.map
+		${tests_SOURCE_DIR}/assets/maps/error-width.map
+		${tests_SOURCE_DIR}/assets/maps/sample-map.map
+)
 molko_define_test(TARGET rbuf SOURCES test-rbuf.c)
 molko_define_test(TARGET save SOURCES test-save.c)
 molko_define_test(TARGET script SOURCES test-script.c)

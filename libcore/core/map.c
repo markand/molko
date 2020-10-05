@@ -26,6 +26,7 @@
 #include "image.h"
 #include "map.h"
 #include "painter.h"
+#include "rbuf.h"
 #include "sprite.h"
 #include "sys.h"
 #include "texture.h"
@@ -131,18 +132,16 @@ draw_layer(struct map *map, const struct map_layer *layer)
 }
 
 bool
-map_data_open(struct map_data *data, const char *path)
+map_data_open_fp(struct map_data *data, FILE *fp)
 {
 	assert(data);
-	assert(path);
 
-	memset(data, 0, sizeof (*data));
-
-	FILE *fp = fopen(path, "r");
-	char line[BUFSIZ];
+	char line[1024];
 
 	if (!fp)
 		return false;
+
+	memset(data, 0, sizeof (*data));
 
 	while (fgets(line, sizeof (line), fp)) {
 		/* Remove \n if any */
@@ -162,6 +161,24 @@ map_data_open(struct map_data *data, const char *path)
 	data->real_h = data->h * data->tile_h;
 
 	return true;
+}
+
+bool
+map_data_open(struct map_data *data, const char *path)
+{
+	assert(data);
+	assert(path);
+
+	return map_data_open_fp(data, fopen(path, "r"));
+}
+
+bool
+map_data_openmem(struct map_data *data, const void *buf, size_t bufsz)
+{
+	assert(data);
+	assert(buf);
+
+	return map_data_open_fp(data, fmemopen((void *)buf, bufsz, "r"));
 }
 
 void

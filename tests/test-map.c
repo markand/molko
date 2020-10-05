@@ -16,93 +16,101 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define GREATEST_USE_ABBREVS 0
 #include <greatest.h>
 
-#include <error.h>
-#include <map.h>
-#include <panic.h>
-#include <sys.h>
-#include <window.h>
+#include <core/error.h>
+#include <core/map.h>
+#include <core/panic.h>
+#include <core/sys.h>
+#include <core/window.h>
 
-TEST
-sample(void)
+#include <assets/maps/sample-map.h>
+#include <assets/maps/error-title.h>
+#include <assets/maps/error-width.h>
+#include <assets/maps/error-height.h>
+#include <assets/maps/error-tilewidth.h>
+#include <assets/maps/error-tileheight.h>
+
+GREATEST_TEST
+test_sample(void)
 {
 	struct map_data map;
 
-	ASSERT(map_data_open(&map, sys_datapath("maps/sample-map.map")));
-	ASSERT_STR_EQ("This is a test map", map.title);
-	ASSERT_EQ(2, map.w);
-	ASSERT_EQ(2, map.h);
-	ASSERT_EQ(32, map.tile_w);
-	ASSERT_EQ(16, map.tile_h);
-	ASSERT_EQ(0, map.layers[0].tiles[0]);
-	ASSERT_EQ(1, map.layers[0].tiles[1]);
-	ASSERT_EQ(2, map.layers[0].tiles[2]);
-	ASSERT_EQ(3, map.layers[0].tiles[3]);
-	ASSERT_EQ(4, map.layers[1].tiles[0]);
-	ASSERT_EQ(5, map.layers[1].tiles[1]);
-	ASSERT_EQ(6, map.layers[1].tiles[2]);
-	ASSERT_EQ(7, map.layers[1].tiles[3]);
-	PASS();
+	GREATEST_ASSERT(map_data_openmem(&map, sample_map, sizeof (sample_map)));
+	GREATEST_ASSERT_STR_EQ("This is a test map", map.title);
+	GREATEST_ASSERT_EQ(2, map.w);
+	GREATEST_ASSERT_EQ(2, map.h);
+	GREATEST_ASSERT_EQ(32, map.tile_w);
+	GREATEST_ASSERT_EQ(16, map.tile_h);
+	GREATEST_ASSERT_EQ(0, map.layers[0].tiles[0]);
+	GREATEST_ASSERT_EQ(1, map.layers[0].tiles[1]);
+	GREATEST_ASSERT_EQ(2, map.layers[0].tiles[2]);
+	GREATEST_ASSERT_EQ(3, map.layers[0].tiles[3]);
+	GREATEST_ASSERT_EQ(4, map.layers[1].tiles[0]);
+	GREATEST_ASSERT_EQ(5, map.layers[1].tiles[1]);
+	GREATEST_ASSERT_EQ(6, map.layers[1].tiles[2]);
+	GREATEST_ASSERT_EQ(7, map.layers[1].tiles[3]);
+	GREATEST_PASS();
 }
 
-TEST
-error_title(void)
+GREATEST_TEST
+test_error_title(void)
 {
 	struct map_data map;
 
-	ASSERT(!map_data_open(&map, sys_datapath("maps/error-title.map")));
-	PASS();
+	GREATEST_ASSERT(!map_data_openmem(&map, error_title, sizeof (error_title)));
+	GREATEST_PASS();
 }
 
-TEST
-error_width(void)
+GREATEST_TEST
+test_error_width(void)
 {
 	struct map_data map;
 
-	ASSERT(!map_data_open(&map, sys_datapath("maps/error-width.map")));
-	PASS();
+	GREATEST_ASSERT(!map_data_openmem(&map, error_width, sizeof (error_width)));
+	GREATEST_PASS();
 }
 
-TEST
-error_height(void)
+GREATEST_TEST
+test_error_height(void)
 {
 	struct map_data map;
 
-	ASSERT(!map_data_open(&map, sys_datapath("maps/error-height.map")));
-	PASS();
+	GREATEST_ASSERT(!map_data_openmem(&map, error_height, sizeof (error_height)));
+	GREATEST_PASS();
 }
 
-TEST
-error_tilewidth(void)
+GREATEST_TEST
+test_error_tilewidth(void)
 {
 	struct map_data map;
 
-	ASSERT(!map_data_open(&map, sys_datapath("maps/error-tilewidth.map")));
-	PASS();
+	GREATEST_ASSERT(!map_data_openmem(&map, error_tilewidth, sizeof (error_tilewidth)));
+	GREATEST_PASS();
 }
 
-TEST
-error_tileheight(void)
+GREATEST_TEST
+test_error_tileheight(void)
 {
 	struct map_data map;
 
-	ASSERT(!map_data_open(&map, sys_datapath("maps/error-tileheight.map")));
-	PASS();
+	GREATEST_ASSERT(!map_data_openmem(&map, error_tileheight, sizeof (error_tileheight)));
+	GREATEST_PASS();
 }
 
-SUITE(basics)
+GREATEST_SUITE(basics)
 {
-	RUN_TEST(sample);
+	GREATEST_RUN_TEST(test_sample);
 }
 
-SUITE(errors)
+GREATEST_SUITE(errors)
 {
-	RUN_TEST(error_title);
-	RUN_TEST(error_width);
-	RUN_TEST(error_height);
-	RUN_TEST(error_tilewidth);
-	RUN_TEST(error_tileheight);
+	GREATEST_RUN_TEST(test_error_title);
+	GREATEST_RUN_TEST(test_error_width);
+	GREATEST_RUN_TEST(test_error_height);
+	GREATEST_RUN_TEST(test_error_tilewidth);
+	GREATEST_RUN_TEST(test_error_tileheight);
 }
 
 GREATEST_MAIN_DEFS();
@@ -111,8 +119,8 @@ int
 main(int argc, char **argv)
 {
 	GREATEST_MAIN_BEGIN();
-	RUN_SUITE(basics);
-	RUN_SUITE(errors);
+	GREATEST_RUN_SUITE(basics);
+	GREATEST_RUN_SUITE(errors);
 	GREATEST_MAIN_END();
 
 	return 0;
