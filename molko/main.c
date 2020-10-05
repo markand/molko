@@ -19,17 +19,17 @@
 #include <setjmp.h>
 #include <stdnoreturn.h>
 
-#include <clock.h>
-#include <event.h>
-#include <game.h>
-#include <panic.h>
-#include <sys.h>
-#include <theme.h>
-#include <util.h>
-#include <window.h>
+#include <core/clock.h>
+#include <core/event.h>
+#include <core/game.h>
+#include <core/panic.h>
+#include <core/sys.h>
+#include <core/theme.h>
+#include <core/util.h>
+#include <core/window.h>
 
-#include <panic_state.h>
-#include <splashscreen_state.h>
+#include <adventure/panic_state.h>
+#include <adventure/splashscreen_state.h>
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720

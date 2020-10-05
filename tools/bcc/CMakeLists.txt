@@ -17,4 +17,4 @@
 #
 
 project(molko-bcc)
-add_executable(bcc bcc.c)
+molko_define_executable(TARGET bcc SOURCES bcc.c FOLDER tools)

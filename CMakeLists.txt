@@ -24,9 +24,12 @@ set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS Off)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+set_property(GLOBAL PROPERTY USE_FOLDERS On)
+
 include(GNUInstallDirs)
 
 include(cmake/MolkoBuildAssets.cmake)
+include(cmake/MolkoDefineExecutable.cmake)
 include(cmake/MolkoDefineLibrary.cmake)
 include(Cmake/MolkoDefineTest.cmake)
 
@@ -43,8 +46,8 @@ add_subdirectory(doxygen)
 add_subdirectory(tools/bcc)
 add_subdirectory(tools/map)
 
-add_subdirectory(src/core)
-add_subdirectory(src/adventure)
-add_subdirectory(src/molko)
+add_subdirectory(libcore)
+add_subdirectory(libadventure)
+add_subdirectory(molko)
 
 add_subdirectory(tests)

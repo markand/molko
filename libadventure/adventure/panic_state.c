@@ -20,18 +20,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <error.h>
-#include <event.h>
-#include <font.h>
-#include <game.h>
-#include <painter.h>
-#include <sys.h>
-#include <texture.h>
-#include <util.h>
-#include <window.h>
-#include <map_state.h>
+#include <core/error.h>
+#include <core/event.h>
+#include <core/font.h>
+#include <core/game.h>
+#include <core/painter.h>
+#include <core/sys.h>
+#include <core/texture.h>
+#include <core/util.h>
+#include <core/window.h>
+#include <core/map_state.h>
 
-#include <assets/fonts/Lato-Regular.h>
+#include <core/assets/fonts/Lato-Regular.h>
 
 #include "panic_state.h"
 

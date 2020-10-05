@@ -24,7 +24,7 @@
  * \brief Splash screen state.
  */
 
-#include "texture.h"
+#include <core/texture.h>
 
 /**
  * \brief Data for splashscreen.

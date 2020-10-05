@@ -31,7 +31,7 @@
 #include "theme.h"
 #include "util.h"
 
-#include "assets/fonts/ComicNeue-Regular.h"
+#include "core/assets/fonts/ComicNeue-Regular.h"
 
 #define THEME(t) (t ? t : &default_theme)
 

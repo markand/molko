@@ -20,12 +20,12 @@ project(libadventure)
 
 set(
 	SOURCES
-	${libadventure_SOURCE_DIR}/mainmenu_state.c
-	${libadventure_SOURCE_DIR}/mainmenu_state.h
-	${libadventure_SOURCE_DIR}/panic_state.c
-	${libadventure_SOURCE_DIR}/panic_state.h
-	${libadventure_SOURCE_DIR}/splashscreen_state.c
-	${libadventure_SOURCE_DIR}/splashscreen_state.h
+	${libadventure_SOURCE_DIR}/adventure/mainmenu_state.c
+	${libadventure_SOURCE_DIR}/adventure/mainmenu_state.h
+	${libadventure_SOURCE_DIR}/adventure/panic_state.c
+	${libadventure_SOURCE_DIR}/adventure/panic_state.h
+	${libadventure_SOURCE_DIR}/adventure/splashscreen_state.c
+	${libadventure_SOURCE_DIR}/adventure/splashscreen_state.h
 )
 
 molko_define_library(
@@ -35,3 +35,5 @@ molko_define_library(
 	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libadventure_SOURCE_DIR}>
 )
+
+source_group(adventure FILES ${SOURCES})

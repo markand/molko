@@ -19,8 +19,8 @@
  *
  * | System  | Init function    | Close function     | Remarks                |
  * |---------|------------------|--------------------|------------------------|
- * | General | \ref sys_init    | \ref sys_finish    | Required for most API  |
- * | Window  | \ref window_init | \ref window_finish | Required by some parts |
+ * | General | sys_init         | sys_finish    | Required for most API  |
+ * | Window  | window_init      | window_finish | Required by some parts |
  *
  * All init functions set an error code if any and you're encouraged to test the
  * result and check the error if any.

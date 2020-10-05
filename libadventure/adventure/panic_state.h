@@ -24,7 +24,7 @@
  * \brief Panic state.
  */
 
-#include "state.h"
+#include <core/state.h>
 
 /**
  * \brief Global panic state structure.

@@ -18,7 +18,7 @@
 
 #include <greatest.h>
 
-#include <error.h>
+#include <core/error.h>
 
 TEST
 simple(void)

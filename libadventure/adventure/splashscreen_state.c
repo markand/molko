@@ -16,17 +16,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <font.h>
-#include <game.h>
-#include <image.h>
-#include <map.h>
-#include <map_state.h>
-#include <painter.h>
-#include <panic.h>
-#include <state.h>
-#include <sys.h>
-#include <texture.h>
-#include <window.h>
+#include <core/font.h>
+#include <core/game.h>
+#include <core/image.h>
+#include <core/map.h>
+#include <core/map_state.h>
+#include <core/painter.h>
+#include <core/panic.h>
+#include <core/state.h>
+#include <core/sys.h>
+#include <core/texture.h>
+#include <core/window.h>
 
 #include "splashscreen_state.h"
 #include "mainmenu_state.h"

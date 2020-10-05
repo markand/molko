@@ -19,7 +19,7 @@
 #define GREATEST_USE_ABBREVS 0
 #include <greatest.h>
 
-#include <rbuf.h>
+#include <core/rbuf.h>
 
 /* Don't use "" to avoid '\0' */
 const char data1[] = { 'a', 'b', 'c', '\n', 'd', 'e', 'f', '\n' };

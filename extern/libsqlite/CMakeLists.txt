@@ -21,6 +21,7 @@ project(libsqlite)
 molko_define_library(
 	TARGET libsqlite
 	SOURCES sqlite3.c sqlite3.h
+	FOLDER extern
 	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libsqlite_SOURCE_DIR}>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>

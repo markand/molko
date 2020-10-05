@@ -17,5 +17,10 @@
 #
 
 project(molko-map)
-add_executable(map map.c)
-target_link_libraries(map Jansson::Jansson)
+
+molko_define_executable(
+	TARGET map
+	SOURCES map.c
+	FOLDER tools
+	LIBRARIES Jansson::Jansson
+)

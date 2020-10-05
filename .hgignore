@@ -7,3 +7,6 @@
 
 # macOS specific.
 \.DS_Store$
+
+# CMake build directory.
+^build$

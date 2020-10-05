@@ -25,6 +25,7 @@
 # molko_define_library(
 #   TARGET              target name
 #   SOURCES             src1, src2, srcn
+#   FOLDER              (Optional) optional subfolder to organize
 #   TYPE                (Optional) type of library
 #   ASSETS              (Optional) list of assets
 #   LIBRARIES           (Optional) libraries to link
@@ -50,14 +51,15 @@
 # The arguments ASSETS contains a list of assets to be converted during the
 # build. The file hierarchy is conserved in the ${CMAKE_CURRENT_BINARY_DIR}.
 #
-# If EXPORT boolean parameter is set, the library is exported and installed.
+# If FOLDER option is set, it is organized into its name under the IDE if
+# supported.
 #
 
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
 
 function(molko_define_library)
 	set(options)
-	set(oneValueArgs TARGET TYPE)
+	set(oneValueArgs FOLDER TARGET TYPE)
 	set(multiValueArgs ASSETS LIBRARIES PRIVATE_FLAGS PRIVATE_INCLUDES PUBLIC_FLAGS PUBLIC_INCLUDES SOURCES)
 
 	cmake_parse_arguments(LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -107,5 +109,9 @@ function(molko_define_library)
 				C_STANDARD 11
 				C_STANDARD_REQUIRED On
 		)
+	endif ()
+
+	if (LIB_FOLDER)
+		set_target_properties(${LIB_TARGET} PROPERTIES FOLDER ${LIB_FOLDER})
 	endif ()
 endfunction()

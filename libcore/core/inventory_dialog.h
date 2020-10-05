@@ -28,11 +28,17 @@ union event;
 struct inventory;
 struct theme;
 
+/**
+ * \brief Inventory dialog state.
+ */
 enum inventory_dialog_state {
 	INVENTORY_DIALOG_NONE,
 	INVENTORY_DIALOG_SHOWING
 };
 
+/**
+ * \brief Inventory dialog.
+ */
 struct inventory_dialog {
 	int x;                                  /*!< (RO) Position in x. */
 	int y;                                  /*!< (RO) Position in y. */

@@ -18,33 +18,32 @@
 
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
 
-function(molko_define_test)
+function(molko_define_executable)
 	set(options)
-	set(oneValueArgs TARGET)
+	set(oneValueArgs FOLDER TARGET)
 	set(multiValueArgs ASSETS FLAGS INCLUDES LIBRARIES SOURCES)
 
-	cmake_parse_arguments(TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+	cmake_parse_arguments(EXE "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-	if (NOT TEST_TARGET)
+	if (NOT EXE_TARGET)
 		message(FATAL_ERROR "Missing TARGET argument")
 	endif ()
-	if (NOT TEST_SOURCES)
+	if (NOT EXE_SOURCES)
 		message(FATAL_ERROR "Missing SOURCES argument")
 	endif ()
 
-	molko_build_assets("${TEST_ASSETS}" OUTPUTS)
+	molko_build_assets("${EXE_ASSETS}" OUTPUTS)
 
-	add_executable(test-${TEST_TARGET} ${TEST_SOURCES} ${OUTPUTS})
-	target_compile_definitions(test-${TEST_TARGET} PRIVATE ${TEST_FLAGS})
-	target_include_directories(test-${TEST_TARGET} PRIVATE ${TEST_INCLUDES})
+	add_executable(${EXE_TARGET} ${EXE_SOURCES} ${OUTPUTS})
+	target_compile_definitions(${EXE_TARGET} PRIVATE ${EXE_FLAGS})
+	target_include_directories(${EXE_TARGET} PRIVATE ${EXE_INCLUDES})
 	target_link_libraries(
-		test-${TEST_TARGET}
+		${EXE_TARGET}
 		PRIVATE
-			libcore
-			libadventure
-			libgreatest
-			${TEST_LIBRARIES}
+			${EXE_LIBRARIES}
 	)
-	add_test(NAME ${TEST_TARGET} COMMAND test-${TEST_TARGET})
-	set_target_properties(test-${TEST_TARGET} PROPERTIES FOLDER tests)
+
+	if (EXE_FOLDER)
+		set_target_properties(${EXE_TARGET} PROPERTIES FOLDER ${EXE_FOLDER})
+	endif ()
 endfunction()

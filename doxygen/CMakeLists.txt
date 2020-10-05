@@ -28,7 +28,8 @@ if (DOXYGEN_FOUND)
 		doxygen/page-howto-initialization.c
 		doxygen/page-faq.c
 		doxygen/page-examples.c
-		src
+		libadventure
+		libcore
 	)
 	set(DOXYGEN_ALLOW_UNICODE_NAMES YES)
 	set(DOXYGEN_AUTOLINK_SUPPORT NO)
@@ -57,4 +58,6 @@ if (DOXYGEN_FOUND)
 		ALL
 		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 	)
+
+	set_target_properties(doxygen PROPERTIES FOLDER misc)
 endif ()

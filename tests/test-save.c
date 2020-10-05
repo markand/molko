@@ -20,7 +20,7 @@
 
 #include <greatest.h>
 
-#include "save.h"
+#include "core/save.h"
 
 #define NAME "test.db"
 

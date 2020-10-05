@@ -18,7 +18,7 @@
 
 #include <greatest.h>
 
-#include <script.h>
+#include <core/script.h>
 
 static bool
 truth(struct action *a, unsigned int ticks)

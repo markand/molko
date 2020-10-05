@@ -18,7 +18,7 @@
 
 #include <greatest.h>
 
-#include <color.h>
+#include <core/color.h>
 
 TEST
 red(void)
