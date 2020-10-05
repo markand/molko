@@ -36,7 +36,12 @@ function(molko_define_test)
 
 	add_executable(test-${TEST_TARGET} ${TEST_SOURCES} ${OUTPUTS})
 	target_compile_definitions(test-${TEST_TARGET} PRIVATE ${TEST_FLAGS})
-	target_include_directories(test-${TEST_TARGET} PRIVATE ${TEST_INCLUDES})
+	target_include_directories(
+		test-${TEST_TARGET}
+		PRIVATE
+			${CMAKE_CURRENT_BINARY_DIR}
+			${TEST_INCLUDES}
+	)
 	target_link_libraries(
 		test-${TEST_TARGET}
 		PRIVATE
