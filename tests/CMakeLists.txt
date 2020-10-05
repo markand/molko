@@ -25,5 +25,6 @@ molko_define_test(TARGET inventory SOURCES test-inventory.c)
 # Maps will be revamped.
 # molko_define_test(TARGET map SOURCES test-map.c ASSETS ${tests_SOURCE_DIR}/)
 #
+molko_define_test(TARGET rbuf SOURCES test-rbuf.c)
 molko_define_test(TARGET save SOURCES test-save.c)
 molko_define_test(TARGET script SOURCES test-script.c)

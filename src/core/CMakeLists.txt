@@ -84,6 +84,8 @@ set(
 	${libcore_SOURCE_DIR}/panic.c
 	${libcore_SOURCE_DIR}/panic.h
 	${libcore_SOURCE_DIR}/plat.h
+	${libcore_SOURCE_DIR}/rbuf.c
+	${libcore_SOURCE_DIR}/rbuf.h
 	${libcore_SOURCE_DIR}/save.c
 	${libcore_SOURCE_DIR}/save.h
 	${libcore_SOURCE_DIR}/script.c
