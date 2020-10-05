@@ -116,6 +116,7 @@ molko_define_library(
 	SOURCES ${SOURCES}
 	ASSETS ${ASSETS}
 	LIBRARIES
+		libsqlite
 		SDL2::SDL2
 		SDL2::image
 		SDL2::mixer

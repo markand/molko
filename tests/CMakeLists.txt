@@ -16,35 +16,14 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.18)
-project(molko)
+project(tests)
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED On)
-set(CMAKE_C_EXTENSIONS Off)
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-
-include(GNUInstallDirs)
-
-include(cmake/MolkoBuildAssets.cmake)
-include(cmake/MolkoDefineLibrary.cmake)
-include(Cmake/MolkoDefineTest.cmake)
-
-find_package(Jansson REQUIRED)
-find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
-
-enable_testing()
-
-add_subdirectory(extern/libsqlite)
-add_subdirectory(extern/libgreatest)
-
-add_subdirectory(doxygen)
-
-add_subdirectory(tools/bcc)
-add_subdirectory(tools/map)
-
-add_subdirectory(src/core)
-add_subdirectory(src/adventure)
-add_subdirectory(src/molko)
-
-add_subdirectory(tests)
+molko_define_test(TARGET color SOURCES test-color.c)
+molko_define_test(TARGET error SOURCES test-error.c)
+molko_define_test(TARGET inventory SOURCES test-inventory.c)
+#
+# Maps will be revamped.
+# molko_define_test(TARGET map SOURCES test-map.c ASSETS ${tests_SOURCE_DIR}/)
+#
+molko_define_test(TARGET save SOURCES test-save.c)
+molko_define_test(TARGET script SOURCES test-script.c)

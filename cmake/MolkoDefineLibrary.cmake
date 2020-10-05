@@ -25,6 +25,7 @@
 # molko_define_library(
 #   TARGET              target name
 #   SOURCES             src1, src2, srcn
+#   TYPE                (Optional) type of library
 #   ASSETS              (Optional) list of assets
 #   LIBRARIES           (Optional) libraries to link
 #   PRIVATE_FLAGS       (Optional) C flags (without -D)
@@ -56,7 +57,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
 
 function(molko_define_library)
 	set(options)
-	set(oneValueArgs TARGET)
+	set(oneValueArgs TARGET TYPE)
 	set(multiValueArgs ASSETS LIBRARIES PRIVATE_FLAGS PRIVATE_INCLUDES PUBLIC_FLAGS PUBLIC_INCLUDES SOURCES)
 
 	cmake_parse_arguments(LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -70,30 +71,41 @@ function(molko_define_library)
 
 	molko_build_assets("${LIB_ASSETS}" OUTPUTS)
 
-	add_library(${LIB_TARGET} ${LIB_SOURCES} ${OUTPUTS})
-	target_include_directories(
-		${LIB_TARGET}
-		PRIVATE
-			${LIB_PRIVATE_INCLUDES}
-		PUBLIC
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-			${LIB_PUBLIC_INCLUDES}
-	)
-	target_compile_definitions(
-		${LIB_TARGET}
-		PRIVATE
-			${LIB_PRIVATE_FLAGS}
-		PUBLIC
-			${LIB_PUBLIC_FLAGS}
-	)
-	target_link_libraries(${LIB_TARGET} ${LIB_LIBRARIES})
-	set_target_properties(
-		${LIB_TARGET}
-		PROPERTIES
-			PREFIX ""
-			IMPORT_PREFIX ""
-			C_EXTENSIONS Off
-			C_STANDARD 11
-			C_STANDARD_REQUIRED On
-	)
+	if (${LIB_TYPE} MATCHES "INTERFACE")
+		add_library(${LIB_TARGET} INTERFACE)
+		target_sources(${LIB_TARGET} INTERFACE ${LIB_SOURCES})
+		target_include_directories(
+			${LIB_TARGET}
+			INTERFACE
+				${LIB_PRIVATE_INCLUDES}
+				${LIB_PUBLIC_INCLUDES}
+		)
+	else ()
+		add_library(${LIB_TARGET} ${LIB_TYPE} ${LIB_SOURCES} ${OUTPUTS})
+		target_include_directories(
+			${LIB_TARGET}
+			PRIVATE
+				${LIB_PRIVATE_INCLUDES}
+			PUBLIC
+				$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+				${LIB_PUBLIC_INCLUDES}
+		)
+		target_compile_definitions(
+			${LIB_TARGET}
+			PRIVATE
+				${LIB_PRIVATE_FLAGS}
+			PUBLIC
+				${LIB_PUBLIC_FLAGS}
+		)
+		target_link_libraries(${LIB_TARGET} ${LIB_LIBRARIES})
+		set_target_properties(
+			${LIB_TARGET}
+			PROPERTIES
+				PREFIX ""
+				IMPORT_PREFIX ""
+				C_EXTENSIONS Off
+				C_STANDARD 11
+				C_STANDARD_REQUIRED On
+		)
+	endif ()
 endfunction()

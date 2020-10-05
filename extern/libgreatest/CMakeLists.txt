@@ -17,11 +17,11 @@
 #
 
 project(libgreatest)
-add_library(libgreatest INTERFACE)
-target_sources(libgreatest INTERFACE greatest.h)
-target_include_directories(
-	libgreatest
-	INTERFACE
+
+molko_define_library(
+	TARGET libgreatest
+	TYPE INTERFACE
+	SOURCES greatest.h
+	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libgreatest_SOURCE_DIR}>
-		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
