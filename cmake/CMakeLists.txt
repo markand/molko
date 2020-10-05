@@ -16,40 +16,19 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.18)
-project(molko)
+project(cmake)
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED On)
-set(CMAKE_C_EXTENSIONS Off)
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+add_custom_target(
+	cmake
+	SOURCES
+		${cmake_SOURCE_DIR}/FindJansson.cmake
+		${cmake_SOURCE_DIR}/FindSDL2.cmake
+		${cmake_SOURCE_DIR}/MolkoBuildAssets.cmake
+		${cmake_SOURCE_DIR}/MolkoDefineExecutable.cmake
+		${cmake_SOURCE_DIR}/MolkoDefineLibrary.cmake
+		${cmake_SOURCE_DIR}/MolkoDefineTest.cmake
+	COMMENT
+		"Dummy target to list CMake files in IDEs"
+)
 
-set_property(GLOBAL PROPERTY USE_FOLDERS On)
-
-include(GNUInstallDirs)
-
-include(cmake/MolkoBuildAssets.cmake)
-include(cmake/MolkoDefineExecutable.cmake)
-include(cmake/MolkoDefineLibrary.cmake)
-include(cmake/MolkoDefineTest.cmake)
-
-find_package(Jansson REQUIRED)
-find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
-
-enable_testing()
-
-add_subdirectory(cmake)
-
-add_subdirectory(extern/libsqlite)
-add_subdirectory(extern/libgreatest)
-
-add_subdirectory(doxygen)
-
-add_subdirectory(tools/bcc)
-add_subdirectory(tools/map)
-
-add_subdirectory(libcore)
-add_subdirectory(libadventure)
-add_subdirectory(molko)
-
-add_subdirectory(tests)
+set_target_properties(cmake PROPERTIES FOLDER misc)
