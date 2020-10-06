@@ -31,11 +31,11 @@ struct texture;
  * \brief Sprite structure.
  */
 struct sprite {
-	struct texture *texture;        /*!< Texture to access (RO) */
-	unsigned int cellw;             /*!< Width per cell (RW) */
-	unsigned int cellh;             /*!< Height per cell (RW) */
-	unsigned int nrows;             /*!< Number of rows (RW) */
-	unsigned int ncols;             /*!< Number of columns (RW) */
+	struct texture *texture;        /*!< (RW) Texture to access (RO) */
+	unsigned int cellw;             /*!< (RW) Width per cell (RW) */
+	unsigned int cellh;             /*!< (RW) Height per cell (RW) */
+	unsigned int nrows;             /*!< (RW) Number of rows (RW) */
+	unsigned int ncols;             /*!< (RW) Number of columns (RW) */
 };
 
 /**
