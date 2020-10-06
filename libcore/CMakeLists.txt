@@ -47,6 +47,8 @@ set(
 	${libcore_SOURCE_DIR}/core/color.h
 	${libcore_SOURCE_DIR}/core/debug.c
 	${libcore_SOURCE_DIR}/core/debug.h
+	${libcore_SOURCE_DIR}/core/drawable.c
+	${libcore_SOURCE_DIR}/core/drawable.h
 	${libcore_SOURCE_DIR}/core/error.c
 	${libcore_SOURCE_DIR}/core/error.h
 	${libcore_SOURCE_DIR}/core/error_p.h

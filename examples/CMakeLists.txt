@@ -44,3 +44,12 @@ molko_define_executable(
 		${examples_SOURCE_DIR}/assets/sounds/vabsounds-romance.ogg 
 	LIBRARIES libcore
 )
+
+molko_define_executable(
+	TARGET example-drawable
+	SOURCES example-drawable.c
+	FOLDER examples
+	LIBRARIES libcore
+	ASSETS
+		${examples_SOURCE_DIR}/assets/sprites/explosion.png
+)
