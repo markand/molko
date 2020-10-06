@@ -52,4 +52,6 @@ add_subdirectory(libcore)
 add_subdirectory(libadventure)
 add_subdirectory(molko)
 
+add_subdirectory(examples)
+
 add_subdirectory(tests)

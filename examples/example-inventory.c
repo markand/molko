@@ -16,24 +16,24 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <clock.h>
-#include <event.h>
-#include <image.h>
-#include <inventory.h>
-#include <inventory_dialog.h>
-#include <item.h>
-#include <painter.h>
-#include <panic.h>
-#include <sys.h>
-#include <texture.h>
-#include <theme.h>
-#include <util.h>
-#include <window.h>
+#include <core/clock.h>
+#include <core/event.h>
+#include <core/image.h>
+#include <core/inventory.h>
+#include <core/inventory_dialog.h>
+#include <core/item.h>
+#include <core/painter.h>
+#include <core/panic.h>
+#include <core/sys.h>
+#include <core/texture.h>
+#include <core/theme.h>
+#include <core/util.h>
+#include <core/window.h>
 
 /* https://shikashiassets.itch.io/shikashis-fantasy-icons-pack */
-#include "assets/images/fish.h"
-#include "assets/images/potion.h"
-#include "assets/images/sword.h"
+#include <assets/images/fish.h>
+#include <assets/images/potion.h>
+#include <assets/images/sword.h>
 
 #define W 1280
 #define H 720

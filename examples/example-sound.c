@@ -16,19 +16,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <clock.h>
-#include <event.h>
-#include <label.h>
-#include <painter.h>
-#include <panic.h>
-#include <sound.h>
-#include <sys.h>
-#include <theme.h>
-#include <util.h>
-#include <window.h>
+#include <core/clock.h>
+#include <core/event.h>
+#include <core/label.h>
+#include <core/painter.h>
+#include <core/panic.h>
+#include <core/sound.h>
+#include <core/sys.h>
+#include <core/theme.h>
+#include <core/util.h>
+#include <core/window.h>
 
 /* https://freesound.org/people/VABsounds/sounds/423658 */
-#include "assets/sounds/vabsounds-romance.h"
+#include <assets/sounds/vabsounds-romance.h>
 
 #define W 1280
 #define H 720

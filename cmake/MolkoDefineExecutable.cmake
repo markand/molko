@@ -36,7 +36,12 @@ function(molko_define_executable)
 
 	add_executable(${EXE_TARGET} ${EXE_SOURCES} ${OUTPUTS})
 	target_compile_definitions(${EXE_TARGET} PRIVATE ${EXE_FLAGS})
-	target_include_directories(${EXE_TARGET} PRIVATE ${EXE_INCLUDES})
+	target_include_directories(
+		${EXE_TARGET}
+		PRIVATE
+			${CMAKE_CURRENT_BINARY_DIR}
+			${EXE_INCLUDES}
+	)
 	target_link_libraries(
 		${EXE_TARGET}
 		PRIVATE

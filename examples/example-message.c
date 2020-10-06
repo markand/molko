@@ -16,15 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <clock.h>
-#include <event.h>
-#include <message.h>
-#include <painter.h>
-#include <panic.h>
-#include <sys.h>
-#include <util.h>
-#include <theme.h>
-#include <window.h>
+#include <core/clock.h>
+#include <core/event.h>
+#include <core/message.h>
+#include <core/painter.h>
+#include <core/panic.h>
+#include <core/sys.h>
+#include <core/util.h>
+#include <core/theme.h>
+#include <core/window.h>
 
 #define W 1280
 #define H 720
