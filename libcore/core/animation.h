@@ -33,11 +33,11 @@ struct sprite;
  * \brief Animation object
  */
 struct animation {
-	struct sprite *sprite;  /*!< Sprite to use (RW) */
-	unsigned int row;       /*!< current row (RO) */
-	unsigned int column;    /*!< current column (RO) */
-	unsigned int delay;     /*!< delay between frames (RW) */
-	unsigned int elapsed;   /*!< elapsed time since last frame (RO) */
+	struct sprite *sprite;  /*!< (RW, ref) Sprite to use. */
+	unsigned int row;       /*!< (RO) Current row. */
+	unsigned int column;    /*!< (RO) Current column. */
+	unsigned int delay;     /*!< (RO) Delay between frames. */
+	unsigned int elapsed;   /*!< (RO) Elapsed time since last frame. */
 };
 
 /**
@@ -73,8 +73,9 @@ animation_start(struct animation *an);
  * \pre an != NULL
  * \param an the animation
  * \param ticks the elapsed ticks since the last call
+ * \return true if the animation is complete
  */
-void
+bool
 animation_update(struct animation *an, unsigned int ticks);
 
 /**
