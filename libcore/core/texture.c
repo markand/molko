@@ -123,5 +123,7 @@ texture_from_surface(struct texture *tex, SDL_Surface *surface)
 	tex->w = surface->w;
 	tex->h = surface->h;
 
+	SDL_FreeSurface(surface);
+
 	return true;
 }
