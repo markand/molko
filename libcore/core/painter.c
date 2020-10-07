@@ -94,10 +94,6 @@ painter_draw_circle(int x, int y, int radius)
 	// method than just changing this value.  See how pixels are
 	// altered at the following web page for tips:
 	//   http://www.libsdl.org/intro.en/usingvideo.html
-	static const int BPP = 4;
-
-	//double ra = (double)radius;
-
 	for (double dy = 1; dy <= radius; dy += 1.0) {
 		double dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
 

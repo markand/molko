@@ -28,9 +28,16 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/splashscreen_state.h
 )
 
+set(
+	ASSETS
+	${libadventure_SOURCE_DIR}/adventure/assets/maps/overworld.map
+	${libadventure_SOURCE_DIR}/adventure/assets/tilesets/world.png
+)
+
 molko_define_library(
 	TARGET libadventure
 	SOURCES ${SOURCES}
+	ASSETS ${ASSETS}
 	LIBRARIES libcore
 	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libadventure_SOURCE_DIR}>

@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "font.h"
 #include "texture.h"
+#include "theme.h"
 
 #define PADDING_X 5
 #define PADDING_Y 5
@@ -57,7 +58,7 @@ debug_vprintf(struct debug_report *report, const char *fmt, va_list ap)
 
 	vsnprintf(line, sizeof (line), fmt, ap);
 
-	font = report->font ? report->font : debug_options.default_font;
+	font = report->font ? report->font : theme_default()->fonts[THEME_FONT_INTERFACE];
 	font->color = report->color;
 	font->style = report->style;
 

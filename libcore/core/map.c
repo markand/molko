@@ -112,7 +112,7 @@ draw_layer(struct map *map, const struct map_layer *layer)
 	struct sprite sprite;
 	int x = 0, y = 0;
 
-	sprite_init(&sprite, &map->tileset, map->data->tile_w, map->data->tile_h);
+	sprite_init(&sprite, map->tileset, map->data->tile_w, map->data->tile_h);
 
 	for (unsigned int r = 0; r < map->data->w; ++r) {
 		for (unsigned int c = 0; c < map->data->h; ++c) {
@@ -193,25 +193,21 @@ map_data_finish(struct map_data *data)
 }
 
 bool
-map_init(struct map *map, struct map_data *data)
+map_init(struct map *map, struct map_data *data, struct texture *tileset)
 {
 	assert(map);
 	assert(data);
+	assert(tileset && texture_ok(tileset));
 
-	if (!(image_open(&map->tileset, sys_datapath("tilesets/%s", data->tileset))))
-		goto failure;
 	if (!(texture_new(&map->picture, data->real_w, data->real_h)))
-		goto failure;
+		return false;
 
 	map->data = data;
+	map->tileset = tileset;
+
 	map_repaint(map);
 
 	return true;
-
-failure:
-	map_data_finish(data);
-
-	return false;
 }
 
 void
@@ -235,7 +231,6 @@ map_finish(struct map *map)
 {
 	assert(map);
 
-	texture_finish(&map->tileset);
 	texture_finish(&map->picture);
 
 	memset(map, 0, sizeof (*map));

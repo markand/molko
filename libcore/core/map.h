@@ -73,7 +73,7 @@ struct map_data {
  */
 struct map {
 	struct map_data *data;          /*!< (RW, ref) Map data. */
-	struct texture tileset;         /*!< (RW) Tileset to use. */
+	struct texture *tileset;        /*!< (RW, ref) Tileset to use. */
 	struct texture picture;         /*!< (RO) Map drawn into a picture. */
 };
 
@@ -115,12 +115,16 @@ map_data_finish(struct map_data *data);
  *
  * \pre map != NULL
  * \pre data != NULL
+ * \pre tileset != NULL && texture_ok(tileset)
  * \param map the map to initialize
  * \param data the definition to reference
+ * \param tileset the tileset to use
  * \return False on errors.
  */
 bool
-map_init(struct map *map, struct map_data *data);
+map_init(struct map *map,
+         struct map_data *data,
+         struct texture *tileset);
 
 /**
  * Render a map.

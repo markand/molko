@@ -17,5 +17,9 @@
 #
 
 project(molko)
-add_executable(molko main.c)
-target_link_libraries(molko libadventure)
+
+molko_define_executable(
+	TARGET molko
+	SOURCES main.c
+	LIBRARIES libadventure
+)

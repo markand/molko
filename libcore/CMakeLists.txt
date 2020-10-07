@@ -20,7 +20,6 @@ project(libcore)
 
 set(
 	ASSETS
-	${libcore_SOURCE_DIR}/core/assets/maps/test.map
 	${libcore_SOURCE_DIR}/core/assets/images/message.png
 	${libcore_SOURCE_DIR}/core/assets/sprites/test-walk.png
 	${libcore_SOURCE_DIR}/core/assets/fonts/DejaVuSansCondensed.ttf
@@ -30,7 +29,6 @@ set(
 	${libcore_SOURCE_DIR}/core/assets/fonts/pirata-one.ttf
 	${libcore_SOURCE_DIR}/core/assets/fonts/teutonic1.ttf
 	${libcore_SOURCE_DIR}/core/assets/fonts/knights-quest.ttf
-	${libcore_SOURCE_DIR}/core/assets/tilesets/test.png
 )
 
 set(

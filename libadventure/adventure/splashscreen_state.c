@@ -28,6 +28,8 @@
 #include <core/texture.h>
 #include <core/window.h>
 
+#include <core/assets/fonts/teutonic1.h>
+
 #include "splashscreen_state.h"
 #include "mainmenu_state.h"
 
@@ -42,7 +44,7 @@ enter(void)
 		.color = 0x000000ff
 	};
 
-	if (!(font_open(&font, sys_datapath("fonts/teutonic1.ttf"), 130)))
+	if (!(font_openmem(&font, teutonic_, sizeof (teutonic_), 130)))
 		panic();
 	if (!(font_render(&font, &splashscreen_state_data.text, "Molko's Adventure")))
 		panic();

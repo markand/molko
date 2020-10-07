@@ -32,6 +32,12 @@
 #include <core/texture.h>
 #include <core/window.h>
 
+#include <core/assets/fonts/pirata-one.h>
+#include <core/assets/sprites/test-walk.h>
+
+#include <adventure/assets/maps/overworld.h>
+#include <adventure/assets/tilesets/world.h>
+
 #include "mainmenu_state.h"
 #include "splashscreen_state.h"
 
@@ -49,6 +55,7 @@ static unsigned int selection;
 static int destination;
 static enum substate substate;
 static struct texture image;
+static struct texture tileset;
 
 /* Menu items. */
 static struct {
@@ -62,7 +69,7 @@ enter(void)
 {
 	struct font font = { 0 };
 
-	if (!font_open(&font, sys_datapath("fonts/pirata-one.ttf"), 30))
+	if (!font_openmem(&font, pirata_one, sizeof (pirata_one), 30))
 		panic();
 
 	substate = SUBSTATE_MOVING;
@@ -89,16 +96,19 @@ enter(void)
 static void
 new(void)
 {
-	/* TODO: convenient map_state_start function? */
-
 	/* Prepare map. */
-	if (!map_data_open(&map_state_data.map.data, sys_datapath("maps/test.map")))
+	if (!map_data_openmem(&map_state_data.map.data, overworld, sizeof (overworld)))
+		panicf("Unable to open map 'test'");
+
+	// TODO: this is temporary.
+	if (!image_openmem(&tileset, world, sizeof (world)))
 		panic();
-	if (!map_init(&map_state_data.map.map, &map_state_data.map.data))
+	
+	if (!map_init(&map_state_data.map.map, &map_state_data.map.data, &tileset))
 		panic();
 
 	/* Prepare image and sprite. */
-	if (!(image_open(&image, sys_datapath("sprites/test-walk.png"))))
+	if (!(image_openmem(&image, test_walk, sizeof (test_walk))))
 		panic();
 
 	sprite_init(&map_state_data.player.sprite, &image, 48, 48);

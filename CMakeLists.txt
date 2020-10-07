@@ -24,6 +24,10 @@ set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS Off)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+if (CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
+	set(CMAKE_C_FLAGS "-Wall -Wextra ${CMAKE_C_FLAGS}")
+endif ()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS On)
 
 include(GNUInstallDirs)
