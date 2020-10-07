@@ -94,6 +94,7 @@ game_switch(struct state *state, bool quick)
 	assert(state);
 
 	if (quick) {
+		game.state_next = NULL;
 		game.state = state;
 		game.state->enter();
 	} else
