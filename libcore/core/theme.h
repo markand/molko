@@ -36,6 +36,7 @@ struct label;
  * \brief Font component.
  */
 enum theme_font {
+	THEME_FONT_DEBUG,       /*!< Font for debug messages. */
 	THEME_FONT_INTERFACE,   /*!< Font for interface elements. */
 	THEME_FONT_LAST         /*!< Unused. */
 };
@@ -44,6 +45,7 @@ enum theme_font {
  * \brief Theme colors.
  */
 enum theme_color {
+	THEME_COLOR_DEBUG,      /*!< Debug color font. */
 	THEME_COLOR_NORMAL,     /*!< Normal font color. */
 	THEME_COLOR_SELECTED,   /*!< Font color for selected elements. */
 	THEME_COLOR_SHADOW,     /*!< Shadow color. */

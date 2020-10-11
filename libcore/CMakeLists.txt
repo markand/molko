@@ -20,15 +20,10 @@ project(libcore)
 
 set(
 	ASSETS
+	${libcore_SOURCE_DIR}/core/assets/fonts/comic-neue.ttf
+	${libcore_SOURCE_DIR}/core/assets/fonts/f25-bank-printer.ttf
 	${libcore_SOURCE_DIR}/core/assets/images/message.png
 	${libcore_SOURCE_DIR}/core/assets/sprites/test-walk.png
-	${libcore_SOURCE_DIR}/core/assets/fonts/DejaVuSansCondensed.ttf
-	${libcore_SOURCE_DIR}/core/assets/fonts/DejaVuSans.ttf
-	${libcore_SOURCE_DIR}/core/assets/fonts/Lato-Regular.ttf
-	${libcore_SOURCE_DIR}/core/assets/fonts/ComicNeue-Regular.ttf
-	${libcore_SOURCE_DIR}/core/assets/fonts/pirata-one.ttf
-	${libcore_SOURCE_DIR}/core/assets/fonts/teutonic1.ttf
-	${libcore_SOURCE_DIR}/core/assets/fonts/knights-quest.ttf
 )
 
 set(

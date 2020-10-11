@@ -31,7 +31,7 @@
 #include <core/window.h>
 #include <core/map_state.h>
 
-#include <core/assets/fonts/Lato-Regular.h>
+#include <adventure/assets/fonts/lato.h>
 
 #include "panic_state.h"
 
@@ -222,6 +222,6 @@ panic_state_init(void)
 	 * useful information to the screen so as last resort print them
 	 * on the console.
 	 */
-	if (!(font_openmem(&data.font, Lato_Regular, sizeof (Lato_Regular), SIZE)))
+	if (!(font_openmem(&data.font, lato, sizeof (lato), SIZE)))
 		die("%s", error());
 }

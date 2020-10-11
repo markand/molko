@@ -70,6 +70,8 @@
  */
 #define DEBUG_LINE_MAX 1024
 
+struct theme;
+
 /**
  * \brief Debugging options.
  *
@@ -77,9 +79,6 @@
  * in core API.
  */
 struct debug_options {
-	struct font *default_font;      /*!< (RW) Default font for reports. */
-	enum font_style default_style;  /*!< (RW) Default font style. */
-	unsigned long default_color;    /*!< (RW) Default font color. */
 	bool enable;                    /*!< (RW) Enable core API debugging. */
 };
 
@@ -89,8 +88,7 @@ struct debug_options {
  * Use this structure each time you need to print one or more messages.
  */
 struct debug_report {
-	struct font *font;              /*!< (RW) Font to use. */
-	enum font_style style;          /*!< (RW) Font style to use. */
+	struct theme *theme;            /*!< (RW, ref, optional) Theme to use. */
 	unsigned long color;            /*!< (RW) Font foreground color to use. */
 	unsigned int count;             /*!< (PV) Number of messages already printed. */
 };

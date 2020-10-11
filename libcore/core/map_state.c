@@ -324,7 +324,7 @@ update(unsigned int ticks)
 static void
 draw(void)
 {
-	struct debug_report report = DEBUG_INIT_DEFAULTS;
+	struct debug_report report = {0};
 
 	map_draw(&map_state_data.map.map, VIEW()->x, VIEW()->y);
 	walksprite_draw(

@@ -30,6 +30,9 @@ set(
 
 set(
 	ASSETS
+	${libadventure_SOURCE_DIR}/adventure/assets/fonts/lato.ttf
+	${libadventure_SOURCE_DIR}/adventure/assets/fonts/teutonic.ttf
+	${libadventure_SOURCE_DIR}/adventure/assets/fonts/pirata-one.ttf
 	${libadventure_SOURCE_DIR}/adventure/assets/maps/overworld.map
 	${libadventure_SOURCE_DIR}/adventure/assets/tilesets/world.png
 )

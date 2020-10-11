@@ -28,8 +28,9 @@
 #define PADDING_Y 5
 
 struct debug_options debug_options = {
-	.default_color = 0x0000ffff,
-	.default_style = FONT_STYLE_ANTIALIASED
+#if !defined(NDEBUG)
+	.enable = true
+#endif
 };
 
 void
@@ -37,6 +38,9 @@ debug_printf(struct debug_report *report, const char *fmt, ...)
 {
 	assert(report);
 	assert(fmt);
+
+	if (!debug_options.enable)
+		return;
 
 	va_list ap;
 
@@ -51,16 +55,20 @@ debug_vprintf(struct debug_report *report, const char *fmt, va_list ap)
 	assert(report);
 	assert(fmt);
 
+	if (!debug_options.enable)
+		return;
+
 	char line[DEBUG_LINE_MAX];
-	struct texture tex;
+	struct theme *theme;
 	struct font *font;
+	struct texture tex;
 	unsigned int gapy;
 
 	vsnprintf(line, sizeof (line), fmt, ap);
 
-	font = report->font ? report->font : theme_default()->fonts[THEME_FONT_INTERFACE];
+	theme = report->theme ? report->theme : theme_default();
+	font = theme->fonts[THEME_FONT_DEBUG];
 	font->color = report->color;
-	font->style = report->style;
 
 	if (!font_render(font, &tex, line))
 		return;

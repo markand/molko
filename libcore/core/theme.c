@@ -31,15 +31,14 @@
 #include "theme.h"
 #include "util.h"
 
-#include "core/assets/fonts/ComicNeue-Regular.h"
+#include <core/assets/fonts/f25-bank-printer.h>
+#include <core/assets/fonts/comic-neue.h>
 
 #define THEME(t) (t ? t : &default_theme)
 
 #define CHECKBOX_W 16
 #define CHECKBOX_H 16
 #define CHECKBOX_RAD 6
-
-static struct font default_font;
 
 static void
 box(int x, int y, unsigned int w, unsigned int h)
@@ -175,7 +174,8 @@ static struct font_catalog {
 	struct font **dest;
 	struct font font;
 } default_fonts[] = {
-	FONT(ComicNeue_Regular, 20, THEME_FONT_INTERFACE)
+	FONT(f25_bank_printer, 10, THEME_FONT_DEBUG),
+	FONT(comic_neue, 20, THEME_FONT_INTERFACE)
 };
 
 bool
