@@ -55,6 +55,8 @@ box(int x, int y, unsigned int w, unsigned int h)
 static void
 draw_frame(struct theme *t, const struct frame *frame)
 {
+	(void)t;
+
 	if (frame->style == FRAME_STYLE_BOX)
 		painter_set_color(0x6e4c30ff);
 	else
@@ -108,6 +110,8 @@ draw_label(struct theme *t, const struct label *label)
 static void
 draw_button(struct theme *t, const struct button *button)
 {
+	(void)t;
+
 	struct label label = {
 		.text = button->text,
 		.x = button->x,
@@ -165,7 +169,7 @@ static struct theme default_theme = {
 
 /* Default font catalog. */
 #define FONT(bin, size, index)                                          \
-        { bin, sizeof (bin), size, &default_theme.fonts[index] }
+	{ bin, sizeof (bin), size, &default_theme.fonts[index], {0} }
 
 static struct font_catalog {
 	const unsigned char *data;

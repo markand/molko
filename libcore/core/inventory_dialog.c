@@ -144,8 +144,8 @@ draw_grid_items(const struct inventory_dialog *dlg)
 	int x, y;
 	bool selected;
 
-	for (int r = 0; r < INVENTORY_ROWS_MAX; ++r) {
-		for (int c = 0; c < INVENTORY_COLS_MAX; ++c) {
+	for (unsigned int r = 0; r < INVENTORY_ROWS_MAX; ++r) {
+		for (unsigned int c = 0; c < INVENTORY_COLS_MAX; ++c) {
 			selected = r == dlg->selrow && c == dlg->selcol;
 			compute_box_position(dlg, r, c, &x, &y);
 			draw_grid_item(&dlg->inv->items[r][c], x, y, selected);
@@ -299,6 +299,9 @@ void
 inventory_dialog_move(struct inventory_dialog *dlg, int x, int y)
 {
 	assert(dlg);
+
+	dlg->x = x;
+	dlg->y = y;
 }
 
 void

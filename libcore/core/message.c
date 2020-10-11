@@ -202,7 +202,7 @@ draw_lines(const struct message *msg)
 		 * The function label_draw will normally use
 		 * THEME_FONT_INTERFACE so update its color if needed.
 		 */
-		if (msg->flags & MESSAGE_QUESTION && msg->index == i)
+		if (msg->flags & MESSAGE_QUESTION && msg->index == (unsigned int)i)
 			label.color = THEME(msg)->colors[THEME_COLOR_SELECTED];
 
 		label_draw(&label);

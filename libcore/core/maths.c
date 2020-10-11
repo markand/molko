@@ -23,8 +23,8 @@ maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
 {
 	return px >= x &&
 	       py >= y &&
-	       px <= x + w &&
-	       py <= y + h;
+	       px <= x + (int)w &&
+	       py <= y + (int)h;
 }
 
 void

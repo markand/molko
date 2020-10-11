@@ -53,13 +53,13 @@ static struct {
 } data;
 
 static struct label headers[] = {
-	{ "An unrecoverable error occured and the game cannot continue.", 0 },
-	{ "Please report the detailed error as provided below.", 0 },
+	{ .text = "An unrecoverable error occured and the game cannot continue." },
+	{ .text = "Please report the detailed error as provided below." },
 };
 
 static struct label bottom[] = {
-	{ "Press <s> to save information and generate a core dump.", 0 },
-	{ "Press <q> to quit without saving information.", 0 }
+	{ .text = "Press <s> to save information and generate a core dump." },
+	{ .text = "Press <q> to quit without saving information." }
 };
 
 static struct label lerror;

@@ -40,8 +40,8 @@ enum inventory_dialog_state {
  * \brief Inventory dialog.
  */
 struct inventory_dialog {
-	int x;                                  /*!< (RO) Position in x. */
-	int y;                                  /*!< (RO) Position in y. */
+	int x;                                  /*!< (RW) Position in x. */
+	int y;                                  /*!< (RW) Position in y. */
 	struct inventory *inv;                  /*!< (RW, ref) Inventory to use. */
 	struct theme *theme;                    /*!< (RW, ref, optional) Theme to use. */
 	struct button bsort;                    /*!< (RO) Button sort. */
