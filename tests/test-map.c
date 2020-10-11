@@ -37,7 +37,7 @@ test_sample(void)
 {
 	struct map_data map;
 
-	GREATEST_ASSERT(map_data_openmem(&map, sample_map, sizeof (sample_map)));
+	GREATEST_ASSERT(map_data_openmem(&map, maps_sample_map, sizeof (maps_sample_map)));
 	GREATEST_ASSERT_STR_EQ("This is a test map", map.title);
 	GREATEST_ASSERT_EQ(2, map.w);
 	GREATEST_ASSERT_EQ(2, map.h);
@@ -59,7 +59,7 @@ test_error_title(void)
 {
 	struct map_data map;
 
-	GREATEST_ASSERT(!map_data_openmem(&map, error_title, sizeof (error_title)));
+	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_title, sizeof (maps_error_title)));
 	GREATEST_PASS();
 }
 
@@ -68,7 +68,7 @@ test_error_width(void)
 {
 	struct map_data map;
 
-	GREATEST_ASSERT(!map_data_openmem(&map, error_width, sizeof (error_width)));
+	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_width, sizeof (maps_error_width)));
 	GREATEST_PASS();
 }
 
@@ -77,7 +77,7 @@ test_error_height(void)
 {
 	struct map_data map;
 
-	GREATEST_ASSERT(!map_data_openmem(&map, error_height, sizeof (error_height)));
+	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_height, sizeof (maps_error_height)));
 	GREATEST_PASS();
 }
 
@@ -86,7 +86,7 @@ test_error_tilewidth(void)
 {
 	struct map_data map;
 
-	GREATEST_ASSERT(!map_data_openmem(&map, error_tilewidth, sizeof (error_tilewidth)));
+	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_tilewidth, sizeof (maps_error_tilewidth)));
 	GREATEST_PASS();
 }
 
@@ -95,7 +95,7 @@ test_error_tileheight(void)
 {
 	struct map_data map;
 
-	GREATEST_ASSERT(!map_data_openmem(&map, error_tileheight, sizeof (error_tileheight)));
+	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_tileheight, sizeof (maps_error_tileheight)));
 	GREATEST_PASS();
 }
 

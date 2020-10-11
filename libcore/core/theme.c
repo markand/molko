@@ -174,8 +174,8 @@ static struct font_catalog {
 	struct font **dest;
 	struct font font;
 } default_fonts[] = {
-	FONT(f25_bank_printer, 10, THEME_FONT_DEBUG),
-	FONT(comic_neue, 20, THEME_FONT_INTERFACE)
+	FONT(fonts_f25_bank_printer, 10, THEME_FONT_DEBUG),
+	FONT(fonts_comic_neue, 20, THEME_FONT_INTERFACE)
 };
 
 bool

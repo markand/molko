@@ -83,7 +83,7 @@ init(void)
 		panic();
 
 	/* 0: Explosion animation. */
-	if (!image_openmem(&explosion_tex, explosion, sizeof (explosion)))
+	if (!image_openmem(&explosion_tex, sprites_explosion, sizeof (sprites_explosion)))
 		panic();
 
 	sprite_init(&explosion_sprite, &explosion_tex, 256, 256);

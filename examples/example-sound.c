@@ -51,7 +51,7 @@ init(void)
 	    !theme_init())
 		panic();
 
-	if (!sound_openmem(&sound, vabsounds_romance, sizeof (vabsounds_romance)))
+	if (!sound_openmem(&sound, sounds_vabsounds_romance, sizeof (sounds_vabsounds_romance)))
 		panic();
 }
 

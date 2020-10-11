@@ -34,6 +34,7 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/assets/fonts/teutonic.ttf
 	${libadventure_SOURCE_DIR}/adventure/assets/fonts/pirata-one.ttf
 	${libadventure_SOURCE_DIR}/adventure/assets/maps/overworld.map
+	${libadventure_SOURCE_DIR}/adventure/assets/sprites/john.png
 	${libadventure_SOURCE_DIR}/adventure/assets/tilesets/world.png
 )
 

@@ -23,7 +23,6 @@ set(
 	${libcore_SOURCE_DIR}/core/assets/fonts/comic-neue.ttf
 	${libcore_SOURCE_DIR}/core/assets/fonts/f25-bank-printer.ttf
 	${libcore_SOURCE_DIR}/core/assets/images/message.png
-	${libcore_SOURCE_DIR}/core/assets/sprites/test-walk.png
 )
 
 set(

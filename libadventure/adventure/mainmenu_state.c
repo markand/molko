@@ -37,6 +37,7 @@
 #include <adventure/assets/fonts/pirata-one.h>
 #include <adventure/assets/maps/overworld.h>
 #include <adventure/assets/tilesets/world.h>
+#include <adventure/assets/sprites/john.h>
 
 #include "mainmenu_state.h"
 #include "splashscreen_state.h"
@@ -67,9 +68,9 @@ static struct {
 static void
 enter(void)
 {
-	struct font font = { 0 };
+	struct font font;
 
-	if (!font_openmem(&font, pirata_one, sizeof (pirata_one), 30))
+	if (!font_openmem(&font, fonts_pirata_one, sizeof (fonts_pirata_one), 30))
 		panic();
 
 	substate = SUBSTATE_MOVING;
@@ -97,18 +98,18 @@ static void
 new(void)
 {
 	/* Prepare map. */
-	if (!map_data_openmem(&map_state_data.map.data, overworld, sizeof (overworld)))
+	if (!map_data_openmem(&map_state_data.map.data, maps_overworld, sizeof (maps_overworld)))
 		panicf("Unable to open map 'test'");
 
 	// TODO: this is temporary.
-	if (!image_openmem(&tileset, world, sizeof (world)))
+	if (!image_openmem(&tileset, tilesets_world, sizeof (tilesets_world)))
 		panic();
 	
 	if (!map_init(&map_state_data.map.map, &map_state_data.map.data, &tileset))
 		panic();
 
 	/* Prepare image and sprite. */
-	if (!(image_openmem(&image, test_walk, sizeof (test_walk))))
+	if (!(image_openmem(&image, sprites_john, sizeof (sprites_john))))
 		panic();
 
 	sprite_init(&map_state_data.player.sprite, &image, 48, 48);

@@ -44,7 +44,7 @@ enter(void)
 		.color = 0x000000ff
 	};
 
-	if (!(font_openmem(&font, teutonic, sizeof (teutonic), 130)))
+	if (!(font_openmem(&font, fonts_teutonic, sizeof (fonts_teutonic), 130)))
 		panic();
 	if (!(font_render(&font, &splashscreen_state_data.text, "Molko's Adventure")))
 		panic();

@@ -222,6 +222,6 @@ panic_state_init(void)
 	 * useful information to the screen so as last resort print them
 	 * on the console.
 	 */
-	if (!(font_openmem(&data.font, lato, sizeof (lato), SIZE)))
+	if (!(font_openmem(&data.font, fonts_lato, sizeof (fonts_lato), SIZE)))
 		die("%s", error());
 }

@@ -45,8 +45,8 @@ static struct {
 	struct item item;
 } items[] = {
 	{
-		.data = potion,
-		.datasz = sizeof (potion),
+		.data = images_potion,
+		.datasz = sizeof (images_potion),
 		.item = {
 			.name = "Potion",
 			.summary = "Recover 100 HP.",
@@ -54,8 +54,8 @@ static struct {
 		}
 	},
 	{
-		.data = fish,
-		.datasz = sizeof (fish),
+		.data = images_fish,
+		.datasz = sizeof (images_fish),
 		.item = {
 			.name = "Fish",
 			.summary = "Recover 1000 HP.",
@@ -63,8 +63,8 @@ static struct {
 		}
 	},
 	{
-		.data = sword,
-		.datasz = sizeof (sword),
+		.data = images_sword,
+		.datasz = sizeof (images_sword),
 		.item = {
 			.name = "Sword",
 			.summary = "A very basic sword.",

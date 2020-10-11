@@ -25,12 +25,12 @@ macro(molko_build_assets assets outputs)
 		set(output ${CMAKE_CURRENT_BINARY_DIR}/${output})
 		get_filename_component(outputdir ${output} DIRECTORY)
 		get_filename_component(name ${basename} NAME_WE)
-
+		get_filename_component(category ${outputdir} NAME)
 		file(MAKE_DIRECTORY ${outputdir})
 
 		add_custom_command(
 			OUTPUT ${output}
-			COMMAND $<TARGET_FILE:bcc> -s ${a} ${name} > ${output}
+			COMMAND $<TARGET_FILE:bcc> -s ${a} ${category}-${name} > ${output}
 			DEPENDS $<TARGET_FILE:bcc>
 			COMMENT "Generate header file for ${basename}"
 		)
