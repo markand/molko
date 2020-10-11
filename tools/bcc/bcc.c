@@ -25,7 +25,7 @@
 #include <string.h>
 #include <unistd.h>
 
-static const char *charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+static const char *charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 static bool fstatic;
 
 noreturn static void
