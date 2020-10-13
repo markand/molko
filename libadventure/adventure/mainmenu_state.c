@@ -32,8 +32,6 @@
 #include <core/texture.h>
 #include <core/window.h>
 
-#include <core/assets/sprites/test-walk.h>
-
 #include <adventure/assets/fonts/pirata-one.h>
 #include <adventure/assets/maps/overworld.h>
 #include <adventure/assets/tilesets/world.h>
