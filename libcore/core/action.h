@@ -226,6 +226,16 @@ void
 action_stack_draw(struct action_stack *st);
 
 /**
+ * Tells if there is any pending action in the stack.
+ *
+ * \pre st != NULL
+ * \param st the stack
+ * \return true if there is at least one action in the stack
+ */
+bool
+action_stack_completed(const struct action_stack *st);
+
+/**
  * Terminate all actions and clear the stack.
  *
  * \pre st != NULL

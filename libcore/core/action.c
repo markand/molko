@@ -150,6 +150,20 @@ action_stack_draw(struct action_stack *st)
 			action_draw(act);
 }
 
+bool
+action_stack_completed(const struct action_stack *st)
+{
+	assert(st);
+
+	struct action *act;
+
+	ACTION_FOREACH(st, act)
+		if (act)
+			return false;
+
+	return true;
+}
+
 void
 action_stack_finish(struct action_stack *st)
 {

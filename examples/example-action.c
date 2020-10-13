@@ -1,5 +1,5 @@
 /*
- * example-action.c -- example on how to use automatic drawables
+ * example-action.c -- example on how to use automatic actions
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -40,7 +40,11 @@
 #define W 1280
 #define H 720
 
-static struct action_stack stack;
+/* This is a stack of "parallel" events. */
+static struct action_stack events;
+
+/* This is a stack of modal events. */
+static struct action_stack modal;
 
 /*
  * Event object for the chest to click on.
@@ -163,13 +167,7 @@ guide_response_end(struct action *act)
 	const int index = guide.msgs[2].msg.index + 3;
 
 	message_action(&guide.msgs[index].msg, &guide.msgs[index].act);
-	action_stack_add(&stack, &guide.msgs[index].act);
-}
-
-static bool
-guide_running(void)
-{
-	return guide.script.actionsz > 0;
+	action_stack_add(&modal, &guide.msgs[index].act);
 }
 
 static void
@@ -190,7 +188,7 @@ guide_popup(void)
 	script_append(&guide.script, &guide.response);
 
 	script_action(&guide.script, &guide.script_act);
-	action_stack_add(&stack, &guide.script_act);
+	action_stack_add(&modal, &guide.script_act);
 }
 
 static void
@@ -198,7 +196,7 @@ guide_handle(struct action *act, const union event *ev)
 {
 	(void)act;
 
-	if (guide_running())
+	if (!action_stack_completed(&modal))
 		return;
 
 	switch (ev->type) {
@@ -241,7 +239,7 @@ chest_handle(struct action *act, const union event *ev)
 {
 	(void)act;
 
-	if (chest.opened)
+	if (chest.opened || !action_stack_completed(&modal))
 		return;
 
 	switch (ev->type) {
@@ -250,7 +248,7 @@ chest_handle(struct action *act, const union event *ev)
 		    ev->click.x, ev->click.y)) {
 			chest.opened = true;
 			message_action(&chest.msg, &chest.msg_act);
-			action_stack_add(&stack, &chest.msg_act);
+			action_stack_add(&modal, &chest.msg_act);
 		}
 	default:
 		break;
@@ -299,8 +297,8 @@ run(void)
 	struct clock clock = {0};
 
 	clock_start(&clock);
-	action_stack_add(&stack, &chest.event);
-	action_stack_add(&stack, &guide.event);
+	action_stack_add(&events, &chest.event);
+	action_stack_add(&events, &guide.event);
 
 	for (;;) {
 		unsigned int elapsed = clock_elapsed(&clock);
@@ -312,15 +310,18 @@ run(void)
 			case EVENT_QUIT:
 				return;
 			default:
-				action_stack_handle(&stack, &ev);
+				action_stack_handle(&events, &ev);
+				action_stack_handle(&modal, &ev);
 				break;
 			}
 		}
 
 		painter_set_color(0xffffffff);
 		painter_clear();
-		action_stack_update(&stack, elapsed);
-		action_stack_draw(&stack);
+		action_stack_update(&events, elapsed);
+		action_stack_update(&modal, elapsed);
+		action_stack_draw(&events);
+		action_stack_draw(&modal);
 		painter_present();
 
 		if ((elapsed = clock_elapsed(&clock)) < 20)
