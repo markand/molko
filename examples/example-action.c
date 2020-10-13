@@ -37,8 +37,13 @@
 #include <assets/sprites/chest.h>
 #include <assets/sprites/people.h>
 
-#define W 1280
-#define H 720
+#define W       (1280)
+#define H       (720)
+
+#define MW      (W * 0.75)
+#define MH      (H * 0.125)
+#define MX      ((W / 2) - (MW / 2))
+#define MY      (100)
 
 /* This is a stack of "parallel" events. */
 static struct action_stack events;
@@ -60,6 +65,10 @@ static struct {
 	struct action event;
 } chest = {
 	.msg = {
+		.x = MX,
+		.y = MY,
+		.w = MW,
+		.h = MH,
 		.text = {
 			"100000 pièces.",
 			"Te voilà riche sale file de crevette."
@@ -106,6 +115,12 @@ static struct {
 	.msgs = {
 		{
 			.msg = {
+				.x = MX,
+				.y = MY,
+				.w = MW,
+				.h = MH,
+				.delay = MESSAGE_DELAY_DEFAULT,
+				.flags = MESSAGE_FLAGS_FADEIN | MESSAGE_FLAGS_AUTOMATIC,
 				.text = {
 					"Bienvenue dans ce monde Molko."
 				}
@@ -113,6 +128,10 @@ static struct {
 		},
 		{
 			.msg = {
+				.x = MX,
+				.y = MY,
+				.w = MW,
+				.h = MH,
 				.text = {
 					"Penses tu vraiment pouvoir me battre ?"
 				}
@@ -120,7 +139,11 @@ static struct {
 		},
 		{
 			.msg = {
-				.flags = MESSAGE_QUESTION,
+				.x = MX,
+				.y = MY,
+				.w = MW,
+				.h = MH,
+				.flags = MESSAGE_FLAGS_QUESTION,
 				.text = {
 					"Non j'ai la trouille.",
 					"Bien sûr, je suis la légende."
@@ -131,6 +154,10 @@ static struct {
 		/* In case of NO. */
 		{
 			.msg = {
+				.x = MX,
+				.y = MY,
+				.w = MW,
+				.h = MH,
 				.text = {
 					"Poule mouillée."
 				}
@@ -140,6 +167,10 @@ static struct {
 		/* In case of YES. */
 		{
 			.msg = {
+				.x = MX,
+				.y = MY,
+				.w = MW,
+				.h = MH,
 				.text = {
 					"Prépare toi à souffrir."
 				}

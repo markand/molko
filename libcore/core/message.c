@@ -25,6 +25,7 @@
 #include "font.h"
 #include "frame.h"
 #include "label.h"
+#include "maths.h"
 #include "message.h"
 #include "painter.h"
 #include "panic.h"
@@ -32,15 +33,8 @@
 #include "texture.h"
 #include "theme.h"
 #include "util.h"
-#include "window.h"
 
-#define MESSAGE_SPEED   100     /* Time delay for animations */
-#define MESSAGE_TIMEOUT 5000    /* Time for auto-closing */
-
-#define WIDTH   (window.w * 0.75)
-#define HEIGHT  (window.h * 0.125)
-
-#define THEME(msg) (msg->theme ? msg->theme : theme_default())
+#define THEME(msg)      (msg->theme ? msg->theme : theme_default())
 
 static void
 handle(struct action *action, const union event *ev)
@@ -67,14 +61,65 @@ draw(struct action *action)
 	message_draw(action->data);
 }
 
+static void
+draw_frame(const struct message *msg)
+{
+	assert(msg);
+
+	struct frame frame = {
+		.w = msg->w,
+		.h = msg->h,
+		.theme = msg->theme
+	};
+
+	frame_draw(&frame);
+}
+
+static void
+draw_lines(const struct message *msg)
+{
+	struct theme *theme;
+	struct font *font;
+	unsigned int lineh;
+
+	theme = THEME(msg);
+	font = theme->fonts[THEME_FONT_INTERFACE];
+	lineh = font_height(font);
+
+	for (int i = 0; i < 6; ++i) {
+		if (!msg->text[i])
+			continue;
+
+		struct label label = {
+			.x = theme->padding,
+			.y = theme->padding + (i * lineh),
+			.h = lineh,
+			.theme = msg->theme,
+			.text = msg->text[i],
+			.flags = LABEL_NO_HCENTER
+		};
+
+		/*
+		 * The function label_draw will normally use
+		 * THEME_FONT_INTERFACE so update its color if needed.
+		 */
+		if (msg->flags & MESSAGE_FLAGS_QUESTION && msg->index == (unsigned int)i)
+			label.color = theme->colors[THEME_COLOR_SELECTED];
+
+		label_draw(&label);
+	}
+}
+
 void
 message_start(struct message *msg)
 {
 	assert(msg);
 
 	msg->elapsed = 0;
-	msg->scale = 0.0;
-	msg->state = msg->flags & MESSAGE_QUICK ? MESSAGE_SHOWING : MESSAGE_OPENING;
+	msg->scale = msg->flags & MESSAGE_FLAGS_FADEIN ? 0.0 : 1.0;
+	msg->state = msg->flags & MESSAGE_FLAGS_FADEIN
+	    ? MESSAGE_STATE_OPENING
+	    : MESSAGE_STATE_SHOWING;
 }
 
 void
@@ -84,11 +129,11 @@ message_handle(struct message *msg, const union event *ev)
 	assert(ev);
 
 	/* Skip if the message animation hasn't complete. */
-	if (msg->state != MESSAGE_SHOWING)
+	if (msg->state != MESSAGE_STATE_SHOWING)
 		return;
 
 	/* Only keyboard event are valid. */
-	if (ev->type != EVENT_KEYDOWN || msg->state == MESSAGE_NONE)
+	if (ev->type != EVENT_KEYDOWN || msg->state == MESSAGE_STATE_NONE)
 		return;
 
 	switch (ev->key.key) {
@@ -101,7 +146,9 @@ message_handle(struct message *msg, const union event *ev)
 			msg->index++;
 		break;
 	case KEY_ENTER:
-		msg->state = msg->flags & MESSAGE_QUICK ? MESSAGE_NONE : MESSAGE_HIDING;
+		msg->state = msg->flags & MESSAGE_FLAGS_FADEOUT
+		    ? MESSAGE_STATE_HIDING
+		    : MESSAGE_STATE_NONE;
 		msg->elapsed = 0;
 		break;
 	default:
@@ -117,33 +164,35 @@ message_update(struct message *msg, unsigned int ticks)
 	msg->elapsed += ticks;
 
 	switch (msg->state) {
-	case MESSAGE_OPENING:
-		msg->scale = (double)msg->elapsed / (double)MESSAGE_SPEED;
+	case MESSAGE_STATE_OPENING:
+		msg->scale = (double)msg->elapsed / (double)msg->delay;
 
 		if (msg->scale > 1)
 			msg->scale = 1;
 
-		if (msg->elapsed >= MESSAGE_SPEED) {
-			msg->state = MESSAGE_SHOWING;
+		if (msg->elapsed >= msg->delay) {
+			msg->state = MESSAGE_STATE_SHOWING;
 			msg->elapsed = 0;
 		}
 
 		break;
-	case MESSAGE_SHOWING:
+	case MESSAGE_STATE_SHOWING:
 		/* Do automatically switch state if requested by the user. */
-		if (msg->flags & MESSAGE_AUTOMATIC && msg->elapsed >= MESSAGE_TIMEOUT) {
-			msg->state = msg->flags & MESSAGE_QUICK ? MESSAGE_NONE : MESSAGE_HIDING;
+		if (msg->flags & MESSAGE_FLAGS_AUTOMATIC && msg->elapsed >= msg->timeout) {
+			msg->state = msg->flags & MESSAGE_FLAGS_FADEOUT
+			    ? MESSAGE_STATE_HIDING
+			    : MESSAGE_STATE_NONE;
 			msg->elapsed = 0;
 		}
 
 		break;
-	case MESSAGE_HIDING:
-		msg->scale = 1 - (double)msg->elapsed / (double)MESSAGE_SPEED;
+	case MESSAGE_STATE_HIDING:
+		msg->scale = 1 - (double)msg->elapsed / (double)msg->delay;
 
 		if (msg->scale < 0)
 			msg->scale = 0;
-		if (msg->elapsed >= MESSAGE_SPEED) {
-			msg->state = MESSAGE_NONE;
+		if (msg->elapsed >= msg->delay) {
+			msg->state = MESSAGE_STATE_NONE;
 			msg->elapsed = 0;
 		}
 
@@ -152,53 +201,7 @@ message_update(struct message *msg, unsigned int ticks)
 		break;
 	}
 
-	return msg->state == MESSAGE_NONE;
-}
-
-static void
-draw_frame(const struct message *msg)
-{
-	assert(msg);
-
-	struct frame frame = {
-		.w = WIDTH,
-		.h = HEIGHT
-	};
-
-	frame_draw(&frame);
-}
-
-static void
-draw_lines(const struct message *msg)
-{
-	struct font *font;
-	unsigned int lineh;
-
-	font = THEME(msg)->fonts[THEME_FONT_INTERFACE];
-	lineh = font_height(font);
-
-	for (int i = 0; i < 6; ++i) {
-		if (!msg->text[i])
-			continue;
-
-		struct label label = {
-			.x = 10,
-			.y = 10 + (i * lineh),
-			.h = lineh,
-			.theme = msg->theme,
-			.text = msg->text[i],
-			.flags = LABEL_NO_HCENTER
-		};
-
-		/*
-		 * The function label_draw will normally use
-		 * THEME_FONT_INTERFACE so update its color if needed.
-		 */
-		if (msg->flags & MESSAGE_QUESTION && msg->index == (unsigned int)i)
-			label.color = THEME(msg)->colors[THEME_COLOR_SELECTED];
-
-		label_draw(&label);
-	}
+	return msg->state == MESSAGE_STATE_NONE;
 }
 
 void
@@ -207,9 +210,10 @@ message_draw(struct message *msg)
 	assert(msg);
 
 	struct texture tex;
-	int x, y, w, h;
+	int x, y;
+	unsigned int w, h;
 
-	if (!texture_new(&tex, WIDTH, HEIGHT))
+	if (!texture_new(&tex, msg->w, msg->h))
 		panic();
 
 	PAINTER_BEGIN(&tex);
@@ -218,14 +222,14 @@ message_draw(struct message *msg)
 	PAINTER_END();
 
 	/* Compute scaling. */
-	w = WIDTH * msg->scale;
-	h = HEIGHT * msg->scale;
+	w = msg->w * msg->scale;
+	h = msg->h * msg->scale;
 
-	/* Compute position. */
-	x = (window.w / 2) - (w / 2);
-	y = HEIGHT;
+	/* Centerize within its drawing area. */
+	maths_centerize(&x, &y, w, h, msg->x, msg->y, msg->w, msg->h);
 
-	texture_scale(&tex, 0, 0, WIDTH, HEIGHT, x, y, w, h, 0.0);
+	/* Draw and clear. */
+	texture_scale(&tex, 0, 0, msg->w, msg->h, x, y, w, h, 0);
 	texture_finish(&tex);
 }
 
@@ -234,7 +238,7 @@ message_hide(struct message *msg)
 {
 	assert(msg);
 
-	msg->state = MESSAGE_HIDING;
+	msg->state = MESSAGE_STATE_HIDING;
 	msg->elapsed = 0;
 }
 

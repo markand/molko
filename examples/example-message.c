@@ -16,8 +16,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <string.h>
+
 #include <core/clock.h>
 #include <core/event.h>
+#include <core/frame.h>
 #include <core/message.h>
 #include <core/painter.h>
 #include <core/panic.h>
@@ -26,8 +29,13 @@
 #include <core/theme.h>
 #include <core/window.h>
 
-#define W 1280
-#define H 720
+#define W       (1280)
+#define H       (720)
+
+#define MW      (W * 0.75)
+#define MH      (H * 0.125)
+#define MX      ((W / 2) - (MW / 2))
+#define MY      (100)
 
 static void
 init(void)
@@ -63,7 +71,7 @@ run(struct message *msg)
 		while (event_poll(&ev)) {
 			switch (ev.type) {
 			case EVENT_QUIT:
-				msg->state = MESSAGE_NONE;
+				msg->state = MESSAGE_STATE_NONE;
 				break;
 			default:
 				message_handle(msg, &ev);
@@ -83,9 +91,22 @@ run(struct message *msg)
 }
 
 static void
+my_draw_frame(struct theme *th, const struct frame *f)
+{
+	(void)th;
+
+	painter_set_color(0xff0000ff);
+	painter_draw_rectangle(f->x, f->y, f->w, f->h);
+}
+
+static void
 basic(void)
 {
 	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = MW,
+		.h = MH,
 		.text = {
 			"This is a basic message.",
 			"You need to press <Enter> to close it."
@@ -99,12 +120,71 @@ static void
 automatic(void)
 {
 	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = MW,
+		.h = MH,
+		.timeout = MESSAGE_TIMEOUT_DEFAULT,
 		.text = {
 			"This is a an automatic message.",
 			"It will disappear in a few seconds.",
 			"You can still press <Enter> to close it quicker."
 		},
-		.flags = MESSAGE_AUTOMATIC
+		.flags = MESSAGE_FLAGS_AUTOMATIC
+	};
+
+	run(&msg);
+}
+
+static void
+fadein(void)
+{
+	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = MW,
+		.h = MH,
+		.delay = MESSAGE_DELAY_DEFAULT,
+		.text = {
+			"This message will fade in."
+		},
+		.flags = MESSAGE_FLAGS_FADEIN
+	};
+
+	run(&msg);
+}
+
+static void
+fadeout(void)
+{
+	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = MW,
+		.h = MH,
+		.delay = MESSAGE_DELAY_DEFAULT,
+		.text = {
+			"This message will fade out."
+		},
+		.flags = MESSAGE_FLAGS_FADEOUT
+	};
+
+	run(&msg);
+}
+
+static void
+fade(void)
+{
+	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = MW,
+		.h = MH,
+		.delay = MESSAGE_DELAY_DEFAULT,
+		.text = {
+			"This message will fade in and out."
+		},
+		.flags = MESSAGE_FLAGS_FADEIN | MESSAGE_FLAGS_FADEOUT
 	};
 
 	run(&msg);
@@ -114,12 +194,63 @@ static void
 question(void)
 {
 	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = MW,
+		.h = MH,
 		.text = {
 			"Okay, I've understood.",
 			"Nevermind, I'll do it again."
 		},
-		.flags = MESSAGE_QUESTION
+		.flags = MESSAGE_FLAGS_QUESTION
 	};
+
+	run(&msg);
+}
+
+static void
+smallbottom(void)
+{
+	const unsigned int w = window.w / 4;
+	const unsigned int h = 50;
+	const int x = (window.w / 2) - (w / 2);
+	const int y = (window.h - h - 10);
+
+	struct message msg = {
+		.x = x,
+		.y = y,
+		.w = w,
+		.h = h,
+		.delay = MESSAGE_DELAY_DEFAULT,
+		.flags = MESSAGE_FLAGS_FADEIN | MESSAGE_FLAGS_FADEOUT,
+		.text = {
+			"This one is small here."
+		}
+	};
+
+	run(&msg);
+}
+
+static void
+custom(void)
+{
+	struct theme theme;
+	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = MW,
+		.h = MH,
+		.text = {
+			"This one will destroy your eyes.",
+			"Because it use a terrible custom theme."
+		},
+		.theme = &theme
+	};
+
+	/* Borrow default theme and change its frame drawing. */
+	memcpy(&theme, theme_default(), sizeof (theme));
+	theme.draw_frame = my_draw_frame;
+	theme.colors[THEME_COLOR_NORMAL] = 0x0000ffff;
 
 	run(&msg);
 }
@@ -132,7 +263,12 @@ main(int argc, char **argv)
 
 	init();
 	basic();
+	fadein();
+	fadeout();
+	fade();
 	automatic();
 	question();
+	smallbottom();
+	custom();
 	quit();
 }

@@ -74,22 +74,33 @@ struct theme;
 union event;
 
 /**
+ * \brief Default animation speed in milliseconds.
+ */
+#define MESSAGE_DELAY_DEFAULT   (150)
+
+/**
+ * \brief Default timeout in milliseconds for automatic messages.
+ */
+#define MESSAGE_TIMEOUT_DEFAULT (5000)
+
+/**
  * \brief Message flags.
  */
 enum message_flags {
-	MESSAGE_AUTOMATIC       = (1 << 0),     /*!< Will automatically change state by itself. */
-	MESSAGE_QUESTION        = (1 << 1),     /*!< The message is a question. */
-	MESSAGE_QUICK           = (1 << 2),     /*!< Avoid animations. */
+	MESSAGE_FLAGS_AUTOMATIC         = (1 << 0),     /*!< Will automatically change state by itself. */
+	MESSAGE_FLAGS_QUESTION          = (1 << 1),     /*!< The message is a question. */
+	MESSAGE_FLAGS_FADEIN            = (1 << 2),     /*!< Animate opening. */
+	MESSAGE_FLAGS_FADEOUT           = (1 << 3)      /*!< Animate closing. */
 };
 
 /**
  * \brief Message state.
  */
 enum message_state {
-	MESSAGE_NONE,           /*!< Message hasn't start yet or is finished */
-	MESSAGE_OPENING,        /*!< Message animation is opening */
-	MESSAGE_SHOWING,        /*!< Message is displaying */
-	MESSAGE_HIDING          /*!< Message animation for hiding */
+	MESSAGE_STATE_NONE,             /*!< Message hasn't start yet or is finished */
+	MESSAGE_STATE_OPENING,          /*!< Message animation is opening */
+	MESSAGE_STATE_SHOWING,          /*!< Message is displaying */
+	MESSAGE_STATE_HIDING            /*!< Message animation for hiding */
 };
 
 /**
@@ -99,8 +110,13 @@ enum message_state {
  * any user properties and therefore must exist while using it.
  */
 struct message {
+	int x;                          /*!< (RW) Position in x. */
+	int y;                          /*!< (RW) Position in y. */
+	unsigned int w;                 /*!< (RW) Width. */
+	unsigned int h;                 /*!< (RW) Height. */
+	unsigned int delay;             /*!< (RW) Delay for animations. */
+	unsigned int timeout;           /*!< (RW) Timeout in milliseconds. */
 	const char *text[6];            /*!< (RW) Lines of text to show. */
-	struct texture *frame;          /*!< (RW, ref) Frame to use. */
 	struct texture *avatar;         /*!< (RW, ref, optional) Avatar face. */
 	unsigned int index;             /*!< (RW) Line selected */
 	enum message_flags flags;       /*!< (RW) Message flags */
