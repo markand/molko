@@ -34,40 +34,40 @@
  *
  * 1. Create a script with see \ref script_init,
  * 2. Create one or more actions and append with \ref script_append,
- * 3. Start the action using \ref script_start,
- * 4. Put the script into the game using \ref game_add_action.
+ * 3. Put the script into the game using \ref game_add_action.
  *
  * \warning You must always call \ref script_init before using this object.
  */
 
 #include <stdbool.h>
+#include <stddef.h>
 
-#include "action.h"
+struct action;
 
 union event;
 
 /**
- * \brief Single-linked list of actions.
+ * \brief Maximum number of actions in a script.
  */
-struct script_action {
-	struct action action;           /*!< (RW) Action to use */
-	struct script_action *next;     /*!< (RO) Pointer to next action */
-};
+#define SCRIPT_ACTION_MAX       (128)
 
 /**
  * \brief Sequence of actions and state holder.
+ *
+ * Setup the array actions within the structure for each action you want to run
+ * in order. You can use the convenient \ref script_append instead. If you do
+ * manually don't forget to adjust actionsz field accordingly.
  */
 struct script {
-	struct script_action *iter;     /*!< (RO) Current action */
-	struct script_action *head;     /*!< (RO) Beginning */
-	struct script_action **tail;    /*!< (RO) Pointer to add to tail */
+	struct action *actions[SCRIPT_ACTION_MAX];	/*!< (RW, ref) Array of actions. */
+	size_t actionsz;                                /*!< (RO) Number of actions in array. */
+	size_t cur;                                     /*!< (RO) Current action index.*/
 };
 
 /**
  * Initialize a script.
  *
- * This is mandatory before using any functions, do not zero-initialize the
- * structure yourself.
+ * This is not necessary if you zero'ed the structure.
  *
  * \pre s != NULL
  * \param s the script
@@ -76,29 +76,18 @@ void
 script_init(struct script *s);
 
 /**
- * Call this function before putting the script in the game.
- *
- * \pre s != NULL
- * \param s the script
- */
-void
-script_start(struct script *s);
-
-/**
  * Append a new action to the script.
  *
- * The action is copied into the script and does not need to be allocated on
- * the heap.
- *
- * The action can be empty but must have at least update member set.
+ * The action must be kept alive until the script is no longer used.
  *
  * \pre s != NULL
- * \pre a != NULL && a->update
+ * \pre a != NULL
  * \param s the script
- * \param a the action to copy
+ * \param a the action to reference
+ * \return false if unable to append
  */
-void
-script_append(struct script *s, const struct action *a);
+bool
+script_append(struct script *s, struct action *a);
 
 /**
  * Handle the event into the current action.
@@ -107,7 +96,6 @@ script_append(struct script *s, const struct action *a);
  * \pre ev != NULL
  * \param s the script
  * \param ev the event
- * \note You usually don't need to call this yourself.
  */
 void
 script_handle(struct script *s, const union event *ev);
@@ -118,7 +106,7 @@ script_handle(struct script *s, const union event *ev);
  * \pre s != NULL
  * \param s the script
  * \param ticks the number of milliseconds since last frame
- * \note You usually don't need to call this yourself.
+ * \return true if the script completed
  */
 bool
 script_update(struct script *s, unsigned int ticks);
@@ -128,16 +116,33 @@ script_update(struct script *s, unsigned int ticks);
  *
  * \pre s != NULL
  * \param s the script
- * \note You usually don't need to call this yourself.
  */
 void
 script_draw(struct script *s);
 
 /**
- * Create an action from the script for use into the game.
+ * Tells if the script is terminated.
  *
- * This function is meant to transform the script into an action itself and be
- * added to the game using \ref game_add_action.
+ * \pre s != NULL
+ * \param s the script
+ * \return true if all action were completed
+ */
+bool
+script_completed(const struct script *s);
+
+/**
+ * Destroy all the actions into the script.
+ *
+ * \pre s != NULL
+ * \param s the script
+ */
+void
+script_finish(struct script *s);
+
+/**
+ * Create an action from the script itself for use into the game.
+ *
+ * The script must be kept alive until the action is no longer needed.
  *
  * \pre s != NULL
  * \pre dst != NULL
@@ -145,16 +150,6 @@ script_draw(struct script *s);
  * \param dst the action to build with the script
  */
 void
-script_action(const struct script *s, struct action *dst);
-
-/**
- * Destroy all the actions into the script.
- *
- * \pre s != NULL
- * \param s the script
- * \note You usually don't need to call this yourself.
- */
-void
-script_finish(struct script *s);
+script_action(struct script *s, struct action *dst);
 
 #endif /* !MOLKO_SCRIPT_H */

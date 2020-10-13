@@ -19,14 +19,17 @@
 #ifndef MOLKO_DRAWABLE_H
 #define MOLKO_DRAWABLE_H
 
+/**
+ * \file drawable.h
+ * \brief Automatic drawable objects.
+ */
+
 #include <stdbool.h>
 
 /**
  * \brief Maximum number of drawable object into a stack.
  */
 #define DRAWABLE_STACK_MAX      128
-
-struct animation;
 
 /**
  * \brief Abstract drawable object.
@@ -64,7 +67,7 @@ struct drawable {
 };
 
 /**
- * Update the object
+ * Shortcut for dw->update (if not NULL).
  *
  * \pre dw != NULL
  * \param dw the drawable object
@@ -75,7 +78,7 @@ bool
 drawable_update(struct drawable *dw, unsigned int ticks);
 
 /**
- * Draw the drawable.
+ * Shortcut for dw->draw (if not NULL).
  *
  * \pre dw != NULL
  * \param dw the drawable object
@@ -84,7 +87,7 @@ void
 drawable_draw(struct drawable *dw);
 
 /**
- * Dispose internal resources if necessary.
+ * Shortcut for dw->finish (if not NULL).
  *
  * \pre dw != NULL
  * \param dw the drawable object
@@ -93,34 +96,15 @@ void
 drawable_finish(struct drawable *dw);
 
 /**
- * Create a drawable from an animation.
- *
- * The animation is copied verbatim (as such internal resources must be kept
- * valid).
- *
- * \pre dw != NULL
- * \pre an the animation
- * \param dw the drawable
- * \param an the animation
- * \param x x position on screen
- * \param y y position on screen
- */
-void
-drawable_from_animation(struct drawable *dw,
-                        const struct animation *an,
-                        int x,
-                        int y);
-
-/**
  * \brief Stack of drawable objects.
  *
  * This stack of drawable object can be used to store drawable objects within
  * a specific transition (state, battle, menu, etc).
  *
- * You can add, clear, and update and draw them.
+ * You can add, clear, update and draw them.
  */
 struct drawable_stack {
-	struct drawable objects[DRAWABLE_STACK_MAX];    /*!< (RW) Drawables. */
+	struct drawable *objects[DRAWABLE_STACK_MAX];   /*!< (RW) Drawables. */
 };
 
 /**
@@ -135,17 +119,17 @@ drawable_stack_init(struct drawable_stack *st);
 /**
  * Add a drawable object into the stack.
  *
- * The drawable object internals are copied verbatim into the stack.
+ * The drawable object must be kept alive until the stack uses it.
  *
  * \pre st != NULL
  * \pre dw != NULL
  * \param st the stack
- * \param dw the drawable to copy from
+ * \param dw the drawable to reference
  * \return true if the drawable was placed correctly and false if there wasn't
  *         enough room.
  */
 bool
-drawable_stack_add(struct drawable_stack *st, const struct drawable *dw);
+drawable_stack_add(struct drawable_stack *st, struct drawable *dw);
 
 /**
  * Update all drawable objects.

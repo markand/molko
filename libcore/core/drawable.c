@@ -26,6 +26,9 @@
 #include "util.h"
 #include "sprite.h"
 
+#define DRAWABLE_FOREACH(st, iter) \
+	for (size_t i = 0; i < DRAWABLE_STACK_MAX && ((iter) = (st)->objects[i], 1); ++i)
+
 bool
 drawable_update(struct drawable *dw, unsigned int ticks)
 {
@@ -49,43 +52,6 @@ drawable_finish(struct drawable *dw)
 		dw->finish(dw);
 }
 
-static bool
-drawable_animation_update(struct drawable *dw, unsigned int ticks)
-{
-	return animation_update(dw->data, ticks);
-}
-
-static void
-drawable_animation_draw(struct drawable *dw)
-{
-	return animation_draw(dw->data, dw->x, dw->y);
-}
-
-static void
-drawable_animation_finish(struct drawable *dw)
-{
-	free(dw->data);
-}
-
-void
-drawable_from_animation(struct drawable *dw,
-			const struct animation *an,
-			int x,
-			int y)
-{
-	assert(dw);
-	assert(an);
-
-	memset(dw, 0, sizeof (*dw));
-	
-	dw->data = ememdup(an, sizeof (*an));
-	dw->x = x - (an->sprite->cellw / 2);
-	dw->y = y - (an->sprite->cellh / 2);
-	dw->update = drawable_animation_update;
-	dw->draw = drawable_animation_draw;
-	dw->finish = drawable_animation_finish;
-}
-
 void
 drawable_stack_init(struct drawable_stack *st)
 {
@@ -95,27 +61,18 @@ drawable_stack_init(struct drawable_stack *st)
 }
 
 bool
-drawable_stack_add(struct drawable_stack *st, const struct drawable *dw)
+drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 {
-	/* Find an empty slot. */
-	struct drawable *slot = NULL;
+	assert(st);
+	assert(dw);
 
 	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
-		struct drawable *dtmp = &st->objects[i];
-
-		dtmp = &st->objects[i];
-
-		if (!dtmp->update && !dtmp->draw) {
-			slot = dtmp;
-			break;
+		if (!st->objects[i]) {
+			st->objects[i] = dw;
+			return true;
 		}
 	}
 
-	if (slot) {
-		memcpy(slot, dw, sizeof (*dw));
-		return true;
-	}
-	
 	return false;
 }
 
@@ -125,10 +82,12 @@ drawable_stack_update(struct drawable_stack *st, unsigned int ticks)
 	assert(st);
 
 	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
-		struct drawable *dw = &st->objects[i];
+		struct drawable *dw = st->objects[i];
 
-		if (dw->update && dw->update(dw, ticks))
-			memset(dw, 0, sizeof (*dw));
+		if (dw && drawable_update(dw, ticks)) {
+			drawable_finish(dw);
+			st->objects[i] = NULL;
+		}
 	}
 }
 
@@ -137,21 +96,20 @@ drawable_stack_draw(struct drawable_stack *st)
 {
 	assert(st);
 
-	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
-		struct drawable *dw = &st->objects[i];
+	struct drawable *dw;
 
-		if (dw->draw)
-			dw->draw(dw);
-	}
+	DRAWABLE_FOREACH(st, dw)
+		if (dw)
+			drawable_draw(dw);
 }
 
 void
 drawable_stack_finish(struct drawable_stack *st)
 {
 	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
-		struct drawable *dw = &st->objects[i];
+		struct drawable *dw = st->objects[i];
 
-		if (dw->finish)
+		if (dw && dw->finish)
 			dw->finish(dw);
 	}
 

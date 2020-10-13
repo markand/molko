@@ -85,12 +85,14 @@ wait_update(struct wait *w, unsigned int ticks);
 /**
  * Create an action from the wait object.
  *
+ * The wait action must be kept alive until the action completes.
+ *
  * \pre w != NULL
- * \pre a != NULL
+ * \pre act != NULL
  * \param w the wait object to copy from
- * \param a the action to fill
+ * \param act the action to fill
  */
 void
-wait_action(const struct wait *w, struct action *a);
+wait_action(struct wait *w, struct action *act);
 
 #endif /* !MOLKO_WAIT_H */

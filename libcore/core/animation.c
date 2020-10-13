@@ -17,9 +17,23 @@
  */
 
 #include <assert.h>
+#include <string.h>
 
+#include "drawable.h"
 #include "animation.h"
 #include "sprite.h"
+
+static bool
+update(struct drawable *dw, unsigned int ticks)
+{
+	return animation_update(dw->data, ticks);
+}
+
+static void
+draw(struct drawable *dw)
+{
+	return animation_draw(dw->data, dw->x, dw->y);
+}
 
 void
 animation_init(struct animation *an, struct sprite *sprite, unsigned int delay)
@@ -32,16 +46,6 @@ animation_init(struct animation *an, struct sprite *sprite, unsigned int delay)
 	an->column = 0;
 	an->delay = delay;
 	an->elapsed = 0;
-}
-
-bool
-animation_is_complete(const struct animation *an)
-{
-	assert(an);
-
-	return an->row == an->sprite->nrows &&
-	       an->column == an->sprite->ncols &&
-	       an->elapsed >= an->delay;
 }
 
 void
@@ -85,4 +89,21 @@ void
 animation_draw(struct animation *an, int x, int y)
 {
 	sprite_draw(an->sprite, an->row, an->column, x, y);
+}
+
+void
+animation_drawable(struct animation *an, struct drawable *dw, int x, int y)
+{
+	assert(an);
+	assert(dw);
+
+	memset(dw, 0, sizeof (*dw));
+	
+	dw->data = an;
+	dw->x = x - (an->sprite->cellw / 2);
+	dw->y = y - (an->sprite->cellh / 2);
+	dw->update = update;
+	dw->draw = draw;
+
+	animation_start(an);
 }

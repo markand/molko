@@ -20,41 +20,41 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "action.h"
+#include "error.h"
 #include "script.h"
-#include "util.h"
 
-static void
-script_action_finish(struct action *a)
+static struct action *
+current(struct script *s)
 {
-	assert(a);
+	if (s->cur >= s->actionsz)
+		return NULL;
 
-	script_finish(a->data);
-	free(a->data);
+	return s->actions[s->cur];
 }
 
 static void
-script_action_handle(struct action *a, const union event *ev)
+handle(struct action *a, const union event *ev)
 {
-	assert(a);
-	assert(ev);
-
 	script_handle(a->data, ev);
 }
 
 static bool
-script_action_update(struct action *a, unsigned int ticks)
+update(struct action *a, unsigned int ticks)
 {
-	assert(a);
-
 	return script_update(a->data, ticks);
 }
 
 static void
-script_action_draw(struct action *a)
+draw(struct action *a)
 {
-	assert(a);
-
 	script_draw(a->data);
+}
+
+static void
+finish(struct action *a)
+{
+	script_finish(a->data);
 }
 
 void
@@ -62,30 +62,21 @@ script_init(struct script *s)
 {
 	assert(s);
 
-	memset(s, 0, sizeof (struct script));
-	s->tail = &s->head;
+	memset(s, 0, sizeof (*s));
 }
 
-void
-script_start(struct script *s)
-{
-	assert(s);
-
-	s->iter = s->head;
-}
-
-void
-script_append(struct script *s, const struct action *a)
+bool
+script_append(struct script *s, struct action *a)
 {
 	assert(s);
 	assert(a);
-	assert(a->update);
 
-	struct script_action *iter = ecalloc(1, sizeof (struct script_action));
+	if (s->actionsz >= SCRIPT_ACTION_MAX)
+		return error_printf("script is full");
 
-	memcpy(&iter->action, a, sizeof (struct action));
-	*s->tail = iter;
-	s->tail = &iter->next;
+	s->actions[s->actionsz++] = a;
+
+	return true;
 }
 
 void
@@ -94,8 +85,10 @@ script_handle(struct script *s, const union event *ev)
 	assert(s);
 	assert(ev);
 
-	if (s->iter && s->iter->action.handle)
-		s->iter->action.handle(&s->iter->action, ev);
+	struct action *a = current(s);
+	
+	if (a)
+		action_handle(a, ev);
 }
 
 bool
@@ -103,21 +96,17 @@ script_update(struct script *s, unsigned int ticks)
 {
 	assert(s);
 
-	if (!s->iter)
+	struct action *a = current(s);
+
+	if (!a)
 		return true;
 
-	struct action *a = &s->iter->action;
-
-	if (a->update(a, ticks)) {
-		if (a->end)
-			a->end(a);
-		if (a->finish)
-			a->finish(a);
-
-		s->iter = s->iter->next;
+	if (action_update(a, ticks)) {
+		action_end(a);
+		s->cur++;
 	}
 
-	return s->iter == NULL;
+	return s->cur >= s->actionsz;
 }
 
 void
@@ -125,22 +114,18 @@ script_draw(struct script *s)
 {
 	assert(s);
 
-	if (s->iter && s->iter->action.draw)
-		s->iter->action.draw(&s->iter->action);
+	struct action *a = current(s);
+
+	if (a)
+		action_draw(a);
 }
 
-void
-script_action(const struct script *s, struct action *action)
+bool
+script_completed(const struct script *s)
 {
 	assert(s);
-	assert(action);
 
-	memset(action, 0, sizeof (struct action));
-	action->data = ememdup(s, sizeof (struct script));
-	action->handle = script_action_handle;
-	action->update = script_action_update;
-	action->draw = script_action_draw;
-	action->finish = script_action_finish;
+	return s->cur >= s->actionsz;
 }
 
 void
@@ -148,12 +133,22 @@ script_finish(struct script *s)
 {
 	assert(s);
 
-	struct script_action *iter, *next;
+	for (size_t i = 0; i < s->actionsz; ++i)
+		action_finish(s->actions[i]);
 
-	for (iter = s->head; iter; iter = next) {
-		next = iter->next;
-		free(iter);
-	}
+	memset(s, 0, sizeof (*s));
+}
 
-	memset(s, 0, sizeof (struct script));
+void
+script_action(struct script *s, struct action *action)
+{
+	assert(s);
+	assert(action);
+
+	memset(action, 0, sizeof (*action));
+	action->data = s;
+	action->handle = handle;
+	action->update = update;
+	action->draw = draw;
+	action->finish = finish;
 }

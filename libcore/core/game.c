@@ -26,6 +26,8 @@
 
 struct game game;
 
+#if 0
+
 static struct action *
 find_empty_action(void)
 {
@@ -88,6 +90,8 @@ draw_actions(void)
 			game.actions[i].draw(&game.actions[i]);
 }
 
+#endif
+
 void
 game_switch(struct state *state, bool quick)
 {
@@ -109,7 +113,9 @@ game_handle(const union event *event)
 	if (game.state && !(game.inhibit & INHIBIT_STATE_INPUT))
 		game.state->handle(event);
 
+#if 0
 	handle_actions(event);
+#endif
 }
 
 void
@@ -126,15 +132,19 @@ game_update(unsigned int ticks)
 			game.state->enter();
 			game.state_next = NULL;
 
+#if 0
 			/* Remove any actions that must be deleted. */
 			clear_actions();
+#endif
 		}
 
 		if (game.state)
 			game.state->update(ticks);
 	}
 
+#if 0
 	update_actions(ticks);
+#endif
 }
 
 void
@@ -143,10 +153,13 @@ game_draw(void)
 	if (game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
 		game.state->draw();
 
+#if 0
 	draw_actions();
+#endif
 	painter_present();
 }
 
+#if 0
 void
 game_add_action(const struct action *action)
 {
@@ -157,6 +170,7 @@ game_add_action(const struct action *action)
 	if ((pos = find_empty_action()))
 		memcpy(pos, action, sizeof (struct action));
 }
+#endif
 
 void
 game_quit(void)

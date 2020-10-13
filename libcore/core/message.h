@@ -170,10 +170,10 @@ message_hide(struct message *msg);
  *
  * \pre msg != NULL
  * \pre action != NULL
- * \param msg the message to copy from
+ * \param msg the message to reference
  * \param action the action to fill
  */
 void
-message_action(const struct message *msg, struct action *action);
+message_action(struct message *msg, struct action *action);
 
 #endif /* !MOLKO_MESSAGE_H */

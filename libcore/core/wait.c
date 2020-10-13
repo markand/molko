@@ -25,25 +25,18 @@
 #include "util.h"
 
 static bool
-action_update(struct action *a, unsigned int ticks)
+update(struct action *a, unsigned int ticks)
 {
 	assert(a);
 
 	return wait_update(a->data, ticks);
 }
 
-static void
-action_finish(struct action *a)
-{
-	assert(a);
-
-	free(a->data);
-}
-
 void
 wait_start(struct wait *w)
 {
 	assert(w);
+
 	w->elapsed = 0u;
 }
 
@@ -61,13 +54,13 @@ wait_update(struct wait *w, unsigned int ticks)
 }
 
 void
-wait_action(const struct wait *w, struct action *a)
+wait_action(struct wait *w, struct action *a)
 {
 	assert(w);
 	assert(a);
 
 	memset(a, 0, sizeof (struct action));
-	a->data = ememdup(w, sizeof (struct wait));
-	a->update = action_update;
-	a->finish = action_finish;
+
+	a->data = w;
+	a->update = update;
 }

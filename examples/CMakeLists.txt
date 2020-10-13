@@ -19,6 +19,16 @@
 project(examples)
 
 molko_define_executable(
+	TARGET example-action
+	SOURCES example-action.c
+	FOLDER examples
+	ASSETS
+		${examples_SOURCE_DIR}/assets/sprites/chest.png
+		${examples_SOURCE_DIR}/assets/sprites/people.png
+	LIBRARIES libcore
+)
+
+molko_define_executable(
 	TARGET example-inventory
 	SOURCES example-inventory
 	ASSETS

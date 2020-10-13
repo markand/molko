@@ -43,7 +43,7 @@
 #define THEME(msg) (msg->theme ? msg->theme : theme_default())
 
 static void
-action_handle(struct action *action, const union event *ev)
+handle(struct action *action, const union event *ev)
 {
 	assert(action);
 	assert(ev);
@@ -52,7 +52,7 @@ action_handle(struct action *action, const union event *ev)
 }
 
 static bool
-action_update(struct action *action, unsigned int ticks)
+update(struct action *action, unsigned int ticks)
 {
 	assert(action);
 
@@ -60,19 +60,11 @@ action_update(struct action *action, unsigned int ticks)
 }
 
 static void
-action_draw(struct action *action)
+draw(struct action *action)
 {
 	assert(action);
 
 	message_draw(action->data);
-}
-
-static void
-action_finish(struct action *action)
-{
-	assert(action);
-
-	free(action->data);
 }
 
 void
@@ -247,15 +239,16 @@ message_hide(struct message *msg)
 }
 
 void
-message_action(const struct message *msg, struct action *action)
+message_action(struct message *msg, struct action *action)
 {
 	assert(msg);
 	assert(action);
 
 	memset(action, 0, sizeof (struct action));
-	action->data = ememdup(msg, sizeof (struct message));
-	action->handle = action_handle;
-	action->update = action_update;
-	action->draw = action_draw;
-	action->finish = action_finish;
+	action->data = msg;
+	action->handle = handle;
+	action->update = update;
+	action->draw = draw;
+
+	message_start(msg);
 }

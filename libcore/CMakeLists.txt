@@ -27,6 +27,7 @@ set(
 
 set(
 	SOURCES
+	${libcore_SOURCE_DIR}/core/action.c
 	${libcore_SOURCE_DIR}/core/action.h
 	${libcore_SOURCE_DIR}/core/animation.c
 	${libcore_SOURCE_DIR}/core/animation.h

@@ -27,6 +27,7 @@
 
 #include <stdbool.h>
 
+struct drawable;
 struct sprite;
 
 /**
@@ -88,5 +89,29 @@ animation_update(struct animation *an, unsigned int ticks);
  */
 void
 animation_draw(struct animation *an, int x, int y);
+
+/**
+ * Create a drawable from an animation.
+ *
+ * The animation must be kept alive until the drawable is used.
+ *
+ * The dw->data member will be set to the animation pointer and can be
+ * safely used by the user for custom drawable operation if needed.
+ *
+ * The dw->finish member isn't used and can be re-used by the user.
+ *
+ * \pre an != NULL
+ * \pre dw != NULL
+ * \param an the animation
+ * \param dw the drawable
+ * \param x x position on screen
+ * \param y y position on screen
+ * \post dw->data contains an
+ * \post dw->update contains an update function
+ * \post dw->draw contains a drawing function
+ * \post dw->finish is NULL
+ */
+void
+animation_drawable(struct animation *an, struct drawable *dw, int x, int y);
 
 #endif /* !MOLKO_ANIMATION_H */

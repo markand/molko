@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stdlib.h>
+
 #include <core/animation.h>
 #include <core/clock.h>
 #include <core/event.h>
@@ -72,7 +74,11 @@ static struct drawable_stack stack;
 /* 0: Explosion animation. */
 static struct texture explosion_tex;
 static struct sprite explosion_sprite;
-static struct animation explosion_animation;
+
+struct explosion {
+	struct animation anim;
+	struct drawable dw;
+};
 
 static void
 init(void)
@@ -87,16 +93,32 @@ init(void)
 		panic();
 
 	sprite_init(&explosion_sprite, &explosion_tex, 256, 256);
-	animation_init(&explosion_animation, &explosion_sprite, 100);
+}
+
+static void
+explosion_finish(struct drawable *dw)
+{
+	free(dw->data);
 }
 
 static void
 spawn(int x, int y)
 {
-	struct drawable dw;
+	struct explosion *expl = emalloc(sizeof (struct explosion));
 
-	drawable_from_animation(&dw, &explosion_animation, x, y);
-	drawable_stack_add(&stack, &dw);
+	animation_init(&expl->anim, &explosion_sprite, 100);
+	animation_drawable(&expl->anim, &expl->dw, x, y);
+
+	/*
+	 * This work because the drawable->data field expects a struct animation
+	 * pointer which is the first member of struct explosion.
+	 *
+	 * Thus this "poor man inheritance" trick works perfectly in our case
+	 * and we simply need to free the whole explosion struct afterwards.
+	 */
+	expl->dw.finish = explosion_finish;
+
+	drawable_stack_add(&stack, &expl->dw);
 }
 
 static void
