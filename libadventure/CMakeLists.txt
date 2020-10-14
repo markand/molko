@@ -26,6 +26,8 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/panic_state.h
 	${libadventure_SOURCE_DIR}/adventure/splashscreen_state.c
 	${libadventure_SOURCE_DIR}/adventure/splashscreen_state.h
+	${libadventure_SOURCE_DIR}/adventure/trace_hud.c
+	${libadventure_SOURCE_DIR}/adventure/trace_hud.h
 )
 
 set(

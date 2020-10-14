@@ -63,3 +63,10 @@ molko_define_executable(
 	ASSETS
 		${examples_SOURCE_DIR}/assets/sprites/explosion.png
 )
+
+molko_define_executable(
+	TARGET example-trace
+	SOURCES example-trace.c
+	FOLDER examples
+	LIBRARIES libcore libadventure
+)

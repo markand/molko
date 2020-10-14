@@ -32,6 +32,7 @@
 #include "sprite.h"
 #include "texture.h"
 #include "theme.h"
+#include "trace.h"
 #include "util.h"
 
 #define THEME(msg)      (msg->theme ? msg->theme : theme_default())
@@ -115,11 +116,17 @@ message_start(struct message *msg)
 {
 	assert(msg);
 
+	if (msg->flags & (MESSAGE_FLAGS_FADEIN|MESSAGE_FLAGS_FADEOUT))
+		assert(msg->delay > 0);
+
 	msg->elapsed = 0;
 	msg->scale = msg->flags & MESSAGE_FLAGS_FADEIN ? 0.0 : 1.0;
 	msg->state = msg->flags & MESSAGE_FLAGS_FADEIN
 	    ? MESSAGE_STATE_OPENING
 	    : MESSAGE_STATE_SHOWING;
+
+	if (msg->flags & MESSAGE_FLAGS_AUTOMATIC && msg->timeout == 0)
+		trace("message is automatic but has zero timeout");
 }
 
 void

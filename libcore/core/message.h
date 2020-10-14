@@ -131,6 +131,8 @@ struct message {
  * elapsed time.
  *
  * \pre msg != NULL
+ * \pre msg->delay > 0 if msg->flags contains MESSAGE_FLAGS_FADEIN or
+ *      MESSAGE_FLAGS_FADEOUT
  * \param msg the message
  */
 void

@@ -120,7 +120,7 @@ static struct {
 				.w = MW,
 				.h = MH,
 				.delay = MESSAGE_DELAY_DEFAULT,
-				.flags = MESSAGE_FLAGS_FADEIN | MESSAGE_FLAGS_AUTOMATIC,
+				.flags = MESSAGE_FLAGS_FADEIN,
 				.text = {
 					"Bienvenue dans ce monde Molko."
 				}

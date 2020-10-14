@@ -97,6 +97,8 @@ set(
 	${libcore_SOURCE_DIR}/core/texture_p.h
 	${libcore_SOURCE_DIR}/core/theme.c
 	${libcore_SOURCE_DIR}/core/theme.h
+	${libcore_SOURCE_DIR}/core/trace.c
+	${libcore_SOURCE_DIR}/core/trace.h
 	${libcore_SOURCE_DIR}/core/util.c
 	${libcore_SOURCE_DIR}/core/util.h
 	${libcore_SOURCE_DIR}/core/wait.c
