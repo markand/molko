@@ -121,6 +121,23 @@ struct theme *
 theme_default(void);
 
 /**
+ * Convenient shortcut to shallow copy src into dst.
+ *
+ * Use this function when you want your own local copy of a theme because you
+ * want to modify some attributes.
+ *
+ * This is a shortcut to `memcpy(dst, src, sizeof (*src))`.
+ *
+ * \pre dst != NULL
+ * \param dst the destination theme
+ * \param src the source theme (may be NULL)
+ * \note Resources are not cloned, internal pointers will adress the same
+ *       regions.
+ */
+void
+theme_shallow(struct theme *dst, const struct theme *src);
+
+/**
  * Get the desired padding between GUI elements.
  *
  * \param t the theme to use (may be NULL)

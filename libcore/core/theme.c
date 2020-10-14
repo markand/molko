@@ -18,6 +18,7 @@
 
 #include <assert.h>
 #include <stddef.h>
+#include <string.h>
 
 #include "button.h"
 #include "checkbox.h"
@@ -255,6 +256,14 @@ unsigned int
 theme_padding(const struct theme *t)
 {
 	return THEME(t)->padding;
+}
+
+void
+theme_shallow(struct theme *dst, const struct theme *src)
+{
+	assert(dst);
+
+	memcpy(dst, src ? src : &default_theme, sizeof (*src));
 }
 
 void

@@ -80,14 +80,13 @@ static void
 draw_lines(const struct message *msg)
 {
 	struct theme theme;
-	struct font *font;
 	unsigned int lineh;
 
 	/* Shallow copy theme to modify colors. */
-	memcpy(&theme, THEME(msg), sizeof (theme));
+	theme_shallow(&theme, msg->theme);
 
-	font = theme.fonts[THEME_FONT_INTERFACE];
-	lineh = font_height(font);
+	/* Compute text size for list alignment. */
+	lineh = font_height(theme.fonts[THEME_FONT_INTERFACE]);
 
 	for (int i = 0; i < 6; ++i) {
 		if (!msg->text[i])
