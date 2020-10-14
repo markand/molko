@@ -131,11 +131,7 @@ action_stack_update(struct action_stack *st, unsigned int ticks)
 	 * We process all actions again in case the user modified the stack
 	 * within their update function.
 	 */
-	ACTION_FOREACH(st, act)
-		if (act)
-			return false;
-
-	return true;
+	return action_stack_completed(st);
 }
 
 void

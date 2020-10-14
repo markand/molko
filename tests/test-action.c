@@ -136,7 +136,7 @@ basics_update(void)
 GREATEST_TEST
 basics_draw(void)
 {
-	struct invokes inv;
+	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
 
 	action_draw(&act);
@@ -152,7 +152,7 @@ basics_draw(void)
 GREATEST_TEST
 basics_end(void)
 {
-	struct invokes inv;
+	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
 
 	action_end(&act);
@@ -168,7 +168,7 @@ basics_end(void)
 GREATEST_TEST
 basics_finish(void)
 {
-	struct invokes inv;
+	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
 
 	action_finish(&act);

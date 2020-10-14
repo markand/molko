@@ -230,7 +230,7 @@ action_stack_draw(struct action_stack *st);
  *
  * \pre st != NULL
  * \param st the stack
- * \return true if there is at least one action in the stack
+ * \return false if there is at least one action in the stack
  */
 bool
 action_stack_completed(const struct action_stack *st);

@@ -56,6 +56,15 @@ struct drawable {
 	 * \param dw the drawable object
 	 */
 	void (*draw)(struct drawable *dw);
+
+	/**
+	 * (RW)
+	 *
+	 * Called immediately after the drawable ended.
+	 *
+	 * \param act this action
+	 */
+	void (*end)(struct drawable *act);
 	
 	/**
 	 * Destroy the drawable if necessary.
@@ -85,6 +94,15 @@ drawable_update(struct drawable *dw, unsigned int ticks);
  */
 void
 drawable_draw(struct drawable *dw);
+
+/**
+ * Shortcut for dw->end (if not NULL).
+ *
+ * \pre dw != NULL
+ * \param dw the drawable object
+ */
+void
+drawable_end(struct drawable *dw);
 
 /**
  * Shortcut for dw->finish (if not NULL).
@@ -139,8 +157,9 @@ drawable_stack_add(struct drawable_stack *st, struct drawable *dw);
  * \pre st != NULL
  * \param st the drawable stack
  * \param ticks the number of ticks since last frame
+ * \return true if all drawable were rendered
  */
-void
+bool
 drawable_stack_update(struct drawable_stack *st, unsigned int ticks);
 
 /**
@@ -151,6 +170,16 @@ drawable_stack_update(struct drawable_stack *st, unsigned int ticks);
  */
 void
 drawable_stack_draw(struct drawable_stack *st);
+
+/**
+ * Tells if there is any pending drawable in the stack.
+ *
+ * \pre st != NULL
+ * \param st the stack
+ * \return false if there is at least one drawable in the stack
+ */
+bool
+drawable_stack_completed(const struct drawable_stack *st);
 
 /**
  * Clear all drawable objects into the stack.

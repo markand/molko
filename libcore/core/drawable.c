@@ -46,8 +46,19 @@ drawable_draw(struct drawable *dw)
 }
 
 void
+drawable_end(struct drawable *dw)
+{
+	assert(dw);
+
+	if (dw->end)
+		dw->end(dw);
+}
+
+void
 drawable_finish(struct drawable *dw)
 {
+	assert(dw);
+
 	if (dw->finish)
 		dw->finish(dw);
 }
@@ -76,7 +87,7 @@ drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 	return false;
 }
 
-void
+bool
 drawable_stack_update(struct drawable_stack *st, unsigned int ticks)
 {
 	assert(st);
@@ -85,10 +96,17 @@ drawable_stack_update(struct drawable_stack *st, unsigned int ticks)
 		struct drawable *dw = st->objects[i];
 
 		if (dw && drawable_update(dw, ticks)) {
+			drawable_end(dw);
 			drawable_finish(dw);
 			st->objects[i] = NULL;
 		}
 	}
+
+	/*
+	 * We process the array again in case a drawable added a new drawable
+	 * within the update function.
+	 */
+	return drawable_stack_completed(st);
 }
 
 void
@@ -103,14 +121,32 @@ drawable_stack_draw(struct drawable_stack *st)
 			drawable_draw(dw);
 }
 
+bool
+drawable_stack_completed(const struct drawable_stack *st)
+{
+	assert(st);
+
+	struct drawable *dw;
+
+	DRAWABLE_FOREACH(st, dw)
+		if (dw)
+			return false;
+
+	return true;
+}
+
 void
 drawable_stack_finish(struct drawable_stack *st)
 {
-	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
-		struct drawable *dw = st->objects[i];
+	assert(st);
 
-		if (dw && dw->finish)
-			dw->finish(dw);
+	struct drawable *dw;
+
+	DRAWABLE_FOREACH(st, dw) {
+		if (dw) {
+			drawable_end(dw);
+			drawable_finish(dw);
+		}
 	}
 
 	memset(st, 0, sizeof (*st));
