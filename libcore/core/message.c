@@ -79,12 +79,14 @@ draw_frame(const struct message *msg)
 static void
 draw_lines(const struct message *msg)
 {
-	struct theme *theme;
+	struct theme theme;
 	struct font *font;
 	unsigned int lineh;
 
-	theme = THEME(msg);
-	font = theme->fonts[THEME_FONT_INTERFACE];
+	/* Shallow copy theme to modify colors. */
+	memcpy(&theme, THEME(msg), sizeof (theme));
+
+	font = theme.fonts[THEME_FONT_INTERFACE];
 	lineh = font_height(font);
 
 	for (int i = 0; i < 6; ++i) {
@@ -92,20 +94,24 @@ draw_lines(const struct message *msg)
 			continue;
 
 		struct label label = {
-			.x = theme->padding,
-			.y = theme->padding + (i * lineh),
-			.h = lineh,
-			.theme = msg->theme,
+			.y = i * lineh,
+			.w = msg->w,
+			.h = msg->h,
+			.theme = &theme,
 			.text = msg->text[i],
-			.flags = LABEL_NO_HCENTER
+			.align = LABEL_ALIGN_TOP_LEFT,
+			.flags = LABEL_FLAGS_SHADOW
 		};
 
 		/*
-		 * The function label_draw will normally use
-		 * THEME_FONT_INTERFACE so update its color if needed.
+		 * The function label_draw will use THEME_COLOR_NORMAL to draw
+		 * text and THEME_COLOR_SHADOW so if we have selected a line
+		 * we need to cheat the normal color.
 		 */
 		if (msg->flags & MESSAGE_FLAGS_QUESTION && msg->index == (unsigned int)i)
-			label.color = theme->colors[THEME_COLOR_SELECTED];
+			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_SELECTED];
+		else
+			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_NORMAL];
 
 		label_draw(&label);
 	}

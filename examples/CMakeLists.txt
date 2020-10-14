@@ -46,6 +46,12 @@ molko_define_executable(
 )
 
 molko_define_executable(
+	TARGET example-label
+	SOURCES example-label.c
+	LIBRARIES libcore
+)
+
+molko_define_executable(
 	TARGET example-message
 	SOURCES example-message.c
 	FOLDER examples

@@ -98,7 +98,7 @@ trace_hud_draw(void)
 			.y = y,
 			.text = data.lines[i],
 			.theme = th,
-			.flags = LABEL_NO_HCENTER
+			.flags = LABEL_ALIGN_LEFT
 		});
 
 		y += font_height(th->fonts[THEME_FONT_INTERFACE]);

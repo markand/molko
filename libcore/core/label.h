@@ -30,10 +30,35 @@ struct theme;
  * \brief Label flags.
  */
 enum label_flags {
-	LABEL_NONE,                             /*!< No flags. */
-	LABEL_NO_SHADOW         = (1 << 0),     /*!< Disable shadow. */
-	LABEL_NO_VCENTER        = (1 << 1),     /*!< Disable vertical centering. */
-	LABEL_NO_HCENTER        = (1 << 2)      /*!< Disable horizontal centering. */
+	LABEL_FLAGS_NONE,                       /*!< No flags. */
+	LABEL_FLAGS_SHADOW      = (1 << 0),     /*!< Enable shadow. */
+};
+
+/**
+ * \brief Label alignment in bounding box.
+ *
+ * The alignment is described as following:
+ *
+ * ```
+ * +---------------------+
+ * | 1        2        3 |
+ * |                     |
+ * | 8        0        4 |
+ * |                     |
+ * | 7        6        5 |
+ * +---------------------+
+ * ```
+ */
+enum label_align {
+	LABEL_ALIGN_CENTER,             /*!< Align to the center (default). */
+	LABEL_ALIGN_TOP_LEFT,           /*!< Top left. */
+	LABEL_ALIGN_TOP,                /*!< Top center (aligned horizontally). */
+	LABEL_ALIGN_TOP_RIGHT,          /*!< Top right. */
+	LABEL_ALIGN_RIGHT,              /*!< Right (aligned vertically). */
+	LABEL_ALIGN_BOTTOM_RIGHT,       /*!< Bottom right. */
+	LABEL_ALIGN_BOTTOM,             /*!< Bottom (aligned horizontally). */
+	LABEL_ALIGN_BOTTOM_LEFT,        /*!< Bottom left. */
+	LABEL_ALIGN_LEFT                /*!< Left (aligned vertically). */
 };
 
 /**
@@ -46,7 +71,7 @@ struct label {
 	unsigned int h;         /*!< (RW) Height. */
 	const char *text;       /*!< (RW, ref) Text to show. */
 	enum label_flags flags; /*!< (RW) Optional flags. */
-	unsigned long color;    /*!< (RW) Color to use (0 = use theme). */
+	enum label_align align; /*!< (RW) How to positionate label. */
 	struct theme *theme;    /*!< (RW, ref, optional) Theme to use. */
 };
 

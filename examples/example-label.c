@@ -1,5 +1,5 @@
 /*
- * example-sound.c -- show how to use sounds
+ * example-label.c -- show how to use label and alignments
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -21,38 +21,20 @@
 #include <core/label.h>
 #include <core/painter.h>
 #include <core/panic.h>
-#include <core/sound.h>
 #include <core/sys.h>
 #include <core/theme.h>
 #include <core/util.h>
 #include <core/window.h>
 
-/* https://freesound.org/people/VABsounds/sounds/423658 */
-#include <assets/sounds/vabsounds-romance.h>
-
-#define W 1280
-#define H 720
-
-static struct sound sound;
-static struct label label = {
-	.text = "Keys: <s> start, <p> pause, <r> resume, <q> stop, <l> loop",
-	.x = 10,
-	.y = 10,
-	.w = W,
-	.h = H,
-	.align = LABEL_ALIGN_TOP_LEFT,
-	.flags = LABEL_FLAGS_SHADOW
-};
+#define W       (1280)
+#define H       (720)
 
 static void
 init(void)
 {
 	if (!sys_init() ||
-	    !window_init("Example - Sound", W, H) ||
+	    !window_init("Example - Label", W, H) ||
 	    !theme_init())
-		panic();
-
-	if (!sound_openmem(&sound, sounds_vabsounds_romance, sizeof (sounds_vabsounds_romance)))
 		panic();
 }
 
@@ -68,6 +50,80 @@ static void
 run(void)
 {
 	struct clock clock = {0};
+	struct label labels[] = {
+		{
+			.x = 0,
+			.y = 0,
+			.w = W,
+			.h = H,
+			.text = "Top left",
+			.align = LABEL_ALIGN_TOP_LEFT
+		},
+		{
+			.x = 0,
+			.y = 0,
+			.w = W,
+			.h = H,
+			.text = "Top",
+			.align = LABEL_ALIGN_TOP
+		},
+		{
+			.x = 0,
+			.y = 0,
+			.w = W,
+			.h = H,
+			.text = "Top right",
+			.align = LABEL_ALIGN_TOP_RIGHT
+		},
+		{
+			.x = 0,
+			.y = 0,
+			.w = W,
+			.h = H,
+			.text = "Right",
+			.align = LABEL_ALIGN_RIGHT
+		},
+		{
+			.x = 0,
+			.y = 0,
+			.w = W,
+			.h = H,
+			.text = "Bottom right",
+			.align = LABEL_ALIGN_BOTTOM_RIGHT
+		},
+		{
+			.x = 0,
+			.y = 0,
+			.w = W,
+			.h = H,
+			.text = "Bottom",
+			.align = LABEL_ALIGN_BOTTOM
+		},
+		{
+			.x = 0,
+			.y = 0,
+			.w = W,
+			.h = H,
+			.text = "Bottom left",
+			.align = LABEL_ALIGN_BOTTOM_LEFT
+		},
+		{
+			.x = 0,
+			.y = 0,
+			.w = W,
+			.h = H,
+			.text = "Left",
+			.align = LABEL_ALIGN_LEFT
+		},
+		{
+			.x = 0,
+			.y = 0,
+			.w = W,
+			.h = H,
+			.text = "The world is Malikania.",
+			.flags = LABEL_FLAGS_SHADOW
+		},
+	};
 
 	clock_start(&clock);
 
@@ -79,28 +135,6 @@ run(void)
 
 		while (event_poll(&ev)) {
 			switch (ev.type) {
-			case EVENT_KEYDOWN:
-				switch (ev.key.key) {
-				case KEY_s:
-					sound_play(&sound);
-					break;
-				case KEY_p:
-					sound_pause(&sound);
-					break;
-				case KEY_r:
-					sound_resume(&sound);
-					break;
-				case KEY_q:
-					sound_stop(&sound);
-					break;
-				case KEY_l:
-					sound.flags ^= SOUND_LOOP;
-					sound_play(&sound);
-					break;
-				default:
-					break;
-				}
-				break;
 			case EVENT_QUIT:
 				return;
 			default:
@@ -108,9 +142,12 @@ run(void)
 			}
 		}
 
-		painter_set_color(0x006554ff);
+		painter_set_color(0x4f8fbaff);
 		painter_clear();
-		label_draw(&label);
+
+		for (size_t i = 0; i < NELEM(labels); ++i)
+			label_draw(&labels[i]);
+
 		painter_present();
 
 		if ((elapsed = clock_elapsed(&clock)) < 20)
@@ -128,3 +165,4 @@ main(int argc, char **argv)
 	run();
 	quit();
 }
+

@@ -69,39 +69,80 @@ draw_frame(struct theme *t, const struct frame *frame)
 static void
 draw_label(struct theme *t, const struct label *label)
 {
+	struct font *font;
 	struct texture tex;
-	int x = label->x, y = label->y;
-	int *px = &x, *py = &y;
+	int x, y, bx, by;
+	unsigned int tw, th, bw, bh;
 
-	if (label->flags & LABEL_NO_HCENTER)
-		px = NULL;
-	if (label->flags & LABEL_NO_VCENTER)
-		py = NULL;
+	/* Compute real box size according to padding. */
+	bx = label->x + t->padding;
+	by = label->y + t->padding;
+	bw = label->w - (t->padding * 2);
+	bh = label->h - (t->padding * 2);
+
+	/* Make a shallow copy of the interface font. */
+	font = t->fonts[THEME_FONT_INTERFACE];
+
+	/* Compute text size. */
+	if (!font_box(font, label->text, &tw, &th))
+		panic();
+
+	/* Compute position according to alignment and box. */
+	switch (label->align) {
+	case LABEL_ALIGN_CENTER:
+		maths_centerize(&x, &y, tw, th, bx, by, bw, bh);
+		break;
+	case LABEL_ALIGN_TOP_LEFT:
+		x = bx;
+		y = by;
+		break;
+	case LABEL_ALIGN_TOP:
+		maths_centerize(&x, NULL, tw, th, bx, by, bw, bh);
+		y = by;
+		break;
+	case LABEL_ALIGN_TOP_RIGHT:
+		x = bx + bw - tw;
+		y = by;
+		break;
+	case LABEL_ALIGN_RIGHT:
+		maths_centerize(NULL, &y, tw, th, bx, by, bw, bh);
+		x = bx + bw - tw;
+		break;
+	case LABEL_ALIGN_BOTTOM_RIGHT:
+		x = bx + bw - tw;
+		y = by + bh - th;
+		break;
+	case LABEL_ALIGN_BOTTOM:
+		maths_centerize(&x, NULL, tw, th, bx, by, bw, bh);
+		y = by + bh - th;
+		break;
+	case LABEL_ALIGN_BOTTOM_LEFT:
+		x = bx;
+		y = by + bh - th;
+		break;
+	case LABEL_ALIGN_LEFT:
+		maths_centerize(NULL, &y, tw, th, bx, by, bw, bh);
+		x = bx;
+	default:
+		break;
+	}
 
 	/* Shadow text, only if enabled. */
-	if (!(label->flags & LABEL_NO_SHADOW)) {
-		t->fonts[THEME_FONT_INTERFACE]->color = t->colors[THEME_COLOR_SHADOW];
+	if (label->flags & LABEL_FLAGS_SHADOW) {
+		font->color = t->colors[THEME_COLOR_SHADOW];
 
-		if (!font_render(t->fonts[THEME_FONT_INTERFACE], &tex, label->text))
+		if (!font_render(font, &tex, label->text))
 			panic();
-
-		maths_centerize(px, py, tex.w, tex.h,
-		    label->x, label->y, label->w, label->h);
 
 		texture_draw(&tex, x + 1, y + 1);
 		texture_finish(&tex);
 	}
 
 	/* Normal text. */
-	t->fonts[THEME_FONT_INTERFACE]->color = label->color
-		? label->color
-		: t->colors[THEME_COLOR_NORMAL];
+	font->color = t->colors[THEME_COLOR_NORMAL];
 
-	if (!font_render(t->fonts[THEME_FONT_INTERFACE], &tex, label->text))
+	if (!font_render(font, &tex, label->text))
 		panic();
-
-	maths_centerize(px, py, tex.w, tex.h,
-	    label->x, label->y, label->w, label->h);
 
 	texture_draw(&tex, x, y);
 	texture_finish(&tex);
@@ -142,7 +183,7 @@ draw_checkbox(struct theme *t, const struct checkbox *cb)
 
 		struct label label = {
 			.text = cb->label,
-			.flags = LABEL_NO_HCENTER,
+			.align = LABEL_ALIGN_LEFT,
 			.x = x,
 			.y = cb->y,
 			.w = w,
