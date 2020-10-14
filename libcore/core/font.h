@@ -44,7 +44,7 @@ enum font_style {
 struct font {
 	enum font_style style;          /*!< (RW) Style for rendering. */
 	unsigned long color;            /*!< (RW) Color for rendering. */
-	void *handle;                   /*!< (RO) Native handle. */
+	void *handle;                   /*!< (PV) Native handle. */
 };
 
 /**
@@ -91,7 +91,7 @@ font_ok(const struct font *font);
  * This function use the current color/style and other properties in the font
  * to render the texture.
  *
- * \pre font != NULL
+ * \pre font_ok(font)
  * \pre tex != NULL
  * \param font the font to use
  * \param tex the texture to generate
@@ -104,12 +104,26 @@ font_render(struct font *font, struct texture *tex, const char *text);
 /**
  * Get the maximum height for all glyphs.
  *
- * \pre font != NULL
+ * \pre font_ok(font)
  * \param font the font handle
  * \return the height in pixels
  */
 unsigned int
 font_height(const struct font *font);
+
+/**
+ * Compute the text size required with this font.
+ *
+ * \pre font_ok(font)
+ * \pre text != NULL
+ * \param font the font object
+ * \param text the UTF-8 text
+ * \param w pointer to width (may be NULL)
+ * \param h pointer to height (may be NULL)
+ * \return false in case of error and pointers to w and h are left unmodified
+ */
+bool
+font_box(const struct font *font, const char *text, unsigned int *w, unsigned int *h);
 
 /**
  * Close the font.

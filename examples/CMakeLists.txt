@@ -29,6 +29,12 @@ molko_define_executable(
 )
 
 molko_define_executable(
+	TARGET example-font
+	SOURCES example-font.c
+	LIBRARIES libcore
+)
+
+molko_define_executable(
 	TARGET example-inventory
 	SOURCES example-inventory
 	ASSETS

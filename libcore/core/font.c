@@ -17,8 +17,6 @@
  */
 
 #include <assert.h>
-#include <stdbool.h>
-#include <stdio.h>
 
 #include <SDL_ttf.h>
 
@@ -67,7 +65,7 @@ font_ok(const struct font *font)
 bool
 font_render(struct font *font, struct texture *tex, const char *text)
 {
-	assert(font);
+	assert(font_ok(font));
 	assert(text);
 
 	SDL_Color fg = {
@@ -97,9 +95,21 @@ font_render(struct font *font, struct texture *tex, const char *text)
 unsigned int
 font_height(const struct font *font)
 {
-	assert(font);
+	assert(font_ok(font));
 
 	return TTF_FontHeight(font->handle);
+}
+
+bool
+font_box(const struct font *font, const char *text, unsigned int *w, unsigned int *h)
+{
+	assert(font_ok(font));
+	assert(text);
+
+	if (TTF_SizeUTF8(font->handle, text, (int *)w, (int *)h) != 0)
+		return error_sdl();
+
+	return true;
 }
 
 void
@@ -109,4 +119,6 @@ font_finish(struct font *font)
 
 	if (font->handle)
 		TTF_CloseFont(font->handle);
+
+	memset(font, 0, sizeof (*font));
 }
