@@ -53,6 +53,8 @@ add_subdirectory(tools/bcc)
 add_subdirectory(tools/map)
 
 add_subdirectory(libcore)
+add_subdirectory(libui)
+add_subdirectory(librpg)
 add_subdirectory(libadventure)
 add_subdirectory(molko)
 

@@ -63,7 +63,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-#include "font.h"
+#include <core/font.h>
 
 /**
  * Maximum content length per report.

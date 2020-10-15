@@ -19,9 +19,9 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include <core/texture.h>
+
 #include "debug.h"
-#include "font.h"
-#include "texture.h"
 #include "theme.h"
 
 #define PADDING_X 5

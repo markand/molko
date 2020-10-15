@@ -20,14 +20,16 @@
 
 #include <core/clock.h>
 #include <core/event.h>
-#include <core/frame.h>
-#include <core/message.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/sys.h>
 #include <core/util.h>
-#include <core/theme.h>
 #include <core/window.h>
+
+#include <ui/frame.h>
+#include <ui/theme.h>
+
+#include <rpg/message.h>
 
 #define W       (1280)
 #define H       (720)

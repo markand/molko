@@ -19,17 +19,16 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "button.h"
-#include "event.h"
-#include "frame.h"
-#include "game.h"
+#include <core/event.h>
+#include <core/game.h>
+#include <core/maths.h>
+#include <core/painter.h>
+#include <core/texture.h>
+#include <core/window.h>
+
 #include "inventory.h"
 #include "inventory_dialog.h"
 #include "item.h"
-#include "maths.h"
-#include "painter.h"
-#include "texture.h"
-#include "window.h"
 
 #define ITEM_SIZE       64
 #define ITEM_PADDING    32

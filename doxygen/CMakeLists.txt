@@ -30,12 +30,16 @@ if (DOXYGEN_FOUND)
 		doxygen/page-examples.c
 		libadventure
 		libcore
+		libui
+		librpg
 	)
 
 	set(
 		DOXYGEN_STRIP_FROM_PATH
 		${CMAKE_SOURCE_DIR}/libadventure
 		${CMAKE_SOURCE_DIR}/libcore
+		${CMAKE_SOURCE_DIR}/libui
+		${CMAKE_SOURCE_DIR}/librpg
 	)
 
 	set(DOXYGEN_ALLOW_UNICODE_NAMES YES)

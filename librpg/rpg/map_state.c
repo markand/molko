@@ -18,16 +18,18 @@
 
 #include <stdio.h>
 
-#include "debug.h"
-#include "event.h"
-#include "game.h"
+#include <core/event.h>
+#include <core/game.h>
+#include <core/painter.h>
+#include <core/state.h>
+#include <core/texture.h>
+#include <core/window.h>
+
+#include <ui/debug.h>
+
 #include "map.h"
 #include "map_state.h"
-#include "painter.h"
-#include "state.h"
-#include "texture.h"
 #include "walksprite.h"
-#include "window.h"
 
 /*
  * This is the speed the player moves on the map.

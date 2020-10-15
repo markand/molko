@@ -27,7 +27,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "texture.h"
+#include <core/texture.h>
 
 /**
  * \brief Max title length for a map.

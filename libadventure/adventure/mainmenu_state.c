@@ -24,7 +24,6 @@
 #include <core/font.h>
 #include <core/game.h>
 #include <core/image.h>
-#include <core/map_state.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/state.h>
@@ -36,6 +35,8 @@
 #include <adventure/assets/maps/overworld.h>
 #include <adventure/assets/tilesets/world.h>
 #include <adventure/assets/sprites/john.h>
+
+#include <rpg/map_state.h>
 
 #include "mainmenu_state.h"
 #include "splashscreen_state.h"

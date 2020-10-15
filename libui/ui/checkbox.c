@@ -1,5 +1,5 @@
 /*
- * label.c -- GUI label
+ * checkbox.c -- GUI checkbox
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -18,18 +18,39 @@
 
 #include <assert.h>
 
-#include "label.h"
+#include <core/event.h>
+#include <core/maths.h>
+
+#include "checkbox.h"
 #include "theme.h"
-#include "trace.h"
+
+static bool
+is_boxed(const struct checkbox *cb, const struct event_click *click)
+{
+	assert(cb);
+	assert(click && click->type == EVENT_CLICKDOWN);
+
+	return maths_is_boxed(cb->x, cb->y, cb->w, cb->h, click->x, click->y);
+}
 
 void
-label_draw(const struct label *label)
+checkbox_handle(struct checkbox *cb, const union event *ev)
 {
-	assert(label);
-	assert(label->text);
+	assert(cb);
+	assert(ev);
 
-	if (label->w == 0 || label->h == 0)
-		trace("label %p has null dimensions", label);
+	switch (ev->type) {
+	case EVENT_CLICKDOWN:
+		if (is_boxed(cb, &ev->click))
+			cb->checked = !cb->checked;
+		break;
+	default:
+		break;
+	}
+}
 
-	theme_draw_label(label->theme, label);
+void
+checkbox_draw(const struct checkbox *cb)
+{
+	theme_draw_checkbox(cb->theme, cb);
 }

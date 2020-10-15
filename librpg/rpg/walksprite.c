@@ -1,5 +1,5 @@
 /*
- * checkbox.c -- GUI checkbox
+ * walksprite.c -- sprite designed for walking entities
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -17,39 +17,45 @@
  */
 
 #include <assert.h>
+#include <string.h>
 
-#include "checkbox.h"
-#include "theme.h"
-#include "event.h"
-#include "maths.h"
+#include <core/sprite.h>
 
-static bool
-is_boxed(const struct checkbox *cb, const struct event_click *click)
+#include "walksprite.h"
+
+void
+walksprite_init(struct walksprite *ws, struct sprite *sprite, unsigned int delay)
 {
-	assert(cb);
-	assert(click && click->type == EVENT_CLICKDOWN);
+	assert(ws);
+	assert(sprite);
 
-	return maths_is_boxed(cb->x, cb->y, cb->w, cb->h, click->x, click->y);
+	memset(ws, 0, sizeof (struct walksprite));
+	ws->sprite = sprite;
+	ws->delay = delay;
 }
 
 void
-checkbox_handle(struct checkbox *cb, const union event *ev)
+walksprite_update(struct walksprite *ws, unsigned int ticks)
 {
-	assert(cb);
-	assert(ev);
+	assert(ws);
 
-	switch (ev->type) {
-	case EVENT_CLICKDOWN:
-		if (is_boxed(cb, &ev->click))
-			cb->checked = !cb->checked;
-		break;
-	default:
-		break;
+	ws->elapsed += ticks;
+
+	if (ws->elapsed >= ws->delay) {
+		ws->index += 1;
+
+		if (ws->index >= ws->sprite->ncols)
+			ws->index = 0;
+
+		ws->elapsed = 0;
 	}
 }
 
 void
-checkbox_draw(const struct checkbox *cb)
+walksprite_draw(struct walksprite *ws, unsigned int orientation, int x, int y)
 {
-	theme_draw_checkbox(cb->theme, cb);
+	assert(ws);
+	assert(orientation < 8);
+
+	sprite_draw(ws->sprite, orientation, ws->index, x, y);
 }

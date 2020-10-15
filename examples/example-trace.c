@@ -20,11 +20,12 @@
 #include <core/event.h>
 #include <core/sys.h>
 #include <core/window.h>
-#include <core/theme.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/trace.h>
 #include <core/util.h>
+
+#include <ui/theme.h>
 
 #include <adventure/trace_hud.h>
 

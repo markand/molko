@@ -24,9 +24,10 @@
 #include <core/game.h>
 #include <core/panic.h>
 #include <core/sys.h>
-#include <core/theme.h>
 #include <core/util.h>
 #include <core/window.h>
+
+#include <ui/theme.h>
 
 #include <adventure/panic_state.h>
 #include <adventure/splashscreen_state.h>

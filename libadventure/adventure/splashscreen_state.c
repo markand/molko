@@ -19,14 +19,15 @@
 #include <core/font.h>
 #include <core/game.h>
 #include <core/image.h>
-#include <core/map.h>
-#include <core/map_state.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/state.h>
 #include <core/sys.h>
 #include <core/texture.h>
 #include <core/window.h>
+
+#include <rpg/map.h>
+#include <rpg/map_state.h>
 
 #include <adventure/assets/fonts/teutonic.h>
 

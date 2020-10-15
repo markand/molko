@@ -19,16 +19,18 @@
 #include <core/clock.h>
 #include <core/event.h>
 #include <core/image.h>
-#include <core/inventory.h>
-#include <core/inventory_dialog.h>
-#include <core/item.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/sys.h>
 #include <core/texture.h>
-#include <core/theme.h>
 #include <core/util.h>
 #include <core/window.h>
+
+#include <ui/theme.h>
+
+#include <rpg/item.h>
+#include <rpg/inventory.h>
+#include <rpg/inventory_dialog.h>
 
 /* https://shikashiassets.itch.io/shikashis-fantasy-icons-pack */
 #include <assets/images/fish.h>

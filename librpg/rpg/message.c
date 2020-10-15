@@ -20,20 +20,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "action.h"
-#include "event.h"
-#include "font.h"
-#include "frame.h"
-#include "label.h"
-#include "maths.h"
+#include <core/action.h>
+#include <core/event.h>
+#include <core/font.h>
+#include <core/maths.h>
+#include <core/painter.h>
+#include <core/panic.h>
+#include <core/sprite.h>
+#include <core/trace.h>
+#include <core/util.h>
+
+#include <ui/frame.h>
+#include <ui/label.h>
+#include <ui/theme.h>
+
 #include "message.h"
-#include "painter.h"
-#include "panic.h"
-#include "sprite.h"
-#include "texture.h"
-#include "theme.h"
-#include "trace.h"
-#include "util.h"
 
 #define THEME(msg)      (msg->theme ? msg->theme : theme_default())
 

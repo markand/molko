@@ -20,20 +20,21 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "button.h"
-#include "checkbox.h"
-#include "font.h"
-#include "frame.h"
-#include "label.h"
-#include "maths.h"
-#include "painter.h"
-#include "panic.h"
-#include "texture.h"
-#include "theme.h"
-#include "util.h"
+#include <core/font.h>
+#include <core/maths.h>
+#include <core/painter.h>
+#include <core/panic.h>
+#include <core/texture.h>
+#include <core/util.h>
 
 #include <core/assets/fonts/f25-bank-printer.h>
 #include <core/assets/fonts/comic-neue.h>
+
+#include "button.h"
+#include "checkbox.h"
+#include "frame.h"
+#include "label.h"
+#include "theme.h"
 
 #define THEME(t) (t ? t : &default_theme)
 

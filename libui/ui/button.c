@@ -18,9 +18,10 @@
 
 #include <assert.h>
 
+#include <core/event.h>
+#include <core/maths.h>
+
 #include "button.h"
-#include "event.h"
-#include "maths.h"
 #include "theme.h"
 
 static bool

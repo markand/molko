@@ -65,7 +65,7 @@
 
 #include <stdbool.h>
 
-#include "texture.h"
+#include <core/texture.h>
 
 struct action;
 struct font;

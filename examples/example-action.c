@@ -23,16 +23,18 @@
 #include <core/event.h>
 #include <core/image.h>
 #include <core/maths.h>
-#include <core/message.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/script.h>
 #include <core/sprite.h>
 #include <core/sys.h>
 #include <core/texture.h>
-#include <core/theme.h>
 #include <core/util.h>
 #include <core/window.h>
+
+#include <ui/theme.h>
+
+#include <rpg/message.h>
 
 #include <assets/sprites/chest.h>
 #include <assets/sprites/people.h>

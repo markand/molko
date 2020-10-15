@@ -18,13 +18,14 @@
 
 #include <core/clock.h>
 #include <core/event.h>
-#include <core/label.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/sys.h>
-#include <core/theme.h>
 #include <core/util.h>
 #include <core/window.h>
+
+#include <ui/label.h>
+#include <ui/theme.h>
 
 #define W       (1280)
 #define H       (720)

@@ -20,10 +20,11 @@
 #include <greatest.h>
 
 #include <core/error.h>
-#include <core/map.h>
 #include <core/panic.h>
 #include <core/sys.h>
 #include <core/window.h>
+
+#include <rpg/map.h>
 
 #include <assets/maps/sample-map.h>
 #include <assets/maps/error-title.h>

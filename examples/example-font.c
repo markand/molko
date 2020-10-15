@@ -23,9 +23,10 @@
 #include <core/panic.h>
 #include <core/sys.h>
 #include <core/texture.h>
-#include <core/theme.h>
 #include <core/util.h>
 #include <core/window.h>
+
+#include <ui/theme.h>
 
 #define W       (1280)
 #define H       (720)

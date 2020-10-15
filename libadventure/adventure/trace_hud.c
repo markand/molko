@@ -20,10 +20,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <core/label.h>
 #include <core/font.h>
-#include <core/theme.h>
 #include <core/trace.h>
+#include <core/window.h>
+
+#include <ui/label.h>
+#include <ui/theme.h>
 
 #include "trace_hud.h"
 
@@ -98,7 +100,7 @@ trace_hud_draw(void)
 			.y = y,
 			.text = data.lines[i],
 			.theme = th,
-			.flags = LABEL_ALIGN_LEFT
+			.align = LABEL_ALIGN_TOP_LEFT
 		});
 
 		y += font_height(th->fonts[THEME_FONT_INTERFACE]);

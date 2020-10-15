@@ -19,8 +19,8 @@
 #define GREATEST_USE_ABBREVS 0
 #include <greatest.h>
 
-#include <core/item.h>
-#include <core/inventory.h>
+#include <rpg/item.h>
+#include <rpg/inventory.h>
 
 static struct item potion = {
 	.name = "Potion",

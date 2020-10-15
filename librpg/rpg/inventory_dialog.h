@@ -19,9 +19,9 @@
 #ifndef INVENTORY_DIALOG_H
 #define INVENTORY_DIALOG_H
 
-#include "button.h"
-#include "label.h"
-#include "frame.h"
+#include <ui/button.h>
+#include <ui/frame.h>
+#include <ui/label.h>
 
 union event;
 

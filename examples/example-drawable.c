@@ -23,16 +23,17 @@
 #include <core/event.h>
 #include <core/drawable.h>
 #include <core/key.h>
-#include <core/label.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/sys.h>
 #include <core/image.h>
 #include <core/sprite.h>
 #include <core/texture.h>
-#include <core/theme.h>
 #include <core/util.h>
 #include <core/window.h>
+
+#include <ui/label.h>
+#include <ui/theme.h>
 
 #include <assets/sprites/explosion.h>
 

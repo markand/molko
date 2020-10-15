@@ -21,16 +21,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "error.h"
-#include "error_p.h"
-#include "image.h"
+#include <core/error.h>
+#include <core/error_p.h>
+#include <core/image.h>
+#include <core/painter.h>
+#include <core/sprite.h>
+#include <core/sys.h>
+#include <core/texture.h>
+#include <core/window.h>
+
 #include "map.h"
-#include "painter.h"
-#include "rbuf.h"
-#include "sprite.h"
-#include "sys.h"
-#include "texture.h"
-#include "window.h"
 
 /* Create %<v>c string literal for scanf */
 #define MAX_F(v) MAX_F_(v)

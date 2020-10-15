@@ -25,8 +25,9 @@
  * \ingroup states
  */
 
+#include <core/sprite.h>
+
 #include "map.h"
-#include "sprite.h"
 
 /**
  * \brief Data for the state.

@@ -29,7 +29,8 @@
 #include <core/texture.h>
 #include <core/util.h>
 #include <core/window.h>
-#include <core/map_state.h>
+
+#include <rpg/map_state.h>
 
 #include <adventure/assets/fonts/lato.h>
 

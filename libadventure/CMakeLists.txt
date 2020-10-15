@@ -44,7 +44,7 @@ molko_define_library(
 	TARGET libadventure
 	SOURCES ${SOURCES}
 	ASSETS ${ASSETS}
-	LIBRARIES libcore
+	LIBRARIES libcore libui librpg
 	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libadventure_SOURCE_DIR}>
 )

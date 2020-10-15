@@ -31,15 +31,9 @@ set(
 	${libcore_SOURCE_DIR}/core/action.h
 	${libcore_SOURCE_DIR}/core/animation.c
 	${libcore_SOURCE_DIR}/core/animation.h
-	${libcore_SOURCE_DIR}/core/button.c
-	${libcore_SOURCE_DIR}/core/button.h
-	${libcore_SOURCE_DIR}/core/checkbox.c
-	${libcore_SOURCE_DIR}/core/checkbox.h
 	${libcore_SOURCE_DIR}/core/clock.c
 	${libcore_SOURCE_DIR}/core/clock.h
 	${libcore_SOURCE_DIR}/core/color.h
-	${libcore_SOURCE_DIR}/core/debug.c
-	${libcore_SOURCE_DIR}/core/debug.h
 	${libcore_SOURCE_DIR}/core/drawable.c
 	${libcore_SOURCE_DIR}/core/drawable.h
 	${libcore_SOURCE_DIR}/core/error.c
@@ -49,30 +43,15 @@ set(
 	${libcore_SOURCE_DIR}/core/event.h
 	${libcore_SOURCE_DIR}/core/font.c
 	${libcore_SOURCE_DIR}/core/font.h
-	${libcore_SOURCE_DIR}/core/frame.c
-	${libcore_SOURCE_DIR}/core/frame.h
 	${libcore_SOURCE_DIR}/core/game.c
 	${libcore_SOURCE_DIR}/core/game.h
 	${libcore_SOURCE_DIR}/core/image.c
 	${libcore_SOURCE_DIR}/core/image.h
 	${libcore_SOURCE_DIR}/core/inhibit.c
 	${libcore_SOURCE_DIR}/core/inhibit.h
-	${libcore_SOURCE_DIR}/core/inventory.c
-	${libcore_SOURCE_DIR}/core/inventory.h
-	${libcore_SOURCE_DIR}/core/inventory_dialog.c
-	${libcore_SOURCE_DIR}/core/inventory_dialog.h
-	${libcore_SOURCE_DIR}/core/item.h
 	${libcore_SOURCE_DIR}/core/key.h
-	${libcore_SOURCE_DIR}/core/label.c
-	${libcore_SOURCE_DIR}/core/label.h
-	${libcore_SOURCE_DIR}/core/map.c
-	${libcore_SOURCE_DIR}/core/map.h
-	${libcore_SOURCE_DIR}/core/map_state.c
-	${libcore_SOURCE_DIR}/core/map_state.h
 	${libcore_SOURCE_DIR}/core/maths.c
 	${libcore_SOURCE_DIR}/core/maths.h
-	${libcore_SOURCE_DIR}/core/message.c
-	${libcore_SOURCE_DIR}/core/message.h
 	${libcore_SOURCE_DIR}/core/mouse.h
 	${libcore_SOURCE_DIR}/core/painter.c
 	${libcore_SOURCE_DIR}/core/painter.h
@@ -95,16 +74,12 @@ set(
 	${libcore_SOURCE_DIR}/core/texture.c
 	${libcore_SOURCE_DIR}/core/texture.h
 	${libcore_SOURCE_DIR}/core/texture_p.h
-	${libcore_SOURCE_DIR}/core/theme.c
-	${libcore_SOURCE_DIR}/core/theme.h
 	${libcore_SOURCE_DIR}/core/trace.c
 	${libcore_SOURCE_DIR}/core/trace.h
 	${libcore_SOURCE_DIR}/core/util.c
 	${libcore_SOURCE_DIR}/core/util.h
 	${libcore_SOURCE_DIR}/core/wait.c
 	${libcore_SOURCE_DIR}/core/wait.h
-	${libcore_SOURCE_DIR}/core/walksprite.c
-	${libcore_SOURCE_DIR}/core/walksprite.h
 	${libcore_SOURCE_DIR}/core/window.c
 	${libcore_SOURCE_DIR}/core/window.h
 	${libcore_SOURCE_DIR}/core/window_p.h

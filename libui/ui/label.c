@@ -1,5 +1,5 @@
 /*
- * walksprite.c -- sprite designed for walking entities
+ * label.c -- GUI label
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -17,44 +17,20 @@
  */
 
 #include <assert.h>
-#include <string.h>
 
-#include "walksprite.h"
-#include "sprite.h"
+#include <core/trace.h>
 
-void
-walksprite_init(struct walksprite *ws, struct sprite *sprite, unsigned int delay)
-{
-	assert(ws);
-	assert(sprite);
-
-	memset(ws, 0, sizeof (struct walksprite));
-	ws->sprite = sprite;
-	ws->delay = delay;
-}
+#include "label.h"
+#include "theme.h"
 
 void
-walksprite_update(struct walksprite *ws, unsigned int ticks)
+label_draw(const struct label *label)
 {
-	assert(ws);
+	assert(label);
+	assert(label->text);
 
-	ws->elapsed += ticks;
+	if (label->w == 0 || label->h == 0)
+		trace("label %p has null dimensions", label);
 
-	if (ws->elapsed >= ws->delay) {
-		ws->index += 1;
-
-		if (ws->index >= ws->sprite->ncols)
-			ws->index = 0;
-
-		ws->elapsed = 0;
-	}
-}
-
-void
-walksprite_draw(struct walksprite *ws, unsigned int orientation, int x, int y)
-{
-	assert(ws);
-	assert(orientation < 8);
-
-	sprite_draw(ws->sprite, orientation, ws->index, x, y);
+	theme_draw_label(label->theme, label);
 }

@@ -25,37 +25,37 @@ molko_define_executable(
 	ASSETS
 		${examples_SOURCE_DIR}/assets/sprites/chest.png
 		${examples_SOURCE_DIR}/assets/sprites/people.png
-	LIBRARIES libcore
+	LIBRARIES librpg
 )
 
 molko_define_executable(
 	TARGET example-font
 	SOURCES example-font.c
-	LIBRARIES libcore
+	LIBRARIES libui
 )
 
 molko_define_executable(
 	TARGET example-inventory
-	SOURCES example-inventory
+	SOURCES example-inventory.c
 	ASSETS
 		${examples_SOURCE_DIR}/assets/images/fish.png
 		${examples_SOURCE_DIR}/assets/images/potion.png
 		${examples_SOURCE_DIR}/assets/images/sword.png
 	FOLDER examples
-	LIBRARIES libcore
+	LIBRARIES librpg
 )
 
 molko_define_executable(
 	TARGET example-label
 	SOURCES example-label.c
-	LIBRARIES libcore
+	LIBRARIES libui
 )
 
 molko_define_executable(
 	TARGET example-message
 	SOURCES example-message.c
 	FOLDER examples
-	LIBRARIES libcore
+	LIBRARIES librpg
 )
 
 molko_define_executable(
@@ -63,15 +63,15 @@ molko_define_executable(
 	SOURCES example-sound.c
 	FOLDER examples
 	ASSETS
-		${examples_SOURCE_DIR}/assets/sounds/vabsounds-romance.ogg 
-	LIBRARIES libcore
+		${examples_SOURCE_DIR}/assets/sounds/vabsounds-romance.ogg
+	LIBRARIES libui
 )
 
 molko_define_executable(
 	TARGET example-drawable
 	SOURCES example-drawable.c
 	FOLDER examples
-	LIBRARIES libcore
+	LIBRARIES libui
 	ASSETS
 		${examples_SOURCE_DIR}/assets/sprites/explosion.png
 )
@@ -80,5 +80,5 @@ molko_define_executable(
 	TARGET example-trace
 	SOURCES example-trace.c
 	FOLDER examples
-	LIBRARIES libcore libadventure
+	LIBRARIES libui libadventure
 )
