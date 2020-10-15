@@ -60,14 +60,13 @@ button_draw_default(struct theme *t, const struct button *button)
 
 	(void)t;
 
-	const struct label label = {
+	struct label label = {
 		.text = button->text,
-		.x = button->x,
-		.y = button->y,
-		.w = button->w,
-		.h = button->h,
-		.align = ALIGN_CENTER
 	};
+
+	label_query(&label);
+	align(ALIGN_CENTER, &label.x, &label.y, label.w, label.h,
+	    button->x, button->y, button->w, button->h);
 
 	painter_set_color(0x577277ff);
 	painter_draw_rectangle(button->x, button->y, button->w, button->h);

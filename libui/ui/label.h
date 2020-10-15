@@ -25,8 +25,6 @@
  * \ingroup ui
  */
 
-#include "align.h"
-
 struct action;
 struct theme;
 
@@ -41,9 +39,9 @@ enum label_flags {
 /**
  * \brief GUI label.
  *
- * A label can be conveniently positioned using a bounding box and an alignment
- * in that case the fields `w`, `h` and `align` must be specified, otherwise
- * the label is drawn immediately at `x` and `y` field.
+ * A label has a position and a size. The size is only provided to the user as
+ * information and is not used during rendering. It should be computed using the
+ * \ref label_query command each time you change the theme or text.
  */
 struct label {
 	int x;                          /*!< (+) Position in x. */
@@ -52,7 +50,6 @@ struct label {
 	unsigned int h;                 /*!< (+?) Height. */
 	const char *text;               /*!< (+&) Text to show. */
 	enum label_flags flags;         /*!< (+) Optional flags. */
-	enum align align;               /*!< (+) How to positionate label. */
 	struct theme *theme;            /*!< (+&?) Theme to use. */
 };
 
@@ -66,6 +63,16 @@ struct label {
  */
 void
 label_draw_default(struct theme *t, const struct label *label);
+
+/**
+ * Update the `w` and `h` fields with the dimensions the text would needs with
+ * the current theme.
+ *
+ * \pre label != NULL
+ * \param label the label
+ */
+void
+label_query(struct label *label);
 
 /**
  * Draw the label.

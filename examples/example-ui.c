@@ -26,6 +26,7 @@
 #include <core/util.h>
 #include <core/window.h>
 
+#include <ui/align.h>
 #include <ui/button.h>
 #include <ui/checkbox.h>
 #include <ui/frame.h>
@@ -101,10 +102,7 @@ static struct {
 			.text = "Preferences",
 			.x = FRAME_ORIGIN_X,
 			.y = FRAME_ORIGIN_Y,
-			.w = FRAME_WIDTH,
-			.h = HEADER_HEIGHT,
 			.flags = LABEL_FLAGS_SHADOW,
-			.align = ALIGN_LEFT
 		}
 	},
 	.autosave = {
@@ -114,9 +112,7 @@ static struct {
 		},
 		.label = {
 			.text = "Auto save game",
-			.align = ALIGN_LEFT,
 			.flags = LABEL_FLAGS_SHADOW,
-			.h = ELEMENT_HEIGHT
 		}
 	},
 	.quit = {
@@ -137,35 +133,57 @@ init(void)
 }
 
 static void
-resize(void)
+resize_header(void)
 {
-	const unsigned int padding = theme_default()->padding;
+	struct frame *h = &ui.panel.frame;
+	struct label *l = &ui.header.label;
 
 	/* Header. */
-	ui.header.label.x = ui.panel.frame.x;
-	ui.header.label.y = ui.panel.frame.y;
+	label_query(l);
+	align(ALIGN_LEFT, &l->x, &l->y, l->w, l->h, h->x, h->y, h->w, HEADER_HEIGHT);
 
-	/* Auto save. */
-	ui.autosave.cb.x = ui.panel.frame.x + padding;
-	ui.autosave.cb.y = ui.panel.frame.y + HEADER_HEIGHT + padding;
-	ui.autosave.label.w = ui.panel.frame.w - ui.autosave.cb.w - padding;
-	ui.autosave.label.x = ui.autosave.cb.x + ui.autosave.cb.w;
-	ui.autosave.label.y = ui.autosave.cb.y;
+	l->x += theme_default()->padding;
+}
+
+static void
+resize_autosave(void)
+{
+	unsigned int padding = theme_default()->padding;
+	struct frame *f = &ui.panel.frame;
+	struct checkbox *c = &ui.autosave.cb;
+	struct label *l = &ui.autosave.label;
+
+	c->x = f->x + padding;
+	c->y = f->y + HEADER_HEIGHT + padding;
+
+	l->w = f->w - c->w - padding;
+	l->x = c->x + c->w + padding;
+	l->y = c->y;
+}
+
+static void
+resize_button(void)
+{
+	unsigned int padding = theme_default()->padding;
+	struct frame *f = &ui.panel.frame;
+	struct button *b = &ui.quit.button;
 
 	/* Button. */
-	ui.quit.button.w = ui.panel.frame.w / 4;
+	b->w = f->w / 4;
 
-	align(
-	    ALIGN_BOTTOM_RIGHT,
-	    &ui.quit.button.x,
-	    &ui.quit.button.y,
-	    ui.quit.button.w,
-	    ui.quit.button.h,
-	    ui.panel.frame.x + padding,
-	    ui.panel.frame.y + padding,
-	    ui.panel.frame.w - padding * 2,
-	    ui.panel.frame.h - padding * 2
-	);
+	align(ALIGN_BOTTOM_RIGHT, &b->x, &b->y, b->w, b->h,
+	    f->x, f->y, f->w, f->h);
+
+	b->x -= padding;
+	b->y -= padding;
+}
+
+static void
+resize(void)
+{
+	resize_header();
+	resize_autosave();
+	resize_button();
 }
 
 static void

@@ -41,29 +41,11 @@
 #define H 720
 
 static struct label help = {
-	.text = "Keys: <Esc> to reset. Click anywhere to spawn a drawable.",
 	.x = 10,
 	.y = 10,
-	.w = W,
-	.h = H,
-	.align = ALIGN_TOP_LEFT,
+	.text = "Keys: <Esc> to reset. Click anywhere to spawn a drawable.",
 	.flags = LABEL_FLAGS_SHADOW
 };
-
-#if 0
-// TODO: for the moment only animations are supported.
-static unsigned int which_selection;
-static char which_text[128];
-static struct label which = {
-	.text = buf,
-	.x = 10,
-	.y = 40,
-	.w = W,
-	.h = 32,
-	.flags = LABEL_NO_HCENTER,
-	.color = 0x4f8fbaff
-};
-#endif
 
 static struct drawable_stack stack;
 

@@ -41,27 +41,8 @@ label_draw_default(struct theme *t, const struct label *label)
 
 	struct font *font;
 	struct texture tex;
-	int x, y, bx, by;
-	unsigned int tw, th, bw, bh;
 
-	/* Compute real box size according to padding. */
-	bx = label->x + t->padding;
-	by = label->y + t->padding;
-	bw = label->w - (t->padding * 2);
-	bh = label->h - (t->padding * 2);
-
-	/* Make a shallow copy of the interface font. */
 	font = t->fonts[THEME_FONT_INTERFACE];
-
-	/* Compute text size. */
-	if (!font_box(font, label->text, &tw, &th))
-		panic();
-
-	/* Align if needed. */
-	x = label->x;
-	y = label->y;
-
-	align(label->align, &x, &y, tw, th, bx, by, bw, bh);
 
 	/* Shadow text, only if enabled. */
 	if (label->flags & LABEL_FLAGS_SHADOW) {
@@ -70,7 +51,7 @@ label_draw_default(struct theme *t, const struct label *label)
 		if (!font_render(font, &tex, label->text))
 			panic();
 
-		texture_draw(&tex, x + 1, y + 1);
+		texture_draw(&tex, label->x + 1, label->y + 1);
 		texture_finish(&tex);
 	}
 
@@ -80,8 +61,20 @@ label_draw_default(struct theme *t, const struct label *label)
 	if (!font_render(font, &tex, label->text))
 		panic();
 
-	texture_draw(&tex, x, y);
+	texture_draw(&tex, label->x, label->y);
 	texture_finish(&tex);
+}
+
+void
+label_query(struct label *label)
+{
+	assert(label);
+	assert(label->text);
+
+	struct theme *t = label->theme ? label->theme : theme_default();
+
+	if (!font_box(t->fonts[THEME_FONT_INTERFACE], label->text, &label->w, &label->h))
+		panic();
 }
 
 void

@@ -39,9 +39,6 @@ static struct label label = {
 	.text = "Keys: <s> start, <p> pause, <r> resume, <q> stop, <l> loop",
 	.x = 10,
 	.y = 10,
-	.w = W,
-	.h = H,
-	.align = ALIGN_TOP_LEFT,
 	.flags = LABEL_FLAGS_SHADOW
 };
 

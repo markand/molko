@@ -100,7 +100,6 @@ draw_lines(const struct message *msg)
 			.h = msg->h,
 			.theme = &theme,
 			.text = msg->text[i],
-			.align = ALIGN_TOP_LEFT,
 			.flags = LABEL_FLAGS_SHADOW
 		};
 

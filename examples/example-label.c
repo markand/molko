@@ -24,11 +24,73 @@
 #include <core/util.h>
 #include <core/window.h>
 
+#include <ui/align.h>
 #include <ui/label.h>
 #include <ui/theme.h>
 
 #define W       (1280)
 #define H       (720)
+
+struct {
+	enum align align;
+	struct label label;
+} table[] = {
+	{
+		.align = ALIGN_TOP_LEFT,
+		.label = {
+			.text = "Top left"
+		}
+	},
+	{
+		.align = ALIGN_TOP,
+		.label = {
+			.text = "Top",
+		}
+	},
+	{
+		.align = ALIGN_TOP_RIGHT,
+		.label = {
+			.text = "Top right",
+		}
+	},
+	{
+		.align = ALIGN_RIGHT,
+		.label = {
+			.text = "Right",
+		}
+	},
+	{
+		.align = ALIGN_BOTTOM_RIGHT,
+		.label = {
+			.text = "Bottom right",
+		}
+	},
+	{
+		.align = ALIGN_BOTTOM,
+		.label = {
+			.text = "Bottom",
+		}
+	},
+	{
+		.align = ALIGN_BOTTOM_LEFT,
+		.label = {
+			.text = "Bottom left",
+		}
+	},
+	{
+		.align = ALIGN_LEFT,
+		.label = {
+			.text = "Left",
+		}
+	},
+	{
+		.align = ALIGN_CENTER,
+		.label = {
+			.text = "The world is Malikania.",
+			.flags = LABEL_FLAGS_SHADOW
+		}
+	}
+};
 
 static void
 init(void)
@@ -37,6 +99,13 @@ init(void)
 	    !window_init("Example - Label", W, H) ||
 	    !theme_init())
 		panic();
+
+	for (size_t i = 0; i < NELEM(table); ++i) {
+		struct label *l = &table[i].label;
+
+		label_query(l);
+		align(table[i].align, &l->x, &l->y, l->w, l->h, 0, 0, W, H);
+	}
 }
 
 static void
@@ -51,81 +120,6 @@ static void
 run(void)
 {
 	struct clock clock = {0};
-	struct label labels[] = {
-		{
-			.x = 0,
-			.y = 0,
-			.w = W,
-			.h = H,
-			.text = "Top left",
-			.align = ALIGN_TOP_LEFT
-		},
-		{
-			.x = 0,
-			.y = 0,
-			.w = W,
-			.h = H,
-			.text = "Top",
-			.align = ALIGN_TOP
-		},
-		{
-			.x = 0,
-			.y = 0,
-			.w = W,
-			.h = H,
-			.text = "Top right",
-			.align = ALIGN_TOP_RIGHT
-		},
-		{
-			.x = 0,
-			.y = 0,
-			.w = W,
-			.h = H,
-			.text = "Right",
-			.align = ALIGN_RIGHT
-		},
-		{
-			.x = 0,
-			.y = 0,
-			.w = W,
-			.h = H,
-			.text = "Bottom right",
-			.align = ALIGN_BOTTOM_RIGHT
-		},
-		{
-			.x = 0,
-			.y = 0,
-			.w = W,
-			.h = H,
-			.text = "Bottom",
-			.align = ALIGN_BOTTOM
-		},
-		{
-			.x = 0,
-			.y = 0,
-			.w = W,
-			.h = H,
-			.text = "Bottom left",
-			.align = ALIGN_BOTTOM_LEFT
-		},
-		{
-			.x = 0,
-			.y = 0,
-			.w = W,
-			.h = H,
-			.text = "Left",
-			.align = ALIGN_LEFT
-		},
-		{
-			.x = 0,
-			.y = 0,
-			.w = W,
-			.h = H,
-			.text = "The world is Malikania.",
-			.flags = LABEL_FLAGS_SHADOW,
-			.align = ALIGN_CENTER
-		},
-	};
 	struct label mlabel = {
 		.text = "This one follows your mouse and is not aligned."
 	};
@@ -154,8 +148,8 @@ run(void)
 		painter_set_color(0x4f8fbaff);
 		painter_clear();
 
-		for (size_t i = 0; i < NELEM(labels); ++i)
-			label_draw(&labels[i]);
+		for (size_t i = 0; i < NELEM(table); ++i)
+			label_draw(&table[i].label);
 
 		label_draw(&mlabel);
 		painter_present();
