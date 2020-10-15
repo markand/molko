@@ -22,10 +22,12 @@
 /**
  * \file label.h
  * \brief GUI label.
+ * \ingroup ui
  */
 
 #include "align.h"
 
+struct action;
 struct theme;
 
 /**
@@ -73,5 +75,24 @@ label_draw_default(struct theme *t, const struct label *label);
  */
 void
 label_draw(const struct label *label);
+
+/**
+ * Convert the label into an action.
+ *
+ * The following field will be set into the action:
+ *
+ * - act->data: points to label (reference),
+ * - act->draw: a wrapper to label_draw.
+ *
+ * The label being an UI element is considered to never completes, as such
+ * you will need to handle this case or to use a custom update function.
+ *
+ * \pre frame != NULL
+ * \pre act != NULL
+ * \param label the label to reference
+ * \param act the action to fill
+ */
+void
+label_action(struct label *label, struct action *act);
 
 #endif /* !MOLKO_LABEL_H */

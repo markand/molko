@@ -22,10 +22,12 @@
 /**
  * \file button.h
  * \brief GUI button.
+ * \ingroup ui
  */
 
 union event;
 
+struct action;
 struct theme;
 
 /**
@@ -92,5 +94,27 @@ button_draw_default(struct theme *t, const struct button *button);
  */
 void
 button_draw(struct button *button);
+
+/**
+ * Convert the button into an action.
+ *
+ * The following field will be set into the action:
+ *
+ * - act->data: points to button (reference),
+ * - act->handle: a wrapper to button_handle,
+ * - act->draw: a wrapper to button_draw.
+ *
+ * The button being an UI element is considered to never completes, as such
+ * you will need to handle this case or to use a custom update function.
+ *
+ * \note You will still need to check the button state and reset it at some
+ *       point.
+ * \pre button != NULL
+ * \pre act != NULL
+ * \param button the button to reference
+ * \param act the action to fill
+ */
+void
+button_action(struct button *button, struct action *act);
 
 #endif /* !MOLKO_BUTTON_H */

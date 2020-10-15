@@ -40,3 +40,8 @@
  * \defgroup input Input and events
  * \brief Input and event handling.
  */
+
+/**
+ * \defgroup ui UI
+ * \brief User interface elements.
+ */

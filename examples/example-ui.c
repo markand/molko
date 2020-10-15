@@ -16,8 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <core/action.h>
 #include <core/clock.h>
 #include <core/event.h>
+#include <core/maths.h>
 #include <core/panic.h>
 #include <core/painter.h>
 #include <core/sys.h>
@@ -30,51 +32,99 @@
 #include <ui/label.h>
 #include <ui/theme.h>
 
-#define W       (1280)
-#define H       (720)
+#define W               (1280)
+#define H               (720)
 
-static struct frame frame = {
-	.x = 10,
-	.y = 10,
-	.w = 400,
-	.h = 200
-};
+#define FRAME_ORIGIN_X  (10)
+#define FRAME_ORIGIN_Y  (10)
+#define FRAME_WIDTH     (400)
+#define FRAME_HEIGHT    (200)
 
-static struct label title = {
-	.text = "Preferences",
-	.x = 10,
-	.y = 10,
-	.w = 400,
-	.h = 200,
-	.flags = LABEL_FLAGS_SHADOW,
-	.align = ALIGN_TOP_LEFT
-};
+#define HEADER_HEIGHT   (32)
 
+#define ELEMENT_HEIGHT  (20)
+
+/*
+ * We design a basic UI like this.
+ *
+ *                    FRAME_WIDTH
+ * +---------------------------------------------+--
+ * | Title                                       | | HEADER_HEIGHT
+ * +---------------------------------------------+--
+ * | [x] Auto save                               |
+ * |                                             |
+ * |                                             |
+ * |                                    [ Quit ] |
+ * +---------------------------------------------+
+ */
 static struct {
-	struct checkbox cb;
-	struct label label;
-} autosave = {
-	.cb = {
-		.x = 20,
-		.y = 60,
-		.w = 20,
-		.h = 20
-	},
-	.label = {
-		.text = "Auto save game",
-		.x = 20 + 20,
-		.y = 60,
-		.w = 200,
-		.h = 20,
-		.align = ALIGN_LEFT,
-		.flags = LABEL_FLAGS_SHADOW
-	}
-};
+	struct action_stack st;
 
-static struct button btquit = {
-	.text = "Quit",
-	.w = 50,
-	.h = 20
+	struct {
+		bool active;
+		int x;
+		int y;
+	} motion;
+
+	struct {
+		struct frame frame;
+		struct action act;
+	} panel;
+
+	struct {
+		struct label label;
+		struct action act;
+	} header;
+
+	struct {
+		struct checkbox cb;
+		struct action cb_act;
+		struct label label;
+		struct action label_act;
+	} autosave;
+
+	struct {
+		struct button button;
+		struct action act;
+	} quit;
+} ui = {
+	.panel = {
+		.frame = {
+			.x = FRAME_ORIGIN_X,
+			.y = FRAME_ORIGIN_Y,
+			.w = FRAME_WIDTH,
+			.h = FRAME_HEIGHT
+		}
+	},
+	.header = {
+		.label = {
+			.text = "Preferences",
+			.x = FRAME_ORIGIN_X,
+			.y = FRAME_ORIGIN_Y,
+			.w = FRAME_WIDTH,
+			.h = HEADER_HEIGHT,
+			.flags = LABEL_FLAGS_SHADOW,
+			.align = ALIGN_LEFT
+		}
+	},
+	.autosave = {
+		.cb = {
+			.w = ELEMENT_HEIGHT,
+			.h = ELEMENT_HEIGHT
+		},
+		.label = {
+			.text = "Auto save game",
+			.align = ALIGN_LEFT,
+			.flags = LABEL_FLAGS_SHADOW,
+			.h = ELEMENT_HEIGHT
+		}
+	},
+	.quit = {
+		.button = {
+			.text = "Quit",
+			.h = ELEMENT_HEIGHT
+		}
+	}
 };
 
 static void
@@ -87,13 +137,85 @@ init(void)
 }
 
 static void
+resize(void)
+{
+	const unsigned int padding = theme_default()->padding;
+
+	/* Header. */
+	ui.header.label.x = ui.panel.frame.x;
+	ui.header.label.y = ui.panel.frame.y;
+
+	/* Auto save. */
+	ui.autosave.cb.x = ui.panel.frame.x + padding;
+	ui.autosave.cb.y = ui.panel.frame.y + HEADER_HEIGHT + padding;
+	ui.autosave.label.w = ui.panel.frame.w - ui.autosave.cb.w - padding;
+	ui.autosave.label.x = ui.autosave.cb.x + ui.autosave.cb.w;
+	ui.autosave.label.y = ui.autosave.cb.y;
+
+	/* Button. */
+	ui.quit.button.w = ui.panel.frame.w / 4;
+
+	align(
+	    ALIGN_BOTTOM_RIGHT,
+	    &ui.quit.button.x,
+	    &ui.quit.button.y,
+	    ui.quit.button.w,
+	    ui.quit.button.h,
+	    ui.panel.frame.x + padding,
+	    ui.panel.frame.y + padding,
+	    ui.panel.frame.w - padding * 2,
+	    ui.panel.frame.h - padding * 2
+	);
+}
+
+static void
+prepare(void)
+{
+	/* Frame. */
+	frame_action(&ui.panel.frame, &ui.panel.act);
+
+	/* Header title. */
+	label_action(&ui.header.label, &ui.header.act);
+
+	/* Button quit. */
+	button_action(&ui.quit.button, &ui.quit.act);
+
+	/* Autosave. */
+	checkbox_action(&ui.autosave.cb, &ui.autosave.cb_act);
+	label_action(&ui.autosave.label, &ui.autosave.label_act);
+
+	/* Add all UI elements. */
+	action_stack_add(&ui.st, &ui.panel.act);
+	action_stack_add(&ui.st, &ui.header.act);
+	action_stack_add(&ui.st, &ui.autosave.cb_act);
+	action_stack_add(&ui.st, &ui.autosave.label_act);
+	action_stack_add(&ui.st, &ui.quit.act);
+}
+
+static bool
+headerclick(int x, int y)
+{
+	return maths_is_boxed(
+	    ui.panel.frame.x,
+	    ui.panel.frame.y,
+	    ui.panel.frame.w,
+	    HEADER_HEIGHT,
+	    x,
+	    y
+	);
+}
+
+static void
 run(void)
 {
 	struct clock clock = {0};
 
 	clock_start(&clock);
 
-	for (;;) {
+	prepare();
+	resize();
+
+	while (ui.quit.button.state != BUTTON_STATE_ACTIVATED) {
 		unsigned int elapsed = clock_elapsed(&clock);
 
 		clock_start(&clock);
@@ -102,31 +224,37 @@ run(void)
 			switch (ev.type) {
 			case EVENT_QUIT:
 				return;
+			case EVENT_MOUSE:
+				if (ui.motion.active) {
+					ui.panel.frame.x += ev.mouse.x - ui.motion.x;
+					ui.panel.frame.y += ev.mouse.y - ui.motion.y;
+					ui.motion.x = ev.mouse.x;
+					ui.motion.y = ev.mouse.y;
+					resize();
+				}
+				break;
+			case EVENT_CLICKDOWN:
+				if (headerclick(ev.click.x, ev.click.y)) {
+					ui.motion.active = true;
+					ui.motion.x = ev.click.x;
+					ui.motion.y = ev.click.y;
+				}
+				else
+					action_stack_handle(&ui.st, &ev);
+				break;
+			case EVENT_CLICKUP:
+				ui.motion.active = false;
+				/* Fallthrough. */
 			default:
-				checkbox_handle(&autosave.cb, &ev);
-				button_handle(&btquit, &ev);
-
-				if (btquit.state == BUTTON_STATE_ACTIVATED)
-					return;
-
+				action_stack_handle(&ui.st, &ev);
 				break;
 			}
 		}
 
-		/* Compute button position at runtime. */
-		align(ALIGN_BOTTOM_RIGHT, &btquit.x, &btquit.y, btquit.w, btquit.h,
-		    frame.x, frame.y, frame.w, frame.h);
-
-		btquit.x -= theme_default()->padding;
-		btquit.y -= theme_default()->padding;
-
 		painter_set_color(0xffffffff);
 		painter_clear();
-		frame_draw(&frame);
-		label_draw(&title);
-		checkbox_draw(&autosave.cb);
-		label_draw(&autosave.label);
-		button_draw(&btquit);
+		action_stack_update(&ui.st, elapsed);
+		action_stack_draw(&ui.st);
 		painter_present();
 
 		if ((elapsed = clock_elapsed(&clock)) < 20)
@@ -154,4 +282,3 @@ main(int argc, char **argv)
 
 	return 0;
 }
-

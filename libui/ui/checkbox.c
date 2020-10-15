@@ -17,7 +17,9 @@
  */
 
 #include <assert.h>
+#include <string.h>
 
+#include <core/action.h>
 #include <core/event.h>
 #include <core/maths.h>
 #include <core/painter.h>
@@ -33,6 +35,18 @@ is_boxed(const struct checkbox *cb, const struct event_click *click)
 	assert(click && click->type == EVENT_CLICKDOWN);
 
 	return maths_is_boxed(cb->x, cb->y, cb->w, cb->h, click->x, click->y);
+}
+
+static void
+handle(struct action *act, const union event *ev)
+{
+	checkbox_handle(act->data, ev);
+}
+
+static void
+draw(struct action *act)
+{
+	checkbox_draw(act->data);
 }
 
 void
@@ -72,4 +86,16 @@ void
 checkbox_draw(const struct checkbox *cb)
 {
 	theme_draw_checkbox(cb->theme, cb);
+}
+
+void
+checkbox_action(struct checkbox *cb, struct action *act)
+{
+	assert(cb);
+	assert(act);
+
+	memset(act, 0, sizeof (*act));
+	act->data = cb;
+	act->handle = handle;
+	act->draw = draw;
 }

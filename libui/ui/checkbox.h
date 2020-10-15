@@ -22,11 +22,15 @@
 /**
  * \file checkbox.h
  * \brief GUI checkbox.
+ * \ingroup ui
  */
 
 #include <stdbool.h>
 
 union event;
+
+struct action;
+struct theme;
 
 /**
  * \brief GUI checkbox.
@@ -70,5 +74,27 @@ checkbox_handle(struct checkbox *cb, const union event *ev);
  */
 void
 checkbox_draw(const struct checkbox *cb);
+
+/**
+ * Convert the checkbox into an action.
+ *
+ * The following field will be set into the action:
+ *
+ * - act->data: points to cb (reference),
+ * - act->handle: a wrapper to checkbox_handle,
+ * - act->draw: a wrapper to checkbox_draw.
+ *
+ * The checkbox being an UI element is considered to never completes, as such
+ * you will need to handle this case or to use a custom update function.
+ *
+ * \note You will still need to check the checkbox state and reset it at some
+ *       point.
+ * \pre cb != NULL
+ * \pre act != NULL
+ * \param cb the checkbox to reference
+ * \param act the action to fill
+ */
+void
+checkbox_action(struct checkbox *cb, struct action *act);
 
 #endif /* !MOLKO_CHECKBOX_H */

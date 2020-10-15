@@ -17,11 +17,14 @@
  */
 
 #include <assert.h>
+#include <string.h>
 
+#include <core/action.h>
 #include <core/event.h>
 #include <core/maths.h>
 #include <core/painter.h>
 
+#include "align.h"
 #include "button.h"
 #include "label.h"
 #include "theme.h"
@@ -35,6 +38,18 @@ is_boxed(const struct button *button, const struct event_click *click)
 
 	return maths_is_boxed(button->x, button->y, button->w, button->h,
 	    click->x, click->y);
+}
+
+static void
+handle(struct action *act, const union event *ev)
+{
+	button_handle(act->data, ev);
+}
+
+static void
+draw(struct action *act)
+{
+	button_draw(act->data);
 }
 
 void
@@ -101,4 +116,16 @@ button_draw(struct button *button)
 	assert(button);
 
 	theme_draw_button(button->theme, button);
+}
+
+void
+button_action(struct button *button, struct action *act)
+{
+	assert(button);
+	assert(act);
+
+	memset(act, 0, sizeof (*act));
+	act->data = button;
+	act->handle = handle;
+	act->draw = draw;
 }

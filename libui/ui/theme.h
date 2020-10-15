@@ -22,6 +22,7 @@
 /**
  * \file theme.h
  * \brief Abstract theming.
+ * \ingroup ui
  */
 
 #include <stdbool.h>

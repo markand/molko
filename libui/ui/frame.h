@@ -22,8 +22,10 @@
 /**
  * \file frame.h
  * \brief GUI frame.
+ * \ingroup ui
  */
 
+struct action;
 struct theme;
 
 /**
@@ -65,5 +67,24 @@ frame_draw_default(struct theme *t, const struct frame *frame);
  */
 void
 frame_draw(const struct frame *frame);
+
+/**
+ * Convert the frame into an action.
+ *
+ * The following field will be set into the action:
+ *
+ * - act->data: points to frame (reference),
+ * - act->draw: a wrapper to checkbox_draw.
+ *
+ * The frame being an UI element is considered to never completes, as such
+ * you will need to handle this case or to use a custom update function.
+ *
+ * \pre frame != NULL
+ * \pre act != NULL
+ * \param frame the frame to reference
+ * \param act the action to fill
+ */
+void
+frame_action(struct frame *frame, struct action *act);
 
 #endif /* !MOLKO_FRAME_H */
