@@ -26,19 +26,3 @@ maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
 	       px <= x + (int)w &&
 	       py <= y + (int)h;
 }
-
-void
-maths_centerize(int *x,
-               int *y,
-               unsigned int w,
-               unsigned int h,
-               int px,
-               int py,
-               unsigned int pw,
-               unsigned int ph)
-{
-	if (x)
-		*x = px + (pw / 2) - (w / 2);
-	if (y)
-		*y = py + (ph / 2) - (h / 2);
-}

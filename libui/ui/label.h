@@ -24,6 +24,8 @@
  * \brief GUI label.
  */
 
+#include "align.h"
+
 struct theme;
 
 /**
@@ -32,34 +34,6 @@ struct theme;
 enum label_flags {
 	LABEL_FLAGS_NONE,                       /*!< No flags. */
 	LABEL_FLAGS_SHADOW      = (1 << 0),     /*!< Enable shadow. */
-};
-
-/**
- * \brief Label alignment in bounding box.
- *
- * The alignment is described as following:
- *
- * ```
- * +---------------------+
- * | 1        2        3 |
- * |                     |
- * | 8        0        4 |
- * |                     |
- * | 7        6        5 |
- * +---------------------+
- * ```
- */
-enum label_align {
-	LABEL_ALIGN_NONE,               /*!< No alignment. */
-	LABEL_ALIGN_CENTER,             /*!< Align to the center. */
-	LABEL_ALIGN_TOP_LEFT,           /*!< Top left. */
-	LABEL_ALIGN_TOP,                /*!< Top center (aligned horizontally). */
-	LABEL_ALIGN_TOP_RIGHT,          /*!< Top right. */
-	LABEL_ALIGN_RIGHT,              /*!< Right (aligned vertically). */
-	LABEL_ALIGN_BOTTOM_RIGHT,       /*!< Bottom right. */
-	LABEL_ALIGN_BOTTOM,             /*!< Bottom (aligned horizontally). */
-	LABEL_ALIGN_BOTTOM_LEFT,        /*!< Bottom left. */
-	LABEL_ALIGN_LEFT                /*!< Left (aligned vertically). */
 };
 
 /**
@@ -76,7 +50,7 @@ struct label {
 	unsigned int h;                 /*!< (+?) Height. */
 	const char *text;               /*!< (+&) Text to show. */
 	enum label_flags flags;         /*!< (+) Optional flags. */
-	enum label_align align;         /*!< (+) How to positionate label. */
+	enum align align;               /*!< (+) How to positionate label. */
 	struct theme *theme;            /*!< (+&?) Theme to use. */
 };
 

@@ -20,6 +20,8 @@ project(libui)
 
 set(
 	SOURCES
+	${libui_SOURCE_DIR}/ui/align.c
+	${libui_SOURCE_DIR}/ui/align.h
 	${libui_SOURCE_DIR}/ui/button.c
 	${libui_SOURCE_DIR}/ui/button.h
 	${libui_SOURCE_DIR}/ui/checkbox.c

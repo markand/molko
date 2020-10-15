@@ -58,7 +58,7 @@ run(void)
 			.w = W,
 			.h = H,
 			.text = "Top left",
-			.align = LABEL_ALIGN_TOP_LEFT
+			.align = ALIGN_TOP_LEFT
 		},
 		{
 			.x = 0,
@@ -66,7 +66,7 @@ run(void)
 			.w = W,
 			.h = H,
 			.text = "Top",
-			.align = LABEL_ALIGN_TOP
+			.align = ALIGN_TOP
 		},
 		{
 			.x = 0,
@@ -74,7 +74,7 @@ run(void)
 			.w = W,
 			.h = H,
 			.text = "Top right",
-			.align = LABEL_ALIGN_TOP_RIGHT
+			.align = ALIGN_TOP_RIGHT
 		},
 		{
 			.x = 0,
@@ -82,7 +82,7 @@ run(void)
 			.w = W,
 			.h = H,
 			.text = "Right",
-			.align = LABEL_ALIGN_RIGHT
+			.align = ALIGN_RIGHT
 		},
 		{
 			.x = 0,
@@ -90,7 +90,7 @@ run(void)
 			.w = W,
 			.h = H,
 			.text = "Bottom right",
-			.align = LABEL_ALIGN_BOTTOM_RIGHT
+			.align = ALIGN_BOTTOM_RIGHT
 		},
 		{
 			.x = 0,
@@ -98,7 +98,7 @@ run(void)
 			.w = W,
 			.h = H,
 			.text = "Bottom",
-			.align = LABEL_ALIGN_BOTTOM
+			.align = ALIGN_BOTTOM
 		},
 		{
 			.x = 0,
@@ -106,7 +106,7 @@ run(void)
 			.w = W,
 			.h = H,
 			.text = "Bottom left",
-			.align = LABEL_ALIGN_BOTTOM_LEFT
+			.align = ALIGN_BOTTOM_LEFT
 		},
 		{
 			.x = 0,
@@ -114,7 +114,7 @@ run(void)
 			.w = W,
 			.h = H,
 			.text = "Left",
-			.align = LABEL_ALIGN_LEFT
+			.align = ALIGN_LEFT
 		},
 		{
 			.x = 0,
@@ -123,7 +123,7 @@ run(void)
 			.h = H,
 			.text = "The world is Malikania.",
 			.flags = LABEL_FLAGS_SHADOW,
-			.align = LABEL_ALIGN_CENTER
+			.align = ALIGN_CENTER
 		},
 	};
 	struct label mlabel = {

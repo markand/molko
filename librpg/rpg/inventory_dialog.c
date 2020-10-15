@@ -195,7 +195,7 @@ inventory_dialog_open(struct inventory_dialog *dlg)
 	dlg->fname.x = dlg->lname.x = dlg->x;
 	dlg->fname.y = dlg->lname.y = dlg->y + GRID_HEIGHT;
 	dlg->lname.x += ITEM_PADDING;
-	dlg->lname.align = LABEL_ALIGN_LEFT;
+	dlg->lname.align = ALIGN_LEFT;
 
 	/* Description label. */
 	dlg->fdesc.w = dlg->ldesc.w = LABEL_WIDTH;
@@ -203,7 +203,7 @@ inventory_dialog_open(struct inventory_dialog *dlg)
 	dlg->fdesc.x = dlg->ldesc.x = dlg->y;
 	dlg->fdesc.y = dlg->ldesc.y = dlg->y + GRID_HEIGHT + (LABEL_HEIGHT / 2);
 	dlg->ldesc.x += ITEM_PADDING;
-	dlg->ldesc.align = LABEL_ALIGN_LEFT;
+	dlg->ldesc.align = ALIGN_LEFT;
 
 	/* Button sort. */
 	dlg->bsort.x = dlg->x;

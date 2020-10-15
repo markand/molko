@@ -30,6 +30,7 @@
 #include <core/trace.h>
 #include <core/util.h>
 
+#include <ui/align.h>
 #include <ui/frame.h>
 #include <ui/label.h>
 #include <ui/theme.h>
@@ -99,7 +100,7 @@ draw_lines(const struct message *msg)
 			.h = msg->h,
 			.theme = &theme,
 			.text = msg->text[i],
-			.align = LABEL_ALIGN_TOP_LEFT,
+			.align = ALIGN_TOP_LEFT,
 			.flags = LABEL_FLAGS_SHADOW
 		};
 
@@ -239,7 +240,7 @@ message_draw(struct message *msg)
 	h = msg->h * msg->scale;
 
 	/* Centerize within its drawing area. */
-	maths_centerize(&x, &y, w, h, msg->x, msg->y, msg->w, msg->h);
+	align(ALIGN_CENTER, &x, &y, w, h, msg->x, msg->y, msg->w, msg->h);
 
 	/* Draw and clear. */
 	texture_scale(&tex, 0, 0, msg->w, msg->h, x, y, w, h, 0);

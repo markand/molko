@@ -40,29 +40,4 @@
 bool
 maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py);
 
-/**
- * Update x, y to be centered into a parent region.
- *
- * You can select to ignore horizontal/vertical centering by passing NULL to x
- * or y respectively.
- *
- * \param x the pointer to x coordinate to modify
- * \param y the pointer yo y coordinate to modify
- * \param w the object width
- * \param h the object height
- * \param px the parent region start
- * \param py the parent region start
- * \param pw the parent region width
- * \param ph the parent region height
- */
-void
-maths_centerize(int *x,
-                int *y,
-                unsigned int w,
-                unsigned int h,
-                int px,
-                int py,
-                unsigned int pw,
-                unsigned int ph);
-
 #endif /* !MOLKO_MATHS_H */

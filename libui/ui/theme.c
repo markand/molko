@@ -30,6 +30,7 @@
 #include <core/assets/fonts/f25-bank-printer.h>
 #include <core/assets/fonts/comic-neue.h>
 
+#include "align.h"
 #include "button.h"
 #include "checkbox.h"
 #include "frame.h"
@@ -89,48 +90,11 @@ draw_label(struct theme *t, const struct label *label)
 	if (!font_box(font, label->text, &tw, &th))
 		panic();
 
-	/* Compute position according to alignment and box. */
-	switch (label->align) {
-	case LABEL_ALIGN_CENTER:
-		maths_centerize(&x, &y, tw, th, bx, by, bw, bh);
-		break;
-	case LABEL_ALIGN_TOP_LEFT:
-		x = bx;
-		y = by;
-		break;
-	case LABEL_ALIGN_TOP:
-		maths_centerize(&x, NULL, tw, th, bx, by, bw, bh);
-		y = by;
-		break;
-	case LABEL_ALIGN_TOP_RIGHT:
-		x = bx + bw - tw;
-		y = by;
-		break;
-	case LABEL_ALIGN_RIGHT:
-		maths_centerize(NULL, &y, tw, th, bx, by, bw, bh);
-		x = bx + bw - tw;
-		break;
-	case LABEL_ALIGN_BOTTOM_RIGHT:
-		x = bx + bw - tw;
-		y = by + bh - th;
-		break;
-	case LABEL_ALIGN_BOTTOM:
-		maths_centerize(&x, NULL, tw, th, bx, by, bw, bh);
-		y = by + bh - th;
-		break;
-	case LABEL_ALIGN_BOTTOM_LEFT:
-		x = bx;
-		y = by + bh - th;
-		break;
-	case LABEL_ALIGN_LEFT:
-		maths_centerize(NULL, &y, tw, th, bx, by, bw, bh);
-		x = bx;
-		break;
-	default:
-		x = label->x;
-		y = label->y;
-		break;
-	}
+	/* Align if needed. */
+	x = label->x;
+	y = label->y;
+
+	align(label->align, &x, &y, tw, th, bx, by, bw, bh);
 
 	/* Shadow text, only if enabled. */
 	if (label->flags & LABEL_FLAGS_SHADOW) {
@@ -188,7 +152,7 @@ draw_checkbox(struct theme *t, const struct checkbox *cb)
 
 		struct label label = {
 			.text = cb->label,
-			.align = LABEL_ALIGN_LEFT,
+			.align = ALIGN_LEFT,
 			.x = x,
 			.y = cb->y,
 			.w = w,

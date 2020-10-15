@@ -46,7 +46,7 @@ static struct label help = {
 	.y = 10,
 	.w = W,
 	.h = H,
-	.align = LABEL_ALIGN_TOP_LEFT,
+	.align = ALIGN_TOP_LEFT,
 	.flags = LABEL_FLAGS_SHADOW
 };
 

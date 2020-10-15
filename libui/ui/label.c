@@ -29,7 +29,7 @@ label_draw(const struct label *label)
 	assert(label);
 	assert(label->text);
 
-	if (label->align != LABEL_ALIGN_NONE && (label->w == 0 || label->h == 0))
+	if (label->align != ALIGN_NONE && (label->w == 0 || label->h == 0))
 		trace("label %p has alignment but null dimensions", label);
 
 	theme_draw_label(label->theme, label);
