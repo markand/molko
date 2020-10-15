@@ -50,7 +50,8 @@ enum label_flags {
  * ```
  */
 enum label_align {
-	LABEL_ALIGN_CENTER,             /*!< Align to the center (default). */
+	LABEL_ALIGN_NONE,               /*!< No alignment. */
+	LABEL_ALIGN_CENTER,             /*!< Align to the center. */
 	LABEL_ALIGN_TOP_LEFT,           /*!< Top left. */
 	LABEL_ALIGN_TOP,                /*!< Top center (aligned horizontally). */
 	LABEL_ALIGN_TOP_RIGHT,          /*!< Top right. */
@@ -63,12 +64,16 @@ enum label_align {
 
 /**
  * \brief GUI label.
+ *
+ * A label can be conveniently positioned using a bounding box and an alignment
+ * in that case the fields `w`, `h` and `align` must be specified, otherwise
+ * the label is drawn immediately at `x` and `y` field.
  */
 struct label {
 	int x;                          /*!< (+) Position in x. */
 	int y;                          /*!< (+) Position in y. */
-	unsigned int w;                 /*!< (+) Width. */
-	unsigned int h;                 /*!< (+) Height. */
+	unsigned int w;                 /*!< (+?) Width. */
+	unsigned int h;                 /*!< (+?) Height. */
 	const char *text;               /*!< (+&) Text to show. */
 	enum label_flags flags;         /*!< (+) Optional flags. */
 	enum label_align align;         /*!< (+) How to positionate label. */

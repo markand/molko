@@ -78,7 +78,7 @@ run(void)
 			}
 		}
 
-		painter_set_color(0xffffffff);
+		painter_set_color(0x4f8fbaff);
 		painter_clear();
 		trace_hud_update(elapsed);
 		trace_hud_draw();

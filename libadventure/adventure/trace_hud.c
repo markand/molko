@@ -100,7 +100,7 @@ trace_hud_draw(void)
 			.y = y,
 			.text = data.lines[i],
 			.theme = th,
-			.align = LABEL_ALIGN_TOP_LEFT
+			.flags = LABEL_FLAGS_SHADOW
 		});
 
 		y += font_height(th->fonts[THEME_FONT_INTERFACE]);

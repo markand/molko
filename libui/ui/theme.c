@@ -125,7 +125,10 @@ draw_label(struct theme *t, const struct label *label)
 	case LABEL_ALIGN_LEFT:
 		maths_centerize(NULL, &y, tw, th, bx, by, bw, bh);
 		x = bx;
+		break;
 	default:
+		x = label->x;
+		y = label->y;
 		break;
 	}
 

@@ -122,8 +122,12 @@ run(void)
 			.w = W,
 			.h = H,
 			.text = "The world is Malikania.",
-			.flags = LABEL_FLAGS_SHADOW
+			.flags = LABEL_FLAGS_SHADOW,
+			.align = LABEL_ALIGN_CENTER
 		},
+	};
+	struct label mlabel = {
+		.text = "This one follows your mouse and is not aligned."
 	};
 
 	clock_start(&clock);
@@ -136,6 +140,10 @@ run(void)
 
 		while (event_poll(&ev)) {
 			switch (ev.type) {
+			case EVENT_MOUSE:
+				mlabel.x = ev.mouse.x;
+				mlabel.y = ev.mouse.y;
+				break;
 			case EVENT_QUIT:
 				return;
 			default:
@@ -149,6 +157,7 @@ run(void)
 		for (size_t i = 0; i < NELEM(labels); ++i)
 			label_draw(&labels[i]);
 
+		label_draw(&mlabel);
 		painter_present();
 
 		if ((elapsed = clock_elapsed(&clock)) < 20)
