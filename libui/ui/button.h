@@ -74,6 +74,17 @@ void
 button_reset(struct button *button);
 
 /**
+ * Default drawing function.
+ *
+ * \pre t != NULL
+ * \pre frame != NULL
+ * \param t the theme
+ * \param button the button
+ */
+void
+button_draw_default(struct theme *t, const struct button *button);
+
+/**
  * Draw the button.
  *
  * \pre button != NULL

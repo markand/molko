@@ -20,8 +20,10 @@
 
 #include <core/event.h>
 #include <core/maths.h>
+#include <core/painter.h>
 
 #include "button.h"
+#include "label.h"
 #include "theme.h"
 
 static bool
@@ -33,6 +35,29 @@ is_boxed(const struct button *button, const struct event_click *click)
 
 	return maths_is_boxed(button->x, button->y, button->w, button->h,
 	    click->x, click->y);
+}
+
+void
+button_draw_default(struct theme *t, const struct button *button)
+{
+	assert(t);
+	assert(button);
+
+	(void)t;
+
+	const struct label label = {
+		.text = button->text,
+		.x = button->x,
+		.y = button->y,
+		.w = button->w,
+		.h = button->h,
+		.align = ALIGN_CENTER
+	};
+
+	painter_set_color(0x577277ff);
+	painter_draw_rectangle(button->x, button->y, button->w, button->h);
+
+	label_draw(&label);
 }
 
 void

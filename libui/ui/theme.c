@@ -39,129 +39,9 @@
 
 #define THEME(t) (t ? t : &default_theme)
 
-#define CHECKBOX_W 16
-#define CHECKBOX_H 16
-#define CHECKBOX_RAD 6
-
-static void
-box(int x, int y, unsigned int w, unsigned int h)
-{
-	/* Some basic outlines. */
-	painter_set_color(0x4d3533ff);
-
-	painter_draw_line(x, y, x + w, y);
-	painter_draw_line(x, y + h, x + w, y + h);
-	painter_draw_line(x, y, x, y + h);
-	painter_draw_line(x + w, y, x + w, y + h);
-}
-
-static void
-draw_frame(struct theme *t, const struct frame *frame)
-{
-	(void)t;
-
-	if (frame->style == FRAME_STYLE_BOX)
-		painter_set_color(0x6e4c30ff);
-	else
-		painter_set_color(0xce9248ff);
-
-	painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
-	box(frame->x, frame->y, frame->w, frame->h);
-}
-
-static void
-draw_label(struct theme *t, const struct label *label)
-{
-	struct font *font;
-	struct texture tex;
-	int x, y, bx, by;
-	unsigned int tw, th, bw, bh;
-
-	/* Compute real box size according to padding. */
-	bx = label->x + t->padding;
-	by = label->y + t->padding;
-	bw = label->w - (t->padding * 2);
-	bh = label->h - (t->padding * 2);
-
-	/* Make a shallow copy of the interface font. */
-	font = t->fonts[THEME_FONT_INTERFACE];
-
-	/* Compute text size. */
-	if (!font_box(font, label->text, &tw, &th))
-		panic();
-
-	/* Align if needed. */
-	x = label->x;
-	y = label->y;
-
-	align(label->align, &x, &y, tw, th, bx, by, bw, bh);
-
-	/* Shadow text, only if enabled. */
-	if (label->flags & LABEL_FLAGS_SHADOW) {
-		font->color = t->colors[THEME_COLOR_SHADOW];
-
-		if (!font_render(font, &tex, label->text))
-			panic();
-
-		texture_draw(&tex, x + 1, y + 1);
-		texture_finish(&tex);
-	}
-
-	/* Normal text. */
-	font->color = t->colors[THEME_COLOR_NORMAL];
-
-	if (!font_render(font, &tex, label->text))
-		panic();
-
-	texture_draw(&tex, x, y);
-	texture_finish(&tex);
-}
-
-static void
-draw_button(struct theme *t, const struct button *button)
-{
-	(void)t;
-
-	struct label label = {
-		.text = button->text,
-		.x = button->x,
-		.y = button->y,
-		.w = button->w,
-		.h = button->h
-	};
-
-	painter_set_color(0xabcdefff);
-	painter_draw_rectangle(button->x, button->y, button->w, button->h);
-
-	label_draw(&label);
-
-	box(button->x, button->y, button->w, button->h);
-}
-
-static void
-draw_checkbox(struct theme *t, const struct checkbox *cb)
-{
-	box(cb->x, cb->y, CHECKBOX_W, CHECKBOX_H);
-
-	if (cb->checked)
-		painter_draw_rectangle(cb->x + 5, cb->y + 5, CHECKBOX_W - 9, CHECKBOX_H - 9);
-
-	if (cb->label) {
-		const unsigned int w = cb->w - (t->padding * 2) - CHECKBOX_W;
-		const int x = cb->x + (t->padding * 2) + CHECKBOX_W;
-
-		struct label label = {
-			.text = cb->label,
-			.align = ALIGN_LEFT,
-			.x = x,
-			.y = cb->y,
-			.w = w,
-			.h = cb->h
-		};
-
-		draw_label(t, &label);
-	}
-}
+/* Default font catalog. */
+#define FONT(bin, size, index)                                          \
+	{ bin, sizeof (bin), size, &default_theme.fonts[index], {0} }
 
 /* Default theme. */
 static struct theme default_theme = {
@@ -171,15 +51,11 @@ static struct theme default_theme = {
 		[THEME_COLOR_SHADOW]    = 0x000000ff
 	},
 	.padding = 10,
-	.draw_frame = draw_frame,
-	.draw_label = draw_label,
-	.draw_button = draw_button,
-	.draw_checkbox = draw_checkbox
+	.draw_frame = frame_draw_default,
+	.draw_label = label_draw_default,
+	.draw_button = button_draw_default,
+	.draw_checkbox = checkbox_draw_default
 };
-
-/* Default font catalog. */
-#define FONT(bin, size, index)                                          \
-	{ bin, sizeof (bin), size, &default_theme.fonts[index], {0} }
 
 static struct font_catalog {
 	const unsigned char *data;
@@ -189,7 +65,7 @@ static struct font_catalog {
 	struct font font;
 } default_fonts[] = {
 	FONT(fonts_f25_bank_printer, 10, THEME_FONT_DEBUG),
-	FONT(fonts_comic_neue, 20, THEME_FONT_INTERFACE)
+	FONT(fonts_comic_neue, 18, THEME_FONT_INTERFACE)
 };
 
 bool

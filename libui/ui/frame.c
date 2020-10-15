@@ -18,8 +18,26 @@
 
 #include <assert.h>
 
+#include <core/painter.h>
+
 #include "frame.h"
 #include "theme.h"
+
+void
+frame_draw_default(struct theme *t, const struct frame *frame)
+{
+	assert(t);
+	assert(frame);
+
+	(void)t;
+
+	if (frame->style == FRAME_STYLE_BOX)
+		painter_set_color(0x7a4841ff);
+	else
+		painter_set_color(0xad7757ff);
+
+	painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
+}
 
 void
 frame_draw(const struct frame *frame)

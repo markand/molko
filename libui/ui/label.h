@@ -55,6 +55,17 @@ struct label {
 };
 
 /**
+ * Default drawing function.
+ *
+ * \pre t != NULL
+ * \pre label != NULL
+ * \param t the theme
+ * \param label the label
+ */
+void
+label_draw_default(struct theme *t, const struct label *label);
+
+/**
  * Draw the label.
  *
  * \pre label != NULL

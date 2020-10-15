@@ -32,6 +32,7 @@ molko_define_executable(
 	TARGET example-font
 	SOURCES example-font.c
 	LIBRARIES libui
+	FOLDER examples
 )
 
 molko_define_executable(
@@ -49,6 +50,7 @@ molko_define_executable(
 	TARGET example-label
 	SOURCES example-label.c
 	LIBRARIES libui
+	FOLDER examples
 )
 
 molko_define_executable(
@@ -81,4 +83,11 @@ molko_define_executable(
 	SOURCES example-trace.c
 	FOLDER examples
 	LIBRARIES libui libadventure
+)
+
+molko_define_executable(
+	TARGET example-ui
+	SOURCES example-ui.c
+	FOLDER examples
+	LIBRARIES libui
 )

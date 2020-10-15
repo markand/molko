@@ -36,10 +36,20 @@ struct checkbox {
 	int y;                  /*!< (+) Position in y. */
 	unsigned int w;         /*!< (+) Width. */
 	unsigned int h;         /*!< (+) Height. */
-	const char *label;      /*!< (+&) Text to show. */
 	bool checked;           /*!< (+) Is activated? */
 	struct theme *theme;    /*!< (+&?) Theme to use. */
 };
+
+/**
+ * Default drawing function.
+ *
+ * \pre t != NULL
+ * \pre cb != NULL
+ * \param t the theme
+ * \param cb the checkbox
+ */
+void
+checkbox_draw_default(struct theme *t, const struct checkbox *cb);
 
 /**
  * Draw the checkbox.

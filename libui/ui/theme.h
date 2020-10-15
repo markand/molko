@@ -138,15 +138,6 @@ void
 theme_shallow(struct theme *dst, const struct theme *src);
 
 /**
- * Get the desired padding between GUI elements.
- *
- * \param t the theme to use (may be NULL)
- * \return the padding in pixels
- */
-unsigned int
-theme_padding(const struct theme *t);
-
-/**
  * Draw a frame.
  *
  * \pre frame != NULL

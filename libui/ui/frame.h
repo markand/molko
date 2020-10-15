@@ -47,6 +47,17 @@ struct frame {
 };
 
 /**
+ * Default drawing function.
+ *
+ * \pre t != NULL
+ * \pre frame != NULL
+ * \param t the theme
+ * \param frame the frame
+ */
+void
+frame_draw_default(struct theme *t, const struct frame *frame);
+
+/**
  * Draw the frame.
  *
  * \pre frame != NULL
