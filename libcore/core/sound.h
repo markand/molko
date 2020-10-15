@@ -39,8 +39,8 @@ enum sound_flags {
  * \brief Sound chunk.
  */
 struct sound {
-	enum sound_flags flags;         /*!< (RW) Flags. */
-	void *handle;                   /*!< (RO) Native handle. */
+	enum sound_flags flags;         /*!< (+) Flags. */
+	void *handle;                   /*!< (*) Native handle. */
 };
 
 /**

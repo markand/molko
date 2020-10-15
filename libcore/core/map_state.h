@@ -38,8 +38,8 @@ extern struct map_state_data {
 	 * Map properties.
 	 */
 	struct {
-		struct map_data data;   /*!< (RW) Map data. */
-		struct map map;         /*!< (RW) Map object. */
+		struct map_data data;   /*!< (+) Map data. */
+		struct map map;         /*!< (+) Map object. */
 	} map;
 
 	/**
@@ -49,20 +49,20 @@ extern struct map_state_data {
 	 * the view as well.
 	 */
 	struct {
-		struct sprite sprite;   /*!< (RW) The sprite to use */
-		int x;                  /*!< (RO) Player position in x */
-		int y;                  /*!< (RO) Player position in y */
-		int angle;              /*!< (RO) Player angle (see walksprite) */
+		struct sprite sprite;   /*!< (+) The sprite to use */
+		int x;                  /*!< (+) Player position in x */
+		int y;                  /*!< (+) Player position in y */
+		int angle;              /*!< (+) Player angle (see walksprite) */
 	} player;
 
 	/**
 	 * Position and size of the view.
 	 */
 	struct {
-		int x;                  /*!< (RW) Position in x */
-		int y;                  /*!< (RW) Position in y */
-		unsigned int w;         /*!< (RO) View width */
-		unsigned int h;         /*!< (RO) View height */
+		int x;                  /*!< (+) Position in x */
+		int y;                  /*!< (+) Position in y */
+		unsigned int w;         /*!< (+) View width */
+		unsigned int h;         /*!< (+) View height */
 	} view;
 } map_state_data; /*!< Access to data. */
 

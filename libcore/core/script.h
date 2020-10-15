@@ -34,7 +34,6 @@
  *
  * 1. Create a script with see \ref script_init,
  * 2. Create one or more actions and append with \ref script_append,
- * 3. Put the script into the game using \ref game_add_action.
  *
  * \warning You must always call \ref script_init before using this object.
  */
@@ -59,9 +58,9 @@ union event;
  * manually don't forget to adjust actionsz field accordingly.
  */
 struct script {
-	struct action *actions[SCRIPT_ACTION_MAX];	/*!< (RW, ref) Array of actions. */
-	size_t actionsz;                                /*!< (RO) Number of actions in array. */
-	size_t cur;                                     /*!< (RO) Current action index.*/
+	struct action *actions[SCRIPT_ACTION_MAX];	/*!< (+&?) Array of actions. */
+	size_t actionsz;                                /*!< (-) Number of actions in array. */
+	size_t cur;                                     /*!< (-) Current action index.*/
 };
 
 /**

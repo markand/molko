@@ -43,7 +43,7 @@
  * \brief Map layer.
  */
 struct map_layer {
-	unsigned short *tiles;          /*!< (RO) Array of tiles, depending on the map size. */
+	unsigned short *tiles;          /*!< (+) Array of tiles, depending on the map size. */
 };
 
 /**
@@ -53,17 +53,17 @@ struct map_layer {
  * logic and is left for game state.
  */
 struct map_data {
-	char title[MAP_TITLE_MAX];      /*!< (RW) The map title. */
-	char tileset[MAP_TILESET_MAX];  /*!< (RO) Name of tileset to use. */
-	int origin_x;                   /*!< (RO) Where the player starts in X. */
-	int origin_y;                   /*!< (RO) Where the player starts in Y. */
-	unsigned int real_w;            /*!< (RO) Real width in pixels. */
-	unsigned int real_h;            /*!< (RO) Real height in pixels. */
-	unsigned int w;                 /*!< (RO) Map width in cells. */
-	unsigned int h;                 /*!< (RO) Map height in cells. */
-	unsigned short tile_w;          /*!< (RO) Pixels per cell (width). */
-	unsigned short tile_h;          /*!< (RO) Pixels per cell (height). */
-	struct map_layer layers[2];     /*!< (RO) Layers (background, foreground). */
+	char title[MAP_TITLE_MAX];      /*!< (+) The map title. */
+	char tileset[MAP_TILESET_MAX];  /*!< (+) Name of tileset to use. */
+	int origin_x;                   /*!< (+) Where the player starts in X. */
+	int origin_y;                   /*!< (+) Where the player starts in Y. */
+	unsigned int real_w;            /*!< (-) Real width in pixels. */
+	unsigned int real_h;            /*!< (-) Real height in pixels. */
+	unsigned int w;                 /*!< (-) Map width in cells. */
+	unsigned int h;                 /*!< (-) Map height in cells. */
+	unsigned short tile_w;          /*!< (-) Pixels per cell (width). */
+	unsigned short tile_h;          /*!< (-) Pixels per cell (height). */
+	struct map_layer layers[2];     /*!< (+) Layers (background, foreground). */
 };
 
 /**
@@ -72,9 +72,9 @@ struct map_data {
  * This structure reference a map and perform drawing operations.
  */
 struct map {
-	struct map_data *data;          /*!< (RW, ref) Map data. */
-	struct texture *tileset;        /*!< (RW, ref) Tileset to use. */
-	struct texture picture;         /*!< (RO) Map drawn into a picture. */
+	struct map_data *data;          /*!< (+&) Map data. */
+	struct texture *tileset;        /*!< (+&) Tileset to use. */
+	struct texture picture;         /*!< (-) Map drawn into a picture. */
 };
 
 /**

@@ -40,19 +40,19 @@ enum inventory_dialog_state {
  * \brief Inventory dialog.
  */
 struct inventory_dialog {
-	int x;                                  /*!< (RW) Position in x. */
-	int y;                                  /*!< (RW) Position in y. */
-	struct inventory *inv;                  /*!< (RW, ref) Inventory to use. */
-	struct theme *theme;                    /*!< (RW, ref, optional) Theme to use. */
-	struct button bsort;                    /*!< (RO) Button sort. */
-	struct frame fgrid;                     /*!< (RO) Grid frame. */
-	struct frame fname;                     /*!< (RO) Frame for name. */
-	struct frame fdesc;                     /*!< (RO) Frame for description. */
-	struct label lname;                     /*!< (RO) Label for name. */
-	struct label ldesc;                     /*!< (RO) Label for description. */
-	enum inventory_dialog_state state;      /*!< (RO) Current dialog state. */
-	unsigned int selrow;                    /*!< (RO) Current selected row. */
-	unsigned int selcol;                    /*!< (RO) Current selected column. */
+	int x;                                  /*!< (+) Position in x. */
+	int y;                                  /*!< (+) Position in y. */
+	struct inventory *inv;                  /*!< (+&) Inventory to use. */
+	struct theme *theme;                    /*!< (+&?) Theme to use. */
+	struct button bsort;                    /*!< (-) Button sort. */
+	struct frame fgrid;                     /*!< (-) Grid frame. */
+	struct frame fname;                     /*!< (-) Frame for name. */
+	struct frame fdesc;                     /*!< (-) Frame for description. */
+	struct label lname;                     /*!< (-) Label for name. */
+	struct label ldesc;                     /*!< (-) Label for description. */
+	enum inventory_dialog_state state;      /*!< (-) Current dialog state. */
+	unsigned int selrow;                    /*!< (-) Current selected row. */
+	unsigned int selcol;                    /*!< (-) Current selected column. */
 };
 
 void

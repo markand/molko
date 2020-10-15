@@ -34,11 +34,11 @@ struct sprite;
  * \brief Animation object
  */
 struct animation {
-	struct sprite *sprite;  /*!< (RW, ref) Sprite to use. */
-	unsigned int row;       /*!< (RO) Current row. */
-	unsigned int column;    /*!< (RO) Current column. */
-	unsigned int delay;     /*!< (RO) Delay between frames. */
-	unsigned int elapsed;   /*!< (RO) Elapsed time since last frame. */
+	struct sprite *sprite;  /*!< (+&) Sprite to use. */
+	unsigned int row;       /*!< (-) Current row. */
+	unsigned int column;    /*!< (-) Current column. */
+	unsigned int delay;     /*!< (-) Delay between frames. */
+	unsigned int elapsed;   /*!< (-) Elapsed time since last frame. */
 };
 
 /**

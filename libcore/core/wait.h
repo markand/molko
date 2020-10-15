@@ -56,8 +56,8 @@ struct action;
  * \brief Wait action.
  */
 struct wait {
-	unsigned int delay;             /*!< (RW) Time to wait in milliseconds */
-	unsigned int elapsed;           /*!< (RO) Elapsed time */
+	unsigned int delay;             /*!< (+) Time to wait in milliseconds */
+	unsigned int elapsed;           /*!< (-) Elapsed time */
 };
 
 /**

@@ -33,9 +33,9 @@
  * \brief Texture object.
  */
 struct texture {
-	unsigned int w;         /*!< (RO) Texture width. */
-	unsigned int h;         /*!< (RO) Texture height. */
-	void *handle;           /*!< (RO) Native handle. */
+	unsigned int w;         /*!< (-) Texture width. */
+	unsigned int h;         /*!< (-) Texture height. */
+	void *handle;           /*!< (*) Native handle. */
 };
 
 /**

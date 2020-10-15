@@ -35,8 +35,8 @@ struct theme;
  * \brief Trace HUD options.
  */
 struct trace_hud {
-	struct theme *theme;	/*!< (RW, ref, optional) Theme to use. */
-	unsigned int timeout;   /*!< (RW) Timeout to remove messages. */
+	struct theme *theme;	/*!< (+&?) Theme to use. */
+	unsigned int timeout;   /*!< (+) Timeout to remove messages. */
 };
 
 /**

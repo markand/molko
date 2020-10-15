@@ -38,12 +38,12 @@ enum frame_style {
  * \brief GUI frame.
  */
 struct frame {
-	int x;                  /*!< (RW) Position in x. */
-	int y;                  /*!< (RW) Position in y. */
-	unsigned int w;         /*!< (RW) Width. */
-	unsigned int h;         /*!< (RW) Height. */
-	enum frame_style style; /*!< (RW) Frame style. */
-	struct theme *theme;    /*!< (RW, ref, optional) Theme to use. */
+	int x;                  /*!< (+) Position in x. */
+	int y;                  /*!< (+) Position in y. */
+	unsigned int w;         /*!< (+) Width. */
+	unsigned int h;         /*!< (+) Height. */
+	enum frame_style style; /*!< (+) Frame style. */
+	struct theme *theme;    /*!< (+&?) Theme to use. */
 };
 
 /**

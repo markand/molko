@@ -41,13 +41,13 @@ enum button_state {
  * \brief GUI button.
  */
 struct button {
-	int x;                          /*!< (RW) Position in x. */
-	int y;                          /*!< (RW) Position in y. */
-	unsigned int w;                 /*!< (RW) Width. */
-	unsigned int h;                 /*!< (RW) Height. */
-	const char *text;               /*!< (RW, ref) Text to draw. */
-	enum button_state state;        /*!< (RW) Button state. */
-	struct theme *theme;            /*!< (RW, ref, optional) Theme to use. */
+	int x;                          /*!< (+) Position in x. */
+	int y;                          /*!< (+) Position in y. */
+	unsigned int w;                 /*!< (+) Width. */
+	unsigned int h;                 /*!< (+) Height. */
+	const char *text;               /*!< (+&) Text to draw. */
+	enum button_state state;        /*!< (+) Button state. */
+	struct theme *theme;            /*!< (+&?) Theme to use. */
 };
 
 /**

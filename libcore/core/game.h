@@ -26,7 +26,6 @@
 
 #include <stdbool.h>
 
-#include "action.h"
 #include "inhibit.h"
 
 /**
@@ -43,14 +42,11 @@ union event;
  */
 struct game {
 	/* Inhibition */
-	enum inhibit inhibit;           /*!< (RW) What to disable. */
+	enum inhibit inhibit;           /*!< (+) What to disable. */
 
 	/* Game states. */
-	struct state *state;            /*!< (RO) Current state  */
-	struct state *state_next;       /*!< (RO) Next state */
-
-	/** Array of actions. */
-	struct action actions[GAME_ACTIONS_MAX];
+	struct state *state;            /*!< (-) Current state  */
+	struct state *state_next;       /*!< (-) Next state */
 };
 
 /**
@@ -92,19 +88,6 @@ game_update(unsigned int ticks);
  */
 void
 game_draw(void);
-
-/**
- * Add an action to the game.
- *
- * If there are no room for the action, action is discarded. Make sure to not
- * exceed the limit GAME_ACTIONS_MAX.
- *
- * \pre action != NULL
- * \param action the action to copy
- * \note The core API **never** add actions by itself.
- */
-void
-game_add_action(const struct action *action);
 
 /**
  * Stop the game.

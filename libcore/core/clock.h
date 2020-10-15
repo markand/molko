@@ -29,7 +29,7 @@
  * \brief Clock structure.
  */
 struct clock {
-	unsigned int ticks;     /*!< time point on initialization */
+	unsigned int ticks;     /*!< (-) Time point on initialization. */
 };
 
 /**

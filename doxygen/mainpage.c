@@ -51,7 +51,7 @@
  * with _p.h are usually reserved for the implementation and should not be used
  * unless you know what you're doing.
  *
- * # Documentation convention
+ * # Documentation nomenclature
  *
  * Every modules are organized per files and referenced this way. For example,
  * if you need to access the error handling, you just have to use \ref error.h
@@ -60,11 +60,39 @@
  * ## Structures
  *
  * Almost every structure are exposed directly to the user and allocated on the
- * stack. Each member is documented with the following prefix:
+ * stack. Each member is documented with the following prefix format (XYZ)
+ * where:
  *
- * - `(RW)`: The property is readable/editable by the user,
- * - `(RO)`: The property is readable by the user,
- * - `(PV)`: The property is not meant to be used directly by the user.
+ * The letter *X* defines the following restriction
+ *
+ * - `+`: The property is readable/editable by the user,
+ * - `-`: The property is readable by the user,
+ * - `*`: The property is not meant to be used directly by the user.
+ *
+ * The letter *Y* can be set to `&` in that case means it is only referenced
+ * and is not an owned property (usually a non-owning pointer). Which means
+ * user is responsible for deallocation if required.
+ *
+ * The finall letter *Z* can be set to `?` which means it is optional (like a
+ * nullable pointer).
+ *
+ * Examples:
+ *
+ * ```c
+ * struct foo {
+ *     int x;                // (+) Position in x.
+ *     int y;                // (+) Position in y.
+ *     struct theme *th;     // (+&?) Theme to use.
+ *     unsigned int elapsed; // (-) Elapsed time since last frame.
+ *     struct texture text;  // (*) Texture used for rendering.
+ * };
+ * ```
+ *
+ * Within this structure, the fields `x` and `y` are completely accessible to
+ * the user for both reading/writing. The field `th` is an optional non-owning
+ * pointer to a theme which is also readable/writable. The field `elapsed` is
+ * readable but should not be modified. Finally, the field `text` is private
+ * and should not be touched by the user.
  *
  * ## Functions
  *
@@ -115,7 +143,7 @@
  * ## Modules
  *
  * Whenever possible, functions that needs a structure context will always take
- * it as first argument. Opaque structures may be returned by pointers instead.
+ * it as first argument.
  *
  * This let the user to control lifetime and allocation storage for most of the
  * API objects.
@@ -129,21 +157,13 @@
  * clock_elapsed(&clock);
  * \endcode
  *
- * Example (opaque object):
- *
- * \code
- * struct texture *tex;
- *
- * tex = image_openf("foo.png");
- * \endcode
- *
  * ## Thread safety and reentrancy
  *
  * The core API is **not** thread-safe at all. Any module must always be used in
  * a single thread unless you really know what you're doing.
  *
- * Most of the API is reentrant though except the \ref window.h and \ref error.h
- * which use global objects.
+ * Most of the API is reentrant though except the some modules which use global
+ * objects.
  *
  * \note This may change in the future.
  *
@@ -152,13 +172,4 @@
  * Functions that may fail usually return a boolean. If an error occured, it is
  * stored in a global variable that are accessed through the \ref error.h
  * module.
- *
- * However, functions returning an opaque object may return NULL instead.
- *
- * Example:
- *
- * \code
- * if (!sys_init())
- * 	error_fatalf(); // Print an error and exits.
- * \endcode
  */

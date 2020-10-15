@@ -46,38 +46,38 @@ enum event_type {
  * \brief Key event.
  */
 struct event_key {
-	enum event_type type;           /*!< EVENT_KEYDOWN or EVENT_KEYUP */
-	enum key key;                   /*!< Which key */
+	enum event_type type;           /*!< (+) EVENT_KEYDOWN or EVENT_KEYUP */
+	enum key key;                   /*!< (+) Which key */
 };
 
 /**
  * \brief Mouse motion event.
  */
 struct event_mouse {
-	enum event_type type;           /*!< EVENT_MOUSE */
-	enum mouse_button buttons;      /*!< OR'ed buttons that are pressed */
-	int x;                          /*!< Mouse position in x */
-	int y;                          /*!< Mouse position in y */
+	enum event_type type;           /*!< (+) EVENT_MOUSE */
+	enum mouse_button buttons;      /*!< (+) OR'ed buttons that are pressed */
+	int x;                          /*!< (+) Mouse position in x */
+	int y;                          /*!< (+) Mouse position in y */
 };
 
 /**
  * \brief Mouse click event.
  */
 struct event_click {
-	enum event_type type;           /*!< EVENT_CLICKDOWN or EVENT_CLICKUP */
-	enum mouse_button button;       /*!< Unique button that was pressed */
-	int x;                          /*!< Mouse position in x */
-	int y;                          /*!< Mouse position in y */
+	enum event_type type;           /*!< (+) EVENT_CLICKDOWN or EVENT_CLICKUP */
+	enum mouse_button button;       /*!< (+) Unique button that was pressed */
+	int x;                          /*!< (+) Mouse position in x */
+	int y;                          /*!< (+) Mouse position in y */
 };
 
 /**
  * \brief Store events.
  */
 union event {
-	enum event_type type;           /*!< Which kind of event */
-	struct event_key key;           /*!< Key event */
-	struct event_mouse mouse;       /*!< Mouse motion event */
-	struct event_click click;       /*!< Mouse click event */
+	enum event_type type;           /*!< (+) Which kind of event */
+	struct event_key key;           /*!< (+) Key event */
+	struct event_mouse mouse;       /*!< (+) Mouse motion event */
+	struct event_click click;       /*!< (+) Mouse click event */
 };
 
 /**

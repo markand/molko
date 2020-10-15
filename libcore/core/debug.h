@@ -79,7 +79,7 @@ struct theme;
  * in core API.
  */
 struct debug_options {
-	bool enable;                    /*!< (RW) Enable core API debugging. */
+	bool enable;                    /*!< (+) Enable core API debugging. */
 };
 
 /**
@@ -88,9 +88,9 @@ struct debug_options {
  * Use this structure each time you need to print one or more messages.
  */
 struct debug_report {
-	struct theme *theme;            /*!< (RW, ref, optional) Theme to use. */
-	unsigned long color;            /*!< (RW) Font foreground color to use. */
-	unsigned int count;             /*!< (PV) Number of messages already printed. */
+	struct theme *theme;            /*!< (+&?) Theme to use. */
+	unsigned long color;            /*!< (+) Font foreground color to use. */
+	unsigned int count;             /*!< (-) Number of messages already printed. */
 };
 
 /**

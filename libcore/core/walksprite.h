@@ -58,10 +58,10 @@ struct sprite;
  * ```
  */
 struct walksprite {
-	struct sprite *sprite;  /*!< (RW) The sprite to use */
-	unsigned int delay;     /*!< (RW) The delay between frames */
-	unsigned int index;     /*!< (RO) Current column index */
-	unsigned int elapsed;   /*!< (RO) Elapsed time since last frame */
+	struct sprite *sprite;  /*!< (+&) The sprite to use */
+	unsigned int delay;     /*!< (+) The delay between frames */
+	unsigned int index;     /*!< (-) Current column index */
+	unsigned int elapsed;   /*!< (-) Elapsed time since last frame */
 };
 
 /**

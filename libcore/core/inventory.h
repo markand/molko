@@ -43,8 +43,8 @@ struct item;
  * and has a given amount of it.
  */
 struct inventory_slot {
-	struct item *item;      /*!< (RO, ref) Pointer to the item. */
-	unsigned int amount;    /*!< (RO) Number of items in this slot. */
+	struct item *item;      /*!< (+&?) Pointer to the item. */
+	unsigned int amount;    /*!< (-) Number of items in this slot. */
 };
 
 /**
@@ -52,9 +52,7 @@ struct inventory_slot {
  */
 struct inventory {
 	/**
-	 * (RW)
-	 *
-	 * Grid of objects.
+	 * (-) Grid of objects.
 	 */
 	struct inventory_slot items[INVENTORY_ROWS_MAX][INVENTORY_COLS_MAX];
 };

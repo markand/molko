@@ -65,14 +65,14 @@ enum label_align {
  * \brief GUI label.
  */
 struct label {
-	int x;                  /*!< (RW) Position in x. */
-	int y;                  /*!< (RW) Position in y. */
-	unsigned int w;         /*!< (RW) Width. */
-	unsigned int h;         /*!< (RW) Height. */
-	const char *text;       /*!< (RW, ref) Text to show. */
-	enum label_flags flags; /*!< (RW) Optional flags. */
-	enum label_align align; /*!< (RW) How to positionate label. */
-	struct theme *theme;    /*!< (RW, ref, optional) Theme to use. */
+	int x;                          /*!< (+) Position in x. */
+	int y;                          /*!< (+) Position in y. */
+	unsigned int w;                 /*!< (+) Width. */
+	unsigned int h;                 /*!< (+) Height. */
+	const char *text;               /*!< (+&) Text to show. */
+	enum label_flags flags;         /*!< (+) Optional flags. */
+	enum label_align align;         /*!< (+) How to positionate label. */
+	struct theme *theme;            /*!< (+&?) Theme to use. */
 };
 
 /**

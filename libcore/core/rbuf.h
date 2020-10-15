@@ -31,8 +31,8 @@
  * \brief Input object to store progression.
  */
 struct rbuf {
-	const char *s;  /*!< (RO) Pointer to current character. */
-	const char *e;  /*!< (RO) Pointer to end of array. */
+	const char *s;  /*!< (-) Pointer to current character. */
+	const char *e;  /*!< (-) Pointer to end of array. */
 };
 
 /**

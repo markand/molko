@@ -26,72 +26,6 @@
 
 struct game game;
 
-#if 0
-
-static struct action *
-find_empty_action(void)
-{
-	static struct action null;
-
-	for (struct action *a = game.actions; a != &game.actions[GAME_ACTIONS_MAX]; ++a)
-		if (memcmp(a, &null, sizeof (struct action)) == 0)
-			return a;
-
-	return NULL;
-}
-
-static void
-clear_actions(void)
-{
-	for (struct action *a = game.actions; a != &game.actions[GAME_ACTIONS_MAX]; ++a) {
-		/* These actions are removed on state change. */
-		if (a->flags & ACTION_AUTO_LEAVE) {
-			if (a->finish)
-				a->finish(a);
-
-			memset(a, 0, sizeof (struct action));
-		}
-	}
-}
-
-static void
-handle_actions(const union event *event)
-{
-	for (struct action *a = game.actions; a != &game.actions[GAME_ACTIONS_MAX]; ++a)
-		if (a->handle)
-			a->handle(a, event);
-}
-
-static void
-update_actions(unsigned int ticks)
-{
-	for (size_t i = 0; i < GAME_ACTIONS_MAX; ++i) {
-		struct action *a = &game.actions[i];
-
-		if (!a->update)
-			continue;
-
-		if (a->update(a, ticks)) {
-			if (a->end)
-				a->end(a);
-			if (a->finish)
-				a->finish(a);
-
-			memset(&game.actions[i], 0, sizeof (struct action));
-		}
-	}
-}
-
-static void
-draw_actions(void)
-{
-	for (size_t i = 0; i < GAME_ACTIONS_MAX; ++i)
-		if (game.actions[i].draw)
-			game.actions[i].draw(&game.actions[i]);
-}
-
-#endif
-
 void
 game_switch(struct state *state, bool quick)
 {
@@ -112,10 +46,6 @@ game_handle(const union event *event)
 
 	if (game.state && !(game.inhibit & INHIBIT_STATE_INPUT))
 		game.state->handle(event);
-
-#if 0
-	handle_actions(event);
-#endif
 }
 
 void
@@ -131,20 +61,11 @@ game_update(unsigned int ticks)
 			game.state = game.state_next;
 			game.state->enter();
 			game.state_next = NULL;
-
-#if 0
-			/* Remove any actions that must be deleted. */
-			clear_actions();
-#endif
 		}
 
 		if (game.state)
 			game.state->update(ticks);
 	}
-
-#if 0
-	update_actions(ticks);
-#endif
 }
 
 void
@@ -153,24 +74,8 @@ game_draw(void)
 	if (game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
 		game.state->draw();
 
-#if 0
-	draw_actions();
-#endif
 	painter_present();
 }
-
-#if 0
-void
-game_add_action(const struct action *action)
-{
-	assert(action);
-
-	struct action *pos;
-
-	if ((pos = find_empty_action()))
-		memcpy(pos, action, sizeof (struct action));
-}
-#endif
 
 void
 game_quit(void)

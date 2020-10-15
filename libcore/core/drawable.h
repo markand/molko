@@ -37,12 +37,12 @@
  * This structure is used to
  */
 struct drawable {
-	void *data;     /*!< (RW) Drawable data. */
-	int x;          /*!< (RW) X coordinate if necessary. */
-	int y;          /*!< (RW) Y coordinate if necessary. */
+	void *data;     /*!< (+&?) Drawable data. */
+	int x;          /*!< (+) X coordinate if necessary. */
+	int y;          /*!< (+) Y coordinate if necessary. */
 
 	/**
-	 * Update this drawable.
+	 * (+?) Update this drawable.
 	 *
 	 * \param dw the drawable object
 	 * \param ticks the number of ticks since last frame
@@ -51,23 +51,21 @@ struct drawable {
 	bool (*update)(struct drawable *dw, unsigned int ticks);
 
 	/**
-	 * Draw this drawable.
+	 * (+?) Draw this drawable.
 	 *
 	 * \param dw the drawable object
 	 */
 	void (*draw)(struct drawable *dw);
 
 	/**
-	 * (RW)
-	 *
-	 * Called immediately after the drawable ended.
+	 * (+?) Called when drawable finished.
 	 *
 	 * \param act this action
 	 */
 	void (*end)(struct drawable *act);
 	
 	/**
-	 * Destroy the drawable if necessary.
+	 * (+?) Destroy the drawable if necessary.
 	 *
 	 * \note This function is optional and can be NULL.
 	 * \param dw the drawable object
@@ -122,7 +120,7 @@ drawable_finish(struct drawable *dw);
  * You can add, clear, update and draw them.
  */
 struct drawable_stack {
-	struct drawable *objects[DRAWABLE_STACK_MAX];   /*!< (RW) Drawables. */
+	struct drawable *objects[DRAWABLE_STACK_MAX];   /*!< (+&?) Drawables. */
 };
 
 /**

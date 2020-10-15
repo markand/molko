@@ -57,22 +57,22 @@ enum theme_color {
  */
 struct theme {
 	/**
-	 * (RW, ref) Fonts catalog.
+	 * (+&) Fonts catalog.
 	 */
 	struct font *fonts[THEME_FONT_LAST];
 
 	/**
-	 * (RW) Miscellaneous colors.
+	 * (+) Miscellaneous colors.
 	 */
 	unsigned long colors[THEME_COLOR_LAST];
 
 	/**
-	 * (RW) Padding between GUI elements.
+	 * (+) Padding between GUI elements.
 	 */
 	unsigned int padding;
 
 	/**
-	 * Draw a frame.
+	 * (+) Draw a frame.
 	 *
 	 * This function is used to draw a box usually as a container where UI
 	 * elements will be put.
@@ -82,21 +82,21 @@ struct theme {
 	void (*draw_frame)(struct theme *, const struct frame *);
 
 	/**
-	 * Draw a label.
+	 * (+) Draw a label.
 	 *
 	 * \see \ref theme_draw_label
 	 */
 	void (*draw_label)(struct theme *, const struct label *);
 
 	/**
-	 * Draw a button.
+	 * (+) Draw a button.
 	 *
 	 * \see \ref theme_draw_button
 	 */
 	void (*draw_button)(struct theme *, const struct button *);
 
 	/**
-	 * Draw a checkbox.
+	 * (+) Draw a checkbox.
 	 *
 	 * \see \ref theme_draw_button
 	 */

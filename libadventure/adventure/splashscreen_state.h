@@ -30,11 +30,11 @@
  * \brief Data for splashscreen.
  */
 extern struct splashscreen_state_data {
-	struct texture text;            /*!< (RW) Texture for the text. */
-	int x;                          /*!< (RW) Position in x. */
-	int y;                          /*!< (RW) Position in y. */
-	unsigned int elapsed;           /*!< (RW) Time elapsed. */
-} splashscreen_state_data;              /*!< (RW) Global state data. */
+	struct texture text;            /*!< (+) Texture for the text. */
+	int x;                          /*!< (+) Position in x. */
+	int y;                          /*!< (+) Position in y. */
+	unsigned int elapsed;           /*!< (+) Time elapsed. */
+} splashscreen_state_data;              /*!< (+) Global state data. */
 
 /**
  * \brief Splash screen state.

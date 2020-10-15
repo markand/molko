@@ -42,9 +42,9 @@ enum font_style {
  * \brief Font object.
  */
 struct font {
-	enum font_style style;          /*!< (RW) Style for rendering. */
-	unsigned long color;            /*!< (RW) Color for rendering. */
-	void *handle;                   /*!< (PV) Native handle. */
+	enum font_style style;          /*!< (+) Style for rendering. */
+	unsigned long color;            /*!< (+) Color for rendering. */
+	void *handle;                   /*!< (*) Native handle. */
 };
 
 /**

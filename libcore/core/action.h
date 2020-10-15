@@ -48,16 +48,12 @@ union event;
  */
 struct action {
 	/**
-	 * (RW, optional)
-	 *
-	 * Arbitrary user data.
+	 * (+&?) Arbitrary user data.
 	 */
 	void *data;
 
 	/**
-	 * (RW, optional)
-	 *
-	 * Handle event.
+	 * (+&?) Handle event.
 	 *
 	 * \param act this action
 	 * \param ev the event
@@ -65,9 +61,7 @@ struct action {
 	void (*handle)(struct action *act, const union event *ev);
 
 	/**
-	 * (RW, optional)
-	 *
-	 * Update the action.
+	 * (+?) Update the action.
 	 *
 	 * \param act this action
 	 * \param ticks the number of milliseconds since last frame
@@ -76,18 +70,14 @@ struct action {
 	bool (*update)(struct action *act, unsigned int ticks);
 
 	/**
-	 * (RW)
-	 *
-	 * Draw the action.
+	 * (+?) Draw the action.
 	 *
 	 * \param act this action
 	 */
 	void (*draw)(struct action *act);
 
 	/**
-	 * (RW)
-	 *
-	 * Called when the action was completed.
+	 * (+?) Called when the action was completed.
 	 *
 	 * This callback is mostly provided to allow the user doing something
 	 * else once an action is complete. Predefined actions should not use
@@ -98,7 +88,7 @@ struct action {
 	void (*end)(struct action *act);
 
 	/**
-	 * (RW)
+	 * (+?) Destroy internal resources.
 	 *
 	 * Close the action before removal. This function should be used to
 	 * deallocate memory if necessary.
@@ -168,7 +158,7 @@ action_finish(struct action *act);
  * from the heap.
  */
 struct action_stack {
-	struct action *actions[ACTION_STACK_MAX];        /*!< (RW) Actions */
+	struct action *actions[ACTION_STACK_MAX];        /*!< (+) Actions */
 };
 
 /**

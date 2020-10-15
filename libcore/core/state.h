@@ -32,28 +32,30 @@ union event;
  */
 struct state {
 	/**
-	 * This function is called when the state is entered.
+	 * (+?) This function is called when the state is entered.
 	 */
 	void (*enter)(void);
 
 	/**
-	 * This function is called when the state is about to be left.
+	 * (+?) This function is called when the state is about to be left.
 	 */
 	void (*leave)(void);
 
 	/**
-	 * This function is called for each event that happened.
+	 * (+) This function is called for each event that happened.
 	 */
 	void (*handle)(const union event *);
 
 	/**
+	 * (+) Update the state.
+	 *
 	 * This function is called to update the game, with the number of
 	 * milliseconds since the last frame.
 	 */
 	void (*update)(unsigned int ticks);
 
 	/**
-	 * This function is supposed to draw the game.
+	 * (+) This function is supposed to draw the game.
 	 */
 	void (*draw)(void);
 };

@@ -31,9 +31,9 @@
  * \brief Global exposed window structure.
  */
 struct window {
-	unsigned int w;         /*!< (RO) Window width. */
-	unsigned int h;         /*!< (RO) Window height. */
-	void *handle;           /*!< (RO) Native handle. */
+	unsigned int w;         /*!< (-) Window width. */
+	unsigned int h;         /*!< (-) Window height. */
+	void *handle;           /*!< (*) Native handle. */
 };
 
 /**

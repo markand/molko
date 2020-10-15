@@ -110,20 +110,20 @@ enum message_state {
  * any user properties and therefore must exist while using it.
  */
 struct message {
-	int x;                          /*!< (RW) Position in x. */
-	int y;                          /*!< (RW) Position in y. */
-	unsigned int w;                 /*!< (RW) Width. */
-	unsigned int h;                 /*!< (RW) Height. */
-	unsigned int delay;             /*!< (RW) Delay for animations. */
-	unsigned int timeout;           /*!< (RW) Timeout in milliseconds. */
-	const char *text[6];            /*!< (RW) Lines of text to show. */
-	struct texture *avatar;         /*!< (RW, ref, optional) Avatar face. */
-	unsigned int index;             /*!< (RW) Line selected */
-	enum message_flags flags;       /*!< (RW) Message flags */
-	enum message_state state;       /*!< (RO) Current state */
-	struct theme *theme;            /*!< (RW, ref, optional) Theme to use. */
-	unsigned int elapsed;           /*!< (RO) Time elapsed. */
-	double scale;                   /*!< (RO) Current scale [0-1]. */
+	int x;                          /*!< (+) Position in x. */
+	int y;                          /*!< (+) Position in y. */
+	unsigned int w;                 /*!< (+) Width. */
+	unsigned int h;                 /*!< (+) Height. */
+	unsigned int delay;             /*!< (+) Delay for animations. */
+	unsigned int timeout;           /*!< (+) Timeout in milliseconds. */
+	const char *text[6];            /*!< (+) Lines of text to show. */
+	struct texture *avatar;         /*!< (+&?) Avatar face. */
+	unsigned int index;             /*!< (+) Line selected */
+	enum message_flags flags;       /*!< (+) Message flags */
+	enum message_state state;       /*!< (-) Current state */
+	struct theme *theme;            /*!< (+&?) Theme to use. */
+	unsigned int elapsed;           /*!< (-) Time elapsed. */
+	double scale;                   /*!< (-) Current scale [0-1]. */
 };
 
 /**

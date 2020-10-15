@@ -38,22 +38,18 @@ struct texture;
  * \brief Inventory items.
  */
 struct item {
-	const char *name;               /*!< (RW) Name of item. */
-	const char *summary;            /*!< (RW) Summary description. */
-	struct texture *icon;           /*!< (RW, ref) Icon to show. */
-	unsigned int stackable;         /*!< (RW) Stack count allowed. */
+	const char *name;               /*!< (+) Name of item. */
+	const char *summary;            /*!< (+) Summary description. */
+	struct texture *icon;           /*!< (+&) Icon to show. */
+	unsigned int stackable;         /*!< (+) Stack count allowed. */
 
 	/**
-	 * (RW)
-	 *
-	 * Execute the action for this character.
+	 * (+) Execute the action for this character.
 	 */
 	void (*exec)(const struct item *, struct character *);
 
 	/**
-	 * (RW, optional)
-	 *
-	 * Tells if the item can be used in this context.
+	 * (+?) Tells if the item can be used in this context.
 	 */
 	bool (*allowed)(const struct item *, const struct character *);
 };

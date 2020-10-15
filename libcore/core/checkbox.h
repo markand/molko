@@ -32,13 +32,13 @@ union event;
  * \brief GUI checkbox.
  */
 struct checkbox {
-	int x;                  /*!< (RW) Position in x. */
-	int y;                  /*!< (RW) Position in y. */
-	unsigned int w;         /*!< (RW) Width. */
-	unsigned int h;         /*!< (RW) Height. */
-	const char *label;      /*!< (RW, ref) Text to show. */
-	bool checked;           /*!< (RW) Is activated? */
-	struct theme *theme;    /*!< (RW, ref, optional) Theme to use. */
+	int x;                  /*!< (+) Position in x. */
+	int y;                  /*!< (+) Position in y. */
+	unsigned int w;         /*!< (+) Width. */
+	unsigned int h;         /*!< (+) Height. */
+	const char *label;      /*!< (+&) Text to show. */
+	bool checked;           /*!< (+) Is activated? */
+	struct theme *theme;    /*!< (+&?) Theme to use. */
 };
 
 /**
