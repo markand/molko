@@ -112,13 +112,15 @@ basic(void)
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.h = MH,
+		.spacing = 12,
 		.text = {
 			"This is a basic message.",
-			"You need to press <Enter> to close it."
+			"Vertical spacing is automatically computed.",
+			"You need to press <Enter> to close it.",
 		},
 	};
 
+	message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -129,7 +131,6 @@ automatic(void)
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.h = MH,
 		.timeout = MESSAGE_TIMEOUT_DEFAULT,
 		.text = {
 			"This is a an automatic message.",
@@ -139,6 +140,7 @@ automatic(void)
 		.flags = MESSAGE_FLAGS_AUTOMATIC
 	};
 
+	message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -149,7 +151,6 @@ fadein(void)
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.h = MH,
 		.delay = MESSAGE_DELAY_DEFAULT,
 		.text = {
 			"This message will fade in."
@@ -157,6 +158,7 @@ fadein(void)
 		.flags = MESSAGE_FLAGS_FADEIN
 	};
 
+	message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -167,7 +169,6 @@ fadeout(void)
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.h = MH,
 		.delay = MESSAGE_DELAY_DEFAULT,
 		.text = {
 			"This message will fade out."
@@ -175,6 +176,7 @@ fadeout(void)
 		.flags = MESSAGE_FLAGS_FADEOUT
 	};
 
+	message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -185,7 +187,6 @@ fade(void)
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.h = MH,
 		.delay = MESSAGE_DELAY_DEFAULT,
 		.text = {
 			"This message will fade in and out."
@@ -193,6 +194,7 @@ fade(void)
 		.flags = MESSAGE_FLAGS_FADEIN | MESSAGE_FLAGS_FADEOUT
 	};
 
+	message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -203,7 +205,6 @@ question(void)
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.h = MH,
 		.text = {
 			"Okay, I've understood.",
 			"Nevermind, I'll do it again."
@@ -211,6 +212,7 @@ question(void)
 		.flags = MESSAGE_FLAGS_QUESTION
 	};
 
+	message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -244,9 +246,10 @@ toosmallh(void)
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.h = 50,
+		.h = 40,
 		.text = {
 			"This one is too small in height and will emit a warning.",
+			"Because this line will be incomplete."
 		},
 	};
 
@@ -293,23 +296,6 @@ custom(void)
 	run(&msg);
 }
 
-static void
-large(void)
-{
-	struct message msg = {
-		.x = MX,
-		.y = MY,
-		.w = 500,
-		.h = 500,
-		.text = {
-			"And this one is terribly large.",
-			"So lines will have large spacing."
-		},
-	};
-
-	run(&msg);
-}
-
 int
 main(int argc, char **argv)
 {
@@ -327,6 +313,5 @@ main(int argc, char **argv)
 	toosmallh();
 	toosmallw();
 	custom();
-	large();
 	quit();
 }

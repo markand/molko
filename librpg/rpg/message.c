@@ -79,63 +79,61 @@ draw_frame(const struct message *msg)
 }
 
 static inline unsigned int
-spacing(const struct message *msg, const struct theme *t, unsigned int fh)
+min_width(const struct message *msg)
 {
 	assert(msg);
-	assert(t);
 
-	/* No vertical spacing if only one message. */
-	if (MESSAGE_LINES_MAX <= 1)
-		return 0;
+	unsigned int maxw = 0, w = 0;
 
-	return ((msg->h - t->padding * 2) - (fh * MESSAGE_LINES_MAX)) / (MESSAGE_LINES_MAX - 1);
+	for (size_t i = 0; i < MESSAGE_LINES_MAX; ++i) {
+		if (!msg->text[i])
+			continue;
+		if (!font_query(THEME(msg)->fonts[THEME_FONT_INTERFACE], msg->text[i], &w, NULL))
+			panic();
+		if (w > maxw)
+			maxw = w;
+	}
+
+	return (THEME(msg)->padding * 2) + maxw;
 }
 
 static inline unsigned int
-height(const struct theme *t, unsigned int lvreq)
+min_height(const struct message *msg)
 {
-	assert(t);
+	assert(msg);
 
-	return lvreq * MESSAGE_LINES_MAX;
+	const struct theme *th = THEME(msg);
+	const unsigned int lh  = font_height(th->fonts[THEME_FONT_INTERFACE]);
+
+	return (th->padding * 2) + (MESSAGE_LINES_MAX * lh) + ((MESSAGE_LINES_MAX - 1) * msg->spacing);
 }
 
 static void
 draw_lines(const struct message *msg)
 {
 	struct theme theme;
-	unsigned int lvreq, vreq, vspace = 0;
+	struct label label;
+	unsigned int lw, lh;
 
 	/* Shallow copy theme to modify colors. */
 	theme_shallow(&theme, msg->theme);
 
-	/*
-	 * Compute the maximum line height for the given font.
-	 *
-	 * Then, compute the minimum height required to draw the lines (without
-	 * their vertical spacing).
-	 */
-	lvreq = font_height(theme.fonts[THEME_FONT_INTERFACE]);
-	vreq = height(&theme, lvreq);
-
-	/* Now if enough space, compute the spacing between lines. */
-	if (vreq > msg->h)
-		trace("message height is too small: %u < %u", msg->h, vreq);
-	else
-		vspace = spacing(msg, &theme, lvreq);
-
 	for (int i = 0; i < MESSAGE_LINES_MAX; ++i) {
 		if (!msg->text[i])
 			continue;
+		if (!font_query(theme.fonts[THEME_FONT_INTERFACE], msg->text[i], &lw, &lh))
+			panic();
 
-		struct label label = {
-			.x = theme.padding,
-			.y = theme.padding + (i * (lvreq + vspace)),
-			.w = msg->w,
-			.h = msg->h,
-			.theme = &theme,
-			.text = msg->text[i],
-			.flags = LABEL_FLAGS_SHADOW
-		};
+		label.theme = &theme;
+		label.x = theme.padding;
+		label.y = theme.padding + (i * (lh + msg->spacing));
+		label.text = msg->text[i];
+		label.flags = LABEL_FLAGS_SHADOW;
+
+		if (label.x + lw > msg->w)
+			trace("message width too small: %u < %u", msg->w, min_width(msg));
+		if (label.y + lh > msg->h)
+			trace("message height too small: %u < %u", msg->h, min_height(msg));
 
 		/*
 		 * The function label_draw will use THEME_COLOR_NORMAL to draw
@@ -143,14 +141,9 @@ draw_lines(const struct message *msg)
 		 * we need to cheat the normal color.
 		 */
 		if (msg->flags & MESSAGE_FLAGS_QUESTION && msg->index == (unsigned int)i)
-			theme.colors[THEME_COLOR_NORMAL] = theme.colors[THEME_COLOR_SELECTED];
+			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_SELECTED];
 		else
-			theme.colors[THEME_COLOR_NORMAL] = theme.colors[THEME_COLOR_NORMAL];
-
-		label_query(&label);
-
-		if (label.w > msg->w)
-			trace("message width is too small: %u < %u", msg->w, label.w);
+			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_NORMAL];
 
 		label_draw(&label);
 	}
@@ -172,6 +165,17 @@ message_start(struct message *msg)
 
 	if (msg->flags & MESSAGE_FLAGS_AUTOMATIC && msg->timeout == 0)
 		trace("message is automatic but has zero timeout");
+}
+
+void
+message_query(const struct message *msg, unsigned int *w, unsigned int *h)
+{
+	assert(msg);
+
+	if (w)
+		*w = min_width(msg);
+	if (h)
+		*h = min_height(msg);
 }
 
 void
@@ -264,6 +268,11 @@ message_draw(struct message *msg)
 	struct texture tex;
 	int x, y;
 	unsigned int w, h;
+
+	if (msg->w == 0 || msg->h == 0) {
+		trace("message has null dimensions");
+		return;
+	}
 
 	if (!texture_new(&tex, msg->w, msg->h))
 		panic();

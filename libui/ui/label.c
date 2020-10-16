@@ -73,7 +73,7 @@ label_query(struct label *label)
 
 	struct theme *t = label->theme ? label->theme : theme_default();
 
-	if (!font_box(t->fonts[THEME_FONT_INTERFACE], label->text, &label->w, &label->h))
+	if (!font_query(t->fonts[THEME_FONT_INTERFACE], label->text, &label->w, &label->h))
 		panic();
 }
 

@@ -26,11 +26,8 @@
  * \ingroup drawing
  *
  * This module's purpose is to show a dialog box into the screen to show text
- * and optionally ask the user a question.
- *
- * By itself, it is very low level and does not prevent other parts of the game
- * to use the input so you probably need to inhibit input if your dialog is
- * meant to be displayed on a map.
+ * and optionally ask the user a question. It is similar to what you're used to
+ * see in many RPGs.
  *
  * To use it use the following procedure:
  *
@@ -50,16 +47,30 @@
  * 	.text = {
  * 		"Hello, what's up?"
  * 	},
- * 	// This image will be shown on the left as user face.
- * 	.avatar = mysuperavatar,
- * 	// This should point to a image that is used as background.
- * 	.frame = mysuperframe,
- * 	// The first color is normal text, the second is for selected text
- * 	// in case of question.
- * 	.colors = { 0xffffffff, 0x0000ffff },
  * 	// This indicates this message is a question.
- * 	.flags = MESSAGE_QUESTION
+ * 	.flags = MESSAGE_FLAGS_QUESTION
  * };
+ * \endcode
+ *
+ * For performance reasons, flexibility and simplicity, the message box does
+ * not try to be clever about positions of lines. It will simply create an
+ * animation for opening the box, drawing the lines to the position according
+ * to the theme padding and spacing and interact with user. For convenience
+ * though, the \ref message_query can be used to determine dimensions required
+ * for a better final result.
+ *
+ * ## Example, computing the dimensions:
+ *
+ * \code
+ * // We create a message that we put on the center of the screen.
+ * struct message msg = {
+ *     .text = {
+ *         "Hi, have you tried turning it off and on again?"
+ *     }
+ * };
+ *
+ * message_query(&msg, &msg.w, &msg.h);
+ * align(ALIGN_CENTER, &msg.x, &msg.y, msg.w, msg.h, 0, 0, window.w, window.h);
  * \endcode
  */
 
@@ -110,19 +121,16 @@ enum message_state {
 
 /**
  * \brief Message object.
- *
- * This structure is used to display a message into the screen. It does not own
- * any user properties and therefore must exist while using it.
  */
 struct message {
 	int x;                                  /*!< (+) Position in x. */
 	int y;                                  /*!< (+) Position in y. */
 	unsigned int w;                         /*!< (+) Width. */
 	unsigned int h;                         /*!< (+) Height. */
+	unsigned int spacing;                   /*!< (+) Spacing between lines. */
 	unsigned int delay;                     /*!< (+) Delay for animations. */
 	unsigned int timeout;                   /*!< (+) Timeout in milliseconds. */
 	const char *text[MESSAGE_LINES_MAX];    /*!< (+) Lines of text to show. */
-	struct texture *avatar;                 /*!< (+&?) Avatar face. */
 	unsigned int index;                     /*!< (+) Line selected */
 	enum message_flags flags;               /*!< (+) Message flags */
 	enum message_state state;               /*!< (-) Current state */
@@ -142,6 +150,17 @@ struct message {
  */
 void
 message_start(struct message *msg);
+
+/**
+ * Compute the minimal message dimensions required.
+ *
+ * \pre msg != NULL
+ * \param msg the message to query
+ * \param w the pointer to width (may be NULL)
+ * \param h the pointer to height (may be NULL)
+ */
+void
+message_query(const struct message *msg, unsigned int *w, unsigned int *h);
 
 /**
  * Handle input events.

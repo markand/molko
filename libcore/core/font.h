@@ -140,7 +140,7 @@ font_height(const struct font *font);
  * \return false in case of error and pointers to w and h are left unmodified
  */
 bool
-font_box(const struct font *font, const char *text, unsigned int *w, unsigned int *h);
+font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h);
 
 /**
  * Close the font.

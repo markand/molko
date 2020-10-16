@@ -111,7 +111,7 @@ font_height(const struct font *font)
 }
 
 bool
-font_box(const struct font *font, const char *text, unsigned int *w, unsigned int *h)
+font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h)
 {
 	assert(font_ok(font));
 	assert(text);
