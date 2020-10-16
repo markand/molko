@@ -17,6 +17,7 @@
  */
 
 #include <core/clock.h>
+#include <core/core.h>
 #include <core/event.h>
 #include <core/painter.h>
 #include <core/panic.h>
@@ -27,6 +28,7 @@
 
 #include <ui/label.h>
 #include <ui/theme.h>
+#include <ui/ui.h>
 
 /* https://freesound.org/people/VABsounds/sounds/423658 */
 #include <assets/sounds/vabsounds-romance.h>
@@ -45,11 +47,10 @@ static struct label label = {
 static void
 init(void)
 {
-	if (!sys_init() ||
-	    !window_init("Example - Sound", W, H) ||
-	    !theme_init())
+	if (!core_init() || !ui_init())
 		panic();
-
+	if (!window_open("Example - Sound", W, H))
+		panic();
 	if (!sound_openmem(&sound, sounds_vabsounds_romance, sizeof (sounds_vabsounds_romance)))
 		panic();
 }
@@ -57,9 +58,9 @@ init(void)
 static void
 quit(void)
 {
-	theme_finish();
 	window_finish();
-	sys_finish();
+	ui_finish();
+	core_finish();
 }
 
 static void

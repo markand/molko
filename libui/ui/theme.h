@@ -107,8 +107,10 @@ struct theme {
 /**
  * Initialize the theming system.
  *
- * \return false on errors
- * \warning This function must be called before any other theme functions.
+ * This function is automatically called from \ref ui_init and thus not
+ * necessary from user.
+ *
+ * \return False on error.
  */
 bool
 theme_init(void);
@@ -178,7 +180,8 @@ void
 theme_draw_checkbox(struct theme *t, const struct checkbox *cb);
 
 /**
- * Close associated resources.
+ * This function is automatically called from \ref ui_finish and thus not
+ * necessary from user.
  */
 void
 theme_finish(void);

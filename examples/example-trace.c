@@ -17,6 +17,7 @@
  */
 
 #include <core/clock.h>
+#include <core/core.h>
 #include <core/event.h>
 #include <core/sys.h>
 #include <core/window.h>
@@ -26,6 +27,7 @@
 #include <core/util.h>
 
 #include <ui/theme.h>
+#include <ui/ui.h>
 
 #include <adventure/trace_hud.h>
 
@@ -35,9 +37,9 @@
 static void
 init(void)
 {
-	if (!sys_init() ||
-	    !window_init("Example - Trace", W, H) ||
-	    !theme_init())
+	if (!core_init() || !ui_init())
+		panic();
+	if (!window_open("Example - Trace", W, H))
 		panic();
 
 	trace_handler = trace_hud_handler;
@@ -92,9 +94,9 @@ run(void)
 static void
 quit(void)
 {
-	theme_finish();
 	window_finish();
-	sys_finish();
+	ui_finish();
+	core_finish();
 }
 
 int

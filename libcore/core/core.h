@@ -1,5 +1,5 @@
 /*
- * window.h -- basic window management
+ * core.h -- libcore convenient header
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,47 +16,28 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_WINDOW_H
-#define MOLKO_WINDOW_H
+#ifndef MOLKO_CORE_H
+#define MOLKO_CORE_H
 
 /**
- * \file window.h
- * \brief Basic window management.
- * \ingroup drawing
+ * \file core.h
+ * \brief libcore convenient header.
  */
 
 #include <stdbool.h>
 
 /**
- * \brief Global exposed window structure.
- */
-struct window {
-	unsigned int w;         /*!< (-) Window width. */
-	unsigned int h;         /*!< (-) Window height. */
-	void *handle;           /*!< (*) Native handle. */
-};
-
-/**
- * \brief Access to global window structure.
- */
-extern struct window window;
-
-/**
- * Initialize window.
+ * Initialize the core library.
  *
- * \pre title != NULL
- * \param title the window title
- * \param width the desired width
- * \param height the desired height
- * \return true on success
+ * \return False on errors.
  */
 bool
-window_open(const char *title, unsigned int width, unsigned int height);
+core_init(void);
 
 /**
- * Close the window and destroy associated resources.
+ * Close the core library.
  */
 void
-window_finish(void);
+core_finish(void);
 
-#endif /* !MOLKO_WINDOW_H */
+#endif /* !MOLKO_CORE_H */

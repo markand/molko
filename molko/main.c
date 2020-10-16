@@ -20,6 +20,7 @@
 #include <stdnoreturn.h>
 
 #include <core/clock.h>
+#include <core/core.h>
 #include <core/event.h>
 #include <core/game.h>
 #include <core/panic.h>
@@ -28,6 +29,9 @@
 #include <core/window.h>
 
 #include <ui/theme.h>
+#include <ui/ui.h>
+
+#include <rpg/rpg.h>
 
 #include <adventure/panic_state.h>
 #include <adventure/splashscreen_state.h>
@@ -46,9 +50,9 @@ unrecoverable(void)
 static void
 init(void)
 {
-	if (!sys_init())
+	if (!core_init() || !ui_init() || !rpg_init())
 		panic();
-	if (!window_init("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
+	if (!window_open("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
 		panic();
 
 	/*
@@ -99,7 +103,9 @@ static void
 close(void)
 {
 	window_finish();
-	sys_finish();
+	rpg_finish();
+	ui_finish();
+	core_finish();
 }
 
 int

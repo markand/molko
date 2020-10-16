@@ -17,6 +17,7 @@
  */
 
 #include <assert.h>
+#include <string.h>
 
 #include <SDL.h>
 
@@ -34,7 +35,7 @@ struct window window = {
 };
 
 bool
-window_init(const char *title, unsigned int w, unsigned int h)
+window_open(const char *title, unsigned int w, unsigned int h)
 {
 	assert(title);
 
@@ -57,4 +58,6 @@ window_finish(void)
 		SDL_DestroyRenderer(handle.renderer);
 	if (handle.win)
 		SDL_DestroyWindow(handle.win);
+
+	memset(&handle, 0, sizeof (handle));
 }

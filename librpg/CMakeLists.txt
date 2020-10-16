@@ -31,6 +31,8 @@ set(
 	${librpg_SOURCE_DIR}/rpg/map_state.h
 	${librpg_SOURCE_DIR}/rpg/message.c
 	${librpg_SOURCE_DIR}/rpg/message.h
+	${librpg_SOURCE_DIR}/rpg/rpg.c
+	${librpg_SOURCE_DIR}/rpg/rpg.h
 	${librpg_SOURCE_DIR}/rpg/walksprite.c
 	${librpg_SOURCE_DIR}/rpg/walksprite.h
 )

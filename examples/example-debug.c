@@ -17,6 +17,7 @@
  */
 
 #include <core/clock.h>
+#include <core/core.h>
 #include <core/event.h>
 #include <core/sys.h>
 #include <core/window.h>
@@ -27,6 +28,7 @@
 
 #include <ui/debug.h>
 #include <ui/theme.h>
+#include <ui/ui.h>
 
 #define W 1280
 #define H 720
@@ -34,9 +36,9 @@
 static void
 init(void)
 {
-	if (!sys_init() ||
-	    !window_init("Example - Debug", W, H) ||
-	    !theme_init())
+	if (!core_init() || !ui_init())
+		panic();
+	if (!window_open("Example - Debug", W, H))
 		panic();
 
 	debug_options.enable = true;
@@ -84,9 +86,9 @@ run(void)
 static void
 quit(void)
 {
-	theme_finish();
 	window_finish();
-	sys_finish();
+	ui_finish();
+	core_finish();
 }
 
 int

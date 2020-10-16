@@ -40,6 +40,8 @@ set(
 	${libui_SOURCE_DIR}/ui/label.h
 	${libui_SOURCE_DIR}/ui/theme.c
 	${libui_SOURCE_DIR}/ui/theme.h
+	${libui_SOURCE_DIR}/ui/ui.c
+	${libui_SOURCE_DIR}/ui/ui.h
 )
 
 molko_define_library(

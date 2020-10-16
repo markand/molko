@@ -28,8 +28,15 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
+#include "plat.h"
+
 /**
- * Initialize the system, should be called in the beginning of the main.
+ * Initialize the system.
+ *
+ * This function is automatically called from \ref core_init and thus not
+ * necessary from user.
+ *
+ * \return False on error.
  */
 bool
 sys_init(void);
@@ -50,7 +57,7 @@ sys_datadir(void);
  * \note This function returns pointer to static string.
  */
 const char *
-sys_datapath(const char *fmt, ...);
+sys_datapath(const char *fmt, ...) PLAT_PRINTF(1, 2);
 
 /**
  * Similar to \a sys_datapath.
@@ -61,7 +68,7 @@ sys_datapath(const char *fmt, ...);
  * \note This function returns pointer to static string.
  */
 const char *
-sys_datapathv(const char *fmt, va_list ap);
+sys_datapathv(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
 
 /**
  * Compute the path to the save file for the given game state.
@@ -76,6 +83,9 @@ sys_savepath(unsigned int idx);
 
 /**
  * Close the system.
+ *
+ * This function is automatically called from \ref core_finish and thus not
+ * necessary from user.
  */
 void
 sys_finish(void);

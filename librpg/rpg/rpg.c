@@ -1,5 +1,5 @@
 /*
- * panic_state.h -- panic state
+ * rpg.c -- librpg convenient header
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,31 +16,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_PANIC_STATE_H
-#define MOLKO_PANIC_STATE_H
+#include "rpg.h"
+
+bool
+rpg_init(void)
+{
+	/* Currently empty, placeholder for future. */
+	return true;
+}
 
 /**
- * \file panic_state.h
- * \brief Panic state.
- */
-
-#include <core/state.h>
-
-/**
- * \brief Global panic state structure.
- */
-extern struct state panic_state;
-
-/**
- * Call this function as early as possible to be able to use this state even on
- * memory allocation errors.
- *
- * \note You must still initialize the system before.
- * \see \ref core_init
- * \see \ref ui_init
- * \see \ref window_open
+ * Close the rpg library.
  */
 void
-panic_state_init(void);
-
-#endif /* !MOLKO_PANIC_STATE_H */
+rpg_finish(void)
+{
+}

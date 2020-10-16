@@ -18,6 +18,7 @@
 
 #include <core/action.h>
 #include <core/clock.h>
+#include <core/core.h>
 #include <core/event.h>
 #include <core/maths.h>
 #include <core/panic.h>
@@ -32,6 +33,7 @@
 #include <ui/frame.h>
 #include <ui/label.h>
 #include <ui/theme.h>
+#include <ui/ui.h>
 
 #define W               (1280)
 #define H               (720)
@@ -126,9 +128,9 @@ static struct {
 static void
 init(void)
 {
-	if (!sys_init() ||
-	    !window_init("Example - UI", W, H) ||
-	    !theme_init())
+	if (!core_init() || !ui_init())
+		panic();
+	if (!window_open("Example - UI", W, H))
 		panic();
 }
 
@@ -283,9 +285,9 @@ run(void)
 static void
 quit(void)
 {
-	theme_finish();
 	window_finish();
-	sys_finish();
+	ui_finish();
+	core_finish();
 }
 
 int

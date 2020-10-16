@@ -20,6 +20,7 @@
 
 #include <core/action.h>
 #include <core/clock.h>
+#include <core/core.h>
 #include <core/event.h>
 #include <core/image.h>
 #include <core/maths.h>
@@ -33,8 +34,10 @@
 #include <core/window.h>
 
 #include <ui/theme.h>
+#include <ui/ui.h>
 
 #include <rpg/message.h>
+#include <rpg/rpg.h>
 
 #include <assets/sprites/chest.h>
 #include <assets/sprites/people.h>
@@ -315,9 +318,9 @@ chest_init(void)
 static void
 init(void)
 {
-	if (!sys_init() ||
-	    !window_init("Example - Action", W, H) ||
-	    !theme_init())
+	if (!core_init() || !ui_init() || !rpg_init())
+		panic();
+	if (!window_open("Example - Action", W, H))
 		panic();
 
 	guide_init();
@@ -365,9 +368,10 @@ run(void)
 static void
 quit(void)
 {
-	theme_finish();
 	window_finish();
-	sys_finish();
+	rpg_finish();
+	ui_finish();
+	core_finish();
 }
 
 int

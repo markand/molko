@@ -19,6 +19,7 @@
 #include <string.h>
 
 #include <core/clock.h>
+#include <core/core.h>
 #include <core/event.h>
 #include <core/painter.h>
 #include <core/panic.h>
@@ -28,8 +29,10 @@
 
 #include <ui/frame.h>
 #include <ui/theme.h>
+#include <ui/ui.h>
 
 #include <rpg/message.h>
+#include <rpg/rpg.h>
 
 #define W       (1280)
 #define H       (720)
@@ -42,18 +45,19 @@
 static void
 init(void)
 {
-	if (!sys_init() ||
-	    !window_init("Example - Message", W, H) ||
-	    !theme_init())
+	if (!core_init() || !ui_init() || !rpg_init())
+		panic();
+	if (!window_open("Example - Message", W, H))
 		panic();
 }
 
 static void
 quit(void)
 {
-	theme_finish();
 	window_finish();
-	sys_finish();
+	rpg_finish();
+	ui_finish();
+	core_finish();
 }
 
 static void

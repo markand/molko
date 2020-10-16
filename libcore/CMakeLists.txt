@@ -27,6 +27,8 @@ set(
 	${libcore_SOURCE_DIR}/core/clock.c
 	${libcore_SOURCE_DIR}/core/clock.h
 	${libcore_SOURCE_DIR}/core/color.h
+	${libcore_SOURCE_DIR}/core/core.c
+	${libcore_SOURCE_DIR}/core/core.h
 	${libcore_SOURCE_DIR}/core/drawable.c
 	${libcore_SOURCE_DIR}/core/drawable.h
 	${libcore_SOURCE_DIR}/core/error.c

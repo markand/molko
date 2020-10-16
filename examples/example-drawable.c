@@ -20,6 +20,7 @@
 
 #include <core/animation.h>
 #include <core/clock.h>
+#include <core/core.h>
 #include <core/event.h>
 #include <core/drawable.h>
 #include <core/key.h>
@@ -34,6 +35,7 @@
 
 #include <ui/label.h>
 #include <ui/theme.h>
+#include <ui/ui.h>
 
 #include <assets/sprites/explosion.h>
 
@@ -66,9 +68,9 @@ struct explosion {
 static void
 init(void)
 {
-	if (!sys_init() ||
-	    !window_init("Example - Drawable", W, H) ||
-	    !theme_init())
+	if (!core_init() || !ui_init())
+		panic();
+	if (!window_open("Example - Drawable", W, H))
 		panic();
 
 	/* 0: Explosion animation. */
@@ -153,7 +155,9 @@ run(void)
 static void
 quit(void)
 {
-	
+	window_finish();
+	ui_finish();
+	core_finish();
 }
 
 int
