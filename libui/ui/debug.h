@@ -32,38 +32,16 @@
  * debug_options.enabled variable is set to true. However, you need to specify
  * the font to use in order to work.
  *
- * Each call to \ref debug_printf or \ref debug_vprintf automatically adjust
+ * Each call to \ref debug or \ref vdebug automatically adjust
  * next coordinate for rendering the text. As such, user may simply print
  * several lines of text without having to deal with that manually.
- *
- * Example, activate global debugging.
- *
- * \code
- * struct font *f = font_openf("foo.ttf", 10);
- *
- * if (!f)
- * 	error_fatal();
- *
- * debug_options.default_font = f;
- * debug_options.enabled = true;
- * \endcode
- *
- * Example, print debugging information manually.
- *
- * \code
- * struct debug_report report = {
- * 	.color = 0x00ff00ff,
- * 	.font = myfont          // Optional if debug_options.default_font is set.
- * };
- *
- * debug_printf("current position: %d, %d\n", x, y);
- * \endcode
  */
 
 #include <stdbool.h>
 #include <stdarg.h>
 
 #include <core/font.h>
+#include <core/plat.h>
 
 /**
  * Maximum content length per report.
@@ -89,7 +67,6 @@ struct debug_options {
  */
 struct debug_report {
 	struct theme *theme;            /*!< (+&?) Theme to use. */
-	unsigned long color;            /*!< (+) Font foreground color to use. */
 	unsigned int count;             /*!< (-) Number of messages already printed. */
 };
 
@@ -97,15 +74,6 @@ struct debug_report {
  * Global debugging options.
  */
 extern struct debug_options debug_options;
-
-/**
- * Convenient macro to initialize \ref debug_report with default values.
- */
-#define DEBUG_INIT_DEFAULTS {                   \
-        .font = debug_options.default_font,     \
-        .color = debug_options.default_color,   \
-        .style = debug_options.default_style    \
-}
 
 /**
  * Print debugging information into the screen.
@@ -118,14 +86,17 @@ extern struct debug_options debug_options;
  *       result is truncated.
  */
 void
-debug_printf(struct debug_report *report, const char *fmt, ...);
+debug(struct debug_report *report, const char *fmt, ...) PLAT_PRINTF(2, 3);
 
 /**
- * Similar to \ref debug_printf but with a va_list object.
+ * Similar to \ref debug with a va_list arguments pointer.
  *
- * \see \ref debug_printf
+ * \pre fmt != NULL
+ * \param report the reporting context
+ * \param fmt the printf(3) format string
+ * \param ap the argument list
  */
 void
-debug_vprintf(struct debug_report *report, const char *fmt, va_list ap);
+vdebug(struct debug_report *report, const char *fmt, va_list ap) PLAT_PRINTF(2, 0);
 
 #endif /* !MOLKO_DEBUG_H */

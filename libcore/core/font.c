@@ -17,6 +17,7 @@
  */
 
 #include <assert.h>
+#include <string.h>
 
 #include <SDL_ttf.h>
 
@@ -52,6 +53,15 @@ font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int 
 		return error_sdl();
 
 	return true;
+}
+
+void
+font_shallow(struct font *dst, const struct font *src)
+{
+	assert(dst);
+	assert(src);
+
+	memcpy(dst, src, sizeof (*src));
 }
 
 bool

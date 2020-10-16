@@ -46,6 +46,7 @@
 /* Default theme. */
 static struct theme default_theme = {
 	.colors = {
+		[THEME_COLOR_DEBUG]     = 0xff0000ff,
 		[THEME_COLOR_NORMAL]    = 0xffffffff,
 		[THEME_COLOR_SELECTED]  = 0x006554ff,
 		[THEME_COLOR_SHADOW]    = 0x000000ff

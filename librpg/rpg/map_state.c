@@ -335,9 +335,9 @@ draw(void)
 		PLAYER()->x - VIEW()->x,
 		PLAYER()->y - VIEW()->y);
 
-	debug_printf(&report, "position: %d, %d", PLAYER()->x,
+	debug(&report, "position: %d, %d", PLAYER()->x,
 	    PLAYER()->y);
-	debug_printf(&report, "view: %d, %d", VIEW()->x,
+	debug(&report, "view: %d, %d", VIEW()->x,
 	    VIEW()->y);
 }
 

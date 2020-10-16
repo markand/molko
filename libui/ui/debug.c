@@ -24,9 +24,6 @@
 #include "debug.h"
 #include "theme.h"
 
-#define PADDING_X 5
-#define PADDING_Y 5
-
 struct debug_options debug_options = {
 #if !defined(NDEBUG)
 	.enable = true
@@ -34,7 +31,7 @@ struct debug_options debug_options = {
 };
 
 void
-debug_printf(struct debug_report *report, const char *fmt, ...)
+debug(struct debug_report *report, const char *fmt, ...)
 {
 	assert(report);
 	assert(fmt);
@@ -45,12 +42,12 @@ debug_printf(struct debug_report *report, const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	debug_vprintf(report, fmt, ap);
+	vdebug(report, fmt, ap);
 	va_end(ap);
 }
 
 void
-debug_vprintf(struct debug_report *report, const char *fmt, va_list ap)
+vdebug(struct debug_report *report, const char *fmt, va_list ap)
 {
 	assert(report);
 	assert(fmt);
@@ -60,23 +57,27 @@ debug_vprintf(struct debug_report *report, const char *fmt, va_list ap)
 
 	char line[DEBUG_LINE_MAX];
 	struct theme *theme;
-	struct font *font;
+	struct font font;
 	struct texture tex;
-	unsigned int gapy;
+	int x, y;
 
 	vsnprintf(line, sizeof (line), fmt, ap);
 
+	/* Get the font and modify its style. */
 	theme = report->theme ? report->theme : theme_default();
-	font = theme->fonts[THEME_FONT_DEBUG];
-	font->color = report->color;
 
-	if (!font_render(font, &tex, line))
+	/* Update font style. */
+	font_shallow(&font, theme->fonts[THEME_FONT_DEBUG]);
+	font.style = FONT_STYLE_NONE;
+	font.color = theme->colors[THEME_COLOR_DEBUG];
+
+	if (!font_render(&font, &tex, line))
 		return;
 
-	gapy = (PADDING_Y * (report->count)) +
-	    (font_height(font) * (report->count));
+	x = theme->padding;
+	y = (theme->padding * (report->count + 1)) + (tex.h * (report->count));
 	report->count++;
 
-	texture_draw(&tex, PADDING_X, gapy);
+	texture_draw(&tex, x, y);
 	texture_finish(&tex);
 }

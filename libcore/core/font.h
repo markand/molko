@@ -76,6 +76,23 @@ bool
 font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size);
 
 /**
+ * Convenient shortcut to shallow copy src into dst.
+ *
+ * Use this function when you want your own local font to update its attributes
+ * without changing the calling site.
+ *
+ * This is a shortcut to `memcpy(dst, src, sizeof (*src))`.
+ *
+ * \pre dst != NULL
+ * \param dst the destination font
+ * \param src the source font (may be NULL)
+ * \note Internal handle points to the same pointer, do not use \ref font_finish
+ *       on the destination.
+ */
+void
+font_shallow(struct font *dst, const struct font *src);
+
+/**
  * Tells if the font was properly opened.
  *
  * \pre font != NULL
