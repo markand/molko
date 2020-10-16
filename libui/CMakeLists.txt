@@ -19,6 +19,12 @@
 project(libui)
 
 set(
+	ASSETS
+	${libui_SOURCE_DIR}/ui/assets/fonts/opensans-light.ttf
+	${libui_SOURCE_DIR}/ui/assets/fonts/opensans-regular.ttf
+)
+
+set(
 	SOURCES
 	${libui_SOURCE_DIR}/ui/align.c
 	${libui_SOURCE_DIR}/ui/align.h
@@ -39,6 +45,7 @@ set(
 molko_define_library(
 	TARGET libui
 	SOURCES ${SOURCES}
+	ASSETS ${ASSETS}
 	LIBRARIES
 		libcore
 	PUBLIC_INCLUDES

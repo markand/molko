@@ -27,8 +27,8 @@
 #include <core/texture.h>
 #include <core/util.h>
 
-#include <core/assets/fonts/f25-bank-printer.h>
-#include <core/assets/fonts/comic-neue.h>
+#include <ui/assets/fonts/opensans-light.h>
+#include <ui/assets/fonts/opensans-regular.h>
 
 #include "align.h"
 #include "button.h"
@@ -65,8 +65,8 @@ static struct font_catalog {
 	struct font **dest;
 	struct font font;
 } default_fonts[] = {
-	FONT(fonts_f25_bank_printer, 10, THEME_FONT_DEBUG),
-	FONT(fonts_comic_neue, 18, THEME_FONT_INTERFACE)
+	FONT(fonts_opensans_light, 12, THEME_FONT_DEBUG),
+	FONT(fonts_opensans_regular, 12, THEME_FONT_INTERFACE)
 };
 
 bool

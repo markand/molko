@@ -68,7 +68,7 @@ vdebug(struct debug_report *report, const char *fmt, va_list ap)
 
 	/* Update font style. */
 	font_shallow(&font, theme->fonts[THEME_FONT_DEBUG]);
-	font.style = FONT_STYLE_NONE;
+	font.style = FONT_STYLE_ANTIALIASED;
 	font.color = theme->colors[THEME_COLOR_DEBUG];
 
 	if (!font_render(&font, &tex, line))

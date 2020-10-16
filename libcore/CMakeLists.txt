@@ -19,13 +19,6 @@
 project(libcore)
 
 set(
-	ASSETS
-	${libcore_SOURCE_DIR}/core/assets/fonts/comic-neue.ttf
-	${libcore_SOURCE_DIR}/core/assets/fonts/f25-bank-printer.ttf
-	${libcore_SOURCE_DIR}/core/assets/images/message.png
-)
-
-set(
 	SOURCES
 	${libcore_SOURCE_DIR}/core/action.c
 	${libcore_SOURCE_DIR}/core/action.h
@@ -88,7 +81,6 @@ set(
 molko_define_library(
 	TARGET libcore
 	SOURCES ${SOURCES}
-	ASSETS ${ASSETS}
 	LIBRARIES
 		libsqlite
 		SDL2::SDL2
