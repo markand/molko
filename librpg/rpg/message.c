@@ -82,20 +82,29 @@ static void
 draw_lines(const struct message *msg)
 {
 	struct theme theme;
-	unsigned int lineh;
+	unsigned int lineh, totalh;
 
 	/* Shallow copy theme to modify colors. */
 	theme_shallow(&theme, msg->theme);
 
-	/* Compute text size for list alignment. */
+	/*
+	 * Compute text size for list alignment and full height required to emit
+	 * a warning if the message box is too small.
+	 */
 	lineh = font_height(theme.fonts[THEME_FONT_INTERFACE]);
+	totalh = lineh * MESSAGE_LINES_MAX + (MESSAGE_LINES_MAX + 1) * theme.padding;
 
-	for (int i = 0; i < 6; ++i) {
+	/* Check if there is enough room to draw all lines. */
+	if (totalh > msg->h)
+		trace("message height is too small: %u < %u", msg->h, totalh);
+
+	for (int i = 0; i < MESSAGE_LINES_MAX; ++i) {
 		if (!msg->text[i])
 			continue;
 
 		struct label label = {
-			.y = i * lineh,
+			.x = theme.padding,
+			.y = theme.padding * (i + 1) + i * lineh,
 			.w = msg->w,
 			.h = msg->h,
 			.theme = &theme,
@@ -112,6 +121,11 @@ draw_lines(const struct message *msg)
 			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_SELECTED];
 		else
 			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_NORMAL];
+
+		label_query(&label);
+
+		if (label.w > msg->w)
+			trace("message width is too small: %u < %u", msg->w, label.w);
 
 		label_draw(&label);
 	}

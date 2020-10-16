@@ -84,6 +84,11 @@ union event;
 #define MESSAGE_TIMEOUT_DEFAULT (5000)
 
 /**
+ * \brief Maximum number of lines allowed in the message.
+ */
+#define MESSAGE_LINES_MAX       (3)
+
+/**
  * \brief Message flags.
  */
 enum message_flags {
@@ -110,20 +115,20 @@ enum message_state {
  * any user properties and therefore must exist while using it.
  */
 struct message {
-	int x;                          /*!< (+) Position in x. */
-	int y;                          /*!< (+) Position in y. */
-	unsigned int w;                 /*!< (+) Width. */
-	unsigned int h;                 /*!< (+) Height. */
-	unsigned int delay;             /*!< (+) Delay for animations. */
-	unsigned int timeout;           /*!< (+) Timeout in milliseconds. */
-	const char *text[6];            /*!< (+) Lines of text to show. */
-	struct texture *avatar;         /*!< (+&?) Avatar face. */
-	unsigned int index;             /*!< (+) Line selected */
-	enum message_flags flags;       /*!< (+) Message flags */
-	enum message_state state;       /*!< (-) Current state */
-	struct theme *theme;            /*!< (+&?) Theme to use. */
-	unsigned int elapsed;           /*!< (-) Time elapsed. */
-	double scale;                   /*!< (-) Current scale [0-1]. */
+	int x;                                  /*!< (+) Position in x. */
+	int y;                                  /*!< (+) Position in y. */
+	unsigned int w;                         /*!< (+) Width. */
+	unsigned int h;                         /*!< (+) Height. */
+	unsigned int delay;                     /*!< (+) Delay for animations. */
+	unsigned int timeout;                   /*!< (+) Timeout in milliseconds. */
+	const char *text[MESSAGE_LINES_MAX];    /*!< (+) Lines of text to show. */
+	struct texture *avatar;                 /*!< (+&?) Avatar face. */
+	unsigned int index;                     /*!< (+) Line selected */
+	enum message_flags flags;               /*!< (+) Message flags */
+	enum message_state state;               /*!< (-) Current state */
+	struct theme *theme;                    /*!< (+&?) Theme to use. */
+	unsigned int elapsed;                   /*!< (-) Time elapsed. */
+	double scale;                           /*!< (-) Current scale [0-1]. */
 };
 
 /**

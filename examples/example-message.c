@@ -38,7 +38,7 @@
 #define H       (720)
 
 #define MW      (W * 0.75)
-#define MH      (H * 0.125)
+#define MH      (H * 0.130)
 #define MX      ((W / 2) - (MW / 2))
 #define MY      (100)
 
@@ -218,7 +218,7 @@ static void
 smallbottom(void)
 {
 	const unsigned int w = window.w / 4;
-	const unsigned int h = 50;
+	const unsigned int h = MH;
 	const int x = (window.w / 2) - (w / 2);
 	const int y = (window.h - h - 10);
 
@@ -232,6 +232,38 @@ smallbottom(void)
 		.text = {
 			"This one is small here."
 		}
+	};
+
+	run(&msg);
+}
+
+static void
+toosmallh(void)
+{
+	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = MW,
+		.h = 50,
+		.text = {
+			"This one is too small in height and will emit a warning.",
+		},
+	};
+
+	run(&msg);
+}
+
+static void
+toosmallw(void)
+{
+	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = 160,
+		.h = MH,
+		.text = {
+			"This one is too small in width."
+		},
 	};
 
 	run(&msg);
@@ -261,6 +293,23 @@ custom(void)
 	run(&msg);
 }
 
+static void
+large(void)
+{
+	struct message msg = {
+		.x = MX,
+		.y = MY,
+		.w = 500,
+		.h = 500,
+		.text = {
+			"And this one is terribly large.",
+			"But lines are still padded at top."
+		},
+	};
+
+	run(&msg);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -275,6 +324,9 @@ main(int argc, char **argv)
 	automatic();
 	question();
 	smallbottom();
+	toosmallh();
+	toosmallw();
 	custom();
+	large();
 	quit();
 }
