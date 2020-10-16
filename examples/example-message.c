@@ -38,7 +38,7 @@
 #define H       (720)
 
 #define MW      (W * 0.75)
-#define MH      (H * 0.130)
+#define MH      (H * 0.120)
 #define MX      ((W / 2) - (MW / 2))
 #define MY      (100)
 
@@ -303,7 +303,7 @@ large(void)
 		.h = 500,
 		.text = {
 			"And this one is terribly large.",
-			"But lines are still padded at top."
+			"So lines will have large spacing."
 		},
 	};
 

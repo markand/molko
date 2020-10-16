@@ -78,25 +78,50 @@ draw_frame(const struct message *msg)
 	frame_draw(&frame);
 }
 
+static inline unsigned int
+spacing(const struct message *msg, const struct theme *t, unsigned int fh)
+{
+	assert(msg);
+	assert(t);
+
+	/* No vertical spacing if only one message. */
+	if (MESSAGE_LINES_MAX <= 1)
+		return 0;
+
+	return ((msg->h - t->padding * 2) - (fh * MESSAGE_LINES_MAX)) / (MESSAGE_LINES_MAX - 1);
+}
+
+static inline unsigned int
+height(const struct theme *t, unsigned int lvreq)
+{
+	assert(t);
+
+	return lvreq * MESSAGE_LINES_MAX;
+}
+
 static void
 draw_lines(const struct message *msg)
 {
 	struct theme theme;
-	unsigned int lineh, totalh;
+	unsigned int lvreq, vreq, vspace = 0;
 
 	/* Shallow copy theme to modify colors. */
 	theme_shallow(&theme, msg->theme);
 
 	/*
-	 * Compute text size for list alignment and full height required to emit
-	 * a warning if the message box is too small.
+	 * Compute the maximum line height for the given font.
+	 *
+	 * Then, compute the minimum height required to draw the lines (without
+	 * their vertical spacing).
 	 */
-	lineh = font_height(theme.fonts[THEME_FONT_INTERFACE]);
-	totalh = lineh * MESSAGE_LINES_MAX + (MESSAGE_LINES_MAX + 1) * theme.padding;
+	lvreq = font_height(theme.fonts[THEME_FONT_INTERFACE]);
+	vreq = height(&theme, lvreq);
 
-	/* Check if there is enough room to draw all lines. */
-	if (totalh > msg->h)
-		trace("message height is too small: %u < %u", msg->h, totalh);
+	/* Now if enough space, compute the spacing between lines. */
+	if (vreq > msg->h)
+		trace("message height is too small: %u < %u", msg->h, vreq);
+	else
+		vspace = spacing(msg, &theme, lvreq);
 
 	for (int i = 0; i < MESSAGE_LINES_MAX; ++i) {
 		if (!msg->text[i])
@@ -104,7 +129,7 @@ draw_lines(const struct message *msg)
 
 		struct label label = {
 			.x = theme.padding,
-			.y = theme.padding * (i + 1) + i * lineh,
+			.y = theme.padding + (i * (lvreq + vspace)),
 			.w = msg->w,
 			.h = msg->h,
 			.theme = &theme,
@@ -118,9 +143,9 @@ draw_lines(const struct message *msg)
 		 * we need to cheat the normal color.
 		 */
 		if (msg->flags & MESSAGE_FLAGS_QUESTION && msg->index == (unsigned int)i)
-			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_SELECTED];
+			theme.colors[THEME_COLOR_NORMAL] = theme.colors[THEME_COLOR_SELECTED];
 		else
-			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_NORMAL];
+			theme.colors[THEME_COLOR_NORMAL] = theme.colors[THEME_COLOR_NORMAL];
 
 		label_query(&label);
 
