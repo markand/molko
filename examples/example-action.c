@@ -46,7 +46,6 @@
 #define H       (720)
 
 #define MW      (W * 0.75)
-#define MH      (H * 0.125)
 #define MX      ((W / 2) - (MW / 2))
 #define MY      (100)
 
@@ -73,7 +72,6 @@ static struct {
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.h = MH,
 		.text = {
 			"100000 pièces.",
 			"Te voilà riche sale file de crevette."
@@ -123,7 +121,6 @@ static struct {
 				.x = MX,
 				.y = MY,
 				.w = MW,
-				.h = MH,
 				.delay = MESSAGE_DELAY_DEFAULT,
 				.flags = MESSAGE_FLAGS_FADEIN,
 				.text = {
@@ -136,7 +133,6 @@ static struct {
 				.x = MX,
 				.y = MY,
 				.w = MW,
-				.h = MH,
 				.text = {
 					"Penses tu vraiment pouvoir me battre ?"
 				}
@@ -147,7 +143,6 @@ static struct {
 				.x = MX,
 				.y = MY,
 				.w = MW,
-				.h = MH,
 				.flags = MESSAGE_FLAGS_QUESTION,
 				.text = {
 					"Non j'ai la trouille.",
@@ -162,7 +157,6 @@ static struct {
 				.x = MX,
 				.y = MY,
 				.w = MW,
-				.h = MH,
 				.text = {
 					"Poule mouillée."
 				}
@@ -175,7 +169,6 @@ static struct {
 				.x = MX,
 				.y = MY,
 				.w = MW,
-				.h = MH,
 				.text = {
 					"Prépare toi à souffrir."
 				}
@@ -203,6 +196,7 @@ guide_response_end(struct action *act)
 	const int index = guide.msgs[2].msg.index + 3;
 
 	message_action(&guide.msgs[index].msg, &guide.msgs[index].act);
+	message_query(&guide.msgs[index].msg, NULL, &guide.msgs[index].msg.h);
 	action_stack_add(&modal, &guide.msgs[index].act);
 }
 
@@ -212,6 +206,7 @@ guide_popup(void)
 	/* Prepare the script with first 3 messages. */
 	for (size_t i = 0; i < 3; ++i) {
 		message_action(&guide.msgs[i].msg, &guide.msgs[i].act);
+		message_query(&guide.msgs[i].msg, NULL, &guide.msgs[i].msg.h);
 		script_append(&guide.script, &guide.msgs[i].act);
 	}
 
@@ -284,6 +279,7 @@ chest_handle(struct action *act, const union event *ev)
 		    ev->click.x, ev->click.y)) {
 			chest.opened = true;
 			message_action(&chest.msg, &chest.msg_act);
+			message_query(&chest.msg, NULL, &chest.msg.h);
 			action_stack_add(&modal, &chest.msg_act);
 		}
 	default:

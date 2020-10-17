@@ -104,9 +104,10 @@ init(void)
 
 	for (size_t i = 0; i < NELEM(table); ++i) {
 		struct label *l = &table[i].label;
+		unsigned int w, h;
 
-		label_query(l);
-		align(table[i].align, &l->x, &l->y, l->w, l->h, 0, 0, W, H);
+		label_query(l, &w, &h);
+		align(table[i].align, &l->x, &l->y, w, h, 0, 0, W, H);
 	}
 }
 

@@ -23,6 +23,7 @@
 #include <core/event.h>
 #include <core/maths.h>
 #include <core/painter.h>
+#include <core/trace.h>
 
 #include "align.h"
 #include "button.h"
@@ -63,9 +64,16 @@ button_draw_default(struct theme *t, const struct button *button)
 	struct label label = {
 		.text = button->text,
 	};
+	unsigned int lw, lh;
 
-	label_query(&label);
-	align(ALIGN_CENTER, &label.x, &label.y, label.w, label.h,
+	label_query(&label, &lw, &lh);
+
+	if (lw > button->w)
+		trace("button is too small for text: %u < %u", button->w, lw);
+	if (lh > button->h)
+		trace("button is too small for text: %u < %u", button->h, lh);
+
+	align(ALIGN_CENTER, &label.x, &label.y, lw, lh,
 	    button->x, button->y, button->w, button->h);
 
 	painter_set_color(0x577277ff);

@@ -38,16 +38,10 @@ enum label_flags {
 
 /**
  * \brief GUI label.
- *
- * A label has a position and a size. The size is only provided to the user as
- * information and is not used during rendering. It should be computed using the
- * \ref label_query command each time you change the theme or text.
  */
 struct label {
 	int x;                          /*!< (+) Position in x. */
 	int y;                          /*!< (+) Position in y. */
-	unsigned int w;                 /*!< (+?) Width. */
-	unsigned int h;                 /*!< (+?) Height. */
 	const char *text;               /*!< (+&) Text to show. */
 	enum label_flags flags;         /*!< (+) Optional flags. */
 	struct theme *theme;            /*!< (+&?) Theme to use. */
@@ -70,9 +64,11 @@ label_draw_default(struct theme *t, const struct label *label);
  *
  * \pre label != NULL
  * \param label the label
+ * \param w the pointer to width (may be NULL)
+ * \param h the pointer to height (may be NULL)
  */
 void
-label_query(struct label *label);
+label_query(struct label *label, unsigned int *w, unsigned int *h);
 
 /**
  * Draw the label.

@@ -66,14 +66,14 @@ label_draw_default(struct theme *t, const struct label *label)
 }
 
 void
-label_query(struct label *label)
+label_query(struct label *label, unsigned int *w, unsigned int *h)
 {
 	assert(label);
 	assert(label->text);
 
 	struct theme *t = label->theme ? label->theme : theme_default();
 
-	if (!font_query(t->fonts[THEME_FONT_INTERFACE], label->text, &label->w, &label->h))
+	if (!font_query(t->fonts[THEME_FONT_INTERFACE], label->text, w, h))
 		panic();
 }
 

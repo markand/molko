@@ -137,12 +137,13 @@ init(void)
 static void
 resize_header(void)
 {
-	struct frame *h = &ui.panel.frame;
+	struct frame *f = &ui.panel.frame;
 	struct label *l = &ui.header.label;
+	unsigned int w, h;
 
 	/* Header. */
-	label_query(l);
-	align(ALIGN_LEFT, &l->x, &l->y, l->w, l->h, h->x, h->y, h->w, HEADER_HEIGHT);
+	label_query(l, &w, &h);
+	align(ALIGN_LEFT, &l->x, &l->y, w, h, f->x, f->y, f->w, HEADER_HEIGHT);
 
 	l->x += theme_default()->padding;
 }
@@ -158,7 +159,6 @@ resize_autosave(void)
 	c->x = f->x + padding;
 	c->y = f->y + HEADER_HEIGHT + padding;
 
-	l->w = f->w - c->w - padding;
 	l->x = c->x + c->w + padding;
 	l->y = c->y;
 }
