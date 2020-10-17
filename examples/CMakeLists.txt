@@ -43,17 +43,6 @@ molko_define_executable(
 )
 
 molko_define_executable(
-	TARGET example-inventory
-	SOURCES example-inventory.c
-	ASSETS
-		${examples_SOURCE_DIR}/assets/images/fish.png
-		${examples_SOURCE_DIR}/assets/images/potion.png
-		${examples_SOURCE_DIR}/assets/images/sword.png
-	FOLDER examples
-	LIBRARIES librpg
-)
-
-molko_define_executable(
 	TARGET example-label
 	SOURCES example-label.c
 	LIBRARIES libui

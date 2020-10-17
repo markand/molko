@@ -22,8 +22,6 @@ set(
 	SOURCES
 	${librpg_SOURCE_DIR}/rpg/inventory.c
 	${librpg_SOURCE_DIR}/rpg/inventory.h
-	${librpg_SOURCE_DIR}/rpg/inventory_dialog.c
-	${librpg_SOURCE_DIR}/rpg/inventory_dialog.h
 	${librpg_SOURCE_DIR}/rpg/item.h
 	${librpg_SOURCE_DIR}/rpg/map.c
 	${librpg_SOURCE_DIR}/rpg/map.h
