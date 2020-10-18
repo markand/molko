@@ -37,6 +37,20 @@ struct window {
 };
 
 /**
+ * \brief Window mouse cursor.
+ */
+enum window_cursor {
+	WINDOW_CURSOR_ARROW,
+	WINDOW_CURSOR_EDIT,
+	WINDOW_CURSOR_WAIT,
+	WINDOW_CURSOR_CROSSHAIR,
+	WINDOW_CURSOR_SIZE,
+	WINDOW_CURSOR_NO,
+	WINDOW_CURSOR_HAND,
+	WINDOW_CURSOR_LAST
+};
+
+/**
  * \brief Access to global window structure.
  */
 extern struct window window;
@@ -52,6 +66,17 @@ extern struct window window;
  */
 bool
 window_open(const char *title, unsigned int width, unsigned int height);
+
+/**
+ * Change the window cursor.
+ *
+ * You must open a window before calling this function.
+ *
+ * \pre cursor < WINDOW_CURSOR_LAST
+ * \param cursor the cursor
+ */
+void
+window_set_cursor(enum window_cursor cursor);
 
 /**
  * Close the window and destroy associated resources.

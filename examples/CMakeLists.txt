@@ -29,6 +29,13 @@ molko_define_executable(
 )
 
 molko_define_executable(
+	TARGET example-cursor
+	SOURCES example-cursor.c
+	FOLDER examples
+	LIBRARIES libui
+)
+
+molko_define_executable(
 	TARGET example-debug
 	SOURCES example-debug.c
 	FOLDER examples

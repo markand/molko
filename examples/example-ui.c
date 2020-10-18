@@ -258,12 +258,14 @@ run(void)
 					ui.motion.active = true;
 					ui.motion.x = ev.click.x;
 					ui.motion.y = ev.click.y;
+					window_set_cursor(WINDOW_CURSOR_SIZE);
 				}
 				else
 					action_stack_handle(&ui.st, &ev);
 				break;
 			case EVENT_CLICKUP:
 				ui.motion.active = false;
+				window_set_cursor(WINDOW_CURSOR_ARROW);
 				/* Fallthrough. */
 			default:
 				action_stack_handle(&ui.st, &ev);
