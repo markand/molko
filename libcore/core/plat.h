@@ -38,10 +38,10 @@
 
 #else
 
-#if defined(__GNUC__)
-#define PLAT_PRINTF(p1, p2) __attribute__ ((format (printf, p1, p2)))
+#if defined(__GNUC__) || defined(__clang__)
+#       define PLAT_PRINTF(p1, p2) __attribute__ ((format (printf, p1, p2)))
 #else
-#define PLAT_PRINTF(p1, p2)
+#       define PLAT_PRINTF(p1, p2)
 #endif
 
 #endif /* !DOXYGEN  */

@@ -56,7 +56,7 @@ struct state {
 	 * \param state this state
 	 * \param ev the event
 	 */
-	void (*handle)(struct state *state, const union event *);
+	void (*handle)(struct state *state, const union event *ev);
 
 	/**
 	 * (+) Update the state.
