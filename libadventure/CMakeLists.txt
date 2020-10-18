@@ -19,19 +19,24 @@
 project(libadventure)
 
 set(
+	STATE_SOURCES
+	${libadventure_SOURCE_DIR}/adventure/state/mainmenu.c
+	${libadventure_SOURCE_DIR}/adventure/state/mainmenu.h
+	${libadventure_SOURCE_DIR}/adventure/state/panic.c
+	${libadventure_SOURCE_DIR}/adventure/state/panic.h
+	${libadventure_SOURCE_DIR}/adventure/state/splashscreen.c
+	${libadventure_SOURCE_DIR}/adventure/state/splashscreen.h
+)
+
+set(
 	SOURCES
-	${libadventure_SOURCE_DIR}/adventure/mainmenu_state.c
-	${libadventure_SOURCE_DIR}/adventure/mainmenu_state.h
-	${libadventure_SOURCE_DIR}/adventure/panic_state.c
-	${libadventure_SOURCE_DIR}/adventure/panic_state.h
-	${libadventure_SOURCE_DIR}/adventure/splashscreen_state.c
-	${libadventure_SOURCE_DIR}/adventure/splashscreen_state.h
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.c
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.h
 )
 
 set(
 	ASSETS
+	${libadventure_SOURCE_DIR}/adventure/assets/fonts/cubic.ttf
 	${libadventure_SOURCE_DIR}/adventure/assets/fonts/lato.ttf
 	${libadventure_SOURCE_DIR}/adventure/assets/fonts/teutonic.ttf
 	${libadventure_SOURCE_DIR}/adventure/assets/fonts/pirata-one.ttf
@@ -42,7 +47,9 @@ set(
 
 molko_define_library(
 	TARGET libadventure
-	SOURCES ${SOURCES}
+	SOURCES
+		${STATE_SOURCES}
+		${SOURCES}
 	ASSETS ${ASSETS}
 	LIBRARIES libcore libui librpg
 	PUBLIC_INCLUDES
@@ -50,3 +57,4 @@ molko_define_library(
 )
 
 source_group(adventure FILES ${SOURCES})
+source_group(adventure/state FILES ${STATE_SOURCES})

@@ -1,5 +1,5 @@
 /*
- * splashscreen_state.h -- splash screen state
+ * state.c -- abstract state
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,29 +16,61 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_SPLASHSCREEN_ADVENTURE_H
-#define MOLKO_SPLASHSCREEN_ADVENTURE_H
+#include <assert.h>
 
-/**
- * \file splashscreen_state.h
- * \brief Splash screen state.
- */
+#include "state.h"
 
-#include <core/texture.h>
+void
+state_start(struct state *state)
+{
+	assert(state);
 
-/**
- * \brief Data for splashscreen.
- */
-extern struct splashscreen_state_data {
-	struct texture text;            /*!< (+) Texture for the text. */
-	int x;                          /*!< (+) Position in x. */
-	int y;                          /*!< (+) Position in y. */
-	unsigned int elapsed;           /*!< (+) Time elapsed. */
-} splashscreen_state_data;              /*!< (+) Global state data. */
+	if (state->start)
+		state->start(state);
+}
 
-/**
- * \brief Splash screen state.
- */
-extern struct state splashscreen_state;
+void
+state_handle(struct state *state, const union event *ev)
+{
+	assert(state);
+	assert(ev);
 
-#endif /* !MOLKO_SPLASHSCREEN_ADVENTURE_H */
+	if (state->handle)
+		state->handle(state, ev);
+}
+
+void
+state_update(struct state *state, unsigned int ticks)
+{
+	assert(state);
+
+	if (state->update)
+		state->update(state, ticks);
+}
+
+void
+state_draw(struct state *state)
+{
+	assert(state);
+
+	if (state->draw)
+		state->draw(state);
+}
+
+void
+state_end(struct state *state)
+{
+	assert(state);
+
+	if (state->end)
+		state->end(state);
+}
+
+void
+state_finish(struct state *state)
+{
+	assert(state);
+
+	if (state->finish)
+		state->finish(state);
+}

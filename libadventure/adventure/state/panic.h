@@ -1,5 +1,5 @@
 /*
- * mainmenu_state.h -- game main menu
+ * panic_state.h -- panic state
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,17 +16,23 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_MAINMENU_STATE_H
-#define MOLKO_MAINMENU_STATE_H
+#ifndef MOLKO_STATE_PANIC_H
+#define MOLKO_STATE_PANIC_H
 
 /**
- * \file mainmenu_state.h
- * \brief Game main menu.
+ * \file panic.h
+ * \brief Panic state.
  */
+
+struct state;
 
 /**
- * \brief Main menu state.
+ * Create a state in case of panic.
+ *
+ * \pre state != NULL
+ * \param state the state to initialize
  */
-extern struct state mainmenu_state;
+void
+panic_state(struct state *state);
 
-#endif /* !MOLKO_MAINMENU_STATE_H */
+#endif /* !MOLKO_STATE_PANIC_H */

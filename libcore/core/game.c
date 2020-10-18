@@ -32,47 +32,63 @@ game_switch(struct state *state, bool quick)
 	assert(state);
 
 	if (quick) {
+		if (game.state_next)
+			state_finish(game.state_next);
+
 		game.state_next = NULL;
 		game.state = state;
-		game.state->enter();
+		state_start(game.state);
 	} else
 		game.state_next = state;
 }
 
 void
-game_handle(const union event *event)
+game_handle(const union event *ev)
 {
-	assert(event);
+	assert(ev);
 
 	if (game.state && !(game.inhibit & INHIBIT_STATE_INPUT))
-		game.state->handle(event);
+		state_handle(game.state, ev);
 }
 
 void
 game_update(unsigned int ticks)
 {
-	if (!(game.inhibit & INHIBIT_STATE_UPDATE)) {
-		/* Change state if any. */
-		if (game.state_next) {
-			/* Inform the current state we're gonna leave it. */
-			if (game.state)
-				game.state->leave();
+	if (game.inhibit & INHIBIT_STATE_UPDATE)
+		return;
 
-			game.state = game.state_next;
-			game.state->enter();
-			game.state_next = NULL;
-		}
+	/* Change state if any. */
+	if (game.state_next) {
+		struct state *previous;
 
-		if (game.state)
-			game.state->update(ticks);
+		/* Inform the current state we're gonna leave it. */
+		if ((previous = game.state))
+			state_end(previous);
+
+		/* Change the state and tell we're starting it. */
+		if ((game.state = game.state_next))
+			state_start(game.state);
+
+		game.state_next = NULL;
+
+		/*
+		 * Only call finish at the end of the process because
+		 * the user may still use resources from it during the
+		 * transition.
+		 */
+		if (previous)
+			state_finish(previous);
 	}
+
+	if (game.state)
+		state_update(game.state, ticks);
 }
 
 void
 game_draw(void)
 {
 	if (game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
-		game.state->draw();
+		state_draw(game.state);
 
 	painter_present();
 }
@@ -80,8 +96,15 @@ game_draw(void)
 void
 game_quit(void)
 {
-	if (game.state && game.state->leave)
-		game.state->leave();
-
-	game.state = NULL;
+	/* Close the next state if any. */
+	if (game.state_next) {
+		state_finish(game.state_next);
+		game.state_next = NULL;
+	}
+	
+	if (game.state) {
+		state_end(game.state);
+		state_finish(game.state);
+		game.state = NULL;
+	}
 }

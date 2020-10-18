@@ -24,6 +24,7 @@
 #include <core/event.h>
 #include <core/game.h>
 #include <core/panic.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/util.h>
 #include <core/window.h>
@@ -33,11 +34,18 @@
 
 #include <rpg/rpg.h>
 
-#include <adventure/panic_state.h>
-#include <adventure/splashscreen_state.h>
+#include <adventure/state/panic.h>
+#include <adventure/state/splashscreen.h>
+#include <adventure/state/mainmenu.h>
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
+
+static struct {
+	struct state splash;
+	struct state mainmenu;
+	struct state panic;
+} states;
 
 static jmp_buf panic_buf;
 
@@ -61,14 +69,14 @@ init(void)
 	 */
 
 	/* Init unrecoverable panic state. */
-	panic_state_init();
+	panic_state(&states.panic);
 	panic_handler = unrecoverable;
 
-	if (!theme_init())
-		panic();
+	/* Init states. */
+	splashscreen_state(&states.splash, &states.mainmenu);
+	mainmenu_state(&states.mainmenu);
 
-	/* Default state is splash screen */
-	game_switch(&splashscreen_state, true);
+	game_switch(&states.splash, true);
 }
 
 static void
@@ -123,7 +131,7 @@ main(int argc, char **argv)
 		for (union event ev; event_poll(&ev); )
 			continue;
 
-		game_switch(&panic_state, true);
+		game_switch(&states.panic, true);
 		run();
 	}
 

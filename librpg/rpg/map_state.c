@@ -126,8 +126,10 @@ center(void)
 }
 
 static void
-enter(void)
+start(struct state *st)
 {
+	(void)st;
+
 	/* Adjust map properties. */
 	struct map *m = &map_state_data.map.map;
 
@@ -148,11 +150,6 @@ enter(void)
 
 	/* Final bits. */
 	walksprite_init(&cache.player.ws, &PLAYER()->sprite, 300);
-}
-
-static void
-leave(void)
-{
 }
 
 static void
@@ -303,8 +300,10 @@ move(unsigned int ticks)
 }
 
 static void
-handle(const union event *event)
+handle(struct state *st, const union event *event)
 {
+	(void)st;
+
 	switch (event->type) {
 	case EVENT_KEYDOWN:
 		handle_keydown(event);
@@ -318,14 +317,18 @@ handle(const union event *event)
 }
 
 static void
-update(unsigned int ticks)
+update(struct state *st, unsigned int ticks)
 {
+	(void)st;
+
 	move(ticks);
 }
 
 static void
-draw(void)
+draw(struct state *st)
 {
+	(void)st;
+
 	struct debug_report report = {0};
 
 	map_draw(&map_state_data.map.map, VIEW()->x, VIEW()->y);
@@ -344,8 +347,7 @@ draw(void)
 struct map_state_data map_state_data;
 
 struct state map_state = {
-	.enter = enter,
-	.leave = leave,
+	.start = start,
 	.update = update,
 	.handle = handle,
 	.draw = draw

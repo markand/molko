@@ -1,5 +1,5 @@
 /*
- * panic_state.h -- panic state
+ * splashscreen.h -- splash screen state
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,31 +16,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_PANIC_STATE_H
-#define MOLKO_PANIC_STATE_H
+#ifndef MOLKO_STATE_SPLASHSCREEN_H
+#define MOLKO_STATE_SPLASHSCREEN_H
 
 /**
- * \file panic_state.h
- * \brief Panic state.
+ * \file splashscreen.h
+ * \brief Splash screen state.
  */
 
-#include <core/state.h>
-
 /**
- * \brief Global panic state structure.
- */
-extern struct state panic_state;
-
-/**
- * Call this function as early as possible to be able to use this state even on
- * memory allocation errors.
+ * Create a state for showing a splashcreen.
  *
- * \note You must still initialize the system before.
- * \see \ref core_init
- * \see \ref ui_init
- * \see \ref window_open
+ * \pre state != NULL
+ * \pre next != NULL
+ * \param state the state to initialize
+ * \param next the next state once it's finished
+ * \post state->data is set internal data
+ * \post state->draw is set
+ * \post state->update is set
+ * \post state->finish is set
  */
 void
-panic_state_init(void);
+splashscreen_state(struct state *state, struct state *next);
 
-#endif /* !MOLKO_PANIC_STATE_H */
+#endif /* !MOLKO_STATE_SPLASHSCREEN_H */

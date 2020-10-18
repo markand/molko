@@ -26,7 +26,8 @@
 static noreturn void
 terminate(void)
 {
-	fprintf(stderr, "abort: %s", error());
+	fprintf(stderr, "abort: %s\n", error());
+	abort();
 	exit(1);
 }
 

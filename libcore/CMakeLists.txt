@@ -63,6 +63,7 @@ set(
 	${libcore_SOURCE_DIR}/core/sound.h
 	${libcore_SOURCE_DIR}/core/sprite.c
 	${libcore_SOURCE_DIR}/core/sprite.h
+	${libcore_SOURCE_DIR}/core/state.c
 	${libcore_SOURCE_DIR}/core/state.h
 	${libcore_SOURCE_DIR}/core/sys.c
 	${libcore_SOURCE_DIR}/core/sys.h
