@@ -32,12 +32,17 @@ game_switch(struct state *state, bool quick)
 	assert(state);
 
 	if (quick) {
-		if (game.state_next)
+		if (game.state_next) {
 			state_finish(game.state_next);
+			game.state_next = NULL;
+		}
 
-		game.state_next = NULL;
-		game.state = state;
-		state_start(game.state);
+		if (game.state) {
+			state_end(game.state);
+			state_finish(game.state);
+		}
+
+		state_start(game.state = state);
 	} else
 		game.state_next = state;
 }

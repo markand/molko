@@ -36,4 +36,5 @@ molko_define_test(
 )
 molko_define_test(TARGET rbuf SOURCES test-rbuf.c)
 molko_define_test(TARGET save SOURCES test-save.c)
+molko_define_test(TARGET state SOURCES test-state.c)
 molko_define_test(TARGET drawable SOURCES test-drawable.c)

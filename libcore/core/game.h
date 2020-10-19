@@ -60,6 +60,8 @@ extern struct game game;
  * This function will only update state after the next \ref  game_update call
  * unless quick is set to true.
  *
+ * \warning Passing true to quick will immediately call end/finish state
+ *          functions which can destroy your state while still running it.
  * \pre state != NULL
  * \param state the new state
  * \param quick quickly change the state
