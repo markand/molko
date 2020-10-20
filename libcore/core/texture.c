@@ -48,12 +48,10 @@ texture_new(struct texture *tex, unsigned int w, unsigned int h)
 bool
 texture_ok(const struct texture *tex)
 {
-	assert(tex);
-
-	return tex->handle && tex->w && tex->h;
+	return tex && tex->handle && tex->w && tex->h;
 }
 
-void
+bool
 texture_draw(struct texture *tex, int x, int y)
 {
 	assert(tex);
@@ -65,10 +63,13 @@ texture_draw(struct texture *tex, int x, int y)
 		.h = tex->h
 	};
 
-	SDL_RenderCopy(RENDERER(), tex->handle, NULL, &dst);
+	if (SDL_RenderCopy(RENDERER(), tex->handle, NULL, &dst) < 0)
+		return error_sdl();
+
+	return true;
 }
 
-void
+bool
 texture_scale(struct texture *tex,
               int src_x,
               int src_y,
@@ -93,7 +94,10 @@ texture_scale(struct texture *tex,
 		.h = dst_h
 	};
 
-	SDL_RenderCopyEx(RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE);
+	if (SDL_RenderCopyEx(RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE) < 0)
+		return error_sdl();
+
+	return true;
 }
 
 void

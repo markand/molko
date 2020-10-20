@@ -56,9 +56,8 @@ texture_new(struct texture *tex, unsigned int w, unsigned int h);
  * This function simply checks if the texture is initialized and has non-null
  * dimensions.
  *
- * \pre tex != NULL
- * \param tex the texture to check
- * \return True if the texture is initialized
+ * \param tex the texture to check (may be NULL)
+ * \return True if the texture is properly initialized.
  */
 bool
 texture_ok(const struct texture *tex);
@@ -70,8 +69,9 @@ texture_ok(const struct texture *tex);
  * \param tex the texture
  * \param x the X coordinate
  * \param y the Y coordinate
+ * \return False in case of rendering error.
  */
-void
+bool
 texture_draw(struct texture *tex, int x, int y);
 
 /**
@@ -88,8 +88,9 @@ texture_draw(struct texture *tex, int x, int y);
  * \param dst_w the destination rectangle width
  * \param dst_h the destination rectangle height
  * \param angle the angle
+ * \return False in case of rendering error.
  */
-void
+bool
 texture_scale(struct texture *tex,
               int src_x,
               int src_y,
