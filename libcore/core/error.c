@@ -36,33 +36,33 @@ error(void)
 }
 
 bool
-error_errno(void)
-{
-	error_printf("%s", strerror(errno));
-
-	return false;
-}
-
-bool
-error_printf(const char *fmt, ...)
+errorf(const char *fmt, ...)
 {
 	assert(fmt);
 
 	va_list ap;
 
 	va_start(ap, fmt);
-	error_vprintf(fmt, ap);
+	verrorf(fmt, ap);
 	va_end(ap);
 
 	return false;
 }
 
 bool
-error_vprintf(const char *fmt, va_list ap)
+verrorf(const char *fmt, va_list ap)
 {
 	assert(fmt);
 
 	vsnprintf(buffer, sizeof (buffer), fmt, ap);
+
+	return false;
+}
+
+bool
+error_errno(void)
+{
+	errorf("%s", strerror(errno));
 
 	return false;
 }
@@ -72,7 +72,7 @@ error_vprintf(const char *fmt, va_list ap)
 bool
 error_sdl(void)
 {
-	error_printf("%s", SDL_GetError());
+	errorf("%s", SDL_GetError());
 
 	return false;
 }

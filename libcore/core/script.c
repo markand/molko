@@ -72,7 +72,7 @@ script_append(struct script *s, struct action *a)
 	assert(a);
 
 	if (s->actionsz >= SCRIPT_ACTION_MAX)
-		return error_printf("script is full");
+		return errorf("script is full");
 
 	s->actions[s->actionsz++] = a;
 

@@ -23,7 +23,7 @@
 TEST
 simple(void)
 {
-	error_printf("Failed: %d", 123);
+	errorf("Failed: %d", 123);
 	ASSERT_STR_EQ("Failed: 123", error());
 	PASS();
 }

@@ -92,13 +92,13 @@ static bool
 check(struct map_data *data)
 {
 	if (strlen(data->title) == 0)
-		return error_printf("data has no title");
+		return errorf("data has no title");
 	if (data->w == 0 || data->h == 0)
-		return error_printf("data has null sizes");
+		return errorf("data has null sizes");
 	if (data->tile_w == 0 || data->tile_h == 0)
-		return error_printf("data has null tile sizes");
+		return errorf("data has null tile sizes");
 	if (!data->layers[0].tiles || !data->layers[1].tiles)
-		return error_printf("could not allocate data");
+		return errorf("could not allocate data");
 
 	return true;
 }

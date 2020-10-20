@@ -56,16 +56,16 @@ extern void (*trace_handler)(const char *);
  * \param fmt the printf(3) format string
  */
 void
-trace(const char *fmt, ...) PLAT_PRINTF(1, 2);
+tracef(const char *fmt, ...) PLAT_PRINTF(1, 2);
 
 /**
- * Similar to \ref trace with a va_list arguments pointer.
+ * Similar to \ref tracef with a va_list arguments pointer.
  *
  * \pre fmt != NULL
  * \param fmt the printf(3) format string
  * \param ap the argument list
  */
 void
-vtrace(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
+vtracef(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
 
 #endif /* !MOLKO_TRACE_H */

@@ -32,7 +32,7 @@ default_handler(const char *line)
 void (*trace_handler)(const char *) = default_handler;
 
 void
-trace(const char *fmt, ...)
+tracef(const char *fmt, ...)
 {
 	assert(fmt);
 
@@ -42,12 +42,12 @@ trace(const char *fmt, ...)
 		return;
 
 	va_start(ap, fmt);
-	vtrace(fmt, ap);
+	vtracef(fmt, ap);
 	va_end(ap);
 }
 
 void
-vtrace(const char *fmt, va_list ap)
+vtracef(const char *fmt, va_list ap)
 {
 	assert(fmt);
 

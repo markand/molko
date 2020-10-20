@@ -69,9 +69,9 @@ button_draw_default(struct theme *t, const struct button *button)
 	label_query(&label, &lw, &lh);
 
 	if (lw > button->w)
-		trace("button is too small for text: %u < %u", button->w, lw);
+		tracef("button is too small for text: %u < %u", button->w, lw);
 	if (lh > button->h)
-		trace("button is too small for text: %u < %u", button->h, lh);
+		tracef("button is too small for text: %u < %u", button->h, lh);
 
 	align(ALIGN_CENTER, &label.x, &label.y, lw, lh,
 	    button->x, button->y, button->w, button->h);

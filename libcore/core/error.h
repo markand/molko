@@ -39,15 +39,6 @@ const char *
 error(void);
 
 /**
- * Convenient helper that sets last error from global C errno and then return
- * false.
- *
- * \return Always false.
- */
-bool
-error_errno(void);
-
-/**
  * Set the game error with a printf-like format.
  *
  * \pre fmt != NULL
@@ -55,10 +46,10 @@ error_errno(void);
  * \return Always false.
  */
 bool
-error_printf(const char *fmt, ...) PLAT_PRINTF(1, 2);
+errorf(const char *fmt, ...) PLAT_PRINTF(1, 2);
 
 /**
- * Similar to \ref error_printf.
+ * Similar to \ref errorf.
  *
  * \pre fmt != NULL
  * \param fmt the format stinrg
@@ -66,6 +57,15 @@ error_printf(const char *fmt, ...) PLAT_PRINTF(1, 2);
  * \return Always false.
  */
 bool
-error_vprintf(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
+verrorf(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
+
+/**
+ * Convenient helper that sets last error from global C errno and then return
+ * false.
+ *
+ * \return Always false.
+ */
+bool
+error_errno(void);
 
 #endif /* !MOLKO_ERROR_H */

@@ -74,8 +74,8 @@ run(void)
 
 		painter_set_color(0x4f8fbaff);
 		painter_clear();
-		debug(&report, "Game running.");
-		debug(&report, "mouse: %d, %d", x, y);
+		debugf(&report, "Game running.");
+		debugf(&report, "mouse: %d, %d", x, y);
 		painter_present();
 
 		if ((elapsed = clock_elapsed(&clock)) < 20)

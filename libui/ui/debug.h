@@ -32,7 +32,7 @@
  * debug_options.enabled variable is set to true. However, you need to specify
  * the font to use in order to work.
  *
- * Each call to \ref debug or \ref vdebug automatically adjust
+ * Each call to \ref debugf or \ref vdebugf automatically adjust
  * next coordinate for rendering the text. As such, user may simply print
  * several lines of text without having to deal with that manually.
  */
@@ -86,10 +86,10 @@ extern struct debug_options debug_options;
  *       result is truncated.
  */
 void
-debug(struct debug_report *report, const char *fmt, ...) PLAT_PRINTF(2, 3);
+debugf(struct debug_report *report, const char *fmt, ...) PLAT_PRINTF(2, 3);
 
 /**
- * Similar to \ref debug with a va_list arguments pointer.
+ * Similar to \ref debugf with a va_list arguments pointer.
  *
  * \pre fmt != NULL
  * \param report the reporting context
@@ -97,6 +97,6 @@ debug(struct debug_report *report, const char *fmt, ...) PLAT_PRINTF(2, 3);
  * \param ap the argument list
  */
 void
-vdebug(struct debug_report *report, const char *fmt, va_list ap) PLAT_PRINTF(2, 0);
+vdebugf(struct debug_report *report, const char *fmt, va_list ap) PLAT_PRINTF(2, 0);
 
 #endif /* !MOLKO_DEBUG_H */

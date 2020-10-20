@@ -79,7 +79,7 @@ static bool
 exec(const char *sql)
 {
 	if (sqlite3_exec(db, sql, NULL, NULL, NULL) != SQLITE_OK)
-		return error_printf("%s", sqlite3_errmsg(db));
+		return errorf("%s", sqlite3_errmsg(db));
 
 	return true;
 }
@@ -96,9 +96,9 @@ save_open_path(const char *path)
 	assert(path);
 
 	if (sqlite3_open(path, &db) != SQLITE_OK)
-		return error_printf("database open error: %s", sqlite3_errmsg(db));
+		return errorf("database open error: %s", sqlite3_errmsg(db));
 	if (sqlite3_exec(db, sinit, NULL, NULL, NULL) != SQLITE_OK)
-		return error_printf("database init error: %s", sqlite3_errmsg(db));
+		return errorf("database init error: %s", sqlite3_errmsg(db));
 
 	return true;
 }
@@ -131,7 +131,7 @@ sqlite3_err:
 		exec(srollback);
 	}
 
-	return error_printf("%s", sqlite3_errmsg(db));
+	return errorf("%s", sqlite3_errmsg(db));
 }
 
 const char *
@@ -172,7 +172,7 @@ sqlite3_err:
 	if (stmt)
 		sqlite3_finalize(stmt);
 
-	error_printf("%s", sqlite3_errmsg(db));
+	errorf("%s", sqlite3_errmsg(db));
 
 	return NULL;
 }
@@ -201,7 +201,7 @@ sqlite3_err:
 	if (stmt)
 		sqlite3_finalize(stmt);
 
-	error_printf("%s", sqlite3_errmsg(db));
+	errorf("%s", sqlite3_errmsg(db));
 
 	return false;
 }

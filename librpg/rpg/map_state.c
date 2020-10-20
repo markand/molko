@@ -338,9 +338,9 @@ draw(struct state *st)
 		PLAYER()->x - VIEW()->x,
 		PLAYER()->y - VIEW()->y);
 
-	debug(&report, "position: %d, %d", PLAYER()->x,
+	debugf(&report, "position: %d, %d", PLAYER()->x,
 	    PLAYER()->y);
-	debug(&report, "view: %d, %d", VIEW()->x,
+	debugf(&report, "view: %d, %d", VIEW()->x,
 	    VIEW()->y);
 }
 

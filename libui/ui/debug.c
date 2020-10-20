@@ -31,7 +31,7 @@ struct debug_options debug_options = {
 };
 
 void
-debug(struct debug_report *report, const char *fmt, ...)
+debugf(struct debug_report *report, const char *fmt, ...)
 {
 	assert(report);
 	assert(fmt);
@@ -42,12 +42,12 @@ debug(struct debug_report *report, const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vdebug(report, fmt, ap);
+	vdebugf(report, fmt, ap);
 	va_end(ap);
 }
 
 void
-vdebug(struct debug_report *report, const char *fmt, va_list ap)
+vdebugf(struct debug_report *report, const char *fmt, va_list ap)
 {
 	assert(report);
 	assert(fmt);

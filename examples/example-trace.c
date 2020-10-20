@@ -66,12 +66,12 @@ run(void)
 					trace_hud_clear();
 					break;
 				default:
-					trace("keydown pressed: %d", ev.key.key);
+					tracef("keydown pressed: %d", ev.key.key);
 					break;
 				}
 				break;
 			case EVENT_CLICKDOWN:
-				trace("click at %d,%d", ev.click.x, ev.click.y);
+				tracef("click at %d,%d", ev.click.x, ev.click.y);
 				break;
 			case EVENT_QUIT:
 				return;
