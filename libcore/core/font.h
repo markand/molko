@@ -137,7 +137,7 @@ font_height(const struct font *font);
  * \param text the UTF-8 text
  * \param w pointer to width (may be NULL)
  * \param h pointer to height (may be NULL)
- * \return false in case of error and pointers to w and h are left unmodified
+ * \return False in case of error and pointers to w and h are left unmodified.
  */
 bool
 font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h);

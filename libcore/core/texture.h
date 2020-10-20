@@ -29,6 +29,8 @@
 
 #include <stdbool.h>
 
+#include "plat.h"
+
 /**
  * \brief Texture object.
  */
@@ -48,7 +50,7 @@ struct texture {
  * \return False on error.
  */
 bool
-texture_new(struct texture *tex, unsigned int w, unsigned int h);
+texture_new(struct texture *tex, unsigned int w, unsigned int h) PLAT_NODISCARD;
 
 /**
  * Check if the texture is valid.

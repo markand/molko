@@ -51,7 +51,7 @@
  * \post returned pointer will never be NULL
  */
 void *
-emalloc(size_t size);
+emalloc(size_t size) PLAT_NODISCARD;
 
 /**
  * Wrapper around calloc(3) that exits on allocation failure.
@@ -62,7 +62,7 @@ emalloc(size_t size);
  * \post returned pointer will never be NULL
  */
 void *
-ecalloc(size_t n, size_t size);
+ecalloc(size_t n, size_t size) PLAT_NODISCARD;
 
 /**
  * Copy the region specified by ptr.
@@ -74,25 +74,7 @@ ecalloc(size_t n, size_t size);
  * \post returned pointer will never be NULL
  */
 void *
-ememdup(const void *ptr, size_t size);
-
-/**
- * Create a dynamically allocated string in the printf(3) format string.
- *
- * \pre fmt != NULL
- * \return The heap allocated string.
- * \post Returned string will never be NULL.
- */
-char *
-eprintf(const char *fmt, ...) PLAT_PRINTF(1, 2);
-
-/**
- * Similar to \ref eprintf with arguments pointer.
- *
- * \copydoc eprintf
- */
-char *
-evprintf(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
+ememdup(const void *ptr, size_t size) PLAT_NODISCARD;
 
 /**
  * Put the thread to sleep for a given amount of milliseconds.

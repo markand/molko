@@ -39,7 +39,7 @@
  * \return False on error.
  */
 bool
-sys_init(void);
+sys_init(void) PLAT_NODISCARD;
 
 /**
  * Get the base system directory path.

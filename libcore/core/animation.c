@@ -32,7 +32,7 @@ update(struct drawable *dw, unsigned int ticks)
 static void
 draw(struct drawable *dw)
 {
-	return animation_draw(dw->data, dw->x, dw->y);
+	animation_draw(dw->data, dw->x, dw->y);
 }
 
 void
@@ -85,10 +85,10 @@ animation_update(struct animation *an, unsigned int ticks)
 	       an->column >= an->sprite->ncols;
 }
 
-void
+bool
 animation_draw(struct animation *an, int x, int y)
 {
-	sprite_draw(an->sprite, an->row, an->column, x, y);
+	return sprite_draw(an->sprite, an->row, an->column, x, y);
 }
 
 void

@@ -25,9 +25,12 @@ if (DOXYGEN_FOUND)
 		INPUT
 		doxygen/groups.c
 		doxygen/mainpage.c
-		doxygen/page-howto-initialization.c
-		doxygen/page-faq.c
 		doxygen/page-examples.c
+		doxygen/page-faq.c
+		doxygen/page-howto-error.c
+		doxygen/page-howto-initialization.c
+		doxygen/page-howto-ownership.c
+		doxygen/page-portability.c
 		libadventure
 		libcore
 		libui

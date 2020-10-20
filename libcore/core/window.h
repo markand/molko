@@ -27,6 +27,8 @@
 
 #include <stdbool.h>
 
+#include "plat.h"
+
 /**
  * \brief Global exposed window structure.
  */
@@ -40,14 +42,14 @@ struct window {
  * \brief Window mouse cursor.
  */
 enum window_cursor {
-	WINDOW_CURSOR_ARROW,
-	WINDOW_CURSOR_EDIT,
-	WINDOW_CURSOR_WAIT,
-	WINDOW_CURSOR_CROSSHAIR,
-	WINDOW_CURSOR_SIZE,
-	WINDOW_CURSOR_NO,
-	WINDOW_CURSOR_HAND,
-	WINDOW_CURSOR_LAST
+	WINDOW_CURSOR_ARROW,            /*!< Standard arrow.*/
+	WINDOW_CURSOR_EDIT,             /*!< Text edit cursor "I". */
+	WINDOW_CURSOR_WAIT,             /*!< Busy cursor. */
+	WINDOW_CURSOR_CROSSHAIR,        /*!< Cross-hair for selection. */
+	WINDOW_CURSOR_SIZE,             /*!< Size/moving. */
+	WINDOW_CURSOR_NO,               /*!< Action forbidden. */
+	WINDOW_CURSOR_HAND,             /*!< Hand. */
+	WINDOW_CURSOR_LAST              /*!< Number of cursors. */
 };
 
 /**
@@ -65,7 +67,7 @@ extern struct window window;
  * \return true on success
  */
 bool
-window_open(const char *title, unsigned int width, unsigned int height);
+window_open(const char *title, unsigned int width, unsigned int height) PLAT_NODISCARD;
 
 /**
  * Change the window cursor.

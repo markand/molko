@@ -28,11 +28,6 @@
 
 #include "inhibit.h"
 
-/**
- * \brief Max number of actions allowed at the same time.
- */
-#define GAME_ACTIONS_MAX 128
-
 struct state;
 
 union event;

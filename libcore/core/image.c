@@ -21,7 +21,7 @@
 
 #include <SDL_image.h>
 
-#include "error_p.h"
+#include "error.h"
 #include "texture.h"
 #include "window.h"
 #include "window_p.h"
@@ -46,7 +46,7 @@ image_open(struct texture *tex, const char *path)
 	assert(path);
 
 	if (!(tex->handle = IMG_LoadTexture(RENDERER(), path)))
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	dimensions(tex);
 
@@ -61,7 +61,7 @@ image_openmem(struct texture *tex, const void *buffer, size_t size)
 	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
 
 	if (!ops || !(tex->handle = IMG_LoadTexture_RW(RENDERER(), ops, true)))
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	dimensions(tex);
 

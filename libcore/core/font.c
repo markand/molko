@@ -23,7 +23,6 @@
 
 #include "color.h"
 #include "error.h"
-#include "error_p.h"
 #include "font.h"
 #include "texture_p.h"
 #include "util.h"
@@ -35,7 +34,7 @@ font_open(struct font *font, const char *path, unsigned int size)
 	assert(path);
 
 	if (!(font->handle = TTF_OpenFont(path, size)))
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return true;
 }
@@ -50,7 +49,7 @@ font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int 
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buflen)) ||
 	   (!(font->handle = TTF_OpenFontRW(ops, true, size))))
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return true;
 }
@@ -97,7 +96,7 @@ font_render(struct font *font, struct texture *tex, const char *text)
 	}
 
 	if (!(surface = func(font->handle, text, fg)))
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return texture_from_surface(tex, surface);
 }
@@ -117,7 +116,7 @@ font_query(const struct font *font, const char *text, unsigned int *w, unsigned 
 	assert(text);
 
 	if (TTF_SizeUTF8(font->handle, text, (int *)w, (int *)h) != 0)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return true;
 }

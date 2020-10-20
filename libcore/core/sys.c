@@ -32,7 +32,6 @@
 #endif
 
 #include "error.h"
-#include "error_p.h"
 #include "sys.h"
 
 #if defined(_WIN32)
@@ -107,15 +106,15 @@ sys_init(void)
 #endif
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 	if (TTF_Init() < 0)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 	if (Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return true;
 }

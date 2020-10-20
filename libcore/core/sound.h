@@ -27,6 +27,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "plat.h"
+
 /**
  * \brief Sound flags.
  */
@@ -53,7 +55,7 @@ struct sound {
  * \return False on errors.
  */
 bool
-sound_open(struct sound *snd, const char *path);
+sound_open(struct sound *snd, const char *path) PLAT_NODISCARD;
 
 /**
  * Open a sound audio from a buffer.

@@ -19,7 +19,6 @@
 #include <assert.h>
 
 #include "error.h"
-#include "error_p.h"
 #include "texture.h"
 #include "texture_p.h"
 #include "util.h"
@@ -36,7 +35,7 @@ texture_new(struct texture *tex, unsigned int w, unsigned int h)
 
 	if (!tex->handle) {
 		tex->w = tex->h = 0;
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 	}
 
 	tex->w = w;
@@ -64,7 +63,7 @@ texture_draw(struct texture *tex, int x, int y)
 	};
 
 	if (SDL_RenderCopy(RENDERER(), tex->handle, NULL, &dst) < 0)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return true;
 }
@@ -95,7 +94,7 @@ texture_scale(struct texture *tex,
 	};
 
 	if (SDL_RenderCopyEx(RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE) < 0)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return true;
 }
@@ -121,7 +120,7 @@ texture_from_surface(struct texture *tex, SDL_Surface *surface)
 
 	if (!(tex->handle = SDL_CreateTextureFromSurface(RENDERER(), surface))) {
 		tex->w = tex->h = 0;
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 	}
 
 	tex->w = surface->w;

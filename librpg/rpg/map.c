@@ -22,7 +22,6 @@
 #include <string.h>
 
 #include <core/error.h>
-#include <core/error_p.h>
 #include <core/image.h>
 #include <core/painter.h>
 #include <core/sprite.h>

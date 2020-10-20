@@ -44,11 +44,11 @@
  * happening under the hood without having to check if functions will generate
  * dynamic allocations or not.
  *
- * However, we also love modernity and as such, C18 is the minimal requirement
+ * However, we also love modernity and as such, C11 is the minimal requirement
  * to build and run Molko's Adventure.
  *
  * \note The code does not make any assumption about the platform it runs, it
- *       expects to have a fully conformant C18 implementation. Microsoft MSVC
+ *       expects to have a fully conformant C11 implementation. Microsoft MSVC
  *       is known to **not** support this C version.
  * 
  * # Can I make a MMORPG with that?

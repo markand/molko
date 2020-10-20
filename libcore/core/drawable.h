@@ -141,8 +141,7 @@ drawable_stack_init(struct drawable_stack *st);
  * \pre dw != NULL
  * \param st the stack
  * \param dw the drawable to reference
- * \return true if the drawable was placed correctly and false if there wasn't
- *         enough room.
+ * \return True if the drawable was added correctly (enough space).
  */
 bool
 drawable_stack_add(struct drawable_stack *st, struct drawable *dw);
@@ -155,7 +154,7 @@ drawable_stack_add(struct drawable_stack *st, struct drawable *dw);
  * \pre st != NULL
  * \param st the drawable stack
  * \param ticks the number of ticks since last frame
- * \return true if all drawable were rendered
+ * \return True if all drawable were rendered.
  */
 bool
 drawable_stack_update(struct drawable_stack *st, unsigned int ticks);
@@ -174,7 +173,7 @@ drawable_stack_draw(struct drawable_stack *st);
  *
  * \pre st != NULL
  * \param st the stack
- * \return false if there is at least one drawable in the stack
+ * \return False if there is at least one drawable in the stack.
  */
 bool
 drawable_stack_completed(const struct drawable_stack *st);

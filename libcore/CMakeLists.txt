@@ -33,7 +33,6 @@ set(
 	${libcore_SOURCE_DIR}/core/drawable.h
 	${libcore_SOURCE_DIR}/core/error.c
 	${libcore_SOURCE_DIR}/core/error.h
-	${libcore_SOURCE_DIR}/core/error_p.h
 	${libcore_SOURCE_DIR}/core/event.c
 	${libcore_SOURCE_DIR}/core/event.h
 	${libcore_SOURCE_DIR}/core/font.c
@@ -53,8 +52,6 @@ set(
 	${libcore_SOURCE_DIR}/core/panic.c
 	${libcore_SOURCE_DIR}/core/panic.h
 	${libcore_SOURCE_DIR}/core/plat.h
-	${libcore_SOURCE_DIR}/core/rbuf.c
-	${libcore_SOURCE_DIR}/core/rbuf.h
 	${libcore_SOURCE_DIR}/core/save.c
 	${libcore_SOURCE_DIR}/core/save.h
 	${libcore_SOURCE_DIR}/core/script.c

@@ -36,10 +36,16 @@
  */
 #define PLAT_PRINTF(p1, p2)
 
+/**
+ * Annotate a function when the result must never be discarded.
+ */
+#define PLAT_NODISCARD
+
 #else
 
 #if defined(__GNUC__) || defined(__clang__)
 #       define PLAT_PRINTF(p1, p2) __attribute__ ((format (printf, p1, p2)))
+#       define PLAT_NODISCARD __attribute__ ((warn_unused_result))
 #else
 #       define PLAT_PRINTF(p1, p2)
 #endif

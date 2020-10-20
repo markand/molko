@@ -17,13 +17,9 @@
  */
 
 #include <assert.h>
-#include <errno.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "error.h"
-#include "error_p.h"
 
 #include <SDL.h>
 
@@ -55,24 +51,6 @@ verrorf(const char *fmt, va_list ap)
 	assert(fmt);
 
 	vsnprintf(buffer, sizeof (buffer), fmt, ap);
-
-	return false;
-}
-
-bool
-error_errno(void)
-{
-	errorf("%s", strerror(errno));
-
-	return false;
-}
-
-/* private: error_p.h */
-
-bool
-error_sdl(void)
-{
-	errorf("%s", SDL_GetError());
 
 	return false;
 }

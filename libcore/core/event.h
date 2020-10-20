@@ -84,7 +84,7 @@ union event {
  * Fetch the next event or return false if there are not.
  *
  * \param ev the event
- * \return true if the event was filled or false otherwise
+ * \return True if the event was filled or false otherwise.
  */
 bool
 event_poll(union event *ev);

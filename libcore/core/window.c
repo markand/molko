@@ -21,7 +21,7 @@
 
 #include <SDL.h>
 
-#include "error_p.h"
+#include "error.h"
 #include "util.h"
 #include "window.h"
 #include "window_p.h"
@@ -64,7 +64,7 @@ window_open(const char *title, unsigned int w, unsigned int h)
 
 	if (SDL_CreateWindowAndRenderer(w, h, SDL_WINDOW_OPENGL,
 	    &handle.win, &handle.renderer) < 0)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	SDL_SetWindowTitle(handle.win, title);
 

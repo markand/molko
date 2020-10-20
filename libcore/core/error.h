@@ -59,13 +59,4 @@ errorf(const char *fmt, ...) PLAT_PRINTF(1, 2);
 bool
 verrorf(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
 
-/**
- * Convenient helper that sets last error from global C errno and then return
- * false.
- *
- * \return Always false.
- */
-bool
-error_errno(void);
-
 #endif /* !MOLKO_ERROR_H */

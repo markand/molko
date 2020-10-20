@@ -21,8 +21,8 @@
 
 #include <SDL_mixer.h>
 
+#include "error.h"
 #include "sound.h"
-#include "error_p.h"
 
 bool
 sound_open(struct sound *snd, const char *path)
@@ -31,7 +31,7 @@ sound_open(struct sound *snd, const char *path)
 	assert(path);
 
 	if (!(snd->handle = Mix_LoadMUS(path)))
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return true;
 }
@@ -46,7 +46,7 @@ sound_openmem(struct sound *snd, const void *buffer, size_t buffersz)
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buffersz)) ||
 	    !(snd->handle = Mix_LoadMUS_RW(ops, true)))
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return true;
 }
@@ -61,7 +61,7 @@ sound_play(struct sound *snd)
 	if (snd->flags & SOUND_LOOP)
 		n = -1;
 	if (Mix_PlayMusic(snd->handle, n) < 0)
-		return error_sdl();
+		return errorf("%s", SDL_GetError());
 
 	return true;
 }

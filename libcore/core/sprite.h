@@ -87,7 +87,7 @@ sprite_init(struct sprite *sprite,
  * Tells if the sprite has a texture and isn't null sized.
  *
  * \param sprite the sprite to check (may be NULL)
- * \return True if it is initialized correctly
+ * \return True if it is initialized correctly.
  */
 bool
 sprite_ok(const struct sprite *sprite);
@@ -103,8 +103,9 @@ sprite_ok(const struct sprite *sprite);
  * \param c the column number
  * \param x the X destination
  * \param y the Y destination
+ * \return False in case of rendering error.
  */
-void
+bool
 sprite_draw(struct sprite *sprite, unsigned int r, unsigned int c, int x, int y);
 
 #endif /* !MOLKO_SPRITE_H */

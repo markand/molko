@@ -74,7 +74,7 @@ animation_start(struct animation *an);
  * \pre an != NULL
  * \param an the animation
  * \param ticks the elapsed ticks since the last call
- * \return true if the animation is complete
+ * \return True if the animation is complete.
  */
 bool
 animation_update(struct animation *an, unsigned int ticks);
@@ -86,8 +86,9 @@ animation_update(struct animation *an, unsigned int ticks);
  * \param an the animation
  * \param x the X coordinate
  * \param y the Y coordinate
+ * \return False in case of rendering error.
  */
-void
+bool
 animation_draw(struct animation *an, int x, int y);
 
 /**

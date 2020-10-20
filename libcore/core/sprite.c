@@ -46,14 +46,14 @@ sprite_ok(const struct sprite *sprite)
 	return texture_ok(sprite->texture) && sprite->cellw != 0 && sprite->cellh != 0;
 }
 
-void
+bool
 sprite_draw(struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
 {
 	assert(sprite_ok(sprite));
 	assert(r < sprite->nrows);
 	assert(c < sprite->ncols);
 
-	texture_scale(
+	return texture_scale(
 		sprite->texture,
 		c * sprite->cellw,      /* src y */
 		r * sprite->cellh,      /* src x */

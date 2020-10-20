@@ -115,6 +115,7 @@ action_handle(struct action *act, const union event *ev);
  * \pre act != NULL
  * \param act the action
  * \param ticks the number of milliseconds since last frame
+ * \return Status of act->update or false if act->update is NULL.
  */
 bool
 action_update(struct action *act, unsigned int ticks);
@@ -180,6 +181,7 @@ action_stack_init(struct action_stack *st);
  * \param st the stack
  * \param act the action
  * \note The pointer must be kept alive.
+ * \return True if the action was added correctly (enough space).
  */
 bool
 action_stack_add(struct action_stack *st, struct action *act);
@@ -201,7 +203,7 @@ action_stack_handle(struct action_stack *st, const union event *ev);
  * \pre st != NULL
  * \param st the stack
  * \param ticks the number of milliseconds since last frame
- * \return true if all actions completed
+ * \return True if all actions completed.
  */
 bool
 action_stack_update(struct action_stack *st, unsigned int ticks);
@@ -220,7 +222,7 @@ action_stack_draw(struct action_stack *st);
  *
  * \pre st != NULL
  * \param st the stack
- * \return false if there is at least one action in the stack
+ * \return False if there is at least one action in the stack.
  */
 bool
 action_stack_completed(const struct action_stack *st);
