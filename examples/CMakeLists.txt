@@ -73,6 +73,15 @@ molko_define_executable(
 )
 
 molko_define_executable(
+	TARGET example-sprite
+	SOURCES example-sprite.c
+	FOLDER examples
+	ASSETS
+		${examples_SOURCE_DIR}/assets/sprites/people.png
+	LIBRARIES libui
+)
+
+molko_define_executable(
 	TARGET example-drawable
 	SOURCES example-drawable.c
 	FOLDER examples

@@ -23,7 +23,27 @@
  * \file sprite.h
  * \brief Image sprites.
  * \ingroup drawing
+ *
+ * The sprite is a module to help rendering a large image that is split into
+ * individual parts. This improves memory usage as several images are loaded
+ * in a unique one instead of individual parts.
+ *
+ * Example of sprite.
+ *
+ * ```
+ * +---+---+---+
+ * | 0 | 1 | 2 |
+ * +---+---+---+
+ * | 3 | 4 | 5 |
+ * +---+---+---+
+ * ```
+ *
+ * If an image is designed like this grid, it contains three columns and 2 rows.
+ *
+ * \note The image may not contain space, margins or padding within each cell.
  */
+
+#include <stdbool.h>
 
 struct texture;
 
@@ -64,15 +84,25 @@ sprite_init(struct sprite *sprite,
             unsigned int cellh);
 
 /**
+ * Tells if the sprite has a texture and isn't null sized.
+ *
+ * \param sprite the sprite to check (may be NULL)
+ * \return True if it is initialized correctly
+ */
+bool
+sprite_ok(const struct sprite *sprite);
+
+/**
  * Draw the sprite component from row `r' and column `c'.
  *
+ * \pre r < sprite->nrows
+ * \pre c < sprite->ncols
  * \pre sprite != NULL
  * \param sprite the sprite to draw
  * \param r the row number
  * \param c the column number
  * \param x the X destination
  * \param y the Y destination
- * \warning No bounds checking
  */
 void
 sprite_draw(struct sprite *sprite, unsigned int r, unsigned int c, int x, int y);
