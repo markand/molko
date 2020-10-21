@@ -26,11 +26,19 @@ macro(molko_build_assets assets outputs)
 		get_filename_component(outputdir ${output} DIRECTORY)
 		get_filename_component(name ${basename} NAME_WE)
 		get_filename_component(category ${outputdir} NAME)
+		get_filename_Component(extension ${a} EXT)
 		file(MAKE_DIRECTORY ${outputdir})
+
+		# For "text" files, we create a C array null-terminated.
+		if (${extension} MATCHES "\\.(txt|sql)")
+			set(arg0 -0)
+		else ()
+			unset(arg0)
+		endif ()
 
 		add_custom_command(
 			OUTPUT ${output}
-			COMMAND $<TARGET_FILE:bcc> -s ${a} ${category}-${name} > ${output}
+			COMMAND $<TARGET_FILE:bcc> ${arg0} -s ${a} ${category}-${name} > ${output}
 			DEPENDS
 				${a}
 				$<TARGET_FILE:bcc>

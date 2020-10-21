@@ -27,6 +27,7 @@
 
 static const char *charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 static bool fstatic;
+static bool nullterm;
 
 noreturn static void
 usage(void)
@@ -84,15 +85,20 @@ process(const char *input, const char *variable)
 		if (idx == 0)
 			putchar('\t');
 
-		printf("0x%02x", (unsigned char)ch);
-
-		if (!feof(fp))
-			printf(", ");
+		printf("0x%02x, ", (unsigned char)ch);
 
 		if (++idx == 4) {
 			idx = 0;
 			putchar('\n');
 		}
+	}
+
+	/* Add final '\0' if requested. */
+	if (nullterm) {
+		if (idx++ == 0)
+			putchar('\t');
+
+		printf("0x00");
 	}
 
 	if (idx != 0)
@@ -107,8 +113,11 @@ main(int argc, char **argv)
 {
 	int ch;
 
-	while ((ch = getopt(argc, argv, "s")) != -1) {
+	while ((ch = getopt(argc, argv, "0s")) != -1) {
 		switch (ch) {
+		case '0':
+			nullterm = true;
+			break;
 		case 's':
 			fstatic = true;
 			break;
