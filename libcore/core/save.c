@@ -18,146 +18,158 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <sqlite3.h>
 
+#include <core/assets/sql/init.h>
+#include <core/assets/sql/property-get.h>
+#include <core/assets/sql/property-remove.h>
+#include <core/assets/sql/property-set.h>
+
 #include "error.h"
 #include "save.h"
 #include "sys.h"
+#include "util.h"
 
-static sqlite3 *db;
-
-static const char *sinit =
-	"BEGIN EXCLUSIVE TRANSACTION;"
-	""
-	"CREATE TABLE IF NOT EXISTS property("
-	"  id INTEGER PRIMARY KEY AUTOINCREMENT,"
-	"  key TEXT NOT NULL UNIQUE,"
-	"  value TEXT NOT NULL"
-	");"
-	""
-	"COMMIT"
-;
-
-static const char *sbegin =
-	"BEGIN EXCLUSIVE TRANSACTION"
-;
-
-static const char *scommit =
-	"COMMIT"
-;
-
-static const char *srollback =
-	"ROLLBACK"
-;
-
-static const char *sset_property =
-	"INSERT OR REPLACE INTO property("
-	"  key,"
-	"  value"
-	")"
-	"VALUES("
-	"  ?,"
-	"  ?"
-	");"
-;
-
-static const char *sget_property =
-	"SELECT value"
-	"  FROM property"
-	" WHERE key = ?"
-;
-
-static const char *sremove_property =
-	"DELETE"
-	"  FROM property"
-	" WHERE key = ?"
-;
+#define SQL_BEGIN       "BEGIN EXCLUSIVE TRANSACTION"
+#define SQL_COMMIT      "COMMIT"
+#define SQL_ROLLBACK    "ROLLBACK"
 
 static bool
-exec(const char *sql)
+exec(struct save *db, const char *sql)
 {
-	if (sqlite3_exec(db, sql, NULL, NULL, NULL) != SQLITE_OK)
-		return errorf("%s", sqlite3_errmsg(db));
+	if (sqlite3_exec(db->handle, sql, NULL, NULL, NULL) != SQLITE_OK)
+		return errorf("%s", sqlite3_errmsg(db->handle));
+
+	return true;
+}
+
+static bool
+execu(struct save *db, const unsigned char *sql)
+{
+	return exec(db, (const char *)sql);
+}
+
+bool
+save_open(struct save *db, unsigned int idx, enum save_mode mode)
+{
+	assert(db);
+
+	return save_open_path(db, sys_savepath(idx), mode);
+}
+
+bool
+verify(struct save *db)
+{
+	struct {
+		time_t *date;
+		struct save_property prop;
+	} table[] = {
+		{ .date = &db->created, { .key = "molko.create-date" } },
+		{ .date = &db->updated, { .key = "molko.update-date" } },
+	};
+
+	/* Ensure create and update dates are present. */
+	for (size_t i = 0; i < NELEM(table); ++i) {
+		if (!save_get_property(db, &table[i].prop)) {
+			sqlite3_close(db->handle);
+			return errorf("database not initialized correctly");
+		}
+
+		*table[i].date = strtoull(table[i].prop.value, NULL, 10);
+	}
 
 	return true;
 }
 
 bool
-save_open(unsigned int idx)
+save_open_path(struct save *db, const char *path, enum save_mode mode)
 {
-	return save_open_path(sys_savepath(idx));
-}
-
-bool
-save_open_path(const char *path)
-{
+	assert(db);
 	assert(path);
 
-	if (sqlite3_open(path, &db) != SQLITE_OK)
-		return errorf("database open error: %s", sqlite3_errmsg(db));
-	if (sqlite3_exec(db, sinit, NULL, NULL, NULL) != SQLITE_OK)
-		return errorf("database init error: %s", sqlite3_errmsg(db));
+	int flags = 0;
 
-	return true;
+	switch (mode) {
+	case SAVE_MODE_WRITE:
+		flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+		break;
+	default:
+		flags = SQLITE_OPEN_READONLY;
+		break;
+	}
+
+	if (sqlite3_open_v2(path, (sqlite3**)&db->handle, flags, NULL) != SQLITE_OK)
+		return errorf("%s", sqlite3_errmsg(db->handle));
+
+	if (mode == SAVE_MODE_WRITE) {
+		if (!execu(db, sql_init)) {
+			sqlite3_close(db->handle);
+			return false;
+		}
+	}
+
+	return verify(db);
 }
 
 bool
-save_set_property(const char *key, const char *value)
+save_set_property(struct save *db, const struct save_property *prop)
 {
-	assert(key);
-	assert(value && strlen(value) <= SAVE_PROPERTY_VALUE_MAX);
+	assert(db);
+	assert(prop);
 
 	sqlite3_stmt *stmt = NULL;
 
-	if (!exec(sbegin))
+	if (!exec(db, SQL_BEGIN))
 		return false;
-	if (sqlite3_prepare(db, sset_property, -1, &stmt, NULL) != SQLITE_OK)
+	if (sqlite3_prepare(db->handle, (const char *)sql_property_set, -1, &stmt, NULL) != SQLITE_OK)
 		goto sqlite3_err;
-	if (sqlite3_bind_text(stmt, 1, key, -1, NULL) != SQLITE_OK ||
-	    sqlite3_bind_text(stmt, 2, value, -1, NULL) != SQLITE_OK)
+	if (sqlite3_bind_text(stmt, 1, prop->key, -1, NULL) != SQLITE_OK ||
+	    sqlite3_bind_text(stmt, 2, prop->value, -1, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 	if (sqlite3_step(stmt) != SQLITE_DONE)
 		goto sqlite3_err;
 
 	sqlite3_finalize(stmt);
 
-	return exec(scommit);
+	return exec(db, SQL_COMMIT);
 
 sqlite3_err:
-	if (stmt) {
-		sqlite3_finalize(stmt);
-		exec(srollback);
-	}
+	errorf("%s", sqlite3_errmsg(db->handle));
 
-	return errorf("%s", sqlite3_errmsg(db));
+	if (stmt)
+		sqlite3_finalize(stmt);
+
+	exec(db, SQL_ROLLBACK);
+
+	return false;
 }
 
-const char *
-save_get_property(const char *key)
+bool
+save_get_property(struct save *db, struct save_property *prop)
 {
-	assert(key);
+	assert(db);
+	assert(prop);
 
-	static char value[SAVE_PROPERTY_VALUE_MAX + 1];
-	const char *ret = value;
 	sqlite3_stmt *stmt = NULL;
+	bool ret = true;
 
-	memset(value, 0, sizeof (value));
-
-	if (sqlite3_prepare(db, sget_property, -1, &stmt, NULL) != SQLITE_OK)
+	if (sqlite3_prepare(db->handle, (const char *)sql_property_get,
+	    sizeof (sql_property_get), &stmt, NULL) != SQLITE_OK)
 		goto sqlite3_err;
-	if (sqlite3_bind_text(stmt, 1, key, -1, NULL) != SQLITE_OK)
+	if (sqlite3_bind_text(stmt, 1, prop->key, -1, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 
 	switch (sqlite3_step(stmt)) {
 	case SQLITE_DONE:
 		/* Not found. */
-		ret = NULL;
+		ret = errorf("property '%s' was not found", prop->key);
 		break;
 	case SQLITE_ROW:
 		/* Found. */
-		snprintf(value, sizeof (value), "%s", sqlite3_column_text(stmt, 0));
+		snprintf(prop->value, sizeof (prop->value), "%s", sqlite3_column_text(stmt, 0));
 		break;
 	default:
 		/* Error. */
@@ -169,46 +181,54 @@ save_get_property(const char *key)
 	return ret;
 
 sqlite3_err:
+	errorf("%s", sqlite3_errmsg(db->handle));
+
 	if (stmt)
 		sqlite3_finalize(stmt);
 
-	errorf("%s", sqlite3_errmsg(db));
-
-	return NULL;
+	return false;
 }
 
 bool
-save_remove_property(const char *key)
+save_remove_property(struct save *db, const struct save_property *prop)
 {
-	assert(key);
+	assert(db);
+	assert(prop);
 
 	sqlite3_stmt *stmt = NULL;
 
-	if (!exec(sbegin))
+	if (!exec(db, SQL_BEGIN))
 		return false;
-	if (sqlite3_prepare(db, sremove_property, -1, &stmt, NULL) != SQLITE_OK)
+	if (sqlite3_prepare(db->handle, (const char *)sql_property_remove,
+	    sizeof (sql_property_remove), &stmt, NULL) != SQLITE_OK)
 		goto sqlite3_err;
-	if (sqlite3_bind_text(stmt, 1, key, -1, NULL) != SQLITE_OK)
+	if (sqlite3_bind_text(stmt, 1, prop->key, -1, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 	if (sqlite3_step(stmt) != SQLITE_DONE)
 		goto sqlite3_err;
 
 	sqlite3_finalize(stmt);
 
-	return exec(scommit);
+	return exec(db, SQL_COMMIT);
 
 sqlite3_err:
+	errorf("%s", sqlite3_errmsg(db->handle));
+
 	if (stmt)
 		sqlite3_finalize(stmt);
 
-	errorf("%s", sqlite3_errmsg(db));
+	exec(db, SQL_ROLLBACK);
 
 	return false;
 }
 
 void
-save_finish(void)
+save_finish(struct save *db)
 {
-	if (db)
-		sqlite3_close(db);
+	assert(db);
+
+	if (db->handle)
+		sqlite3_close(db->handle);
+
+	memset(db, 0, sizeof (*db));
 }

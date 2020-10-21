@@ -19,6 +19,14 @@
 project(libcore)
 
 set(
+	SQL_ASSETS
+	${libcore_SOURCE_DIR}/core/assets/sql/init.sql
+	${libcore_SOURCE_DIR}/core/assets/sql/property-get.sql
+	${libcore_SOURCE_DIR}/core/assets/sql/property-remove.sql
+	${libcore_SOURCE_DIR}/core/assets/sql/property-set.sql
+)
+
+set(
 	SOURCES
 	${libcore_SOURCE_DIR}/core/action.c
 	${libcore_SOURCE_DIR}/core/action.h
@@ -80,7 +88,8 @@ set(
 
 molko_define_library(
 	TARGET libcore
-	SOURCES ${SOURCES}
+	SOURCES ${SOURCES} ${SQL_ASSETS}
+	ASSETS ${SQL_ASSETS}
 	LIBRARIES
 		libsqlite
 		SDL2::SDL2
@@ -98,3 +107,4 @@ molko_define_library(
 )
 
 source_group(core FILES ${SOURCES})
+source_group(core/assets/sql FILES ${SQL_ASSETS})

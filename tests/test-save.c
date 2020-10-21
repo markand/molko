@@ -18,44 +18,140 @@
 
 #include <stdio.h>
 
+#define GREATEST_USE_ABBREVS 0
 #include <greatest.h>
 
-#include "core/save.h"
-
-#define NAME "test.db"
+#include <core/save.h>
 
 static void
 clean(void *data)
 {
 	(void)data;
 
-	save_finish();
-	remove(NAME);
+	remove("1.db");
+	remove("2.db");
 }
 
-TEST
-properties_simple(void)
+GREATEST_TEST
+open_read(void)
 {
-	ASSERT(save_open_path(NAME));
+	struct save db;
+
+	/* Non-existent should return false. */
+	GREATEST_ASSERT(!save_open_path(&db, "1.db", SAVE_MODE_READ));
+
+	save_finish(&db);
+
+	GREATEST_PASS();
+}
+
+GREATEST_TEST
+open_write(void)
+{
+	struct save db[2] = {0};
+
+	/* Write should work on both non-existent and existent database. */
+	GREATEST_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE));
+	GREATEST_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE));
+
+	/* Update and create date must not be 0. */
+	GREATEST_ASSERT(db[0].created > 0);
+	GREATEST_ASSERT(db[0].updated > 0);
+	GREATEST_ASSERT(db[1].created > 0);
+	GREATEST_ASSERT(db[1].updated > 0);
+
+	save_finish(&db[0]);
+	save_finish(&db[1]);
+
+	/* Should work again. */
+	GREATEST_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE));
+	GREATEST_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE));
+	GREATEST_ASSERT(db[0].created > 0);
+	GREATEST_ASSERT(db[0].updated > 0);
+	GREATEST_ASSERT(db[1].created > 0);
+	GREATEST_ASSERT(db[1].updated > 0);
+
+	save_finish(&db[0]);
+	save_finish(&db[1]);
+
+	GREATEST_PASS();
+}
+
+GREATEST_SUITE(open_suite)
+{
+	GREATEST_SET_SETUP_CB(clean, NULL);
+	GREATEST_SET_TEARDOWN_CB(clean, NULL);
+	GREATEST_RUN_TEST(open_read);
+	GREATEST_RUN_TEST(open_write);
+}
+
+GREATEST_TEST
+properties_set(void)
+{
+	struct save db;
+	struct save_property prop;
+
+	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE));
+
+	/* Insert a new property 'state'. */
+	prop = (struct save_property){.key = "state", .value = "intro"};
+	GREATEST_ASSERT(save_set_property(&db, &prop));
+	prop = (struct save_property){.key = "state"};
+	GREATEST_ASSERT(save_get_property(&db, &prop));
+	GREATEST_ASSERT_STR_EQ(prop.value, "intro");
+
+	/* Now we replace the value. */
+	prop = (struct save_property){.key = "state", .value = "map"};
+	GREATEST_ASSERT(save_set_property(&db, &prop));
+	prop = (struct save_property){.key = "state"};
+	GREATEST_ASSERT(save_get_property(&db, &prop));
+	GREATEST_ASSERT_STR_EQ(prop.value, "map");
+
+	save_finish(&db);
+
+	GREATEST_PASS();
+}
+
+GREATEST_TEST
+properties_notfound(void)
+{
+	struct save db;
+	struct save_property prop = {.key = "state"};
+
+	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE));
+	GREATEST_ASSERT(!save_get_property(&db, &prop));
+	GREATEST_ASSERT_STR_EQ(prop.value, "");
+
+	GREATEST_PASS();
+}
+
+GREATEST_TEST
+properties_remove(void)
+{
+	struct save db;
+	struct save_property prop;
+
+	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE));
 
 	/* Insert a new property 'initialized'. */
-	ASSERT(save_set_property("initialized", "1"));
-	ASSERT_STR_EQ(save_get_property("initialized"), "1");
+	prop = (struct save_property){.key = "state", .value = "intro"};
+	GREATEST_ASSERT(save_set_property(&db, &prop));
+	prop = (struct save_property){.key = "state"};
+	GREATEST_ASSERT(save_remove_property(&db, &prop));
+	prop = (struct save_property){.key = "state"};
+	GREATEST_ASSERT(!save_get_property(&db, &prop));
+	GREATEST_ASSERT_STR_EQ(prop.value, "");
 
-	/* This must replace the existing value. */
-	ASSERT(save_set_property("initialized", "2"));
-	ASSERT_STR_EQ(save_get_property("initialized"), "2");
-
-	ASSERT(save_remove_property("initialized"));
-	ASSERT(!save_get_property("initialized"));
-
-	PASS();
+	GREATEST_PASS();
 }
 
-SUITE(properties)
+GREATEST_SUITE(properties_suite)
 {
-	SET_TEARDOWN(clean, NULL);
-	RUN_TEST(properties_simple);
+	GREATEST_SET_SETUP_CB(clean, NULL);
+	GREATEST_SET_TEARDOWN_CB(clean, NULL);
+	GREATEST_RUN_TEST(properties_set);
+	GREATEST_RUN_TEST(properties_notfound);
+	GREATEST_RUN_TEST(properties_remove);
 }
 
 GREATEST_MAIN_DEFS();
@@ -64,6 +160,7 @@ int
 main(int argc, char **argv)
 {
 	GREATEST_MAIN_BEGIN();
-	RUN_SUITE(properties);
+	GREATEST_RUN_SUITE(open_suite);
+	GREATEST_RUN_SUITE(properties_suite);
 	GREATEST_MAIN_END();
 }
