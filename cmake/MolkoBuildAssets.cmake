@@ -31,7 +31,9 @@ macro(molko_build_assets assets outputs)
 		add_custom_command(
 			OUTPUT ${output}
 			COMMAND $<TARGET_FILE:bcc> -s ${a} ${category}-${name} > ${output}
-			DEPENDS $<TARGET_FILE:bcc>
+			DEPENDS
+				${a}
+				$<TARGET_FILE:bcc>
 			COMMENT "Generate header file for ${basename}"
 		)
 
