@@ -60,10 +60,9 @@ init(struct state *next)
 	if (!font_openmem(&font, fonts_cubic, sizeof (fonts_cubic), 80))
 		panic();
 
-	font.color = 0x19332dff;
 	font.style = FONT_STYLE_ANTIALIASED;
 
-	if (!font_render(&font, &splash->tex, "malikania"))
+	if (!font_render(&font, &splash->tex, "malikania", 0x19332dff))
 		panic();
 
 	align(ALIGN_CENTER, &splash->x, &splash->y, splash->tex.w, splash->tex.h,

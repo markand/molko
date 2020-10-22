@@ -50,7 +50,7 @@ draw(struct action *act)
 }
 
 void
-checkbox_draw_default(struct theme *t, const struct checkbox *cb)
+checkbox_draw_default(const struct theme *t, const struct checkbox *cb)
 {
 	assert(t);
 	assert(cb);

@@ -94,20 +94,16 @@ init(void)
 {
 	struct theme *theme;
 	struct view *view;
-	struct font font;
+	struct font *font;
 
 	theme = theme_default();
+	font = theme->fonts[THEME_FONT_INTERFACE];
 	view = ecalloc(1, sizeof (*view));
 
-	/* Generate the texts. */
-	font_shallow(&font, theme->fonts[THEME_FONT_INTERFACE]);
-	font.style = FONT_STYLE_ANTIALIASED,
-	font.color = FOREGROUND;
-
-	if (!font_render(&font, &view->texts[0].tex, "An unrecoverable error occured and the game cannot continue.") ||
-	    !font_render(&font, &view->texts[1].tex, "Please report the detailed error as provided below.") ||
-	    !font_render(&font, &view->texts[2].tex, "Press <s> to save information and generate a core dump.") ||
-	    !font_render(&font, &view->texts[3].tex, "Press <q> to quit without saving information."))
+	if (!font_render(font, &view->texts[0].tex, "An unrecoverable error occured and the game cannot continue.", FOREGROUND) ||
+	    !font_render(font, &view->texts[1].tex, "Please report the detailed error as provided below.", FOREGROUND) ||
+	    !font_render(font, &view->texts[2].tex, "Press <s> to save information and generate a core dump.", FOREGROUND) ||
+	    !font_render(font, &view->texts[3].tex, "Press <q> to quit without saving information.", FOREGROUND))
 		die("%s", error());
 
 	/* All align x the same. */
@@ -173,7 +169,7 @@ draw(struct state *state)
 	struct theme *theme = theme_default();
 	struct view *view = state->data;
 	struct texture tex;
-	struct font font;
+	struct font *font;
 	int x, y;
 
 	painter_set_color(BACKGROUND);
@@ -183,11 +179,9 @@ draw(struct state *state)
 		texture_draw(&view->texts[i].tex, view->texts[i].x, view->texts[i].y);
 
 	/* The error is only available here. */
-	font_shallow(&font, theme->fonts[THEME_FONT_INTERFACE]);
-	font.color = FOREGROUND;
-	font.style = FONT_STYLE_ANTIALIASED;
+	font = theme->fonts[THEME_FONT_INTERFACE];
 
-	if (!font_render(&font, &tex, error()))
+	if (!font_render(font, &tex, error(), FOREGROUND))
 		die("%s\n", error());
 
 	align(ALIGN_LEFT, &x, &y, tex.w, tex.h, 0, 0, window.w, window.h);

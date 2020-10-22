@@ -36,12 +36,12 @@ struct theme;
  * \brief GUI checkbox.
  */
 struct checkbox {
-	int x;                  /*!< (+) Position in x. */
-	int y;                  /*!< (+) Position in y. */
-	unsigned int w;         /*!< (+) Width. */
-	unsigned int h;         /*!< (+) Height. */
-	bool checked;           /*!< (+) Is activated? */
-	struct theme *theme;    /*!< (+&?) Theme to use. */
+	int x;                          /*!< (+) Position in x. */
+	int y;                          /*!< (+) Position in y. */
+	unsigned int w;                 /*!< (+) Width. */
+	unsigned int h;                 /*!< (+) Height. */
+	bool checked;                   /*!< (+) Is activated? */
+	const struct theme *theme;      /*!< (+&?) Theme to use. */
 };
 
 /**
@@ -53,7 +53,7 @@ struct checkbox {
  * \param cb the checkbox
  */
 void
-checkbox_draw_default(struct theme *t, const struct checkbox *cb);
+checkbox_draw_default(const struct theme *t, const struct checkbox *cb);
 
 /**
  * Draw the checkbox.

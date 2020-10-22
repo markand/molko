@@ -134,7 +134,7 @@ struct message {
 	unsigned int index;                     /*!< (+) Line selected */
 	enum message_flags flags;               /*!< (+) Message flags */
 	enum message_state state;               /*!< (-) Current state */
-	struct theme *theme;                    /*!< (+&?) Theme to use. */
+	const struct theme *theme;              /*!< (+&?) Theme to use. */
 	unsigned int elapsed;                   /*!< (-) Time elapsed. */
 	double scale;                           /*!< (-) Current scale [0-1]. */
 };
@@ -194,7 +194,7 @@ message_update(struct message *msg, unsigned int ticks);
  * \param msg the message
  */
 void
-message_draw(struct message *msg);
+message_draw(const struct message *msg);
 
 /**
  * Start hiding the message.

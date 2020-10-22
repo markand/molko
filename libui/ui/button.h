@@ -49,7 +49,7 @@ struct button {
 	unsigned int h;                 /*!< (+) Height. */
 	const char *text;               /*!< (+&) Text to draw. */
 	enum button_state state;        /*!< (+) Button state. */
-	struct theme *theme;            /*!< (+&?) Theme to use. */
+	const struct theme *theme;      /*!< (+&?) Theme to use. */
 };
 
 /**
@@ -84,7 +84,7 @@ button_reset(struct button *button);
  * \param button the button
  */
 void
-button_draw_default(struct theme *t, const struct button *button);
+button_draw_default(const struct theme *t, const struct button *button);
 
 /**
  * Draw the button.
@@ -93,7 +93,7 @@ button_draw_default(struct theme *t, const struct button *button);
  * \param button the button
  */
 void
-button_draw(struct button *button);
+button_draw(const struct button *button);
 
 /**
  * Convert the button into an action.

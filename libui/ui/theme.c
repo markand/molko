@@ -112,7 +112,7 @@ theme_shallow(struct theme *dst, const struct theme *src)
 }
 
 void
-theme_draw_frame(struct theme *t, const struct frame *frame)
+theme_draw_frame(const struct theme *t, const struct frame *frame)
 {
 	assert(frame);
 
@@ -120,7 +120,7 @@ theme_draw_frame(struct theme *t, const struct frame *frame)
 }
 
 void
-theme_draw_label(struct theme *t, const struct label *label)
+theme_draw_label(const struct theme *t, const struct label *label)
 {
 	assert(label);
 
@@ -128,7 +128,7 @@ theme_draw_label(struct theme *t, const struct label *label)
 }
 
 void
-theme_draw_button(struct theme *t, const struct button *button)
+theme_draw_button(const struct theme *t, const struct button *button)
 {
 	assert(button);
 
@@ -136,7 +136,7 @@ theme_draw_button(struct theme *t, const struct button *button)
 }
 
 void
-theme_draw_checkbox(struct theme *t, const struct checkbox *cb)
+theme_draw_checkbox(const struct theme *t, const struct checkbox *cb)
 {
 	assert(cb);
 

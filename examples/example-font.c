@@ -102,10 +102,9 @@ run(void)
 		painter_set_color(0xffffffff);
 		painter_clear();
 
-		font->color = colors[ci];
 		font->style = style;
 
-		if (!font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing."))
+		if (!font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]))
 			panic();
 
 		texture_draw(&tex, 10, 10);

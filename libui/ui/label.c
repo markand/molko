@@ -34,7 +34,7 @@ draw(struct action *act)
 }
 
 void
-label_draw_default(struct theme *t, const struct label *label)
+label_draw_default(const struct theme *t, const struct label *label)
 {
 	assert(t);
 	assert(label);
@@ -46,9 +46,7 @@ label_draw_default(struct theme *t, const struct label *label)
 
 	/* Shadow text, only if enabled. */
 	if (label->flags & LABEL_FLAGS_SHADOW) {
-		font->color = t->colors[THEME_COLOR_SHADOW];
-
-		if (!font_render(font, &tex, label->text))
+		if (!font_render(font, &tex, label->text, t->colors[THEME_COLOR_SHADOW]))
 			panic();
 
 		texture_draw(&tex, label->x + 1, label->y + 1);
@@ -56,22 +54,26 @@ label_draw_default(struct theme *t, const struct label *label)
 	}
 
 	/* Normal text. */
-	font->color = t->colors[THEME_COLOR_NORMAL];
-
-	if (!font_render(font, &tex, label->text))
+	if (!font_render(font, &tex, label->text, t->colors[THEME_COLOR_NORMAL]))
 		panic();
 
 	texture_draw(&tex, label->x, label->y);
 	texture_finish(&tex);
 }
 
+bool
+label_ok(const struct label *label)
+{
+	return label && label->text && strlen(label->text) > 0;
+}
+
 void
-label_query(struct label *label, unsigned int *w, unsigned int *h)
+label_query(const struct label *label, unsigned int *w, unsigned int *h)
 {
 	assert(label);
 	assert(label->text);
 
-	struct theme *t = label->theme ? label->theme : theme_default();
+	const struct theme *t = label->theme ? label->theme : theme_default();
 
 	if (!font_query(t->fonts[THEME_FONT_INTERFACE], label->text, w, h))
 		panic();

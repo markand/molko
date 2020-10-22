@@ -63,7 +63,7 @@ struct theme {
 	struct font *fonts[THEME_FONT_LAST];
 
 	/**
-	 * (+) Miscellaneous colors.
+	 * (+) User interface colors.
 	 */
 	unsigned long colors[THEME_COLOR_LAST];
 
@@ -80,28 +80,28 @@ struct theme {
 	 *
 	 * \see \ref theme_draw_frame
 	 */
-	void (*draw_frame)(struct theme *, const struct frame *);
+	void (*draw_frame)(const struct theme *, const struct frame *);
 
 	/**
 	 * (+) Draw a label.
 	 *
 	 * \see \ref theme_draw_label
 	 */
-	void (*draw_label)(struct theme *, const struct label *);
+	void (*draw_label)(const struct theme *, const struct label *);
 
 	/**
 	 * (+) Draw a button.
 	 *
 	 * \see \ref theme_draw_button
 	 */
-	void (*draw_button)(struct theme *, const struct button *);
+	void (*draw_button)(const struct theme *, const struct button *);
 
 	/**
 	 * (+) Draw a checkbox.
 	 *
 	 * \see \ref theme_draw_button
 	 */
-	void (*draw_checkbox)(struct theme *t, const struct checkbox *);
+	void (*draw_checkbox)(const struct theme *t, const struct checkbox *);
 };
 
 /**
@@ -118,7 +118,9 @@ theme_init(void);
 /**
  * Get a reference to the default theme.
  *
- * \return A non-owning pointer to a static storage for the default theme
+ * The returned theme may be modified to modify the whole UI.
+ *
+ * \return A non-owning pointer to a static storage for the default theme.
  */
 struct theme *
 theme_default(void);
@@ -129,13 +131,40 @@ theme_default(void);
  * Use this function when you want your own local copy of a theme because you
  * want to modify some attributes.
  *
+ * You should not modify underlying objects within the new theme because they
+ * still point to the same region and you may erase the user settings.
+ *
+ * This code is incorrect:
+ *
+ * ```c
+ * struct theme th;
+ *
+ * theme_shallow(&th, theme_default());
+ * th.fonts[THEME_FONT_INTERFACE].style = FONT_STYLE_NONE;
+ *
+ * //
+ * // Since th.fonts contain same pointers to theme_default, you'll erase
+ * // the default theme settings.
+ * //
+ * ```
+ *
+ * Instead, if you really need to modify an underlying object, you have to copy
+ * it too.
+ *
+ * ```c
+ * struct font font;
+ *
+ * font_shallow(&font, theme_default()->fonts[THEME_FONT_INTERFACE];
+ * font.style = FONT_STYLE_NONE;
+ *
+ * // No font_finish needed either, it is only a shallow copy.
+ * ```
+ *
  * This is a shortcut to `memcpy(dst, src, sizeof (*src))`.
  *
  * \pre dst != NULL
  * \param dst the destination theme
  * \param src the source theme (may be NULL)
- * \note Resources are not cloned, internal pointers will adress the same
- *       regions.
  */
 void
 theme_shallow(struct theme *dst, const struct theme *src);
@@ -148,7 +177,7 @@ theme_shallow(struct theme *dst, const struct theme *src);
  * \param frame the frame
  */
 void
-theme_draw_frame(struct theme *t, const struct frame *frame);
+theme_draw_frame(const struct theme *t, const struct frame *frame);
 
 /**
  * Draw a label.
@@ -158,7 +187,7 @@ theme_draw_frame(struct theme *t, const struct frame *frame);
  * \param label the label
  */
 void
-theme_draw_label(struct theme *t, const struct label *label);
+theme_draw_label(const struct theme *t, const struct label *label);
 
 /**
  * Draw a button.
@@ -168,7 +197,7 @@ theme_draw_label(struct theme *t, const struct label *label);
  * \param button the button
  */
 void
-theme_draw_button(struct theme *t, const struct button *button);
+theme_draw_button(const struct theme *t, const struct button *button);
 
 /**
  * Draw a checkbox.
@@ -177,7 +206,7 @@ theme_draw_button(struct theme *t, const struct button *button);
  * \param cb the checkbox
  */
 void
-theme_draw_checkbox(struct theme *t, const struct checkbox *cb);
+theme_draw_checkbox(const struct theme *t, const struct checkbox *cb);
 
 /**
  * This function is automatically called from \ref ui_finish and thus not

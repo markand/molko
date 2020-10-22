@@ -115,8 +115,11 @@ draw_lines(const struct message *msg)
 	struct label label;
 	unsigned int lw, lh;
 
-	/* Shallow copy theme to modify colors. */
-	theme_shallow(&theme, msg->theme);
+	/*
+	 * We need a copy of the current theme because we will alter the label
+	 * color depending on the selection.
+	 */
+	theme_shallow(&theme, THEME(msg));
 
 	for (int i = 0; i < MESSAGE_LINES_MAX; ++i) {
 		if (!msg->text[i])
@@ -261,7 +264,7 @@ message_update(struct message *msg, unsigned int ticks)
 }
 
 void
-message_draw(struct message *msg)
+message_draw(const struct message *msg)
 {
 	assert(msg);
 

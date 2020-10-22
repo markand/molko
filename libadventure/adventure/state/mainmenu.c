@@ -84,7 +84,7 @@ perform(struct mainmenu *main)
 static void
 init_title(struct mainmenu *main, struct font *font)
 {
-	if (!font_render(font, &main->texts[3].tex, "Molko's Adventure"))
+	if (!font_render(font, &main->texts[3].tex, "Molko's Adventure", 0x000000ff))
 		panic();
 	
 	/* Align header. */
@@ -97,9 +97,9 @@ init_title(struct mainmenu *main, struct font *font)
 static void
 init_items(struct mainmenu *main, struct font *font)
 {
-	if (!font_render(font, &main->texts[0].tex, "New") ||
-	    !font_render(font, &main->texts[1].tex, "Continue") ||
-	    !font_render(font, &main->texts[2].tex, "Quit"))
+	if (!font_render(font, &main->texts[0].tex, "New", 0x000000ff) ||
+	    !font_render(font, &main->texts[1].tex, "Continue", 0x000000ff) ||
+	    !font_render(font, &main->texts[2].tex, "Quit", 0x000000ff))
 		panic();
 
 	main->texts[0].x = (window.w / 2) - (main->texts[0].tex.w / 2);
@@ -125,7 +125,6 @@ start(struct state *state)
 	    !font_openmem(&fonts[1], fonts_pirata_one, sizeof (fonts_pirata_one), 30))
 		panic();
 
-	fonts[0].color = fonts[1].color = 0x000000ff;
 	fonts[0].style = fonts[1].style = FONT_STYLE_ANTIALIASED;
 
 	init_title(main, &fonts[0]);

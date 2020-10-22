@@ -28,6 +28,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <core/plat.h>
+
 struct texture;
 
 /**
@@ -43,7 +45,6 @@ enum font_style {
  */
 struct font {
 	enum font_style style;          /*!< (+) Style for rendering. */
-	unsigned long color;            /*!< (+) Color for rendering. */
 	void *handle;                   /*!< (*) Native handle. */
 };
 
@@ -58,7 +59,7 @@ struct font {
  * \return False on errors.
  */
 bool
-font_open(struct font *font, const char *path, unsigned int size);
+font_open(struct font *font, const char *path, unsigned int size) PLAT_NODISCARD;
 
 /**
  * Open font from memory buffer.
@@ -73,7 +74,7 @@ font_open(struct font *font, const char *path, unsigned int size);
  * \return False on errors.
  */
 bool
-font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size);
+font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size) PLAT_NODISCARD;
 
 /**
  * Convenient shortcut to shallow copy src into dst.
@@ -95,8 +96,7 @@ font_shallow(struct font *dst, const struct font *src);
 /**
  * Tells if the font was properly opened.
  *
- * \pre font != NULL
- * \param font the font to check
+ * \param font the font to check (may be NULL)
  * \return True if the native handle was opened.
  */
 bool
@@ -113,10 +113,11 @@ font_ok(const struct font *font);
  * \param font the font to use
  * \param tex the texture to generate
  * \param text the UTF-8 text
+ * \param color the foreground color
  * \return False on errors.
  */
 bool
-font_render(struct font *font, struct texture *tex, const char *text);
+font_render(struct font *font, struct texture *tex, const char *text, unsigned int color) PLAT_NODISCARD;
 
 /**
  * Get the maximum height for all glyphs.
@@ -140,7 +141,7 @@ font_height(const struct font *font);
  * \return False in case of error and pointers to w and h are left unmodified.
  */
 bool
-font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h);
+font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h) PLAT_NODISCARD;
 
 /**
  * Close the font.

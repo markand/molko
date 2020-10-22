@@ -44,7 +44,7 @@ struct label {
 	int y;                          /*!< (+) Position in y. */
 	const char *text;               /*!< (+&) Text to show. */
 	enum label_flags flags;         /*!< (+) Optional flags. */
-	struct theme *theme;            /*!< (+&?) Theme to use. */
+	const struct theme *theme;      /*!< (+&?) Theme to use. */
 };
 
 /**
@@ -56,7 +56,16 @@ struct label {
  * \param label the label
  */
 void
-label_draw_default(struct theme *t, const struct label *label);
+label_draw_default(const struct theme *t, const struct label *label);
+
+/**
+ * Tells if the label is usable.
+ *
+ * \param label the label to check (may be NULL)
+ * \return False if label is null or as empty text.
+ */
+bool
+label_ok(const struct label *label);
 
 /**
  * Update the `w` and `h` fields with the dimensions the text would needs with
@@ -68,7 +77,7 @@ label_draw_default(struct theme *t, const struct label *label);
  * \param h the pointer to height (may be NULL)
  */
 void
-label_query(struct label *label, unsigned int *w, unsigned int *h);
+label_query(const struct label *label, unsigned int *w, unsigned int *h);
 
 /**
  * Draw the label.

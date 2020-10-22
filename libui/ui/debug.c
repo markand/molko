@@ -56,22 +56,17 @@ vdebugf(struct debug_report *report, const char *fmt, va_list ap)
 		return;
 
 	char line[DEBUG_LINE_MAX];
-	struct theme *theme;
-	struct font font;
+	const struct theme *theme;
+	struct font *font;
 	struct texture tex;
 	int x, y;
 
 	vsnprintf(line, sizeof (line), fmt, ap);
 
-	/* Get the font and modify its style. */
 	theme = report->theme ? report->theme : theme_default();
+	font = theme->fonts[THEME_FONT_DEBUG];
 
-	/* Update font style. */
-	font_shallow(&font, theme->fonts[THEME_FONT_DEBUG]);
-	font.style = FONT_STYLE_ANTIALIASED;
-	font.color = theme->colors[THEME_COLOR_DEBUG];
-
-	if (!font_render(&font, &tex, line))
+	if (!font_render(font, &tex, line, theme->colors[THEME_COLOR_DEBUG]))
 		return;
 
 	x = theme->padding;

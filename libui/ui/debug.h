@@ -66,7 +66,7 @@ struct debug_options {
  * Use this structure each time you need to print one or more messages.
  */
 struct debug_report {
-	struct theme *theme;            /*!< (+&?) Theme to use. */
+	const struct theme *theme;      /*!< (+&?) Theme to use. */
 	unsigned int count;             /*!< (-) Number of messages already printed. */
 };
 

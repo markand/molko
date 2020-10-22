@@ -54,7 +54,7 @@ draw(struct action *act)
 }
 
 void
-button_draw_default(struct theme *t, const struct button *button)
+button_draw_default(const struct theme *t, const struct button *button)
 {
 	assert(t);
 	assert(button);
@@ -118,7 +118,7 @@ button_reset(struct button *button)
 }
 
 void
-button_draw(struct button *button)
+button_draw(const struct button *button)
 {
 	assert(button);
 

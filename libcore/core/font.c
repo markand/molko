@@ -66,22 +66,20 @@ font_shallow(struct font *dst, const struct font *src)
 bool
 font_ok(const struct font *font)
 {
-	assert(font);
-
-	return font->handle;
+	return font && font->handle;
 }
 
 bool
-font_render(struct font *font, struct texture *tex, const char *text)
+font_render(struct font *font, struct texture *tex, const char *text, unsigned int color)
 {
 	assert(font_ok(font));
 	assert(text);
 
 	SDL_Color fg = {
-		.r = COLOR_R(font->color),
-		.g = COLOR_G(font->color),
-		.b = COLOR_B(font->color),
-		.a = COLOR_A(font->color)
+		.r = COLOR_R(color),
+		.g = COLOR_G(color),
+		.b = COLOR_B(color),
+		.a = COLOR_A(color)
 	};
 	SDL_Surface *surface;
 	SDL_Surface *(*func)(TTF_Font *, const char *, SDL_Color);

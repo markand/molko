@@ -32,7 +32,7 @@ draw(struct action *act)
 }
 
 void
-frame_draw_default(struct theme *t, const struct frame *frame)
+frame_draw_default(const struct theme *t, const struct frame *frame)
 {
 	assert(t);
 	assert(frame);
