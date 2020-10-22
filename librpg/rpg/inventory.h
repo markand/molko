@@ -19,6 +19,8 @@
 #ifndef MOLKO_INVENTORY_H
 #define MOLKO_INVENTORY_H
 
+#if 0
+
 /**
  * \file inventory.h
  * \brief Inventory of items.
@@ -88,5 +90,7 @@ inventory_sort(struct inventory *iv);
  */
 void
 inventory_clear(struct inventory *iv);
+
+#endif
 
 #endif /* !MOLKO_INVENTORY_H */

@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#if 0
+
 #include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -208,3 +210,5 @@ inventory_clear(struct inventory *iv)
 
 	memset(iv, 0, sizeof (*iv));
 }
+
+#endif
