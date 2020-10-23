@@ -29,7 +29,7 @@ if (CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
 endif ()
 
 if (CMAKE_C_COMPILER_ID MATCHES "Clang")
-	set(options "-fsanitize=address -fsanitize=undefined -fsanitize=integer")
+	set(options "-fsanitize=address,undefined,integer")
 	set(CMAKE_C_FLAGS_DEBUG "-fno-omit-frame-pointer ${options} ${CMAKE_C_FLAGS_DEBUG}")
 	set(CMAKE_EXE_LINKER_FLAGS "${options} ${CMAKE_EXE_LINKER_FLAGS}")
 endif ()
