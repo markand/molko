@@ -28,6 +28,12 @@ if (CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
 	set(CMAKE_C_FLAGS "-Wall -Wextra ${CMAKE_C_FLAGS}")
 endif ()
 
+if (CMAKE_C_COMPILER_ID MATCHES "Clang")
+	set(options "-fsanitize=address -fsanitize=undefined -fsanitize=integer")
+	set(CMAKE_C_FLAGS_DEBUG "-fno-omit-frame-pointer ${options} ${CMAKE_C_FLAGS_DEBUG}")
+	set(CMAKE_EXE_LINKER_FLAGS "${options} ${CMAKE_EXE_LINKER_FLAGS}")
+endif ()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS On)
 
 include(GNUInstallDirs)
