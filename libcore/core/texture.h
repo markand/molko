@@ -74,7 +74,7 @@ texture_ok(const struct texture *tex);
  * \return False in case of rendering error.
  */
 bool
-texture_draw(struct texture *tex, int x, int y);
+texture_draw(const struct texture *tex, int x, int y);
 
 /**
  * Advanced texture drawing.
@@ -93,7 +93,7 @@ texture_draw(struct texture *tex, int x, int y);
  * \return False in case of rendering error.
  */
 bool
-texture_scale(struct texture *tex,
+texture_scale(const struct texture *tex,
               int src_x,
               int src_y,
               unsigned src_w,

@@ -51,7 +51,7 @@ texture_ok(const struct texture *tex)
 }
 
 bool
-texture_draw(struct texture *tex, int x, int y)
+texture_draw(const struct texture *tex, int x, int y)
 {
 	assert(tex);
 
@@ -69,7 +69,7 @@ texture_draw(struct texture *tex, int x, int y)
 }
 
 bool
-texture_scale(struct texture *tex,
+texture_scale(const struct texture *tex,
               int src_x,
               int src_y,
               unsigned src_w,
