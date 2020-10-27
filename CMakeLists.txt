@@ -34,6 +34,10 @@ if (CMAKE_C_COMPILER_ID MATCHES "Clang")
 	set(CMAKE_EXE_LINKER_FLAGS "${options} ${CMAKE_EXE_LINKER_FLAGS}")
 endif ()
 
+option(MOLKO_WITH_DOXYGEN "Enable Doxygen build" On)
+option(MOLKO_WITH_TESTS "Enable unit tests" On)
+option(MOLKO_WITH_EXAMPLES "Enable build of examples" On)
+
 set_property(GLOBAL PROPERTY USE_FOLDERS On)
 
 include(GNUInstallDirs)
@@ -46,14 +50,14 @@ include(cmake/MolkoDefineTest.cmake)
 find_package(Jansson REQUIRED)
 find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
 
-enable_testing()
-
 add_subdirectory(cmake)
 
 add_subdirectory(extern/libsqlite)
 add_subdirectory(extern/libgreatest)
 
-add_subdirectory(doxygen)
+if (MOLKO_WITH_DOXYGEN)
+	add_subdirectory(doxygen)
+endif ()
 
 add_subdirectory(tools/bcc)
 add_subdirectory(tools/map)
@@ -64,6 +68,11 @@ add_subdirectory(librpg)
 add_subdirectory(libadventure)
 add_subdirectory(molko)
 
-add_subdirectory(examples)
+if (MOLKO_WITH_EXAMPLES)
+	add_subdirectory(examples)
+endif ()
 
-add_subdirectory(tests)
+if (MOLKO_WITH_TESTS)
+	enable_testing()
+	add_subdirectory(tests)
+endif ()
