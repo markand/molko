@@ -36,6 +36,8 @@ set(
 	${libui_SOURCE_DIR}/ui/debug.h
 	${libui_SOURCE_DIR}/ui/frame.c
 	${libui_SOURCE_DIR}/ui/frame.h
+	${libui_SOURCE_DIR}/ui/gridmenu.c
+	${libui_SOURCE_DIR}/ui/gridmenu.h
 	${libui_SOURCE_DIR}/ui/label.c
 	${libui_SOURCE_DIR}/ui/label.h
 	${libui_SOURCE_DIR}/ui/theme.c

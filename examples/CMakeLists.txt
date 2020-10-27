@@ -91,6 +91,13 @@ molko_define_executable(
 )
 
 molko_define_executable(
+	TARGET example-gridmenu
+	SOURCES example-gridmenu.c
+	FOLDER examples
+	LIBRARIES libui
+)
+
+molko_define_executable(
 	TARGET example-trace
 	SOURCES example-trace.c
 	FOLDER examples
