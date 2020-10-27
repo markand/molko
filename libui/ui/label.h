@@ -25,6 +25,8 @@
  * \ingroup ui
  */
 
+#include <stdbool.h>
+
 struct action;
 struct theme;
 
