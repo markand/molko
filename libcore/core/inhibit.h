@@ -53,16 +53,4 @@ enum inhibit {
 	INHIBIT_STATE_DRAW         = (1 << 2)
 };
 
-/**
- * Create an action to inhibit the system.
- *
- * The mode will replace the actual inhibit modes rather than adding new flags.
- *
- * \pre a != NULL
- * \param mode the new mode
- * \param a the action to fill
- */
-void
-inhibit_action(enum inhibit mode, struct action *a);
-
 #endif /* !MOLKO_INHIBIT_H */

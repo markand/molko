@@ -30,6 +30,8 @@ set(
 	SOURCES
 	${libcore_SOURCE_DIR}/core/action.c
 	${libcore_SOURCE_DIR}/core/action.h
+	${libcore_SOURCE_DIR}/core/alloc.c
+	${libcore_SOURCE_DIR}/core/alloc.h
 	${libcore_SOURCE_DIR}/core/animation.c
 	${libcore_SOURCE_DIR}/core/animation.h
 	${libcore_SOURCE_DIR}/core/clock.c
@@ -49,7 +51,6 @@ set(
 	${libcore_SOURCE_DIR}/core/game.h
 	${libcore_SOURCE_DIR}/core/image.c
 	${libcore_SOURCE_DIR}/core/image.h
-	${libcore_SOURCE_DIR}/core/inhibit.c
 	${libcore_SOURCE_DIR}/core/inhibit.h
 	${libcore_SOURCE_DIR}/core/key.h
 	${libcore_SOURCE_DIR}/core/maths.c

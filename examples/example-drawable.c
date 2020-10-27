@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 
+#include <core/alloc.h>
 #include <core/animation.h>
 #include <core/clock.h>
 #include <core/core.h>
@@ -89,7 +90,7 @@ explosion_finish(struct drawable *dw)
 static void
 spawn(int x, int y)
 {
-	struct explosion *expl = emalloc(sizeof (struct explosion));
+	struct explosion *expl = alloc(1, sizeof (struct explosion));
 
 	animation_init(&expl->anim, &explosion_sprite, 100);
 	animation_drawable(&expl->anim, &expl->dw, x, y);

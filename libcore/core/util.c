@@ -16,48 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <SDL.h>
 
-#include "panic.h"
 #include "util.h"
-
-void *
-emalloc(size_t size)
-{
-	void *mem;
-
-	if (!(mem = malloc(size)))
-		panicf("%s", strerror(errno));
-
-	return mem;
-}
-
-void *
-ecalloc(size_t n, size_t size)
-{
-	void *mem;
-
-	if (!(mem = calloc(n, size)))
-		panicf("%s", strerror(errno));
-
-	return mem;
-}
-
-void *
-ememdup(const void *ptr, size_t size)
-{
-	void *mem;
-
-	if (!(mem = malloc(size)))
-		panicf("%s", strerror(errno));
-
-	return memcpy(mem, ptr, size);
-}
 
 void
 delay(unsigned int ms)

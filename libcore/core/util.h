@@ -44,39 +44,6 @@
 #define NELEM(x) sizeof ((x)) / sizeof ((x)[0])
 
 /**
- * Wrapper around malloc(3) that exits on allocation failure.
- *
- * \param size the size
- * \return a pointer
- * \post returned pointer will never be NULL
- */
-void *
-emalloc(size_t size) PLAT_NODISCARD;
-
-/**
- * Wrapper around calloc(3) that exits on allocation failure.
- *
- * \param n the number of objects to allocate
- * \param size the size per n
- * \return a pointer
- * \post returned pointer will never be NULL
- */
-void *
-ecalloc(size_t n, size_t size) PLAT_NODISCARD;
-
-/**
- * Copy the region specified by ptr.
- *
- * \pre ptr != NULL
- * \param ptr the pointer
- * \param size the size of the memory to copy
- * \return a pointer
- * \post returned pointer will never be NULL
- */
-void *
-ememdup(const void *ptr, size_t size) PLAT_NODISCARD;
-
-/**
  * Put the thread to sleep for a given amount of milliseconds.
  *
  * \param ms the number of milliseconds to wait

@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <core/alloc.h>
 #include <core/font.h>
 #include <core/game.h>
 #include <core/image.h>
@@ -28,7 +29,6 @@
 #include <core/state.h>
 #include <core/sys.h>
 #include <core/texture.h>
-#include <core/util.h>
 #include <core/window.h>
 
 #include <ui/align.h>
@@ -54,7 +54,7 @@ init(struct state *next)
 	struct splashscreen *splash;
 	struct font font;
 
-	splash = ecalloc(1, sizeof (*splash));
+	splash = alloc_zero(1, sizeof (*splash));
 	splash->next = next;
 
 	if (!font_openmem(&font, fonts_cubic, sizeof (fonts_cubic), 80))

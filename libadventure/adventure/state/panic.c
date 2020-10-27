@@ -22,6 +22,7 @@
 #include <stdnoreturn.h>
 #include <string.h>
 
+#include <core/alloc.h>
 #include <core/error.h>
 #include <core/event.h>
 #include <core/font.h>
@@ -31,7 +32,6 @@
 #include <core/state.h>
 #include <core/sys.h>
 #include <core/texture.h>
-#include <core/util.h>
 #include <core/window.h>
 
 #include <ui/align.h>
@@ -98,7 +98,7 @@ init(void)
 
 	theme = theme_default();
 	font = theme->fonts[THEME_FONT_INTERFACE];
-	view = ecalloc(1, sizeof (*view));
+	view = alloc_zero(1, sizeof (*view));
 
 	if (!font_render(font, &view->texts[0].tex, "An unrecoverable error occured and the game cannot continue.", FOREGROUND) ||
 	    !font_render(font, &view->texts[1].tex, "Please report the detailed error as provided below.", FOREGROUND) ||
