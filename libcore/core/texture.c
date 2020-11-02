@@ -18,6 +18,7 @@
 
 #include <assert.h>
 
+#include "color.h"
 #include "error.h"
 #include "texture.h"
 #include "texture_p.h"
@@ -48,6 +49,29 @@ bool
 texture_ok(const struct texture *tex)
 {
 	return tex && tex->handle && tex->w && tex->h;
+}
+
+bool
+texture_set_alpha_mod(struct texture *tex, unsigned int alpha)
+{
+	assert(texture_ok(tex));
+	assert(alpha <= 255);
+
+	if (SDL_SetTextureAlphaMod(tex->handle, alpha) < 0)
+		return errorf("%s", SDL_GetError());
+
+	return true;
+}
+
+bool
+texture_set_color_mod(struct texture *tex, unsigned long color)
+{
+	assert(texture_ok(tex));
+
+	if (SDL_SetTextureColorMod(tex->handle, COLOR_R(color), COLOR_G(color), COLOR_B(color)) < 0)
+		return errorf("%s", SDL_GetError());
+
+	return true;
 }
 
 bool

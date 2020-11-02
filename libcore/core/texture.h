@@ -65,6 +65,26 @@ bool
 texture_ok(const struct texture *tex);
 
 /**
+ * Apply an alpha modulation (aka transparency).
+ *
+ * \pre texture_ok(tex)
+ * \param tex the texture
+ * \param alpha the alpha (0-255)
+ */
+bool
+texture_set_alpha_mod(struct texture *tex, unsigned int alpha);
+
+/**
+ * Apply a color modulation (for every pixel).
+ *
+ * \pre texture_ok(tex)
+ * \param tex the texture to modify
+ * \param color the color
+ */
+bool
+texture_set_color_mod(struct texture *tex, unsigned long color);
+
+/**
  * Simple texture drawing.
  *
  * \pre tex != NULL
