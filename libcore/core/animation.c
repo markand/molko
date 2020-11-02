@@ -59,6 +59,14 @@ animation_start(struct animation *an)
 }
 
 bool
+animation_completed(const struct animation *an)
+{
+	return an->elapsed >= an->delay &&
+	       an->row >= an->sprite->nrows &&
+	       an->column >= an->sprite->ncols;
+}
+
+bool
 animation_update(struct animation *an, unsigned int ticks)
 {
 	assert(an);
@@ -77,16 +85,15 @@ animation_update(struct animation *an, unsigned int ticks)
 		if (++an->row >= an->sprite->nrows)
 			an->row = an->sprite->nrows;
 		else
-			an->column = 0;
-	}
+			an->column = an->elapsed = 0;
+	} else
+		an->elapsed = 0;
 
-	return an->elapsed >= an->delay &&
-	       an->row >= an->sprite->nrows &&
-	       an->column >= an->sprite->ncols;
+	return animation_completed(an);
 }
 
 bool
-animation_draw(struct animation *an, int x, int y)
+animation_draw(const struct animation *an, int x, int y)
 {
 	return sprite_draw(an->sprite, an->row, an->column, x, y);
 }

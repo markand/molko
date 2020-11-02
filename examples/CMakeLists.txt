@@ -29,6 +29,15 @@ molko_define_executable(
 )
 
 molko_define_executable(
+	TARGET example-animation
+	SOURCES example-animation.c
+	FOLDER examples
+	ASSETS
+		${examples_SOURCE_DIR}/assets/sprites/numbers.png
+	LIBRARIES libui
+)
+
+molko_define_executable(
 	TARGET example-cursor
 	SOURCES example-cursor.c
 	FOLDER examples

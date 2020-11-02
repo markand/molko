@@ -66,6 +66,16 @@ void
 animation_start(struct animation *an);
 
 /**
+ * Tells if the animation has completed.
+ *
+ * \pre an != NULL
+ * \param an the animation
+ * \return True if the animation shown all images.
+ */
+bool
+animation_completed(const struct animation *an);
+
+/**
  * Update the animation.
  *
  * You must call this function at each loop iteration to update the animation
@@ -82,14 +92,14 @@ animation_update(struct animation *an, unsigned int ticks);
 /**
  * Draw the animation.
  *
- * \pre an != NULL
+ * \pre an != NULL && !animation_completed(an)
  * \param an the animation
  * \param x the X coordinate
  * \param y the Y coordinate
  * \return False in case of rendering error.
  */
 bool
-animation_draw(struct animation *an, int x, int y);
+animation_draw(const struct animation *an, int x, int y);
 
 /**
  * Create a drawable from an animation.
