@@ -51,4 +51,15 @@
 void
 delay(unsigned int ms);
 
+/**
+ * Generate a random number between lower and upper (included).
+ *
+ * \pre upper must be <= RAND_MAX
+ * \param lower the lower bound
+ * \param upper the upper bound
+ * \return The generated number.
+ */
+unsigned int
+nrand(unsigned int lower, unsigned int upper);
+
 #endif /* !MOLKO_UTIL_H */

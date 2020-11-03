@@ -16,6 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
+#include <stdlib.h>
+
 #include <SDL.h>
 
 #include "util.h"
@@ -24,4 +27,12 @@ void
 delay(unsigned int ms)
 {
 	SDL_Delay(ms);
+}
+
+unsigned int
+nrand(unsigned int lower, unsigned int upper)
+{
+	assert(upper <= RAND_MAX);
+
+	return (rand() % (upper - lower + 1)) + lower;
 }

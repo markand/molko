@@ -16,12 +16,18 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stddef.h>
+#include <stdlib.h>
+#include <time.h>
+
 #include "core.h"
 #include "sys.h"
 
 bool
 core_init(void)
 {
+	srand(time(NULL));
+
 	return sys_init();
 }
 
