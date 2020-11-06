@@ -41,6 +41,16 @@ struct texture {
 };
 
 /**
+ * \brief Blend type when rendering.
+ */
+enum texture_blend {
+	TEXTURE_BLEND_NONE,     /*!< No pixel modulation. */
+	TEXTURE_BLEND_BLEND,    /*!< Blend transparency. */
+	TEXTURE_BLEND_ADD,      /*!< Additive blending. */
+	TEXTURE_BLEND_MODULATE  /*!< Color modulation. */
+};
+
+/**
  * Create a new texture.
  *
  * \pre tex != NULL
@@ -65,11 +75,25 @@ bool
 texture_ok(const struct texture *tex);
 
 /**
+ * Set blend mode.
+ *
+ * \pre texture_ok(tex)
+ * \param tex the texture
+ * \param blend the blend mode
+ * \return False on errors.
+ */
+bool
+texture_set_blend_mode(struct texture *tex, enum texture_blend blend);
+
+/**
  * Apply an alpha modulation (aka transparency).
+ *
+ * You may need to use texture_set_blend_mode before this function to work.
  *
  * \pre texture_ok(tex)
  * \param tex the texture
  * \param alpha the alpha (0-255)
+ * \return False on errors.
  */
 bool
 texture_set_alpha_mod(struct texture *tex, unsigned int alpha);
@@ -80,6 +104,7 @@ texture_set_alpha_mod(struct texture *tex, unsigned int alpha);
  * \pre texture_ok(tex)
  * \param tex the texture to modify
  * \param color the color
+ * \return False on errors.
  */
 bool
 texture_set_color_mod(struct texture *tex, unsigned long color);

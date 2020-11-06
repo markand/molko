@@ -52,6 +52,25 @@ texture_ok(const struct texture *tex)
 }
 
 bool
+texture_set_blend_mode(struct texture *tex, enum texture_blend blend)
+{
+	assert(tex);
+	assert(blend >= TEXTURE_BLEND_NONE && blend <= TEXTURE_BLEND_MODULATE);
+
+	static const SDL_BlendMode table[] = {
+		[TEXTURE_BLEND_NONE] = SDL_BLENDMODE_NONE,
+		[TEXTURE_BLEND_BLEND] = SDL_BLENDMODE_BLEND,
+		[TEXTURE_BLEND_ADD] = SDL_BLENDMODE_ADD,
+		[TEXTURE_BLEND_MODULATE] = SDL_BLENDMODE_MOD
+	};
+
+	if (SDL_SetTextureBlendMode(tex->handle, table[blend]) < 0)
+		return errorf("%s", SDL_GetError());
+
+	return true;
+}
+
+bool
 texture_set_alpha_mod(struct texture *tex, unsigned int alpha)
 {
 	assert(texture_ok(tex));
