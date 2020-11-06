@@ -41,7 +41,7 @@ panic_realloc(void *ptr, size_t size)
 {
 	void *mem;
 
-	if (!(mem = realloc(ptr, size)))
+	if (!(mem = realloc(ptr, size)) && size != 0)
 		panicf("%s", strerror(errno));
 
 	return mem;
