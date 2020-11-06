@@ -52,8 +52,9 @@ find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
 
 add_subdirectory(cmake)
 
-add_subdirectory(extern/libsqlite)
+add_subdirectory(extern/libduktape)
 add_subdirectory(extern/libgreatest)
+add_subdirectory(extern/libsqlite)
 
 if (MOLKO_WITH_DOXYGEN)
 	add_subdirectory(doxygen)
@@ -67,6 +68,7 @@ add_subdirectory(libui)
 add_subdirectory(librpg)
 add_subdirectory(libadventure)
 add_subdirectory(molko)
+add_subdirectory(molko-js)
 
 if (MOLKO_WITH_EXAMPLES)
 	add_subdirectory(examples)
