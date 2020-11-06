@@ -66,7 +66,7 @@ run(void)
 	bool completed = true;
 
 	clock_start(&clock);
-	sprite_init(&sprite, &numbers, 128, 128);
+	sprite_init(&sprite, &numbers, 48, 48);
 	animation_init(&animation, &sprite, 1000);
 
 	for (;;) {
