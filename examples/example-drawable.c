@@ -92,7 +92,7 @@ spawn(int x, int y)
 {
 	struct explosion *expl = alloc(1, sizeof (struct explosion));
 
-	animation_init(&expl->anim, &explosion_sprite, 100);
+	animation_init(&expl->anim, &explosion_sprite, 10);
 	animation_drawable(&expl->anim, &expl->dw, x, y);
 
 	/*
