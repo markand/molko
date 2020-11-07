@@ -10,7 +10,7 @@ Various core utilities.
 Functions
 ---------
 
-.. js:functions:: Molko.Util.delay(delay)
+.. js:function:: Molko.Util.delay(delay)
 
    :param uint delay: Time to wait in milliseconds.
 
