@@ -69,12 +69,28 @@ js_painter_clear(duk_context *ctx)
 static duk_ret_t
 js_painter_drawLine(duk_context *ctx)
 {
-	painter_draw_line(
-	    duk_require_int(ctx, 0),
-	    duk_require_int(ctx, 1),
-	    duk_require_int(ctx, 2),
-	    duk_require_int(ctx, 3)
-	);
+	int x1, y1, x2, y2;
+
+	if (duk_get_top(ctx) == 4) {
+		x1 = duk_require_int(ctx, 0);
+		y1 = duk_require_int(ctx, 1);
+		x2 = duk_require_int(ctx, 2);
+		y2 = duk_require_int(ctx, 3);
+	} else if (duk_get_top(ctx) == 1) {
+		duk_require_object(ctx, 0);
+		duk_get_prop_string(ctx, 0, "x1");
+		x1 = duk_require_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "y1");
+		y1 = duk_require_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "x2");
+		x2 = duk_require_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "y2");
+		y2 = duk_require_int(ctx, -1);
+		duk_pop_n(ctx, 4);
+	} else
+		return duk_error(ctx, DUK_ERR_ERROR, "Object or 4 numbers expected");
+
+	painter_draw_line(x1, y2, x2, y2);
 
 	return 0;
 }
@@ -82,10 +98,22 @@ js_painter_drawLine(duk_context *ctx)
 static duk_ret_t
 js_painter_drawPoint(duk_context *ctx)
 {
-	painter_draw_point(
-	    duk_require_int(ctx, 0),
-	    duk_require_int(ctx, 1)
-	);
+	int x, y;
+
+	if (duk_get_top(ctx) == 2) {
+		x = duk_require_int(ctx, 0);
+		y = duk_require_int(ctx, 1);
+	} else if (duk_get_top(ctx) == 1) {
+		duk_require_object(ctx, 0);
+		duk_get_prop_string(ctx, 0, "x");
+		x = duk_require_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "y");
+		y = duk_require_int(ctx, -1);
+		duk_pop_n(ctx, 2);
+	} else
+		return duk_error(ctx, DUK_ERR_ERROR, "Object or 2 numbers expected");
+
+	painter_draw_point(x, y);
 
 	return 0;
 }
@@ -93,12 +121,29 @@ js_painter_drawPoint(duk_context *ctx)
 static duk_ret_t
 js_painter_drawRectangle(duk_context *ctx)
 {
-	painter_draw_rectangle(
-	    duk_require_int(ctx, 0),
-	    duk_require_int(ctx, 1),
-	    duk_require_int(ctx, 2),
-	    duk_require_int(ctx, 3)
-	);
+	int x, y;
+	unsigned int w, h;
+
+	if (duk_get_top(ctx) == 4) {
+		x = duk_require_int(ctx, 0);
+		y = duk_require_int(ctx, 1);
+		w = duk_require_uint(ctx, 2);
+		h = duk_require_uint(ctx, 3);
+	} else if (duk_get_top(ctx) == 1) {
+		duk_require_object(ctx, 0);
+		duk_get_prop_string(ctx, 0, "x");
+		x = duk_require_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "y");
+		y = duk_require_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "w");
+		w = duk_require_uint(ctx, -1);
+		duk_get_prop_string(ctx, 0, "h");
+		h = duk_require_uint(ctx, -1);
+		duk_pop_n(ctx, 4);
+	} else
+		return duk_error(ctx, DUK_ERR_ERROR, "Object or 4 numbers expected");
+
+	painter_draw_rectangle(x, y, w, h);
 	
 	return 0;
 }
@@ -106,11 +151,26 @@ js_painter_drawRectangle(duk_context *ctx)
 static duk_ret_t
 js_painter_drawCircle(duk_context *ctx)
 {
-	painter_draw_circle(
-	    duk_require_int(ctx, 0),
-	    duk_require_int(ctx, 1),
-	    duk_require_number(ctx, 2)
-	);
+	int x, y;
+	double r;
+
+	if (duk_get_top(ctx) == 3) {
+		x = duk_require_int(ctx, 0);
+		y = duk_require_int(ctx, 1);
+		r = duk_require_number(ctx, 2);
+	} else if (duk_get_top(ctx) == 1) {
+		duk_require_object(ctx, 0);
+		duk_get_prop_string(ctx, 0, "x");
+		x = duk_require_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "y");
+		y = duk_require_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "r");
+		r = duk_require_number(ctx, -1);
+		duk_pop_n(ctx, 3);
+	} else
+		return duk_error(ctx, DUK_ERR_ERROR, "Object or 3 numbers expected");
+
+	painter_draw_circle(x, y, r);
 
 	return 0;
 }
@@ -126,13 +186,13 @@ js_painter_present(duk_context *ctx)
 }
 
 static const duk_function_list_entry methods[] = {
-	{ "clear",              js_painter_clear,               0 },
-	{ "drawLine",           js_painter_drawLine,            4 },
-	{ "drawPoint",          js_painter_drawPoint,           2 },
-	{ "drawRectangle",      js_painter_drawRectangle,       4 },
-	{ "drawCircle",         js_painter_drawCircle,          3 },
-	{ "present",            js_painter_present,             0 },
-	{ NULL,                 NULL,                           0 }
+	{ "clear",              js_painter_clear,               0               },
+	{ "drawLine",           js_painter_drawLine,            DUK_VARARGS     },
+	{ "drawPoint",          js_painter_drawPoint,           DUK_VARARGS     },
+	{ "drawRectangle",      js_painter_drawRectangle,       DUK_VARARGS     },
+	{ "drawCircle",         js_painter_drawCircle,          DUK_VARARGS     },
+	{ "present",            js_painter_present,             0               },
+	{ NULL,                 NULL,                           0               }
 };
 
 void
