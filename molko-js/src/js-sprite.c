@@ -49,6 +49,22 @@ js_sprite_this(duk_context *ctx)
 }
 
 static duk_ret_t
+js_sprite_getRowCount(duk_context *ctx)
+{
+	duk_push_uint(ctx, js_sprite_this(ctx)->nrows);
+
+	return 1;
+}
+
+static duk_ret_t
+js_sprite_getColumnCount(duk_context *ctx)
+{
+	duk_push_uint(ctx, js_sprite_this(ctx)->ncols);
+
+	return 1;
+}
+
+static duk_ret_t
 js_sprite_new(duk_context *ctx)
 {
 	struct js *js = js_self(ctx);
@@ -68,6 +84,17 @@ js_sprite_new(duk_context *ctx)
 	duk_push_this(ctx);
 	duk_push_pointer(ctx, alloc_dup(&sprite, sizeof (sprite)));
 	duk_put_prop_string(ctx, -2, SYMBOL);
+
+	/*
+	 * Put rowCount/columnCount properties.
+	 */
+	duk_push_string(ctx, "rowCount");
+	duk_push_c_function(ctx, js_sprite_getRowCount, 0);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_GETTER);
+
+	duk_push_string(ctx, "columnCount");
+	duk_push_c_function(ctx, js_sprite_getColumnCount, 0);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_GETTER);
 
 	/* We store the texture into the sprite to avoid being collected. */
 	duk_dup(ctx, 0);
@@ -96,16 +123,24 @@ js_sprite_draw(duk_context *ctx)
 	unsigned int r, c;
 	int x, y;
 
-	duk_require_object(ctx, 0);
-	duk_get_prop_string(ctx, 0, "r");
-	r = duk_to_int(ctx, -1);
-	duk_get_prop_string(ctx, 0, "c");
-	c = duk_to_int(ctx, -1);
-	duk_get_prop_string(ctx, 0, "x");
-	x = duk_to_int(ctx, -1);
-	duk_get_prop_string(ctx, 0, "y");
-	y = duk_to_int(ctx, -1);
-	duk_pop_n(ctx, 4);
+	if (duk_get_top(ctx) == 4) {
+		r = duk_require_uint(ctx, 0);
+		c = duk_require_uint(ctx, 1);
+		x = duk_require_int(ctx, 2);
+		y = duk_require_int(ctx, 3);
+	} else if (duk_get_top(ctx) == 1) {
+		duk_require_object(ctx, 0);
+		duk_get_prop_string(ctx, 0, "row");
+		r = duk_to_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "column");
+		c = duk_to_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "x");
+		x = duk_to_int(ctx, -1);
+		duk_get_prop_string(ctx, 0, "y");
+		y = duk_to_int(ctx, -1);
+		duk_pop_n(ctx, 4);
+	} else
+		return duk_error(ctx, DUK_ERR_ERROR, "Object or 4 numbers expected");
 
 	sprite_draw(sprite, r, c, x, y);
 	

@@ -52,6 +52,7 @@ js_painter_new(duk_context *ctx)
 	duk_push_c_function(ctx, js_painter_getColor, 0);
 	duk_push_c_function(ctx, js_painter_setColor, 1);
 	duk_def_prop(ctx, -4, DUK_DEFPROP_HAVE_GETTER | DUK_DEFPROP_HAVE_SETTER);
+	duk_pop(ctx);
 
 	return 0;
 }

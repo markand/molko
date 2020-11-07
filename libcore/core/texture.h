@@ -47,7 +47,8 @@ enum texture_blend {
 	TEXTURE_BLEND_NONE,     /*!< No pixel modulation. */
 	TEXTURE_BLEND_BLEND,    /*!< Blend transparency. */
 	TEXTURE_BLEND_ADD,      /*!< Additive blending. */
-	TEXTURE_BLEND_MODULATE  /*!< Color modulation. */
+	TEXTURE_BLEND_MODULATE, /*!< Color modulation. */
+	TEXTURE_BLEND_LAST      /*!< Unused. */
 };
 
 /**

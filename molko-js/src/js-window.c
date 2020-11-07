@@ -27,6 +27,19 @@
 #include "js-window.h"
 
 static duk_ret_t
+js_window_setCursor(duk_context *ctx)
+{
+	enum window_cursor cursor = duk_require_int(ctx, 0);
+
+	if (cursor < 0 || cursor > WINDOW_CURSOR_LAST)
+		return duk_error(ctx, DUK_ERR_TYPE_ERROR, "invalid cursor type: %d", cursor);
+
+	window_set_cursor(cursor);
+
+	return 0;
+}
+
+static duk_ret_t
 js_window_new(duk_context *ctx)
 {
 	if (!duk_is_constructor_call(ctx))
@@ -39,18 +52,11 @@ js_window_new(duk_context *ctx)
 	if (!window_open(str, w, h))
 		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
-	return 0;
-}
-
-static duk_ret_t
-js_window_setCursor(duk_context *ctx)
-{
-	enum window_cursor cursor = duk_require_int(ctx, 0);
-
-	if (cursor < 0 || cursor > WINDOW_CURSOR_LAST)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "invalid cursor type: %d", cursor);
-
-	window_set_cursor(cursor);
+	duk_push_this(ctx);
+	duk_push_string(ctx, "cursor");
+	duk_push_c_function(ctx, js_window_setCursor, 1);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_SETTER);
+	duk_pop(ctx);
 
 	return 0;
 }
@@ -66,25 +72,17 @@ static const duk_number_list_entry cursors[] = {
 	{ NULL,         0                               }
 };
 
-static const duk_function_list_entry methods[] = {
-	{ "setCursor",  js_window_setCursor,    1 },
-	{ NULL,         NULL,                   0 }
-};
-
 void
 js_window_load(struct js *js)
 {
 	assert(js);
 
-	duk_push_global_object(js->handle);
-	duk_get_prop_string(js->handle, -1, "Molko");
-	duk_push_c_function(js->handle, js_window_new, 3);
-	duk_push_object(js->handle);
-	duk_put_function_list(js->handle, -1, methods);
-	duk_put_prop_string(js->handle, -2, "prototype");
-	duk_push_object(js->handle);
+	duk_push_global_object(js->handle);                  // [g]
+	duk_get_prop_string(js->handle, -1, "Molko");        // [g] [Molko]
+	duk_push_c_function(js->handle, js_window_new, 3);   // [g] [Molko] [Window]
+	duk_push_object(js->handle);                         // [g] [Molko] [Window] [Cursor]
 	duk_put_number_list(js->handle, -1, cursors);
-	duk_put_prop_string(js->handle, -1, "Cursor");
+	duk_put_prop_string(js->handle, -2, "Cursor");       // [g] [Molko] [Window]
 	duk_put_prop_string(js->handle, -2, "Window");
 	duk_pop_n(js->handle, 2);
 }

@@ -35,6 +35,7 @@ if (CMAKE_C_COMPILER_ID MATCHES "Clang")
 endif ()
 
 option(MOLKO_WITH_DOXYGEN "Enable Doxygen build" On)
+option(MOLKO_WITH_DOC "Enable documentation (requires sphinx)" On)
 option(MOLKO_WITH_TESTS "Enable unit tests" On)
 option(MOLKO_WITH_EXAMPLES "Enable build of examples" On)
 
@@ -69,6 +70,10 @@ add_subdirectory(librpg)
 add_subdirectory(libadventure)
 add_subdirectory(molko)
 add_subdirectory(molko-js)
+
+if (MOLKO_WITH_DOC)
+	add_subdirectory(doc)
+endif ()
 
 if (MOLKO_WITH_EXAMPLES)
 	add_subdirectory(examples)

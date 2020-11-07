@@ -49,6 +49,62 @@ js_texture_this(duk_context *ctx)
 }
 
 static duk_ret_t
+js_texture_getWidth(duk_context *ctx)
+{
+	duk_push_uint(ctx, js_texture_this(ctx)->w);
+
+	return 1;
+}
+
+static duk_ret_t
+js_texture_getHeight(duk_context *ctx)
+{
+	duk_push_uint(ctx, js_texture_this(ctx)->h);
+
+	return 1;
+}
+
+static duk_ret_t
+js_texture_setBlendMode(duk_context *ctx)
+{
+	struct texture *tex = js_texture_this(ctx);
+	enum texture_blend blend = duk_require_int(ctx, 0);
+
+	if (blend < 0 || blend >= TEXTURE_BLEND_MODULATE)
+		return duk_error(ctx, DUK_ERR_ERROR, "invalid blend mode: %d", blend);
+	if (!texture_set_blend_mode(tex, blend))
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+
+	return 0;
+}
+
+static duk_ret_t
+js_texture_setAlphaMod(duk_context *ctx)
+{
+	struct texture *tex = js_texture_this(ctx);
+	unsigned int alpha = duk_require_uint(ctx, 0);
+
+	if (alpha > 255)
+		return duk_error(ctx, DUK_ERR_RANGE_ERROR, "%u is out of range [0..255]", alpha);
+	if (!texture_set_alpha_mod(tex, alpha))
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+
+	return 0;
+}
+
+static duk_ret_t
+js_texture_setColorMod(duk_context *ctx)
+{
+	struct texture *tex = js_texture_this(ctx);
+	unsigned long color = duk_require_number(ctx, 0);
+
+	if (!texture_set_color_mod(tex, color))
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+
+	return 0;
+}
+
+static duk_ret_t
 js_texture_new(duk_context *ctx)
 {
 	struct texture tex;
@@ -82,7 +138,8 @@ js_texture_draw(duk_context *ctx)
 	y = duk_to_int(ctx, -1);
 	duk_pop_n(ctx, 2);
 
-	texture_draw(tex, x, y);
+	if (!texture_draw(tex, x, y))
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	return 0;
 }
@@ -122,7 +179,8 @@ js_texture_scale(duk_context *ctx)
 	/* Angle. */
 	angle = duk_to_number(ctx, 2);
 
-	texture_scale(tex, srcx, srcy, srcw, srch, dstx, dsty, dstw, dsth, angle);
+	if (!texture_scale(tex, srcx, srcy, srcw, srch, dstx, dsty, dstw, dsth, angle))
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	return 0;
 }
@@ -198,6 +256,23 @@ js_texture_push(struct js *js, const struct texture *tex)
 	duk_push_pointer(js->handle, alloc_dup(tex, sizeof (*tex)));
 	duk_put_prop_string(js->handle, -3, SYMBOL);
 	duk_set_prototype(js->handle, -2);
+
+	/* Put some properties. */
+	duk_push_string(js->handle, "width");
+	duk_push_c_function(js->handle, js_texture_getWidth, 0);
+	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_GETTER);
+	duk_push_string(js->handle, "height");
+	duk_push_c_function(js->handle, js_texture_getHeight, 0);
+	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_GETTER);
+	duk_push_string(js->handle, "blendMode");
+	duk_push_c_function(js->handle, js_texture_setBlendMode, 1);
+	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_SETTER);
+	duk_push_string(js->handle, "alphaMod");
+	duk_push_c_function(js->handle, js_texture_setAlphaMod, 1);
+	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_SETTER);
+	duk_push_string(js->handle, "colorMod");
+	duk_push_c_function(js->handle, js_texture_setColorMod, 1);
+	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_SETTER);
 }
 
 void
