@@ -27,11 +27,12 @@
 
 #include <stdbool.h>
 
-struct checkbox;
 struct button;
+struct checkbox;
 struct font;
 struct frame;
 struct label;
+struct sprite;
 
 /**
  * \brief Font component.
@@ -54,6 +55,14 @@ enum theme_color {
 };
 
 /**
+ * \brief Special sprites.
+ */
+enum theme_sprite {
+	THEME_SPRITE_CURSOR,    /*!< Sprite cursor. */
+	THEME_SPRITE_LAST,
+};
+
+/**
  * \brief Abstract theme structure.
  */
 struct theme {
@@ -61,6 +70,11 @@ struct theme {
 	 * (+&) Fonts catalog.
 	 */
 	struct font *fonts[THEME_FONT_LAST];
+
+	/**
+	 * (+&?) Special sprites catalog.
+	 */
+	const struct sprite *sprites[THEME_SPRITE_LAST];
 
 	/**
 	 * (+) User interface colors.

@@ -106,6 +106,6 @@ sprite_ok(const struct sprite *sprite);
  * \return False in case of rendering error.
  */
 bool
-sprite_draw(struct sprite *sprite, unsigned int r, unsigned int c, int x, int y);
+sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y);
 
 #endif /* !MOLKO_SPRITE_H */

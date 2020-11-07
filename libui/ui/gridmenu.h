@@ -44,7 +44,7 @@ union event;
  */
 enum gridmenu_state {
 	GRIDMENU_STATE_NONE,            /*!< No state yet. */
-	GRIDMENU_STATE_SELECTED         /*!< An entry has been selected. */
+	GRIDMENU_STATE_ACTIVATED        /*!< An entry has been selected. */
 };
 
 /**

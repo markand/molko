@@ -20,6 +20,34 @@ project(librpg)
 
 set(
 	SOURCES
+	${librpg_SOURCE_DIR}/rpg/battle.c
+	${librpg_SOURCE_DIR}/rpg/battle.h
+	${librpg_SOURCE_DIR}/rpg/battle-indicator.c
+	${librpg_SOURCE_DIR}/rpg/battle-indicator.h
+	${librpg_SOURCE_DIR}/rpg/battle-bar.c
+	${librpg_SOURCE_DIR}/rpg/battle-bar.h
+	${librpg_SOURCE_DIR}/rpg/battle-state.c
+	${librpg_SOURCE_DIR}/rpg/battle-state.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-ai.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-ai.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-check.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-check.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-closing.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-closing.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-menu.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-menu.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-lost.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-lost.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-opening.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-opening.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-selection.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-selection.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-sub.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-sub.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-victory.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-victory.h
+	${librpg_SOURCE_DIR}/rpg/character.c
+	${librpg_SOURCE_DIR}/rpg/character.h
 	${librpg_SOURCE_DIR}/rpg/inventory.c
 	${librpg_SOURCE_DIR}/rpg/inventory.h
 	${librpg_SOURCE_DIR}/rpg/item.c
@@ -32,6 +60,9 @@ set(
 	${librpg_SOURCE_DIR}/rpg/message.h
 	${librpg_SOURCE_DIR}/rpg/rpg.c
 	${librpg_SOURCE_DIR}/rpg/rpg.h
+	${librpg_SOURCE_DIR}/rpg/selection.h
+	${librpg_SOURCE_DIR}/rpg/spell.c
+	${librpg_SOURCE_DIR}/rpg/spell.h
 	${librpg_SOURCE_DIR}/rpg/walksprite.c
 	${librpg_SOURCE_DIR}/rpg/walksprite.h
 )

@@ -47,7 +47,7 @@ sprite_ok(const struct sprite *sprite)
 }
 
 bool
-sprite_draw(struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
+sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
 {
 	assert(sprite_ok(sprite));
 	assert(r < sprite->nrows);

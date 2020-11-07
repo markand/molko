@@ -19,6 +19,24 @@
 project(examples)
 
 molko_define_executable(
+	TARGET example-battle
+	SOURCES
+		${examples_SOURCE_DIR}/example-battle.c
+		${examples_SOURCE_DIR}/battle/spell-fire.c
+		${examples_SOURCE_DIR}/battle/spell-fire.h
+		${examples_SOURCE_DIR}/battle/registry.c
+		${examples_SOURCE_DIR}/battle/registry.h
+	FOLDER examples
+	ASSETS
+		${examples_SOURCE_DIR}/assets/images/haunted-wood.png
+		${examples_SOURCE_DIR}/assets/images/black-cat.png
+		${examples_SOURCE_DIR}/assets/sprites/cursor.png
+		${examples_SOURCE_DIR}/assets/sprites/explosion.png
+		${examples_SOURCE_DIR}/assets/sounds/fire.wav
+	LIBRARIES librpg libadventure
+)
+
+molko_define_executable(
 	TARGET example-action
 	SOURCES example-action.c
 	FOLDER examples

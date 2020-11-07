@@ -194,7 +194,7 @@ handle_keydown(struct gridmenu *menu, const struct event_key *key)
 			menu->selected -= 1;
 		break;
 	case KEY_ENTER:
-		menu->state = GRIDMENU_STATE_SELECTED;
+		menu->state = GRIDMENU_STATE_ACTIVATED;
 		break;
 	default:
 		break;
@@ -224,8 +224,11 @@ handle_clickdown(struct gridmenu *menu, const struct event_click *click)
 		}
 	}
 
-	if (save != menu->selected)
+	/* A click immediately active the widget. */
+	if (save != menu->selected) {
 		gridmenu_repaint(menu);
+		menu->state = GRIDMENU_STATE_ACTIVATED;
+	}
 }
 
 void

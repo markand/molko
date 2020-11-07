@@ -66,7 +66,7 @@ static struct font_catalog {
 	struct font font;
 } default_fonts[] = {
 	FONT(fonts_opensans_light, 12, THEME_FONT_DEBUG),
-	FONT(fonts_opensans_regular, 12, THEME_FONT_INTERFACE)
+	FONT(fonts_opensans_regular, 14, THEME_FONT_INTERFACE)
 };
 
 bool

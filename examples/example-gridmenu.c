@@ -99,7 +99,7 @@ run(void)
 			}
 		}
 
-		if (menu.state == GRIDMENU_STATE_SELECTED) {
+		if (menu.state == GRIDMENU_STATE_ACTIVATED) {
 			tracef("selected index: %u", (unsigned int)menu.selected);
 			gridmenu_reset(&menu);
 		}
