@@ -18,6 +18,8 @@
 
 project(libsqlite)
 
+find_package(Threads REQUIRED)
+
 molko_define_library(
 	TARGET libsqlite
 	SOURCES sqlite3.c sqlite3.h
@@ -25,4 +27,5 @@ molko_define_library(
 	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libsqlite_SOURCE_DIR}>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+	LIBRARIES Threads::Threads ${CMAKE_DL_LIBS}
 )

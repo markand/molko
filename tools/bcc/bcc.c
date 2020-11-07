@@ -16,6 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define _XOPEN_SOURCE 700
 #include <errno.h>
 #include <stdarg.h>
 #include <stdbool.h>

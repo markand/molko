@@ -18,6 +18,8 @@
 
 project(libcore)
 
+include(CheckLibraryExists)
+
 set(
 	SQL_ASSETS
 	${libcore_SOURCE_DIR}/core/assets/sql/init.sql
@@ -87,11 +89,14 @@ set(
 	${libcore_SOURCE_DIR}/core/window_p.h
 )
 
+check_library_exists(m sqrt "" LIBM)
+
 molko_define_library(
 	TARGET libcore
 	SOURCES ${SOURCES} ${SQL_ASSETS}
 	ASSETS ${SQL_ASSETS}
 	LIBRARIES
+		$<$<BOOL:${LIBM}>:m>
 		libsqlite
 		SDL2::SDL2
 		SDL2::image
