@@ -28,7 +28,6 @@
 #include "js-font.h"
 #include "js-texture.h"
 #include "js.h"
-#include "js_p.h"
 
 #define SYMBOL  DUK_HIDDEN_SYMBOL("molko::font")
 #define PROTO   DUK_HIDDEN_SYMBOL("molko::font::prototype")
@@ -92,7 +91,7 @@ js_font_render(duk_context *ctx)
 	if (!font_render(font, &tex, text, color))
 		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
-	js_texture_push(js_self(ctx), &tex);
+	js_texture_push(ctx, &tex);
 
 	return 1;
 }
@@ -146,20 +145,20 @@ static const duk_function_list_entry methods[] = {
 };
 
 void
-js_font_load(struct js *js)
+js_font_load(duk_context *ctx)
 {
-	assert(js);
+	assert(ctx);
 
-	duk_push_global_object(js->handle);
-	duk_get_prop_string(js->handle, -1, "Molko");
-	duk_push_object(js->handle);
-	duk_put_function_list(js->handle, -1, functions);
-	duk_put_prop_string(js->handle, -2, "Font");
-	duk_push_global_stash(js->handle);
-	duk_push_object(js->handle);
-	duk_put_function_list(js->handle, -1, methods);
-	duk_push_c_function(js->handle, js_font_finish, 1);
-	duk_set_finalizer(js->handle, -2);
-	duk_put_prop_string(js->handle, -2, PROTO);
-	duk_pop_n(js->handle, 3);
+	duk_push_global_object(ctx);
+	duk_get_prop_string(ctx, -1, "Molko");
+	duk_push_object(ctx);
+	duk_put_function_list(ctx, -1, functions);
+	duk_put_prop_string(ctx, -2, "Font");
+	duk_push_global_stash(ctx);
+	duk_push_object(ctx);
+	duk_put_function_list(ctx, -1, methods);
+	duk_push_c_function(ctx, js_font_finish, 1);
+	duk_set_finalizer(ctx, -2);
+	duk_put_prop_string(ctx, -2, PROTO);
+	duk_pop_n(ctx, 3);
 }

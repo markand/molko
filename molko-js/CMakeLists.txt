@@ -40,8 +40,6 @@ set(
 	${molko-js_SOURCE_DIR}/src/js-window.h
 	${molko-js_SOURCE_DIR}/src/js.c
 	${molko-js_SOURCE_DIR}/src/js.h
-	${molko-js_SOURCE_DIR}/src/js_p.c
-	${molko-js_SOURCE_DIR}/src/js_p.h
 	${molko-js_SOURCE_DIR}/src/main.c
 )
 

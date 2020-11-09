@@ -19,15 +19,13 @@
 #ifndef MOLKO_JS_TEXTURE_H
 #define MOLKO_JS_TEXTURE_H
 
-struct js;
-
 struct texture *
-js_texture_require(struct js *js, unsigned int index);
+js_texture_require(duk_context *ctx, unsigned int index);
 
 void
-js_texture_push(struct js *js, const struct texture *tex);
+js_texture_push(duk_context *ctx, const struct texture *tex);
 
 void
-js_texture_load(struct js *js);
+js_texture_load(duk_context *ctx);
 
 #endif /* !MOLKO_JS_TEXTURE_H */

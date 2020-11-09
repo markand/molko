@@ -200,16 +200,16 @@ static const duk_function_list_entry methods[] = {
 };
 
 void
-js_painter_load(struct js *js)
+js_painter_load(duk_context *ctx)
 {
-	assert(js);
+	assert(ctx);
 
-	duk_push_global_object(js->handle);
-	duk_get_prop_string(js->handle, -1, "Molko");
-	duk_push_c_function(js->handle, js_painter_new, 0);
-	duk_push_object(js->handle);
-	duk_put_function_list(js->handle, -1, methods);
-	duk_put_prop_string(js->handle, -2, "prototype");
-	duk_put_prop_string(js->handle, -2, "Painter");
-	duk_pop_n(js->handle, 2);
+	duk_push_global_object(ctx);
+	duk_get_prop_string(ctx, -1, "Molko");
+	duk_push_c_function(ctx, js_painter_new, 0);
+	duk_push_object(ctx);
+	duk_put_function_list(ctx, -1, methods);
+	duk_put_prop_string(ctx, -2, "prototype");
+	duk_put_prop_string(ctx, -2, "Painter");
+	duk_pop_n(ctx, 2);
 }

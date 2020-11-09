@@ -27,7 +27,6 @@
 #include "js.h"
 #include "js-animation.h"
 #include "js-sprite.h"
-#include "js_p.h"
 
 #define SYMBOL          DUK_HIDDEN_SYMBOL("molko::animation")
 #define SPRITE_REF      DUK_HIDDEN_SYMBOL("molko::animation::sprite")
@@ -66,7 +65,7 @@ js_animation_new(duk_context *ctx)
 	if (!duk_is_constructor_call(ctx))
 		duk_error(ctx, DUK_ERR_TYPE_ERROR, "Animation must be new-constructed");
 
-	sprite = js_sprite_require(js_self(ctx), 0);
+	sprite = js_sprite_require(ctx, 0);
 	delay = duk_require_uint(ctx, 1);
 
 	anim = alloc_zero(1, sizeof (*anim));
@@ -142,18 +141,18 @@ static duk_function_list_entry methods[] = {
 };
 
 void
-js_animation_load(struct js *js)
+js_animation_load(duk_context *ctx)
 {
-	assert(js);
+	assert(ctx);
 
-	duk_push_global_object(js->handle);
-	duk_get_prop_string(js->handle, -1, "Molko");
-	duk_push_c_function(js->handle, js_animation_new, 3);
-	duk_push_object(js->handle);
-	duk_put_function_list(js->handle, -1, methods);
-	duk_push_c_function(js->handle, js_animation_finish, 1);
-	duk_set_finalizer(js->handle, -2);
-	duk_put_prop_string(js->handle, -2, "prototype");
-	duk_put_prop_string(js->handle, -2, "Animation");
-	duk_pop_n(js->handle, 2);
+	duk_push_global_object(ctx);
+	duk_get_prop_string(ctx, -1, "Molko");
+	duk_push_c_function(ctx, js_animation_new, 3);
+	duk_push_object(ctx);
+	duk_put_function_list(ctx, -1, methods);
+	duk_push_c_function(ctx, js_animation_finish, 1);
+	duk_set_finalizer(ctx, -2);
+	duk_put_prop_string(ctx, -2, "prototype");
+	duk_put_prop_string(ctx, -2, "Animation");
+	duk_pop_n(ctx, 2);
 }

@@ -89,15 +89,15 @@ static const duk_function_list_entry functions[] = {
 };
 
 void
-js_event_load(struct js *js)
+js_event_load(duk_context *ctx)
 {
-	assert(js);
+	assert(ctx);
 
-	duk_push_global_object(js->handle);
-	duk_get_prop_string(js->handle, -1, "Molko");
-	duk_push_object(js->handle);
-	duk_put_number_list(js->handle, -1, types);
-	duk_put_function_list(js->handle, -1, functions);
-	duk_put_prop_string(js->handle, -2, "Event");
-	duk_pop_n(js->handle, 1);
+	duk_push_global_object(ctx);
+	duk_get_prop_string(ctx, -1, "Molko");
+	duk_push_object(ctx);
+	duk_put_number_list(ctx, -1, types);
+	duk_put_function_list(ctx, -1, functions);
+	duk_put_prop_string(ctx, -2, "Event");
+	duk_pop_n(ctx, 1);
 }

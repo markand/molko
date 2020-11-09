@@ -39,14 +39,14 @@ static const duk_function_list_entry functions[] = {
 };
 
 void
-js_util_load(struct js *js)
+js_util_load(duk_context *ctx)
 {
-	assert(js);
+	assert(ctx);
 
-	duk_push_global_object(js->handle);
-	duk_get_prop_string(js->handle, -1, "Molko");
-	duk_push_object(js->handle);
-	duk_put_function_list(js->handle, -1, functions);
-	duk_put_prop_string(js->handle, -2, "Util");
-	duk_pop_n(js->handle, 2);
+	duk_push_global_object(ctx);
+	duk_get_prop_string(ctx, -1, "Molko");
+	duk_push_object(ctx);
+	duk_put_function_list(ctx, -1, functions);
+	duk_put_prop_string(ctx, -2, "Util");
+	duk_pop_n(ctx, 2);
 }

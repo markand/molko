@@ -73,16 +73,16 @@ static const duk_number_list_entry cursors[] = {
 };
 
 void
-js_window_load(struct js *js)
+js_window_load(duk_context *ctx)
 {
-	assert(js);
+	assert(ctx);
 
-	duk_push_global_object(js->handle);                  // [g]
-	duk_get_prop_string(js->handle, -1, "Molko");        // [g] [Molko]
-	duk_push_c_function(js->handle, js_window_new, 3);   // [g] [Molko] [Window]
-	duk_push_object(js->handle);                         // [g] [Molko] [Window] [Cursor]
-	duk_put_number_list(js->handle, -1, cursors);
-	duk_put_prop_string(js->handle, -2, "Cursor");       // [g] [Molko] [Window]
-	duk_put_prop_string(js->handle, -2, "Window");
-	duk_pop_n(js->handle, 2);
+	duk_push_global_object(ctx);
+	duk_get_prop_string(ctx, -1, "Molko");
+	duk_push_c_function(ctx, js_window_new, 3);
+	duk_push_object(ctx);
+	duk_put_number_list(ctx, -1, cursors);
+	duk_put_prop_string(ctx, -2, "Cursor");
+	duk_put_prop_string(ctx, -2, "Window");
+	duk_pop_n(ctx, 2);
 }

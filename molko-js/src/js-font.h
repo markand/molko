@@ -19,9 +19,7 @@
 #ifndef MOLKO_JS_FONT_H
 #define MOLKO_JS_FONT_H
 
-struct js;
-
 void
-js_font_load(struct js *js);
+js_font_load(duk_context *ctx);
 
 #endif /* !MOLKO_JS_FONT_H */

@@ -182,15 +182,15 @@ js_core_load(struct js *js)
 {
 	assert(js);
 
-	js_animation_load(js);
-	js_clock_load(js);
-	js_event_load(js);
-	js_font_load(js);
-	js_painter_load(js);
-	js_texture_load(js);
-	js_sprite_load(js);
-	js_util_load(js);
-	js_window_load(js);
+	js_animation_load(js->handle);
+	js_clock_load(js->handle);
+	js_event_load(js->handle);
+	js_font_load(js->handle);
+	js_painter_load(js->handle);
+	js_texture_load(js->handle);
+	js_sprite_load(js->handle);
+	js_util_load(js->handle);
+	js_window_load(js->handle);
 }
 
 bool
@@ -221,19 +221,6 @@ js_open(struct js *js, const char *path)
 	duk_pop(js->handle);
 
 	return ret;
-}
-
-bool
-js_openmem(struct js *js, const void *data, size_t datasz)
-{
-	assert(js);
-	assert(data);
-	
-	(void)js;
-	(void)data;
-	(void)datasz;
-
-	return true;
 }
 
 void

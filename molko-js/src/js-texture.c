@@ -26,7 +26,6 @@
 #include <core/texture.h>
 
 #include "js.h"
-#include "js_p.h"
 #include "js-texture.h"
 
 #define SYMBOL DUK_HIDDEN_SYMBOL("molko::texture")
@@ -212,7 +211,7 @@ js_texture_fromImage(duk_context *ctx)
 	if (!image_open(&tex, path))
 		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
-	js_texture_push(js_self(ctx), &tex);
+	js_texture_push(ctx, &tex);
 
 	return 1;
 }
@@ -229,70 +228,70 @@ static const duk_function_list_entry functions[] = {
 };
 
 struct texture *
-js_texture_require(struct js *js, unsigned int index)
+js_texture_require(duk_context *ctx, unsigned int index)
 {
 	struct texture *tex;
 
-	duk_get_prop_string(js->handle, index, SYMBOL);
-	tex = duk_to_pointer(js->handle, -1);
-	duk_pop(js->handle);
+	duk_get_prop_string(ctx, index, SYMBOL);
+	tex = duk_to_pointer(ctx, -1);
+	duk_pop(ctx);
 
 	if (!tex)
-		duk_error(js->handle, DUK_ERR_TYPE_ERROR, "Texture expected on argument #%u", index);
+		duk_error(ctx, DUK_ERR_TYPE_ERROR, "Texture expected on argument #%u", index);
 
 	return tex;
 }
 
 void
-js_texture_push(struct js *js, const struct texture *tex)
+js_texture_push(duk_context *ctx, const struct texture *tex)
 {
-	assert(js);
+	assert(ctx);
 	assert(texture_ok(tex));
 
-	duk_push_object(js->handle);
-	duk_push_global_stash(js->handle);
-	duk_get_prop_string(js->handle, -1, PROTO);
-	duk_remove(js->handle, -2);
-	duk_push_pointer(js->handle, alloc_dup(tex, sizeof (*tex)));
-	duk_put_prop_string(js->handle, -3, SYMBOL);
-	duk_set_prototype(js->handle, -2);
+	duk_push_object(ctx);
+	duk_push_global_stash(ctx);
+	duk_get_prop_string(ctx, -1, PROTO);
+	duk_remove(ctx, -2);
+	duk_push_pointer(ctx, alloc_dup(tex, sizeof (*tex)));
+	duk_put_prop_string(ctx, -3, SYMBOL);
+	duk_set_prototype(ctx, -2);
 
 	/* Put some properties. */
-	duk_push_string(js->handle, "width");
-	duk_push_c_function(js->handle, js_texture_getWidth, 0);
-	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_GETTER);
-	duk_push_string(js->handle, "height");
-	duk_push_c_function(js->handle, js_texture_getHeight, 0);
-	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_GETTER);
-	duk_push_string(js->handle, "blendMode");
-	duk_push_c_function(js->handle, js_texture_setBlendMode, 1);
-	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_SETTER);
-	duk_push_string(js->handle, "alphaMod");
-	duk_push_c_function(js->handle, js_texture_setAlphaMod, 1);
-	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_SETTER);
-	duk_push_string(js->handle, "colorMod");
-	duk_push_c_function(js->handle, js_texture_setColorMod, 1);
-	duk_def_prop(js->handle, -3, DUK_DEFPROP_HAVE_SETTER);
+	duk_push_string(ctx, "width");
+	duk_push_c_function(ctx, js_texture_getWidth, 0);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_GETTER);
+	duk_push_string(ctx, "height");
+	duk_push_c_function(ctx, js_texture_getHeight, 0);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_GETTER);
+	duk_push_string(ctx, "blendMode");
+	duk_push_c_function(ctx, js_texture_setBlendMode, 1);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_SETTER);
+	duk_push_string(ctx, "alphaMod");
+	duk_push_c_function(ctx, js_texture_setAlphaMod, 1);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_SETTER);
+	duk_push_string(ctx, "colorMod");
+	duk_push_c_function(ctx, js_texture_setColorMod, 1);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_SETTER);
 }
 
 void
-js_texture_load(struct js *js)
+js_texture_load(duk_context *ctx)
 {
-	assert(js);
+	assert(ctx);
 
-	duk_push_global_object(js->handle);
-	duk_get_prop_string(js->handle, -1, "Molko");
-	duk_push_c_function(js->handle, js_texture_new, 2);
-	duk_put_function_list(js->handle, -1, functions);
-	duk_push_object(js->handle);
-	duk_put_function_list(js->handle, -1, methods);
-	duk_push_c_function(js->handle, js_texture_finish, 1);
-	duk_set_finalizer(js->handle, -2);
-	duk_push_global_stash(js->handle);
-	duk_dup(js->handle, -2);
-	duk_put_prop_string(js->handle, -2, PROTO);
-	duk_pop(js->handle);
-	duk_put_prop_string(js->handle, -2, "prototype");
-	duk_put_prop_string(js->handle, -2, "Texture");
-	duk_pop_n(js->handle, 2);
+	duk_push_global_object(ctx);
+	duk_get_prop_string(ctx, -1, "Molko");
+	duk_push_c_function(ctx, js_texture_new, 2);
+	duk_put_function_list(ctx, -1, functions);
+	duk_push_object(ctx);
+	duk_put_function_list(ctx, -1, methods);
+	duk_push_c_function(ctx, js_texture_finish, 1);
+	duk_set_finalizer(ctx, -2);
+	duk_push_global_stash(ctx);
+	duk_dup(ctx, -2);
+	duk_put_prop_string(ctx, -2, PROTO);
+	duk_pop(ctx);
+	duk_put_prop_string(ctx, -2, "prototype");
+	duk_put_prop_string(ctx, -2, "Texture");
+	duk_pop_n(ctx, 2);
 }

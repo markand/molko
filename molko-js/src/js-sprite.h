@@ -19,12 +19,10 @@
 #ifndef MOLKO_JS_SPRITE_H
 #define MOLKO_JS_SPRITE_H
 
-struct js;
-
 void
-js_sprite_load(struct js *js);
+js_sprite_load(duk_context *ctx);
 
 struct sprite *
-js_sprite_require(struct js *js, unsigned int index);
+js_sprite_require(duk_context *ctx, unsigned int index);
 
 #endif /* !MOLKO_JS_SPRITE_H */

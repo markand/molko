@@ -19,9 +19,7 @@
 #ifndef MOLKO_JS_ANIMATION_H
 #define MOLKO_JS_ANIMATION_H
 
-struct js;
-
 void
-js_animation_load(struct js *js);
+js_animation_load(duk_context *ctx);
 
 #endif /* !MOLKO_JS_ANIMATION_H */

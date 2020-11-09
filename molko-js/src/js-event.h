@@ -19,9 +19,7 @@
 #ifndef MOLKO_JS_EVENT_H
 #define MOLKO_JS_EVENT_H
 
-struct js;
-
 void
-js_event_load(struct js *js);
+js_event_load(duk_context *ctx);
 
 #endif /* !MOLKO_JS_EVENT_H */

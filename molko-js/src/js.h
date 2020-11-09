@@ -35,9 +35,6 @@ js_core_load(struct js *js);
 bool
 js_open(struct js *js, const char *path);
 
-bool
-js_openmem(struct js *js, const void *data, size_t datasz);
-
 void
 js_finish(struct js *js);
 

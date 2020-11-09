@@ -19,9 +19,7 @@
 #ifndef MOLKO_JS_CLOCK_H
 #define MOLKO_JS_CLOCK_H
 
-struct js;
-
 void
-js_clock_load(struct js *js);
+js_clock_load(duk_context *ctx);
 
 #endif /* !MOLKO_JS_CLOCK_H */

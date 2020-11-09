@@ -19,9 +19,7 @@
 #ifndef MOLKO_JS_UTIL_H
 #define MOLKO_JS_UTIL_H
 
-struct js;
-
 void
-js_util_load(struct js *js);
+js_util_load(duk_context *ctx);
 
 #endif /* !MOLKO_JS_UTIL_H */

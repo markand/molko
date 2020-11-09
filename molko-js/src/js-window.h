@@ -19,9 +19,7 @@
 #ifndef MOLKO_JS_WINDOW_H
 #define MOLKO_JS_WINDOW_H
 
-struct js;
-
 void
-js_window_load(struct js *js);
+js_window_load(duk_context *ctx);
 
 #endif /* !MOLKO_JS_WINDOW_H */

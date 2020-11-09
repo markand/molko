@@ -19,9 +19,7 @@
 #ifndef MOLKO_JS_PAINTER_H
 #define MOLKO_JS_PAINTER_H
 
-struct js;
-
 void
-js_painter_load(struct js *js);
+js_painter_load(duk_context *ctx);
 
 #endif /* !MOLKO_JS_PAINTER_H */
