@@ -52,6 +52,18 @@ void
 delay(unsigned int ms);
 
 /**
+ * Read a whole file dynamically.
+ *
+ * \pre path != NULL
+ * \param path the path to the file
+ * \return A pointer to a dynamically allocated string containing the file
+ *         contents or NULL on failures.
+ * \note Don't forget to free the result.
+ */
+char *
+readall(const char *path) PLAT_NODISCARD;
+
+/**
  * Generate a random number between lower and upper (included).
  *
  * \pre upper must be <= RAND_MAX

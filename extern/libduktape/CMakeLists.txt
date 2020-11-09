@@ -23,6 +23,8 @@ molko_define_library(
 	FOLDER extern
 	SOURCES
 		${libduktape_SOURCE_DIR}/duk_config.h
+		${libduktape_SOURCE_DIR}/duk_module.c
+		${libduktape_SOURCE_DIR}/duk_module.h
 		${libduktape_SOURCE_DIR}/duktape.c
 		${libduktape_SOURCE_DIR}/duktape.h
 	PUBLIC_INCLUDES

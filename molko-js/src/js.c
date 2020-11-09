@@ -16,12 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/stat.h>
 #include <assert.h>
-#include <errno.h>
-#include <fcntl.h>
+#include <libgen.h>
+#include <limits.h>
 #include <string.h>
-#include <unistd.h>
 
 #include <core/alloc.h>
 #include <core/error.h>
@@ -29,6 +27,7 @@
 #include <core/trace.h>
 
 #include <duktape.h>
+#include <duk_module.h>
 
 #include "js.h"
 #include "js-clock.h"
@@ -88,6 +87,76 @@ wrap_fatal(void *udata, const char *msg)
 	panicf("%s", msg);
 }
 
+static duk_ret_t
+search(duk_context *ctx)
+{
+	char path[PATH_MAX];
+	char *ret;
+
+	duk_push_global_stash(ctx);
+	duk_get_prop_string(ctx, -1, DUK_HIDDEN_SYMBOL("molko::base"));
+	snprintf(path, sizeof (path), "%s/%s.js", duk_to_string(ctx, -1), duk_require_string(ctx, 0));
+	duk_pop_n(ctx, 2);
+
+	tracef("opening module: %s", path);
+
+	if (!(ret = readall(path)))
+		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+	
+	duk_push_string(ctx, ret);
+	free(ret);
+
+	return 1;
+}
+
+static void
+setup_module(struct js *js)
+{
+	duk_module_duktape_init(js->handle);
+	duk_get_global_string(js->handle, "Duktape");
+	duk_push_c_function(js->handle, search, 4);
+	duk_put_prop_string(js->handle, -2, "modSearch");
+	duk_pop(js->handle);
+}
+
+static void
+setup_global(struct js *js)
+{
+	/* Create global "Molko" property. */
+	duk_push_global_object(js->handle);
+	duk_push_object(js->handle);
+	duk_put_prop_string(js->handle, -2, "Molko");
+	duk_push_c_function(js->handle, js_print, 1);
+	duk_put_prop_string(js->handle, -2, "print");
+	duk_push_c_function(js->handle, js_trace, 1);
+	duk_put_prop_string(js->handle, -2, "trace");
+	duk_pop(js->handle);
+}
+
+static void
+setup_properties(struct js *js)
+{
+	/* Store a reference to this pointer. */
+	duk_push_global_stash(js->handle);
+	duk_push_pointer(js->handle, js);
+	duk_put_prop_string(js->handle, -2, DUK_HIDDEN_SYMBOL("js.pointer"));
+	duk_pop(js->handle);
+}
+
+static void
+setup_base(struct js *js, const char *path)
+{
+	char base[PATH_MAX];
+
+	snprintf(base, sizeof (base), "%s", path);
+	snprintf(base, sizeof (base), "%s", dirname(base));
+
+	duk_push_global_stash(js->handle);
+	duk_push_string(js->handle, base);
+	duk_put_prop_string(js->handle, -2, DUK_HIDDEN_SYMBOL("molko::base"));
+	duk_pop(js->handle);
+}
+
 bool
 js_init(struct js *js)
 {
@@ -99,54 +168,12 @@ js_init(struct js *js)
 	if (!js->handle)
 		panicf("could not create Javascript context");
 
-	/* Create global "Molko" property. */
-	duk_push_global_object(js->handle);
-	duk_push_object(js->handle);
-	duk_put_prop_string(js->handle, -2, "Molko");
-	duk_push_c_function(js->handle, js_print, 1);
-	duk_put_prop_string(js->handle, -2, "print");
-	duk_push_c_function(js->handle, js_trace, 1);
-	duk_put_prop_string(js->handle, -2, "trace");
-	duk_pop(js->handle);
-
-	/* Store a reference to this pointer. */
-	duk_push_global_stash(js->handle);
-	duk_push_pointer(js->handle, js);
-	duk_put_prop_string(js->handle, -2, DUK_HIDDEN_SYMBOL("js.pointer"));
-	duk_pop(js->handle);
-
+	/* Setup module. */
+	setup_module(js);
+	setup_global(js);
+	setup_properties(js);
+	
 	return true;
-}
-
-static char *
-readall(const char *path)
-{
-	int fd = -1;
-	struct stat st;
-	char *str = NULL;
-	ssize_t nr;
-
-	if ((fd = open(path, O_RDONLY)) < 0)
-		goto failure;
-	if (fstat(fd, &st) < 0)
-		goto failure;
-
-	if (!(str = alloc_zero(1, st.st_size + 1)))
-		goto failure;
-	if ((nr = read(fd, str, st.st_size)) != st.st_size)
-		goto failure;
-
-	return str;
-
-failure:
-	errorf("%s", strerror(errno));
-
-	if (fd != -1)
-		close(fd);
-
-	free(str);
-
-	return NULL;
 }
 
 void
@@ -175,6 +202,8 @@ js_open(struct js *js, const char *path)
 
 	if (!text)
 		return false;
+
+	setup_base(js, path);
 
 	if (duk_peval_string(js->handle, text) != 0) {
 		int ln;
