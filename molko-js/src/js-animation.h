@@ -1,5 +1,5 @@
 /*
- * js-sprite.h -- image sprites (Javascript bindings)
+ * js-animation.h -- basic animations (Javascript bindings)
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,15 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_JS_SPRITE_H
-#define MOLKO_JS_SPRITE_H
+#ifndef MOLKO_JS_ANIMATION_H
+#define MOLKO_JS_ANIMATION_H
 
 struct js;
 
 void
-js_sprite_load(struct js *js);
+js_animation_load(struct js *js);
 
-struct sprite *
-js_sprite_require(struct js *js, unsigned int index);
-
-#endif /* !MOLKO_JS_SPRITE_H */
+#endif /* !MOLKO_JS_ANIMATION_H */

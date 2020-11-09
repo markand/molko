@@ -30,12 +30,13 @@
 #include <duk_module.h>
 
 #include "js.h"
+#include "js-animation.h"
 #include "js-clock.h"
 #include "js-event.h"
 #include "js-font.h"
 #include "js-painter.h"
-#include "js-texture.h"
 #include "js-sprite.h"
+#include "js-texture.h"
 #include "js-util.h"
 #include "js-window.h"
 
@@ -139,7 +140,7 @@ setup_properties(struct js *js)
 	/* Store a reference to this pointer. */
 	duk_push_global_stash(js->handle);
 	duk_push_pointer(js->handle, js);
-	duk_put_prop_string(js->handle, -2, DUK_HIDDEN_SYMBOL("js.pointer"));
+	duk_put_prop_string(js->handle, -2, DUK_HIDDEN_SYMBOL("molko::pointer"));
 	duk_pop(js->handle);
 }
 
@@ -181,6 +182,7 @@ js_core_load(struct js *js)
 {
 	assert(js);
 
+	js_animation_load(js);
 	js_clock_load(js);
 	js_event_load(js);
 	js_font_load(js);

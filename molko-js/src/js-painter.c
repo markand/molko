@@ -25,6 +25,9 @@
 #include "js.h"
 #include "js-painter.h"
 
+#define SYMBOL          DUK_HIDDEN_SYMBOL("molko::sprite")
+#define TEXTURE_REF     DUK_HIDDEN_SYMBOL("molko::sprite::texture")
+
 static duk_ret_t
 js_painter_getColor(duk_context *ctx)
 {

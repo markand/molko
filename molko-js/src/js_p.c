@@ -24,7 +24,7 @@ js_self(duk_context *ctx)
 	struct js *self;
 
 	duk_push_global_stash(ctx);
-	duk_get_prop_string(ctx, -1, DUK_HIDDEN_SYMBOL("js.pointer"));
+	duk_get_prop_string(ctx, -1, DUK_HIDDEN_SYMBOL("molko::pointer"));
 	self = duk_to_pointer(ctx, -1);
 	duk_pop_n(ctx, 2);
 

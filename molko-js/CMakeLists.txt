@@ -20,6 +20,8 @@ project(molko-js)
 
 set(
 	SOURCES
+	${molko-js_SOURCE_DIR}/src/js-animation.c
+	${molko-js_SOURCE_DIR}/src/js-animation.h
 	${molko-js_SOURCE_DIR}/src/js-clock.c
 	${molko-js_SOURCE_DIR}/src/js-clock.h
 	${molko-js_SOURCE_DIR}/src/js-event.c

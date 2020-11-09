@@ -148,9 +148,24 @@ js_sprite_draw(duk_context *ctx)
 }
 
 static const duk_function_list_entry methods[] = {
-	{ "draw",       js_sprite_draw, 1 },
-	{ NULL,         NULL,           0 }
+	{ "draw",       js_sprite_draw, DUK_VARARGS     },
+	{ NULL,         NULL,           0               }
 };
+
+struct sprite *
+js_sprite_require(struct js *js, unsigned int index)
+{
+	struct sprite *sp;
+
+	duk_get_prop_string(js->handle, index, SYMBOL);
+	sp = duk_to_pointer(js->handle, -1);
+	duk_pop(js->handle);
+
+	if (!sp)
+		duk_error(js->handle, DUK_ERR_TYPE_ERROR, "Sprite expected on argument #%u", index);
+
+	return sp;
+}
 
 void
 js_sprite_load(struct js *js)
