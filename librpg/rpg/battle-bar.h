@@ -149,6 +149,12 @@ battle_bar_handle(struct battle_bar *bar,
 void
 battle_bar_reset(struct battle_bar *bar);
 
+/**
+ * Open global menu.
+ *
+ * \pre bar != NULL
+ * \param bar the bar
+ */
 void
 battle_bar_open_menu(struct battle_bar *bar);
 
@@ -156,8 +162,10 @@ battle_bar_open_menu(struct battle_bar *bar);
  * Open the view to select a spell by opening the grid menu.
  *
  * \pre bar != NULL
+ * \pre bt != NULL
  * \pre character_ok(ch)
  * \param bar this bar
+ * \param bt the current battle
  * \param ch the owner of spells
  */
 void
