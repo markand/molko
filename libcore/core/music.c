@@ -1,5 +1,5 @@
 /*
- * sound.c -- sound support
+ * music.h -- music support
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -17,96 +17,101 @@
  */
 
 #include <assert.h>
-#include <stdio.h>
+#include <string.h>
 
 #include <SDL_mixer.h>
 
 #include "error.h"
-#include "sound.h"
+#include "music.h"
 
 bool
-sound_open(struct sound *snd, const char *path)
+music_open(struct music *mus, const char *path)
 {
-	assert(snd);
+	assert(mus);
 	assert(path);
 
-	if (!(snd->handle = Mix_LoadWAV(path)))
+	if (!(mus->handle = Mix_LoadMUS(path)))
 		return errorf("%s", SDL_GetError());
 
 	return true;
 }
 
 bool
-sound_openmem(struct sound *snd, const void *buffer, size_t buffersz)
+music_openmem(struct music *mus, const void *buffer, size_t buffersz)
 {
-	assert(snd);
+	assert(mus);
 	assert(buffer);
 
 	SDL_RWops *ops;
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buffersz)) ||
-	    !(snd->handle = Mix_LoadWAV_RW(ops, true)))
+	    !(mus->handle = Mix_LoadMUS_RW(ops, true)))
 		return errorf("%s", SDL_GetError());
 
 	return true;
 }
 
 bool
-sound_ok(const struct sound *snd)
+music_ok(const struct music *mus)
 {
-	return snd && snd->handle;
+	return mus && mus->handle;
 }
 
 bool
-sound_play(struct sound *snd, int channel, unsigned int fadein)
+music_play(struct music *mus, enum music_flags flags, unsigned int fadein)
 {
-	assert(sound_ok(snd));
+	assert(mus);
 
+	int loops = flags & MUSIC_LOOP ? -1 : 1;
 	int ret;
 
 	if (fadein > 0)
-		ret = Mix_FadeInChannel(channel, snd->handle, 0, fadein);
+		ret = Mix_FadeInMusic(mus->handle, loops, fadein);
 	else
-		ret = Mix_PlayChannel(channel, snd->handle, 0);
+		ret = Mix_PlayMusic(mus->handle, loops);
 
 	if (ret < 0)
 		return errorf("%s", SDL_GetError());
 
-	snd->channel = channel;
-
 	return true;
 }
 
-void
-sound_pause(struct sound *snd)
+bool
+music_playing(void)
 {
-	Mix_Pause(snd ? snd->channel : -1);
+	return Mix_PlayingMusic();
 }
 
 void
-sound_resume(struct sound *snd)
+music_pause(void)
 {
-	Mix_Resume(snd ? snd->channel : -1);
+	Mix_PauseMusic();
 }
 
 void
-sound_stop(struct sound *snd, unsigned int fadeout)
+music_resume(void)
+{
+	Mix_ResumeMusic();
+}
+
+void
+music_stop(unsigned int fadeout)
 {
 	if (fadeout > 0)
-		Mix_FadeOutChannel(snd ? snd->channel : -1, fadeout);
+		Mix_FadeOutMusic(fadeout);
 	else
-		Mix_HaltChannel(snd ? snd->channel : -1);
+		Mix_HaltMusic();
 }
 
 void
-sound_finish(struct sound *snd)
+music_finish(struct music *mus)
 {
-	assert(snd);
+	assert(mus);
 
-	if (snd->handle) {
-		Mix_HaltChannel(snd->channel);
-		Mix_FreeChunk(snd->handle);
+	if (mus->handle) {
+		Mix_HaltMusic();
+		Mix_FreeMusic(mus->handle);
 	}
 
-	memset(snd, 0, sizeof (*snd));
+	memset(mus, 0, sizeof (*mus));
 }

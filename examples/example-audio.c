@@ -19,6 +19,7 @@
 #include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/music.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/sound.h>
@@ -31,16 +32,26 @@
 #include <ui/ui.h>
 
 /* https://freesound.org/people/VABsounds/sounds/423658 */
-#include <assets/sounds/vabsounds-romance.h>
+#include <assets/musics/vabsounds-romance.h>
+#include <assets/sounds/fire.h>
 
 #define W 1280
 #define H 720
 
+static struct music music;
 static struct sound sound;
-static struct label label = {
-	.text = "Keys: <s> start, <p> pause, <r> resume, <q> stop, <l> loop",
+
+static struct label label_music = {
+	.text = "Music: <Space> play, <f> fade in, <s> fade out, <p> pause, <r> resume, <q> stop, <l> loop.",
 	.x = 10,
 	.y = 10,
+	.flags = LABEL_FLAGS_SHADOW
+};
+
+static struct label label_sound = {
+	.text = "Sound: click anywhere to pop a sound.",
+	.x = 10,
+	.y = 30,
 	.flags = LABEL_FLAGS_SHADOW
 };
 
@@ -49,9 +60,11 @@ init(void)
 {
 	if (!core_init() || !ui_init())
 		panic();
-	if (!window_open("Example - Sound", W, H))
+	if (!window_open("Example - Audio", W, H))
 		panic();
-	if (!sound_openmem(&sound, sounds_vabsounds_romance, sizeof (sounds_vabsounds_romance)))
+	if (!music_openmem(&music, musics_vabsounds_romance, sizeof (musics_vabsounds_romance)))
+		panic();
+	if (!sound_openmem(&sound, sounds_fire, sizeof (sounds_fire)))
 		panic();
 }
 
@@ -78,23 +91,32 @@ run(void)
 
 		while (event_poll(&ev)) {
 			switch (ev.type) {
+			case EVENT_CLICKDOWN:
+				if (!sound_play(&sound, -1, 0))
+					panic();
+				break;
 			case EVENT_KEYDOWN:
 				switch (ev.key.key) {
+				case KEY_f:
+					music_play(&music, 0, 500);
+					break;
 				case KEY_s:
-					sound_play(&sound);
+					music_stop(500);
 					break;
 				case KEY_p:
-					sound_pause(&sound);
+					music_pause();
 					break;
 				case KEY_r:
-					sound_resume(&sound);
+					music_resume();
 					break;
 				case KEY_q:
-					sound_stop(&sound);
+					music_stop(0);
 					break;
 				case KEY_l:
-					sound.flags ^= SOUND_LOOP;
-					sound_play(&sound);
+					music_play(&music, MUSIC_LOOP, 0);
+					break;
+				case KEY_SPACE:
+					music_play(&music, 0, 0);
 					break;
 				default:
 					break;
@@ -109,12 +131,16 @@ run(void)
 
 		painter_set_color(0x006554ff);
 		painter_clear();
-		label_draw(&label);
+		label_draw(&label_music);
+		label_draw(&label_sound);
 		painter_present();
 
 		if ((elapsed = clock_elapsed(&clock)) < 20)
 			delay(20 - elapsed);
 	}
+
+	music_finish(&music);
+	sound_finish(&sound);
 }
 
 int

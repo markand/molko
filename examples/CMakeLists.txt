@@ -56,6 +56,16 @@ molko_define_executable(
 )
 
 molko_define_executable(
+	TARGET example-audio
+	SOURCES example-audio.c
+	FOLDER examples
+	ASSETS
+		${examples_SOURCE_DIR}/assets/musics/vabsounds-romance.ogg
+		${examples_SOURCE_DIR}/assets/sounds/fire.wav
+	LIBRARIES libui
+)
+
+molko_define_executable(
 	TARGET example-cursor
 	SOURCES example-cursor.c
 	FOLDER examples
@@ -88,15 +98,6 @@ molko_define_executable(
 	SOURCES example-message.c
 	FOLDER examples
 	LIBRARIES librpg
-)
-
-molko_define_executable(
-	TARGET example-sound
-	SOURCES example-sound.c
-	FOLDER examples
-	ASSETS
-		${examples_SOURCE_DIR}/assets/sounds/vabsounds-romance.ogg
-	LIBRARIES libui
 )
 
 molko_define_executable(

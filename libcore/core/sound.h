@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_SOUND_H
-#define MOLKO_SOUND_H
+#ifndef MOLKO_CORE_SOUND_H
+#define MOLKO_CORE_SOUND_H
 
 /**
  * \file sound.h
@@ -30,19 +30,16 @@
 #include "plat.h"
 
 /**
- * \brief Sound flags.
+ * \brief Number of channels allocated.
  */
-enum sound_flags {
-	SOUND_NONE,                     /*!< No flags. */
-	SOUND_LOOP      = (1 << 0)      /*!< Loop the music. */
-};
+#define SOUND_MAX_CHANNELS	(256)
 
 /**
  * \brief Sound chunk.
  */
 struct sound {
-	enum sound_flags flags;         /*!< (+) Flags. */
 	void *handle;                   /*!< (*) Native handle. */
+	int channel;                    /*!< (*) Current channel. */
 };
 
 /**
@@ -69,49 +66,59 @@ sound_open(struct sound *snd, const char *path) PLAT_NODISCARD;
  * \warning The buffer must exists until the sound object is closed.
  */
 bool
-sound_openmem(struct sound *snd, const void *buffer, size_t buffersz);
+sound_openmem(struct sound *snd, const void *buffer, size_t buffersz) PLAT_NODISCARD;
+
+/**
+ * Check if this sound handle is properly loaded.
+ *
+ * \param snd the sound to check (may be NULL)
+ */
+bool
+sound_ok(const struct sound *snd);
 
 /**
  * Start playing the sound.
  *
  * This function will resume the playback since the beginning.
  *
- * \pre snd != NULL
+ * \pre sound_ok(snd)
  * \param snd the sound object
+ * \param channel the channel to use (-1 for a default)
+ * \param fadein a fade in delay in milliseconds (0 to disable)
  * \return False on errors.
  */
 bool
-sound_play(struct sound *snd);
+sound_play(struct sound *snd, int channel, unsigned int fadein);
 
 /**
- * Pause the sound music.
+ * Pause the given sound or all sounds currently playing.
  *
- * \pre snd != NULL
- * \param snd the sound object
+ * \param snd the sound object (or NULL to pause all)
  */
 void
 sound_pause(struct sound *snd);
 
 /**
- * Resume the sound music.
+ * Resume the current sound or all sounds currently paused.
  *
- * \pre snd != NULL
- * \param snd the sound object
+ * \param snd the sound object (or NULL to resume all)
  */
 void
 sound_resume(struct sound *snd);
 
 /**
- * Stop the sound music.
+ * Stop the sound music or all sounds currently playing.
  *
- * \pre snd != NULL
+ * \pre sound_ok(snd)
  * \param snd the sound object
+ * \param fadeout a fade out delay in milliseconds (0 to disable)
  */
 void
-sound_stop(struct sound *snd);
+sound_stop(struct sound *snd, unsigned int fadeout);
 
 /**
- * Close the associated resources.
+ * Close the associated resources. This will also stop the playback of the
+ * given sound.
  *
  * \pre snd != NULL
  * \param snd the sound object
@@ -119,4 +126,4 @@ sound_stop(struct sound *snd);
 void
 sound_finish(struct sound *snd);
 
-#endif /* !MOLKO_SOUND_H */
+#endif /* !MOLKO_CORE_SOUND_H */

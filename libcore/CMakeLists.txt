@@ -58,6 +58,8 @@ set(
 	${libcore_SOURCE_DIR}/core/maths.c
 	${libcore_SOURCE_DIR}/core/maths.h
 	${libcore_SOURCE_DIR}/core/mouse.h
+	${libcore_SOURCE_DIR}/core/music.c
+	${libcore_SOURCE_DIR}/core/music.h
 	${libcore_SOURCE_DIR}/core/painter.c
 	${libcore_SOURCE_DIR}/core/painter.h
 	${libcore_SOURCE_DIR}/core/panic.c
