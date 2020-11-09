@@ -26,13 +26,7 @@ molko_define_test(TARGET inventory SOURCES test-inventory.c)
 molko_define_test(
 	TARGET map
 	SOURCES test-map.c
-	ASSETS
-		${tests_SOURCE_DIR}/assets/maps/error-height.map
-		${tests_SOURCE_DIR}/assets/maps/error-tileheight.map
-		${tests_SOURCE_DIR}/assets/maps/error-tilewidth.map
-		${tests_SOURCE_DIR}/assets/maps/error-title.map
-		${tests_SOURCE_DIR}/assets/maps/error-width.map
-		${tests_SOURCE_DIR}/assets/maps/sample-map.map
+	FLAGS DIRECTORY="${tests_SOURCE_DIR}/assets/maps/"
 )
 molko_define_test(TARGET save SOURCES test-save.c)
 molko_define_test(TARGET state SOURCES test-state.c)

@@ -64,15 +64,4 @@
  * synchronisation and many other stuff than a local game does not require.
  *
  * There are no plans to create a network oriented core API anytime soon.
- *
- * # Can I write an action RPG like Zelda?
- *
- * Probably.
- *
- * Do not use the battle system provided and then depending on your game you
- * may:
- *
- * - Edit the \ref map_state.h module to your needs (you may also simply define
- *   your own input/update handler instead),
- * - Create a dedicated state and use \ref map.h if you want.
  */

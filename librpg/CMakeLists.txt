@@ -54,8 +54,8 @@ set(
 	${librpg_SOURCE_DIR}/rpg/item.h
 	${librpg_SOURCE_DIR}/rpg/map.c
 	${librpg_SOURCE_DIR}/rpg/map.h
-	${librpg_SOURCE_DIR}/rpg/map_state.c
-	${librpg_SOURCE_DIR}/rpg/map_state.h
+	${librpg_SOURCE_DIR}/rpg/map-file.c
+	${librpg_SOURCE_DIR}/rpg/map-file.h
 	${librpg_SOURCE_DIR}/rpg/message.c
 	${librpg_SOURCE_DIR}/rpg/message.h
 	${librpg_SOURCE_DIR}/rpg/rpg.c

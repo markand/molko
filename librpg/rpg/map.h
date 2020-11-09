@@ -24,37 +24,43 @@
  * \brief Game map.
  */
 
-#include <stdbool.h>
-#include <stdio.h>
-
 #include <core/texture.h>
 
-/**
- * \brief Max title length for a map.
- */
-#define MAP_TITLE_MAX   32
+#include "walksprite.h"
+
+struct sprite;
+struct state;
+
+union event;
 
 /**
- * \brief Max filename for tilesets.
+ * \brief Map layer type.
  */
-#define MAP_TILESET_MAX FILENAME_MAX
+enum map_layer_type {
+	MAP_LAYER_TYPE_BACKGROUND,      /*!< Background layer. */
+	MAP_LAYER_TYPE_FOREGROUND,      /*!< Foreground layer. */
+	MAP_LAYER_TYPE_ABOVE,           /*!< Above foreground layer. */
+	MAP_LAYER_TYPE_NUM              /*!< Number of layers. */
+};
 
 /**
  * \brief Map layer.
  */
 struct map_layer {
-	unsigned short *tiles;          /*!< (+) Array of tiles, depending on the map size. */
+	unsigned short *tiles;          /*!< (+&) Array of tiles, depending on the map size. */
 };
 
 /**
- * \brief Map definition structure.
+ * \brief Map object.
  *
- * This structure only defines the map characteristics. It does not have any
- * logic and is left for game state.
+ * The map object is used to move a player within the map according to the
+ * tilesets and collisions masks.
+ *
+ * By itself, a map does not know how to be loaded from a file and must be done
+ * from an helper like \ref map_file.
  */
-struct map_data {
-	char title[MAP_TITLE_MAX];      /*!< (+) The map title. */
-	char tileset[MAP_TILESET_MAX];  /*!< (+) Name of tileset to use. */
+struct map {
+	const char *title;              /*!< (+) Map title name. */
 	int origin_x;                   /*!< (+) Where the player starts in X. */
 	int origin_y;                   /*!< (+) Where the player starts in Y. */
 	unsigned int real_w;            /*!< (-) Real width in pixels. */
@@ -63,79 +69,76 @@ struct map_data {
 	unsigned int h;                 /*!< (-) Map height in cells. */
 	unsigned short tile_w;          /*!< (-) Pixels per cell (width). */
 	unsigned short tile_h;          /*!< (-) Pixels per cell (height). */
-	struct map_layer layers[2];     /*!< (+) Layers (background, foreground). */
+	struct sprite *tileset;         /*!< (+&) Tileset to use. */
+	struct texture picture;         /*!< (-) Map drawn into a texture. */
+
+	/* Player. */
+	struct sprite *player_sprite;   /*!< (+) The sprite to use */
+	struct walksprite player_ws;    /*!< (-) Walking sprite for moving the player. */
+	int player_x;                   /*!< (+) Player position in x */
+	int player_y;                   /*!< (+) Player position in y */
+	int player_angle;               /*!< (+) Player angle (see walksprite) */
+	unsigned int player_movement;   /*!< (*) Current player movements. */
+
+	/* View to zoom/locate. */
+	int view_x;                     /*!< (+) Position in x */
+	int view_y;                     /*!< (+) Position in y */
+	unsigned int view_w;            /*!< (+) View width */
+	unsigned int view_h;            /*!< (+) View height */
+
+	/* View margin. */
+	int margin_x;                   /*!< (+) View margin in x. */
+	int margin_y;                   /*!< (+) View margin in y. */
+	unsigned int margin_w;          /*!< (+) Margin width. */
+	unsigned int margin_h;          /*!< (+) Margin height. */
+
+	/**
+	 * Different tile layers.
+	 */
+	struct map_layer layers[MAP_LAYER_TYPE_NUM];
 };
 
 /**
- * \brief High level map object.
+ * Initialize the map.
  *
- * This structure reference a map and perform drawing operations.
- */
-struct map {
-	struct map_data *data;          /*!< (+&) Map data. */
-	struct texture *tileset;        /*!< (+&) Tileset to use. */
-	struct texture picture;         /*!< (-) Map drawn into a picture. */
-};
-
-/**
- * Open a map defintion.
- *
- * \pre data != NULL
- * \pre path != NULL
- * \param data the map defintion to fill
- * \param path the path to the map
- * \return True if successfully loaded.
- */
-bool
-map_data_open(struct map_data *data, const char *path);
-
-/**
- * Open map data definition from memory.
- *
- *\pre data != NULL
- *\pre buf != NULL
- *\param data the map definition to fill
- *\param buf the source buffer
- *\param bufsz the source buffer size
- */
-bool
-map_data_openmem(struct map_data *data, const void *buf, size_t bufsz);
-
-/**
- * Dispose the map definition data.
- *
- * \pre data != NULL
- * \param data the map definition
- */
-void
-map_data_finish(struct map_data *data);
-
-/**
- * Initialize this map.
+ * This function will re-generate the terrain and center the view to the player
+ * position.
  *
  * \pre map != NULL
- * \pre data != NULL
- * \pre tileset != NULL && texture_ok(tileset)
  * \param map the map to initialize
- * \param data the definition to reference
- * \param tileset the tileset to use
- * \return False on errors.
  */
 bool
-map_init(struct map *map,
-         struct map_data *data,
-         struct texture *tileset);
+map_init(struct map *map);
+
+/**
+ * Handle an event.
+ *
+ * \pre map != NULL
+ * \pre ev != NULL
+ * \param map the map
+ * \param ev the event to handle
+ */
+void
+map_handle(struct map *map, const union event *ev);
+
+/**
+ * Update the map.
+ *
+ * \pre map != NULL
+ * \param map the map
+ * \param ticks ellapsed milliseconds since last frame
+ */
+void
+map_update(struct map *map, unsigned int ticks);
 
 /**
  * Render a map.
  *
  * \pre map != NULL
  * \param map the map to render
- * \param srcx the x coordinate region
- * \param srcy the y coordinate region
  */
 void
-map_draw(struct map *map, int srcx, int srcy);
+map_draw(const struct map *map);
 
 /**
  * Force map repaint on its texture.
@@ -146,6 +149,23 @@ map_draw(struct map *map, int srcx, int srcy);
  */
 void
 map_repaint(struct map *map);
+
+/**
+ * Convert the map into a game state.
+ *
+ * Both objects must exist until the state is no longer used.
+ *
+ * \pre map != NULL
+ * \pre state != NULL
+ * \param map the map to use
+ * \param state the state to fill
+ * \post state->data is set to map
+ * \post state->handle is set
+ * \post state->update is set
+ * \post state->draw is set
+ */
+void
+map_state(struct map *map, struct state *state);
 
 /**
  * Dispose map resources.

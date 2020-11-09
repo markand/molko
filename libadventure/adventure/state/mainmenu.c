@@ -24,6 +24,7 @@
 #include <core/event.h>
 #include <core/font.h>
 #include <core/game.h>
+#include <core/image.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/state.h>
@@ -39,6 +40,7 @@
 #include <adventure/assets/fonts/pirata-one.h>
 
 #include "mainmenu.h"
+#include "molko.h"
 
 struct mainmenu {
 	struct {
@@ -54,6 +56,20 @@ static void
 new(void)
 {
 	/* TODO: implement here. */
+	if (!map_file_open(&molko.map_file, DIRECTORY "/maps/overworld.map", &molko.map))
+		panic();
+
+	/* Put a sprite. */
+	if (!image_open(&molko.map_player_texture, DIRECTORY "/sprites/john.png"))
+		panic();
+
+	sprite_init(&molko.map_player_sprite, &molko.map_player_texture, 48, 48);
+	molko.map.player_sprite = &molko.map_player_sprite;
+
+	if (!map_init(&molko.map))
+		panic();
+
+	game_switch(&molko.states[MOLKO_STATE_MAP], false);
 }
 
 static void

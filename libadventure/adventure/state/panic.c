@@ -37,8 +37,6 @@
 #include <ui/align.h>
 #include <ui/theme.h>
 
-#include <rpg/map_state.h>
-
 #include "panic.h"
 
 #define BACKGROUND 0x4f5070ff

@@ -4,6 +4,7 @@ width|100
 height|100
 tilewidth|32
 tileheight|32
+tileset|overworld.png
 layer|background
 21
 21
@@ -20006,4 +20007,3 @@ layer|foreground
 0
 0
 0
-tileset|test.png

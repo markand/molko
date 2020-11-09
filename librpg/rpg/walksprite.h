@@ -98,6 +98,6 @@ walksprite_update(struct walksprite *ws, unsigned int ticks);
  * \param y the y coordinate
  */
 void
-walksprite_draw(struct walksprite *ws, unsigned int orientation, int x, int y);
+walksprite_draw(const struct walksprite *ws, unsigned int orientation, int x, int y);
 
 #endif /* !MOLKO_WALKSPRITE_H */

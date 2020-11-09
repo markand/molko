@@ -30,6 +30,8 @@ set(
 
 set(
 	SOURCES
+	${libadventure_SOURCE_DIR}/adventure/molko.c
+	${libadventure_SOURCE_DIR}/adventure/molko.h
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.c
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.h
 )
@@ -40,9 +42,7 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/assets/fonts/lato.ttf
 	${libadventure_SOURCE_DIR}/adventure/assets/fonts/teutonic.ttf
 	${libadventure_SOURCE_DIR}/adventure/assets/fonts/pirata-one.ttf
-	${libadventure_SOURCE_DIR}/adventure/assets/maps/overworld.map
 	${libadventure_SOURCE_DIR}/adventure/assets/sprites/john.png
-	${libadventure_SOURCE_DIR}/adventure/assets/tilesets/world.png
 )
 
 molko_define_library(
@@ -52,8 +52,11 @@ molko_define_library(
 		${SOURCES}
 	ASSETS ${ASSETS}
 	LIBRARIES libcore libui librpg
+	PRIVATE_INCLUDES
+		${libadventure_SOURCE_DIR}/adventure
 	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libadventure_SOURCE_DIR}>
+	PRIVATE_FLAGS DIRECTORY="${libadventure_SOURCE_DIR}/adventure/assets"
 )
 
 source_group(adventure FILES ${SOURCES})

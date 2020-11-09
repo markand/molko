@@ -1,5 +1,5 @@
 /*
- * walksprite.c -- sprite designed for walking entities
+ * molko.h -- main structure for Molko's Adventure
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,46 +16,45 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
-#include <string.h>
+#ifndef MOLKO_H
+#define MOLKO_H
 
+#include <core/game.h>
+#include <core/texture.h>
 #include <core/sprite.h>
+#include <core/state.h>
 
-#include "walksprite.h"
+#include <rpg/map-file.h>
+#include <rpg/map.h>
 
-void
-walksprite_init(struct walksprite *ws, struct sprite *sprite, unsigned int delay)
-{
-	assert(ws);
-	assert(sprite);
+enum molko_state {
+	MOLKO_STATE_SPLASH,
+	MOLKO_STATE_MAINMENU,
+	MOLKO_STATE_PANIC,
+	MOLKO_STATE_MAP,
+	MOLKO_STATE_NUM
+};
 
-	memset(ws, 0, sizeof (struct walksprite));
-	ws->sprite = sprite;
-	ws->delay = delay;
-}
+struct molko {
+	struct game engine;
+	struct state states[MOLKO_STATE_NUM];
 
-void
-walksprite_update(struct walksprite *ws, unsigned int ticks)
-{
-	assert(ws);
+	/* MOLKO_STATE_MAP. */
+	struct texture map_player_texture;
+	struct sprite map_player_sprite;
+	struct map_file map_file;
+	struct map map;
+};
 
-	ws->elapsed += ticks;
-
-	if (ws->elapsed >= ws->delay) {
-		ws->index += 1;
-
-		if (ws->index >= ws->sprite->ncols)
-			ws->index = 0;
-
-		ws->elapsed = 0;
-	}
-}
+extern struct molko molko;
 
 void
-walksprite_draw(const struct walksprite *ws, unsigned int orientation, int x, int y)
-{
-	assert(ws);
-	assert(orientation < 8);
+molko_init(void);
 
-	sprite_draw(ws->sprite, orientation, ws->index, x, y);
-}
+void
+molko_run(void);
+
+void
+molko_finish(void);
+
+#endif /* !MOLKO_H */

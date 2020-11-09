@@ -19,26 +19,22 @@
 #define GREATEST_USE_ABBREVS 0
 #include <greatest.h>
 
+#include <core/core.h>
 #include <core/error.h>
 #include <core/panic.h>
 #include <core/sys.h>
 #include <core/window.h>
 
+#include <rpg/map-file.h>
 #include <rpg/map.h>
-
-#include <assets/maps/sample-map.h>
-#include <assets/maps/error-title.h>
-#include <assets/maps/error-width.h>
-#include <assets/maps/error-height.h>
-#include <assets/maps/error-tilewidth.h>
-#include <assets/maps/error-tileheight.h>
 
 GREATEST_TEST
 test_sample(void)
 {
-	struct map_data map;
+	struct map_file loader = {0};
+	struct map map = {0};
 
-	GREATEST_ASSERT(map_data_openmem(&map, maps_sample_map, sizeof (maps_sample_map)));
+	GREATEST_ASSERT(map_file_open(&loader, DIRECTORY "sample-map.map", &map));
 	GREATEST_ASSERT_STR_EQ("This is a test map", map.title);
 	GREATEST_ASSERT_EQ(2, map.w);
 	GREATEST_ASSERT_EQ(2, map.h);
@@ -52,51 +48,80 @@ test_sample(void)
 	GREATEST_ASSERT_EQ(5, map.layers[1].tiles[1]);
 	GREATEST_ASSERT_EQ(6, map.layers[1].tiles[2]);
 	GREATEST_ASSERT_EQ(7, map.layers[1].tiles[3]);
+
+	map_finish(&map);
+	map_file_finish(&loader);
+
 	GREATEST_PASS();
 }
 
 GREATEST_TEST
 test_error_title(void)
 {
-	struct map_data map;
+	struct map_file loader = {0};
+	struct map map = {0};
 
-	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_title, sizeof (maps_error_title)));
+	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-title.map", &map));
+
+	map_finish(&map);
+	map_file_finish(&loader);
+
 	GREATEST_PASS();
 }
 
 GREATEST_TEST
 test_error_width(void)
 {
-	struct map_data map;
+	struct map_file loader = {0};
+	struct map map = {0};
 
-	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_width, sizeof (maps_error_width)));
+	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-width.map", &map));
+
+	map_finish(&map);
+	map_file_finish(&loader);
+
 	GREATEST_PASS();
 }
 
 GREATEST_TEST
 test_error_height(void)
 {
-	struct map_data map;
+	struct map_file loader = {0};
+	struct map map = {0};
 
-	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_height, sizeof (maps_error_height)));
+	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-height.map", &map));
+
+	map_finish(&map);
+	map_file_finish(&loader);
+
 	GREATEST_PASS();
 }
 
 GREATEST_TEST
 test_error_tilewidth(void)
 {
-	struct map_data map;
+	struct map_file loader = {0};
+	struct map map = {0};
 
-	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_tilewidth, sizeof (maps_error_tilewidth)));
+	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-tilewidth.map", &map));
+
+	map_finish(&map);
+	map_file_finish(&loader);
+
 	GREATEST_PASS();
 }
 
 GREATEST_TEST
 test_error_tileheight(void)
 {
-	struct map_data map;
+	struct map_file loader = {0};
+	struct map map = {0};
 
-	GREATEST_ASSERT(!map_data_openmem(&map, maps_error_tileheight, sizeof (maps_error_tileheight)));
+	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-tileheight.map", &map));
+
+	map_finish(&map);
+	map_file_finish(&loader);
+
 	GREATEST_PASS();
 }
 
@@ -120,8 +145,18 @@ int
 main(int argc, char **argv)
 {
 	GREATEST_MAIN_BEGIN();
-	GREATEST_RUN_SUITE(basics);
-	GREATEST_RUN_SUITE(errors);
+
+	/*
+	 * This test opens graphical images and therefore need to initialize a
+	 * window and all of the API. As tests sometime run on headless machine
+	 * we will skip if it fails to initialize.
+	 */
+
+	if (core_init() && window_open("test-map", 100, 100)) {
+		GREATEST_RUN_SUITE(basics);
+		GREATEST_RUN_SUITE(errors);
+	}
+
 	GREATEST_MAIN_END();
 
 	return 0;

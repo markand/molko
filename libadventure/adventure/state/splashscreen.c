@@ -98,9 +98,6 @@ finish(struct state *state)
 {
 	struct splashscreen *splash = state->data;
 
-	if (!splash)
-		return;
-
 	texture_finish(&splash->tex);
 
 	free(splash);
