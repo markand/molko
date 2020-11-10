@@ -32,6 +32,8 @@ set(
 	${molko-js_SOURCE_DIR}/src/js-music.h
 	${molko-js_SOURCE_DIR}/src/js-painter.c
 	${molko-js_SOURCE_DIR}/src/js-painter.h
+	${molko-js_SOURCE_DIR}/src/js-sound.c
+	${molko-js_SOURCE_DIR}/src/js-sound.h
 	${molko-js_SOURCE_DIR}/src/js-sprite.c
 	${molko-js_SOURCE_DIR}/src/js-sprite.h
 	${molko-js_SOURCE_DIR}/src/js-texture.c

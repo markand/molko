@@ -36,6 +36,7 @@
 #include "js-font.h"
 #include "js-music.h"
 #include "js-painter.h"
+#include "js-sound.h"
 #include "js-sprite.h"
 #include "js-texture.h"
 #include "js-util.h"
@@ -99,8 +100,6 @@ search(duk_context *ctx)
 	duk_get_prop_string(ctx, -1, DUK_HIDDEN_SYMBOL("molko::base"));
 	snprintf(path, sizeof (path), "%s/%s.js", duk_to_string(ctx, -1), duk_require_string(ctx, 0));
 	duk_pop_n(ctx, 2);
-
-	tracef("opening module: %s", path);
 
 	if (!(ret = readall(path)))
 		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
@@ -190,6 +189,7 @@ js_core_load(struct js *js)
 	js_music_load(js->handle);
 	js_painter_load(js->handle);
 	js_texture_load(js->handle);
+	js_sound_load(js->handle);
 	js_sprite_load(js->handle);
 	js_util_load(js->handle);
 	js_window_load(js->handle);
