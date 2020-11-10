@@ -32,6 +32,7 @@
 #endif
 
 #include "error.h"
+#include "sound.h"
 #include "sys.h"
 
 #if defined(_WIN32)
@@ -115,6 +116,8 @@ sys_init(void)
 		return errorf("%s", SDL_GetError());
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
 		return errorf("%s", SDL_GetError());
+
+	Mix_AllocateChannels(SOUND_CHANNELS_MAX);
 
 	return true;
 }

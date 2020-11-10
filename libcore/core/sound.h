@@ -32,7 +32,7 @@
 /**
  * \brief Number of channels allocated.
  */
-#define SOUND_MAX_CHANNELS	(256)
+#define SOUND_CHANNELS_MAX      (256)
 
 /**
  * \brief Sound chunk.
