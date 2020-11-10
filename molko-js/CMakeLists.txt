@@ -28,6 +28,8 @@ set(
 	${molko-js_SOURCE_DIR}/src/js-event.h
 	${molko-js_SOURCE_DIR}/src/js-font.c
 	${molko-js_SOURCE_DIR}/src/js-font.h
+	${molko-js_SOURCE_DIR}/src/js-music.c
+	${molko-js_SOURCE_DIR}/src/js-music.h
 	${molko-js_SOURCE_DIR}/src/js-painter.c
 	${molko-js_SOURCE_DIR}/src/js-painter.h
 	${molko-js_SOURCE_DIR}/src/js-sprite.c

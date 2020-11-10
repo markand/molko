@@ -81,6 +81,7 @@ List of all available modules.
    api-molko-clock
    api-molko-event
    api-molko-font
+   api-molko-music
    api-molko-painter
    api-molko-sprite
    api-molko-texture

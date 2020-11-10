@@ -34,6 +34,7 @@
 #include "js-clock.h"
 #include "js-event.h"
 #include "js-font.h"
+#include "js-music.h"
 #include "js-painter.h"
 #include "js-sprite.h"
 #include "js-texture.h"
@@ -186,6 +187,7 @@ js_core_load(struct js *js)
 	js_clock_load(js->handle);
 	js_event_load(js->handle);
 	js_font_load(js->handle);
+	js_music_load(js->handle);
 	js_painter_load(js->handle);
 	js_texture_load(js->handle);
 	js_sprite_load(js->handle);
