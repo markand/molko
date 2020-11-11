@@ -45,8 +45,8 @@
 #include <rpg/rpg.h>
 #include <rpg/spell.h>
 
-#include "battle/registry.h"
-#include "battle/spell-fire.h"
+#include "registry.h"
+#include "spell-fire.h"
 
 #define W 1280
 #define H 720

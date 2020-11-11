@@ -16,17 +16,11 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(tests)
+project(example-message)
 
-molko_define_test(TARGET action SOURCES test-action.c)
-molko_define_test(TARGET action-script SOURCES test-action-script.c)
-molko_define_test(TARGET color SOURCES test-color.c)
-molko_define_test(TARGET error SOURCES test-error.c)
-molko_define_test(
-	TARGET map
-	SOURCES test-map.c
-	FLAGS DIRECTORY="${tests_SOURCE_DIR}/assets/maps/"
+molko_define_executable(
+	TARGET example-message
+	SOURCES ${example-message_SOURCE_DIR}/main.c
+	FOLDER examples
+	LIBRARIES librpg
 )
-molko_define_test(TARGET save SOURCES test-save.c)
-molko_define_test(TARGET state SOURCES test-state.c)
-molko_define_test(TARGET drawable SOURCES test-drawable.c)

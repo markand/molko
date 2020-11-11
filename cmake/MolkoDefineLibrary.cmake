@@ -75,7 +75,7 @@ function(molko_define_library)
 
 	if (${LIB_TYPE} MATCHES "INTERFACE")
 		add_library(${LIB_TARGET} INTERFACE)
-		target_sources(${LIB_TARGET} INTERFACE ${LIB_SOURCES})
+		target_sources(${LIB_TARGET} INTERFACE ${LIB_SOURCES} ${OUTPUTS})
 		target_include_directories(
 			${LIB_TARGET}
 			INTERFACE

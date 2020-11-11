@@ -134,6 +134,8 @@ run(void)
 		.draw = draw
 	};
 
+	changed();
+
 	game_switch(&state, true);
 	game_loop();
 }

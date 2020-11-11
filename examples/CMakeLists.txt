@@ -18,123 +18,42 @@
 
 project(examples)
 
-molko_define_executable(
-	TARGET example-battle
-	SOURCES
-		${examples_SOURCE_DIR}/example-battle.c
-		${examples_SOURCE_DIR}/battle/spell-fire.c
-		${examples_SOURCE_DIR}/battle/spell-fire.h
-		${examples_SOURCE_DIR}/battle/registry.c
-		${examples_SOURCE_DIR}/battle/registry.h
-	FOLDER examples
+set(
 	ASSETS
-		${examples_SOURCE_DIR}/assets/images/haunted-wood.png
-		${examples_SOURCE_DIR}/assets/images/black-cat.png
-		${examples_SOURCE_DIR}/assets/sprites/cursor.png
-		${examples_SOURCE_DIR}/assets/sprites/explosion.png
-		${examples_SOURCE_DIR}/assets/sounds/fire.wav
-	LIBRARIES librpg libadventure
+	${examples_SOURCE_DIR}/assets/images/black-cat.png
+	${examples_SOURCE_DIR}/assets/images/haunted-wood.png
+	${examples_SOURCE_DIR}/assets/music/vabsounds-romance.ogg
+	${examples_SOURCE_DIR}/assets/sounds/fire.wav
+	${examples_SOURCE_DIR}/assets/sprites/chest.png
+	${examples_SOURCE_DIR}/assets/sprites/cursor.png
+	${examples_SOURCE_DIR}/assets/sprites/explosion.png
+	${examples_SOURCE_DIR}/assets/sprites/numbers.png
+	${examples_SOURCE_DIR}/assets/sprites/people.png
 )
 
-molko_define_executable(
-	TARGET example-action
-	SOURCES example-action.c
+# Can't use an interface library as examples live in subdirectories.
+file(WRITE ${examples_BINARY_DIR}/none.c "void molko() {}")
+
+molko_define_library(
+	TARGET libexamples
 	FOLDER examples
-	ASSETS
-		${examples_SOURCE_DIR}/assets/sprites/chest.png
-		${examples_SOURCE_DIR}/assets/sprites/people.png
-	LIBRARIES librpg
+	SOURCES ${examples_BINARY_DIR}/none.c ${ASSETS}
+	ASSETS ${ASSETS}
 )
 
-molko_define_executable(
-	TARGET example-animation
-	SOURCES example-animation.c
-	FOLDER examples
-	ASSETS
-		${examples_SOURCE_DIR}/assets/sprites/numbers.png
-	LIBRARIES libui
-)
+add_subdirectory(example-action)
+add_subdirectory(example-animation)
+add_subdirectory(example-audio)
+add_subdirectory(example-battle)
+add_subdirectory(example-cursor)
+add_subdirectory(example-debug)
+add_subdirectory(example-drawable)
+add_subdirectory(example-font)
+add_subdirectory(example-gridmenu)
+add_subdirectory(example-label)
+add_subdirectory(example-message)
+add_subdirectory(example-sprite)
+add_subdirectory(example-trace)
+add_subdirectory(example-ui)
 
-molko_define_executable(
-	TARGET example-audio
-	SOURCES example-audio.c
-	FOLDER examples
-	ASSETS
-		${examples_SOURCE_DIR}/assets/musics/vabsounds-romance.ogg
-		${examples_SOURCE_DIR}/assets/sounds/fire.wav
-	LIBRARIES libui
-)
-
-molko_define_executable(
-	TARGET example-cursor
-	SOURCES example-cursor.c
-	FOLDER examples
-	LIBRARIES libui
-)
-
-molko_define_executable(
-	TARGET example-debug
-	SOURCES example-debug.c
-	FOLDER examples
-	LIBRARIES libui
-)
-
-molko_define_executable(
-	TARGET example-font
-	SOURCES example-font.c
-	LIBRARIES libui
-	FOLDER examples
-)
-
-molko_define_executable(
-	TARGET example-label
-	SOURCES example-label.c
-	LIBRARIES libui
-	FOLDER examples
-)
-
-molko_define_executable(
-	TARGET example-message
-	SOURCES example-message.c
-	FOLDER examples
-	LIBRARIES librpg
-)
-
-molko_define_executable(
-	TARGET example-sprite
-	SOURCES example-sprite.c
-	FOLDER examples
-	ASSETS
-		${examples_SOURCE_DIR}/assets/sprites/people.png
-	LIBRARIES libui
-)
-
-molko_define_executable(
-	TARGET example-drawable
-	SOURCES example-drawable.c
-	FOLDER examples
-	LIBRARIES libui
-	ASSETS
-		${examples_SOURCE_DIR}/assets/sprites/explosion.png
-)
-
-molko_define_executable(
-	TARGET example-gridmenu
-	SOURCES example-gridmenu.c
-	FOLDER examples
-	LIBRARIES libui
-)
-
-molko_define_executable(
-	TARGET example-trace
-	SOURCES example-trace.c
-	FOLDER examples
-	LIBRARIES libui libadventure
-)
-
-molko_define_executable(
-	TARGET example-ui
-	SOURCES example-ui.c
-	FOLDER examples
-	LIBRARIES libui
-)
+source_group("assets" FILES ${ASSETS})

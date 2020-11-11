@@ -33,7 +33,7 @@
 #include <ui/ui.h>
 
 /* https://freesound.org/people/VABsounds/sounds/423658 */
-#include <assets/musics/vabsounds-romance.h>
+#include <assets/music/vabsounds-romance.h>
 #include <assets/sounds/fire.h>
 
 #define W 1280
@@ -63,7 +63,7 @@ init(void)
 		panic();
 	if (!window_open("Example - Audio", W, H))
 		panic();
-	if (!music_openmem(&music, musics_vabsounds_romance, sizeof (musics_vabsounds_romance)) ||
+	if (!music_openmem(&music, music_vabsounds_romance, sizeof (music_vabsounds_romance)) ||
 	    !sound_openmem(&sound, sounds_fire, sizeof (sounds_fire)))
 		panic();
 }
