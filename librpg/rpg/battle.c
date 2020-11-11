@@ -24,6 +24,7 @@
 #include <core/alloc.h>
 #include <core/event.h>
 #include <core/font.h>
+#include <core/music.h>
 #include <core/painter.h>
 #include <core/sprite.h>
 #include <core/texture.h>
@@ -252,6 +253,10 @@ battle_start(struct battle *bt)
 
 	/* Start the state "opening" animation. */
 	battle_state_opening(bt);
+
+	/* Play music if present. */
+	if (bt->music[0])
+		music_play(bt->music[0], MUSIC_LOOP, 0);
 }
 
 void

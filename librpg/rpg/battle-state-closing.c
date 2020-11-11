@@ -20,6 +20,7 @@
 #include <stdlib.h>
 
 #include <core/alloc.h>
+#include <core/music.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/texture.h>
@@ -35,7 +36,6 @@ struct closing {
 	unsigned int elapsed;
 };
 
-
 static bool
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
@@ -48,8 +48,10 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	if (closing->elapsed > 8) {
 		closing->elapsed = 0;
 
-		if (closing->alpha == 255)
+		if (closing->alpha == 255) {
+			music_stop(0);
 			return true;
+		}
 
 		closing->alpha += 5;
 		texture_set_alpha_mod(&closing->texture, closing->alpha);

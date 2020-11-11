@@ -36,7 +36,7 @@
 union event;
 
 struct character;
-struct sound;
+struct music;
 struct spell;
 struct theme;
 
@@ -121,8 +121,14 @@ struct battle {
 
 	/**
 	 * (+&?) A music to play.
+	 *
+	 * Music to play in the battle:
+	 *
+	 * - [0]: while the battle is running,
+	 * - [1]: in case of victory,
+	 * - [2]: in case of lost.
 	 */
-	struct sound *music;
+	struct music *music[3];
 
 	/**
 	 * (+&?) Theme to use.

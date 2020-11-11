@@ -19,6 +19,7 @@
 #include <assert.h>
 
 #include <core/alloc.h>
+#include <core/music.h>
 #include <core/panic.h>
 #include <core/window.h>
 
@@ -100,4 +101,7 @@ battle_state_victory(struct battle *bt)
 
 	bt->status = BATTLE_STATUS_WON;
 	battle_switch(bt, &vic->self);
+
+	if (bt->music[1])
+		music_play(bt->music[1], MUSIC_NONE, 0);
 }
