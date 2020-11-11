@@ -16,13 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <string.h>
-
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/painter.h>
 #include <core/panic.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/util.h>
 #include <core/window.h>
@@ -61,39 +60,48 @@ quit(void)
 }
 
 static void
+handle(struct state *st, const union event *ev)
+{
+	switch (ev->type) {
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		message_handle(st->data, ev);
+		break;
+	}
+}
+
+static void
+update(struct state *st, unsigned int ticks)
+{
+	if (message_update(st->data, ticks))
+		game_quit();
+}
+
+static void
+draw(struct state *st)
+{
+	painter_set_color(0xffffffff);
+	painter_clear();
+	message_draw(st->data);
+	painter_present();
+}
+
+static void
 run(struct message *msg)
 {
-	struct clock clock = {0};
+	struct state state = {
+		.data = msg,
+		.handle = handle,
+		.update = update,
+		.draw = draw
+	};
 
 	message_start(msg);
-	clock_start(&clock);
 
-	while (msg->state) {
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				msg->state = MESSAGE_STATE_NONE;
-				break;
-			default:
-				message_handle(msg, &ev);
-				break;
-			}
-		}
-
-		message_update(msg, elapsed);
-		painter_set_color(0xffffffff);
-		painter_clear();
-		message_draw(msg);
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 }
 
 static void
@@ -289,7 +297,7 @@ custom(void)
 	};
 
 	/* Borrow default theme and change its frame drawing. */
-	memcpy(&theme, theme_default(), sizeof (theme));
+	theme_shallow(&theme, NULL);
 	theme.draw_frame = my_draw_frame;
 	theme.colors[THEME_COLOR_NORMAL] = 0x0000ffff;
 

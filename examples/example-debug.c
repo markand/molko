@@ -16,14 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
-#include <core/sys.h>
+#include <core/game.h>
 #include <core/window.h>
 #include <core/painter.h>
 #include <core/panic.h>
-#include <core/trace.h>
+#include <core/state.h>
 #include <core/util.h>
 
 #include <ui/debug.h>
@@ -32,6 +31,9 @@
 
 #define W 1280
 #define H 720
+
+static int mouse_x;
+static int mouse_y;
 
 static void
 init(void)
@@ -45,42 +47,47 @@ init(void)
 }
 
 static void
+handle(struct state *st, const union event *ev)
+{
+	(void)st;
+
+	switch (ev->type) {
+	case EVENT_MOUSE:
+		mouse_x = ev->mouse.x;
+		mouse_y = ev->mouse.y;
+		break;
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	struct debug_report report = {0};
+
+	painter_set_color(0x4f8fbaff);
+	painter_clear();
+	debugf(&report, "Game running.");
+	debugf(&report, "mouse: %d, %d", mouse_x, mouse_y);
+	painter_present();
+}
+
+static void
 run(void)
 {
-	struct clock clock = {0};
-	int x = 0, y = 0;
+	struct state state = {
+		.handle = handle,
+		.draw = draw
+	};
 
-	clock_start(&clock);
-
-	for (;;) {
-		struct debug_report report = {0};
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_MOUSE:
-				x = ev.mouse.x;
-				y = ev.mouse.y;
-				break;
-			case EVENT_QUIT:
-				return;
-			default:
-				break;
-			}
-		}
-
-		painter_set_color(0x4f8fbaff);
-		painter_clear();
-		debugf(&report, "Game running.");
-		debugf(&report, "mouse: %d, %d", x, y);
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 }
 
 static void

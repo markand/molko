@@ -16,11 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/painter.h>
 #include <core/panic.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/trace.h>
 #include <core/util.h>
@@ -53,9 +54,43 @@ quit(void)
 }
 
 static void
+handle(struct state *st, const union event *ev)
+{
+	switch (ev->type) {
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		gridmenu_handle(st->data, ev);
+		break;
+	}
+}
+
+static void
+update(struct state *st, unsigned int ticks)
+{
+	(void)ticks;
+
+	struct gridmenu *menu = st->data;
+
+	if (menu->state == GRIDMENU_STATE_ACTIVATED) {
+		tracef("selected index: %u", (unsigned int)menu->selected);
+		gridmenu_reset(menu);
+	}
+}
+
+static void
+draw(struct state *st)
+{
+	painter_set_color(0x4f8fbaff);
+	painter_clear();
+	gridmenu_draw(st->data);
+	painter_present();
+}
+
+static void
 run(void)
 {
-	struct clock clock = {0};
 	struct gridmenu menu = {
 		.menu = {
 			"Feu mineur",
@@ -76,42 +111,20 @@ run(void)
 		.nrows = 3,
 		.ncols = 2
 	};
+	struct state state = {
+		.data = &menu,
+		.handle = handle,
+		.update = update,
+		.draw = draw,
+	};
 
-	clock_start(&clock);
 	align(ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, W, H);
 
 	/* Need to repaint at least once. */
 	gridmenu_repaint(&menu);
 
-	for (;;) {
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				return;
-			default:
-				gridmenu_handle(&menu, &ev);
-				break;
-			}
-		}
-
-		if (menu.state == GRIDMENU_STATE_ACTIVATED) {
-			tracef("selected index: %u", (unsigned int)menu.selected);
-			gridmenu_reset(&menu);
-		}
-
-		painter_set_color(0x4f8fbaff);
-		painter_clear();
-		gridmenu_draw(&menu);
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 }
 
 int

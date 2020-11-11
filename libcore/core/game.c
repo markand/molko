@@ -20,9 +20,12 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "clock.h"
+#include "event.h"
 #include "game.h"
 #include "state.h"
 #include "painter.h"
+#include "util.h"
 
 struct game game;
 
@@ -94,8 +97,33 @@ game_draw(void)
 {
 	if (game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
 		state_draw(game.state);
+}
 
-	painter_present();
+void
+game_loop(void)
+{
+	struct clock clock = {0};
+	double frametimemax = 1000.0 / 60.0;
+	unsigned int frametime = 0;
+
+	while (game.state) {
+		clock_start(&clock);
+
+		for (union event ev; event_poll(&ev); )
+			game_handle(&ev);
+
+		game_update(frametime);
+		game_draw();
+
+		/*
+		 * Sleep not the full left time to allow context switches and
+		 * such.
+		 */
+		if (frametime < frametimemax)
+			delay((frametimemax - frametime) / 4);
+
+		frametime = clock_elapsed(&clock);
+	}
 }
 
 void

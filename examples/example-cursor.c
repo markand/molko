@@ -18,12 +18,13 @@
 
 #include <stdio.h>
 
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/key.h>
 #include <core/painter.h>
 #include <core/panic.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/util.h>
 #include <core/window.h>
@@ -35,6 +36,7 @@
 #define H 720
 
 static char help_text[128];
+static enum window_cursor cursor = WINDOW_CURSOR_ARROW;
 
 static struct label help = {
 	.x = 10,
@@ -70,53 +72,58 @@ change(enum window_cursor cursor)
 }
 
 static void
-run(void)
+handle(struct state *st, const union event *ev)
 {
-	struct clock clock = {0};
-	enum window_cursor cursor = WINDOW_CURSOR_ARROW;
+	(void)st;
 
-	clock_start(&clock);
-	change(cursor);
-
-	for (;;) {
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_KEYDOWN:
-				switch (ev.key.key) {
-				case KEY_LEFT:
-					if (cursor > 0)
-						change(--cursor);
-					break;
-				case KEY_RIGHT:
-					if (cursor + 1 < WINDOW_CURSOR_LAST)
-						change(++cursor);
-					break;
-				default:
-					break;
-				}
-
-
-				break;
-			case EVENT_QUIT:
-				return;
-			default:
-				break;
-			}
+	switch (ev->type) {
+	case EVENT_KEYDOWN:
+		switch (ev->key.key) {
+		case KEY_LEFT:
+			if (cursor > 0)
+				change(--cursor);
+			break;
+		case KEY_RIGHT:
+			if (cursor + 1 < WINDOW_CURSOR_LAST)
+				change(++cursor);
+			break;
+		default:
+			break;
 		}
 
-		painter_set_color(0xebede9ff);
-		painter_clear();
-		label_draw(&help);
-		painter_present();
 
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
+		break;
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		break;
 	}
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	painter_set_color(0xebede9ff);
+	painter_clear();
+	label_draw(&help);
+	painter_present();
+}
+
+static void
+run(void)
+{
+	struct state state = {
+		.handle = handle,
+		.draw = draw
+	};
+
+	change(cursor);
+
+	game_switch(&state, true);
+	game_loop();
 }
 
 static void
@@ -137,4 +144,3 @@ main(int argc, char **argv)
 	run();
 	quit();
 }
-

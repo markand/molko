@@ -17,12 +17,13 @@
  */
 
 #include <core/action.h>
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/maths.h>
 #include <core/panic.h>
 #include <core/painter.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/util.h>
 #include <core/window.h>
@@ -226,62 +227,79 @@ headerclick(int x, int y)
 }
 
 static void
+handle(struct state *st, const union event *ev)
+{
+	(void)st;
+
+	switch (ev->type) {
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	case EVENT_MOUSE:
+		if (ui.motion.active) {
+			ui.panel.frame.x += ev->mouse.x - ui.motion.x;
+			ui.panel.frame.y += ev->mouse.y - ui.motion.y;
+			ui.motion.x = ev->mouse.x;
+			ui.motion.y = ev->mouse.y;
+			resize();
+		}
+		break;
+	case EVENT_CLICKDOWN:
+		if (headerclick(ev->click.x, ev->click.y)) {
+			ui.motion.active = true;
+			ui.motion.x = ev->click.x;
+			ui.motion.y = ev->click.y;
+			window_set_cursor(WINDOW_CURSOR_SIZE);
+		}
+		else
+			action_stack_handle(&ui.st, ev);
+		break;
+	case EVENT_CLICKUP:
+		ui.motion.active = false;
+		window_set_cursor(WINDOW_CURSOR_ARROW);
+		/* Fallthrough. */
+	default:
+		action_stack_handle(&ui.st, ev);
+		break;
+	}
+}
+
+static void
+update(struct state *st, unsigned int ticks)
+{
+	(void)st;
+
+	if (ui.quit.button.state == BUTTON_STATE_ACTIVATED)
+		game_quit();
+	else
+		action_stack_update(&ui.st, ticks);
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	painter_set_color(0xffffffff);
+	painter_clear();
+	action_stack_draw(&ui.st);
+	painter_present();
+}
+
+static void
 run(void)
 {
-	struct clock clock = {0};
-
-	clock_start(&clock);
+	struct state state = {
+		.handle = handle,
+		.update = update,
+		.draw = draw
+	};
 
 	prepare();
 	resize();
 
-	while (ui.quit.button.state != BUTTON_STATE_ACTIVATED) {
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		for (union event ev; event_poll(&ev); ) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				return;
-			case EVENT_MOUSE:
-				if (ui.motion.active) {
-					ui.panel.frame.x += ev.mouse.x - ui.motion.x;
-					ui.panel.frame.y += ev.mouse.y - ui.motion.y;
-					ui.motion.x = ev.mouse.x;
-					ui.motion.y = ev.mouse.y;
-					resize();
-				}
-				break;
-			case EVENT_CLICKDOWN:
-				if (headerclick(ev.click.x, ev.click.y)) {
-					ui.motion.active = true;
-					ui.motion.x = ev.click.x;
-					ui.motion.y = ev.click.y;
-					window_set_cursor(WINDOW_CURSOR_SIZE);
-				}
-				else
-					action_stack_handle(&ui.st, &ev);
-				break;
-			case EVENT_CLICKUP:
-				ui.motion.active = false;
-				window_set_cursor(WINDOW_CURSOR_ARROW);
-				/* Fallthrough. */
-			default:
-				action_stack_handle(&ui.st, &ev);
-				break;
-			}
-		}
-
-		painter_set_color(0xffffffff);
-		painter_clear();
-		action_stack_update(&ui.st, elapsed);
-		action_stack_draw(&ui.st);
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 }
 
 static void

@@ -18,15 +18,16 @@
 
 #include <stdio.h>
 
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/image.h>
 #include <core/key.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/image.h>
 #include <core/sprite.h>
+#include <core/state.h>
 #include <core/texture.h>
 #include <core/util.h>
 #include <core/window.h>
@@ -73,63 +74,68 @@ init(void)
 }
 
 static void
-run(void)
+handle(struct state *st, const union event *ev)
 {
-	struct clock clock = {0};
-	int x, y;
+	(void)st;
 
-	clock_start(&clock);
-	changed();
-
-	for (;;) {
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_KEYDOWN:
-				switch (ev.key.key) {
-				case KEY_LEFT:
-					if (column > 0)
-						column--;
-					break;
-				case KEY_RIGHT:
-					if (column + 1 < sprite.ncols)
-						column++;
-					break;
-				case KEY_UP:
-					if (row > 0)
-						row--;
-					break;
-				case KEY_DOWN:
-					if (row + 1 < sprite.nrows)
-						row++;
-					break;
-				default:
-					break;
-				}
-
-				changed();
-				break;
-			case EVENT_QUIT:
-				return;
-			default:
-				break;
-			}
+	switch (ev->type) {
+	case EVENT_KEYDOWN:
+		switch (ev->key.key) {
+		case KEY_LEFT:
+			if (column > 0)
+				column--;
+			break;
+		case KEY_RIGHT:
+			if (column + 1 < sprite.ncols)
+				column++;
+			break;
+		case KEY_UP:
+			if (row > 0)
+				row--;
+			break;
+		case KEY_DOWN:
+			if (row + 1 < sprite.nrows)
+				row++;
+			break;
+		default:
+			break;
 		}
 
-		painter_set_color(0xebede9ff);
-		painter_clear();
-		align(ALIGN_CENTER, &x, &y, sprite.cellw, sprite.cellh, 0, 0, W, H);
-		sprite_draw(&sprite, row, column, x, y);
-		label_draw(&help);
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
+		changed();
+		break;
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		break;
 	}
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	int x, y;
+
+	painter_set_color(0xebede9ff);
+	painter_clear();
+	align(ALIGN_CENTER, &x, &y, sprite.cellw, sprite.cellh, 0, 0, W, H);
+	sprite_draw(&sprite, row, column, x, y);
+	label_draw(&help);
+	painter_present();
+}
+
+static void
+run(void)
+{
+	struct state state = {
+		.handle = handle,
+		.draw = draw
+	};
+
+	game_switch(&state, true);
+	game_loop();
 }
 
 static void

@@ -87,6 +87,13 @@ void
 game_draw(void);
 
 /**
+ * Start a game loop that calls game_handle, game_update and game_draw until
+ * game_quit has been called.
+ */
+void
+game_loop(void);
+
+/**
  * Stop the game.
  *
  * This will effectively stop the current state but the main loop may continue

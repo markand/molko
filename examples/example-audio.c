@@ -1,5 +1,5 @@
 /*
- * example-sound.c -- show how to use sounds
+ * example-audio.c -- show how to use sounds and music
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,13 +16,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/music.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/sound.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/util.h>
 #include <core/window.h>
@@ -62,9 +63,8 @@ init(void)
 		panic();
 	if (!window_open("Example - Audio", W, H))
 		panic();
-	if (!music_openmem(&music, musics_vabsounds_romance, sizeof (musics_vabsounds_romance)))
-		panic();
-	if (!sound_openmem(&sound, sounds_fire, sizeof (sounds_fire)))
+	if (!music_openmem(&music, musics_vabsounds_romance, sizeof (musics_vabsounds_romance)) ||
+	    !sound_openmem(&sound, sounds_fire, sizeof (sounds_fire)))
 		panic();
 }
 
@@ -77,67 +77,72 @@ quit(void)
 }
 
 static void
+handle(struct state *st, const union event *ev)
+{
+	(void)st;
+
+	switch (ev->type) {
+	case EVENT_CLICKDOWN:
+		if (!sound_play(&sound, -1, 0))
+			panic();
+		break;
+	case EVENT_KEYDOWN:
+		switch (ev->key.key) {
+		case KEY_f:
+			music_play(&music, 0, 500);
+			break;
+		case KEY_s:
+			music_stop(500);
+			break;
+		case KEY_p:
+			music_pause();
+			break;
+		case KEY_r:
+			music_resume();
+			break;
+		case KEY_q:
+			music_stop(0);
+			break;
+		case KEY_l:
+			music_play(&music, MUSIC_LOOP, 0);
+			break;
+		case KEY_SPACE:
+			music_play(&music, 0, 0);
+			break;
+		default:
+			break;
+		}
+		break;
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	painter_set_color(0x006554ff);
+	painter_clear();
+	label_draw(&label_music);
+	label_draw(&label_sound);
+	painter_present();
+}
+
+static void
 run(void)
 {
-	struct clock clock = {0};
+	struct state state = {
+		.handle = handle,
+		.draw = draw
+	};
 
-	clock_start(&clock);
-
-	for (;;) {
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_CLICKDOWN:
-				if (!sound_play(&sound, -1, 0))
-					panic();
-				break;
-			case EVENT_KEYDOWN:
-				switch (ev.key.key) {
-				case KEY_f:
-					music_play(&music, 0, 500);
-					break;
-				case KEY_s:
-					music_stop(500);
-					break;
-				case KEY_p:
-					music_pause();
-					break;
-				case KEY_r:
-					music_resume();
-					break;
-				case KEY_q:
-					music_stop(0);
-					break;
-				case KEY_l:
-					music_play(&music, MUSIC_LOOP, 0);
-					break;
-				case KEY_SPACE:
-					music_play(&music, 0, 0);
-					break;
-				default:
-					break;
-				}
-				break;
-			case EVENT_QUIT:
-				return;
-			default:
-				break;
-			}
-		}
-
-		painter_set_color(0x006554ff);
-		painter_clear();
-		label_draw(&label_music);
-		label_draw(&label_sound);
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 
 	music_finish(&music);
 	sound_finish(&sound);

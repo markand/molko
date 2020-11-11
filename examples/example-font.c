@@ -16,12 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
 #include <core/font.h>
+#include <core/game.h>
 #include <core/painter.h>
 #include <core/panic.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/texture.h>
 #include <core/util.h>
@@ -45,6 +46,9 @@ static const unsigned long colors[] = {
 	0xc7cfccff,     /* Christian Grey. */
 };
 
+static int ci = 0;
+static enum font_style style = FONT_STYLE_ANTIALIASED;
+
 static void
 init(void)
 {
@@ -55,65 +59,69 @@ init(void)
 }
 
 static void
+handle(struct state *st, const union event *ev)
+{
+	(void)st;
+
+	switch (ev->type) {
+	case EVENT_KEYDOWN:
+		switch (ev->key.key) {
+		case KEY_LEFT:
+			if (ci > 0)
+				ci--;
+			break;
+		case KEY_RIGHT:
+			if ((size_t)ci < NELEM(colors))
+				ci++;
+			break;
+		case KEY_SPACE:
+			if (style == FONT_STYLE_ANTIALIASED)
+				style = FONT_STYLE_NONE;
+			else
+				style = FONT_STYLE_ANTIALIASED;
+
+			theme_default()->fonts[THEME_FONT_INTERFACE]->style = style;
+		default:
+			break;
+		}
+		break;
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	struct font *font = theme_default()->fonts[THEME_FONT_INTERFACE];
+	struct texture tex;
+
+	painter_set_color(0xffffffff);
+	painter_clear();
+
+	if (!font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]))
+		panic();
+
+	texture_draw(&tex, 10, 10);
+	painter_present();
+	texture_finish(&tex);
+}
+
+static void
 run(void)
 {
-	struct clock clock = {0};
-	struct font *font = theme_default()->fonts[THEME_FONT_INTERFACE];
-	int ci = 0;
-	enum font_style style = font->style;
+	struct state state = {
+		.handle = handle,
+		.draw = draw
+	};
 
-	clock_start(&clock);
-
-	for (;;) {
-		struct texture tex;
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_KEYDOWN:
-				switch (ev.key.key) {
-				case KEY_LEFT:
-					if (ci > 0)
-						ci--;
-					break;
-				case KEY_RIGHT:
-					if ((size_t)ci < NELEM(colors))
-						ci++;
-					break;
-				case KEY_SPACE:
-					if (style == FONT_STYLE_ANTIALIASED)
-						style = FONT_STYLE_NONE;
-					else
-						style = FONT_STYLE_ANTIALIASED;
-				default:
-					break;
-				}
-				break;
-			case EVENT_QUIT:
-				return;
-			default:
-				break;
-			}
-		}
-
-		painter_set_color(0xffffffff);
-		painter_clear();
-
-		font->style = style;
-
-		if (!font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]))
-			panic();
-
-		texture_draw(&tex, 10, 10);
-		painter_present();
-		texture_finish(&tex);
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 }
 
 static void

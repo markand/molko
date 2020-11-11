@@ -16,13 +16,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/sys.h>
 #include <core/window.h>
 #include <core/painter.h>
 #include <core/panic.h>
+#include <core/state.h>
 #include <core/trace.h>
 #include <core/util.h>
 
@@ -46,49 +47,62 @@ init(void)
 }
 
 static void
+handle(struct state *st, const union event *ev)
+{
+	(void)st;
+
+	switch (ev->type) {
+	case EVENT_KEYDOWN:
+		switch (ev->key.key) {
+		case KEY_ESCAPE:
+			trace_hud_clear();
+			break;
+		default:
+			tracef("keydown pressed: %d", ev->key.key);
+			break;
+		}
+		break;
+	case EVENT_CLICKDOWN:
+		tracef("click at %d,%d", ev->click.x, ev->click.y);
+		break;
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+update(struct state *st, unsigned int ticks)
+{
+	(void)st;
+
+	trace_hud_update(ticks);
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	painter_set_color(0x4f8fbaff);
+	painter_clear();
+	trace_hud_draw();
+	painter_present();
+}
+
+static void
 run(void)
 {
-	struct clock clock = {0};
+	struct state state = {
+		.handle = handle,
+		.update = update,
+		.draw = draw
+	};
 
-	clock_start(&clock);
-
-	for (;;) {
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_KEYDOWN:
-				switch (ev.key.key) {
-				case KEY_ESCAPE:
-					trace_hud_clear();
-					break;
-				default:
-					tracef("keydown pressed: %d", ev.key.key);
-					break;
-				}
-				break;
-			case EVENT_CLICKDOWN:
-				tracef("click at %d,%d", ev.click.x, ev.click.y);
-				break;
-			case EVENT_QUIT:
-				return;
-			default:
-				break;
-			}
-		}
-
-		painter_set_color(0x4f8fbaff);
-		painter_clear();
-		trace_hud_update(elapsed);
-		trace_hud_draw();
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 }
 
 static void

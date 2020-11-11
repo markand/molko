@@ -18,15 +18,18 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#include <core/clock.h>
+#include <core/alloc.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/image.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/sprite.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/texture.h>
 #include <core/util.h>
@@ -148,18 +151,10 @@ static struct character black_cat = {
 static void
 init(void)
 {
-	struct clock clock = {0};
-
 	if (!core_init() || !ui_init() || !rpg_init())
 		panic();
 	if (!window_open("Example - Battle", W, H))
 		panic();
-
-	/* Wait 1 second to let all events processed. */
-	while (clock_elapsed(&clock) < 1000)
-		for (union event ev; event_poll(&ev); )
-			if (ev.type == EVENT_QUIT)
-				return;
 
 	registry_init();
 
@@ -167,10 +162,12 @@ init(void)
 	theme_default()->sprites[THEME_SPRITE_CURSOR] = &registry_sprites[REGISTRY_TEXTURE_CURSOR];
 }
 
+static struct state fight_state;
+
 static void
-prepare_to_fight(struct battle *bt)
+prepare_to_fight(void)
 {
-	assert(bt);
+	struct battle *bt = alloc_zero(1, sizeof (*bt));
 
 //	bt->enemies[0].ch = &haunted_wood;
 	bt->team[0].ch = &team[0];
@@ -187,60 +184,96 @@ prepare_to_fight(struct battle *bt)
 	bt->enemies[1].y = 100;
 
 	battle_start(bt);
+
+	fight_state.data = bt;
+	game_switch(&fight_state, false);
+}
+
+
+static void
+empty_handle(struct state *st, const union event *ev)
+{
+	(void)st;
+
+	switch (ev->type) {
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	case EVENT_KEYDOWN:
+		if (ev->key.key == KEY_SPACE)
+			prepare_to_fight();
+		break;
+	default:
+		break;
+	}
 }
 
 static void
-run(void)
+empty_draw(struct state *st)
 {
-	struct clock clock;
-	struct battle battle = {0};
-	struct label info = {
+	(void)st;
+
+	static const struct label info = {
 		.text = "Press <Space> to start a battle.",
 		.x = 10,
 		.y = 10,
 		.flags = LABEL_FLAGS_SHADOW
 	};
 
-	clock_start(&clock);
+	painter_set_color(0x4f8fbaff);
+	painter_clear();
+	label_draw(&info);
+	painter_present();
+}
 
-	for (;;) {
-		unsigned int elapsed = clock_elapsed(&clock);
+static struct state empty_state = {
+	.handle = empty_handle,
+	.draw = empty_draw
+};
 
-		clock_start(&clock);
+static void
+fight_handle(struct state *st, const union event *ev)
+{
+	battle_handle(st->data, ev);
+}
 
-		for (union event ev; event_poll(&ev); ) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				return;
-			case EVENT_KEYDOWN:
-				if (ev.key.key == KEY_SPACE && !battle.state)
-					prepare_to_fight(&battle);
-				else if (battle.state)
-					battle_handle(&battle, &ev);
-				break;
-			default:
-				if (battle.state)
-					battle_handle(&battle, &ev);
-				break;
-			}
-		}
+static void
+fight_update(struct state *st, unsigned int ticks)
+{
+	struct battle *bt = st->data;
 
-		if (battle.state) {
-			if (battle_update(&battle, elapsed))
-				battle_finish(&battle);
-			else
-				battle_draw(&battle);
-		} else {
-			painter_set_color(0x4f8fbaff);
-			painter_clear();
-			label_draw(&info);
-		}
+	if (battle_update(bt, ticks))
+		game_switch(&empty_state, false);
+}
 
-		painter_present();
+static void
+fight_draw(struct state *st)
+{
+	painter_set_color(0x000000ff);
+	painter_clear();
+	battle_draw(st->data);
+	painter_present();
+}
 
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(1);
-	}
+static void
+fight_finish(struct state *st)
+{
+	battle_finish(st->data);
+	free(st->data);
+}
+
+static struct state fight_state = {
+	.handle = fight_handle,
+	.update = fight_update,
+	.draw = fight_draw,
+	.finish = fight_finish,
+};
+
+static void
+run(void)
+{
+	game_switch(&empty_state, true);
+	game_loop();
 }
 
 static void

@@ -19,15 +19,16 @@
 #include <assert.h>
 
 #include <core/action.h>
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/image.h>
 #include <core/maths.h>
 #include <core/painter.h>
 #include <core/panic.h>
 #include <core/script.h>
 #include <core/sprite.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/texture.h>
 #include <core/util.h>
@@ -324,41 +325,56 @@ init(void)
 }
 
 static void
+handle(struct state *st, const union event *ev)
+{
+	(void)st;
+
+	switch (ev->type) {
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		action_stack_handle(&events, ev);
+		action_stack_handle(&modal, ev);
+		break;
+	}
+}
+
+static void
+update(struct state *st, unsigned int ticks)
+{
+	(void)st;
+
+	action_stack_update(&events, ticks);
+	action_stack_update(&modal, ticks);
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	painter_set_color(0xffffffff);
+	painter_clear();
+	action_stack_draw(&events);
+	action_stack_draw(&modal);
+	painter_present();
+}
+
+static void
 run(void)
 {
-	struct clock clock = {0};
+	struct state state = {
+		.handle = handle,
+		.update = update,
+		.draw = draw
+	};
 
-	clock_start(&clock);
 	action_stack_add(&events, &chest.event);
 	action_stack_add(&events, &guide.event);
 
-	for (;;) {
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		for (union event ev; event_poll(&ev); ) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				return;
-			default:
-				action_stack_handle(&events, &ev);
-				action_stack_handle(&modal, &ev);
-				break;
-			}
-		}
-
-		painter_set_color(0xffffffff);
-		painter_clear();
-		action_stack_update(&events, elapsed);
-		action_stack_update(&modal, elapsed);
-		action_stack_draw(&events);
-		action_stack_draw(&modal);
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 }
 
 static void

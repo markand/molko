@@ -16,11 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/painter.h>
 #include <core/panic.h>
+#include <core/state.h>
 #include <core/sys.h>
 #include <core/util.h>
 #include <core/window.h>
@@ -94,6 +95,10 @@ struct {
 	}
 };
 
+static struct label mlabel = {
+	.text = "This one follows your mouse and is not aligned."
+};
+
 static void
 init(void)
 {
@@ -120,46 +125,48 @@ quit(void)
 }
 
 static void
+handle(struct state *st, const union event *ev)
+{
+	(void)st;
+
+	switch (ev->type) {
+	case EVENT_MOUSE:
+		mlabel.x = ev->mouse.x;
+		mlabel.y = ev->mouse.y;
+		break;
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	painter_set_color(0x4f8fbaff);
+	painter_clear();
+
+	for (size_t i = 0; i < NELEM(table); ++i)
+		label_draw(&table[i].label);
+
+	label_draw(&mlabel);
+	painter_present();
+}
+
+static void
 run(void)
 {
-	struct clock clock = {0};
-	struct label mlabel = {
-		.text = "This one follows your mouse and is not aligned."
+	struct state state = {
+		.handle = handle,
+		.draw = draw
 	};
 
-	clock_start(&clock);
-
-	for (;;) {
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_MOUSE:
-				mlabel.x = ev.mouse.x;
-				mlabel.y = ev.mouse.y;
-				break;
-			case EVENT_QUIT:
-				return;
-			default:
-				break;
-			}
-		}
-
-		painter_set_color(0x4f8fbaff);
-		painter_clear();
-
-		for (size_t i = 0; i < NELEM(table); ++i)
-			label_draw(&table[i].label);
-
-		label_draw(&mlabel);
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 }
 
 int

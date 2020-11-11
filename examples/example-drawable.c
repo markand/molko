@@ -16,13 +16,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <core/alloc.h>
 #include <core/animation.h>
-#include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/game.h>
 #include <core/drawable.h>
 #include <core/key.h>
 #include <core/painter.h>
@@ -30,6 +31,7 @@
 #include <core/sys.h>
 #include <core/image.h>
 #include <core/sprite.h>
+#include <core/state.h>
 #include <core/texture.h>
 #include <core/util.h>
 #include <core/window.h>
@@ -81,6 +83,22 @@ init(void)
 	sprite_init(&explosion_sprite, &explosion_tex, 256, 256);
 }
 
+static bool
+explosion_update(struct drawable *dw, unsigned int ticks)
+{
+	struct explosion *ex = dw->data;
+
+	return animation_update(&ex->anim, ticks);
+}
+
+static void
+explosion_draw(struct drawable *dw)
+{
+	struct explosion *ex = dw->data;
+
+	animation_draw(&ex->anim, ex->dw.x, ex->dw.y);
+}
+
 static void
 explosion_finish(struct drawable *dw)
 {
@@ -90,67 +108,78 @@ explosion_finish(struct drawable *dw)
 static void
 spawn(int x, int y)
 {
-	struct explosion *expl = alloc(1, sizeof (struct explosion));
+	struct explosion *ex = alloc_zero(1, sizeof (*ex));
 
-	animation_init(&expl->anim, &explosion_sprite, 10);
-	animation_drawable(&expl->anim, &expl->dw, x, y);
+	animation_init(&ex->anim, &explosion_sprite, 15);
 
-	/*
-	 * This work because the drawable->data field expects a struct animation
-	 * pointer which is the first member of struct explosion.
-	 *
-	 * Thus this "poor man inheritance" trick works perfectly in our case
-	 * and we simply need to free the whole explosion struct afterwards.
-	 */
-	expl->dw.finish = explosion_finish;
+	ex->dw.data = ex;
+	ex->dw.x = x - (int)(explosion_sprite.cellw / 2);
+	ex->dw.y = y - (int)(explosion_sprite.cellh / 2);
+	ex->dw.update = explosion_update;
+	ex->dw.draw = explosion_draw;
+	ex->dw.finish = explosion_finish;
 
-	drawable_stack_add(&stack, &expl->dw);
+	drawable_stack_add(&stack, &ex->dw);
+}
+
+static void
+handle(struct state *st, const union event *ev)
+{
+	(void)st;
+
+	switch (ev->type) {
+	case EVENT_KEYDOWN:
+		switch (ev->key.key) {
+		case KEY_ESCAPE:
+			drawable_stack_finish(&stack);
+			break;
+		default:
+			break;
+		}
+		break;
+	case EVENT_CLICKDOWN:
+		spawn(ev->click.x, ev->click.y);
+		break;
+	case EVENT_QUIT:
+		game_quit();
+		break;
+	default:
+		break;
+	}
+}
+
+static void
+update(struct state *st, unsigned int ticks)
+{
+	(void)st;
+
+	drawable_stack_update(&stack, ticks);
+
+}
+
+static void
+draw(struct state *st)
+{
+	(void)st;
+
+	painter_set_color(0xebede9ff);
+	painter_clear();
+	label_draw(&help);
+	drawable_stack_draw(&stack);
+	painter_present();
 }
 
 static void
 run(void)
 {
-	struct clock clock = {0};
+	struct state state = {
+		.handle = handle,
+		.update = update,
+		.draw = draw
+	};
 
-	clock_start(&clock);
-
-	for (;;) {
-		union event ev;
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		while (event_poll(&ev)) {
-			switch (ev.type) {
-			case EVENT_KEYDOWN:
-				switch (ev.key.key) {
-				case KEY_ESCAPE:
-					drawable_stack_finish(&stack);
-					break;
-				default:
-					break;
-				}
-				break;
-			case EVENT_CLICKDOWN:
-				spawn(ev.click.x, ev.click.y);
-				break;
-			case EVENT_QUIT:
-				return;
-			default:
-				break;
-			}
-		}
-
-		drawable_stack_update(&stack, elapsed);
-		painter_set_color(0xebede9ff);
-		painter_clear();
-		label_draw(&help);
-		drawable_stack_draw(&stack);
-		painter_present();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
+	game_switch(&state, true);
+	game_loop();
 }
 
 static void
