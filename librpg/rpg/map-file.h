@@ -71,6 +71,7 @@ struct map_file {
 	 */
 	struct map_layer layers[MAP_LAYER_TYPE_NUM];
 
+	struct map_tile *tiles; /*!< (*) Per tile properties. */
 	struct texture tileset; /*!< (*) Tileset image. */
 	struct sprite sprite;   /*!< (*) Tileset sprite. */
 };

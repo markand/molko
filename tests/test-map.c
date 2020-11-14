@@ -48,6 +48,17 @@ test_sample(void)
 	GREATEST_ASSERT_EQ(5, map.layers[1].tiles[1]);
 	GREATEST_ASSERT_EQ(6, map.layers[1].tiles[2]);
 	GREATEST_ASSERT_EQ(7, map.layers[1].tiles[3]);
+	GREATEST_ASSERT_EQ(2, map.tilesz);
+	GREATEST_ASSERT_EQ(0, map.tiles[0].id);
+	GREATEST_ASSERT_EQ(10, map.tiles[0].x);
+	GREATEST_ASSERT_EQ(12, map.tiles[0].y);
+	GREATEST_ASSERT_EQ(5, map.tiles[0].w);
+	GREATEST_ASSERT_EQ(7, map.tiles[0].h);
+	GREATEST_ASSERT_EQ(2, map.tiles[1].id);
+	GREATEST_ASSERT_EQ(12, map.tiles[1].x);
+	GREATEST_ASSERT_EQ(14, map.tiles[1].y);
+	GREATEST_ASSERT_EQ(8, map.tiles[1].w);
+	GREATEST_ASSERT_EQ(10, map.tiles[1].h);
 
 	map_finish(&map);
 	map_file_finish(&loader);

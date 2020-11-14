@@ -24,6 +24,8 @@
  * \brief Game map.
  */
 
+#include <stddef.h>
+
 #include <core/texture.h>
 
 #include "walksprite.h"
@@ -44,10 +46,27 @@ enum map_layer_type {
 };
 
 /**
+ * \brief Describe a tile in a tileset.
+ */
+struct map_tile {
+	short id;                       /*!< (*) Tile index. */
+	short x;                        /*!< (*) Collision region starts in y. */
+	short y;                        /*!< (*) Collision region starts in y. */
+	unsigned short w;               /*!< (*) Collision width. */
+	unsigned short h;               /*!< (*) Collision height. */
+};
+
+/**
  * \brief Map layer.
  */
 struct map_layer {
 	unsigned short *tiles;          /*!< (+&) Array of tiles, depending on the map size. */
+};
+
+enum map_flags {
+	MAP_FLAGS_NONE          = 0,            /*!< No flags. */
+	MAP_FLAGS_SHOW_GRID     = (1 << 0),     /*!< Show grid pattern. */
+	MAP_FLAGS_SHOW_COLLIDE  = (1 << 2)      /*!< Show collision layer. */
 };
 
 /**
@@ -71,6 +90,11 @@ struct map {
 	unsigned short tile_h;          /*!< (-) Pixels per cell (height). */
 	struct sprite *tileset;         /*!< (+&) Tileset to use. */
 	struct texture picture;         /*!< (-) Map drawn into a texture. */
+	struct map_tile *tiles;         /*!< (+&?) Per tile properties (must be sorted). */
+	size_t tilesz;                  /*!< (+) Number of tile properties. */
+
+	/* View options. */
+	enum map_flags flags;           /*!< (+) View options. */
 
 	/* Player. */
 	struct sprite *player_sprite;   /*!< (+) The sprite to use */

@@ -257,14 +257,67 @@ write_layers(const json_t *layers)
 }
 
 static void
+write_tileset_tile(const json_t *tile)
+{
+	const json_t *id = json_object_get(tile, "id");
+	const json_t *objectgroup = json_object_get(tile, "objectgroup");
+	const json_t *objects = json_object_get(objectgroup, "objects");
+	const json_t *first = json_array_get(objects, 0);
+	const json_t *x, *y, *w, *h;
+
+	if (!json_is_integer(id))
+		die("invalid 'id' property in tile\n");
+	if (!json_is_object(objectgroup))
+		die("invalid 'objectgroup' property in tile\n");
+	if (!json_is_array(objects))
+		die("invalid 'objects' property in tile\n");
+
+	x = json_object_get(first, "x");
+	y = json_object_get(first, "y");
+	w = json_object_get(first, "width");
+	h = json_object_get(first, "height");
+
+	if (!json_is_integer(x) || !json_is_integer(y) ||
+	    !json_is_integer(w) || !json_is_integer(h))
+		die("invalid collide object in tile description\n");
+
+	printf("%lld|%lld|%lld|%lld|%lld\n",
+	    json_integer_value(id),
+	    json_integer_value(x),
+	    json_integer_value(y),
+	    json_integer_value(w),
+	    json_integer_value(h));
+}
+
+static void
+write_tileset_tiles(const json_t *tiles)
+{
+	size_t index;
+	json_t *object;
+
+	puts("tiles");
+
+	json_array_foreach(tiles, index, object) {
+		if (!json_is_object(object))
+			die("tile is not an object\n");
+
+		write_tileset_tile(object);
+	}
+}
+
+static void
 write_tileset(const json_t *tileset)
 {
-	json_t *image = json_object_get(tileset, "image");
+	const json_t *image = json_object_get(tileset, "image");
+	const json_t *tiles = json_object_get(tileset, "tiles");
 
 	if (!image || !json_is_string(image))
 		die("invalid 'image' property in tileset");
 
 	printf("tileset|%s\n", json_string_value(image));
+
+	if (json_is_array(tiles))
+		write_tileset_tiles(tiles);
 }
 
 static void

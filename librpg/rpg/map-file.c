@@ -23,6 +23,7 @@
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <core/alloc.h>
@@ -41,6 +42,20 @@ struct parser {
 	FILE *fp;                       /* Map file pointer. */
 	char basedir[PATH_MAX];         /* Parent map directory */
 };
+
+static int
+tile_cmp(const void *d1, const void *d2)
+{
+	const struct map_tile *mt1 = d1;
+	const struct map_tile *mt2 = d2;
+
+	if (mt1->id < mt2->id)
+		return -1;
+	if (mt1->id > mt2->id)
+		return 1;
+
+	return 0;
+}
 
 static bool
 parse_layer(struct parser *ps, const char *line)
@@ -74,7 +89,7 @@ parse_layer(struct parser *ps, const char *line)
 	if (!(ps->mf->layers[layer_type].tiles = alloc_zero(amount, sizeof (unsigned short))))
 		return false;
 
-	for (int tile; fscanf(ps->fp, "%d", &tile) && current < amount; ++current)
+	for (int tile; fscanf(ps->fp, "%d\n", &tile) && current < amount; ++current)
 		ps->mf->layers[layer_type].tiles[current] = tile;
 
 	ps->map->layers[layer_type].tiles = ps->mf->layers[layer_type].tiles;
@@ -179,6 +194,32 @@ parse_origin(struct parser *ps, const char *line)
 }
 
 static bool
+parse_tiles(struct parser *ps, const char *line)
+{
+	(void)line;
+
+	short x, y;
+	unsigned short id, w, h;
+	struct map_tile *tiles = NULL;
+	size_t tilesz = 0;
+
+	while (fscanf(ps->fp, "%hu|%hd|%hd|%hu|%hu\n", &id, &x, &y, &w, &h) == 5) {
+		tiles = allocator.realloc(tiles, ++tilesz * sizeof (*tiles));
+		tiles[tilesz - 1].id = id;
+		tiles[tilesz - 1].x = x;
+		tiles[tilesz - 1].y = y;
+		tiles[tilesz - 1].w = w;
+		tiles[tilesz - 1].h = h;
+	}
+
+	qsort(tiles, tilesz, sizeof (struct map_tile), tile_cmp);
+	ps->map->tiles = ps->mf->tiles = tiles;
+	ps->map->tilesz = tilesz;
+
+	return true;
+}
+
+static bool
 parse_line(struct parser *ps, const char *line)
 {
 	static const struct {
@@ -192,7 +233,8 @@ parse_line(struct parser *ps, const char *line)
 		{ "tileheight", parse_tileheight        },
 		{ "tileset",    parse_tileset           },
 		{ "origin",     parse_origin            },
-		{ "layer",      parse_layer             }
+		{ "layer",      parse_layer             },
+		{ "tiles",      parse_tiles             }
 	};
 
 	for (size_t i = 0; i < NELEM(props); ++i)
@@ -285,6 +327,7 @@ map_file_finish(struct map_file *file)
 {
 	assert(file);
 
+	free(file->tiles);
 	texture_finish(&file->tileset);
 	memset(file, 0, sizeof (*file));
 }
