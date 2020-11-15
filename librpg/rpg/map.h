@@ -48,7 +48,7 @@ enum map_layer_type {
 /**
  * \brief Describe a tile in a tileset.
  */
-struct map_tile {
+struct map_tiledef {
 	short id;                       /*!< (*) Tile index. */
 	short x;                        /*!< (*) Collision region starts in y. */
 	short y;                        /*!< (*) Collision region starts in y. */
@@ -90,8 +90,8 @@ struct map {
 	unsigned short tile_h;          /*!< (-) Pixels per cell (height). */
 	struct sprite *tileset;         /*!< (+&) Tileset to use. */
 	struct texture picture;         /*!< (-) Map drawn into a texture. */
-	struct map_tile *tiles;         /*!< (+&?) Per tile properties (must be sorted). */
-	size_t tilesz;                  /*!< (+) Number of tile properties. */
+	struct map_tiledef *tiledefs;   /*!< (+&?) Per tile properties (must be sorted by id). */
+	size_t tiledefsz;               /*!< (+) Number of tile properties. */
 
 	/* View options. */
 	enum map_flags flags;           /*!< (+) View options. */

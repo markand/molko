@@ -44,14 +44,14 @@ struct parser {
 };
 
 static int
-tile_cmp(const void *d1, const void *d2)
+tiledef_cmp(const void *d1, const void *d2)
 {
-	const struct map_tile *mt1 = d1;
-	const struct map_tile *mt2 = d2;
+	const struct map_tiledef *mtd1 = d1;
+	const struct map_tiledef *mtd2 = d2;
 
-	if (mt1->id < mt2->id)
+	if (mtd1->id < mtd2->id)
 		return -1;
-	if (mt1->id > mt2->id)
+	if (mtd1->id > mtd2->id)
 		return 1;
 
 	return 0;
@@ -194,27 +194,27 @@ parse_origin(struct parser *ps, const char *line)
 }
 
 static bool
-parse_tiles(struct parser *ps, const char *line)
+parse_tiledefs(struct parser *ps, const char *line)
 {
 	(void)line;
 
 	short x, y;
 	unsigned short id, w, h;
-	struct map_tile *tiles = NULL;
-	size_t tilesz = 0;
+	struct map_tiledef *tiledefs = NULL;
+	size_t tiledefsz = 0;
 
 	while (fscanf(ps->fp, "%hu|%hd|%hd|%hu|%hu\n", &id, &x, &y, &w, &h) == 5) {
-		tiles = allocator.realloc(tiles, ++tilesz * sizeof (*tiles));
-		tiles[tilesz - 1].id = id;
-		tiles[tilesz - 1].x = x;
-		tiles[tilesz - 1].y = y;
-		tiles[tilesz - 1].w = w;
-		tiles[tilesz - 1].h = h;
+		tiledefs = allocator.realloc(tiledefs, ++tiledefsz * sizeof (*tiledefs));
+		tiledefs[tiledefsz - 1].id = id;
+		tiledefs[tiledefsz - 1].x = x;
+		tiledefs[tiledefsz - 1].y = y;
+		tiledefs[tiledefsz - 1].w = w;
+		tiledefs[tiledefsz - 1].h = h;
 	}
 
-	qsort(tiles, tilesz, sizeof (struct map_tile), tile_cmp);
-	ps->map->tiles = ps->mf->tiles = tiles;
-	ps->map->tilesz = tilesz;
+	qsort(tiledefs, tiledefsz, sizeof (*tiledefs), tiledef_cmp);
+	ps->map->tiledefs = ps->mf->tiledefs = tiledefs;
+	ps->map->tiledefsz = tiledefsz;
 
 	return true;
 }
@@ -234,7 +234,7 @@ parse_line(struct parser *ps, const char *line)
 		{ "tileset",    parse_tileset           },
 		{ "origin",     parse_origin            },
 		{ "layer",      parse_layer             },
-		{ "tiles",      parse_tiles             }
+		{ "tiledefs",   parse_tiledefs          }
 	};
 
 	for (size_t i = 0; i < NELEM(props); ++i)
@@ -327,7 +327,7 @@ map_file_finish(struct map_file *file)
 {
 	assert(file);
 
-	free(file->tiles);
+	free(file->tiledefs);
 	texture_finish(&file->tileset);
 	memset(file, 0, sizeof (*file));
 }

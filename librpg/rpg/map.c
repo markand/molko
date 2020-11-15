@@ -89,6 +89,39 @@ static unsigned int orientations[16] = {
 	[0xC] = 5
 };
 
+struct collision {
+	int x;
+	int y;
+	unsigned int w;
+	unsigned int h;
+};
+
+static bool
+is_collision_out(const struct map *map, struct collision *block, int drow, int dcol)
+{
+	if (drow) {
+		/* Object outside of left-right bounds. */
+		if (block->x + (int)block->w <= map->player_x ||
+		    block->x                 >= map->player_x + (int)map->player_sprite->cellw)
+			return false;
+
+		if ((drow < 0 && block->y            >= map->player_y + (int)map->player_sprite->cellh) ||
+		    (drow > 0 && block->y + block->h <= map->player_y + map->player_sprite->cellh))
+			return false;
+	} else if (dcol) {
+		/* Object outside of up-down bounds. */
+		if (block->y + (int)block->h <= map->player_y ||
+		    block->y                 >= map->player_y + (int)map->player_sprite->cellh)
+			return false;
+
+		if ((dcol < 0 && block->x            >= map->player_x + (int)map->player_sprite->cellw) ||
+		    (dcol > 0 && block->x + block->w <= map->player_x + map->player_sprite->cellw))
+			return false;
+	}
+
+	return true;
+}
+
 static void
 center(struct map *map)
 {
@@ -175,190 +208,160 @@ handle_keyup(struct map *map, const union event *event)
 }
 
 static int
-cmp_tile(const struct map_tile *t1, const struct map_tile *t2)
+cmp_tile(const struct map_tiledef *td1, const struct map_tiledef *td2)
 {
-	if (t1->id < t2->id)
+	if (td1->id < td2->id)
 		return -1;
-	if (t1->id > t2->id)
+	if (td1->id > td2->id)
 		return 1;
 
 	return 0;
 }
 
-static struct map_tile *
-find_tile_by_id(const struct map *map, unsigned short id)
+static struct map_tiledef *
+find_tiledef_by_id(const struct map *map, unsigned short id)
 {
 	typedef int (*cmp)(const void *, const void *);
 
-	const struct map_tile key = {
+	const struct map_tiledef key = {
 		.id = id
 	};
 
-	return bsearch(&key, map->tiles, map->tilesz, sizeof (struct map_tile), (cmp)cmp_tile);
+	return bsearch(&key, map->tiledefs, map->tiledefsz, sizeof (key), (cmp)cmp_tile);
 }
 
-static struct map_tile *
-find_tile_in_layer(const struct map *map, const struct map_layer *layer, int pr, int pc)
+static struct map_tiledef *
+find_tiledef_by_row_column_in_layer(const struct map *map,
+                                    const struct map_layer *layer,
+                                    int row,
+                                    int col)
 {
 	unsigned short id;
 
-	if ((id = layer->tiles[pc + pr * map->w]) == 0)
+	if (row < 0 || (unsigned int)row >= map->h ||
+	    col < 0 || (unsigned int)col >= map->w)
+		return false;
+
+	if ((id = layer->tiles[col + row * map->w]) == 0)
 		return NULL;
 
-	return find_tile_by_id(map, id - 1);
+	return find_tiledef_by_id(map, id - 1);
 }
 
-static bool
-can_be_used(const struct map *map, const struct map_tile *block, int drow, int dcol)
+static struct map_tiledef *
+find_tiledef_by_row_column(const struct map *map, int row, int col)
 {
-	if (drow) {
-		/* Object outside of left-right bounds. */
-		if (block->x + (int)block->w <= map->player_x ||
-		    block->x                 >= map->player_x + (int)map->player_sprite->cellw)
-			return false;
+	struct map_tiledef *tile;
 
-		if ((drow < 0 && block->y            >= map->player_y + (int)map->player_sprite->cellh) ||
-		    (drow > 0 && block->y + block->h <= map->player_y + (int)map->player_sprite->cellh))
-			return false;
-	} else if (dcol) {
-		/* Object outside of up-down bounds. */
-		if (block->y + (int)block->h <= map->player_y ||
-		    block->y                 >= map->player_y + (int)map->player_sprite->cellh)
-			return false;
+	/* TODO: probably a for loop when we have indefinite layers. */
+	if (!(tile = find_tiledef_by_row_column_in_layer(map, &map->layers[1], row, col)))
+		tile = find_tiledef_by_row_column_in_layer(map, &map->layers[0], row, col);
 
-		if ((dcol < 0 && block->x            >= map->player_x + (int)map->player_sprite->cellw) ||
-		    (dcol > 0 && block->x + block->w <= map->player_x + (int)map->player_sprite->cellw))
-			return false;
-	}
-
-	return true;
-}
-
-static bool
-find_tile_absolute(const struct map *map, struct map_tile *block, int row, int col, int drow, int dcol)
-{
-	struct map_tile *tile, tmp;
-
-	if (row < 0 || (unsigned int)row >= map->h || col < 0 || (unsigned int) col >= map->w)
-		return false;
-
-	if (!(tile = find_tile_in_layer(map, &map->layers[1], row, col)))
-		tile = find_tile_in_layer(map, &map->layers[0], row, col);
-
-	if (!tile)
-		return false;
-
-	/* Convert to absolute values. */
-	tmp.id = tile->id;
-	tmp.x = tile->x + col * map->tileset->cellw;
-	tmp.y = tile->y + row * map->tileset->cellh;
-	tmp.w = tile->w;
-	tmp.h = tile->h;
-
-	/* This tile is not usable */
-	if (!tile || !can_be_used(map, &tmp, drow, dcol))
-		return false;
-
-	memcpy(block, &tmp, sizeof (tmp));
-
-	return true;
+	return tile;
 }
 
 static void
-find_block_y(const struct map *map, struct map_tile *block, int pr, int pc, int drow)
+find_block_iterate(const struct map *map,
+                   struct collision *block,
+                   int rowstart,
+                   int rowend,
+                   int colstart,
+                   int colend,
+                   int drow,
+                   int dcol)
 {
-	int ncols = map->player_sprite->cellw / map->tileset->cellw;
-	int nrows = map->player_sprite->cellh / map->tileset->cellh;
-	int start, end;
+	assert(map);
+	assert(block);
 
-	if (drow < 0) {
-		start = 0;
-		end = pr;
-		block->x = block->y = block->h = 0;
-		block->w = map->real_w;
-	} else {
-		start = pr + nrows;
-		end = map->h;
-		block->x = block->h = 0;
-		block->y = map->real_h;
-		block->w = map->real_w;
-	}
+	for (int r = rowstart; r <= rowend; ++r) {
+		for (int c = colstart; c <= colend; ++c) {
+			struct map_tiledef *td;
+			struct collision tmp;
 
-	for (int r = start; r <= end; ++r) {
-		for (int c = 0; c <= ncols; ++c) {
-			struct map_tile tmp;
-
-			if (!find_tile_absolute(map, &tmp, r, pc + c, drow, 0))
+			if (!(td = find_tiledef_by_row_column(map, r, c)))
 				continue;
+
+			/* Convert to absolute values. */
+			tmp.x = td->x + c * map->tileset->cellw;
+			tmp.y = td->y + r * map->tileset->cellh;
+			tmp.w = td->w;
+			tmp.h = td->h;
+
+			/* This tiledef is out of context. */
+			if (!is_collision_out(map, &tmp, drow, dcol))
+				continue;
+
 			if ((drow < 0 && tmp.y + tmp.h > block->y + block->h) ||
-			    (drow > 0 && tmp.y < block->y))
-				memcpy(block, &tmp, sizeof (tmp));
+			    (drow > 0 && tmp.y < block->y) ||
+			    (dcol < 0 && tmp.x + tmp.w > block->x + block->w) ||
+			    (dcol > 0 && tmp.x < block->x)) {
+				block->x = tmp.x;
+				block->y = tmp.y;
+				block->w = tmp.w;
+				block->h = tmp.h;
+			}
 		}
 	}
 }
 
 static void
-find_block_x(const struct map *map, struct map_tile *block, int pr, int pc, int dcol)
+find_collision(const struct map *map, struct collision *block, int drow, int dcolumn)
 {
-	int ncols = map->player_sprite->cellw / map->tileset->cellw;
-	int nrows = map->player_sprite->cellh / map->tileset->cellh;
-	int start, end;
+	assert((drow && !dcolumn) || (dcolumn && !drow));
 
-	if (dcol < 0) {
-		start = 0;
-		end = pc;
-		block->x = block->y = block->w = 0;
-		block->h = map->real_h;
+	const int playercol = map->player_x / map->tileset->cellw;
+	const int playerrow = map->player_y / map->tileset->cellh;
+	const int ncols = map->player_sprite->cellw / map->tileset->cellw;
+	const int nrows = map->player_sprite->cellh / map->tileset->cellh;
+	int rowstart, rowend, colstart, colend;
+
+	if (drow) {
+		colstart = playercol;
+		colend = playercol + ncols;
+
+		if (drow < 0) {
+			/* Moving UP. */
+			rowstart = 0;
+			rowend = playerrow;
+			block->x = block->y = block->h = 0;
+			block->w = map->real_w;
+		} else {
+			/* Moving DOWN. */
+			rowstart = playerrow + nrows;
+			rowend = map->h;
+			block->x = block->h = 0;
+			block->y = map->real_h;
+			block->w = map->real_w;
+		}
 	} else {
-		start = pc + ncols;
-		end = map->w;
-		block->x = map->real_w;
-		block->y = block->w = 0;
-		block->h = block->h;
-	}
+		rowstart = playerrow;
+		rowend = playerrow + nrows;
 
-	for (int c = start; c <= end; ++c) {
-		for (int r = 0; r <= nrows; ++r) {
-			struct map_tile tmp;
-
-			if (!find_tile_absolute(map, &tmp, pr + r, c, 0, dcol))
-				continue;
-			if ((dcol < 0 && tmp.x + tmp.w > block->x + block->w) ||
-			    (dcol > 0 && tmp.x < block->x))
-				memcpy(block, &tmp, sizeof (tmp));
+		if (dcolumn < 0) {
+			/* Moving LEFT. */
+			colstart = 0;
+			colend = playercol;
+			block->x = block->y = block->w = 0;
+			block->h = map->real_h;
+		} else {
+			/* Moving RIGHT. */
+			colstart = playercol + ncols;
+			colend = map->w;
+			block->x = map->real_w;
+			block->y = block->w = 0;
+			block->h = block->h;
 		}
 	}
-}
 
-/*
- * Fill dimensions of the adjacent tile from the current player position. The
- * arguments drow/dcolumn indicate the desired movement (e.g. -1, +1) but only
- * one at a time must be set.
- *
- * The argument block will be set to a rectangle that will collide with the
- * player according to its position and destination. It is never null because
- * if no tile definition is found it is set to the screen edges.
- */
-static void
-find_tile_collision(const struct map *map, struct map_tile *block, int drow, int dcol)
-{
-	assert((drow != 0 && dcol == 0) || (drow == 0 && dcol != 0));
-
-	const int pcol = map->player_x / map->tileset->cellw;
-	const int prow = map->player_y / map->tileset->cellh;
-
-	if (drow)
-		find_block_y(map, block, prow, pcol, drow);
-	else if (dcol)
-		find_block_x(map, block, prow, pcol, dcol);
+	find_block_iterate(map, block, rowstart, rowend, colstart, colend, drow, dcolumn);
 }
 
 static void
 move_x(struct map *map, int delta)
 {
-	struct map_tile block;
+	struct collision block;
 
-	find_tile_collision(map, &block, 0, delta < 0 ? -1 : +1);
+	find_collision(map, &block, 0, delta < 0 ? -1 : +1);
 
 	if (delta < 0 && map->player_x + delta < (int)(block.x + block.w))
 		delta = map->player_x - block.x - block.w;
@@ -379,9 +382,9 @@ move_x(struct map *map, int delta)
 static void
 move_y(struct map *map, int delta)
 {
-	struct map_tile block;
+	struct collision block;
 
-	find_tile_collision(map, &block, delta < 0 ? -1 : +1, 0);
+	find_collision(map, &block, delta < 0 ? -1 : +1, 0);
 
 	if (delta < 0 && map->player_y + delta < (int)(block.y + block.h))
 		delta = map->player_y - block.y - block.h;
@@ -453,7 +456,7 @@ draw_layer(struct map *map, const struct map_layer *layer)
 	}
 
 	for (size_t i = 0; i < ntiles; ++i) {
-		const struct map_tile *tile;
+		const struct map_tiledef *td;
 		int mx, my, mr, mc, sr, sc, id;
 
 		if (layer->tiles[i] == 0)
@@ -475,8 +478,8 @@ draw_layer(struct map *map, const struct map_layer *layer)
 
 		sprite_draw(map->tileset, sr, sc, mx, my);
 
-		if ((tile = find_tile_by_id(map, id)) && texture_ok(&colbox))
-			texture_scale(&colbox, 0, 0, 5, 5, mx + tile->x, my + tile->y, tile->w, tile->h, 0);
+		if ((td = find_tiledef_by_id(map, id)) && texture_ok(&colbox))
+			texture_scale(&colbox, 0, 0, 5, 5, mx + td->x, my + td->y, td->w, td->h, 0);
 
 		if (map->flags & MAP_FLAGS_SHOW_GRID) {
 			painter_set_color(0x202e37ff);

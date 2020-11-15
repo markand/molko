@@ -257,7 +257,7 @@ write_layers(const json_t *layers)
 }
 
 static void
-write_tileset_tile(const json_t *tile)
+write_tileset_tiledef(const json_t *tile)
 {
 	const json_t *id = json_object_get(tile, "id");
 	const json_t *objectgroup = json_object_get(tile, "objectgroup");
@@ -290,18 +290,18 @@ write_tileset_tile(const json_t *tile)
 }
 
 static void
-write_tileset_tiles(const json_t *tiles)
+write_tileset_tiledefs(const json_t *tiles)
 {
 	size_t index;
 	json_t *object;
 
-	puts("tiles");
+	puts("tiledefs");
 
 	json_array_foreach(tiles, index, object) {
 		if (!json_is_object(object))
 			die("tile is not an object\n");
 
-		write_tileset_tile(object);
+		write_tileset_tiledef(object);
 	}
 }
 
@@ -317,7 +317,7 @@ write_tileset(const json_t *tileset)
 	printf("tileset|%s\n", json_string_value(image));
 
 	if (json_is_array(tiles))
-		write_tileset_tiles(tiles);
+		write_tileset_tiledefs(tiles);
 }
 
 static void
