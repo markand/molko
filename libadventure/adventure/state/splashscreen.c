@@ -91,6 +91,7 @@ draw(struct state *state)
 	painter_set_color(0xffffffff);
 	painter_clear();
 	texture_draw(&splash->tex, splash->x, splash->y);
+	painter_present();
 }
 
 static void

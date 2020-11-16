@@ -61,6 +61,8 @@ set(
 	${librpg_SOURCE_DIR}/rpg/selection.h
 	${librpg_SOURCE_DIR}/rpg/spell.c
 	${librpg_SOURCE_DIR}/rpg/spell.h
+	${librpg_SOURCE_DIR}/rpg/teleport.c
+	${librpg_SOURCE_DIR}/rpg/teleport.h
 	${librpg_SOURCE_DIR}/rpg/walksprite.c
 	${librpg_SOURCE_DIR}/rpg/walksprite.h
 )

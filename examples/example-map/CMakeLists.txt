@@ -23,18 +23,30 @@ add_custom_command(
 	OUTPUT
 		${example-map_BINARY_DIR}/simple.map
 		${example-map_BINARY_DIR}/simple.png
+		${example-map_BINARY_DIR}/village.map
+		${example-map_BINARY_DIR}/village.png
 	DEPENDS
 		$<TARGET_FILE:map>
 		${examples_SOURCE_DIR}/assets/maps/simple.json
 		${examples_SOURCE_DIR}/assets/maps/simple.png
+		${examples_SOURCE_DIR}/assets/maps/village.json
+		${examples_SOURCE_DIR}/assets/maps/village.png
 	COMMAND
 		$<TARGET_FILE:map>
 			< ${examples_SOURCE_DIR}/assets/maps/simple.json
 			> ${example-map_BINARY_DIR}/simple.map
 	COMMAND
+		$<TARGET_FILE:map>
+			< ${examples_SOURCE_DIR}/assets/maps/village.json
+			> ${example-map_BINARY_DIR}/village.map
+	COMMAND
 		${CMAKE_COMMAND} -E copy
 			${examples_SOURCE_DIR}/assets/maps/simple.png
 			${example-map_BINARY_DIR}/simple.png
+	COMMAND
+		${CMAKE_COMMAND} -E copy
+			${examples_SOURCE_DIR}/assets/maps/village.png
+			${example-map_BINARY_DIR}/village.png
 )
 
 molko_define_executable(

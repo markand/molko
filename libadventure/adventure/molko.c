@@ -97,7 +97,6 @@ molko_init(void)
 	/* Init states. */
 	splashscreen_state(&molko.states[MOLKO_STATE_SPLASH], &molko.states[MOLKO_STATE_MAINMENU]);
 	mainmenu_state(&molko.states[MOLKO_STATE_MAINMENU]);
-	map_state(&molko.map, &molko.states[MOLKO_STATE_MAP]);
 
 	/* Start to splash. */
 	game_switch(&molko.states[MOLKO_STATE_SPLASH], true);

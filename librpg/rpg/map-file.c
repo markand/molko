@@ -29,6 +29,7 @@
 #include <core/alloc.h>
 #include <core/error.h>
 #include <core/image.h>
+#include <core/trace.h>
 
 #include "map-file.h"
 
@@ -58,19 +59,10 @@ tiledef_cmp(const void *d1, const void *d2)
 }
 
 static bool
-parse_layer(struct parser *ps, const char *line)
+parse_tiles(struct parser *ps, const char *layer_name)
 {
-	char layer_name[32 + 1] = {0};
 	enum map_layer_type layer_type;
 	size_t amount, current;
-
-	/* Check if weight/height has been specified. */
-	if (ps->map->w == 0 || ps->map->h == 0)
-		return errorf("missing map dimensions before layer");
-
-	/* Determine layer type. */
-	if (sscanf(line, "layer|%32s", layer_name) <= 0)
-		return errorf("missing layer type definition");
 
 	if (strcmp(layer_name, "background") == 0)
 		layer_type = MAP_LAYER_TYPE_BACKGROUND;
@@ -95,6 +87,47 @@ parse_layer(struct parser *ps, const char *line)
 	ps->map->layers[layer_type].tiles = ps->mf->layers[layer_type].tiles;
 
 	return true;
+}
+
+static bool
+parse_actions(struct parser *ps)
+{
+	char exec[128 + 1];
+	int x = 0, y = 0;
+	unsigned int w = 0, h = 0;
+
+	while (fscanf(ps->fp, "%d|%d|%u|%u|%128[^\n]\n", &x, &y, &w, &h, exec) == 5) {
+		struct action *act;
+
+		if (!ps->mf->load_action) {
+			tracef("ignoring action %d,%d,%u,%u,%s", x, y, w, h, exec);
+			continue;
+		}
+
+		if ((act = ps->mf->load_action(ps->map, x, y, w, h, exec)))
+			action_stack_add(&ps->map->actions, act);
+	}
+
+	return true;
+}
+
+static bool
+parse_layer(struct parser *ps, const char *line)
+{
+	char layer_name[32 + 1] = {0};
+
+	/* Check if weight/height has been specified. */
+	if (ps->map->w == 0 || ps->map->h == 0)
+		return errorf("missing map dimensions before layer");
+
+	/* Determine layer type. */
+	if (sscanf(line, "layer|%32s", layer_name) <= 0)
+		return errorf("missing layer type definition");
+
+	if (strcmp(layer_name, "actions") == 0)
+		return parse_actions(ps);
+
+	return parse_tiles(ps, layer_name);
 }
 
 static bool
@@ -306,7 +339,6 @@ map_file_open(struct map_file *file, const char *path, struct map *map)
 	FILE *fp;
 	bool ret = true;
 
-	memset(file, 0, sizeof (*file));
 	memset(map, 0, sizeof (*map));
 
 	if (!(fp = fopen(path, "r")))

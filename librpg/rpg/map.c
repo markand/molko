@@ -140,7 +140,7 @@ center(struct map *map)
 }
 
 static void
-start(struct map *map)
+init(struct map *map)
 {
 	map_repaint(map);
 
@@ -370,7 +370,8 @@ move_x(struct map *map, int delta)
 
 	map->player_x += delta;
 
-	if (map->player_x < map->margin_x || map->player_x >= (int)(map->margin_x + map->margin_w))
+	if ((delta < 0 && map->player_x < map->margin_x) ||
+	    (delta > 0 && map->player_x >= (int)(map->margin_x + map->margin_w)))
 		map->view_x += delta;
 
 	if (map->view_x < 0)
@@ -393,7 +394,8 @@ move_y(struct map *map, int delta)
 
 	map->player_y += delta;
 
-	if (map->player_y < map->margin_y || map->player_y >= (int)(map->margin_y + map->margin_h))
+	if ((delta < 0 && map->player_y < map->margin_y) ||
+	    (delta > 0 && map->player_y >= (int)(map->margin_y + map->margin_h)))
 		map->view_y += delta;
 
 	if (map->view_y < 0)
@@ -491,24 +493,6 @@ draw_layer(struct map *map, const struct map_layer *layer)
 	texture_finish(&colbox);
 }
 
-static void
-handle(struct state *state, const union event *ev)
-{
-	map_handle(state->data, ev);
-}
-
-static void
-update(struct state *state, unsigned int ticks)
-{
-	map_update(state->data, ticks);
-}
-
-static void
-draw(struct state *state)
-{
-	map_draw(state->data);
-}
-
 bool
 map_init(struct map *map)
 {
@@ -517,7 +501,7 @@ map_init(struct map *map)
 	if (!texture_new(&map->picture, map->real_w, map->real_h))
 		return false;
 
-	start(map);
+	init(map);
 
 	return true;
 }
@@ -545,6 +529,8 @@ map_update(struct map *map, unsigned int ticks)
 {
 	assert(map);
 
+	action_stack_update(&map->actions, ticks);
+
 	move(map, ticks);
 }
 
@@ -564,6 +550,8 @@ map_draw(const struct map *map)
 		map->player_angle,
 		map->player_x - map->view_x,
 		map->player_y - map->view_y);
+
+	action_stack_draw(&map->actions);
 
 	/* Draw collide box around player if requested. */
 	if (map->flags & MAP_FLAGS_SHOW_COLLIDE &&
@@ -591,23 +579,11 @@ map_repaint(struct map *map)
 }
 
 void
-map_state(struct map *map, struct state *state)
-{
-	assert(map);
-	assert(state);
-
-	memset(state, 0, sizeof (*state));
-	state->data = map;
-	state->draw = draw;
-	state->handle = handle;
-	state->update = update;
-}
-
-void
 map_finish(struct map *map)
 {
 	assert(map);
 
+	action_stack_finish(&map->actions);
 	texture_finish(&map->picture);
 
 	memset(map, 0, sizeof (*map));

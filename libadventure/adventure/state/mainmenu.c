@@ -193,6 +193,7 @@ draw(struct state *state)
 	painter_draw_rectangle(
 	    main->texts[main->itemsel].x - 30,
 	    main->texts[main->itemsel].y + 11, 15, 15);
+	painter_present();
 }
 
 static void

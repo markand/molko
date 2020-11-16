@@ -44,7 +44,7 @@ is_layer(const char *name)
 {
 	return strcmp(name, "background") == 0 ||
 	       strcmp(name, "foreground") == 0 ||
-	       strcmp(name, "objects") == 0;
+	       strcmp(name, "actions") == 0;
 }
 
 static const json_t *
@@ -60,6 +60,33 @@ find_property(const json_t *props, const char *which)
 		const json_t *key = json_object_get(value, "name");
 
 		if (json_is_string(key) && strcmp(json_string_value(key), which) == 0)
+			return value;
+	}
+
+	return NULL;
+}
+
+static const json_t *
+find_action_exec(const json_t *props)
+{
+	assert(json_is_array(props));
+
+	json_t *prop, *name, *value;
+	size_t i;
+
+	json_array_foreach(props, i, prop) {
+		if (!json_is_object(prop))
+			die("invalid property in object\n");
+
+		name = json_object_get(prop, "name");
+		value = json_object_get(prop, "value");
+
+		if (!name || !json_is_string(name))
+			die("invalid 'name' property in object properties");
+		if (!value || !json_is_string(value))
+			die("invalid 'value' property in object properties");
+
+		if (strcmp(json_string_value(name), "exec") == 0)
 			return value;
 	}
 
@@ -131,75 +158,38 @@ write_metadata(const json_t *document)
 }
 
 static void
-write_object_property(int id, const json_t *property)
-{
-	assert(json_is_object(property));
-
-	json_t *name = json_object_get(property, "name");
-	json_t *type = json_object_get(property, "type");
-	json_t *value = json_object_get(property, "value");
-
-	if (!name || !json_is_string(name))
-		die("invalid 'name' property in object");
-	if (!type || !json_is_string(type))
-		die("invalid 'type' property in object");
-	if (!value || !json_is_string(value))
-		die("invalid 'value' property in object");
-
-	printf("object-property|%d|%s|%s\n",
-	    id,
-	    json_string_value(name),
-	    json_string_value(value)
-	);
-}
-
-static void
 write_object(const json_t *object)
 {
 	assert(json_is_object(object));
 
-	json_t *id = json_object_get(object, "id");
 	json_t *x = json_object_get(object, "x");
 	json_t *y = json_object_get(object, "y");
 	json_t *width = json_object_get(object, "width");
 	json_t *height = json_object_get(object, "height");
-	json_t *type = json_object_get(object, "type");
 	json_t *props = json_object_get(object, "properties");
+	const json_t *exec;
 
-	if (!id || !json_is_integer(id))
-		die("invalid 'id' property in object\n");
-	if (!x || !json_is_real(x))
+	if (!x || !json_is_number(x))
 		die("invalid 'x' property in object\n");
-	if (!y || !json_is_real(y))
+	if (!y || !json_is_number(y))
 		die("invalid 'y' property in object\n");
-	if (!width || !json_is_real(width))
+	if (!width || !json_is_number(width))
 		die("invalid 'width' property in object\n");
-	if (!height || !json_is_real(height))
+	if (!height || !json_is_number(height))
 		die("invalid 'height' property in object\n");
-	if (!type || !json_is_string(type))
-		die("invalid 'type' property in object\n");
 
 	/* In tiled, those properties are float but we only use ints in MA */
-	printf("object|%lld|%s|%d|%d|%d|%d\n",
-	    json_integer_value(id),
-	    json_string_value(type),
-	    (int)json_real_value(x),
-	    (int)json_real_value(y),
-	    (int)json_real_value(width),
-	    (int)json_real_value(height)
+	printf("%d|%d|%d|%d|",
+	    (int)json_integer_value(x),
+	    (int)json_integer_value(y),
+	    (int)json_integer_value(width),
+	    (int)json_integer_value(height)
 	);
 
-	if (json_is_array(props)) {
-		json_t *prop;
-		size_t index;
+	if ((exec = find_action_exec(props)))
+		printf("%s", json_string_value(exec));
 
-		json_array_foreach(props, index, prop) {
-			if (!json_is_object(prop))
-				die("invalid property in object\n");
-
-			write_object_property(json_integer_value(id), prop);
-		}
-	}
+	printf("\n");
 }
 
 static void

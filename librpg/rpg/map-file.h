@@ -62,6 +62,16 @@
  */
 struct map_file {
 	/**
+	 * (+?) User function to create an action when it is listed in the map
+	 * definition.
+	 *
+	 * The returned value is owned by the user and is never free'ed from the
+	 * map file itself. If the function is present and return a non-NULL
+	 * action it is added into map.
+	 */
+	struct action *(*load_action)(struct map *map, int x, int y, int w, int h, const char *exec);
+
+	/**
 	 * (*) Map title loaded from file.
 	 */
 	char title[MAP_FILE_TITLE_MAX];

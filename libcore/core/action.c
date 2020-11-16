@@ -135,7 +135,7 @@ action_stack_update(struct action_stack *st, unsigned int ticks)
 }
 
 void
-action_stack_draw(struct action_stack *st)
+action_stack_draw(const struct action_stack *st)
 {
 	assert(st);
 

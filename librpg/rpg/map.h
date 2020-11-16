@@ -26,6 +26,7 @@
 
 #include <stddef.h>
 
+#include <core/action.h>
 #include <core/texture.h>
 
 #include "walksprite.h"
@@ -95,6 +96,8 @@ struct map {
 
 	/* View options. */
 	enum map_flags flags;           /*!< (+) View options. */
+
+	struct action_stack actions;    /*!< (+) */
 
 	/* Player. */
 	struct sprite *player_sprite;   /*!< (+) The sprite to use */
@@ -173,23 +176,6 @@ map_draw(const struct map *map);
  */
 void
 map_repaint(struct map *map);
-
-/**
- * Convert the map into a game state.
- *
- * Both objects must exist until the state is no longer used.
- *
- * \pre map != NULL
- * \pre state != NULL
- * \param map the map to use
- * \param state the state to fill
- * \post state->data is set to map
- * \post state->handle is set
- * \post state->update is set
- * \post state->draw is set
- */
-void
-map_state(struct map *map, struct state *state);
 
 /**
  * Dispose map resources.

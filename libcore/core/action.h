@@ -215,7 +215,7 @@ action_stack_update(struct action_stack *st, unsigned int ticks);
  * \param st the stack
  */
 void
-action_stack_draw(struct action_stack *st);
+action_stack_draw(const struct action_stack *st);
 
 /**
  * Tells if there is any pending action in the stack.
