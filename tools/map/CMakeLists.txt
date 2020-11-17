@@ -1,5 +1,5 @@
 #
-# CMakeLists.txt -- CMake build system for molko-map
+# CMakeLists.txt -- CMake build system for mlk-map
 #
 # Copyright (c) 2020 David Demelier <markand@malikania.fr>
 #
@@ -16,11 +16,11 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(molko-map)
+project(mlk-map)
 
 molko_define_executable(
-	TARGET map
-	SOURCES map.c
+	TARGET mlk-map
+	SOURCES main.c
 	FOLDER tools
 	LIBRARIES Jansson::Jansson
 )

@@ -27,7 +27,6 @@
 #include <core/maths.h>
 #include <core/painter.h>
 #include <core/sprite.h>
-#include <core/state.h>
 #include <core/sys.h>
 #include <core/texture.h>
 #include <core/window.h>
@@ -35,6 +34,7 @@
 #include <ui/debug.h>
 
 #include "map.h"
+#include "tileset.h"
 
 /*
  * This is the speed the player moves on the map.
@@ -51,6 +51,9 @@
  */
 #define MARGIN_WIDTH    80
 #define MARGIN_HEIGHT   80
+
+#define WIDTH(map)      ((map)->columns * (map)->tileset->sprite->cellw)
+#define HEIGHT(map)     ((map)->rows * (map)->tileset->sprite->cellh)
 
 /*
  * This structure defines the possible movement of the player as flags since
@@ -130,20 +133,18 @@ center(struct map *map)
 
 	if (map->view_x < 0)
 		map->view_x = 0;
-	else if ((unsigned int)map->view_x > map->real_w - map->view_w)
-		map->view_x = map->real_w - map->view_w;
+	else if ((unsigned int)map->view_x > WIDTH(map) - map->view_w)
+		map->view_x = WIDTH(map) - map->view_w;
 
 	if (map->view_y < 0)
 		map->view_y = 0;
-	else if ((unsigned int)map->view_y > map->real_h - map->view_h)
-		map->view_y = map->real_h - map->view_h;
+	else if ((unsigned int)map->view_y > HEIGHT(map) - map->view_h)
+		map->view_y = HEIGHT(map) - map->view_h;
 }
 
 static void
 init(struct map *map)
 {
-	map_repaint(map);
-
 	/* Adjust view. */
 	map->view_w = window.w;
 	map->view_h = window.h;
@@ -188,7 +189,6 @@ handle_keyup(struct map *map, const union event *event)
 	switch (event->key.key) {
 	case KEY_TAB:
 		map->flags ^= MAP_FLAGS_SHOW_GRID | MAP_FLAGS_SHOW_COLLIDE;
-		map_repaint(map);
 		break;
 	case KEY_UP:
 		map->player_movement &= ~(MOVING_UP);
@@ -208,7 +208,7 @@ handle_keyup(struct map *map, const union event *event)
 }
 
 static int
-cmp_tile(const struct map_tiledef *td1, const struct map_tiledef *td2)
+cmp_tile(const struct tileset_tiledef *td1, const struct tileset_tiledef *td2)
 {
 	if (td1->id < td2->id)
 		return -1;
@@ -218,19 +218,20 @@ cmp_tile(const struct map_tiledef *td1, const struct map_tiledef *td2)
 	return 0;
 }
 
-static struct map_tiledef *
+static struct tileset_tiledef *
 find_tiledef_by_id(const struct map *map, unsigned short id)
 {
 	typedef int (*cmp)(const void *, const void *);
 
-	const struct map_tiledef key = {
+	const struct tileset_tiledef key = {
 		.id = id
 	};
 
-	return bsearch(&key, map->tiledefs, map->tiledefsz, sizeof (key), (cmp)cmp_tile);
+	return bsearch(&key, map->tileset->tiledefs, map->tileset->tiledefsz,
+	    sizeof (key), (cmp)cmp_tile);
 }
 
-static struct map_tiledef *
+static struct tileset_tiledef *
 find_tiledef_by_row_column_in_layer(const struct map *map,
                                     const struct map_layer *layer,
                                     int row,
@@ -238,20 +239,20 @@ find_tiledef_by_row_column_in_layer(const struct map *map,
 {
 	unsigned short id;
 
-	if (row < 0 || (unsigned int)row >= map->h ||
-	    col < 0 || (unsigned int)col >= map->w)
+	if (row < 0 || (unsigned int)row >= map->rows ||
+	    col < 0 || (unsigned int)col >= map->columns)
 		return false;
 
-	if ((id = layer->tiles[col + row * map->w]) == 0)
+	if ((id = layer->tiles[col + row * map->columns]) == 0)
 		return NULL;
 
 	return find_tiledef_by_id(map, id - 1);
 }
 
-static struct map_tiledef *
+static struct tileset_tiledef *
 find_tiledef_by_row_column(const struct map *map, int row, int col)
 {
-	struct map_tiledef *tile;
+	struct tileset_tiledef *tile;
 
 	/* TODO: probably a for loop when we have indefinite layers. */
 	if (!(tile = find_tiledef_by_row_column_in_layer(map, &map->layers[1], row, col)))
@@ -275,15 +276,15 @@ find_block_iterate(const struct map *map,
 
 	for (int r = rowstart; r <= rowend; ++r) {
 		for (int c = colstart; c <= colend; ++c) {
-			struct map_tiledef *td;
+			struct tileset_tiledef *td;
 			struct collision tmp;
 
 			if (!(td = find_tiledef_by_row_column(map, r, c)))
 				continue;
 
 			/* Convert to absolute values. */
-			tmp.x = td->x + c * map->tileset->cellw;
-			tmp.y = td->y + r * map->tileset->cellh;
+			tmp.x = td->x + c * map->tileset->sprite->cellw;
+			tmp.y = td->y + r * map->tileset->sprite->cellh;
 			tmp.w = td->w;
 			tmp.h = td->h;
 
@@ -309,10 +310,10 @@ find_collision(const struct map *map, struct collision *block, int drow, int dco
 {
 	assert((drow && !dcolumn) || (dcolumn && !drow));
 
-	const int playercol = map->player_x / map->tileset->cellw;
-	const int playerrow = map->player_y / map->tileset->cellh;
-	const int ncols = map->player_sprite->cellw / map->tileset->cellw;
-	const int nrows = map->player_sprite->cellh / map->tileset->cellh;
+	const int playercol = map->player_x / map->tileset->sprite->cellw;
+	const int playerrow = map->player_y / map->tileset->sprite->cellh;
+	const int ncols = map->player_sprite->cellw / map->tileset->sprite->cellw;
+	const int nrows = map->player_sprite->cellh / map->tileset->sprite->cellh;
 	int rowstart, rowend, colstart, colend;
 
 	if (drow) {
@@ -324,14 +325,14 @@ find_collision(const struct map *map, struct collision *block, int drow, int dco
 			rowstart = 0;
 			rowend = playerrow;
 			block->x = block->y = block->h = 0;
-			block->w = map->real_w;
+			block->w = WIDTH(map);
 		} else {
 			/* Moving DOWN. */
 			rowstart = playerrow + nrows;
-			rowend = map->h;
+			rowend = HEIGHT(map);
 			block->x = block->h = 0;
-			block->y = map->real_h;
-			block->w = map->real_w;
+			block->y = HEIGHT(map);
+			block->w = WIDTH(map);
 		}
 	} else {
 		rowstart = playerrow;
@@ -342,12 +343,12 @@ find_collision(const struct map *map, struct collision *block, int drow, int dco
 			colstart = 0;
 			colend = playercol;
 			block->x = block->y = block->w = 0;
-			block->h = map->real_h;
+			block->h = HEIGHT(map);
 		} else {
 			/* Moving RIGHT. */
 			colstart = playercol + ncols;
-			colend = map->w;
-			block->x = map->real_w;
+			colend = WIDTH(map);
+			block->x = WIDTH(map);
 			block->y = block->w = 0;
 			block->h = block->h;
 		}
@@ -376,8 +377,8 @@ move_x(struct map *map, int delta)
 
 	if (map->view_x < 0)
 		map->view_x = 0;
-	else if (map->view_x >= (int)(map->real_w - map->view_w))
-		map->view_x = map->real_w - map->view_w;
+	else if (map->view_x >= (int)(WIDTH(map) - map->view_w))
+		map->view_x = WIDTH(map) - map->view_w;
 }
 
 static void
@@ -400,8 +401,8 @@ move_y(struct map *map, int delta)
 
 	if (map->view_y < 0)
 		map->view_y = 0;
-	else if (map->view_y >= (int)(map->real_h - map->view_h))
-		map->view_y = map->real_h - map->view_h;
+	else if (map->view_y >= (int)(HEIGHT(map) - map->view_h))
+		map->view_y = HEIGHT(map) - map->view_h;
 }
 
 static void
@@ -438,14 +439,71 @@ move(struct map *map, unsigned int ticks)
 	walksprite_update(&map->player_ws, ticks);
 }
 
+static inline void
+draw_layer_tile(const struct map *map,
+                const struct map_layer *layer,
+                struct texture *colbox,
+                int start_col,
+                int start_row,
+                int start_x,
+                int start_y,
+                unsigned int r,
+                unsigned int c)
+{
+	const struct tileset_tiledef *td;
+	int index, id, sc, sr, mx, my;
+
+	index = (start_col + c) + ((start_row + r) * map->columns);
+
+	if ((id = layer->tiles[index]) == 0)
+		return;
+
+	id -= 1;
+
+	/* Sprite row/column. */
+	sc = (id) % map->tileset->sprite->ncols;
+	sr = (id) / map->tileset->sprite->ncols;
+
+	/* On screen coordinates. */
+	mx = start_x + (int)c * (int)map->tileset->sprite->cellw;
+	my = start_y + (int)r * (int)map->tileset->sprite->cellh;
+
+	tileset_draw(map->tileset, sr, sc, mx, my);
+
+	if ((td = find_tiledef_by_id(map, id)) && texture_ok(colbox))
+		texture_scale(colbox, 0, 0, 5, 5, mx + td->x, my + td->y, td->w, td->h, 0);
+
+	if (map->flags & MAP_FLAGS_SHOW_GRID) {
+		painter_set_color(0x202e37ff);
+		painter_draw_line(mx, my, mx + (int)map->tileset->sprite->cellw, my);
+		painter_draw_line(
+		    mx + (int)map->tileset->sprite->cellw - 1, my,
+		    mx + (int)map->tileset->sprite->cellw - 1, my + (int)map->tileset->sprite->cellh);
+	}
+}
+
 static void
-draw_layer(struct map *map, const struct map_layer *layer)
+draw_layer(const struct map *map, const struct map_layer *layer)
 {
 	assert(map);
 	assert(layer);
 
+	/* Beginning of view in row/column. */
+	const unsigned int start_col = map->view_x / map->tileset->sprite->cellw;
+	const unsigned int start_row = map->view_y / map->tileset->sprite->cellh;
+
+	/* Convert into x/y coordinate. */
+	const int start_x = 0 - (map->view_x % (int)map->tileset->sprite->cellw);
+	const int start_y = 0 - (map->view_y % (int)map->tileset->sprite->cellh);
+
+	/* Number of row/columns to draw starting from there. */
+	const unsigned int ncols = (map->view_w / map->tileset->sprite->cellw) + 2;
+	const unsigned int nrows = (map->view_h / map->tileset->sprite->cellh) + 2;
+
 	struct texture colbox = {0};
-	const size_t ntiles = map->w * map->h;
+
+	if (!layer->tiles)
+		return;
 
 	/* Show collision box if requested. */
 	if (map->flags & MAP_FLAGS_SHOW_COLLIDE && texture_new(&colbox, 16, 16)) {
@@ -457,36 +515,13 @@ draw_layer(struct map *map, const struct map_layer *layer)
 		PAINTER_END();
 	}
 
-	for (size_t i = 0; i < ntiles; ++i) {
-		const struct map_tiledef *td;
-		int mx, my, mr, mc, sr, sc, id;
+	for (unsigned int r = 0; r < nrows; ++r) {
+		for (unsigned int c = 0; c < ncols; ++c) {
+			if (start_col + c >= map->columns ||
+			    start_row + r >= map->rows)
+				continue;
 
-		if (layer->tiles[i] == 0)
-			continue;
-
-		id = layer->tiles[i] - 1;
-
-		/* Map row/column. */
-		mc = i % map->w;
-		mr = i / map->w;
-
-		/* Map row/column real positions. */
-		mx = mc * map->tileset->cellw;
-		my = mr * map->tileset->cellh;
-
-		/* Sprite row/column. */
-		sc = (id) % map->tileset->ncols;
-		sr = (id) / map->tileset->ncols;
-
-		sprite_draw(map->tileset, sr, sc, mx, my);
-
-		if ((td = find_tiledef_by_id(map, id)) && texture_ok(&colbox))
-			texture_scale(&colbox, 0, 0, 5, 5, mx + td->x, my + td->y, td->w, td->h, 0);
-
-		if (map->flags & MAP_FLAGS_SHOW_GRID) {
-			painter_set_color(0x202e37ff);
-			painter_draw_line(mx, my, mx + map->tileset->cellw, my);
-			painter_draw_line(mx + map->tileset->cellw - 1, my, mx + map->tileset->cellw - 1, my + map->tileset->cellh);
+			draw_layer_tile(map, layer, &colbox, start_col, start_row, start_x, start_y, r, c);
 		}
 	}
 
@@ -497,9 +532,6 @@ bool
 map_init(struct map *map)
 {
 	assert(map);
-
-	if (!texture_new(&map->picture, map->real_w, map->real_h))
-		return false;
 
 	init(map);
 
@@ -542,14 +574,16 @@ map_draw(const struct map *map)
 	struct texture box = {0};
 
 	/* Draw the texture about background/foreground. */
-	texture_scale(&map->picture, map->view_x, map->view_y, window.w, window.h,
-	    0, 0, window.w, window.h, 0.0);
+	draw_layer(map, &map->layers[MAP_LAYER_TYPE_BACKGROUND]);
+	draw_layer(map, &map->layers[MAP_LAYER_TYPE_FOREGROUND]);
 
 	walksprite_draw(
 		&map->player_ws,
 		map->player_angle,
 		map->player_x - map->view_x,
 		map->player_y - map->view_y);
+
+	draw_layer(map, &map->layers[MAP_LAYER_TYPE_ABOVE]);
 
 	action_stack_draw(&map->actions);
 
@@ -568,23 +602,11 @@ map_draw(const struct map *map)
 }
 
 void
-map_repaint(struct map *map)
-{
-	assert(map);
-
-	PAINTER_BEGIN(&map->picture);
-	draw_layer(map, &map->layers[MAP_LAYER_TYPE_BACKGROUND]);
-	draw_layer(map, &map->layers[MAP_LAYER_TYPE_FOREGROUND]);
-	PAINTER_END();
-}
-
-void
 map_finish(struct map *map)
 {
 	assert(map);
 
 	action_stack_finish(&map->actions);
-	texture_finish(&map->picture);
 
 	memset(map, 0, sizeof (*map));
 }

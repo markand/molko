@@ -26,7 +26,20 @@ set(
 
 set(
 	ASSETS_MAPS
-	${examples_SOURCE_DIR}/assets/maps/simple.json
+	${examples_SOURCE_DIR}/assets/maps/map-rebonai.json
+	${examples_SOURCE_DIR}/assets/maps/map-world.json
+)
+
+set(
+	ASSETS_MAPS_SPRITES
+	${examples_SOURCE_DIR}/assets/maps/sprite-town.png
+	${examples_SOURCE_DIR}/assets/maps/sprite-world.png
+)
+
+set(
+	ASSETS_TILESETS
+	${examples_SOURCE_DIR}/assets/maps/tileset-town.json
+	${examples_SOURCE_DIR}/assets/maps/tileset-world.json
 )
 
 set(
@@ -52,7 +65,6 @@ set(
 set(
 	ASSETS
 	${ASSETS_IMAGES}
-	${ASSETS_MAPS}
 	${ASSETS_MUSIC}
 	${ASSETS_SOUNDS}
 	${ASSETS_SPRITES}
@@ -61,11 +73,38 @@ set(
 # Can't use an interface library as examples live in subdirectories.
 file(WRITE ${examples_BINARY_DIR}/none.c "void molko() {}")
 
+# These files just need to be copied.
+file(MAKE_DIRECTORY ${cmake_BINARY_DIR}/assets/maps)
+
+foreach (s ${ASSETS_MAPS_SPRITES})
+	get_filename_component(basename ${s} NAME)
+	set(output ${examples_BINARY_DIR}/assets/maps/${basename})
+
+	add_custom_command(
+		OUTPUT ${output}
+		COMMENT "Copy ${basename}"
+		DEPENDS ${s}
+		COMMAND ${CMAKE_COMMAND} -E copy ${s} ${output}
+		VERBATIM
+	)
+
+	list(APPEND COPY_OUTPUTS ${output})
+endforeach ()
+
 molko_define_library(
 	TARGET libexamples
 	FOLDER examples
-	SOURCES ${examples_BINARY_DIR}/none.c ${ASSETS} ${ASSETS_MAPS}
+	SOURCES
+		${examples_BINARY_DIR}/none.c
+		${COPY_OUTPUTS}
+		${ASSETS}
+		${ASSETS_MAPS}
+		${ASSETS_TILESETS}
+	PUBLIC_FLAGS
+		BINDIR="${examples_BINARY_DIR}"
 	ASSETS ${ASSETS}
+	MAPS ${ASSETS_MAPS}
+	TILESETS ${ASSETS_TILESETS}
 )
 
 add_subdirectory(example-action)
@@ -89,3 +128,4 @@ source_group("assets/maps" FILES ${ASSETS_MAPS})
 source_group("assets/music" FILES ${ASSETS_MUSIC})
 source_group("assets/sounds" FILES ${ASSETS_SOUNDS})
 source_group("assets/sprites" FILES ${ASSETS_SPRITES})
+source_group("assets/tilesets" FILES ${ASSETS_TILESETS})

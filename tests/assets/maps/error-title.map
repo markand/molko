@@ -1,8 +1,6 @@
+columns|2
 width|2
-height|2
-tilewidth|32
-tileheight|16
-tileset|sample-map.png
+tileset|sample-tileset.tileset
 layer|background
 0
 1

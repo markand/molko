@@ -29,36 +29,62 @@
 #include <rpg/map.h>
 
 GREATEST_TEST
-test_sample(void)
+test_basics_sample(void)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
 
-	GREATEST_ASSERT(map_file_open(&loader, DIRECTORY "sample-map.map", &map));
+	GREATEST_ASSERT(map_file_open(&loader, &map, DIRECTORY "sample-map.map"));
 	GREATEST_ASSERT_STR_EQ("This is a test map", map.title);
-	GREATEST_ASSERT_EQ(2, map.w);
-	GREATEST_ASSERT_EQ(2, map.h);
-	GREATEST_ASSERT_EQ(32, map.tile_w);
-	GREATEST_ASSERT_EQ(16, map.tile_h);
+	GREATEST_ASSERT_EQ(4, map.columns);
+	GREATEST_ASSERT_EQ(2, map.rows);
+
 	GREATEST_ASSERT_EQ(0, map.layers[0].tiles[0]);
 	GREATEST_ASSERT_EQ(1, map.layers[0].tiles[1]);
 	GREATEST_ASSERT_EQ(2, map.layers[0].tiles[2]);
 	GREATEST_ASSERT_EQ(3, map.layers[0].tiles[3]);
-	GREATEST_ASSERT_EQ(4, map.layers[1].tiles[0]);
-	GREATEST_ASSERT_EQ(5, map.layers[1].tiles[1]);
-	GREATEST_ASSERT_EQ(6, map.layers[1].tiles[2]);
-	GREATEST_ASSERT_EQ(7, map.layers[1].tiles[3]);
-	GREATEST_ASSERT_EQ(2, map.tiledefsz);
-	GREATEST_ASSERT_EQ(0, map.tiledefs[0].id);
-	GREATEST_ASSERT_EQ(10, map.tiledefs[0].x);
-	GREATEST_ASSERT_EQ(12, map.tiledefs[0].y);
-	GREATEST_ASSERT_EQ(5, map.tiledefs[0].w);
-	GREATEST_ASSERT_EQ(7, map.tiledefs[0].h);
-	GREATEST_ASSERT_EQ(2, map.tiledefs[1].id);
-	GREATEST_ASSERT_EQ(12, map.tiledefs[1].x);
-	GREATEST_ASSERT_EQ(14, map.tiledefs[1].y);
-	GREATEST_ASSERT_EQ(8, map.tiledefs[1].w);
-	GREATEST_ASSERT_EQ(10, map.tiledefs[1].h);
+	GREATEST_ASSERT_EQ(4, map.layers[0].tiles[4]);
+	GREATEST_ASSERT_EQ(5, map.layers[0].tiles[5]);
+	GREATEST_ASSERT_EQ(6, map.layers[0].tiles[6]);
+	GREATEST_ASSERT_EQ(7, map.layers[0].tiles[7]);
+
+	GREATEST_ASSERT_EQ(8,  map.layers[1].tiles[0]);
+	GREATEST_ASSERT_EQ(9,  map.layers[1].tiles[1]);
+	GREATEST_ASSERT_EQ(10, map.layers[1].tiles[2]);
+	GREATEST_ASSERT_EQ(11, map.layers[1].tiles[3]);
+	GREATEST_ASSERT_EQ(12, map.layers[1].tiles[4]);
+	GREATEST_ASSERT_EQ(13, map.layers[1].tiles[5]);
+	GREATEST_ASSERT_EQ(14, map.layers[1].tiles[6]);
+	GREATEST_ASSERT_EQ(15, map.layers[1].tiles[7]);
+
+	GREATEST_ASSERT_EQ(64U, map.tileset->sprite->cellw);
+	GREATEST_ASSERT_EQ(32U, map.tileset->sprite->cellh);
+
+	GREATEST_ASSERT_EQ(4, map.tileset->tiledefsz);
+
+	GREATEST_ASSERT_EQ(129, map.tileset->tiledefs[0].id);
+	GREATEST_ASSERT_EQ(8, map.tileset->tiledefs[0].x);
+	GREATEST_ASSERT_EQ(0, map.tileset->tiledefs[0].y);
+	GREATEST_ASSERT_EQ(56, map.tileset->tiledefs[0].w);
+	GREATEST_ASSERT_EQ(40, map.tileset->tiledefs[0].h);
+
+	GREATEST_ASSERT_EQ(130, map.tileset->tiledefs[1].id);
+	GREATEST_ASSERT_EQ(0, map.tileset->tiledefs[1].x);
+	GREATEST_ASSERT_EQ(0, map.tileset->tiledefs[1].y);
+	GREATEST_ASSERT_EQ(62, map.tileset->tiledefs[1].w);
+	GREATEST_ASSERT_EQ(40, map.tileset->tiledefs[1].h);
+
+	GREATEST_ASSERT_EQ(132, map.tileset->tiledefs[2].id);
+	GREATEST_ASSERT_EQ(0, map.tileset->tiledefs[2].x);
+	GREATEST_ASSERT_EQ(0, map.tileset->tiledefs[2].y);
+	GREATEST_ASSERT_EQ(64, map.tileset->tiledefs[2].w);
+	GREATEST_ASSERT_EQ(40, map.tileset->tiledefs[2].h);
+
+	GREATEST_ASSERT_EQ(133, map.tileset->tiledefs[3].id);
+	GREATEST_ASSERT_EQ(0, map.tileset->tiledefs[3].x);
+	GREATEST_ASSERT_EQ(0, map.tileset->tiledefs[3].y);
+	GREATEST_ASSERT_EQ(58, map.tileset->tiledefs[3].w);
+	GREATEST_ASSERT_EQ(40, map.tileset->tiledefs[3].h);
 
 	map_finish(&map);
 	map_file_finish(&loader);
@@ -72,7 +98,7 @@ test_error_title(void)
 	struct map_file loader = {0};
 	struct map map = {0};
 
-	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-title.map", &map));
+	GREATEST_ASSERT(!map_file_open(&loader, &map, DIRECTORY "error-title.map"));
 
 	map_finish(&map);
 	map_file_finish(&loader);
@@ -81,12 +107,12 @@ test_error_title(void)
 }
 
 GREATEST_TEST
-test_error_width(void)
+test_error_columns(void)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
 
-	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-width.map", &map));
+	GREATEST_ASSERT(!map_file_open(&loader, &map, DIRECTORY "error-columns.map"));
 
 	map_finish(&map);
 	map_file_finish(&loader);
@@ -95,12 +121,12 @@ test_error_width(void)
 }
 
 GREATEST_TEST
-test_error_height(void)
+test_error_rows(void)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
 
-	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-height.map", &map));
+	GREATEST_ASSERT(!map_file_open(&loader, &map, DIRECTORY "error-rows.map"));
 
 	map_finish(&map);
 	map_file_finish(&loader);
@@ -108,46 +134,16 @@ test_error_height(void)
 	GREATEST_PASS();
 }
 
-GREATEST_TEST
-test_error_tilewidth(void)
+GREATEST_SUITE(suite_basics)
 {
-	struct map_file loader = {0};
-	struct map map = {0};
-
-	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-tilewidth.map", &map));
-
-	map_finish(&map);
-	map_file_finish(&loader);
-
-	GREATEST_PASS();
+	GREATEST_RUN_TEST(test_basics_sample);
 }
 
-GREATEST_TEST
-test_error_tileheight(void)
-{
-	struct map_file loader = {0};
-	struct map map = {0};
-
-	GREATEST_ASSERT(!map_file_open(&loader, DIRECTORY "error-tileheight.map", &map));
-
-	map_finish(&map);
-	map_file_finish(&loader);
-
-	GREATEST_PASS();
-}
-
-GREATEST_SUITE(basics)
-{
-	GREATEST_RUN_TEST(test_sample);
-}
-
-GREATEST_SUITE(errors)
+GREATEST_SUITE(suite_errors)
 {
 	GREATEST_RUN_TEST(test_error_title);
-	GREATEST_RUN_TEST(test_error_width);
-	GREATEST_RUN_TEST(test_error_height);
-	GREATEST_RUN_TEST(test_error_tilewidth);
-	GREATEST_RUN_TEST(test_error_tileheight);
+	GREATEST_RUN_TEST(test_error_columns);
+	GREATEST_RUN_TEST(test_error_rows);
 }
 
 GREATEST_MAIN_DEFS();
@@ -164,8 +160,8 @@ main(int argc, char **argv)
 	 */
 
 	if (core_init() && window_open("test-map", 100, 100)) {
-		GREATEST_RUN_SUITE(basics);
-		GREATEST_RUN_SUITE(errors);
+		GREATEST_RUN_SUITE(suite_basics);
+		GREATEST_RUN_SUITE(suite_errors);
 	}
 
 	GREATEST_MAIN_END();

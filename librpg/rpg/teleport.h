@@ -32,25 +32,73 @@ struct action;
 struct map;
 struct state;
 
+/**
+ * \brief Animate screen and teleport.
+ *
+ * This structure should be used as an action to block the current state input,
+ * draw a fading effect and finally change the game state.
+ */
 struct teleport {
-	struct state *state;
-	unsigned int elapsed;
-	unsigned int alpha;
+	struct state *state;    /*!< (+&) Next state to use. */
+	unsigned int elapsed;   /*!< (-) Elapsed time since last frame. */
+	unsigned int alpha;     /*!< (-) Current alpha */
 	struct texture fade;
 };
 
+/**
+ * Start the teleport effect.
+ *
+ * This function will inhibit the current state input to avoid user interaction
+ * while the effect is running.
+ *
+ * \pre tp != NULL
+ * \param tp the teleport to start
+ */
 void
 teleport_start(struct teleport *tp);
 
+/**
+ * Update the transition.
+ *
+ * \pre tp != NULL
+ * \param tp the teleport effect
+ * \param ticks the elapsed time since last frame
+ * \return True if completed.
+ */
 bool
 teleport_update(struct teleport *tp, unsigned int ticks);
 
+/**
+ * Draw the transition effect.
+ *
+ * \pre tp != NULL
+ * \param tp the teleport effect
+ */
 void
 teleport_draw(struct teleport *tp);
 
+/**
+ * Cleanup the teleport effect.
+ *
+ * \pre tp != NULL
+ * \param tp the teleport effect to clear
+ */
 void
 teleport_finish(struct teleport *tp);
 
+/**
+ * Transform the teleport effect into an action. This function will also call
+ * teleport_start.
+ *
+ * \pre tp != NULL && tp->state != NULL
+ * \pre act != NULL
+ * \param tp the teleport object
+ * \param act the action to fill
+ * \post act->data contains tp
+ * \post act->update will invoke teleport_update
+ * \post act->draw will invoke teleport_draw
+ * \post act->finish will invoke teleport_finish
+ */
 void
 teleport_action(struct teleport *tp, struct action *act);
 

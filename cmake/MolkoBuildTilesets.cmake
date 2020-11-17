@@ -1,5 +1,5 @@
 #
-# CMakeLists.txt -- CMake build system for molko
+# MolkoBuildTilesets.cmake -- CMake build system for molko
 #
 # Copyright (c) 2020 David Demelier <markand@malikania.fr>
 #
@@ -16,25 +16,26 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(tests)
+macro(molko_build_tilesets inputs outputs)
+	set(${outputs})
 
-molko_define_test(TARGET action SOURCES test-action.c)
-molko_define_test(TARGET action-script SOURCES test-action-script.c)
-molko_define_test(TARGET color SOURCES test-color.c)
-molko_define_test(TARGET error SOURCES test-error.c)
+	foreach (t ${inputs})
+		file(RELATIVE_PATH basename ${CMAKE_CURRENT_SOURCE_DIR} ${t})
+		string(REGEX REPLACE "\\.json$" ".tileset" output ${basename})
+		set(output ${CMAKE_CURRENT_BINARY_DIR}/${output})
+		get_filename_component(outputdir ${output} DIRECTORY)
+		file(MAKE_DIRECTORY ${outputdir})
 
-molko_define_test(
-	TARGET map
-	SOURCES test-map.c
-	FLAGS DIRECTORY="${tests_SOURCE_DIR}/assets/maps/"
-)
+		add_custom_command(
+			OUTPUT ${output}
+			COMMAND
+				$<TARGET_FILE:mlk-tileset> < ${t} > ${output}
+			COMMENT
+				"Generating tileset from ${basename}"
+			DEPENDS $<TARGET_FILE:mlk-tileset> ${t}
+			VERBATIM
+		)
 
-molko_define_test(TARGET save SOURCES test-save.c)
-molko_define_test(TARGET state SOURCES test-state.c)
-molko_define_test(TARGET drawable SOURCES test-drawable.c)
-
-molko_define_test(
-	TARGET tileset
-	SOURCES test-tileset.c
-	FLAGS DIRECTORY="${tests_SOURCE_DIR}/assets/maps/"
-)
+		list(APPEND ${outputs} ${output})
+	endforeach ()
+endmacro ()

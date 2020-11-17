@@ -27,12 +27,10 @@
 #include <stddef.h>
 
 #include <core/action.h>
-#include <core/texture.h>
 
 #include "walksprite.h"
 
-struct sprite;
-struct state;
+struct tileset;
 
 union event;
 
@@ -44,17 +42,6 @@ enum map_layer_type {
 	MAP_LAYER_TYPE_FOREGROUND,      /*!< Foreground layer. */
 	MAP_LAYER_TYPE_ABOVE,           /*!< Above foreground layer. */
 	MAP_LAYER_TYPE_NUM              /*!< Number of layers. */
-};
-
-/**
- * \brief Describe a tile in a tileset.
- */
-struct map_tiledef {
-	short id;                       /*!< (*) Tile index. */
-	short x;                        /*!< (*) Collision region starts in y. */
-	short y;                        /*!< (*) Collision region starts in y. */
-	unsigned short w;               /*!< (*) Collision width. */
-	unsigned short h;               /*!< (*) Collision height. */
 };
 
 /**
@@ -81,22 +68,16 @@ enum map_flags {
  */
 struct map {
 	const char *title;              /*!< (+) Map title name. */
-	int origin_x;                   /*!< (+) Where the player starts in X. */
-	int origin_y;                   /*!< (+) Where the player starts in Y. */
-	unsigned int real_w;            /*!< (-) Real width in pixels. */
-	unsigned int real_h;            /*!< (-) Real height in pixels. */
-	unsigned int w;                 /*!< (-) Map width in cells. */
-	unsigned int h;                 /*!< (-) Map height in cells. */
-	unsigned short tile_w;          /*!< (-) Pixels per cell (width). */
-	unsigned short tile_h;          /*!< (-) Pixels per cell (height). */
-	struct sprite *tileset;         /*!< (+&) Tileset to use. */
-	struct texture picture;         /*!< (-) Map drawn into a texture. */
-	struct map_tiledef *tiledefs;   /*!< (+&?) Per tile properties (must be sorted by id). */
-	size_t tiledefsz;               /*!< (+) Number of tile properties. */
+	unsigned int columns;           /*!< (-) Number of columns. */
+	unsigned int rows;              /*!< (-) Number of rows. */
+
+	/* Tileset. */
+	struct tileset *tileset;        /*!< (+&?) Tileset to use. */
 
 	/* View options. */
 	enum map_flags flags;           /*!< (+) View options. */
 
+	/* List of actions. */
 	struct action_stack actions;    /*!< (+) */
 
 	/* Player. */
@@ -166,16 +147,6 @@ map_update(struct map *map, unsigned int ticks);
  */
 void
 map_draw(const struct map *map);
-
-/**
- * Force map repaint on its texture.
- *
- * \pre map != NULL
- * \param map the map to repaint
- * \warning This function does not render anything on the screen.
- */
-void
-map_repaint(struct map *map);
 
 /**
  * Dispose map resources.

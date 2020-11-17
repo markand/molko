@@ -62,7 +62,8 @@ map_state_start(struct state *st)
 
 	game.inhibit &= ~(INHIBIT_STATE_INPUT);
 
-	map_init(&ms->map);
+	if (!map_init(&ms->map))
+		panic();
 }
 
 static void
@@ -117,9 +118,9 @@ map_state_new(const char *name)
 	ms = alloc_zero(1, sizeof (*ms));
 	ms->loader.load_action = load_action;
 
-	snprintf(path, sizeof (path), "%s/%s.map", BINDIR, name);
+	snprintf(path, sizeof (path), "%s/assets/maps/%s.map", BINDIR, name);
 
-	if (!map_file_open(&ms->loader, path, &ms->map))
+	if (!map_file_open(&ms->loader, &ms->map, path))
 		panic();
 
 	/* TODO: we may need to add a function in loader. */
@@ -277,7 +278,7 @@ quit(void)
 static void
 run(void)
 {
-	game_switch(map_state_new("simple"), true);
+	game_switch(map_state_new("map-world"), true);
 	game_loop();
 }
 

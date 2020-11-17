@@ -42,7 +42,7 @@ macro(molko_build_assets assets outputs)
 			DEPENDS
 				${a}
 				$<TARGET_FILE:bcc>
-			COMMENT "Generate header file for ${basename}"
+			COMMENT "Generate header file from ${basename}"
 		)
 
 		list(APPEND ${outputs} ${output})

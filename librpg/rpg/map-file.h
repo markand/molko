@@ -44,6 +44,8 @@
 #include <core/texture.h>
 
 #include "map.h"
+#include "tileset.h"
+#include "tileset-file.h"
 
 /**
  * \brief Maximum title map length in file.
@@ -81,9 +83,15 @@ struct map_file {
 	 */
 	struct map_layer layers[MAP_LAYER_TYPE_NUM];
 
-	struct map_tiledef *tiledefs;   /*!< (*) Per tile properties. */
-	struct texture tileset;         /*!< (*) Tileset image. */
-	struct sprite sprite;           /*!< (*) Tileset sprite. */
+	/**
+	 * (*) Tileset file loader.
+	 */
+	struct tileset_file tileset_file;
+
+	/**
+	 * (*) Tileset referenced from the map.
+	 */
+	struct tileset tileset;
 };
 
 /**
@@ -93,12 +101,12 @@ struct map_file {
  * \pre path != NULL
  * \pre map != NULL
  * \param file the loader to use
- * \param path the path to the map file
  * \param map the map to set
+ * \param path the path to the map file
  * \warning Keep file object until map is no longer used.
  */
 bool
-map_file_open(struct map_file *file, const char *path, struct map *map) PLAT_NODISCARD;
+map_file_open(struct map_file *file, struct map *map, const char *path) PLAT_NODISCARD;
 
 /**
  * Close resources from the loader.

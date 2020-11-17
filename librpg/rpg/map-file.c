@@ -37,29 +37,15 @@
 #define MAX_F(v) MAX_F_(v)
 #define MAX_F_(v) "%" #v "c"
 
-struct parser {
+struct context {
 	struct map_file *mf;            /* Map loader. */
 	struct map *map;                /* Map object to fill. */
 	FILE *fp;                       /* Map file pointer. */
 	char basedir[PATH_MAX];         /* Parent map directory */
 };
 
-static int
-tiledef_cmp(const void *d1, const void *d2)
-{
-	const struct map_tiledef *mtd1 = d1;
-	const struct map_tiledef *mtd2 = d2;
-
-	if (mtd1->id < mtd2->id)
-		return -1;
-	if (mtd1->id > mtd2->id)
-		return 1;
-
-	return 0;
-}
-
 static bool
-parse_tiles(struct parser *ps, const char *layer_name)
+parse_layer_tiles(struct context *ctx, const char *layer_name)
 {
 	enum map_layer_type layer_type;
 	size_t amount, current;
@@ -68,56 +54,58 @@ parse_tiles(struct parser *ps, const char *layer_name)
 		layer_type = MAP_LAYER_TYPE_BACKGROUND;
 	else if (strcmp(layer_name, "foreground") == 0)
 		layer_type = MAP_LAYER_TYPE_FOREGROUND;
+	else if (strcmp(layer_name, "above") == 0)
+		layer_type = MAP_LAYER_TYPE_ABOVE;
 	else
 		return errorf("invalid layer type: %s", layer_name);
 
-	amount = ps->map->w * ps->map->h;
+	amount = ctx->map->columns * ctx->map->rows;
 	current = 0;
 
 	/*
 	 * The next line after a layer declaration is a list of plain integer
 	 * that fill the layer tiles.
 	 */
-	if (!(ps->mf->layers[layer_type].tiles = alloc_zero(amount, sizeof (unsigned short))))
+	if (!(ctx->mf->layers[layer_type].tiles = alloc_zero(amount, sizeof (unsigned short))))
 		return false;
 
-	for (int tile; fscanf(ps->fp, "%d\n", &tile) && current < amount; ++current)
-		ps->mf->layers[layer_type].tiles[current] = tile;
+	for (int tile; fscanf(ctx->fp, "%d\n", &tile) && current < amount; ++current)
+		ctx->mf->layers[layer_type].tiles[current] = tile;
 
-	ps->map->layers[layer_type].tiles = ps->mf->layers[layer_type].tiles;
+	ctx->map->layers[layer_type].tiles = ctx->mf->layers[layer_type].tiles;
 
 	return true;
 }
 
 static bool
-parse_actions(struct parser *ps)
+parse_actions(struct context *ctx)
 {
 	char exec[128 + 1];
 	int x = 0, y = 0;
 	unsigned int w = 0, h = 0;
 
-	while (fscanf(ps->fp, "%d|%d|%u|%u|%128[^\n]\n", &x, &y, &w, &h, exec) == 5) {
+	while (fscanf(ctx->fp, "%d|%d|%u|%u|%128[^\n]\n", &x, &y, &w, &h, exec) == 5) {
 		struct action *act;
 
-		if (!ps->mf->load_action) {
+		if (!ctx->mf->load_action) {
 			tracef("ignoring action %d,%d,%u,%u,%s", x, y, w, h, exec);
 			continue;
 		}
 
-		if ((act = ps->mf->load_action(ps->map, x, y, w, h, exec)))
-			action_stack_add(&ps->map->actions, act);
+		if ((act = ctx->mf->load_action(ctx->map, x, y, w, h, exec)))
+			action_stack_add(&ctx->map->actions, act);
 	}
 
 	return true;
 }
 
 static bool
-parse_layer(struct parser *ps, const char *line)
+parse_layer(struct context *ctx, const char *line)
 {
 	char layer_name[32 + 1] = {0};
 
 	/* Check if weight/height has been specified. */
-	if (ps->map->w == 0 || ps->map->h == 0)
+	if (ctx->map->columns == 0 || ctx->map->rows == 0)
 		return errorf("missing map dimensions before layer");
 
 	/* Determine layer type. */
@@ -125,181 +113,105 @@ parse_layer(struct parser *ps, const char *line)
 		return errorf("missing layer type definition");
 
 	if (strcmp(layer_name, "actions") == 0)
-		return parse_actions(ps);
+		return parse_actions(ctx);
 
-	return parse_tiles(ps, layer_name);
+	return parse_layer_tiles(ctx, layer_name);
 }
 
 static bool
-parse_tileset(struct parser *ps, const char *line)
+parse_tileset(struct context *ctx, const char *line)
 {
-	char filename[FILENAME_MAX + 1] = {0};
-	char filepath[PATH_MAX];
-	int ret;
+	char path[PATH_MAX] = {0}, *p;
+	struct map_file *mf = ctx->mf;
+	struct tileset_file *tf = &mf->tileset_file;
 
-	if (ps->map->tile_w == 0 || ps->map->tile_h == 0)
-		return errorf("missing map dimensions before tileset");
+	if (!(p = strchr(line, '|')))
+		return errorf("could not parse tileset");
 
-	if ((ret = sscanf(line, "tileset|" MAX_F(FILENAME_MAX), filename)) == 1) {
-		snprintf(filepath, sizeof (filepath), "%s/%s", ps->basedir, filename);
+	snprintf(path, sizeof (path), "%s/%s", ctx->basedir, p + 1);
 
-		if (!image_open(&ps->mf->tileset, filepath))
-			return false;
-	}
+	if (!tileset_file_open(tf, &mf->tileset, path))
+		return false;
 
-	/* Initialize sprite. */
-	sprite_init(&ps->mf->sprite, &ps->mf->tileset, ps->map->tile_w, ps->map->tile_h);
-	ps->map->tileset = &ps->mf->sprite;
+	ctx->map->tileset = &mf->tileset;
 
 	return true;
 }
 
 static bool
-parse_title(struct parser *ps, const char *line)
+parse_title(struct context *ctx, const char *line)
 {
-	if (sscanf(line, "title|" MAX_F(MAP_FILE_TITLE_MAX), ps->mf->title) != 1 || strlen(ps->mf->title) == 0)
+	if (sscanf(line, "title|" MAX_F(MAP_FILE_TITLE_MAX), ctx->mf->title) != 1 || strlen(ctx->mf->title) == 0)
 		return errorf("null map title");
 
-	ps->map->title = ps->mf->title;
+	ctx->map->title = ctx->mf->title;
 
 	return true;
 }
 
 static bool
-parse_width(struct parser *ps, const char *line)
+parse_columns(struct context *ctx, const char *line)
 {
-	if (sscanf(line, "width|%u", &ps->map->w) != 1 || ps->map->w == 0)
-		return errorf("null map width");
+	if (sscanf(line, "columns|%u", &ctx->map->columns) != 1 || ctx->map->columns == 0)
+		return errorf("null map columns");
 
 	return true;
 }
 
 static bool
-parse_height(struct parser *ps, const char *line)
+parse_rows(struct context *ctx, const char *line)
 {
-	if (sscanf(line, "height|%u", &ps->map->h) != 1 || ps->map->h == 0)
-		return errorf("null map height");
+	if (sscanf(line, "rows|%u", &ctx->map->rows) != 1 || ctx->map->rows == 0)
+		return errorf("null map rows");
 
 	return true;
 }
 
 static bool
-parse_tilewidth(struct parser *ps, const char *line)
+parse_origin(struct context *ctx, const char *line)
 {
-	if (sscanf(line, "tilewidth|%hu", &ps->map->tile_w) != 1 || ps->map->tile_w == 0)
-		return errorf("null map tile width");
-	if (ps->map->w == 0)
-		return errorf("missing map width before tilewidth");
-
-	ps->map->real_w = ps->map->w * ps->map->tile_w;
-
-	return true;
-}
-
-static bool
-parse_tileheight(struct parser *ps, const char *line)
-{
-	if (sscanf(line, "tileheight|%hu", &ps->map->tile_h) != 1 || ps->map->tile_h == 0)
-		return errorf("null map tile height");
-	if (ps->map->h == 0)
-		return errorf("missing map height before tileheight");
-
-	ps->map->real_h = ps->map->h * ps->map->tile_h;
-
-	return true;
-}
-
-static bool
-parse_origin(struct parser *ps, const char *line)
-{
-	if (sscanf(line, "origin|%d|%d", &ps->map->origin_x, &ps->map->origin_y) != 2)
+	if (sscanf(line, "origin|%d|%d", &ctx->map->player_x, &ctx->map->player_y) != 2)
 		return errorf("invalid origin");
 
-	/*
-	 * We adjust the player position here because it should not be done in
-	 * the map_init function. This is because the player should not move
-	 * magically each time we re-use the map (saving position).
-	 */
-	ps->map->player_x = ps->map->origin_x;
-	ps->map->player_y = ps->map->origin_y;
-
 	return true;
 }
 
 static bool
-parse_tiledefs(struct parser *ps, const char *line)
-{
-	(void)line;
-
-	short x, y;
-	unsigned short id, w, h;
-	struct map_tiledef *tiledefs = NULL;
-	size_t tiledefsz = 0;
-
-	while (fscanf(ps->fp, "%hu|%hd|%hd|%hu|%hu\n", &id, &x, &y, &w, &h) == 5) {
-		tiledefs = allocator.realloc(tiledefs, ++tiledefsz * sizeof (*tiledefs));
-		tiledefs[tiledefsz - 1].id = id;
-		tiledefs[tiledefsz - 1].x = x;
-		tiledefs[tiledefsz - 1].y = y;
-		tiledefs[tiledefsz - 1].w = w;
-		tiledefs[tiledefsz - 1].h = h;
-	}
-
-	qsort(tiledefs, tiledefsz, sizeof (*tiledefs), tiledef_cmp);
-	ps->map->tiledefs = ps->mf->tiledefs = tiledefs;
-	ps->map->tiledefsz = tiledefsz;
-
-	return true;
-}
-
-static bool
-parse_line(struct parser *ps, const char *line)
+parse_line(struct context *ctx, const char *line)
 {
 	static const struct {
 		const char *property;
-		bool (*read)(struct parser *, const char *);
+		bool (*read)(struct context *, const char *);
 	} props[] = {
 		{ "title",      parse_title             },
-		{ "width",      parse_width             },
-		{ "height",     parse_height            },
-		{ "tilewidth",  parse_tilewidth         },
-		{ "tileheight", parse_tileheight        },
+		{ "columns",    parse_columns           },
+		{ "rows",       parse_rows              },
 		{ "tileset",    parse_tileset           },
 		{ "origin",     parse_origin            },
 		{ "layer",      parse_layer             },
-		{ "tiledefs",   parse_tiledefs          }
 	};
 
 	for (size_t i = 0; i < NELEM(props); ++i)
 		if (strncmp(line, props[i].property, strlen(props[i].property)) == 0)
-			return props[i].read(ps, line);
+			return props[i].read(ctx, line);
 
 	return true;
 }
 
 static bool
-parse(struct map_file *loader, const char *path, struct map *map, FILE *fp)
+parse(struct context *ctx, const char *path)
 {
 	char line[1024];
-	struct parser ps = {
-		.mf = loader,
-		.map = map,
-		.fp = fp
-	};
+	char basedir[PATH_MAX];
 
-	/*
-	 * Even though dirname(3) usually not modify the path as argument it may
-	 * do according to POSIX specification, as such we still need a
-	 * temporary buffer.
-	 */
-	snprintf(ps.basedir, sizeof (ps.basedir), "%s", path);
-	snprintf(ps.basedir, sizeof (ps.basedir), "%s", dirname(ps.basedir));
+	snprintf(basedir, sizeof (basedir), "%s", path);
+	snprintf(ctx->basedir, sizeof (ctx->basedir), "%s", dirname(basedir));
 
-	while (fgets(line, sizeof (line), fp)) {
+	while (fgets(line, sizeof (line), ctx->fp)) {
 		/* Remove \n if any */
 		line[strcspn(line, "\n")] = '\0';
 
-		if (!parse_line(&ps, line))
+		if (!parse_line(ctx, line))
 			return false;
 	}
 
@@ -323,33 +235,36 @@ check(struct map *map)
 		return errorf("missing background layer");
 	if (!map->layers[1].tiles)
 		return errorf("missing foreground layer");
-	if (!sprite_ok(map->tileset))
+	if (!tileset_ok(map->tileset))
 		return errorf("missing tileset");
 
 	return true;
 }
 
 bool
-map_file_open(struct map_file *file, const char *path, struct map *map)
+map_file_open(struct map_file *file, struct map *map, const char *path)
 {
 	assert(file);
 	assert(path);
 	assert(map);
 
-	FILE *fp;
+	struct context ctx = {
+		.mf = file,
+		.map = map,
+	};
 	bool ret = true;
 
 	memset(map, 0, sizeof (*map));
 
-	if (!(fp = fopen(path, "r")))
+	if (!(ctx.fp = fopen(path, "r")))
 		return errorf("%s", strerror(errno));
 
-	if (!(ret = parse(file, path, map, fp)) || !(ret = check(map))) {
+	if (!(ret = parse(&ctx, path)) || !(ret = check(map))) {
 		map_finish(map);
 		map_file_finish(file);
 	}
 
-	fclose(fp);
+	fclose(ctx.fp);
 
 	return ret;
 }
@@ -359,7 +274,11 @@ map_file_finish(struct map_file *file)
 {
 	assert(file);
 
-	free(file->tiledefs);
-	texture_finish(&file->tileset);
+	free(file->layers[0].tiles);
+	free(file->layers[1].tiles);
+	free(file->layers[2].tiles);
+
+	tileset_file_finish(&file->tileset_file);
+
 	memset(file, 0, sizeof (*file));
 }

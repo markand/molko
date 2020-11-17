@@ -61,6 +61,8 @@ animation_start(struct animation *an)
 bool
 animation_completed(const struct animation *an)
 {
+	assert(an);
+
 	return an->elapsed >= an->delay &&
 	       an->row >= an->sprite->nrows &&
 	       an->column >= an->sprite->ncols;
@@ -95,6 +97,8 @@ animation_update(struct animation *an, unsigned int ticks)
 bool
 animation_draw(const struct animation *an, int x, int y)
 {
+	assert(an);
+
 	return sprite_draw(an->sprite, an->row, an->column, x, y);
 }
 

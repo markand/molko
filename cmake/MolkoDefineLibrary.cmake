@@ -56,11 +56,13 @@
 #
 
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildTilesets.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildMaps.cmake)
 
 function(molko_define_library)
 	set(options)
 	set(oneValueArgs FOLDER TARGET TYPE)
-	set(multiValueArgs ASSETS LIBRARIES PRIVATE_FLAGS PRIVATE_INCLUDES PUBLIC_FLAGS PUBLIC_INCLUDES SOURCES)
+	set(multiValueArgs ASSETS LIBRARIES MAPS PRIVATE_FLAGS PRIVATE_INCLUDES PUBLIC_FLAGS PUBLIC_INCLUDES TILESETS SOURCES)
 
 	cmake_parse_arguments(LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -71,11 +73,20 @@ function(molko_define_library)
 		message(FATAL_ERROR "Missing SOURCES argument")
 	endif ()
 
-	molko_build_assets("${LIB_ASSETS}" OUTPUTS)
+	molko_build_assets("${LIB_ASSETS}" ASSETS_OUTPUTS)
+	molko_build_tilesets("${LIB_TILESETS}" TILESETS_OUTPUTS)
+	molko_build_maps("${LIB_MAPS}" MAPS_OUTPUTS)
 
 	if (${LIB_TYPE} MATCHES "INTERFACE")
 		add_library(${LIB_TARGET} INTERFACE)
-		target_sources(${LIB_TARGET} INTERFACE ${LIB_SOURCES} ${OUTPUTS})
+		target_sources(
+			${LIB_TARGET}
+			INTERFACE
+				${LIB_SOURCES}
+				${ASSETS_OUTPUTS}
+				${MAPS_OUTPUTS}
+				${TILESETS_OUTPUTS}
+		)
 		target_include_directories(
 			${LIB_TARGET}
 			INTERFACE
@@ -83,7 +94,14 @@ function(molko_define_library)
 				${LIB_PUBLIC_INCLUDES}
 		)
 	else ()
-		add_library(${LIB_TARGET} ${LIB_TYPE} ${LIB_SOURCES} ${OUTPUTS})
+		add_library(
+			${LIB_TARGET}
+			${LIB_TYPE}
+			${LIB_SOURCES}
+			${ASSETS_OUTPUTS}
+			${MAPS_OUTPUTS}
+			${TILESETS_OUTPUTS}
+		)
 		target_include_directories(
 			${LIB_TARGET}
 			PRIVATE

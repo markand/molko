@@ -56,7 +56,7 @@ static void
 new(void)
 {
 	/* TODO: implement here. */
-	if (!map_file_open(&molko.map_file, DIRECTORY "/maps/overworld.map", &molko.map))
+	if (!map_file_open(&molko.map_file, &molko.map, DIRECTORY "/maps/overworld.map"))
 		panic();
 
 	/* Put a sprite. */

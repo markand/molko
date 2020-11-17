@@ -1,5 +1,5 @@
 /*
- * molko-map.c -- convert tiled tiled JSON files into custom files
+ * main.c -- convert tiled tiled JSON files into custom files
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,7 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define _XOPEN_SOURCE 700
 #include <assert.h>
+#include <libgen.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -44,6 +47,7 @@ is_layer(const char *name)
 {
 	return strcmp(name, "background") == 0 ||
 	       strcmp(name, "foreground") == 0 ||
+	       strcmp(name, "above") == 0 ||
 	       strcmp(name, "actions") == 0;
 }
 
@@ -123,8 +127,9 @@ write_origin(const json_t *props)
 	    !origin_y || !json_is_integer(origin_y))
 		return;
 
-	printf("origin|%lld|%lld\n", json_integer_value(origin_x),
-	    json_integer_value(origin_y));
+	printf("origin|%d|%d\n",
+	    (int)json_integer_value(origin_x),
+	    (int)json_integer_value(origin_y));
 }
 
 static void
@@ -135,26 +140,18 @@ write_properties(const json_t *props)
 }
 
 static void
-write_metadata(const json_t *document)
+write_dimensions(const json_t *document)
 {
 	json_t *width = json_object_get(document, "width");
 	json_t *height = json_object_get(document, "height");
-	json_t *tilewidth = json_object_get(document, "tilewidth");
-	json_t *tileheight = json_object_get(document, "tileheight");
 
 	if (!width || !json_is_integer(width))
 		die("missing 'width' property\n");
 	if (!height || !json_is_integer(height))
 		die("missing 'height' property\n");
-	if (!tilewidth || !json_is_integer(tilewidth))
-		die("missing 'tilewidth' property\n");
-	if (!tileheight || !json_is_integer(tileheight))
-		die("missing 'tileheight' property\n");
 
-	printf("width|%lld\n", json_integer_value(width));
-	printf("height|%lld\n", json_integer_value(height));
-	printf("tilewidth|%lld\n", json_integer_value(tilewidth));
-	printf("tileheight|%lld\n", json_integer_value(tileheight));
+	printf("columns|%d\n", (int)json_integer_value(width));
+	printf("rows|%d\n", (int)json_integer_value(height));
 }
 
 static void
@@ -214,7 +211,7 @@ write_layer(const json_t *layer)
 			if (!json_is_integer(tile))
 				die("invalid 'data' property in layer\n");
 
-			printf("%lld\n", json_integer_value(tile));
+			printf("%d\n", (int)json_integer_value(tile));
 		}
 	}
 
@@ -247,84 +244,31 @@ write_layers(const json_t *layers)
 }
 
 static void
-write_tileset_tiledef(const json_t *tile)
+write_tileset(const json_t *tilesets)
 {
-	const json_t *id = json_object_get(tile, "id");
-	const json_t *objectgroup = json_object_get(tile, "objectgroup");
-	const json_t *objects = json_object_get(objectgroup, "objects");
-	const json_t *first = json_array_get(objects, 0);
-	const json_t *x, *y, *w, *h;
+	char path[PATH_MAX];
+	char filename[FILENAME_MAX] = {0}, *ext;
+	const json_t *tileset, *source;
 
-	if (!json_is_integer(id))
-		die("invalid 'id' property in tile\n");
-	if (!json_is_object(objectgroup))
-		die("invalid 'objectgroup' property in tile\n");
-	if (!json_is_array(objects))
-		die("invalid 'objects' property in tile\n");
+	if (json_array_size(tilesets) != 1)
+		die("map must contain exactly one tileset");
 
-	x = json_object_get(first, "x");
-	y = json_object_get(first, "y");
-	w = json_object_get(first, "width");
-	h = json_object_get(first, "height");
+	tileset = json_array_get(tilesets, 0);
+	source = json_object_get(tileset, "source");
 
-	if (!json_is_integer(x) || !json_is_integer(y) ||
-	    !json_is_integer(w) || !json_is_integer(h))
-		die("invalid collide object in tile description\n");
+	if (!json_is_string(source))
+		die("invalid 'source' property in tileset\n");
 
-	printf("%lld|%lld|%lld|%lld|%lld\n",
-	    json_integer_value(id),
-	    json_integer_value(x),
-	    json_integer_value(y),
-	    json_integer_value(w),
-	    json_integer_value(h));
-}
+	/* We need to replace the .json extension to .tileset. */
+	snprintf(path, sizeof (path), "%s", json_string_value(source));
+	snprintf(filename, sizeof (filename), "%s", basename(path));
 
-static void
-write_tileset_tiledefs(const json_t *tiles)
-{
-	size_t index;
-	json_t *object;
+	if (!(ext = strstr(filename, ".json")))
+		die("could not determine tileset extension");
 
-	puts("tiledefs");
+	*ext = '\0';
 
-	json_array_foreach(tiles, index, object) {
-		if (!json_is_object(object))
-			die("tile is not an object\n");
-
-		write_tileset_tiledef(object);
-	}
-}
-
-static void
-write_tileset(const json_t *tileset)
-{
-	const json_t *image = json_object_get(tileset, "image");
-	const json_t *tiles = json_object_get(tileset, "tiles");
-
-	if (!image || !json_is_string(image))
-		die("invalid 'image' property in tileset");
-
-	printf("tileset|%s\n", json_string_value(image));
-
-	if (json_is_array(tiles))
-		write_tileset_tiledefs(tiles);
-}
-
-static void
-write_tilesets(const json_t *tilesets)
-{
-	json_t *tileset;
-	size_t index;
-
-	if (!json_is_array(tilesets))
-		die("invalid 'tilesets' property");
-
-	json_array_foreach(tilesets, index, tileset) {
-		if (!json_is_object(tileset))
-			die("invalid tileset");
-
-		write_tileset(tileset);
-	}
+	printf("tileset|%s.tileset\n", filename);
 }
 
 int
@@ -339,9 +283,9 @@ main(void)
 		die("%d:%d: %s\n", error.line, error.column, error.text);
 
 	write_properties(json_object_get(document, "properties"));
-	write_metadata(document);
+	write_dimensions(document);
 	write_layers(json_object_get(document, "layers"));
-	write_tilesets(json_object_get(document, "tilesets"));
+	write_tileset(json_object_get(document, "tilesets"));
 
 	json_decref(document);
 }

@@ -211,11 +211,15 @@ message_hide(struct message *msg);
  * Convert message into an action.
  *
  * \pre msg != NULL
- * \pre action != NULL
+ * \pre act != NULL
  * \param msg the message to reference
- * \param action the action to fill
+ * \param act the action to fill
+ * \post act->data contains msg
+ * \post act->handle invokes message_handle
+ * \post act->update invokes message_update
+ * \post act->draw invokes message_draw
  */
 void
-message_action(struct message *msg, struct action *action);
+message_action(struct message *msg, struct action *act);
 
 #endif /* !MOLKO_MESSAGE_H */

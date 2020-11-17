@@ -1,5 +1,5 @@
 #
-# CMakeLists.txt -- CMake build system for molko
+# CMakeLists.txt -- CMake build system for mlk-tileset
 #
 # Copyright (c) 2020 David Demelier <markand@malikania.fr>
 #
@@ -16,25 +16,11 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(tests)
+project(mlk-tileset)
 
-molko_define_test(TARGET action SOURCES test-action.c)
-molko_define_test(TARGET action-script SOURCES test-action-script.c)
-molko_define_test(TARGET color SOURCES test-color.c)
-molko_define_test(TARGET error SOURCES test-error.c)
-
-molko_define_test(
-	TARGET map
-	SOURCES test-map.c
-	FLAGS DIRECTORY="${tests_SOURCE_DIR}/assets/maps/"
-)
-
-molko_define_test(TARGET save SOURCES test-save.c)
-molko_define_test(TARGET state SOURCES test-state.c)
-molko_define_test(TARGET drawable SOURCES test-drawable.c)
-
-molko_define_test(
-	TARGET tileset
-	SOURCES test-tileset.c
-	FLAGS DIRECTORY="${tests_SOURCE_DIR}/assets/maps/"
+molko_define_executable(
+	TARGET mlk-tileset
+	SOURCES main.c
+	FOLDER tools
+	LIBRARIES Jansson::Jansson
 )

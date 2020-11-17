@@ -44,6 +44,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS On)
 include(GNUInstallDirs)
 
 include(cmake/MolkoBuildAssets.cmake)
+include(cmake/MolkoBuildMaps.cmake)
+include(cmake/MolkoBuildTilesets.cmake)
 include(cmake/MolkoDefineExecutable.cmake)
 include(cmake/MolkoDefineLibrary.cmake)
 include(cmake/MolkoDefineTest.cmake)
@@ -63,6 +65,7 @@ endif ()
 
 add_subdirectory(tools/bcc)
 add_subdirectory(tools/map)
+add_subdirectory(tools/tileset)
 
 add_subdirectory(libcore)
 add_subdirectory(libui)

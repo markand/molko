@@ -63,6 +63,10 @@ set(
 	${librpg_SOURCE_DIR}/rpg/spell.h
 	${librpg_SOURCE_DIR}/rpg/teleport.c
 	${librpg_SOURCE_DIR}/rpg/teleport.h
+	${librpg_SOURCE_DIR}/rpg/tileset.c
+	${librpg_SOURCE_DIR}/rpg/tileset.h
+	${librpg_SOURCE_DIR}/rpg/tileset-file.c
+	${librpg_SOURCE_DIR}/rpg/tileset-file.h
 	${librpg_SOURCE_DIR}/rpg/walksprite.c
 	${librpg_SOURCE_DIR}/rpg/walksprite.h
 )

@@ -1,8 +1,6 @@
 title|This map lacks width
-height|2
-tilewidth|32
-tileheight|16
-tileset|sample-map.png
+rows|2
+tileset|sample-tileset.tileset
 layer|background
 0
 1
