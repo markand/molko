@@ -18,5 +18,6 @@ specifications for more details.
    :maxdepth: 1
 
    spec-tileset
+   spec-map
 
 .. _conventions over configuration: https://en.wikipedia.org/wiki/Convention_over_configuration

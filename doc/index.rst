@@ -21,6 +21,7 @@ Contents
 
    about
    specifications
+   tools
 
 Indices and tables
 ==================

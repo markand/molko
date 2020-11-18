@@ -18,9 +18,9 @@ Tilesets consists of:
 - An image to use as a sprite,
 - Dimensions of individual cells in that image,
 - Set of animations for specific tiles,
-- Set of collision masks for specific tiles,
-- 3 layers (background, foreground and above),
-- 1 layer of actions.
+- Set of collision masks for specific tiles.
+
+Tilesets have an extension of ``.tileset``.
 
 File format
 -----------

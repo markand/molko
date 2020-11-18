@@ -23,11 +23,16 @@ find_program(SPHINX_EXE sphinx-build DOC "Path to sphinx-build")
 if (SPHINX_EXE)
 	set(
 		SOURCES
- 		${doc_SOURCE_DIR}/about.rst
- 		${doc_SOURCE_DIR}/conf.py
- 		${doc_SOURCE_DIR}/index.rst
- 		${doc_SOURCE_DIR}/specifications.rst
- 		${doc_SOURCE_DIR}/spec-tileset.rst
+		${doc_SOURCE_DIR}/about.rst
+		${doc_SOURCE_DIR}/conf.py
+		${doc_SOURCE_DIR}/index.rst
+		${doc_SOURCE_DIR}/spec-map.rst
+		${doc_SOURCE_DIR}/spec-tileset.rst
+		${doc_SOURCE_DIR}/specifications.rst
+		${doc_SOURCE_DIR}/tool-bcc.rst
+		${doc_SOURCE_DIR}/tool-map.rst
+		${doc_SOURCE_DIR}/tool-tileset.rst
+		${doc_SOURCE_DIR}/tools.rst
 	)
 
 	add_custom_target(
