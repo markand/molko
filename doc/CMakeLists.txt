@@ -24,17 +24,7 @@ if (SPHINX_EXE)
 	set(
 		SOURCES
  		${doc_SOURCE_DIR}/about.rst
- 		${doc_SOURCE_DIR}/api-js.rst
- 		${doc_SOURCE_DIR}/api-molko-clock.rst
- 		${doc_SOURCE_DIR}/api-molko-event.rst
- 		${doc_SOURCE_DIR}/api-molko-font.rst
- 		${doc_SOURCE_DIR}/api-molko-painter.rst
- 		${doc_SOURCE_DIR}/api-molko-sprite.rst
- 		${doc_SOURCE_DIR}/api-molko-texture.rst
- 		${doc_SOURCE_DIR}/api-molko-util.rst
- 		${doc_SOURCE_DIR}/api-molko-window.rst
  		${doc_SOURCE_DIR}/conf.py
- 		${doc_SOURCE_DIR}/getting-started.rst
  		${doc_SOURCE_DIR}/index.rst
  		${doc_SOURCE_DIR}/specifications.rst
  		${doc_SOURCE_DIR}/spec-tileset.rst

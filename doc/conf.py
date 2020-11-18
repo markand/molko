@@ -17,7 +17,7 @@
 #
 
 # Project information.
-project = "Molko Javascript API"
+project = "Molko's Adventure"
 copyright = "2020, David Demelier"
 author = "David Demelier"
 release = '0.1.0'
