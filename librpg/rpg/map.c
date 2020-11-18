@@ -534,6 +534,7 @@ map_init(struct map *map)
 	assert(map);
 
 	init(map);
+	tileset_start(map->tileset);
 
 	return true;
 }
@@ -563,6 +564,7 @@ map_update(struct map *map, unsigned int ticks)
 
 	action_stack_update(&map->actions, ticks);
 
+	tileset_update(map->tileset, ticks);
 	move(map, ticks);
 }
 

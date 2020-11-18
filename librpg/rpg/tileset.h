@@ -30,11 +30,16 @@ struct sprite;
  * It can contains an animation and a collision mask.
  */
 struct tileset_tiledef {
-	short id;                               /*!< (+) Tile index. */
+	unsigned short id;                      /*!< (+) Tile index. */
 	short x;                                /*!< (+) Collision region starts in y. */
 	short y;                                /*!< (+) Collision region starts in y. */
 	unsigned short w;                       /*!< (+) Collision width. */
 	unsigned short h;                       /*!< (+) Collision height. */
+};
+
+struct tileset_animation {
+	unsigned short id;                      /* (*) Tile index. */
+	struct animation *animation;            /* (+&?) Animation. */
 };
 
 /**
@@ -43,11 +48,19 @@ struct tileset_tiledef {
 struct tileset {
 	struct tileset_tiledef *tiledefs;       /*!< (+&?) Per tile properties (must be sorted by id). */
 	size_t tiledefsz;                       /*!< (+) Number of tile properties. */
+	struct tileset_animation *anims;        /*!< (+&?) Per tile animations (must be sorted by id). */
+	size_t animsz;                          /*!< (+) Number of tile animations. */
 	struct sprite *sprite;                  /*!< (+&) Sprite to generate the terrain. */
 };
 
 bool
 tileset_ok(const struct tileset *ts);
+
+void
+tileset_start(struct tileset *ts);
+
+void
+tileset_update(struct tileset *ts, unsigned int ticks);
 
 void
 tileset_draw(const struct tileset *ts, unsigned int r, unsigned int c, int x, int y);

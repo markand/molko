@@ -1,5 +1,5 @@
 /*
- * mlk-tileset.c -- convert tiled tilesets JSON files into custom files
+ * main.c -- convert tiled tilesets JSON files into custom files
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -20,6 +20,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdnoreturn.h>
+#include <string.h>
 
 #include <jansson.h>
 
@@ -62,6 +63,50 @@ write_image(const json_t *document)
 	printf("image|%s\n", json_string_value(image));
 }
 
+static const json_t *
+find_property_value(const json_t *array, const char *prop)
+{
+	const json_t *obj;
+	size_t i;
+
+	json_array_foreach(array, i, obj) {
+		const json_t *name = json_object_get(obj, "name");
+
+		if (!name || !json_is_string(name))
+			die("invalid property object\n");
+
+		if (strcmp(json_string_value(name), prop) == 0)
+			return json_object_get(obj, "value");
+	}
+
+	return NULL;
+}
+
+static void
+write_animation(const json_t *tile)
+{
+	const json_t *id = json_object_get(tile, "id");
+	const json_t *properties = json_object_get(tile, "properties");
+	const json_t *file = find_property_value(properties, "animation-file");
+	const json_t *delay = find_property_value(properties, "animation-delay");
+
+	/* Animations are completely optional. */
+	if (!json_is_array(properties))
+		return;
+
+	if (!json_is_integer(id))
+		die("invalid 'id' property in tile\n");
+
+	if (json_is_string(file)) {
+		printf("%d|%s|", (int)json_integer_value(id), json_string_value(file));
+
+		if (json_is_integer(delay))
+			printf("%d\n", (int)json_integer_value(delay));
+		else
+			printf("10\n");
+	}
+}
+
 static void
 write_tiledef(const json_t *tile)
 {
@@ -71,10 +116,12 @@ write_tiledef(const json_t *tile)
 	const json_t *first = json_array_get(objects, 0);
 	const json_t *x, *y, *w, *h;
 
+	/* Collisions are optional. */
+	if (!json_is_object(objectgroup))
+		return;
+
 	if (!json_is_integer(id))
 		die("invalid 'id' property in tile\n");
-	if (!json_is_object(objectgroup))
-		die("invalid 'objectgroup' property in tile\n");
 	if (!json_is_array(objects))
 		die("invalid 'objects' property in tile\n");
 
@@ -114,9 +161,31 @@ write_tiledefs(const json_t *tiles)
 	}
 }
 
+static void
+write_animations(const json_t *tiles)
+{
+	size_t index;
+	json_t *object;
+
+	if (!json_is_array(tiles))
+		return;
+
+	puts("animations");
+
+	json_array_foreach(tiles, index, object) {
+		if (!json_is_object(object))
+			die("tile is not an object\n");
+
+		write_animation(object);
+	}
+}
+
 int
 main(int argc, char *argv[])
 {
+	(void)argc;
+	(void)argv;
+
 	json_t *document;
 	json_error_t error;
 
@@ -130,6 +199,7 @@ main(int argc, char *argv[])
 	write_dimensions(document);
 	write_image(document);
 	write_tiledefs(json_object_get(document, "tiles"));
+	write_animations(json_object_get(document, "tiles"));
 
 	json_decref(document);
 }

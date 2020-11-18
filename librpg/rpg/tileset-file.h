@@ -20,6 +20,7 @@
 #define MOLKO_RPG_TILESET_FILE_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #include <core/plat.h>
 #include <core/sprite.h>
@@ -32,6 +33,9 @@ struct tileset_file {
 	struct tileset_tiledef *tiledefs;       /*!< (*) Owned tile definitions. */
 	struct texture image;                   /*!< (*) Owned image file. */
 	struct sprite sprite;                   /*!< (*) Owned sprite. */
+	struct tileset_file_animation *tfas;    /*!< (*) Owned per tile animations. */
+	size_t tfasz;                           /*!< (*) Onwed number of tiles. */
+	struct tileset_animation *anims;        /*!< (*) Owned animations array. */
 };
 
 bool

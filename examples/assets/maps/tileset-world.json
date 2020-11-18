@@ -1,4 +1,12 @@
 { "columns":24,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"",
+         "target":"."
+        }
+    },
  "image":"sprite-world.png",
  "imageheight":1392,
  "imagewidth":1152,
@@ -158,6 +166,20 @@
              "x":0,
              "y":0
             }
+        }, 
+        {
+         "id":190,
+         "properties":[
+                {
+                 "name":"animation-delay",
+                 "type":"int",
+                 "value":500
+                }, 
+                {
+                 "name":"animation-file",
+                 "type":"string",
+                 "value":"animation-water.png"
+                }]
         }, 
         {
          "id":191,

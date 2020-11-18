@@ -37,6 +37,11 @@ set(
 )
 
 set(
+	ASSETS_MAPS_ANIMATIONS
+	${examples_SOURCE_DIR}/assets/maps/animation-water.png
+)
+
+set(
 	ASSETS_TILESETS
 	${examples_SOURCE_DIR}/assets/maps/tileset-town.json
 	${examples_SOURCE_DIR}/assets/maps/tileset-world.json
@@ -76,7 +81,7 @@ file(WRITE ${examples_BINARY_DIR}/none.c "void molko() {}")
 # These files just need to be copied.
 file(MAKE_DIRECTORY ${cmake_BINARY_DIR}/assets/maps)
 
-foreach (s ${ASSETS_MAPS_SPRITES})
+foreach (s ${ASSETS_MAPS_SPRITES} ${ASSETS_MAPS_ANIMATIONS})
 	get_filename_component(basename ${s} NAME)
 	set(output ${examples_BINARY_DIR}/assets/maps/${basename})
 

@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include <core/alloc.h>
+#include <core/animation.h>
 #include <core/error.h>
 #include <core/image.h>
 #include <core/util.h>
@@ -35,7 +36,13 @@
 #include "tileset.h"
 
 #define MAX_F(v) MAX_F_(v)
-#define MAX_F_(v) "%" #v "c"
+#define MAX_F_(v) "%" #v "[^|]"
+
+struct tileset_file_animation {
+	struct texture texture;
+	struct sprite sprite;
+	struct animation animation;
+};
 
 struct context {
 	struct tileset_file *tf;
@@ -50,6 +57,10 @@ struct context {
 	 */
 	unsigned int tilewidth;
 	unsigned int tileheight;
+
+	/* Number of rows/columns in the image. */
+	unsigned int nrows;
+	unsigned int ncolumns;
 };
 
 static int
@@ -57,6 +68,20 @@ tiledef_cmp(const void *d1, const void *d2)
 {
 	const struct tileset_tiledef *mtd1 = d1;
 	const struct tileset_tiledef *mtd2 = d2;
+
+	if (mtd1->id < mtd2->id)
+		return -1;
+	if (mtd1->id > mtd2->id)
+		return 1;
+
+	return 0;
+}
+
+static int
+anim_cmp(const void *d1, const void *d2)
+{
+	const struct tileset_animation *mtd1 = d1;
+	const struct tileset_animation *mtd2 = d2;
 
 	if (mtd1->id < mtd2->id)
 		return -1;
@@ -111,6 +136,53 @@ parse_tiledefs(struct context *ctx, const char *line)
 }
 
 static bool
+parse_animations(struct context *ctx, const char *line)
+{
+	(void)line;
+
+	unsigned short id;
+	unsigned int delay;
+	char filename[FILENAME_MAX + 1], path[PATH_MAX];
+	struct tileset *tileset = ctx->tileset;
+	struct tileset_file *tf = ctx->tf;
+
+	while (fscanf(ctx->fp, "%hu|" MAX_F(FILENAME_MAX) "|%u", &id, filename, &delay) == 3) {
+		struct tileset_file_animation *tfa;
+
+		/*
+		 * We need two arrays because one must contains sprite, texture
+		 * and the animation while the tileset user side API only use
+		 * one animation reference.
+		 */
+		tf->tfasz++;
+		tf->tfas = allocator.realloc(tf->tfas, tf->tfasz * sizeof (*tf->tfas));
+		tfa = &tf->tfas[tf->tfasz - 1];
+
+		/* This is the real user-side tileset array of animations. */
+		tf->anims = allocator.realloc(tf->anims, tf->tfasz * sizeof (*tf->anims));
+
+		snprintf(path, sizeof (path), "%s/%s", ctx->basedir, filename);
+
+		if (!image_open(&tfa->texture, path))
+			return false;
+
+		/* Initialize animation. */
+		sprite_init(&tfa->sprite, &tfa->texture, ctx->tilewidth, ctx->tileheight);
+		animation_init(&tfa->animation, &tfa->sprite, delay);
+
+		/* Finally store it in the tiledef. */
+		tf->anims[tf->tfasz - 1].id = id;
+		tf->anims[tf->tfasz - 1].animation = &tfa->animation;
+	}
+
+	qsort(tf->anims, tf->tfasz, sizeof (*tf->anims), anim_cmp);
+	tileset->anims = tf->anims;
+	tileset->animsz = tf->tfasz;
+
+	return true;
+}
+
+static bool
 parse_image(struct context *ctx, const char *line)
 {
 	char path[PATH_MAX], *p;
@@ -141,6 +213,7 @@ parse_line(struct context *ctx, const char *line)
 		{ "tilewidth",  parse_tilewidth         },
 		{ "tileheight", parse_tileheight        },
 		{ "tiledefs",   parse_tiledefs          },
+		{ "animations", parse_animations        },
 		{ "image",      parse_image             }
 	};
 
@@ -209,8 +282,13 @@ tileset_file_finish(struct tileset_file *tf)
 {
 	assert(tf);
 
+	for (size_t i = 0; i < tf->tfasz; ++i)
+		texture_finish(&tf->tfas[i].texture);
+
 	texture_finish(&tf->image);
 
 	free(tf->tiledefs);
+	free(tf->tfas);
+	free(tf->anims);
 	memset(tf, 0, sizeof (*tf));
 }
