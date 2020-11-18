@@ -312,8 +312,8 @@ find_collision(const struct map *map, struct collision *block, int drow, int dco
 
 	const int playercol = map->player_x / map->tileset->sprite->cellw;
 	const int playerrow = map->player_y / map->tileset->sprite->cellh;
-	const int ncols = map->player_sprite->cellw / map->tileset->sprite->cellw;
-	const int nrows = map->player_sprite->cellh / map->tileset->sprite->cellh;
+	const int ncols = (map->player_sprite->cellw / map->tileset->sprite->cellw) + 1;
+	const int nrows = (map->player_sprite->cellh / map->tileset->sprite->cellh) + 1;
 	int rowstart, rowend, colstart, colend;
 
 	if (drow) {
@@ -328,7 +328,7 @@ find_collision(const struct map *map, struct collision *block, int drow, int dco
 			block->w = WIDTH(map);
 		} else {
 			/* Moving DOWN. */
-			rowstart = playerrow + nrows;
+			rowstart = playerrow;
 			rowend = HEIGHT(map);
 			block->x = block->h = 0;
 			block->y = HEIGHT(map);
@@ -346,7 +346,7 @@ find_collision(const struct map *map, struct collision *block, int drow, int dco
 			block->h = HEIGHT(map);
 		} else {
 			/* Moving RIGHT. */
-			colstart = playercol + ncols;
+			colstart = playercol;
 			colend = WIDTH(map);
 			block->x = WIDTH(map);
 			block->y = block->w = 0;
