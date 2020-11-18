@@ -63,6 +63,10 @@ add_subdirectory(libadventure)
 add_subdirectory(molko)
 
 if (MOLKO_WITH_DOC)
+	if (NOT MOLKO_WITH_DOXYGEN)
+		message(FATAL_ERROR "Can't build documentation with doxygen disabled")
+	endif ()
+
 	add_subdirectory(doc)
 endif ()
 
