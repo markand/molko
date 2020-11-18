@@ -36,6 +36,8 @@ if (SPHINX_EXE)
  		${doc_SOURCE_DIR}/conf.py
  		${doc_SOURCE_DIR}/getting-started.rst
  		${doc_SOURCE_DIR}/index.rst
+ 		${doc_SOURCE_DIR}/specifications.rst
+ 		${doc_SOURCE_DIR}/spec-tileset.rst
 	)
 
 	add_custom_target(

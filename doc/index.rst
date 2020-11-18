@@ -18,6 +18,7 @@ Contents
 
    about
    getting-started
+   specifications
    api-js
 
 Indices and tables
