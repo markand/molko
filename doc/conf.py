@@ -27,5 +27,12 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # HTML output.
-html_theme = "sphinx_rtd_theme"
+html_theme = "haiku"
 html_static_path = ["_static"]
+
+# Doxygen bridge through breathe.
+extensions = [ "breathe" ]
+breathe_projects = {
+    "molko": "@doxygen_BINARY_DIR@/doxygen/xml"
+}
+breathe_default_project = "molko"

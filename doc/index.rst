@@ -22,6 +22,7 @@ Contents
    about
    specifications
    tools
+   api
 
 Indices and tables
 ==================

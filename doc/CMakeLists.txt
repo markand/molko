@@ -35,12 +35,18 @@ if (SPHINX_EXE)
 		${doc_SOURCE_DIR}/tools.rst
 	)
 
+	configure_file(
+		${doc_SOURCE_DIR}/conf.py
+		${doc_BINARY_DIR}/conf.py
+	)
+
 	add_custom_target(
 		doc
 		ALL VERBATIM
 		SOURCES ${SOURCES}
-		COMMAND ${SPHINX_EXE} -q . ${doc_BINARY_DIR}
+		COMMAND ${SPHINX_EXE} -c ${doc_BINARY_DIR} -q . ${doc_BINARY_DIR}
 		WORKING_DIRECTORY ${doc_SOURCE_DIR}
 		COMMENT "Generating documentation"
+		DEPENDS doxygen
 	)
 endif ()
