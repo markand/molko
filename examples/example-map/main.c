@@ -110,7 +110,7 @@ map_state_finish(struct state *state)
 }
 
 static struct state *
-map_state_new(const char *name)
+map_state_new(const char *name, int ox, int oy)
 {
 	char path[1024];
 	struct map_state *ms;
@@ -125,6 +125,12 @@ map_state_new(const char *name)
 
 	/* TODO: we may need to add a function in loader. */
 	ms->map.player_sprite = &john_sprite;
+
+	/* Override origin. */
+	if (ox >= 0 && oy >= 0) {
+		ms->map.player_x = ox;
+		ms->map.player_y = oy;
+	}
 
 	map_init(&ms->map);
 	ms->state.data = ms;
@@ -167,12 +173,12 @@ teleport_effect_finish(struct action *act)
 }
 
 static void
-teleport_effect(struct map *current_map, const char *name)
+teleport_effect(struct map *current_map, const char *name, int ox, int oy)
 {
 	struct teleport_effect *fx;
 
 	fx = alloc_zero(1, sizeof (*fx));
-	fx->tp.state = map_state_new(name);
+	fx->tp.state = map_state_new(name, ox, oy);
 
 	fx->act.data = fx;
 	fx->act.draw = teleport_effect_draw;
@@ -192,6 +198,8 @@ teleport_effect(struct map *current_map, const char *name)
 struct teleport_touch {
 	struct action act;
 	struct map *map;        /* Current map. */
+	int ox;                 /* Override origin x. (-1 to use map's default). */
+	int oy;                 /* Same in y. */
 	char name[256];
 	int x;
 	int y;
@@ -212,7 +220,7 @@ teleport_touch_update(struct action *act, unsigned int ticks)
 	const unsigned int h = touch->h + touch->map->player_sprite->cellh;
 
 	if (maths_is_boxed(x, y, w, h, touch->map->player_x, touch->map->player_y)) {
-		teleport_effect(touch->map, touch->name);
+		teleport_effect(touch->map, touch->name, touch->ox, touch->oy);
 		return true;
 	}
 
@@ -226,12 +234,19 @@ teleport_touch_finish(struct action *act)
 }
 
 static struct action *
-teleport_touch_new(struct map *map, int x, int y, int w, int h, const char *name)
+teleport_touch_new(struct map *map, int x, int y, int w, int h, const char *def)
 {
+	char name[256];
+	int ox = -1, oy = -1;
 	struct teleport_touch *touch;
+
+	if (sscanf(def, "%255[^:]:%d:%d", name, &ox, &oy) < 1)
+		panicf("could not parse teleport destination");
 
 	touch = alloc_zero(1, sizeof (*touch));
 	touch->map = map;
+	touch->ox = ox;
+	touch->oy = oy;
 	touch->x = x;
 	touch->y = y;
 	touch->w = w;
@@ -278,7 +293,7 @@ quit(void)
 static void
 run(void)
 {
-	game_switch(map_state_new("map-world"), true);
+	game_switch(map_state_new("map-world", -1, -1), true);
 	game_loop();
 }
 
