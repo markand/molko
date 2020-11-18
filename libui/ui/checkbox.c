@@ -52,7 +52,8 @@ draw(struct action *act)
 void
 checkbox_draw_default(const struct theme *t, const struct checkbox *cb)
 {
-	assert(t);
+	(void)t;
+
 	assert(cb);
 
 	painter_set_color(0x151d28ff);

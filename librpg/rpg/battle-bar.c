@@ -272,6 +272,9 @@ battle_bar_positionate(struct battle_bar *bar, const struct battle *bt)
 bool
 battle_bar_handle(struct battle_bar *bar, const struct battle *bt, const union event *ev)
 {
+	/* Not needed yet. */
+	(void)bt;
+
 	assert(bar);
 	assert(bt);
 	assert(ev);

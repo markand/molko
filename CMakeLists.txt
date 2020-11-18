@@ -24,16 +24,6 @@ set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS Off)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-if (CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
-	set(CMAKE_C_FLAGS "-Wall -Wextra ${CMAKE_C_FLAGS}")
-endif ()
-
-if (CMAKE_C_COMPILER_ID MATCHES "Clang")
-	set(options "-fsanitize=address,undefined,integer")
-	set(CMAKE_C_FLAGS_DEBUG "-fno-omit-frame-pointer ${options} ${CMAKE_C_FLAGS_DEBUG}")
-	set(CMAKE_EXE_LINKER_FLAGS "${options} ${CMAKE_EXE_LINKER_FLAGS}")
-endif ()
-
 option(MOLKO_WITH_DOXYGEN "Enable Doxygen build" On)
 option(MOLKO_WITH_DOC "Enable documentation (requires sphinx)" On)
 option(MOLKO_WITH_TESTS "Enable unit tests" On)

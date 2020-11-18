@@ -61,6 +61,8 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 static void
 draw(const struct battle_state *st, const struct battle *bt)
 {
+	(void)bt;
+
 	assert(bt);
 
 	const struct opening *opening = st->data;

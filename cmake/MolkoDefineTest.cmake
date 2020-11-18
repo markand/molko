@@ -17,6 +17,7 @@
 #
 
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetCompilerFlags.cmake)
 
 function(molko_define_test)
 	set(options)
@@ -50,6 +51,9 @@ function(molko_define_test)
 			libgreatest
 			${TEST_LIBRARIES}
 	)
+
 	add_test(NAME ${TEST_TARGET} COMMAND test-${TEST_TARGET})
 	set_target_properties(test-${TEST_TARGET} PROPERTIES FOLDER tests)
+
+	molko_set_compiler_flags(test-${TEST_TARGET})
 endfunction()

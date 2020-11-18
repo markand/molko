@@ -25,6 +25,7 @@
 # molko_define_library(
 #   TARGET              target name
 #   SOURCES             src1, src2, srcn
+#   EXTERNAL            (Optional) set to true for external libraries
 #   FOLDER              (Optional) optional subfolder to organize
 #   TYPE                (Optional) type of library
 #   ASSETS              (Optional) list of assets
@@ -44,6 +45,9 @@
 # The argument SOURCES should contains the C source files and HEADERS should
 # points to a directory to be installed verbatim in the include directory.
 #
+# Optional argument EXTERNAL should be set for targets that are not maintained
+# here (e.g. third party libraries embedded).
+#
 # Optional argument PRIVATE_FLAGS, PUBLIC_FLAGS, PRIVATE_INCLUDES,
 # PUBLIC_INCLUDES, LIBRARIES may be passed to set compile flags, includes and
 # libraries respectively.
@@ -58,9 +62,10 @@
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildTilesets.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildMaps.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetCompilerFlags.cmake)
 
 function(molko_define_library)
-	set(options)
+	set(options EXTERNAL)
 	set(oneValueArgs FOLDER TARGET TYPE)
 	set(multiValueArgs ASSETS LIBRARIES MAPS PRIVATE_FLAGS PRIVATE_INCLUDES PUBLIC_FLAGS PUBLIC_INCLUDES TILESETS SOURCES)
 
@@ -127,6 +132,10 @@ function(molko_define_library)
 				C_STANDARD 11
 				C_STANDARD_REQUIRED On
 		)
+
+		if (NOT ${LIB_EXTERNAL})
+			molko_set_compiler_flags(${LIB_TARGET})
+		endif ()
 	endif ()
 
 	if (LIB_FOLDER)

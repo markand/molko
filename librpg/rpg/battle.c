@@ -293,6 +293,8 @@ battle_order(struct battle *bt)
 void
 battle_attack(struct battle *bt, struct character *source, struct character *target)
 {
+	(void)source;
+
 	assert(bt);
 	assert(character_ok(source));
 	assert(character_ok(target));

@@ -17,6 +17,7 @@
 #
 
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetCompilerFlags.cmake)
 
 function(molko_define_executable)
 	set(options)
@@ -51,4 +52,6 @@ function(molko_define_executable)
 	if (EXE_FOLDER)
 		set_target_properties(${EXE_TARGET} PROPERTIES FOLDER ${EXE_FOLDER})
 	endif ()
+
+	molko_set_compiler_flags(${EXE_TARGET})
 endfunction()

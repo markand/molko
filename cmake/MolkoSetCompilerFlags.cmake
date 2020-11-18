@@ -1,5 +1,5 @@
 #
-# CMakeLists.txt -- CMake build system for libsqlite
+# CMakeLists.txt -- CMake build system for molko
 #
 # Copyright (c) 2020 David Demelier <markand@malikania.fr>
 #
@@ -16,22 +16,13 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(libsqlite)
+function(molko_set_compiler_flags target)
+	if (CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
+		target_compile_options(${target} PRIVATE -Wall -Wextra)
+	endif ()
 
-molko_define_library(
-	TARGET libsqlite
-	SOURCES sqlite3.c sqlite3.h
-	EXTERNAL
-	FOLDER extern
-	PUBLIC_FLAGS
-		SQLITE_THREADSAFE=0
-		SQLITE_DEFAULT_MEMSTATUS=0
-		SQLITE_DEFAULT_FOREIGN_KEYS=1
-		SQLITE_OMIT_DEPRECATED
-		SQLITE_OMIT_LOAD_EXTENSION
-		$<$<CONFIG:Debug>:SQLITE_DEBUG>
-		$<$<CONFIG:Debug>:SQLITE_MEMDEBUG>
-	PUBLIC_INCLUDES
-		$<BUILD_INTERFACE:${libsqlite_SOURCE_DIR}>
-		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
+	if (CMAKE_C_COMPILER_ID MATCHES "Clang")
+		target_compile_options(${target} PRIVATE -fsanitize=address,undefined,integer)
+		target_link_options(${target} PRIVATE -fsanitize=address,undefined,integer)
+	endif ()
+endfunction ()
