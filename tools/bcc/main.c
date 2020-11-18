@@ -1,5 +1,5 @@
 /*
- * molko-bcc.c -- simple binary compiler
+ * main.c -- binary to C/C++ arrays converter
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,7 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define _XOPEN_SOURCE 700
 #include <errno.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -27,13 +26,17 @@
 #include <unistd.h>
 
 static const char *charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+static char findentchar = '\t';
+static int findent = 1;
+static bool fconst;
+static bool fnull;
 static bool fstatic;
-static bool nullterm;
+static bool funsigned;
 
 noreturn static void
 usage(void)
 {
-	fprintf(stderr, "usage: molko-bcc [-s] input varname\n");
+	fprintf(stderr, "usage: bcc [-0csu] [-I tab-indent] [-i space-indent] input variable\n");
 	exit(1);
 }
 
@@ -67,10 +70,26 @@ mangle(char *variable)
 }
 
 static void
+indent(void)
+{
+	for (int i = 0; i < findent; ++i)
+		putchar(findentchar);
+}
+
+static void
+put(int ch)
+{
+	if (funsigned)
+		printf("0x%02hhx", (unsigned char)ch);
+	else
+		printf("%hhd", (signed char)ch);
+}
+
+static void
 process(const char *input, const char *variable)
 {
 	FILE *fp;
-	int ch, idx = 0;
+	int ch, col = 0;
 
 	if (strcmp(input, "-") == 0)
 		fp = stdin;
@@ -79,30 +98,36 @@ process(const char *input, const char *variable)
 
 	if (fstatic)
 		printf("static ");
+	if (fconst)
+		printf("const ");
 
-	printf("const unsigned char %s[] = {\n", variable);
+	printf(funsigned ? "unsigned " : "signed ");
+	printf("char %s[] = {\n", variable);
 
-	while ((ch = fgetc(fp)) != EOF) {
-		if (idx == 0)
-			putchar('\t');
+	for (ch = fgetc(fp); ch != EOF; ) {
+		if (col == 0)
+			indent();
 
-		printf("0x%02x, ", (unsigned char)ch);
+		put(ch);
 
-		if (++idx == 4) {
-			idx = 0;
+		if ((ch = fgetc(fp)) != EOF || fnull)
+			printf(",%s", col < 3 ? " " : "");
+
+		if (++col == 4) {
+			col = 0;
 			putchar('\n');
+		}
+
+		/* Add final '\0' if required. */
+		if (ch == EOF && fnull) {
+			if (col++ == 0)
+				indent();
+
+			put(0);
 		}
 	}
 
-	/* Add final '\0' if requested. */
-	if (nullterm) {
-		if (idx++ == 0)
-			putchar('\t');
-
-		printf("0x00");
-	}
-
-	if (idx != 0)
+	if (col != 0)
 		printf("\n");
 
 	puts("};");
@@ -114,13 +139,27 @@ main(int argc, char **argv)
 {
 	int ch;
 
-	while ((ch = getopt(argc, argv, "0s")) != -1) {
+	while ((ch = getopt(argc, argv, "0cI:i:su")) != -1) {
 		switch (ch) {
 		case '0':
-			nullterm = true;
+			fnull = true;
+			break;
+		case 'c':
+			fconst = true;
+			break;
+		case 'I':
+			findentchar = '\t';
+			findent = atoi(optarg);
+			break;
+		case 'i':
+			findentchar = ' ';
+			findent = atoi(optarg);
 			break;
 		case 's':
 			fstatic = true;
+			break;
+		case 'u':
+			funsigned = true;
 			break;
 		default:
 			break;
