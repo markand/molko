@@ -43,7 +43,7 @@ static jmp_buf panic_buf;
 
 struct molko molko;
 
-static noreturn void
+static void
 crash(void)
 {
 	longjmp(panic_buf, 1);

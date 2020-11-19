@@ -69,8 +69,8 @@ struct battle_state {
 	/**
 	 * (+?) Draw the battle state.
 	 *
-	 * Note, the battle itself already draw the background and game entities
-	 * see the \ref battle_draw function for more details.
+	 * Note, the battle itself already draw the background and game
+	 * entities.
 	 *
 	 * \pre bt != NULL
 	 * \param bt the current battle

@@ -28,6 +28,8 @@ struct battle;
  *
  * \pre bt != NULL
  * \param bt the battle to change state
+ * \param type the kind of selection allowed
+ * \param selection the current selection
  * \post bt->state->data is not NULL
  * \post bt->state->handle is set
  * \post bt->state->draw is set

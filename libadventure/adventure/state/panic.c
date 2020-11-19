@@ -19,7 +19,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include <string.h>
 
 #include <core/alloc.h>
@@ -52,7 +51,7 @@ struct view {
 	} texts[4];
 };
 
-static noreturn void
+static void
 die(const char *fmt, ...)
 {
 	assert(fmt);
@@ -67,7 +66,7 @@ die(const char *fmt, ...)
 	exit(1);
 }
 
-static noreturn void
+static void
 stop(void)
 {
 	die("%s", error());

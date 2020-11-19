@@ -39,7 +39,6 @@
  */
 
 #include <stdarg.h>
-#include <stdnoreturn.h>
 
 /**
  * \brief Global panic handler.
@@ -62,7 +61,7 @@ extern void (*panic_handler)(void);
  * \pre fmt != NULL
  * \param fmt the printf(3) format string
  */
-noreturn void
+void
 panicf(const char *fmt, ...);
 
 /**
@@ -72,14 +71,14 @@ panicf(const char *fmt, ...);
  * \param fmt the printf(3) format string
  * \param ap the arguments pointer
  */
-noreturn void
+void
 vpanicf(const char *fmt, va_list ap);
 
 /**
  * Similar to \ref panicf but use last error stored using \ref error.h
  * routines.
  */
-noreturn void
+void
 panic(void);
 
 #endif /* !MOLKO_PANIC_H */

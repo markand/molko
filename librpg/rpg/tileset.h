@@ -37,9 +37,15 @@ struct tileset_tiledef {
 	unsigned short h;                       /*!< (+) Collision height. */
 };
 
+/**
+ * \brief Per tile animation.
+ *
+ * This structure is used to animate tiles by id. Create one for every tile
+ * that must be animated.
+ */
 struct tileset_animation {
-	unsigned short id;                      /* (*) Tile index. */
-	struct animation *animation;            /* (+&?) Animation. */
+	unsigned short id;                      /*!< (*) Tile index. */
+	struct animation *animation;            /*!< (+&?) Animation. */
 };
 
 /**
@@ -53,15 +59,55 @@ struct tileset {
 	struct sprite *sprite;                  /*!< (+&) Sprite to generate the terrain. */
 };
 
+/**
+ * Tells if the tileset is correctly initialized.
+ *
+ * \param ts the tileset to check (maybe NULL)
+ * \return True if correctly initialized.
+ */
 bool
 tileset_ok(const struct tileset *ts);
 
+/**
+ * Prepare the tileset before use.
+ *
+ * You must call this function once before using it in the rendering of the map
+ * because it will prepare animations.
+ *
+ * \pre ts != NULL
+ * \param ts the tileset to prepare
+ */
 void
 tileset_start(struct tileset *ts);
 
+/**
+ * Update tileset.
+ *
+ * This function will update tileset animations. It is not necessary to call it
+ * if the tileset does not contain any animation.
+ *
+ * \pre ts != NULL
+ * \param ts the tileset to update
+ * \param ticks the elapsed milliseconds since last frame
+ */
 void
 tileset_update(struct tileset *ts, unsigned int ticks);
 
+/**
+ * Draw a tileset cell at the given position.
+ *
+ * If the tileset at the given row, column is animated its animation will be
+ * rendered otherwise it uses the sprite row column.
+ *
+ * The argument r and c must not be out of bounds.
+ *
+ * \pre ts != NULL
+ * \param ts the tileset to use
+ * \param r the row number
+ * \param c the column number
+ * \param x the x coordinate
+ * \param y the y coordinate
+ */
 void
 tileset_draw(const struct tileset *ts, unsigned int r, unsigned int c, int x, int y);
 

@@ -23,7 +23,7 @@
 #include "error.h"
 #include "panic.h"
 
-static noreturn void
+static void
 terminate(void)
 {
 	fprintf(stderr, "abort: %s\n", error());
@@ -33,7 +33,7 @@ terminate(void)
 
 void (*panic_handler)(void) = terminate;
 
-noreturn void
+void
 panicf(const char *fmt, ...)
 {
 	assert(fmt);
@@ -51,7 +51,7 @@ panicf(const char *fmt, ...)
 	panic();
 }
 
-noreturn void
+void
 vpanicf(const char *fmt, va_list ap)
 {
 	assert(fmt);
@@ -61,7 +61,7 @@ vpanicf(const char *fmt, va_list ap)
 	panic();
 }
 
-noreturn void
+void
 panic(void)
 {
 	assert(panic_handler);

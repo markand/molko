@@ -51,6 +51,9 @@ struct map_layer {
 	unsigned short *tiles;          /*!< (+&) Array of tiles, depending on the map size. */
 };
 
+/**
+ * \brief Map view flags.
+ */
 enum map_flags {
 	MAP_FLAGS_NONE          = 0,            /*!< No flags. */
 	MAP_FLAGS_SHOW_GRID     = (1 << 0),     /*!< Show grid pattern. */

@@ -127,8 +127,8 @@ music_stop(unsigned int fadeout);
 /**
  * Close the associated resources.
  *
- * \pre snd != NULL
- * \param snd the sound object
+ * \pre mus != NULL
+ * \param mus the music object
  */
 void
 music_finish(struct music *mus);

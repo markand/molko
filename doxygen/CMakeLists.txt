@@ -25,13 +25,11 @@ if (DOXYGEN_FOUND)
 		INPUT
 		doxygen/groups.c
 		doxygen/mainpage.c
-		doxygen/page-examples.c
 		doxygen/page-faq.c
 		doxygen/page-howto-error.c
 		doxygen/page-howto-initialization.c
 		doxygen/page-howto-ownership.c
 		doxygen/page-portability.c
-		libadventure
 		libcore
 		libui
 		librpg
@@ -39,12 +37,13 @@ if (DOXYGEN_FOUND)
 
 	set(
 		DOXYGEN_STRIP_FROM_PATH
-		${CMAKE_SOURCE_DIR}/libadventure
 		${CMAKE_SOURCE_DIR}/libcore
 		${CMAKE_SOURCE_DIR}/libui
 		${CMAKE_SOURCE_DIR}/librpg
 	)
 
+	set(DOXYGEN_SHOW_GROUPED_MEMB_INC NO)
+	set(DOXYGEN_SHOW_INCLUDE_FILES NO)
 	set(DOXYGEN_ALLOW_UNICODE_NAMES YES)
 	set(DOXYGEN_AUTOLINK_SUPPORT NO)
 	set(DOXYGEN_ENABLE_PREPROCESSING YES)

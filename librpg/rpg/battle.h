@@ -211,20 +211,44 @@ battle_order(struct battle *bt);
  * \pre source != NULL
  * \pre target != NULL
  * \param bt the battle object
- * \param source 
+ * \param source the entity attacking
+ * \param target the target entity
  */
 void
 battle_attack(struct battle *bt, struct character *source, struct character *target);
 
 /**
  * Default function to cast a spell.
+ *
+ * Prefer to use this function to cast a spell because it performs some checks
+ * and hooks before casting the spell.
+ *
+ * \pre bt != NULL
+ * \pre source != NULL
+ * \pre spell != NULL
+ * \param bt the current battle
+ * \param source the entity casting a spell
+ * \param spell the spell used
+ * \param selection the selection
  */
 void
 battle_cast(struct battle *bt,
-	    struct character *source,
-	    const struct spell *spell,
-	    unsigned int selection);
+            struct character *source,
+            const struct spell *spell,
+            unsigned int selection);
 
+/**
+ * Spawn an indicator drawable to show damage.
+ *
+ * The drawable will draw the amount near the entity and fade away after
+ * several seconds.
+ *
+ * \pre bt != NULL
+ * \pre target != NULL
+ * \param bt the battle object
+ * \param target the target entity
+ * \param amount the amount of damage
+ */
 void
 battle_indicator_hp(struct battle *bt, const struct character *target, unsigned int amount);
 

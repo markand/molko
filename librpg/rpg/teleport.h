@@ -42,7 +42,7 @@ struct teleport {
 	struct state *state;    /*!< (+&) Next state to use. */
 	unsigned int elapsed;   /*!< (-) Elapsed time since last frame. */
 	unsigned int alpha;     /*!< (-) Current alpha */
-	struct texture fade;
+	struct texture fade;    /*!< (-) Current fade level. */
 };
 
 /**
