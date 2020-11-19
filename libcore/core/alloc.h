@@ -30,9 +30,16 @@
  * To change the allocator, simply modify the global allocator object.
  */
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include "util.h"
+
+/**
+ * \brief Default size to allocate in struct alloc_pool.
+ * \warning Must be a power of 2.
+ */
+#define ALLOC_POOL_INIT_DEFAULT 32
 
 /**
  * \brief Global allocator strategy.
@@ -71,6 +78,44 @@ struct allocator {
 	 * \param ptr the region (may be NULL)
 	 */
 	void (*free)(void *ptr);
+};
+
+/**
+ * \brief Pool allocator.
+ *
+ * This small structure is a helper to reallocate data each time a new slot is
+ * requested. It allocates twice as the current storage when size exceeds
+ * capacity.
+ *
+ * It uses realloc mechanism to upgrade the new storage space so pointers
+ * returned must not be referenced directly.
+ *
+ * It is designed in mind to help allocating resources locally that may be
+ * referenced in another module without having to manage an array from the user
+ * code. Because it is designed for this responsability only it only supports
+ * insertion.
+ *
+ * The initial capacity is controlled by the ALLOC_POOL_INIT_DEFAULT macro and
+ * **must** be a power of two.
+ *
+ * A custom finalizer function can be set to finalize each individual object if
+ * necessary.
+ */
+struct alloc_pool {
+	void *data;             /*!< (+?) Pointer to the region. */
+	size_t elemsize;        /*!< (-) Size of individual element. */
+	size_t size;            /*!< (-) Number of items in array. */
+	size_t capacity;        /*!< (-) Current capacity. */
+
+	/**
+	 * (+?) Optional finalizer.
+	 *
+	 * This function will be invoked for every element when \ref
+	 * alloc_pool_finish is called.
+	 *
+	 * \param data the element to finalize
+	 */
+	void (*finalizer)(void *data);
 };
 
 /**
@@ -144,7 +189,7 @@ alloc_rearray(void *ptr, size_t n, size_t size);
 /**
  * Duplicate region pointer by ptr.
  *
- * This function calls \ref alloc to allocate memory.
+ * This function calls \ref alloc_new to allocate memory.
  *
  * \pre ptr != NULL
  * \param ptr the pointer
@@ -153,5 +198,51 @@ alloc_rearray(void *ptr, size_t n, size_t size);
  */
 void *
 alloc_dup(const void *ptr, size_t size);
+
+/**
+ * Initialize the pool.
+ *
+ * This will effectively create a initial storage according to
+ * ALLOC_POOL_INIT_DEFAULT.
+ *
+ * This function effectively use the global allocator object to initialize the
+ * array.
+ *
+ * \pre pool != NULL
+ * \pre elemsize != 0
+ * \param pool the pool to initialize
+ * \param elemsize size of each individual element
+ * \param finalizer a finalizer to use when clearing the pool.
+ * \return True if allocation suceedeed.
+ */
+bool
+alloc_pool_init(struct alloc_pool *pool, size_t elemsize, void (*finalizer)(void *));
+
+/**
+ * Request a new slot from the pool.
+ *
+ * If the current size has reached the capacity, it will be doubled in that case
+ * it is possible that all previous pointer may be invalidated.
+ *
+ * This function effectively use the global allocator object to realloc the
+ * array.
+ *
+ * \pre pool != NULL
+ * \param pool the pool
+ * \return The pointer to the region.
+ */
+void *
+alloc_pool_new(struct alloc_pool *pool);
+
+/**
+ * Finalize the pool and all individual element if a finalizer is set.
+ *
+ * You must call \ref alloc_pool_init again before reusing it.
+ *
+ * \pre pool != NULL
+ * \param pool the pool to clear
+ */
+void
+alloc_pool_finish(struct alloc_pool *pool);
 
 #endif /* !MOLKO_ALLOC_H */

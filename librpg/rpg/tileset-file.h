@@ -22,6 +22,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <core/alloc.h>
 #include <core/sprite.h>
 #include <core/texture.h>
 
@@ -29,12 +30,10 @@ struct tileset;
 struct tileset_tiledef;
 
 struct tileset_file {
-	struct tileset_tiledef *tiledefs;       /*!< (*) Owned tile definitions. */
+	struct alloc_pool tiledefs;
+	struct alloc_pool anims[2];
 	struct texture image;                   /*!< (*) Owned image file. */
 	struct sprite sprite;                   /*!< (*) Owned sprite. */
-	struct tileset_file_animation *tfas;    /*!< (*) Owned per tile animations. */
-	size_t tfasz;                           /*!< (*) Onwed number of tiles. */
-	struct tileset_animation *anims;        /*!< (*) Owned animations array. */
 };
 
 bool

@@ -150,3 +150,52 @@ alloc_sdup(const char *src)
 
 	return ret;
 }
+
+bool
+alloc_pool_init(struct alloc_pool *pool, size_t elemsize, void (*finalizer)(void *))
+{
+	assert(pool);
+	assert(elemsize != 0);
+
+	if (!(pool->data = alloc_array(ALLOC_POOL_INIT_DEFAULT, elemsize)))
+		return false;
+
+	pool->elemsize = elemsize;
+	pool->size = 0;
+	pool->capacity = ALLOC_POOL_INIT_DEFAULT;
+	pool->finalizer = finalizer;
+
+	return true;
+}
+
+void *
+alloc_pool_new(struct alloc_pool *pool)
+{
+	assert(pool);
+
+	if (pool->size >= pool->capacity) {
+		void *newptr = alloc_rearray(pool->data, pool->capacity * 2, pool->elemsize);
+
+		if (!newptr)
+			return NULL;
+
+		pool->data = newptr;
+		pool->capacity *= 2;
+	}
+
+	return ((unsigned char *)pool->data) + pool->size++ * pool->elemsize;
+}
+
+void
+alloc_pool_finish(struct alloc_pool *pool)
+{
+	if (pool->finalizer) {
+		unsigned char *tab = pool->data;
+
+		for (size_t i = 0; i < pool->size; ++i)
+			pool->finalizer(tab + i * pool->elemsize);
+	}
+
+	free(pool->data);
+	memset(pool, 0, sizeof (*pool));
+}

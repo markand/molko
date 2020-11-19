@@ -20,6 +20,7 @@ project(tests)
 
 molko_define_test(TARGET action SOURCES test-action.c)
 molko_define_test(TARGET action-script SOURCES test-action-script.c)
+molko_define_test(TARGET alloc SOURCES test-alloc.c)
 molko_define_test(TARGET color SOURCES test-color.c)
 molko_define_test(TARGET error SOURCES test-error.c)
 
