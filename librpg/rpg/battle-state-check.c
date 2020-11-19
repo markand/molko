@@ -82,7 +82,7 @@ fadeout(struct battle *bt, struct battle_entity *et)
 {
 	struct fadeout *fade;
 
-	if (!(fade = alloc_zero(1, sizeof (*fade))))
+	if (!(fade = alloc_new0(sizeof (*fade))))
 		panic();
 
 	fade->ch = et->ch;

@@ -120,7 +120,7 @@ parse_tiledefs(struct context *ctx, const char *line)
 	size_t tiledefsz = 0;
 
 	while (fscanf(ctx->fp, "%hu|%hd|%hd|%hu|%hu\n", &id, &x, &y, &w, &h) == 5) {
-		tiledefs = allocator.realloc(tiledefs, ++tiledefsz * sizeof (*tiledefs));
+		tiledefs = alloc_rearray(tiledefs, ++tiledefsz, sizeof (*tiledefs));
 		tiledefs[tiledefsz - 1].id = id;
 		tiledefs[tiledefsz - 1].x = x;
 		tiledefs[tiledefsz - 1].y = y;
@@ -155,11 +155,11 @@ parse_animations(struct context *ctx, const char *line)
 		 * one animation reference.
 		 */
 		tf->tfasz++;
-		tf->tfas = allocator.realloc(tf->tfas, tf->tfasz * sizeof (*tf->tfas));
+		tf->tfas = alloc_rearray(tf->tfas, tf->tfasz, sizeof (*tf->tfas));
 		tfa = &tf->tfas[tf->tfasz - 1];
 
 		/* This is the real user-side tileset array of animations. */
-		tf->anims = allocator.realloc(tf->anims, tf->tfasz * sizeof (*tf->anims));
+		tf->anims = alloc_rearray(tf->anims, tf->tfasz, sizeof (*tf->anims));
 
 		snprintf(path, sizeof (path), "%s/%s", ctx->basedir, filename);
 

@@ -96,7 +96,7 @@ init(void)
 
 	theme = theme_default();
 	font = theme->fonts[THEME_FONT_INTERFACE];
-	view = alloc_zero(1, sizeof (*view));
+	view = alloc_new0(sizeof (*view));
 
 	if (!font_render(font, &view->texts[0].tex, "An unrecoverable error occured and the game cannot continue.", FOREGROUND) ||
 	    !font_render(font, &view->texts[1].tex, "Please report the detailed error as provided below.", FOREGROUND) ||

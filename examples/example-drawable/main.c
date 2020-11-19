@@ -108,7 +108,7 @@ explosion_finish(struct drawable *dw)
 static void
 spawn(int x, int y)
 {
-	struct explosion *ex = alloc_zero(1, sizeof (*ex));
+	struct explosion *ex = alloc_new0(sizeof (*ex));
 
 	animation_init(&ex->anim, &explosion_sprite, 15);
 

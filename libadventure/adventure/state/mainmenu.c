@@ -136,7 +136,7 @@ start(struct state *state)
 	struct font fonts[2];
 
 	/* Allocate the main menu data. */
-	main = (state->data = alloc_zero(1, sizeof (*main)));
+	main = (state->data = alloc_new0(sizeof (*main)));
 
 	if (!font_openmem(&fonts[0], fonts_teutonic, sizeof (fonts_teutonic), 130) ||
 	    !font_openmem(&fonts[1], fonts_pirata_one, sizeof (fonts_pirata_one), 30))

@@ -81,16 +81,25 @@ extern struct allocator allocator;
 /**
  * Shortcut for allocator->alloc.
  *
- * \pre n != 0 && size != 0
- * \param n the number of objects to allocate
- * \param size the size of each object
+ * \pre size != 0
+ * \param size the amount of bytes to allocate
  * \return The result of allocator->alloc.
  */
 void *
-alloc(size_t n, size_t size);
+alloc_new(size_t size);
 
 /**
- * Shortcut for allocator->alloc and then use memset to clear memory.
+ * Similar to alloc_new but zero-initialize the memory.
+ *
+ * \pre size != 0
+ * \param size the amount of bytes to allocate
+ * \return The result of allocator->alloc.
+ */
+void *
+alloc_new0(size_t size);
+
+/**
+ * Shortcut for allocator->alloc but specialized for arrays.
  *
  * \pre n != 0 && size != 0
  * \param n the number of objects to allocate
@@ -98,7 +107,39 @@ alloc(size_t n, size_t size);
  * \return The result of allocator->alloc.
  */
 void *
-alloc_zero(size_t n, size_t size);
+alloc_array(size_t n, size_t size);
+
+/**
+ * Similar to alloc_array but zero-initialize the memory.
+ *
+ * \pre n != 0 && size != 0
+ * \param n the number of objects to allocate
+ * \param size the size of each object
+ * \return The result of allocator->alloc.
+ */
+void *
+alloc_array0(size_t n, size_t size);
+
+/**
+ * Shortcut for allocator->realloc.
+ *
+ * \param ptr the old pointer (maybe NULL)
+ * \param amount the new amount (maybe 0)
+ * \return The result of allocator->realloc
+ */
+void *
+alloc_renew(void *ptr, size_t amount);
+
+/**
+ * Shortcut for allocator->realloc but specialized for arrays.
+ *
+ * \param ptr the old pointer (maybe NULL)
+ * \param n the number of element
+ * \param size the size of each object
+ * \return The result of allocator->realloc
+ */
+void *
+alloc_rearray(void *ptr, size_t n, size_t size);
 
 /**
  * Duplicate region pointer by ptr.

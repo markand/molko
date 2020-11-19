@@ -207,7 +207,7 @@ battle_state_selection(struct battle *bt,
 
 	struct select *select;
 
-	if (!(select = alloc_zero(1, sizeof (*select))))
+	if (!(select = alloc_new0(sizeof (*select))))
 		panic();
 
 	select->type = type;

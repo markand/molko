@@ -115,7 +115,7 @@ map_state_new(const char *name, int ox, int oy)
 	char path[1024];
 	struct map_state *ms;
 
-	ms = alloc_zero(1, sizeof (*ms));
+	ms = alloc_new0(sizeof (*ms));
 	ms->loader.load_action = load_action;
 
 	snprintf(path, sizeof (path), "%s/assets/maps/%s.map", BINDIR, name);
@@ -177,7 +177,7 @@ teleport_effect(struct map *current_map, const char *name, int ox, int oy)
 {
 	struct teleport_effect *fx;
 
-	fx = alloc_zero(1, sizeof (*fx));
+	fx = alloc_new0(sizeof (*fx));
 	fx->tp.state = map_state_new(name, ox, oy);
 
 	fx->act.data = fx;
@@ -243,7 +243,7 @@ teleport_touch_new(struct map *map, int x, int y, int w, int h, const char *def)
 	if (sscanf(def, "%255[^:]:%d:%d", name, &ox, &oy) < 1)
 		panicf("could not parse teleport destination");
 
-	touch = alloc_zero(1, sizeof (*touch));
+	touch = alloc_new0(sizeof (*touch));
 	touch->map = map;
 	touch->ox = ox;
 	touch->oy = oy;

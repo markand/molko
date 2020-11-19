@@ -66,7 +66,7 @@ parse_layer_tiles(struct context *ctx, const char *layer_name)
 	 * The next line after a layer declaration is a list of plain integer
 	 * that fill the layer tiles.
 	 */
-	if (!(ctx->mf->layers[layer_type].tiles = alloc_zero(amount, sizeof (unsigned short))))
+	if (!(ctx->mf->layers[layer_type].tiles = alloc_array0(amount, sizeof (unsigned short))))
 		return false;
 
 	for (int tile; fscanf(ctx->fp, "%d\n", &tile) && current < amount; ++current)

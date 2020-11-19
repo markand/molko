@@ -358,7 +358,7 @@ battle_indicator_hp(struct battle *bt, const struct character *target, unsigned 
 	assert(target);
 
 	const struct battle_entity *et = find(bt, target);
-	struct indicator *id = alloc_zero(1, sizeof (*id));
+	struct indicator *id = alloc_new0(sizeof (*id));
 
 	id->bti.color = BATTLE_INDICATOR_HP_COLOR;
 	id->bti.amount = amount;

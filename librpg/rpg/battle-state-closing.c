@@ -88,7 +88,7 @@ battle_state_closing(struct battle *bt)
 
 	struct closing *closing;
 
-	if (!(closing = alloc_zero(1, sizeof (*closing))) ||
+	if (!(closing = alloc_new0(sizeof (*closing))) ||
 	    !texture_new(&closing->texture, window.w, window.h))
 		panic();
 

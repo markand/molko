@@ -167,7 +167,7 @@ static struct state fight_state;
 static void
 prepare_to_fight(void)
 {
-	struct battle *bt = alloc_zero(1, sizeof (*bt));
+	struct battle *bt = alloc_new0(sizeof (*bt));
 
 //	bt->enemies[0].ch = &haunted_wood;
 	bt->team[0].ch = &team[0];

@@ -54,7 +54,7 @@ init(struct state *next)
 	struct splashscreen *splash;
 	struct font font;
 
-	splash = alloc_zero(1, sizeof (*splash));
+	splash = alloc_new0(sizeof (*splash));
 	splash->next = next;
 
 	if (!font_openmem(&font, fonts_cubic, sizeof (fonts_cubic), 80))

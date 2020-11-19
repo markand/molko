@@ -54,7 +54,28 @@ struct allocator allocator = {
 };
 
 void *
-alloc(size_t n, size_t size)
+alloc_new(size_t size)
+{
+	assert(size != 0);
+
+	return allocator.alloc(size);
+}
+
+void *
+alloc_new0(size_t size)
+{
+	assert(size != 0);
+
+	void *ptr;
+
+	if ((ptr = allocator.alloc(size)))
+		memset(ptr, 0, size);
+
+	return ptr;
+}
+
+void *
+alloc_array(size_t n, size_t size)
 {
 	assert(n != 0);
 	assert(size != 0);
@@ -68,7 +89,7 @@ alloc(size_t n, size_t size)
 }
 
 void *
-alloc_zero(size_t n, size_t size)
+alloc_array0(size_t n, size_t size)
 {
 	assert(n != 0);
 	assert(size != 0);
@@ -86,6 +107,23 @@ alloc_zero(size_t n, size_t size)
 }
 
 void *
+alloc_renew(void *ptr, size_t amount)
+{
+	return allocator.realloc(ptr, amount);
+}
+
+void *
+alloc_rearray(void *ptr, size_t n, size_t size)
+{
+	size_t total = n * size;
+
+	if (total / n != size)
+		return errorf("%s", strerror(ENOMEM)), NULL;
+
+	return allocator.realloc(ptr, total);
+}
+
+void *
 alloc_dup(const void *ptr, size_t size)
 {
 	assert(ptr);
@@ -97,4 +135,18 @@ alloc_dup(const void *ptr, size_t size)
 		memcpy(mem, ptr, size);
 
 	return mem;
+}
+
+char *
+alloc_sdup(const char *src)
+{
+	assert(src);
+
+	char *ret;
+	size_t length = strlen(src) + 1;
+
+	if ((ret = allocator.alloc(length)))
+		memcpy(ret, src, length + 1);
+
+	return ret;
 }

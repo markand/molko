@@ -91,7 +91,7 @@ battle_state_opening(struct battle *bt)
 
 	struct opening *opening;
 
-	if (!(opening = alloc_zero(1, sizeof (*opening))))
+	if (!(opening = alloc_new0(sizeof (*opening))))
 		panic();
 
 	opening->self.data = opening;

@@ -75,7 +75,7 @@ battle_state_victory(struct battle *bt)
 
 	struct victory *vic;
 
-	if (!(vic = alloc_zero(1, sizeof (*vic))))
+	if (!(vic = alloc_new0(sizeof (*vic))))
 		panic();
 
 	/* TODO: compute money, xp and drop. */

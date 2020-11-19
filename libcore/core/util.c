@@ -45,7 +45,7 @@ readall(const char *path)
 
 	if ((fd = open(path, O_RDONLY)) < 0 || fstat(fd, &st) < 0)
 		goto io_error;
-	if (!(str = alloc_zero(1, st.st_size + 1)))
+	if (!(str = alloc_new0(st.st_size + 1)))
 		goto alloc_error;
 	if ((nr = read(fd, str, st.st_size)) != st.st_size)
 		goto io_error;

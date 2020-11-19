@@ -89,7 +89,7 @@ fire_action(struct battle *bt, struct character *owner, unsigned int selection)
 
 	(void)owner;
 
-	data = alloc_zero(1, sizeof (*data));
+	data = alloc_new0(sizeof (*data));
 	data->battle = bt;
 	data->selection = selection;
 	data->action.data = data;

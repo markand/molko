@@ -75,7 +75,7 @@ battle_state_lost(struct battle *bt)
 
 	struct lost *lost;
 
-	if (!(lost = alloc_zero(1, sizeof (*lost))))
+	if (!(lost = alloc_new0(sizeof (*lost))))
 		panic();
 
 	lost->self.data = lost;
