@@ -87,7 +87,7 @@ extern struct allocator allocator;
  * \return The result of allocator->alloc.
  */
 void *
-alloc(size_t n, size_t size) PLAT_NODISCARD;
+alloc(size_t n, size_t size);
 
 /**
  * Shortcut for allocator->alloc and then use memset to clear memory.
@@ -98,7 +98,7 @@ alloc(size_t n, size_t size) PLAT_NODISCARD;
  * \return The result of allocator->alloc.
  */
 void *
-alloc_zero(size_t n, size_t size) PLAT_NODISCARD;
+alloc_zero(size_t n, size_t size);
 
 /**
  * Duplicate region pointer by ptr.
@@ -111,6 +111,6 @@ alloc_zero(size_t n, size_t size) PLAT_NODISCARD;
  * \return The result of allocator->alloc filled with a copy of ptr.
  */
 void *
-alloc_dup(const void *ptr, size_t size) PLAT_NODISCARD;
+alloc_dup(const void *ptr, size_t size);
 
 #endif /* !MOLKO_ALLOC_H */

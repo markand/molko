@@ -41,8 +41,6 @@
 #include <stdarg.h>
 #include <stdnoreturn.h>
 
-#include "plat.h"
-
 /**
  * \brief Global panic handler.
  *
@@ -65,7 +63,7 @@ extern void (*panic_handler)(void);
  * \param fmt the printf(3) format string
  */
 noreturn void
-panicf(const char *fmt, ...) PLAT_PRINTF(1, 2);
+panicf(const char *fmt, ...);
 
 /**
  * Similar to \ref panicf but with a arguments pointer.
@@ -75,7 +73,7 @@ panicf(const char *fmt, ...) PLAT_PRINTF(1, 2);
  * \param ap the arguments pointer
  */
 noreturn void
-vpanicf(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
+vpanicf(const char *fmt, va_list ap);
 
 /**
  * Similar to \ref panicf but use last error stored using \ref error.h

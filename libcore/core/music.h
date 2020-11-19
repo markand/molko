@@ -30,8 +30,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "plat.h"
-
 /**
  * \brief Music flags.
  */
@@ -57,7 +55,7 @@ struct music {
  * \return False on errors.
  */
 bool
-music_open(struct music *mus, const char *path) PLAT_NODISCARD;
+music_open(struct music *mus, const char *path);
 
 /**
  * Open a music from a buffer.
@@ -71,7 +69,7 @@ music_open(struct music *mus, const char *path) PLAT_NODISCARD;
  * \warning The buffer must exists until the sound object is closed.
  */
 bool
-music_openmem(struct music *mus, const void *buffer, size_t buffersz) PLAT_NODISCARD;
+music_openmem(struct music *mus, const void *buffer, size_t buffersz);
 
 /**
  * Check if this music handle is properly loaded.

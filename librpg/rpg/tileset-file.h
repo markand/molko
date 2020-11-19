@@ -22,7 +22,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include <core/plat.h>
 #include <core/sprite.h>
 #include <core/texture.h>
 
@@ -39,7 +38,7 @@ struct tileset_file {
 };
 
 bool
-tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *path) PLAT_NODISCARD;
+tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *path);
 
 void
 tileset_file_finish(struct tileset_file *tf);

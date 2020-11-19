@@ -28,8 +28,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
-#include "plat.h"
-
 /**
  * Initialize the system.
  *
@@ -39,7 +37,7 @@
  * \return False on error.
  */
 bool
-sys_init(void) PLAT_NODISCARD;
+sys_init(void);
 
 /**
  * Get the base system directory path.
@@ -57,7 +55,7 @@ sys_datadir(void);
  * \note This function returns pointer to static string.
  */
 const char *
-sys_datapath(const char *fmt, ...) PLAT_PRINTF(1, 2);
+sys_datapath(const char *fmt, ...);
 
 /**
  * Similar to \a sys_datapath.
@@ -68,7 +66,7 @@ sys_datapath(const char *fmt, ...) PLAT_PRINTF(1, 2);
  * \note This function returns pointer to static string.
  */
 const char *
-sys_datapathv(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
+sys_datapathv(const char *fmt, va_list ap);
 
 /**
  * Compute the path to the save file for the given game state.

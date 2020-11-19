@@ -33,8 +33,6 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include "plat.h"
-
 /**
  * \brief Max property key.
  */
@@ -90,7 +88,7 @@ struct save_property {
  * \return False on error.
  */
 bool
-save_open(struct save *db, unsigned int idx, enum save_mode mode) PLAT_NODISCARD;
+save_open(struct save *db, unsigned int idx, enum save_mode mode);
 
 /**
  * Open the save slot specified by path.
@@ -103,7 +101,7 @@ save_open(struct save *db, unsigned int idx, enum save_mode mode) PLAT_NODISCARD
  * \return False on error.
  */
 bool
-save_open_path(struct save *db, const char *path, enum save_mode mode) PLAT_NODISCARD;
+save_open_path(struct save *db, const char *path, enum save_mode mode);
 
 /**
  * Sets an arbitrary property.
@@ -130,7 +128,7 @@ save_set_property(struct save *db, const struct save_property *prop);
  * \return False on error and prop->value is left untouched
  */
 bool
-save_get_property(struct save *db, struct save_property *prop) PLAT_NODISCARD;
+save_get_property(struct save *db, struct save_property *prop);
 
 /**
  * Remove a property.

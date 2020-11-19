@@ -28,8 +28,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include <core/plat.h>
-
 struct texture;
 
 /**
@@ -59,7 +57,7 @@ struct font {
  * \return False on errors.
  */
 bool
-font_open(struct font *font, const char *path, unsigned int size) PLAT_NODISCARD;
+font_open(struct font *font, const char *path, unsigned int size);
 
 /**
  * Open font from memory buffer.
@@ -74,7 +72,7 @@ font_open(struct font *font, const char *path, unsigned int size) PLAT_NODISCARD
  * \return False on errors.
  */
 bool
-font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size) PLAT_NODISCARD;
+font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size);
 
 /**
  * Convenient shortcut to shallow copy src into dst.
@@ -117,7 +115,7 @@ font_ok(const struct font *font);
  * \return False on errors.
  */
 bool
-font_render(struct font *font, struct texture *tex, const char *text, unsigned int color) PLAT_NODISCARD;
+font_render(struct font *font, struct texture *tex, const char *text, unsigned int color);
 
 /**
  * Get the maximum height for all glyphs.
@@ -141,7 +139,7 @@ font_height(const struct font *font);
  * \return False in case of error and pointers to w and h are left unmodified.
  */
 bool
-font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h) PLAT_NODISCARD;
+font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h);
 
 /**
  * Close the font.

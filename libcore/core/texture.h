@@ -29,8 +29,6 @@
 
 #include <stdbool.h>
 
-#include "plat.h"
-
 /**
  * \brief Texture object.
  */
@@ -61,7 +59,7 @@ enum texture_blend {
  * \return False on error.
  */
 bool
-texture_new(struct texture *tex, unsigned int w, unsigned int h) PLAT_NODISCARD;
+texture_new(struct texture *tex, unsigned int w, unsigned int h);
 
 /**
  * Check if the texture is valid.

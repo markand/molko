@@ -41,7 +41,6 @@
 #include <stdarg.h>
 
 #include <core/font.h>
-#include <core/plat.h>
 
 /**
  * Maximum content length per report.
@@ -86,7 +85,7 @@ extern struct debug_options debug_options;
  *       result is truncated.
  */
 void
-debugf(struct debug_report *report, const char *fmt, ...) PLAT_PRINTF(2, 3);
+debugf(struct debug_report *report, const char *fmt, ...);
 
 /**
  * Similar to \ref debugf with a va_list arguments pointer.
@@ -97,6 +96,6 @@ debugf(struct debug_report *report, const char *fmt, ...) PLAT_PRINTF(2, 3);
  * \param ap the argument list
  */
 void
-vdebugf(struct debug_report *report, const char *fmt, va_list ap) PLAT_PRINTF(2, 0);
+vdebugf(struct debug_report *report, const char *fmt, va_list ap);
 
 #endif /* !MOLKO_DEBUG_H */

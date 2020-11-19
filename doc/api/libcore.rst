@@ -24,7 +24,6 @@ Library: libcore
    core/music
    core/painter
    core/panic
-   core/plat
    core/save
    core/script
    core/sound

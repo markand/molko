@@ -64,7 +64,6 @@ set(
 	${libcore_SOURCE_DIR}/core/painter.h
 	${libcore_SOURCE_DIR}/core/panic.c
 	${libcore_SOURCE_DIR}/core/panic.h
-	${libcore_SOURCE_DIR}/core/plat.h
 	${libcore_SOURCE_DIR}/core/save.c
 	${libcore_SOURCE_DIR}/core/save.h
 	${libcore_SOURCE_DIR}/core/script.c

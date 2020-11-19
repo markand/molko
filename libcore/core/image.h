@@ -28,8 +28,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "plat.h"
-
 struct texture;
 
 /**
@@ -42,7 +40,7 @@ struct texture;
  * \return False on errors.
  */
 bool
-image_open(struct texture *tex, const char *path) PLAT_NODISCARD;
+image_open(struct texture *tex, const char *path);
 
 /**
  * Open a file from a memory buffer.
@@ -57,6 +55,6 @@ image_open(struct texture *tex, const char *path) PLAT_NODISCARD;
  * \return False on errors.
  */
 bool
-image_openmem(struct texture *tex, const void *buffer, size_t size) PLAT_NODISCARD;
+image_openmem(struct texture *tex, const void *buffer, size_t size);
 
 #endif /* !MOLKO_IMAGE_H */

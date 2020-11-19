@@ -35,8 +35,6 @@
 
 #include <stdarg.h>
 
-#include "plat.h"
-
 /**
  * \brief Maximum length for a trace log.
  */
@@ -56,7 +54,7 @@ extern void (*trace_handler)(const char *);
  * \param fmt the printf(3) format string
  */
 void
-tracef(const char *fmt, ...) PLAT_PRINTF(1, 2);
+tracef(const char *fmt, ...);
 
 /**
  * Similar to \ref tracef with a va_list arguments pointer.
@@ -66,6 +64,6 @@ tracef(const char *fmt, ...) PLAT_PRINTF(1, 2);
  * \param ap the argument list
  */
 void
-vtracef(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
+vtracef(const char *fmt, va_list ap);
 
 #endif /* !MOLKO_TRACE_H */

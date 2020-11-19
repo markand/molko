@@ -28,8 +28,6 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
-#include "plat.h"
-
 /**
  * Get the last error returned.
  *
@@ -46,7 +44,7 @@ error(void);
  * \return Always false.
  */
 bool
-errorf(const char *fmt, ...) PLAT_PRINTF(1, 2);
+errorf(const char *fmt, ...);
 
 /**
  * Similar to \ref errorf.
@@ -57,6 +55,6 @@ errorf(const char *fmt, ...) PLAT_PRINTF(1, 2);
  * \return Always false.
  */
 bool
-verrorf(const char *fmt, va_list ap) PLAT_PRINTF(1, 0);
+verrorf(const char *fmt, va_list ap);
 
 #endif /* !MOLKO_ERROR_H */

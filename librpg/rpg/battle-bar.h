@@ -29,8 +29,6 @@
 
 #include <stdbool.h>
 
-#include <core/plat.h>
-
 #include <ui/frame.h>
 #include <ui/gridmenu.h>
 
@@ -136,7 +134,7 @@ battle_bar_positionate(struct battle_bar *bar, const struct battle *bt);
 bool
 battle_bar_handle(struct battle_bar *bar,
                   const struct battle *bt,
-                  const union event *ev) PLAT_NODISCARD;
+                  const union event *ev);
 
 /**
  * Reset the battle bar selection, state and grid.

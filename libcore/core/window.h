@@ -27,8 +27,6 @@
 
 #include <stdbool.h>
 
-#include "plat.h"
-
 /**
  * \brief Global exposed window structure.
  */
@@ -67,7 +65,7 @@ extern struct window window;
  * \return true on success
  */
 bool
-window_open(const char *title, unsigned int width, unsigned int height) PLAT_NODISCARD;
+window_open(const char *title, unsigned int width, unsigned int height);
 
 /**
  * Change the window cursor.

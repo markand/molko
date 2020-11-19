@@ -33,8 +33,6 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-#include "plat.h"
-
 /**
  * Get the number of elements in a static array.
  *
@@ -61,7 +59,7 @@ delay(unsigned int ms);
  * \note Don't forget to free the result.
  */
 char *
-readall(const char *path) PLAT_NODISCARD;
+readall(const char *path);
 
 /**
  * Generate a random number between lower and upper (included).

@@ -39,7 +39,6 @@
 
 #include <stdbool.h>
 
-#include <core/plat.h>
 #include <core/sprite.h>
 #include <core/texture.h>
 
@@ -106,7 +105,7 @@ struct map_file {
  * \warning Keep file object until map is no longer used.
  */
 bool
-map_file_open(struct map_file *file, struct map *map, const char *path) PLAT_NODISCARD;
+map_file_open(struct map_file *file, struct map *map, const char *path);
 
 /**
  * Close resources from the loader.

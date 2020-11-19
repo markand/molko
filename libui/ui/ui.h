@@ -26,15 +26,13 @@
 
 #include <stdbool.h>
 
-#include <core/plat.h>
-
 /**
  * Initialize the ui library.
  *
  * \return False on errors.
  */
 bool
-ui_init(void) PLAT_NODISCARD;
+ui_init(void);
 
 /**
  * Close the ui library.

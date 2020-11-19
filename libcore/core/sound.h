@@ -27,8 +27,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "plat.h"
-
 /**
  * \brief Number of channels allocated.
  */
@@ -52,7 +50,7 @@ struct sound {
  * \return False on errors.
  */
 bool
-sound_open(struct sound *snd, const char *path) PLAT_NODISCARD;
+sound_open(struct sound *snd, const char *path);
 
 /**
  * Open a sound audio from a buffer.
@@ -66,7 +64,7 @@ sound_open(struct sound *snd, const char *path) PLAT_NODISCARD;
  * \warning The buffer must exists until the sound object is closed.
  */
 bool
-sound_openmem(struct sound *snd, const void *buffer, size_t buffersz) PLAT_NODISCARD;
+sound_openmem(struct sound *snd, const void *buffer, size_t buffersz);
 
 /**
  * Check if this sound handle is properly loaded.
