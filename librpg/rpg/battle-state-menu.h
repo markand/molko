@@ -19,6 +19,11 @@
 #ifndef MOLKO_BATTLE_STATE_MENU_H
 #define MOLKO_BATTLE_STATE_MENU_H
 
+/**
+ * \file battle-state-menu.h
+ * \brief Battle state (menu).
+ */
+
 struct battle;
 
 /**

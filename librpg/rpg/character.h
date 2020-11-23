@@ -44,6 +44,15 @@ enum character_status {
 };
 
 /**
+ * \brief Sprites per action.
+ */
+enum character_sprite {
+	CHARACTER_SPRITE_WALK,          /*!< Sprite for walking. */
+	CHARACTER_SPRITE_SWORD,         /*!< Attacking with sword. */
+	CHARACTER_SPRITE_NUM            /*!< Total number of sprites. */
+};
+
+/**
  * \brief Character object
  *
  * This structure owns the current character statistics used in battle.
@@ -67,7 +76,11 @@ struct character {
 	unsigned int agtbonus;          /*!< (+) User agility bonus. */
 	int luck;                       /*!< (+) Current luck points (increase */
 	unsigned int luckbonus;         /*!< (+) User luck bonus. */
-	struct sprite *sprite;          /*!< (+&) Sprite to use. */
+
+	/**
+	 * (+&) Sprites to use.
+	 */
+	struct sprite *sprites[CHARACTER_SPRITE_NUM];
 
 	/**
 	 * (+&?) List of spells for this character.

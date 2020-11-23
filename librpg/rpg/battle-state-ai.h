@@ -19,6 +19,11 @@
 #ifndef MOLKO_BATTLE_STATE_AI_H
 #define MOLKO_BATTLE_STATE_AI_H
 
+/**
+ * \file battle-state-ai.h
+ * \brief Battle state (enemy is playing).
+ */
+
 struct battle;
 
 /**

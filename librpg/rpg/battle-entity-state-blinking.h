@@ -1,5 +1,5 @@
 /*
- * battle-state-sub.h -- battle state (sub)
+ * battle-entity-state-blinking.h -- the entity is blinking
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,30 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_BATTLE_STATE_SUB_H
-#define MOLKO_BATTLE_STATE_SUB_H
+#ifndef MOLKO_RPG_BATTLE_ENTITY_STATE_BLINKING_H
+#define MOLKO_RPG_BATTLE_ENTITY_STATE_BLINKING_H
 
 /**
- * \file battle-state-sub.h
- * \brief Battle state (sub).
+ * \file battle-entity-state-blinking.h
+ * \brief The entity is blinking.
  */
 
-struct battle;
+struct battle_entity;
 
 /**
- * Switch to battle state sub.
+ * Start blinking the entity.
  *
- * \pre bt != NULL
- * \param bt the battle to change state
- * \post bt->state->handle is set
- * \post bt->state->draw is set
+ * This state will blink two times the entity by reducing the alpha from it at
+ * two intervals. It is designed mostly for enemies since they don't have
+ * walking sprites.
+ *
+ * \pre battle_entity_ok(et)
+ * \param et the entity to change
+ * \post et->state->data is set to custom data
+ * \post et->state->update is set
+ * \post et->state->finish is set
  */
 void
-battle_state_sub(struct battle *bt);
+battle_entity_state_blinking(struct battle_entity *et);
 
-#endif /* !MOLKO_BATTLE_STATE_SUB_H */
+#endif /* !MOLKO_RPG_BATTLE_ENTITY_STATE_BLINKING_H */

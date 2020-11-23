@@ -19,6 +19,11 @@
 #ifndef MOLKO_BATTLE_STATE_LOST_H
 #define MOLKO_BATTLE_STATE_LOST_H
 
+/**
+ * \file battle-state-lost.h
+ * \brief Battle state (lost)
+ */
+
 struct battle;
 
 /**

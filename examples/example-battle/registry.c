@@ -22,21 +22,34 @@
 #include <core/panic.h>
 #include <core/util.h>
 
-#include <adventure/assets/sprites/john.h>
-
-#include <assets/images/haunted-wood.h>
+#include <assets/images/battle-background.h>
 #include <assets/images/black-cat.h>
+#include <assets/images/haunted-wood.h>
 
 #include <assets/sprites/cursor.h>
 #include <assets/sprites/explosion.h>
+#include <assets/sprites/john-sword.h>
+#include <assets/sprites/john-walk.h>
 
 #include <assets/sounds/fire.h>
 
 #include "registry.h"
 
+struct texture registry_images[REGISTRY_IMAGE_NUM];
 struct texture registry_textures[REGISTRY_TEXTURE_NUM];
 struct sprite registry_sprites[REGISTRY_TEXTURE_NUM];
 struct sound registry_sounds[REGISTRY_SOUND_NUM];
+
+#define REGISTRY_IMAGE(i, ptr) \
+	{ (i), (ptr), sizeof ((ptr)) }
+
+static const struct {
+	enum registry_image index;
+	const void *data;
+	size_t datasz;
+} images[] = {
+	REGISTRY_IMAGE(REGISTRY_IMAGE_BATTLE_BACKGROUND, images_battle_background)
+};
 
 #define REGISTRY_TEXTURE(s, ptr, cw, ch) \
 	{ (s), (ptr), sizeof ((ptr)), (cw), (ch) }
@@ -50,7 +63,8 @@ static const struct {
 } textures[] = {
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CURSOR, sprites_cursor, 24, 24),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_EXPLOSION, sprites_explosion, 256, 256),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN, sprites_john, 48, 48),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_SWORD, sprites_john_sword, 256, 256),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_WALK, sprites_john_walk, 256, 256),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_HAUNTED_WOOD, images_haunted_wood, 0, 0),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_BLACK_CAT, images_black_cat, 0, 0)
 };
@@ -65,6 +79,17 @@ static const struct {
 } sounds[] = {
 	REGISTRY_SOUND(REGISTRY_SOUND_FIRE, sounds_fire)
 };
+
+static void
+load_images(void)
+{
+	for (size_t i = 0; i < NELEM(images); ++i) {
+		struct texture *texture = &registry_images[images[i].index];
+
+		if (!image_openmem(texture, images[i].data, images[i].datasz))
+			panic();
+	}
+}
 
 static void
 load_textures_and_sprites(void)
@@ -97,6 +122,7 @@ load_sounds(void)
 void
 registry_init(void)
 {
+	load_images();
 	load_textures_and_sprites();
 	load_sounds();
 }
@@ -104,6 +130,8 @@ registry_init(void)
 void
 registry_finish(void)
 {
+	for (size_t i = 0; i < NELEM(registry_images); ++i)
+		texture_finish(&registry_images[i]);
 	for (size_t i = 0; i < NELEM(registry_textures); ++i)
 		texture_finish(&registry_textures[i]);
 	for (size_t i = 0; i < NELEM(registry_sounds); ++i)

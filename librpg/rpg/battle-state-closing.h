@@ -19,6 +19,11 @@
 #ifndef MOLKO_BATTLE_STATE_CLOSING_H
 #define MOLKO_BATTLE_STATE_CLOSING_H
 
+/**
+ * \file battle-state-closing.h
+ * \brief Battle state (closing).
+ */
+
 struct battle;
 
 /**

@@ -18,12 +18,14 @@
 
 #include <assert.h>
 
+#include <core/sprite.h>
+
 #include "character.h"
 
 bool
 character_ok(struct character *ch)
 {
-	return ch && ch->name && ch->type && ch->reset;
+	return ch && ch->name && ch->type && ch->reset && sprite_ok(ch->sprites[CHARACTER_SPRITE_WALK]);
 }
 
 const char *

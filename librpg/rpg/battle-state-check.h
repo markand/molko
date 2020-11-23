@@ -19,6 +19,11 @@
 #ifndef MOLKO_BATTLE_STATE_CHECK_H
 #define MOLKO_BATTLE_STATE_CHECK_H
 
+/**
+ * \file battle-state-check.h
+ * \brief Battle state (check status).
+ */
+
 struct battle;
 
 /**

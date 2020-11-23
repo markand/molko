@@ -22,14 +22,28 @@ set(
 	SOURCES
 	${librpg_SOURCE_DIR}/rpg/battle.c
 	${librpg_SOURCE_DIR}/rpg/battle.h
-	${librpg_SOURCE_DIR}/rpg/battle-indicator.c
-	${librpg_SOURCE_DIR}/rpg/battle-indicator.h
 	${librpg_SOURCE_DIR}/rpg/battle-bar.c
 	${librpg_SOURCE_DIR}/rpg/battle-bar.h
+	${librpg_SOURCE_DIR}/rpg/battle-entity.c
+	${librpg_SOURCE_DIR}/rpg/battle-entity.h
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state.c
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state.h
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state-attacking.c
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state-attacking.h
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state-blinking.c
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state-blinking.h
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state-moving.c
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state-moving.h
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state-normal.c
+	${librpg_SOURCE_DIR}/rpg/battle-entity-state-normal.h
+	${librpg_SOURCE_DIR}/rpg/battle-indicator.c
+	${librpg_SOURCE_DIR}/rpg/battle-indicator.h
 	${librpg_SOURCE_DIR}/rpg/battle-state.c
 	${librpg_SOURCE_DIR}/rpg/battle-state.h
 	${librpg_SOURCE_DIR}/rpg/battle-state-ai.c
 	${librpg_SOURCE_DIR}/rpg/battle-state-ai.h
+	${librpg_SOURCE_DIR}/rpg/battle-state-attacking.c
+	${librpg_SOURCE_DIR}/rpg/battle-state-attacking.h
 	${librpg_SOURCE_DIR}/rpg/battle-state-check.c
 	${librpg_SOURCE_DIR}/rpg/battle-state-check.h
 	${librpg_SOURCE_DIR}/rpg/battle-state-closing.c

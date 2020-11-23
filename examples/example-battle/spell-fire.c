@@ -51,11 +51,12 @@ draw(struct action *act)
 {
 	const struct data *data = act->data;
 	const struct battle_entity *et = &data->battle->enemies[data->selection];
+	const struct sprite *sprite = et->ch->sprites[CHARACTER_SPRITE_WALK];
 	int x, y;
 
 	align(ALIGN_CENTER,
 	    &x, &y, data->animation.sprite->cellw, data->animation.sprite->cellh,
-	    et->x, et->y, et->ch->sprite->cellw, et->ch->sprite->cellh);
+	    et->x, et->y, sprite->cellw, sprite->cellh);
 
 	animation_draw(&data->animation, x, y);
 }

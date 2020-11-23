@@ -19,6 +19,11 @@
 #ifndef MOLKO_BATTLE_STATE_VICTORY_H
 #define MOLKO_BATTLE_STATE_VICTORY_H
 
+/**
+ * \file battle-state-victory.h
+ * \brief Battle state (victory).
+ */
+
 struct battle;
 
 /**

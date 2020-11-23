@@ -97,8 +97,16 @@ handle_keydown(struct battle_state *st, struct battle *bt, const union event *ev
 		battle_state_sub(bt);
 		break;
 	case KEY_ENTER:
-		battle_cast(bt, source, sp, select->selection);
-		battle_state_check(bt);
+		switch (bt->bar.menu) {
+		case BATTLE_BAR_MENU_ATTACK:
+			battle_attack(bt, source, bt->enemies[select->selection].ch);
+			break;
+		case BATTLE_BAR_MENU_MAGIC:
+			battle_cast(bt, source, sp, select->selection);
+			break;
+		default:
+			break;
+		}
 		break;
 	case KEY_LEFT:
 	case KEY_UP:

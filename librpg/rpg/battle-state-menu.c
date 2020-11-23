@@ -22,6 +22,7 @@
 #include "battle.h"
 #include "battle-bar.h"
 #include "battle-state-menu.h"
+#include "battle-state-selection.h"
 #include "battle-state-sub.h"
 #include "battle-state.h"
 #include "character.h"
@@ -35,6 +36,22 @@ open_spells(struct battle *bt)
 }
 
 static void
+open_attack(struct battle *bt)
+{
+	unsigned int selection = 0;
+
+	/* Find first enemy to attack. */
+	for (size_t i = 0; i < BATTLE_ENEMY_MAX; ++i) {
+		if (character_ok(bt->enemies[i].ch)) {
+			selection = i;
+			break;
+		}
+	}
+
+	battle_state_selection(bt, SELECTION_ENEMY_ONE, selection);
+}
+
+static void
 handle(struct battle_state *st, struct battle *bt, const union event *ev)
 {
 	(void)st;
@@ -42,7 +59,7 @@ handle(struct battle_state *st, struct battle *bt, const union event *ev)
 	if (battle_bar_handle(&bt->bar, bt, ev)) {
 		switch (bt->bar.menu) {
 		case BATTLE_BAR_MENU_ATTACK:
-			/* TODO: do selection for attacking. */
+			open_attack(bt);
 			break;
 		case BATTLE_BAR_MENU_MAGIC:
 			open_spells(bt);

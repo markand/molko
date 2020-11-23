@@ -1,5 +1,5 @@
 /*
- * battle-state-sub.h -- battle state (sub)
+ * battle-state-attacking.h -- battle state (entity is moving for attacking)
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,35 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_BATTLE_STATE_SUB_H
-#define MOLKO_BATTLE_STATE_SUB_H
+#ifndef MOLKO_BATTLE_STATE_ATTACKING_H
+#define MOLKO_BATTLE_STATE_ATTACKING_H
 
 /**
- * \file battle-state-sub.h
- * \brief Battle state (sub).
+ * \file battle-state-attacking.h
+ * \brief Battle state (entity is moving for attacking).
+ *
+ * This state will move the entity source to the target if it is a member of
+ * team or will blink the enemy. Then it computes damage and change state to
+ * check.
  */
 
 struct battle;
+struct character;
 
 /**
- * Switch to battle state sub.
+ * Switch to battle state attacking.
  *
- * \pre bt != NULL
+ * \pre battle_ok(bt)
+ * \pre character_ok(source)
+ * \pre character_ok(target)
  * \param bt the battle to change state
- * \post bt->state->handle is set
- * \post bt->state->draw is set
+ * \param source the entity attacking
+ * \param target the target to damage
+ * \post bt->state->data is set to a custom data type
+ * \post bt->state->update is set
+ * \post bt->state->finish is set
  */
 void
-battle_state_sub(struct battle *bt);
+battle_state_attacking(struct battle *bt, struct character *source, struct character *target);
 
-#endif /* !MOLKO_BATTLE_STATE_SUB_H */
+#endif /* !MOLKO_BATTLE_STATE_CHECK_H */

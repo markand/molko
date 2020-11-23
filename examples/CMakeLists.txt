@@ -20,6 +20,7 @@ project(examples)
 
 set(
 	ASSETS_IMAGES
+	${examples_SOURCE_DIR}/assets/images/battle-background.png
 	${examples_SOURCE_DIR}/assets/images/black-cat.png
 	${examples_SOURCE_DIR}/assets/images/haunted-wood.png
 )
@@ -63,6 +64,8 @@ set(
 	${examples_SOURCE_DIR}/assets/sprites/cursor.png
 	${examples_SOURCE_DIR}/assets/sprites/explosion.png
 	${examples_SOURCE_DIR}/assets/sprites/john.png
+	${examples_SOURCE_DIR}/assets/sprites/john-sword.png
+	${examples_SOURCE_DIR}/assets/sprites/john-walk.png
 	${examples_SOURCE_DIR}/assets/sprites/numbers.png
 	${examples_SOURCE_DIR}/assets/sprites/people.png
 )

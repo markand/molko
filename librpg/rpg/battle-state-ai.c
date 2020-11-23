@@ -37,7 +37,6 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	 * to check.
 	 */
 	character_exec(ch, bt);
-	battle_state_check(bt);
 
 	return false;
 }

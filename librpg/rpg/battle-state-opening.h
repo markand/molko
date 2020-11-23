@@ -19,6 +19,11 @@
 #ifndef MOLKO_BATTLE_STATE_OPENING_H
 #define MOLKO_BATTLE_STATE_OPENING_H
 
+/**
+ * \file battle-state-opening.h
+ * \brief Battle state (opening).
+ */
+
 struct battle;
 
 /**

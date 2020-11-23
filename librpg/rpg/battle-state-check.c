@@ -52,12 +52,11 @@ fadeout_update(struct action *act, unsigned int ticks)
 	if (fade->elapsed >= 8) {
 		fade->elapsed = 0;
 
-		if (fade->alpha == 0) {
+		if (fade->alpha == 0)
 			return true;
-		}
 
 		fade->alpha -= 10;
-		texture_set_alpha_mod(ch->sprite->texture, fade->alpha);
+		texture_set_alpha_mod(ch->sprites[CHARACTER_SPRITE_WALK]->texture, fade->alpha);
 	}
 
 	return false;
@@ -68,7 +67,7 @@ fadeout_draw(struct action *act)
 {
 	const struct fadeout *fade = act->data;
 
-	sprite_draw(fade->ch->sprite, 0, 0, fade->x, fade->y);
+	sprite_draw(fade->ch->sprites[CHARACTER_SPRITE_WALK], 0, 0, fade->x, fade->y);
 }
 
 static void

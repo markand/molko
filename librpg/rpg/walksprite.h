@@ -77,6 +77,15 @@ void
 walksprite_init(struct walksprite *ws, struct sprite *sprite, unsigned int delay);
 
 /**
+ * Reset current column to inactive (aka no longer walking).
+ *
+ * \pre ws != NULL
+ * \param ws the walking sprite
+ */
+void
+walksprite_reset(struct walksprite *ws);
+
+/**
  * Update the walking sprite
  *
  * \pre ws != NULL

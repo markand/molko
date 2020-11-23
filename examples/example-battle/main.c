@@ -81,7 +81,7 @@ black_cat_reset(struct character *ch)
 	ch->mpmax = ch->mp = 38;
 	ch->atk = 22;
 	ch->def = 19;
-	ch->agt = 21;
+	ch->agt = 11;
 	ch->luck = 14;
 }
 
@@ -93,23 +93,14 @@ static struct character team[] = {
 		.hp = 120,
 		.mp = 50,
 		.reset = adventurer_reset,
-		.sprite = &registry_sprites[REGISTRY_TEXTURE_JOHN],
+		.sprites = {
+			[CHARACTER_SPRITE_WALK] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
+			[CHARACTER_SPRITE_SWORD] = &registry_sprites[REGISTRY_TEXTURE_JOHN_SWORD],
+		},
 		.spells = {
 			&spell_fire
 		}
 	},
-	{
-		.name = "Fake Molko",
-		.type = "Adventurer",
-		.level = 1,
-		.hp = 120,
-		.mp = 50,
-		.reset = adventurer_reset,
-		.sprite = &registry_sprites[REGISTRY_TEXTURE_JOHN],
-		.spells = {
-			&spell_fire
-		}
-	}
 };
 
 static void
@@ -135,7 +126,9 @@ static struct character haunted_wood = {
 	.type = "Wood",
 	.level = 30,
 	.reset = haunted_wood_reset,
-	.sprite = &registry_sprites[REGISTRY_TEXTURE_HAUNTED_WOOD],
+	.sprites = {
+		[CHARACTER_SPRITE_WALK] = &registry_sprites[REGISTRY_TEXTURE_HAUNTED_WOOD],
+	},
 	.exec = haunted_wood_strat
 };
 
@@ -144,7 +137,9 @@ static struct character black_cat = {
 	.type = "Cat",
 	.level = 6,
 	.reset = black_cat_reset,
-	.sprite = &registry_sprites[REGISTRY_TEXTURE_BLACK_CAT],
+	.sprites = {
+		[CHARACTER_SPRITE_WALK] = &registry_sprites[REGISTRY_TEXTURE_BLACK_CAT],
+	},
 	.exec = black_cat_strat
 };
 
@@ -171,17 +166,21 @@ prepare_to_fight(void)
 
 //	bt->enemies[0].ch = &haunted_wood;
 	bt->team[0].ch = &team[0];
-	bt->team[1].ch = &team[1];
+	//bt->team[1].ch = &team[1];
 
 	/* Positionate the single ennemy to the left. */
 	align(ALIGN_LEFT,
-	    &bt->enemies[0].x, &bt->enemies[0].y, haunted_wood.sprite->cellw, haunted_wood.sprite->cellh,
+	    &bt->enemies[0].x, &bt->enemies[0].y,
+	    haunted_wood.sprites[0]->cellw,
+	    haunted_wood.sprites[0]->cellh,
 	    0, 0, window.w, window.h);
 
 	/* Black cat is near the previous monster. */
 	bt->enemies[1].ch = &black_cat;
 	bt->enemies[1].x = 500;
 	bt->enemies[1].y = 100;
+
+	bt->background = &registry_images[REGISTRY_IMAGE_BATTLE_BACKGROUND];
 
 	battle_start(bt);
 

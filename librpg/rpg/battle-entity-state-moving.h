@@ -1,5 +1,5 @@
 /*
- * battle-state-sub.h -- battle state (sub)
+ * battle-entity-state-moving.h -- the entity is moving
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,30 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_BATTLE_STATE_SUB_H
-#define MOLKO_BATTLE_STATE_SUB_H
+#ifndef MOLKO_RPG_BATTLE_ENTITY_STATE_MOVING_H
+#define MOLKO_RPG_BATTLE_ENTITY_STATE_MOVING_H
 
 /**
- * \file battle-state-sub.h
- * \brief Battle state (sub).
+ * \file battle-entity-state-moving.h
+ * \brief The entity is moving.
  */
 
-struct battle;
+struct battle_entity;
 
 /**
- * Switch to battle state sub.
+ * Starts moving the entity at the given destination.
  *
- * \pre bt != NULL
- * \param bt the battle to change state
- * \post bt->state->handle is set
- * \post bt->state->draw is set
+ * This will move the entity to the destination using a walking sprite.
+ *
+ * \pre battle_entity_ok(et)
+ * \param et the entity to move
+ * \param destx the destination in x
+ * \param desty the destination in y
+ * \post et->state->data is set to custom data
+ * \post et->state->update is set
+ * \post et->state->finish is set
  */
 void
-battle_state_sub(struct battle *bt);
+battle_entity_state_moving(struct battle_entity *et, int destx, int desty);
 
-#endif /* !MOLKO_BATTLE_STATE_SUB_H */
+#endif /* !MOLKO_RPG_BATTLE_ENTITY_STATE_MOVING_H */

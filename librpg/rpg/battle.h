@@ -25,10 +25,10 @@
 #include <core/drawable.h>
 
 #include <ui/frame.h>
-#include <ui/label.h>
 #include <ui/gridmenu.h>
 
 #include "battle-bar.h"
+#include "battle-entity.h"
 #include "battle-state.h"
 #include "selection.h"
 #include "spell.h"
@@ -51,16 +51,6 @@ struct theme;
 	for (size_t i = 0; i < BATTLE_ENEMY_MAX && ((iter) = &(bt)->enemies[i]); ++i)
 
 #define BATTLE_THEME(bt) ((bt)->theme ? (bt)->theme : theme_default())
-
-/**
- * \brief In battle entity.
- */
-struct battle_entity {
-	struct character *ch;   /*!< (+&?) Character to use. */
-	int x;                  /*!< (+) Position on screen. */
-	int y;                  /*!< (+) Position on screen. */
-	struct label name;      /*!< (*) Where its name label is located. */
-};
 
 /**
  * \brief Generic battle status.
@@ -173,13 +163,16 @@ void
 battle_start(struct battle *bt);
 
 /**
- * Select next member in team.
+ * Select next member in battle.
  *
  * \pre bt != NULL
  * \param bt the battle object
  */
 void
 battle_next(struct battle *bt);
+
+struct battle_entity *
+battle_find(struct battle *bt, const struct character *ch);
 
 /**
  * Change battle state.
@@ -204,8 +197,19 @@ void
 battle_order(struct battle *bt);
 
 /**
- * Default function to calculate damage calculation from the source to the
- * given target and then add an amount indicator as a drawable.
+ * All in one function to animate and compute damage.
+ *
+ * Use this function from the character AI or when a character from the team
+ * should attack an enemy.
+ *
+ * This will do the following in order:
+ *
+ * 1. Change battle state to "attacking"
+ * 2. Change battle entity state to "moving" or "blinking" if source is member of
+ *    team or enemies respectively.
+ * 3. Wait until animations complete.
+ * 4. Compute and produce damage.
+ * 5. Change battle state to "check"
  *
  * \pre bt != NULL
  * \pre source != NULL
@@ -215,7 +219,9 @@ battle_order(struct battle *bt);
  * \param target the target entity
  */
 void
-battle_attack(struct battle *bt, struct character *source, struct character *target);
+battle_attack(struct battle *bt,
+              struct character *source,
+              struct character *target);
 
 /**
  * Default function to cast a spell.

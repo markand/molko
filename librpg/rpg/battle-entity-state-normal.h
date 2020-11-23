@@ -1,5 +1,5 @@
 /*
- * battle-state-sub.h -- battle state (sub)
+ * battle-entity-state-normal.h -- the entity is normal
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,26 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_BATTLE_STATE_SUB_H
-#define MOLKO_BATTLE_STATE_SUB_H
+#ifndef MOLKO_RPG_BATTLE_ENTITY_STATE_NORMAL_H
+#define MOLKO_RPG_BATTLE_ENTITY_STATE_NORMAL_H
 
 /**
- * \file battle-state-sub.h
- * \brief Battle state (sub).
+ * \file battle-entity-state-normal.h
+ * \brief The entity is normal.
  */
 
-struct battle;
+struct battle_entity;
 
 /**
- * Switch to battle state sub.
+ * Set normal state.
  *
- * \pre bt != NULL
- * \param bt the battle to change state
- * \post bt->state->handle is set
- * \post bt->state->draw is set
+ * The normal state does nothing except rendering the entity at its current
+ * position.
+ *
+ * \pre battle_entity_ok(et)
+ * \param et the entity to set
  */
 void
-battle_state_sub(struct battle *bt);
+battle_entity_state_normal(struct battle_entity *et);
 
-#endif /* !MOLKO_BATTLE_STATE_SUB_H */
+#endif /* !MOLKO_RPG_BATTLE_ENTITY_STATE_NORMAL_H */

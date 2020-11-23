@@ -1,5 +1,5 @@
 /*
- * battle-state-sub.h -- battle state (sub)
+ * battle-entity-state.c -- abstract battle entity state
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,39 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_BATTLE_STATE_SUB_H
-#define MOLKO_BATTLE_STATE_SUB_H
+#include <assert.h>
 
-/**
- * \file battle-state-sub.h
- * \brief Battle state (sub).
- */
+#include "battle-entity.h"
+#include "battle-entity-state.h"
 
-struct battle;
+bool
+battle_entity_state_update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks)
+{
+	assert(st);
+	assert(et);
 
-/**
- * Switch to battle state sub.
- *
- * \pre bt != NULL
- * \param bt the battle to change state
- * \post bt->state->handle is set
- * \post bt->state->draw is set
- */
+	if (st->update)
+		return st->update(st, et, ticks);
+
+	return true;
+}
+
 void
-battle_state_sub(struct battle *bt);
+battle_entity_state_draw(const struct battle_entity_state *st, const struct battle_entity *et)
+{
+	assert(st);
 
-#endif /* !MOLKO_BATTLE_STATE_SUB_H */
+	if (st->draw)
+		st->draw(st, et);
+	else
+		battle_entity_draw_sprite(et);
+}
+
+void
+battle_entity_state_finish(struct battle_entity_state *st, struct battle_entity *et)
+{
+	assert(et);
+
+	if (st->finish)
+		st->finish(st, et);
+}

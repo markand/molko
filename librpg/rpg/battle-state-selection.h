@@ -19,6 +19,11 @@
 #ifndef MOLKO_BATTLE_STATE_SELECTION_H
 #define MOLKO_BATTLE_STATE_SELECTION_H
 
+/**
+ * \file battle-state-selection.h
+ * \brief Battle state (selection).
+ */
+
 #include "selection.h"
 
 struct battle;

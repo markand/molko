@@ -31,7 +31,8 @@ enum registry_texture {
 	REGISTRY_TEXTURE_EXPLOSION,
 
 	/* Characters. */
-	REGISTRY_TEXTURE_JOHN,
+	REGISTRY_TEXTURE_JOHN_WALK,
+	REGISTRY_TEXTURE_JOHN_SWORD,
 
 	/* Enemies. */
 	REGISTRY_TEXTURE_HAUNTED_WOOD,
@@ -41,11 +42,17 @@ enum registry_texture {
 	REGISTRY_TEXTURE_NUM
 };
 
+enum registry_image {
+	REGISTRY_IMAGE_BATTLE_BACKGROUND,
+	REGISTRY_IMAGE_NUM
+};
+
 enum registry_sound {
 	REGISTRY_SOUND_FIRE,
 	REGISTRY_SOUND_NUM
 };
 
+extern struct texture registry_images[REGISTRY_IMAGE_NUM];
 extern struct texture registry_textures[REGISTRY_TEXTURE_NUM];
 extern struct sprite registry_sprites[REGISTRY_TEXTURE_NUM];
 extern struct sound registry_sounds[REGISTRY_SOUND_NUM];

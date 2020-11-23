@@ -29,9 +29,17 @@ walksprite_init(struct walksprite *ws, struct sprite *sprite, unsigned int delay
 	assert(ws);
 	assert(sprite);
 
-	memset(ws, 0, sizeof (struct walksprite));
+	memset(ws, 0, sizeof (*ws));
 	ws->sprite = sprite;
 	ws->delay = delay;
+}
+
+void
+walksprite_reset(struct walksprite *ws)
+{
+	assert(ws);
+
+	ws->index = 0;
 }
 
 void
