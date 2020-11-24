@@ -105,6 +105,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	case SUBSTATE_BLINKING:
 		/* Just wait. */
 		battle_entity_state_normal(data->source);
+		damage(data->source, data->target, bt);
 		battle_state_check(bt);
 		break;
 	default:

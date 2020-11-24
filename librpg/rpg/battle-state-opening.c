@@ -27,6 +27,7 @@
 
 #include "battle.h"
 #include "battle-state.h"
+#include "battle-state-check.h"
 #include "battle-state-opening.h"
 #include "battle-state-menu.h"
 
@@ -50,10 +51,8 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	 * Those function will effectively change state accordingly to the
 	 * order of playing.
 	 */
-	if (opening->elapsed >= DELAY) {
-		battle_order(bt);
-		battle_next(bt);
-	}
+	if (opening->elapsed >= DELAY)
+		battle_state_check(bt);
 
 	return false;
 }
@@ -81,7 +80,7 @@ finish(struct battle_state *st, struct battle *bt)
 {
 	(void)bt;
 
-	free(st);
+	free(st->data);
 }
 
 void

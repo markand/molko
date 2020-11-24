@@ -40,6 +40,7 @@
 #include "battle-indicator.h"
 #include "battle-state.h"
 #include "battle-state-attacking.h"
+#include "battle-state-check.h"
 #include "battle-state-opening.h"
 #include "battle-state-menu.h"
 #include "battle-state-ai.h"
@@ -284,6 +285,7 @@ battle_cast(struct battle *bt,
 	/* TODO: animate. */
 	source->mp -= spell->mp;
 	spell_action(spell, bt, source, selection);
+	battle_state_check(bt);
 }
 
 void
@@ -293,9 +295,10 @@ battle_next(struct battle *bt)
 
 	battle_bar_reset(&bt->bar);
 
-	if (!bt->order_cur)
+	if (!bt->order_cur) {
+		battle_order(bt);
 		bt->order_cur = bt->order[bt->order_curindex = 0];
-	else {
+	} else {
 		/* End of turn. */
 		if (++bt->order_curindex >= BATTLE_ENTITY_MAX || !bt->order[bt->order_curindex]) {
 			battle_order(bt);
