@@ -50,7 +50,7 @@ battle_entity_init(struct battle_entity *et)
 	assert(et);
 
 	character_reset(et->ch);
-	texture_set_alpha_mod(et->ch->sprites[CHARACTER_SPRITE_WALK]->texture, 255);
+	texture_set_alpha_mod(et->ch->sprites[CHARACTER_SPRITE_NORMAL]->texture, 255);
 
 	battle_entity_state_normal(et);
 }
@@ -84,7 +84,7 @@ battle_entity_update(struct battle_entity *et, unsigned int ticks)
 void
 battle_entity_draw_sprite(const struct battle_entity *et)
 {
-	struct sprite *sprite = et->ch->sprites[CHARACTER_SPRITE_WALK];
+	struct sprite *sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
 	int row;
 
 	/*

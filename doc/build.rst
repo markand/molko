@@ -33,24 +33,48 @@ Both of the API and the game are written using C99 and C11 but not all of the
 features from both C versions are required. Here's a list of functionalities
 that are required:
 
-From C99:
+From C99
+^^^^^^^^
+
+Features:
 
 - `Compound literals`_,
-- `stdbool.h`_ header,
-- `snprintf`_ function and friends,
 - `inline`_ keyword.
 
-From C11:
+Headers:
 
-- `stdnoreturn.h`_ header.
+- `stdbool.h`_
 
-From POSIX:
+Functions:
 
-We use a few parts of POSIX_ specification but try to keep its use limited as
-not all platforms are POSIX compliant.
+- `snprintf`_
 
-- `getopt(3)`_: to parse arguments,
+From C11
+^^^^^^^^
+
+- `stdnoreturn.h`_
+
+From POSIX
+^^^^^^^^^^
+
+Expectations:
+
+- We use a few parts of POSIX_ specification but try to keep its use limited as
+  not all platforms are POSIX compliant.
 - We assume that ``fopen``, ``malloc`` and friends set errno in case of failures.
+
+Functions:
+
+- `dirname`_,
+- `getopt`_.
+
+Headers:
+
+- `libgen.h`_
+
+Macros:
+
+- PATH_MAX: in limits.h.
 
 .. note:: When a POSIX requirement isn't present it is replaced by a shim
    specified for the platform.
@@ -65,8 +89,10 @@ not all platforms are POSIX compliant.
 .. _SDL2_ttf: https://www.libsdl.org/projects/SDL_ttf
 .. _brew: https://brew.sh
 .. _cmake: http://cmake.org
-.. _getopt(3): https://pubs.opengroup.org/onlinepubs/9699919799/functions/getopt.html
+.. _dirname: https://pubs.opengroup.org/onlinepubs/9699919799/functions/dirname.html
+.. _getopt: https://pubs.opengroup.org/onlinepubs/9699919799/functions/getopt.html
 .. _inline: https://en.cppreference.com/w/c/language/inline
+.. _libgen.h: https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/libgen.h.html
 .. _snprintf: https://en.cppreference.com/w/c/io/fprintf
 .. _stdbool.h: https://en.cppreference.com/w/c/language/arithmetic_types#Boolean_type
 .. _stdnoreturn.h: https://en.cppreference.com/w/c/types

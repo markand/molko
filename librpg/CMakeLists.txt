@@ -62,6 +62,8 @@ set(
 	${librpg_SOURCE_DIR}/rpg/battle-state-victory.h
 	${librpg_SOURCE_DIR}/rpg/character.c
 	${librpg_SOURCE_DIR}/rpg/character.h
+	${librpg_SOURCE_DIR}/rpg/equipment.c
+	${librpg_SOURCE_DIR}/rpg/equipment.h
 	${librpg_SOURCE_DIR}/rpg/item.c
 	${librpg_SOURCE_DIR}/rpg/item.h
 	${librpg_SOURCE_DIR}/rpg/map.c

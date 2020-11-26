@@ -76,7 +76,7 @@ battle_entity_state_blinking(struct battle_entity *et)
 	if (!(blk = alloc_new0(sizeof (*blk))))
 		panic();
 
-	blk->tex = et->ch->sprites[CHARACTER_SPRITE_WALK]->texture;
+	blk->tex = et->ch->sprites[CHARACTER_SPRITE_NORMAL]->texture;
 	texture_set_alpha_mod(blk->tex, TRANSPARENT);
 
 	blk->state.data = blk;

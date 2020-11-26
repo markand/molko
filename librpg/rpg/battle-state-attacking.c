@@ -141,7 +141,7 @@ battle_state_attacking(struct battle *bt, struct character *source, struct chara
 	data->origin_y = data->source->y;
 
 	/* We go to the enemy. */
-	x = data->target->x + data->target->ch->sprites[CHARACTER_SPRITE_WALK]->cellw;
+	x = data->target->x + data->target->ch->sprites[CHARACTER_SPRITE_NORMAL]->cellw;
 	y = data->target->y;
 
 	/* If it is an enemy we don't move it but blink instead. */

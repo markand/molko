@@ -99,7 +99,7 @@ battle_entity_state_moving(struct battle_entity *et, int destx, int desty)
 	if (!(pos = alloc_new0(sizeof (*pos))))
 		panic();
 
-	walksprite_init(&pos->ws, et->ch->sprites[CHARACTER_SPRITE_WALK], 40);
+	walksprite_init(&pos->ws, et->ch->sprites[CHARACTER_SPRITE_NORMAL], 40);
 	pos->x = destx;
 	pos->y = desty;
 

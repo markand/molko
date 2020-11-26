@@ -118,7 +118,7 @@ positionate_name(struct battle_entity *et, const struct battle *bt)
 	struct sprite *sprite;
 
 	/* Show the character name below its sprite. */
-	sprite = et->ch->sprites[CHARACTER_SPRITE_WALK];
+	sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
 
 	et->name.text = et->ch->name;
 	et->name.flags = LABEL_FLAGS_SHADOW;
@@ -154,7 +154,7 @@ positionate_team(struct battle *bt)
 
 		if (battle_entity_ok(&bt->team[i])) {
 			nmemb++;
-			requirement += et->ch->sprites[CHARACTER_SPRITE_WALK]->cellh;
+			requirement += et->ch->sprites[CHARACTER_SPRITE_NORMAL]->cellh;
 		}
 	}
 
@@ -167,7 +167,7 @@ positionate_team(struct battle *bt)
 		if (battle_entity_ok(et)) {
 			et->x = x;
 			et->y = y;
-			y += et->ch->sprites[CHARACTER_SPRITE_WALK]->cellh + spacing;
+			y += et->ch->sprites[CHARACTER_SPRITE_NORMAL]->cellh + spacing;
 		}
 	}
 }
@@ -336,8 +336,8 @@ battle_indicator_hp(struct battle *bt, const struct character *target, unsigned 
 	id->bti.amount = amount;
 
 	/* TODO: positionate better. */
-	id->dw.x = et->x + target->sprites[CHARACTER_SPRITE_WALK]->cellw;
-	id->dw.y = et->y + target->sprites[CHARACTER_SPRITE_WALK]->cellh;
+	id->dw.x = et->x + target->sprites[CHARACTER_SPRITE_NORMAL]->cellw;
+	id->dw.y = et->y + target->sprites[CHARACTER_SPRITE_NORMAL]->cellh;
 	id->dw.data = id;
 	id->dw.update = indicator_update;
 	id->dw.draw = indicator_draw;

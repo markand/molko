@@ -45,11 +45,35 @@ enum character_status {
 
 /**
  * \brief Sprites per action.
+ *
+ * This enumeration should be synced with \ref equipment_type.
  */
 enum character_sprite {
-	CHARACTER_SPRITE_WALK,          /*!< Sprite for walking. */
+	CHARACTER_SPRITE_AXE,           /*!< Attacking with axe. */
+	CHARACTER_SPRITE_BOW,           /*!< Attacking with bow. */
+	CHARACTER_SPRITE_CROSSBOW,      /*!< Attacking with crossbow. */
+	CHARACTER_SPRITE_DAGGER,        /*!< Attacking with dagger. */
+	CHARACTER_SPRITE_HAMMER,        /*!< Attacking with hammer. */
+	CHARACTER_SPRITE_NORMAL,        /*!< Sprite for walking. */
+	CHARACTER_SPRITE_SPIKE,         /*!< Attacking with spike. */
 	CHARACTER_SPRITE_SWORD,         /*!< Attacking with sword. */
+	CHARACTER_SPRITE_WAND,          /*!< Attacking with wand. */
 	CHARACTER_SPRITE_NUM            /*!< Total number of sprites. */
+};
+
+/**
+ * \brief Equipment per character.
+ *
+ * This enumeration should be synced with \ref equipment_type.
+ */
+enum character_equipment {
+	CHARACTER_EQUIPMENT_GLOVES,     /*!< Gloves equiped. */
+	CHARACTER_EQUIPMENT_HELMET,     /*!< Helmet equiped. */
+	CHARACTER_EQUIPMENT_SHIELD,     /*!< Shield equiped. */
+	CHARACTER_EQUIPMENT_TOP,        /*!< Top equiped. */
+	CHARACTER_EQUIPMENT_TROUSERS,   /*!< Trousers equiped. */
+	CHARACTER_EQUIPMENT_WEAPON,     /*!< Weapon equiped. */
+	CHARACTER_EQUIPMENT_NUM         /*!< Total number of equipments equiped. */
 };
 
 /**
@@ -81,6 +105,11 @@ struct character {
 	 * (+&) Sprites to use.
 	 */
 	struct sprite *sprites[CHARACTER_SPRITE_NUM];
+
+	/**
+	 * (+&) Equipments for this character.
+	 */
+	const struct equipment *equipments[CHARACTER_EQUIPMENT_NUM];
 
 	/**
 	 * (+&?) List of spells for this character.

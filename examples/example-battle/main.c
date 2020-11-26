@@ -94,7 +94,7 @@ static struct character team[] = {
 		.mp = 50,
 		.reset = adventurer_reset,
 		.sprites = {
-			[CHARACTER_SPRITE_WALK] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
+			[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
 			[CHARACTER_SPRITE_SWORD] = &registry_sprites[REGISTRY_TEXTURE_JOHN_SWORD],
 		},
 		.spells = {
@@ -127,7 +127,7 @@ static struct character haunted_wood = {
 	.level = 30,
 	.reset = haunted_wood_reset,
 	.sprites = {
-		[CHARACTER_SPRITE_WALK] = &registry_sprites[REGISTRY_TEXTURE_HAUNTED_WOOD],
+		[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_HAUNTED_WOOD],
 	},
 	.exec = haunted_wood_strat
 };
@@ -138,7 +138,7 @@ static struct character black_cat = {
 	.level = 6,
 	.reset = black_cat_reset,
 	.sprites = {
-		[CHARACTER_SPRITE_WALK] = &registry_sprites[REGISTRY_TEXTURE_BLACK_CAT],
+		[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_BLACK_CAT],
 	},
 	.exec = black_cat_strat
 };
@@ -171,8 +171,8 @@ prepare_to_fight(void)
 	/* Positionate the single ennemy to the left. */
 	align(ALIGN_LEFT,
 	    &bt->enemies[0].x, &bt->enemies[0].y,
-	    haunted_wood.sprites[0]->cellw,
-	    haunted_wood.sprites[0]->cellh,
+	    haunted_wood.sprites[CHARACTER_SPRITE_NORMAL]->cellw,
+	    haunted_wood.sprites[CHARACTER_SPRITE_NORMAL]->cellh,
 	    0, 0, window.w, window.h);
 
 	/* Black cat is near the previous monster. */

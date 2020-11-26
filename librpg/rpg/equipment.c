@@ -1,5 +1,5 @@
 /*
- * character.c -- character definition
+ * equipment.h -- character equipment
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -18,50 +18,21 @@
 
 #include <assert.h>
 
-#include <core/sprite.h>
-
 #include "character.h"
 #include "equipment.h"
 
 bool
-character_ok(struct character *ch)
+equipment_ok(const struct equipment *eq)
 {
-	return ch && ch->name && ch->type && ch->reset && sprite_ok(ch->sprites[CHARACTER_SPRITE_NORMAL]);
-}
-
-const char *
-character_status_string(enum character_status status)
-{
-	/*
-	 * We expect the user to only specify one status as character_status
-	 * is a bitmask.
-	 */
-	switch (status) {
-	case CHARACTER_STATUS_POISON:
-		return "poison";
-	default:
-		return "normal";
-	}
+	return eq && eq->name && eq->description;
 }
 
 void
-character_reset(struct character *ch)
+equipment_equip(const struct equipment *eq, struct character *ch)
 {
+	assert(equipment_ok(eq));
 	assert(character_ok(ch));
 
-	ch->reset(ch);
-
-	/* For all equipments, apply its equip function. */
-	for (int i = 0; i < CHARACTER_EQUIPMENT_NUM; ++i)
-		if (ch->equipments[i])
-			equipment_equip(ch->equipments[i], ch);
-}
-
-void
-character_exec(struct character *ch, struct battle *bt)
-{
-	assert(character_ok(ch));
-
-	if (ch->exec)
-		ch->exec(ch, bt);
+	if (eq->equip)
+		eq->equip(eq, ch);
 }
