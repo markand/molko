@@ -24,6 +24,7 @@ if (SPHINX_EXE)
 	set(
 		SOURCES
 		${doc_SOURCE_DIR}/about.rst
+		${doc_SOURCE_DIR}/build.rst
 		${doc_SOURCE_DIR}/conf.py
 		${doc_SOURCE_DIR}/index.rst
 		${doc_SOURCE_DIR}/spec-map.rst

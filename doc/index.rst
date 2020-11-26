@@ -20,6 +20,7 @@ Contents
    :maxdepth: 1
 
    about
+   build
    specifications
    tools
    api
