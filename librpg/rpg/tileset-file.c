@@ -43,9 +43,9 @@
  * structure.
  *
  * As animations require a texture and a sprite to be present, we need to store
- * them locally in the tileset structure.
+ * them locally in the tileset_file structure.
  *
- * tileset_file->anims[0] array (struct anim):
+ * tileset_file->anims[0] array (struct tileset_animation_block):
  *
  * [0]            [1]            [N]
  *  | texture      | texture      | texture
@@ -61,10 +61,10 @@
  * The second array is the exposed array through the tileset->anims pointer,
  * animations are referenced from the first array. This is because user may need
  * or replace the tileset by itself and as such we need to keep track of the
- * resource the tileset_file have allocated itself.
+ * resource the tileset_file has allocated itself.
  */
 
-struct anim {
+struct tileset_animation_block {
 	struct texture texture;
 	struct sprite sprite;
 	struct animation animation;
@@ -88,6 +88,14 @@ struct context {
 	unsigned int nrows;
 	unsigned int ncolumns;
 };
+
+static void
+tileset_animation_block_finish(void *data)
+{
+	struct tileset_animation_block *anim = data;
+
+	texture_finish(&anim->texture);
+}
 
 static int
 tileset_tiledef_cmp(const void *d1, const void *d2)
@@ -142,14 +150,13 @@ parse_tiledefs(struct context *ctx, const char *line)
 
 	short x, y;
 	unsigned short id, w, h;
-	struct tileset_file *tf = ctx->tf;
 	struct tileset_tiledef *td;
 
-	if (!alloc_pool_init(&tf->tiledefs, sizeof (*td), NULL))
+	if (!alloc_pool_init(&ctx->tf->tiledefs, sizeof (*td), NULL))
 		return false;
 
 	while (fscanf(ctx->fp, "%hu|%hd|%hd|%hu|%hu\n", &id, &x, &y, &w, &h) == 5) {
-		if (!(td = alloc_pool_new(&tf->tiledefs)))
+		if (!(td = alloc_pool_new(&ctx->tf->tiledefs)))
 			return false;
 
 		td->id = id;
@@ -159,22 +166,12 @@ parse_tiledefs(struct context *ctx, const char *line)
 		td->h = h;
 	}
 
-	/*
-	 * Sort the array and expose it through the tileset->tiledefs pointer.
-	 */
-	qsort(tf->tiledefs.data, tf->tiledefs.size, tf->tiledefs.elemsize, tileset_tiledef_cmp);
-	ctx->tileset->tiledefs = tf->tiledefs.data;
-	ctx->tileset->tiledefsz = tf->tiledefs.size;
+	/* Sort the array and expose it through the tileset->tiledefs pointer. */
+	qsort(ctx->tf->tiledefs.data, ctx->tf->tiledefs.size, ctx->tf->tiledefs.elemsize, tileset_tiledef_cmp);
+	ctx->tileset->tiledefs = ctx->tf->tiledefs.data;
+	ctx->tileset->tiledefsz = ctx->tf->tiledefs.size;
 
 	return true;
-}
-
-static void
-anim_finish(void *data)
-{
-	struct anim *anim = data;
-
-	texture_finish(&anim->texture);
 }
 
 static bool
@@ -184,34 +181,37 @@ parse_animations(struct context *ctx, const char *line)
 
 	unsigned short id;
 	unsigned int delay;
-	char filename[FILENAME_MAX + 1], path[PATH_MAX];
-	struct tileset *tileset = ctx->tileset;
-	struct tileset_file *tf = ctx->tf;
-	struct tileset_animation *ta;
-	struct anim *anim;
+	char filename[FILENAME_MAX + 1];
 
-	if (!alloc_pool_init(&tf->anims[0], sizeof (*anim), anim_finish) ||
-	    !alloc_pool_init(&tf->anims[1], sizeof (*ta), NULL))
+	if (!alloc_pool_init(&ctx->tf->anims[0], sizeof (struct tileset_animation_block), tileset_animation_block_finish) ||
+	    !alloc_pool_init(&ctx->tf->anims[1], sizeof (struct tileset_animation), NULL))
 		return false;
 
+	/*
+	 * 1. Create the first array of animation, sprite and texture that are
+	 *    owned by the tileset_file structure.
+	 */
 	while (fscanf(ctx->fp, "%hu|" MAX_F(FILENAME_MAX) "|%u", &id, filename, &delay) == 3) {
-		if (!(anim = alloc_pool_new(&tf->anims[0])))
+		struct tileset_animation_block *anim;
+
+		if (!(anim = alloc_pool_new(&ctx->tf->anims[0])))
+			return false;
+		if (!image_open(&anim->texture, pprintf("%s/%s", ctx->basedir, filename)))
 			return false;
 
-		snprintf(path, sizeof (path), "%s/%s", ctx->basedir, filename);
-
-		if (!image_open(&anim->texture, path))
-			return false;
-
-		/* Initialize animation. */
 		sprite_init(&anim->sprite, &anim->texture, ctx->tilewidth, ctx->tileheight);
 		animation_init(&anim->animation, &anim->sprite, delay);
+	}
 
-		/*
-		 * Now create the real tileset_animation visible in
-		 * tileset->anims.
-		 */
-		if (!(ta = alloc_pool_new(&tf->anims[1])))
+	/*
+	 * 2. Create the second array that only consist of pointers to
+	 *    animations referencing the first array.
+	 */
+	for (size_t i = 0; i < ctx->tf->anims[0].size; ++i) {
+		struct tileset_animation_block *anim = alloc_pool_get(&ctx->tf->anims[0], i);
+		struct tileset_animation *ta;
+
+		if (!(ta = alloc_pool_new(&ctx->tf->anims[1])))
 			return false;
 
 		ta->id = id;
@@ -219,12 +219,12 @@ parse_animations(struct context *ctx, const char *line)
 	}
 
 	/*
-	 * Sort and expose the animation array through the tileset->animsz
-	 * pointer.
+	 * 3. Finally expose the second array through the tileset->anims pointer
+	 *    and sort it.
 	 */
-	qsort(tf->anims[1].data, tf->anims[1].size, tf->anims[1].elemsize, tileset_animation_cmp);
-	tileset->anims = tf->anims[1].data;
-	tileset->animsz = tf->anims[1].size;
+	qsort(ctx->tf->anims[1].data, ctx->tf->anims[1].size, ctx->tf->anims[1].elemsize, tileset_animation_cmp);
+	ctx->tileset->anims  = ctx->tf->anims[1].data;
+	ctx->tileset->animsz = ctx->tf->anims[1].size;
 
 	return true;
 }
@@ -232,16 +232,14 @@ parse_animations(struct context *ctx, const char *line)
 static bool
 parse_image(struct context *ctx, const char *line)
 {
-	char path[PATH_MAX], *p;
+	char *p;
 
 	if (ctx->tilewidth == 0 || ctx->tileheight == 0)
 		return errorf("missing tile dimensions before image");
 	if (!(p = strchr(line, '|')))
 		return errorf("could not parse image");
 
-	snprintf(path, sizeof (path), "%s/%s", ctx->basedir, p + 1);
-
-	if (!image_open(&ctx->tf->image, path))
+	if (!image_open(&ctx->tf->image, pprintf("%s/%s", ctx->basedir, p + 1)))
 		return false;
 
 	sprite_init(&ctx->tf->sprite, &ctx->tf->image, ctx->tilewidth, ctx->tileheight);
