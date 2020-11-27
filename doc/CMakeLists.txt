@@ -18,36 +18,118 @@
 
 project(doc)
 
-find_program(SPHINX_EXE sphinx-build DOC "Path to sphinx-build")
+find_package(Doxygen QUIET)
+find_program(MKDOCS_EXE mkdocs DOC "Path to mkdocs")
+find_program(DOXYBOOK2_EXE doxybook2 DOC "Path to doxybook2")
 
-if (SPHINX_EXE)
+if (DOXYGEN_FOUND AND MKDOCS_EXE AND DOXYBOOK2_EXE)
 	set(
-		SOURCES
-		${doc_SOURCE_DIR}/about.rst
-		${doc_SOURCE_DIR}/build.rst
-		${doc_SOURCE_DIR}/conf.py
-		${doc_SOURCE_DIR}/index.rst
-		${doc_SOURCE_DIR}/spec-map.rst
-		${doc_SOURCE_DIR}/spec-tileset.rst
-		${doc_SOURCE_DIR}/specifications.rst
-		${doc_SOURCE_DIR}/tool-bcc.rst
-		${doc_SOURCE_DIR}/tool-map.rst
-		${doc_SOURCE_DIR}/tool-tileset.rst
-		${doc_SOURCE_DIR}/tools.rst
+		DOXYGEN_SOURCES
+		libcore
+		libui
+		librpg
+		${doc_SOURCE_DIR}/doxygen/groups.c
 	)
 
-	configure_file(
-		${doc_SOURCE_DIR}/conf.py
-		${doc_BINARY_DIR}/conf.py
+	set(
+		DOXYGEN_STRIP_FROM_PATH
+		${CMAKE_SOURCE_DIR}/libcore
+		${CMAKE_SOURCE_DIR}/libui
+		${CMAKE_SOURCE_DIR}/librpg
+	)
+	set(
+		DOC_SOURCES
+		${doc_SOURCE_DIR}/docs/specs/map.md
+		${doc_SOURCE_DIR}/docs/specs/tileset.md
+		${doc_SOURCE_DIR}/docs/tools/bcc.md
+		${doc_SOURCE_DIR}/docs/tools/map.md
+		${doc_SOURCE_DIR}/docs/tools/tileset.md
+		${doc_SOURCE_DIR}/docs/about.md
+		${doc_SOURCE_DIR}/docs/index.md
+		${doc_SOURCE_DIR}/docs/install.md
+		${doc_SOURCE_DIR}/mkdocs.yml
+	)
+
+	# 1. Generate XML structure with Doxygen.
+	set(DOXYGEN_SHOW_GROUPED_MEMB_INC NO)
+	set(DOXYGEN_SHOW_INCLUDE_FILES NO)
+	set(DOXYGEN_SHOW_USED_FILES NO)
+	set(DOXYGEN_ALLOW_UNICODE_NAMES YES)
+	set(DOXYGEN_AUTOLINK_SUPPORT NO)
+	set(DOXYGEN_ENABLE_PREPROCESSING YES)
+	set(DOXYGEN_EXAMPLE_PATH examples)
+	set(DOXYGEN_EXCLUDE_PATTERNS *_p.h)
+	set(DOXYGEN_FILE_PATTERNS *.h)
+	set(DOXYGEN_GENERATE_LATEX NO)
+	set(DOXYGEN_GENERATE_MAN NO)
+	set(DOXYGEN_GENERATE_XML YES)
+	set(DOXYGEN_GENERATE_HTML NO)
+	set(DOXYGEN_INPUT_ENCODING UTF-8)
+	set(DOXYGEN_MAX_INITIALIZER_LINES 0)
+	set(DOXYGEN_OPTIMIZE_OUTPUT_FOR_C YES)
+	set(DOXYGEN_OUTPUT_DIRECTORY doxygen)
+	set(DOXYGEN_PREDEFINED DOXYGEN)
+	set(DOXYGEN_XML_OUTPUT ${doc_BINARY_DIR}/doxygen-xml)
+	#set(DOXYGEN_PROJECT_BRIEF "2D RPG game in C")
+	#set(DOXYGEN_PROJECT_NAME "Molko's Adventure")
+	set(DOXYGEN_QUIET YES)
+	set(DOXYGEN_RECURSIVE YES)
+	set(DOXYGEN_TAB_SIZE 8)
+	set(DOXYGEN_WARNINGS YES)
+
+	# 1. Generate XML from doxygen.
+	doxygen_add_docs(
+		doc-doxygen-xml
+		${DOXYGEN_SOURCES}
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+	)
+
+	# 2. Convert XML through markdown with doxybook2.
+	add_custom_target(
+		doc-doxybook
+		VERBATIM
+		DEPENDS doc-doxygen-xml
+		COMMAND
+			${CMAKE_COMMAND} -E make_directory ${doc_BINARY_DIR}/docs
+		COMMAND ${DOXYBOOK2_EXE} -q
+			-i ${doc_BINARY_DIR}/doxygen-xml
+			-o ${doc_BINARY_DIR}/docs
+			-c ${doc_SOURCE_DIR}/doxybook.json
+	)
+
+	# 3. Copy the directory containing hand-made documentation and call mkdocs.
+	add_custom_target(
+		doc
+		VERBATIM
+		DEPENDS doc-doxybook
+		WORKING_DIRECTORY ${doc_BINARY_DIR}
+		COMMAND
+			${CMAKE_COMMAND} -E copy_directory
+				${doc_SOURCE_DIR}/docs
+				${doc_BINARY_DIR}/docs
+		COMMAND
+			${CMAKE_COMMAND} -E copy
+				${doc_SOURCE_DIR}/mkdocs.yml
+				${doc_BINARY_DIR}
+		COMMAND
+			${MKDOCS_EXE} build
+				-d ${doc_BINARY_DIR}/html
 	)
 
 	add_custom_target(
-		doc
-		ALL VERBATIM
-		SOURCES ${SOURCES}
-		COMMAND ${SPHINX_EXE} -c ${doc_BINARY_DIR} -q . ${doc_BINARY_DIR}
-		WORKING_DIRECTORY ${doc_SOURCE_DIR}
-		COMMENT "Generating documentation"
-		DEPENDS doxygen
+		doc-serve
+		VERBATIM
+		DEPENDS doc-doxybook
+		WORKING_DIRECTORY ${doc_BINARY_DIR}
+		COMMAND
+			${CMAKE_COMMAND} -E copy_directory
+				${doc_SOURCE_DIR}/docs
+				${doc_BINARY_DIR}/docs
+		COMMAND
+			${CMAKE_COMMAND} -E copy
+				${doc_SOURCE_DIR}/mkdocs.yml
+				${doc_BINARY_DIR}
+		COMMAND
+			${MKDOCS_EXE} serve
 	)
 endif ()

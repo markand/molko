@@ -24,8 +24,7 @@ set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS Off)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-option(MOLKO_WITH_DOXYGEN "Enable Doxygen build" On)
-option(MOLKO_WITH_DOC "Enable documentation (requires sphinx)" On)
+option(MOLKO_WITH_DOC "Enable documentation (requires doxygen, doxybook2 and mkdocs)" On)
 option(MOLKO_WITH_TESTS "Enable unit tests" On)
 option(MOLKO_WITH_EXAMPLES "Enable build of examples" On)
 
@@ -48,10 +47,6 @@ add_subdirectory(cmake)
 add_subdirectory(extern/libgreatest)
 add_subdirectory(extern/libsqlite)
 
-if (MOLKO_WITH_DOXYGEN)
-	add_subdirectory(doxygen)
-endif ()
-
 add_subdirectory(tools/bcc)
 add_subdirectory(tools/map)
 add_subdirectory(tools/tileset)
@@ -63,10 +58,6 @@ add_subdirectory(libadventure)
 add_subdirectory(molko)
 
 if (MOLKO_WITH_DOC)
-	if (NOT MOLKO_WITH_DOXYGEN)
-		message(FATAL_ERROR "Can't build documentation with doxygen disabled")
-	endif ()
-
 	add_subdirectory(doc)
 endif ()
 
