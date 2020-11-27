@@ -71,7 +71,7 @@ Macros:
 
 !!! note
     When a POSIX requirement isn't present it is replaced by a shim
-       specified for the platform.
+    specified for the platform.
 
 ## Building with CMake
 
