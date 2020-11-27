@@ -50,6 +50,21 @@ void
 delay(unsigned int ms);
 
 /**
+ * Construct a temporary path to a file that can fit in a PATH_MAX array.
+ *
+ * This function is useful when specifying paths into a function invocation such
+ * as `fopen(pprintf("%s.png", i), "r"))`.
+ *
+ * \pre fmt != NULL
+ * \param fmt the format string
+ * \warning This function is not reentrant, it returns a static storage path.
+ * \return A non null path to a file.
+ * \post Returned string is never NULL.
+ */
+const char *
+pprintf(const char *fmt, ...);
+
+/**
  * Generate a random number between lower and upper (included).
  *
  * \pre upper must be <= RAND_MAX

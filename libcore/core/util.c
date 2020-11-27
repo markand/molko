@@ -17,6 +17,7 @@
  */
 
 #include <assert.h>
+#include <limits.h>
 #include <stdlib.h>
 
 #include <SDL.h>
@@ -27,6 +28,19 @@ void
 delay(unsigned int ms)
 {
 	SDL_Delay(ms);
+}
+
+const char *
+pprintf(const char *fmt, ...)
+{
+	static char path[PATH_MAX];
+	va_list ap;
+
+	va_start(ap, fmt);
+	vsnprintf(path, sizeof (path), fmt, ap);
+	va_end(ap);
+
+	return path;
 }
 
 unsigned int
