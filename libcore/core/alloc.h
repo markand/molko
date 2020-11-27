@@ -235,6 +235,18 @@ void *
 alloc_pool_new(struct alloc_pool *pool);
 
 /**
+ * Get the value at the given index.
+ *
+ * \pre pool != NULL
+ * \pre index < pool->size
+ * \param pool the pool
+ * \param index the object index
+ * \return The pointer to the region.
+ */
+void *
+alloc_pool_get(const struct alloc_pool *pool, size_t index);
+
+/**
  * Finalize the pool and all individual element if a finalizer is set.
  *
  * You must call \ref alloc_pool_init again before reusing it.

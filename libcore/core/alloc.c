@@ -186,6 +186,15 @@ alloc_pool_new(struct alloc_pool *pool)
 	return ((unsigned char *)pool->data) + pool->size++ * pool->elemsize;
 }
 
+void *
+alloc_pool_get(const struct alloc_pool *pool, size_t index)
+{
+	assert(pool);
+	assert(index < pool->size);
+
+	return ((unsigned char *)pool->data) + index * pool->elemsize;
+}
+
 void
 alloc_pool_finish(struct alloc_pool *pool)
 {
