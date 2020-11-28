@@ -16,6 +16,18 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+#
+# molko_set_build_directories
+# ---------------------------
+#
+# Synopsis:
+#
+# molko_set_build_directories(target)
+#
+# This function will set output directories for the given target. It is
+# necessary so that binaries can know where to find extra data.
+#
+
 function(_msbd_set_dir target property value)
 	if (NOT IS_ABSOLUTE ${value})
 		set_target_properties(

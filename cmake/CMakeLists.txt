@@ -21,12 +21,18 @@ project(cmake)
 add_custom_target(
 	cmake
 	SOURCES
+		${cmake_SOURCE_DIR}/CMakeLists.txt
 		${cmake_SOURCE_DIR}/FindJansson.cmake
 		${cmake_SOURCE_DIR}/FindSDL2.cmake
 		${cmake_SOURCE_DIR}/MolkoBuildAssets.cmake
+		${cmake_SOURCE_DIR}/MolkoBuildMaps.cmake
+		${cmake_SOURCE_DIR}/MolkoBuildTilesets.cmake
+		${cmake_SOURCE_DIR}/MolkoBuildTranslations.cmake
 		${cmake_SOURCE_DIR}/MolkoDefineExecutable.cmake
 		${cmake_SOURCE_DIR}/MolkoDefineLibrary.cmake
 		${cmake_SOURCE_DIR}/MolkoDefineTest.cmake
+		${cmake_SOURCE_DIR}/MolkoSetBuildDirectories.cmake
+		${cmake_SOURCE_DIR}/MolkoSetCompilerFlags.cmake
 	COMMENT
 		"Dummy target to list CMake files in IDEs"
 )

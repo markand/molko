@@ -16,6 +16,24 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+#
+# molko_build_maps
+# ----------------
+#
+# Synopsis:
+#
+# molko_build_maps(input outputs)
+#
+# Generate .map files from tiled .json files using the mlk-map tool. The file
+# hierarchy is kept and only extension is changed from .json to .map.
+#
+# Argument outputs will be set with the generated output files in the binary
+# directory to be added as target sources.
+#
+# Make sure to add ${CMAKE_CURRENT_BINARY_DIR} into the target include
+# directories.
+#
+
 macro(molko_build_maps inputs outputs)
 	set(${outputs})
 
