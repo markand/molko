@@ -94,12 +94,12 @@ set(
 )
 
 molko_define_library(
-	TARGET librpg
+	TARGET libmlk-rpg
 	TRANSLATIONS fr
 	SOURCES ${SOURCES} ${PO}
 	LIBRARIES
-		libcore
-		libui
+		libmlk-core
+		libmlk-ui
 	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${librpg_SOURCE_DIR}>
 )

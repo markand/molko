@@ -22,5 +22,5 @@ molko_define_executable(
 	TARGET example-cursor
 	SOURCES ${example-cursor_SOURCE_DIR}/main.c
 	FOLDER examples
-	LIBRARIES libui
+	LIBRARIES libmlk-ui
 )

@@ -21,6 +21,6 @@ project(example-font)
 molko_define_executable(
 	TARGET example-font
 	SOURCES ${example-font_SOURCE_DIR}/main.c
-	LIBRARIES libui
+	LIBRARIES libmlk-ui
 	FOLDER examples
 )

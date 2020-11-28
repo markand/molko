@@ -112,7 +112,7 @@ if (MOLKO_WITH_NLS AND Intl_FOUND)
 endif ()
 
 molko_define_library(
-	TARGET libcore
+	TARGET libmlk-core
 	SOURCES ${SOURCES} ${SQL_ASSETS} ${PO}
 	ASSETS ${SQL_ASSETS}
 	TRANSLATIONS fr

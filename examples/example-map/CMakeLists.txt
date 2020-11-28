@@ -22,5 +22,5 @@ molko_define_executable(
 	TARGET example-map
 	SOURCES ${example-map_SOURCE_DIR}/main.c
 	FOLDER examples
-	LIBRARIES librpg libexamples
+	LIBRARIES libmlk-rpg libexamples
 )

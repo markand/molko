@@ -25,7 +25,7 @@ bool
 rpg_init(void)
 {
 #if defined(MOLKO_WITH_NLS)
-	translate_init("mlk-librpg");
+	translate_init("libmlk-rpg");
 #endif
 
 	return true;

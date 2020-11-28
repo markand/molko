@@ -22,5 +22,5 @@ molko_define_executable(
 	TARGET example-ui
 	SOURCES ${example-ui_SOURCE_DIR}/main.c
 	FOLDER examples
-	LIBRARIES libui
+	LIBRARIES libmlk-ui
 )

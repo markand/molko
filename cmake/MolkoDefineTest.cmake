@@ -46,8 +46,8 @@ function(molko_define_test)
 	target_link_libraries(
 		test-${TEST_TARGET}
 		PRIVATE
-			libcore
-			libadventure
+			libmlk-core
+			libmlk-adventure
 			libgreatest
 			${TEST_LIBRARIES}
 	)

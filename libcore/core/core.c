@@ -36,7 +36,7 @@ core_init(const char *organization, const char *name)
 	if (!sys_init(organization, name))
 		return false;
 
-	translate_init("mlk-libcore");
+	translate_init("libmlk-core");
 
 	return true;
 }

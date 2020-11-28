@@ -21,5 +21,5 @@ project(molko)
 molko_define_executable(
 	TARGET molko
 	SOURCES main.c
-	LIBRARIES libadventure
+	LIBRARIES libmlk-adventure
 )

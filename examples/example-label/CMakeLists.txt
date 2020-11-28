@@ -21,6 +21,6 @@ project(example-label)
 molko_define_executable(
 	TARGET example-label
 	SOURCES ${example-label_SOURCE_DIR}/main.c
-	LIBRARIES libui
+	LIBRARIES libmlk-ui
 	FOLDER examples
 )

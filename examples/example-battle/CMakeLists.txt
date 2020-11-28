@@ -27,5 +27,5 @@ molko_define_executable(
 		${example-battle_SOURCE_DIR}/registry.c
 		${example-battle_SOURCE_DIR}/registry.h
 	FOLDER examples
-	LIBRARIES librpg libadventure libexamples
+	LIBRARIES libmlk-rpg libmlk-adventure libexamples
 )

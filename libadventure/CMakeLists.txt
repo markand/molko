@@ -46,12 +46,12 @@ set(
 )
 
 molko_define_library(
-	TARGET libadventure
+	TARGET libmlk-adventure
 	SOURCES
 		${STATE_SOURCES}
 		${SOURCES}
 	ASSETS ${ASSETS}
-	LIBRARIES libcore libui librpg
+	LIBRARIES libmlk-core libmlk-ui libmlk-rpg
 	PRIVATE_INCLUDES
 		${libadventure_SOURCE_DIR}/adventure
 	PUBLIC_INCLUDES

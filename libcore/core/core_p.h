@@ -23,7 +23,7 @@
 
 #if defined(MOLKO_WITH_NLS)
 #       include <libintl.h>
-#       define _(s) dgettext("mlk-libcore", s)
+#       define _(s) dgettext("libmlk-core", s)
 #else
 #       define _(s)
 #endif

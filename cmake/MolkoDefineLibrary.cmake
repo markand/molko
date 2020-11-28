@@ -63,6 +63,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildTilesets.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildMaps.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetCompilerFlags.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetBuildDirectories.cmake)
 
 function(molko_define_library)
 	set(options EXTERNAL)
@@ -148,6 +149,8 @@ function(molko_define_library)
 			molko_set_compiler_flags(${LIB_TARGET})
 		endif ()
 	endif ()
+
+	molko_set_build_directories(${LIB_TARGET})
 
 	if (LIB_FOLDER)
 		set_target_properties(${LIB_TARGET} PROPERTIES FOLDER ${LIB_FOLDER})

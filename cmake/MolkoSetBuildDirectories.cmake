@@ -1,5 +1,5 @@
 #
-# CMakeLists.txt -- CMake build system for molko
+# MolkoSetBuildDirectories.cmake -- CMake build system for molko
 #
 # Copyright (c) 2020 David Demelier <markand@malikania.fr>
 #
@@ -16,11 +16,28 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(example-sprite)
+function(_msbd_set_dir target property value)
+	if (NOT IS_ABSOLUTE ${value})
+		set_target_properties(
+			${target}
+			PROPERTIES
+				${property} ${CMAKE_BINARY_DIR}/${value}
+		)
 
-molko_define_executable(
-	TARGET example-sprite
-	SOURCES ${example-sprite_SOURCE_DIR}/main.c
-	FOLDER examples
-	LIBRARIES libmlk-ui libexamples
-)
+		foreach (c ${CMAKE_CONFIGURATION_TYPES})
+			string(TOUPPER ${c} cfg)
+			set_target_properties(
+				${target}
+				PROPERTIES
+					${property}_${cfg} ${CMAKE_BINARY_DIR}/${c}/${value}
+			)
+		endforeach ()
+	endif ()
+
+endfunction()
+
+function(molko_set_build_directories target)
+	_msbd_set_dir(${target} ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_INSTALL_LIBDIR})
+	_msbd_set_dir(${target} LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_LIBDIR})
+	_msbd_set_dir(${target} RUNTIME_OUTPUT_DIRECTORY ${CMAKE_INSTALL_BINDIR})
+endfunction()

@@ -60,7 +60,14 @@ if (MOLKO_WITH_NLS AND XGETTEXT_EXE AND MSGMERGE_EXE)
 
 		foreach (t ${NLS_TRANSLATIONS})
 			set(po ${CMAKE_CURRENT_SOURCE_DIR}/nls/${t}.po)
-			set(mo ${CMAKE_CURRENT_BINARY_DIR}/${t}.mo)
+
+			if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_LIBDIR})
+				set(modir ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_INSTALL_LOCALEDIR}/${t}/LC_MESSAGES)
+				set(mo ${modir}/${NLS_TARGET}.mo)
+			else ()
+				set(modir ${CMAKE_CURRENT_BINARY_DIR}/${t})
+				set(mo ${CMAKE_CURRENT_BINARY_DIR}/${NLS_TARGET}.mo)
+			endif ()
 
 			if (NOT EXISTS ${po})
 				message(WARNING "Missing translation ${po}")
@@ -81,6 +88,7 @@ if (MOLKO_WITH_NLS AND XGETTEXT_EXE AND MSGMERGE_EXE)
 			add_custom_command(
 				OUTPUT ${mo}
 				VERBATIM
+				COMMAND ${CMAKE_COMMAND} -E make_directory ${modir}
 				COMMAND ${MSGFMT_EXE} -o ${mo} ${po}
 				DEPENDS ${po}
 				COMMENT "Generating translation binary ${mo}"

@@ -22,5 +22,5 @@ molko_define_executable(
 	TARGET example-message
 	SOURCES ${example-message_SOURCE_DIR}/main.c
 	FOLDER examples
-	LIBRARIES librpg
+	LIBRARIES libmlk-rpg
 )

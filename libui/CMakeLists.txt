@@ -53,12 +53,12 @@ set(
 )
 
 molko_define_library(
-	TARGET libui
+	TARGET libmlk-ui
 	TRANSLATIONS fr
 	SOURCES ${SOURCES} ${PO} ${ASSETS}
 	ASSETS ${ASSETS}
 	LIBRARIES
-		libcore
+		libmlk-core
 	PUBLIC_INCLUDES
 		$<BUILD_INTERFACE:${libui_SOURCE_DIR}>
 )

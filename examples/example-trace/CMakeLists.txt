@@ -22,5 +22,5 @@ molko_define_executable(
 	TARGET example-trace
 	SOURCES ${example-trace_SOURCE_DIR}/main.c
 	FOLDER examples
-	LIBRARIES libui libadventure
+	LIBRARIES libmlk-ui libmlk-adventure
 )

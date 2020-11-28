@@ -26,7 +26,7 @@ bool
 ui_init(void)
 {
 #if defined(MOLKO_WITH_NLS)
-	translate_init("mlk-libui");
+	translate_init("libmlk-ui");
 #endif
 
 	return theme_init();

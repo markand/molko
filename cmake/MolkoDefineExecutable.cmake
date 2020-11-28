@@ -19,6 +19,7 @@
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildTranslations.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetCompilerFlags.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetBuildDirectories.cmake)
 
 function(molko_define_executable)
 	set(options)
@@ -63,4 +64,5 @@ function(molko_define_executable)
 	endif ()
 
 	molko_set_compiler_flags(${EXE_TARGET})
+	molko_set_build_directories(${EXE_TARGET})
 endfunction()
