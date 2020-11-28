@@ -67,7 +67,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetCompilerFlags.cmake)
 function(molko_define_library)
 	set(options EXTERNAL)
 	set(oneValueArgs FOLDER TARGET TYPE)
-	set(multiValueArgs ASSETS LIBRARIES MAPS PRIVATE_FLAGS PRIVATE_INCLUDES PUBLIC_FLAGS PUBLIC_INCLUDES TILESETS SOURCES)
+	set(multiValueArgs ASSETS LIBRARIES MAPS PRIVATE_FLAGS PRIVATE_INCLUDES PUBLIC_FLAGS PUBLIC_INCLUDES TILESETS SOURCES TRANSLATIONS)
 
 	cmake_parse_arguments(LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -99,6 +99,15 @@ function(molko_define_library)
 				${LIB_PUBLIC_INCLUDES}
 		)
 	else ()
+		if (LIB_TRANSLATIONS)
+			molko_build_translations(
+				TARGET ${LIB_TARGET}
+				TRANSLATIONS ${LIB_TRANSLATIONS}
+				SOURCES ${LIB_SOURCES}
+				OUTPUTS NLS_OUTPUTS
+			)
+		endif ()
+
 		add_library(
 			${LIB_TARGET}
 			${LIB_TYPE}
@@ -106,7 +115,9 @@ function(molko_define_library)
 			${ASSETS_OUTPUTS}
 			${MAPS_OUTPUTS}
 			${TILESETS_OUTPUTS}
+			${NLS_OUTPUTS}
 		)
+
 		target_include_directories(
 			${LIB_TARGET}
 			PRIVATE

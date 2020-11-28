@@ -26,6 +26,7 @@
 #include <core/texture.h>
 #include <core/trace.h>
 
+#include "ui_p.h"
 #include "frame.h"
 #include "label.h"
 #include "gridmenu.h"
@@ -74,7 +75,7 @@ positionate(struct gridmenu *menu)
 
 	/* Compute spacing between elements. */
 	if (hreq > menu->w) {
-		tracef("gridmenu width is too small: %u < %u", menu->w, vreq);
+		tracef(_("gridmenu width is too small: %u < %u"), menu->w, vreq);
 		gtex->spaceh = 1;
 	} else {
 		hreq -= theme->padding * 2;
@@ -82,7 +83,7 @@ positionate(struct gridmenu *menu)
 	}
 
 	if (vreq > menu->h) {
-		tracef("gridmenu height is too small: %u < %u", menu->h, vreq);
+		tracef(_("gridmenu height is too small: %u < %u"), menu->h, vreq);
 		gtex->spacev = 1;
 	} else {
 		vreq -= theme->padding * 2;

@@ -29,6 +29,7 @@
 #include "button.h"
 #include "label.h"
 #include "theme.h"
+#include "ui_p.h"
 
 static bool
 is_boxed(const struct button *button, const struct event_click *click)
@@ -69,9 +70,9 @@ button_draw_default(const struct theme *t, const struct button *button)
 	label_query(&label, &lw, &lh);
 
 	if (lw > button->w)
-		tracef("button is too small for text: %u < %u", button->w, lw);
+		tracef(_("button width is too small for text: %u < %u"), button->w, lw);
 	if (lh > button->h)
-		tracef("button is too small for text: %u < %u", button->h, lh);
+		tracef(_("button height is too small for text: %u < %u"), button->h, lh);
 
 	align(ALIGN_CENTER, &label.x, &label.y, lw, lh,
 	    button->x, button->y, button->w, button->h);

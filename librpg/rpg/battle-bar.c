@@ -32,6 +32,7 @@
 #include "battle-bar.h"
 #include "character.h"
 #include "spell.h"
+#include "rpg_p.h"
 
 static void
 draw_status_character_stats(const struct battle *bt,
@@ -115,7 +116,7 @@ draw_status(const struct battle_bar *bar, const struct battle *bt)
 static void
 draw_menu(const struct battle_bar *bar, const struct battle *bt)
 {
-	static struct {
+	struct {
 		unsigned int w, h;
 		enum align align;
 		struct label label;
@@ -123,28 +124,28 @@ draw_menu(const struct battle_bar *bar, const struct battle *bt)
 		{
 			.align = ALIGN_TOP,
 			.label = {
-				.text = "Attack",
+				.text = _("Attack"),
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = ALIGN_RIGHT,
 			.label = {
-				.text = "Magic",
+				.text = _("Magic"),
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = ALIGN_BOTTOM,
 			.label = {
-				.text = "Objects",
+				.text = _("Objects"),
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = ALIGN_LEFT,
 			.label = {
-				.text = "Special",
+				.text = _("Special"),
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		}

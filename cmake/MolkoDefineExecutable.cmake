@@ -17,12 +17,13 @@
 #
 
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildTranslations.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetCompilerFlags.cmake)
 
 function(molko_define_executable)
 	set(options)
 	set(oneValueArgs FOLDER TARGET)
-	set(multiValueArgs ASSETS FLAGS INCLUDES LIBRARIES SOURCES)
+	set(multiValueArgs ASSETS FLAGS INCLUDES LIBRARIES SOURCES TRANSLATIONS)
 
 	cmake_parse_arguments(EXE "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -34,6 +35,14 @@ function(molko_define_executable)
 	endif ()
 
 	molko_build_assets("${EXE_ASSETS}" OUTPUTS)
+
+	if (EXE_TRANSLATIONS)
+		molko_build_translations(
+			TARGET ${EXE_TARGET}
+			TRANSLATIONS ${EXE_TRANSLATIONS}
+			SOURCES ${EXE_SOURCES}
+		)
+	endif ()
 
 	add_executable(${EXE_TARGET} ${EXE_SOURCES} ${OUTPUTS})
 	target_compile_definitions(${EXE_TARGET} PRIVATE ${EXE_FLAGS})

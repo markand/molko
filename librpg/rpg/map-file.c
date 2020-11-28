@@ -32,6 +32,7 @@
 #include <core/trace.h>
 
 #include "map-file.h"
+#include "rpg_p.h"
 
 /* Create %<v>c string literal for scanf */
 #define MAX_F(v) MAX_F_(v)
@@ -57,7 +58,7 @@ parse_layer_tiles(struct context *ctx, const char *layer_name)
 	else if (strcmp(layer_name, "above") == 0)
 		layer_type = MAP_LAYER_TYPE_ABOVE;
 	else
-		return errorf("invalid layer type: %s", layer_name);
+		return errorf(_("invalid layer type: %s"), layer_name);
 
 	amount = ctx->map->columns * ctx->map->rows;
 	current = 0;
@@ -88,7 +89,7 @@ parse_actions(struct context *ctx)
 		struct action *act;
 
 		if (!ctx->mf->load_action) {
-			tracef("ignoring action %d,%d,%u,%u,%s", x, y, w, h, exec);
+			tracef(_("ignoring action %d,%d,%u,%u,%s"), x, y, w, h, exec);
 			continue;
 		}
 
@@ -106,11 +107,11 @@ parse_layer(struct context *ctx, const char *line)
 
 	/* Check if weight/height has been specified. */
 	if (ctx->map->columns == 0 || ctx->map->rows == 0)
-		return errorf("missing map dimensions before layer");
+		return errorf(_("missing map dimensions before layer"));
 
 	/* Determine layer type. */
 	if (sscanf(line, "layer|%32s", layer_name) <= 0)
-		return errorf("missing layer type definition");
+		return errorf(_("missing layer type definition"));
 
 	if (strcmp(layer_name, "actions") == 0)
 		return parse_actions(ctx);
@@ -126,7 +127,7 @@ parse_tileset(struct context *ctx, const char *line)
 	struct tileset_file *tf = &mf->tileset_file;
 
 	if (!(p = strchr(line, '|')))
-		return errorf("could not parse tileset");
+		return errorf(_("could not parse tileset"));
 
 	snprintf(path, sizeof (path), "%s/%s", ctx->basedir, p + 1);
 
@@ -142,7 +143,7 @@ static bool
 parse_title(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "title|" MAX_F(MAP_FILE_TITLE_MAX), ctx->mf->title) != 1 || strlen(ctx->mf->title) == 0)
-		return errorf("null map title");
+		return errorf(_("null map title"));
 
 	ctx->map->title = ctx->mf->title;
 
@@ -153,7 +154,7 @@ static bool
 parse_columns(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "columns|%u", &ctx->map->columns) != 1 || ctx->map->columns == 0)
-		return errorf("null map columns");
+		return errorf(_("null map columns"));
 
 	return true;
 }
@@ -162,7 +163,7 @@ static bool
 parse_rows(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "rows|%u", &ctx->map->rows) != 1 || ctx->map->rows == 0)
-		return errorf("null map rows");
+		return errorf(_("null map rows"));
 
 	return true;
 }
@@ -171,7 +172,7 @@ static bool
 parse_origin(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "origin|%d|%d", &ctx->map->player_x, &ctx->map->player_y) != 2)
-		return errorf("invalid origin");
+		return errorf(_("invalid origin"));
 
 	return true;
 }
@@ -225,18 +226,18 @@ check(struct map *map)
 	 * Check that we have parsed every required components.
 	 */
 	if (!map->title)
-		return errorf("missing title");
+		return errorf(_("missing title"));
 
 	/*
 	 * We don't need to check width/height because parsing layers and
 	 * tilesets already check for their presence, so only check layers.
 	 */
 	if (!map->layers[0].tiles)
-		return errorf("missing background layer");
+		return errorf(_("missing background layer"));
 	if (!map->layers[1].tiles)
-		return errorf("missing foreground layer");
+		return errorf(_("missing foreground layer"));
 	if (!tileset_ok(map->tileset))
-		return errorf("missing tileset");
+		return errorf(_("missing tileset"));
 
 	return true;
 }

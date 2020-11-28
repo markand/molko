@@ -1,5 +1,5 @@
 /*
- * core.c -- libcore main entry
+ * core_p -- libcore private definitions
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,33 +16,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <time.h>
+#ifndef MOLKO_CORE_CORE_P_H
+#define MOLKO_CORE_CORE_P_H
 
-#include "core.h"
-#include "sys.h"
-#include "translate.h"
+#include "sysconfig.h"
 
-bool
-core_init(const char *organization, const char *name)
-{
-	assert(organization);
-	assert(name);
+#if defined(MOLKO_WITH_NLS)
+#       include <libintl.h>
+#       define _(s) dgettext("mlk-libcore", s)
+#else
+#       define _(s)
+#endif
 
-	srand(time(NULL));
-
-	if (!sys_init(organization, name))
-		return false;
-
-	translate_init("mlk-libcore");
-
-	return true;
-}
-
-void
-core_finish(void)
-{
-	sys_finish();
-}
+#endif /* !MOLKO_CORE_CORE_P_H */

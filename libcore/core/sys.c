@@ -16,95 +16,85 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "sysconfig.h"
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+
+#if defined(_WIN32)
+#       include <shlwapi.h>
+#endif
 
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 
-#if !defined(_WIN32)            /* Assuming POSIX */
-#	include <sys/types.h>
-#	include <dirent.h>
-#endif
-
 #include "error.h"
 #include "sound.h"
 #include "sys.h"
 
+static struct {
+	char organization[128];
+	char name[128];
+} info = {
+	.organization = "fr.malikania",
+	.name = "molko"
+};
+
+static const char *paths[] = {
+	[SYS_DIR_BIN]           = MOLKO_BINDIR,
+	[SYS_DIR_DATA]          = MOLKO_DATADIR,
+	[SYS_DIR_LOCALE]        = MOLKO_LOCALEDIR
+};
+
+static const char *abspaths[] = {
+	[SYS_DIR_BIN]           = MOLKO_ABS_BINDIR,
+	[SYS_DIR_DATA]          = MOLKO_ABS_DATADIR,
+	[SYS_DIR_LOCALE]        = MOLKO_ABS_LOCALEDIR
+};
+
 #if defined(_WIN32)
-
-static void
-determine(char path[], size_t pathlen)
-{
-	char *base = SDL_GetBasePath();
-
-	/* On Windows, the data hierarchy is the same as the project. */
-	snprintf(path, pathlen, "%sassets", base);
-	SDL_free(base);
-}
-
-#else                           /* Assuming POSIX */
 
 static bool
 is_absolute(const char *path)
 {
-	assert(path);
-
-	return path[0] == '/';
+	return !PathIsRelativeA(path);
 }
 
-static void
-determine(char path[], size_t pathlen)
+#else
+
+static bool
+is_absolute(const char *path)
 {
-	char localassets[PATH_MAX];
-	char *base = SDL_GetBasePath();
-	DIR *dp;
-
-	/* Try assets directory where executable lives. */
-	snprintf(localassets, sizeof (localassets), "%sassets", base);
-
-	if ((dp = opendir(localassets))) {
-		snprintf(path, pathlen, "%sassets", base);
-		closedir(dp);
-	} else {
-		/* We are not in the project source directory. */
-		if (is_absolute(SHAREDIR)) {
-			/* SHAREDIR is absolute */
-			snprintf(path, pathlen, "%s/molko", SHAREDIR);
-		} else if (is_absolute(BINDIR)) {
-			/* SHAREDIR is relative but BINDIR is absolute */
-			snprintf(path, pathlen, "%s/%s/molko", PREFIX, SHAREDIR);
-		} else {
-			/* SHAREDIR, BINDIR are both relative */
-			char *ptr = strstr(base, BINDIR);
-
-			if (ptr) {
-				*ptr = '\0';
-				snprintf(path, pathlen, "%s%s/molko", base, SHAREDIR);
-			} else {
-				/* Unable to determine. */
-				snprintf(path, pathlen, ".");
-			}
-		}
-	}
-
-	SDL_free(base);
+	return path[0] == '/';
 }
 
 #endif
 
+static char *
+normalize(char *str)
+{
+	for (char *p = str; *p; ++p)
+		if (*p == '\\')
+			*p = '/';
+
+	return str;
+}
+
 bool
-sys_init(void)
+sys_init(const char *organization, const char *name)
 {
 #if defined(__MINGW64__)
 	/* On MinGW buffering leads to painful debugging. */
 	setbuf(stderr, NULL);
 	setbuf(stdout, NULL);
 #endif
+
+	snprintf(info.organization, sizeof (info.organization), "%s", organization);
+	snprintf(info.name, sizeof (info.name), "%s", name);
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 		return errorf("%s", SDL_GetError());
@@ -122,55 +112,97 @@ sys_init(void)
 	return true;
 }
 
-const char *
-sys_datadir(void)
+static const char *
+absolute(const char *which)
 {
 	static char path[PATH_MAX];
 
-	if (path[0] == '\0')
-		determine(path, sizeof (path));
+	snprintf(path, sizeof (path), "%s", which);
 
-	return path;
+	return normalize(path);
 }
 
-const char *
-sys_datapath(const char *fmt, ...)
-{
-	const char *ret;
-	va_list ap;
-
-	va_start(ap, fmt);
-	ret = sys_datapathv(fmt, ap);
-	va_end(ap);
-
-	return ret;
-}
-
-const char *
-sys_datapathv(const char *fmt, va_list ap)
+static const char *
+system_directory(enum sys_dir kind)
 {
 	static char path[PATH_MAX];
-	char filename[FILENAME_MAX];
+	static char ret[PATH_MAX];
+	char *base, *binsect;
 
-	vsnprintf(filename, sizeof (filename), fmt, ap);
-	snprintf(path, sizeof (path), "%s/%s", sys_datadir(), filename);
+	/* 1. Get current binary directory. */
+	base = SDL_GetBasePath();
 
-	return path;
+	/*
+	 * 2. Decompose the path to the given special directory by computing
+	 *    relative directory to it from where the binary is located.
+	 *
+	 * Example:
+	 *   PREFIX/bin/mlk
+	 *   PREFIX/share/molko
+	 *
+	 * The path to the data is ../share/molko starting from the binary.
+	 *
+	 * If path to binary is absolute we can't determine relative paths to
+	 * any other directory and use the absolute one instead.
+	 *
+	 * Also, on some platforms SDL_GetBasePath isn't implemented and returns
+	 * NULL, in that case return the fallback to the installation prefix.
+	 */
+	if (is_absolute(paths[SYS_DIR_BIN]) || is_absolute(paths[kind]) || !base)
+		return absolute(abspaths[kind]);
+
+	/*
+	 * 3. Put the base path into the path and remove the value of
+	 *    MOLKO_BINDIR.
+	 *
+	 * Example:
+	 *   from: /usr/local/bin
+	 *   to:   /usr/local
+	 */
+	snprintf(path, sizeof (path), "%s", base);
+	SDL_free(base);
+
+	if ((binsect = strstr(path, paths[SYS_DIR_BIN])))
+		*binsect = '\0';
+
+	/* 4. For data directories, we append the program name. */
+	if (kind == SYS_DIR_DATA)
+		snprintf(ret, sizeof (ret), "%s%s/%s", path, paths[kind], info.name);
+	else
+		snprintf(ret, sizeof (ret), "%s%s", path, paths[kind]);
+
+	return normalize(ret);
 }
 
-const char *
-sys_savepath(unsigned int idx)
+static const char *
+user_directory(enum sys_dir kind)
 {
+	/* Kept for future use. */
+	(void)kind;
+
 	static char path[PATH_MAX];
 	char *pref;
 
-	if ((pref = SDL_GetPrefPath("malikania", "molko"))) {
-		snprintf(path, sizeof (path), "%ssave-%u", pref, idx);
+	if ((pref = SDL_GetPrefPath(info.organization, info.name))) {
+		snprintf(path, sizeof (path), "%s", pref);
 		SDL_free(pref);
 	} else
-		snprintf(path, sizeof (path), "save-%u", idx);
+		snprintf(path, sizeof (path), "./");
 
-	return path;
+	return NULL;
+}
+
+const char *
+sys_dir(enum sys_dir kind)
+{
+	switch (kind) {
+	case SYS_DIR_BIN:
+	case SYS_DIR_DATA:
+	case SYS_DIR_LOCALE:
+		return system_directory(kind);
+	default:
+		return user_directory(kind);
+	}
 }
 
 void

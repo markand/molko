@@ -115,7 +115,7 @@ main(int argc, char **argv)
 {
 	GREATEST_MAIN_BEGIN();
 
-	if (core_init() && window_open("test-tileset", 100, 100)) {
+	if (core_init("fr.malikania", "test") && window_open("test-tileset", 100, 100)) {
 		GREATEST_RUN_SUITE(suite_basics);
 		GREATEST_RUN_SUITE(suite_errors);
 	}

@@ -1,5 +1,5 @@
 /*
- * core.c -- libcore main entry
+ * translate.h -- native language support
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,33 +16,25 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <time.h>
+#ifndef MOLKO_CORE_TRANSLATE_H
+#define MOLKO_CORE_TRANSLATE_H
 
-#include "core.h"
-#include "sys.h"
-#include "translate.h"
+#include <stdbool.h>
 
+/**
+ * Initialize native language support.
+ *
+ * \pre name != NULL
+ * \param name the domain name to initialize (e.g mlk-libcore)
+ * \return True if correctly initialized.
+ */
 bool
-core_init(const char *organization, const char *name)
-{
-	assert(organization);
-	assert(name);
+translate_init(const char *name);
 
-	srand(time(NULL));
-
-	if (!sys_init(organization, name))
-		return false;
-
-	translate_init("mlk-libcore");
-
-	return true;
-}
-
+/**
+ * Close the native language support.
+ */
 void
-core_finish(void)
-{
-	sys_finish();
-}
+translate_finish(void);
+
+#endif /* !MOLKO_CORE_TRANSLATE_H */

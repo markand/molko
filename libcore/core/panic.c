@@ -20,13 +20,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "core_p.h"
 #include "error.h"
 #include "panic.h"
 
 static void
 terminate(void)
 {
-	fprintf(stderr, "abort: %s\n", error());
+	fprintf(stderr, _("abort: %s\n"), error());
 	abort();
 	exit(1);
 }
@@ -72,6 +73,6 @@ panic(void)
 	 * This should not happen, if it does it means the user did not fully
 	 * satisfied the constraint of panic_handler.
 	 */
-	fprintf(stderr, "abort: panic handler returned");
+	fprintf(stderr, _("abort: panic handler returned\n"));
 	exit(1);
 }

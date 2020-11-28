@@ -25,6 +25,11 @@ set(
 )
 
 set(
+	PO
+	${libui_SOURCE_DIR}/nls/fr.po
+)
+
+set(
 	SOURCES
 	${libui_SOURCE_DIR}/ui/align.c
 	${libui_SOURCE_DIR}/ui/align.h
@@ -44,11 +49,13 @@ set(
 	${libui_SOURCE_DIR}/ui/theme.h
 	${libui_SOURCE_DIR}/ui/ui.c
 	${libui_SOURCE_DIR}/ui/ui.h
+	${libui_SOURCE_DIR}/ui/ui_p.h
 )
 
 molko_define_library(
 	TARGET libui
-	SOURCES ${SOURCES}
+	TRANSLATIONS fr
+	SOURCES ${SOURCES} ${PO} ${ASSETS}
 	ASSETS ${ASSETS}
 	LIBRARIES
 		libcore
@@ -56,4 +63,6 @@ molko_define_library(
 		$<BUILD_INTERFACE:${libui_SOURCE_DIR}>
 )
 
+source_group(TREE ${libui_SOURCE_DIR}/ui/assets PREFIX assets FILES ${ASSETS})
 source_group(ui FILES ${SOURCES})
+source_group(nls FILES ${PO})

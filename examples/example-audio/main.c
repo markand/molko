@@ -59,7 +59,7 @@ static struct label label_sound = {
 static void
 init(void)
 {
-	if (!core_init() || !ui_init())
+	if (!core_init("fr.malikania", "audio") || !ui_init())
 		panic();
 	if (!window_open("Example - Audio", W, H))
 		panic();

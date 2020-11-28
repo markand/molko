@@ -38,7 +38,7 @@
 static void
 init(void)
 {
-	if (!core_init() || !ui_init())
+	if (!core_init("fr.malikania", "trace") || !ui_init())
 		panic();
 	if (!window_open("Example - Trace", W, H))
 		panic();

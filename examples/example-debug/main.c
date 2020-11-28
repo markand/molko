@@ -38,7 +38,7 @@ static int mouse_y;
 static void
 init(void)
 {
-	if (!core_init() || !ui_init())
+	if (!core_init("fr.malikania", "debug") || !ui_init())
 		panic();
 	if (!window_open("Example - Debug", W, H))
 		panic();

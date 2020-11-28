@@ -44,7 +44,7 @@
 static void
 init(void)
 {
-	if (!core_init() || !ui_init() || !rpg_init())
+	if (!core_init("fr.malikania", "message") || !ui_init() || !rpg_init())
 		panic();
 	if (!window_open("Example - Message", W, H))
 		panic();

@@ -159,7 +159,7 @@ main(int argc, char **argv)
 	 * we will skip if it fails to initialize.
 	 */
 
-	if (core_init() && window_open("test-map", 100, 100)) {
+	if (core_init("fr.malikania", "test") && window_open("test-map", 100, 100)) {
 		GREATEST_RUN_SUITE(suite_basics);
 		GREATEST_RUN_SUITE(suite_errors);
 	}

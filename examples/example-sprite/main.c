@@ -63,7 +63,7 @@ changed(void)
 static void
 init(void)
 {
-	if (!core_init() || !ui_init())
+	if (!core_init("fr.malikania", "sprite") || !ui_init())
 		panic();
 	if (!window_open("Example - Sprite", W, H))
 		panic();

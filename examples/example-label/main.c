@@ -102,7 +102,7 @@ static struct label mlabel = {
 static void
 init(void)
 {
-	if (!core_init() || !ui_init())
+	if (!core_init("fr.malikania", "label") || !ui_init())
 		panic();
 	if (!window_open("Example - Label", W, H))
 		panic();

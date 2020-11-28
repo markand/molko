@@ -74,6 +74,7 @@ set(
 	${librpg_SOURCE_DIR}/rpg/message.h
 	${librpg_SOURCE_DIR}/rpg/rpg.c
 	${librpg_SOURCE_DIR}/rpg/rpg.h
+	${librpg_SOURCE_DIR}/rpg/rpg_p.h
 	${librpg_SOURCE_DIR}/rpg/selection.h
 	${librpg_SOURCE_DIR}/rpg/spell.c
 	${librpg_SOURCE_DIR}/rpg/spell.h
@@ -87,9 +88,15 @@ set(
 	${librpg_SOURCE_DIR}/rpg/walksprite.h
 )
 
+set(
+	PO
+	${librpg_SOURCE_DIR}/nls/fr.po
+)
+
 molko_define_library(
 	TARGET librpg
-	SOURCES ${SOURCES}
+	TRANSLATIONS fr
+	SOURCES ${SOURCES} ${PO}
 	LIBRARIES
 		libcore
 		libui
@@ -98,4 +105,4 @@ molko_define_library(
 )
 
 source_group(rpg FILES ${SOURCES})
-
+source_group(nls FILES ${PO})

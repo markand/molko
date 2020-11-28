@@ -1,5 +1,5 @@
 /*
- * core.h -- libcore convenient header
+ * core.c -- libcore main entry
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -21,7 +21,7 @@
 
 /**
  * \file core.h
- * \brief libcore convenient header.
+ *\brief libcore convenient header.
  */
 
 #include <stdbool.h>
@@ -29,10 +29,14 @@
 /**
  * Initialize the core library.
  *
+ * \pre organization != NULL
+ * \pre name != NULL
+ * \param organization the name of the organization
+ * \param name the game name
  * \return False on errors.
  */
 bool
-core_init(void);
+core_init(const char *organization, const char *name);
 
 /**
  * Close the core library.

@@ -272,7 +272,7 @@ load_action(struct map *map, int x, int y, int w, int h, const char *id)
 static void
 init(void)
 {
-	if (!core_init() || !ui_init())
+	if (!core_init("fr.malikania", "map") || !ui_init())
 		panic();
 	if (!window_open("Example - Map", W, H))
 		panic();

@@ -80,7 +80,7 @@ loop(void)
 void
 molko_init(void)
 {
-	if (!core_init() || !ui_init() || !rpg_init())
+	if (!core_init("fr.malikania", "molko") || !ui_init() || !rpg_init())
 		panic();
 	if (!window_open("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
 		panic();

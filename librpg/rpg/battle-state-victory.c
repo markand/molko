@@ -29,6 +29,7 @@
 #include "battle-state.h"
 #include "battle-state-closing.h"
 #include "battle-state-victory.h"
+#include "rpg_p.h"
 
 struct victory {
 	struct battle_state self;
@@ -84,7 +85,7 @@ battle_state_victory(struct battle *bt)
 	vic->self.update = update;
 	vic->self.draw = draw;
 
-	vic->msg.text[0] = "Victory!";
+	vic->msg.text[0] = _("Victory!");
 	vic->msg.theme = bt->theme;
 	vic->msg.flags = MESSAGE_FLAGS_AUTOMATIC |
 	                 MESSAGE_FLAGS_FADEIN |

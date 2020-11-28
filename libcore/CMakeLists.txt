@@ -29,6 +29,11 @@ set(
 )
 
 set(
+	PO
+	${libcore_SOURCE_DIR}/nls/fr.po
+)
+
+set(
 	SOURCES
 	${libcore_SOURCE_DIR}/core/action.c
 	${libcore_SOURCE_DIR}/core/action.h
@@ -41,6 +46,7 @@ set(
 	${libcore_SOURCE_DIR}/core/color.h
 	${libcore_SOURCE_DIR}/core/core.c
 	${libcore_SOURCE_DIR}/core/core.h
+	${libcore_SOURCE_DIR}/core/core_p.h
 	${libcore_SOURCE_DIR}/core/drawable.c
 	${libcore_SOURCE_DIR}/core/drawable.h
 	${libcore_SOURCE_DIR}/core/error.c
@@ -76,11 +82,14 @@ set(
 	${libcore_SOURCE_DIR}/core/state.h
 	${libcore_SOURCE_DIR}/core/sys.c
 	${libcore_SOURCE_DIR}/core/sys.h
+	${libcore_SOURCE_DIR}/core/sysconfig.h.in
 	${libcore_SOURCE_DIR}/core/texture.c
 	${libcore_SOURCE_DIR}/core/texture.h
 	${libcore_SOURCE_DIR}/core/texture_p.h
 	${libcore_SOURCE_DIR}/core/trace.c
 	${libcore_SOURCE_DIR}/core/trace.h
+	${libcore_SOURCE_DIR}/core/translate.c
+	${libcore_SOURCE_DIR}/core/translate.h
 	${libcore_SOURCE_DIR}/core/util.c
 	${libcore_SOURCE_DIR}/core/util.h
 	${libcore_SOURCE_DIR}/core/wait.c
@@ -90,13 +99,25 @@ set(
 	${libcore_SOURCE_DIR}/core/window_p.h
 )
 
+configure_file(
+	${libcore_SOURCE_DIR}/core/sysconfig.h.in
+	${libcore_BINARY_DIR}/sysconfig.h
+)
+
 check_library_exists(m sqrt "" LIBM)
+
+if (MOLKO_WITH_NLS AND Intl_FOUND)
+	list(APPEND LIBS ${Intl_LIBRARIES})
+	list(APPEND INCS ${Intl_INCLUDE_DIRS})
+endif ()
 
 molko_define_library(
 	TARGET libcore
-	SOURCES ${SOURCES} ${SQL_ASSETS}
+	SOURCES ${SOURCES} ${SQL_ASSETS} ${PO}
 	ASSETS ${SQL_ASSETS}
+	TRANSLATIONS fr
 	LIBRARIES
+		${LIBS}
 		$<$<BOOL:${LIBM}>:m>
 		libsqlite
 		SDL2::SDL2
@@ -110,8 +131,11 @@ molko_define_library(
 	PUBLIC_FLAGS
 		_XOPEN_SOURCE=700
 	PUBLIC_INCLUDES
+		${INCS}
 		$<BUILD_INTERFACE:${libcore_SOURCE_DIR}>
+		$<BUILD_INTERFACE:${libcore_BINARY_DIR}>
 )
 
+source_group(assets/sql FILES ${SQL_ASSETS})
 source_group(core FILES ${SOURCES})
-source_group(core/assets/sql FILES ${SQL_ASSETS})
+source_group(nls FILES ${PO})

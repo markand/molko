@@ -16,18 +16,21 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <core/translate.h>
+
 #include "rpg.h"
+#include "rpg_p.h"
 
 bool
 rpg_init(void)
 {
-	/* Currently empty, placeholder for future. */
+#if defined(MOLKO_WITH_NLS)
+	translate_init("mlk-librpg");
+#endif
+
 	return true;
 }
 
-/**
- * Close the rpg library.
- */
 void
 rpg_finish(void)
 {

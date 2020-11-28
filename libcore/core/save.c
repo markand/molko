@@ -28,6 +28,7 @@
 #include <core/assets/sql/property-remove.h>
 #include <core/assets/sql/property-set.h>
 
+#include "core_p.h"
 #include "error.h"
 #include "save.h"
 #include "sys.h"
@@ -46,6 +47,12 @@ exec(struct save *db, const char *sql)
 	return true;
 }
 
+static const char *
+path(unsigned int idx)
+{
+	return pprintf("%s/%u", sys_dir(SYS_DIR_SAVE), idx);
+}
+
 static bool
 execu(struct save *db, const unsigned char *sql)
 {
@@ -57,7 +64,7 @@ save_open(struct save *db, unsigned int idx, enum save_mode mode)
 {
 	assert(db);
 
-	return save_open_path(db, sys_savepath(idx), mode);
+	return save_open_path(db, path(idx), mode);
 }
 
 bool
@@ -75,7 +82,7 @@ verify(struct save *db)
 	for (size_t i = 0; i < NELEM(table); ++i) {
 		if (!save_get_property(db, &table[i].prop)) {
 			sqlite3_close(db->handle);
-			return errorf("database not initialized correctly");
+			return errorf(_("database not initialized correctly"));
 		}
 
 		*table[i].date = strtoull(table[i].prop.value, NULL, 10);
@@ -165,7 +172,7 @@ save_get_property(struct save *db, struct save_property *prop)
 	switch (sqlite3_step(stmt)) {
 	case SQLITE_DONE:
 		/* Not found. */
-		ret = errorf("property '%s' was not found", prop->key);
+		ret = errorf(_("property '%s' was not found"), prop->key);
 		break;
 	case SQLITE_ROW:
 		/* Found. */

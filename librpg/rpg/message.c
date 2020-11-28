@@ -36,6 +36,7 @@
 #include <ui/theme.h>
 
 #include "message.h"
+#include "rpg_p.h"
 
 #define THEME(msg)      (msg->theme ? msg->theme : theme_default())
 
@@ -134,9 +135,9 @@ draw_lines(const struct message *msg)
 		label.flags = LABEL_FLAGS_SHADOW;
 
 		if (label.x + lw > msg->w)
-			tracef("message width too small: %u < %u", msg->w, min_width(msg));
+			tracef(_("message width too small: %u < %u"), msg->w, min_width(msg));
 		if (label.y + lh > msg->h)
-			tracef("message height too small: %u < %u", msg->h, min_height(msg));
+			tracef(_("message height too small: %u < %u"), msg->h, min_height(msg));
 
 		/*
 		 * The function label_draw will use THEME_COLOR_NORMAL to draw
@@ -167,7 +168,7 @@ message_start(struct message *msg)
 	    : MESSAGE_STATE_SHOWING;
 
 	if (msg->flags & MESSAGE_FLAGS_AUTOMATIC && msg->timeout == 0)
-		tracef("message is automatic but has zero timeout");
+		tracef(_("message is automatic but has zero timeout"));
 }
 
 void
@@ -273,7 +274,7 @@ message_draw(const struct message *msg)
 	unsigned int w, h;
 
 	if (msg->w == 0 || msg->h == 0) {
-		tracef("message has null dimensions");
+		tracef(_("message has null dimensions"));
 		return;
 	}
 

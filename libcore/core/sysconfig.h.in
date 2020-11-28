@@ -1,5 +1,5 @@
 /*
- * core.c -- libcore main entry
+ * sysconfig.h -- build time configuration
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,33 +16,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <time.h>
+#ifndef MOLKO_CORE_SYSCONFIG_H
+#define MOLKO_CORE_SYSCONFIG_H
 
-#include "core.h"
-#include "sys.h"
-#include "translate.h"
+#cmakedefine MOLKO_WITH_NLS
 
-bool
-core_init(const char *organization, const char *name)
-{
-	assert(organization);
-	assert(name);
+#define MOLKO_BINDIR            "@CMAKE_INSTALL_BINDIR@"
+#define MOLKO_DATADIR           "@CMAKE_INSTALL_DATADIR@"
+#define MOLKO_LOCALEDIR         "@CMAKE_INSTALL_LOCALEDIR@"
 
-	srand(time(NULL));
+#define MOLKO_ABS_BINDIR        "@CMAKE_INSTALL_FULL_BINDIR"
+#define MOLKO_ABS_DATADIR       "@CMAKE_INSTALL_FULL_DATADIR"
+#define MOLKO_ABS_LOCALEDIR     "@CMAKE_INSTALL_FULL_LOCALEDIR"
 
-	if (!sys_init(organization, name))
-		return false;
-
-	translate_init("mlk-libcore");
-
-	return true;
-}
-
-void
-core_finish(void)
-{
-	sys_finish();
-}
+#endif /* !MOLKO_CORE_SYSCONFIG_H */

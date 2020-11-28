@@ -315,7 +315,7 @@ chest_init(void)
 static void
 init(void)
 {
-	if (!core_init() || !ui_init() || !rpg_init())
+	if (!core_init("fr.malikania", "actions") || !ui_init() || !rpg_init())
 		panic();
 	if (!window_open("Example - Action", W, H))
 		panic();

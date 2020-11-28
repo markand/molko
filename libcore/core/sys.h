@@ -29,55 +29,39 @@
 #include <stdbool.h>
 
 /**
+ * \brief Kind of special directories.
+ */
+enum sys_dir {
+	SYS_DIR_BIN,            /*!< Path to binaries. */
+	SYS_DIR_DATA,           /*!< Directory containing data. */
+	SYS_DIR_LOCALE,         /*!< Path to NLS catalogs. */
+	SYS_DIR_SAVE,           /*!< User directory for save databases. */
+};
+
+/**
  * Initialize the system.
  *
  * This function is automatically called from \ref core_init and thus not
  * necessary from user.
  *
+ * \pre organization != NULL
+ * \pre name != NULL
+ * \param organization the name of the organization
+ * \param name the game name
  * \return False on error.
  */
 bool
-sys_init(void);
+sys_init(const char *organization, const char *name);
 
 /**
- * Get the base system directory path.
+ * Get a system or user directory preferred for this platform.
  *
- * \return the path where the executable lives
+ * \pre kind must be valid
+ * \param kind kind of special directory
+ * \return A non-NULL pointer to a static storage path.
  */
 const char *
-sys_datadir(void);
-
-/**
- * Construct path to assets directory using printf-like format.
- *
- * \param fmt the format string
- * \return the path to the file
- * \note This function returns pointer to static string.
- */
-const char *
-sys_datapath(const char *fmt, ...);
-
-/**
- * Similar to \a sys_datapath.
- *
- * \param fmt the format string
- * \param ap the variadic arguments pointer
- * \return the path to the file
- * \note This function returns pointer to static string.
- */
-const char *
-sys_datapathv(const char *fmt, va_list ap);
-
-/**
- * Compute the path to the save file for the given game state.
- *
- * \param idx the save number
- * \return the path to the database file
- * \note This only compute the path, it does not check the presence of the file
- * \post The returned value will never be NULL
- */
-const char *
-sys_savepath(unsigned int idx);
+sys_dir(enum sys_dir kind);
 
 /**
  * Close the system.

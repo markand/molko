@@ -16,12 +16,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <core/translate.h>
+
+#include "ui_p.h"
 #include "ui.h"
 #include "theme.h"
 
 bool
 ui_init(void)
 {
+#if defined(MOLKO_WITH_NLS)
+	translate_init("mlk-libui");
+#endif
+
 	return theme_init();
 }
 

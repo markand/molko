@@ -24,6 +24,7 @@ set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS Off)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+option(MOLKO_WITH_NLS "Enable native language support" On)
 option(MOLKO_WITH_DOC "Enable documentation (requires doxygen, doxybook2 and mkdocs)" On)
 option(MOLKO_WITH_TESTS "Enable unit tests" On)
 option(MOLKO_WITH_EXAMPLES "Enable build of examples" On)
@@ -41,6 +42,7 @@ include(cmake/MolkoDefineTest.cmake)
 
 find_package(Jansson REQUIRED)
 find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
+find_package(Intl)
 
 add_subdirectory(cmake)
 
