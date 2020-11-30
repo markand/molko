@@ -29,7 +29,7 @@
 #   TRANSLATIONS        list of localizations
 # )
 #
-# Generate targets and output commands for NLS (via GNU gettext) support for the
+# Generate target and output commands for NLS (via GNU gettext) support for the
 # given TARGET name.
 #
 # The argument SOURCES must contain sources to extract gettext keywords, it will
@@ -42,18 +42,14 @@
 # The argument TRANSLATIONS should contain a list of languages supported in the
 # gettext form (ll_LL@variant, see ISO 639 and ISO 3166 for more details).
 #
-# This macro also provides specific targets to update both .pot and .po files.
+# This macro create a <TARGET>-po target that will recreate the .pot file and
+# every .po files in the nls/ directory for each language specified in
+# TRANSLATIONS. Note, if you add a new language into translations but do not
+# copy the .pot file, a warning will be issued and you should copy the .pot file
+# as the new .po language file.
 #
-# Target <TARGET>-pot will generate a <TARGET>.pot file under the nls/ directory
-# from the current project.
-#
-# Target <TARGET>-po will merge every .po files in the nls/ directory for every
-# language specified in TRANSLATIONS. Note, if you add a new language into
-# translations but do not copy the .pot file, a warning will be issued and you
-# should copy the .pot file as the new .po language file.
-#
-# Since those targets are modifying files directly in the source tree they are
-# not included in any build process and must be invoked manually.
+# Since the target is modifying files directly in the source tree they are not
+# included in any build process and must be invoked manually.
 #
 
 if (MOLKO_WITH_NLS)
@@ -84,23 +80,28 @@ if (MOLKO_WITH_NLS AND XGETTEXT_EXE AND MSGMERGE_EXE)
 		list(FILTER NLS_SOURCES INCLUDE REGEX "\\.[ch$]")
 		set(pot ${CMAKE_CURRENT_SOURCE_DIR}/nls/${NLS_TARGET}.pot)
 
-		# Generate .pot file.
-		add_custom_target(
-			${NLS_TARGET}-pot
-			ALL
-			VERBATIM
-			COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/nls
-			COMMAND ${XGETTEXT_EXE} -cj -k_ -kN_ -LC -s -o ${pot} ${NLS_SOURCES}
-			COMMENT "Generating reference translation ${pot}"
+		# First command to generate the .pot.
+		list(
+			APPEND
+			commands
+				COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/nls
+				COMMAND ${XGETTEXT_EXE} -cj -k_ -kN_ -LC -s -o ${pot} ${NLS_SOURCES}
 		)
-		set_target_properties(${NLS_TARGET}-pot PROPERTIES FOLDER translations)
 
-		# For every translation create a msgmerge target and output file.
+		#
+		# For every translation create a msgmerge command and output
+		# file.
+		#
 		set(outputs)
 
 		foreach (t ${NLS_TRANSLATIONS})
 			set(po ${CMAKE_CURRENT_SOURCE_DIR}/nls/${t}.po)
 
+			#
+			# If library dir isn't absolute, install them in the
+			# build directory so we can use translations during
+			# development.
+			#
 			if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_LIBDIR})
 				set(modir ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_INSTALL_LOCALEDIR}/${t}/LC_MESSAGES)
 				set(mo ${modir}/${NLS_TARGET}.mo)
@@ -113,16 +114,8 @@ if (MOLKO_WITH_NLS AND XGETTEXT_EXE AND MSGMERGE_EXE)
 				message(WARNING "Missing translation ${po}")
 			endif ()
 
-			add_custom_target(
-				${NLS_TARGET}-po-${t}
-				VERBATIM
-				DEPENDS ${NLS_TARGET}-pot
-				COMMAND ${MSGMERGE_EXE} --backup=off -U ${po} ${pot}
-				COMMENT "Merging translation in ${po}"
-			)
-			set_target_properties(${NLS_TARGET}-po-${t} PROPERTIES FOLDER translations)
-
-			list(APPEND po-targets ${NLS_TARGET}-po-${t})
+			# Commands to generate .po files from the .pot.
+			list(APPEND commands COMMAND ${MSGMERGE_EXE} --backup=off -q -U ${po} ${pot})
 
 			# Finally generate a .mo output from po file.
 			add_custom_command(
@@ -136,24 +129,25 @@ if (MOLKO_WITH_NLS AND XGETTEXT_EXE AND MSGMERGE_EXE)
 
 			list(APPEND outputs ${mo})
 
-			# TODO: naming should be changed maybe.
 			install(
 				FILES ${mo}
 				DESTINATION ${CMAKE_INSTALL_LOCALEDIR}/${t}/LC_MESSAGES
-				RENAME mlk-${NLS_TARGET}.mo
+				RENAME ${NLS_TARGET}.mo
 			)
 		endforeach ()
 
 		set(${NLS_OUTPUTS} ${outputs})
 		source_group("mo" FILES ${outputs})
 
+		# User target to update .pot and .po files.
 		add_custom_target(
 			${NLS_TARGET}-po
-			DEPENDS ${po-targets}
-			COMMENT "Merging all po files"
+			VERBATIM
+			COMMENT "Generating translations for ${NLS_TARGET}"
+			${commands}
 		)
 
-		set_target_properties(${NLS_TARGET}-po PROPERTIES FOLDER translations)
+		set_target_properties(${NLS_TARGET}-po PROPERTIES FOLDER nls)
 	endmacro()
 else ()
 	function(molko_build_translations)

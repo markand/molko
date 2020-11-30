@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-28 16:45+0100\n"
+"POT-Creation-Date: 2020-11-28 22:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /Users/markand/Dev/molko/libcore/core/panic.c:30
+#: /Users/markand/Dev/molko/libmlk-core/core/panic.c:30
 #, c-format
 msgid "abort: %s\n"
 msgstr "fatal: %s\n"
 
-#: /Users/markand/Dev/molko/libcore/core/panic.c:76
+#: /Users/markand/Dev/molko/libmlk-core/core/panic.c:76
 #, c-format
 msgid "abort: panic handler returned\n"
 msgstr "fatal: la fonction de panique n'aurait pas du continuer\n"
 
-#: /Users/markand/Dev/molko/libcore/core/save.c:85
+#: /Users/markand/Dev/molko/libmlk-core/core/save.c:85
 msgid "database not initialized correctly"
 msgstr "database non initialisée"
 
-#: /Users/markand/Dev/molko/libcore/core/save.c:175
+#: /Users/markand/Dev/molko/libmlk-core/core/save.c:175
 #, c-format
 msgid "property '%s' was not found"
 msgstr "propriété '%s' non trouvée"
