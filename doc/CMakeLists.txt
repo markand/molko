@@ -34,9 +34,9 @@ if (DOXYGEN_FOUND AND MKDOCS_EXE AND DOXYBOOK2_EXE AND SH_EXE)
 
 	set(
 		DOXYGEN_STRIP_FROM_PATH
-		${CMAKE_SOURCE_DIR}/libcore
-		${CMAKE_SOURCE_DIR}/libui
-		${CMAKE_SOURCE_DIR}/librpg
+		${CMAKE_SOURCE_DIR}/libmlk-core
+		${CMAKE_SOURCE_DIR}/libmlk-ui
+		${CMAKE_SOURCE_DIR}/libmlk-rpg
 	)
 	set(
 		DOC_SOURCES
