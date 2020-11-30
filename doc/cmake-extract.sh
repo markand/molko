@@ -1,3 +1,6 @@
+#!/bin/sh
+#
+# cmake-extract.sh -- extract documentation from CMake headers
 #
 # CMakeLists.txt -- CMake build system for molko
 #
@@ -16,28 +19,21 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+prog=$(basename $0)
+
+usage()
+{
+	printf "usage: $prog cmake-file\n" 1>&2
+	exit 1
+}
+
+if [ $# -ne 1 ]; then
+	usage
+fi
+
 #
-# # molko_set_compiler_flags
-#
-# Set default compiler flags for the given target.
-#
-# ## Synopsis
-#
-# ```cmake
-# molko_set_compiler_flags(target)
-# ```
-#
-# This function will adds some compiler flags for the development such as
-# warnings, sanitizers if the compiler is compatible.
+# Remove ISC license header then every grep every lines that start with a #
+# and finally remove them.
 #
 
-function(molko_set_compiler_flags target)
-	if (CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
-		target_compile_options(${target} PRIVATE -Wall -Wextra)
-	endif ()
-
-	if (CMAKE_C_COMPILER_ID MATCHES "Clang")
-		target_compile_options(${target} PRIVATE $<$<CONFIG:Debug>:-fsanitize=address,undefined,integer>)
-		target_link_options(${target} PRIVATE $<$<CONFIG:Debug>:-fsanitize=address,undefined,integer>)
-	endif ()
-endfunction ()
+sed -e "1,19d" "$1" | grep '^#' | sed -e "s/^# *//"

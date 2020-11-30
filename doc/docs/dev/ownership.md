@@ -67,6 +67,7 @@ unless explicitly required. As such, no allocation/deallocation required either.
 ```c
 struct player {
     const char *name; // Not allocated, no deallocation
+};
 ```
 
 ## Ownership
@@ -120,8 +121,8 @@ touched by the user.
 
 ## Memory handling in Molko's Adventure API
 
-|         | Dynamic allocation? | Notes                                                   |
-|---------|---------------------|---------------------------------------------------------|
-| libcore | None                | The util.h provides convenient allocators for the user. |
-| libui   | None                |                                                         |
-| librpg  | In map.h module     | Maps are big chunk of data.                             |
+|             | Dynamic allocation?         | Notes                                                   |
+|-------------|-----------------------------|---------------------------------------------------------|
+| libmlk-core | None                        | The util.h provides convenient allocators for the user. |
+| libmlk-ui   | None                        |                                                         |
+| libmlk-rpg  | In map and tilesets loaders | Maps are big chunk of data.                             |

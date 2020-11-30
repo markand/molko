@@ -40,6 +40,16 @@ nav:
       - FAQ: dev/faq.md
     - Howto:
       - dev/howto/01-init.md
+    - CMake macros:
+      - cmake/MolkoBuildAssets.md
+      - cmake/MolkoBuildMaps.md
+      - cmake/MolkoBuildTilesets.md
+      - cmake/MolkoBuildTranslations.md
+      - cmake/MolkoDefineExecutable.md
+      - cmake/MolkoDefineLibrary.md
+      - cmake/MolkoDefineTest.md
+      - cmake/MolkoSetBuildDirectories.md
+      - cmake/MolkoSetCompilerFlags.md
     - API Reference:
       - Modules: modules/index.md
       - Files: files/index.md

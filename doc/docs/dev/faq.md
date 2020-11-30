@@ -37,7 +37,10 @@ static without dynamic allocations.
 Also, having a large amount of different data types, this would generate very
 large function and type names.
 
-## Why C instead of *FOO*?
+But if there is a high demand of having a proper independant library, it may
+change in the future.
+
+## Why C?
 
 C is an awesome language. It still has its place in the industry especially in
 low-level, kernel and game design.
@@ -64,8 +67,25 @@ many other stuff than a local game does not require.
 
 There are no plans to create a network oriented core API anytime soon.
 
-## What are these stranges symbols `(+-*&?)` in member fields?
+## What are these strange symbols `(+-*&?)` in member fields?
 
 It's a custom notation to indicate ownership and user access.
 
 See [ownership](ownership.md) file for more information.
+
+## Why not using RPG Maker instead?
+
+RPG Maker is an indeed great piece of software, in fact it's even the original
+source of inspiration for writing Molko's Adventure.
+
+However RPG Maker (in every versions) suffer from:
+
+- Not opensource. RPG Maker is proprietary while Molko's Adventure is licensed
+  under the very liberal [ISC][] license.
+- Per cell movements while Molko's Adventure provides per pixel granularity.
+  This provides more interesting gameplay especially in dungeons.
+- Flexibility. Even though some RPG Maker variants provide Ruby programming,
+  it's still based on GUI to design the game making less possibilities. Molko's
+  Adventure API is a pure C library where you can do mostly what you want.
+
+[ISC]: https://opensource.org/licenses/ISC

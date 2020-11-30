@@ -21,13 +21,14 @@ project(doc)
 find_package(Doxygen QUIET)
 find_program(MKDOCS_EXE mkdocs DOC "Path to mkdocs")
 find_program(DOXYBOOK2_EXE doxybook2 DOC "Path to doxybook2")
+find_program(SH_EXE sh DOC "Path to a POSIX shell")
 
-if (DOXYGEN_FOUND AND MKDOCS_EXE AND DOXYBOOK2_EXE)
+if (DOXYGEN_FOUND AND MKDOCS_EXE AND DOXYBOOK2_EXE AND SH_EXE)
 	set(
 		DOXYGEN_SOURCES
-		libcore
-		libui
-		librpg
+		libmlk-core
+		libmlk-ui
+		libmlk-rpg
 		${doc_SOURCE_DIR}/doxygen/groups.c
 	)
 
@@ -63,45 +64,24 @@ if (DOXYGEN_FOUND AND MKDOCS_EXE AND DOXYBOOK2_EXE)
 	set(DOXYGEN_GENERATE_LATEX NO)
 	set(DOXYGEN_GENERATE_MAN NO)
 	set(DOXYGEN_GENERATE_XML YES)
-	set(DOXYGEN_GENERATE_HTML NO)
+	set(DOXYGEN_GENERATE_HTML YES)
 	set(DOXYGEN_INPUT_ENCODING UTF-8)
 	set(DOXYGEN_MAX_INITIALIZER_LINES 0)
 	set(DOXYGEN_OPTIMIZE_OUTPUT_FOR_C YES)
 	set(DOXYGEN_OUTPUT_DIRECTORY doxygen)
 	set(DOXYGEN_PREDEFINED DOXYGEN)
-	set(DOXYGEN_XML_OUTPUT ${doc_BINARY_DIR}/doxygen-xml)
+	set(DOXYGEN_HTML_OUTPUT ${doc_BINARY_DIR}/doxygen/html)
+	set(DOXYGEN_XML_OUTPUT ${doc_BINARY_DIR}/doxygen/xml)
 	set(DOXYGEN_QUIET YES)
 	set(DOXYGEN_RECURSIVE YES)
 	set(DOXYGEN_TAB_SIZE 8)
 	set(DOXYGEN_WARNINGS YES)
 
-	# 1. Generate XML from doxygen.
-	doxygen_add_docs(
-		doc-doxygen-xml
-		${DOXYGEN_SOURCES}
-		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-	)
-
-	# 2. Convert XML through markdown with doxybook2.
-	add_custom_target(
-		doc-doxybook
-		VERBATIM
-		DEPENDS doc-doxygen-xml
+	# 0. Create commands to prepare the output build directory.
+	list(
+		APPEND commands
 		COMMAND
-			${CMAKE_COMMAND} -E make_directory ${doc_BINARY_DIR}/docs
-		COMMAND ${DOXYBOOK2_EXE} -q
-			-i ${doc_BINARY_DIR}/doxygen-xml
-			-o ${doc_BINARY_DIR}/docs
-			-c ${doc_SOURCE_DIR}/doxybook.json
-	)
-
-	# 3. Copy the directory containing hand-made documentation and call mkdocs.
-	add_custom_target(
-		doc
-		VERBATIM
-		DEPENDS doc-doxybook
-		SOURCES ${DOC_SOURCES}
-		WORKING_DIRECTORY ${doc_BINARY_DIR}
+			${CMAKE_COMMAND} -E make_directory ${doc_BINARY_DIR}/docs/cmake
 		COMMAND
 			${CMAKE_COMMAND} -E copy_directory
 				${doc_SOURCE_DIR}/docs
@@ -110,33 +90,70 @@ if (DOXYGEN_FOUND AND MKDOCS_EXE AND DOXYBOOK2_EXE)
 			${CMAKE_COMMAND} -E copy
 				${doc_SOURCE_DIR}/mkdocs.yml
 				${doc_BINARY_DIR}
+	)
+
+	# 1. Generate HTML/XML from doxygen.
+	doxygen_add_docs(
+		doc-doxygen
+		${DOXYGEN_SOURCES}
+		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+	)
+
+	# 2. Use doxybook2 to convert doxygen XML to markdown files.
+	list(
+		APPEND commands
+		COMMAND ${DOXYBOOK2_EXE} -q
+			-i ${doc_BINARY_DIR}/doxygen/xml
+			-o ${doc_BINARY_DIR}/docs
+			-c ${doc_SOURCE_DIR}/doxybook.json
+	)
+
+	# 3. Convert our CMake macros into documentation.
+	set(
+		MACROS
+		${cmake_SOURCE_DIR}/MolkoBuildAssets.cmake
+		${cmake_SOURCE_DIR}/MolkoBuildMaps.cmake
+		${cmake_SOURCE_DIR}/MolkoBuildTilesets.cmake
+		${cmake_SOURCE_DIR}/MolkoBuildTranslations.cmake
+		${cmake_SOURCE_DIR}/MolkoDefineExecutable.cmake
+		${cmake_SOURCE_DIR}/MolkoDefineLibrary.cmake
+		${cmake_SOURCE_DIR}/MolkoDefineTest.cmake
+		${cmake_SOURCE_DIR}/MolkoSetBuildDirectories.cmake
+		${cmake_SOURCE_DIR}/MolkoSetCompilerFlags.cmake
+	)
+
+	foreach (m ${MACROS})
+		get_filename_component(file ${m} NAME_WE)
+		set(output ${doc_BINARY_DIR}/docs/cmake/${file}.md)
+		list(
+			APPEND commands
+			COMMAND ${SH_EXE} ${doc_SOURCE_DIR}/cmake-extract.sh ${m} > ${output}
+		)
+	endforeach ()
+
+	# Create our final targets.
+	add_custom_target(
+		doc
+		VERBATIM
+		DEPENDS doc-doxygen
+		SOURCES ${DOC_SOURCES} ${cmake_outputs}
+		WORKING_DIRECTORY ${doc_BINARY_DIR}
+		${commands}
 		COMMAND
-			${MKDOCS_EXE} build
-				-d ${doc_BINARY_DIR}/html
+			${MKDOCS_EXE} build -d ${doc_BINARY_DIR}/html
 	)
 
 	add_custom_target(
 		doc-serve
 		VERBATIM
-		DEPENDS doc-doxybook
+		DEPENDS doc-doxygen
 		SOURCES ${DOC_SOURCES}
 		WORKING_DIRECTORY ${doc_BINARY_DIR}
-		COMMAND
-			${CMAKE_COMMAND} -E copy_directory
-				${doc_SOURCE_DIR}/docs
-				${doc_BINARY_DIR}/docs
-		COMMAND
-			${CMAKE_COMMAND} -E copy
-				${doc_SOURCE_DIR}/mkdocs.yml
-				${doc_BINARY_DIR}
+		${commands}
 		COMMAND
 			${MKDOCS_EXE} serve
 	)
 
-	set_target_properties(doc doc-serve doc-doxygen-xml doc-doxybook
-		PROPERTIES
-			FOLDER doc
-	)
-
+	set_target_properties(doc doc-doxygen doc-serve PROPERTIES FOLDER doc)
 	source_group(TREE ${doc_SOURCE_DIR}  FILES ${DOC_SOURCES})
 endif ()

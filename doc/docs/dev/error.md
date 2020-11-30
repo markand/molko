@@ -65,8 +65,8 @@ API does not take care of deallocating data before calling panic.
 
 The following table shows what is used and when.
 
-|         | `assert`           | Booleans            | panic                                     | Notes                             |
-|---------|--------------------|---------------------|-------------------------------------------|-----------------------------------|
-| libcore | Programming errors | As much as possible | Only in memory utilities from util.h      | Never called from libcore itself. |
-| libui   | Programming errors | When applicable     | Mostly in rendering errors                | None.                             |
-| librpg  | Programming errors | When applicable     | Mostly in rendering errors                | None.                             |
+|             | `assert`           | Booleans            | panic                                     | Notes                             |
+|-------------|--------------------|---------------------|-------------------------------------------|-----------------------------------|
+| libmlk-core | Programming errors | As much as possible | Only in memory utilities from util.h      | Never called from libcore itself. |
+| libmlk-ui   | Programming errors | When applicable     | Mostly in rendering errors                | None.                             |
+| libmlk-rpg  | Programming errors | When applicable     | Mostly in rendering errors                | None.                             |

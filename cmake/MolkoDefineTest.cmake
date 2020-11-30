@@ -17,11 +17,13 @@
 #
 
 #
-# molko_define_test
-# -----------------
+# # molko_define_test
 #
-# Synopsis:
+# Create unit test.
 #
+# ## Synopsis
+#
+# ```cmake
 # molko_define_test(
 #   TARGET      target name
 #   SOURCES     src1, src2, srcn
@@ -29,14 +31,17 @@
 #   FLAGS       (Optional) C flags (without -D)
 #   LIBRARIES   (Optional) libraries to link
 #   INCLUDES    (Optional) includes
+# )
+# ```
 #
-# Create an executable with the name TARGET and a test case of the same name
-# with the given SOURCES.
+# Create an executable with the name *TARGET* and a test case of the same name
+# with the given *SOURCES*.
 #
-# Optional include paths, libraries and flags can be specified via INCLUDES,
-# LIBRARIES and FLAGS arguments respectively.
+# Optional include paths, libraries and flags can be specified via *INCLUDES*,
+# *LIBRARIES* and *FLAGS* arguments respectively.
 #
-# If argument ASSETS is set, they are generated in the target binary directory.
+# If argument *ASSETS* is set, they are generated in the target binary
+# directory.
 #
 
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
