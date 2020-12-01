@@ -42,9 +42,9 @@
 #define ALLOC_POOL_INIT_DEFAULT 32
 
 /**
- * \brief Global allocator strategy.
+ * \brief Allocator functions.
  */
-struct allocator {
+struct alloc_funcs {
 	/**
 	 * (+) Allocate some data.
 	 *
@@ -119,9 +119,18 @@ struct alloc_pool {
 };
 
 /**
- * \brief Global allocator object.
+ * Set custom allocator functions.
+ *
+ * The alloc_funcs struct must stay valid until the program is closed.
+ *
+ * \pre funcs != NULL
+ * \pre funcs->alloc != NULL
+ * \pre funcs->realloc != NULL
+ * \pre funcs->free != NULL
+ * \param funcs the functions
  */
-extern struct allocator allocator;
+void
+alloc_set(const struct alloc_funcs *funcs);
 
 /**
  * Shortcut for allocator->alloc.

@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <SDL.h>
+
 #include "alloc.h"
 #include "error.h"
 #include "panic.h"
@@ -47,18 +49,34 @@ panic_realloc(void *ptr, size_t size)
 	return mem;
 }
 
-struct allocator allocator = {
+static const struct alloc_funcs default_alloc_funcs = {
 	.alloc = panic_alloc,
 	.realloc = panic_realloc,
 	.free = free
 };
+
+static const struct alloc_funcs *funcs = &default_alloc_funcs;
+
+void
+alloc_set(const struct alloc_funcs *newfuncs)
+{
+	assert(funcs);
+	assert(funcs->alloc);
+	assert(funcs->realloc);
+	assert(funcs->free);
+
+	funcs = newfuncs;
+
+	/* Change SDL allocators as well. */
+	SDL_SetMemoryFunctions(alloc_new, alloc_array0, alloc_renew, free);
+}
 
 void *
 alloc_new(size_t size)
 {
 	assert(size != 0);
 
-	return allocator.alloc(size);
+	return funcs->alloc(size);
 }
 
 void *
@@ -68,7 +86,7 @@ alloc_new0(size_t size)
 
 	void *ptr;
 
-	if ((ptr = allocator.alloc(size)))
+	if ((ptr = funcs->alloc(size)))
 		memset(ptr, 0, size);
 
 	return ptr;
@@ -85,7 +103,7 @@ alloc_array(size_t n, size_t size)
 	if (total / n != size)
 		return errorf("%s", strerror(ENOMEM)), NULL;
 
-	return allocator.alloc(total);
+	return funcs->alloc(total);
 }
 
 void *
@@ -100,7 +118,7 @@ alloc_array0(size_t n, size_t size)
 	if (total / n != size)
 		return errorf("%s", strerror(ENOMEM)), NULL;
 
-	if ((mem = allocator.alloc(total)))
+	if ((mem = funcs->alloc(total)))
 		memset(mem, 0, total);
 
 	return mem;
@@ -109,7 +127,7 @@ alloc_array0(size_t n, size_t size)
 void *
 alloc_renew(void *ptr, size_t amount)
 {
-	return allocator.realloc(ptr, amount);
+	return funcs->realloc(ptr, amount);
 }
 
 void *
@@ -120,7 +138,7 @@ alloc_rearray(void *ptr, size_t n, size_t size)
 	if (total / n != size)
 		return errorf("%s", strerror(ENOMEM)), NULL;
 
-	return allocator.realloc(ptr, total);
+	return funcs->realloc(ptr, total);
 }
 
 void *
@@ -131,7 +149,7 @@ alloc_dup(const void *ptr, size_t size)
 
 	void *mem;
 
-	if ((mem = allocator.alloc(size)))
+	if ((mem = funcs->alloc(size)))
 		memcpy(mem, ptr, size);
 
 	return mem;
@@ -145,7 +163,7 @@ alloc_sdup(const char *src)
 	char *ret;
 	size_t length = strlen(src) + 1;
 
-	if ((ret = allocator.alloc(length)))
+	if ((ret = funcs->alloc(length)))
 		memcpy(ret, src, length + 1);
 
 	return ret;
