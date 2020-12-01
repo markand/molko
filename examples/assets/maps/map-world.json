@@ -44,6 +44,11 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"block",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
                          "name":"exec",
                          "type":"string",
                          "value":"teleport:map-rebonai"

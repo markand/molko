@@ -45,7 +45,7 @@ by the appropriate C type name.
     <int> 
     ...
     layer|actions
-    <int>|<int>|<unsigned int>|<unsigned int>|<const char *>
+    <int>|<int>|<unsigned int>|<unsigned int>|<int>|<const char *>
 
 Description of directives:
 
@@ -72,11 +72,16 @@ layer
     4 columns and 6 the number of tiles must not exceed 24.
 
     For the layer action, defines an object to be implemented in the API. The
-    first 4 integers define the ``x``, ``y``, ``width`` and ``height`` dimensions
-    of the action rectangle respectively. The final string is an argument to pass
-    to the action.
+    first 4 integers define the `x`, `y`, `width`, `height` dimensions of the
+    action rectangle respectively. The fifth integer argument should be set to 1
+    if it must collide with the player or 0 otherwise. The final string is an
+    argument to pass to the action and may be omitted.
 
 ## Examples
+
+Some examples of valid maps.
+
+### Example of basic map
 
 The following file is a map with 4 columns and 2 rows (it is probably small for
 a real game but at least it is readable for this example). The player starts at
@@ -105,3 +110,18 @@ different tiles.
     0
     3
     3
+
+### Example of actions
+
+!!! note
+    For simplicity, we only focus on the `layer|actions` and assume that the
+    beginning of the map is valid.
+
+This layer of actions contains two blocking regions and one non-blocking action
+that is named "game-over".
+
+    layer|actions
+    100|100|50|50|1
+    200|200|50|50|1
+    1680|2855|48|48|0|game-over
+

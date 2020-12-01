@@ -82,20 +82,40 @@ static bool
 parse_actions(struct context *ctx)
 {
 	char exec[128 + 1];
-	int x = 0, y = 0;
+	int x = 0, y = 0, block = 0;
 	unsigned int w = 0, h = 0;
 
-	while (fscanf(ctx->fp, "%d|%d|%u|%u|%128[^\n]\n", &x, &y, &w, &h, exec) == 5) {
-		struct action *act;
+	while (fscanf(ctx->fp, "%d|%d|%u|%u|%d|%128[^\n]\n", &x, &y, &w, &h, &block, exec) >= 5) {
+		struct map_block *reg;
 
 		if (!ctx->mf->load_action) {
-			tracef(_("ignoring action %d,%d,%u,%u,%s"), x, y, w, h, exec);
+			tracef(_("ignoring action %d,%d,%u,%u,%d,%s"), x, y, w, h, block, exec);
 			continue;
 		}
 
-		if ((act = ctx->mf->load_action(ctx->map, x, y, w, h, exec)))
-			action_stack_add(&ctx->map->actions, act);
+		ctx->mf->load_action(ctx->map, x, y, w, h, exec);
+
+		/*
+		 * Actions do not have concept of collisions because they are
+		 * not only used on maps. The map structure has its very own
+		 * object to manage collisions but the .map file use the same
+		 * directive for simplicity. So create a block region if the
+		 * directive has one.
+		 */
+		if (block) {
+			if (!(reg = alloc_pool_new(&ctx->mf->blocks)))
+				return false;
+
+			reg->x = x;
+			reg->y = y;
+			reg->w = w;
+			reg->h = h;
+		}
 	}
+
+	/* Reference the blocks array from map_file. */
+	ctx->map->blocks = ctx->mf->blocks.data;
+	ctx->map->blocksz = ctx->mf->blocks.size;
 
 	return true;
 }
@@ -257,6 +277,9 @@ map_file_open(struct map_file *file, struct map *map, const char *path)
 
 	memset(map, 0, sizeof (*map));
 
+	if (!alloc_pool_init(&file->blocks, sizeof (*map->blocks), NULL))
+		return false;
+
 	if (!(ctx.fp = fopen(path, "r")))
 		return errorf("%s", strerror(errno));
 
@@ -280,6 +303,7 @@ map_file_finish(struct map_file *file)
 	free(file->layers[2].tiles);
 
 	tileset_file_finish(&file->tileset_file);
+	alloc_pool_finish(&file->blocks);
 
 	memset(file, 0, sizeof (*file));
 }

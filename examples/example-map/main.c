@@ -44,7 +44,7 @@
 #define W       (1280)
 #define H       (720)
 
-static struct action *load_action(struct map *, int, int, int, int, const char *);
+static void load_action(struct map *, int, int, int, int, const char *);
 
 struct map_state {
 	struct map_file loader;
@@ -192,7 +192,7 @@ teleport_effect(struct map *current_map, const char *name, int ox, int oy)
 	game.inhibit = INHIBIT_STATE_INPUT;
 
 	teleport_start(&fx->tp);
-	action_stack_add(&current_map->actions, &fx->act);
+	action_stack_add(&current_map->astack_par, &fx->act);
 }
 
 struct teleport_touch {
@@ -260,13 +260,11 @@ teleport_touch_new(struct map *map, int x, int y, int w, int h, const char *def)
 	return &touch->act;
 }
 
-static struct action *
+static void
 load_action(struct map *map, int x, int y, int w, int h, const char *id)
 {
 	if (strncmp(id, "teleport:", 9) == 0)
-		return teleport_touch_new(map, x, y, w, h, id + 9);
-
-	return NULL;
+		action_stack_add(&map->astack_par, teleport_touch_new(map, x, y, w, h, id + 9));
 }
 
 static void

@@ -54,43 +54,17 @@ is_layer(const char *name)
 static const json_t *
 find_property(const json_t *props, const char *which)
 {
-	json_t *value;
+	const json_t *obj;
 	size_t index;
 
-	json_array_foreach(props, index, value) {
-		if (!json_is_object(value))
+	json_array_foreach(props, index, obj) {
+		if (!json_is_object(obj))
 			continue;
 
-		const json_t *key = json_object_get(value, "name");
+		const json_t *key = json_object_get(obj, "name");
+		const json_t *value = json_object_get(obj, "value");
 
-		if (json_is_string(key) && strcmp(json_string_value(key), which) == 0)
-			return value;
-	}
-
-	return NULL;
-}
-
-static const json_t *
-find_action_exec(const json_t *props)
-{
-	assert(json_is_array(props));
-
-	json_t *prop, *name, *value;
-	size_t i;
-
-	json_array_foreach(props, i, prop) {
-		if (!json_is_object(prop))
-			die("invalid property in object\n");
-
-		name = json_object_get(prop, "name");
-		value = json_object_get(prop, "value");
-
-		if (!name || !json_is_string(name))
-			die("invalid 'name' property in object properties");
-		if (!value || !json_is_string(value))
-			die("invalid 'value' property in object properties");
-
-		if (strcmp(json_string_value(name), "exec") == 0)
+		if (json_is_string(key) && value && strcmp(json_string_value(key), which) == 0)
 			return value;
 	}
 
@@ -102,13 +76,8 @@ write_title(const json_t *props)
 {
 	const json_t *prop_title = find_property(props, "title");
 
-	if (!prop_title)
-		return;
-
-	const json_t *title = json_object_get(prop_title, "value");
-
-	if (title && json_is_string(title))
-		printf("title|%s\n", json_string_value(title));
+	if (prop_title && json_is_string(prop_title))
+		printf("title|%s\n", json_string_value(prop_title));
 }
 
 static void
@@ -117,19 +86,13 @@ write_origin(const json_t *props)
 	const json_t *prop_origin_x = find_property(props, "origin-x");
 	const json_t *prop_origin_y = find_property(props, "origin-y");
 
-	if (!prop_origin_x || !prop_origin_y)
-		return;
-
-	const json_t *origin_x = json_object_get(prop_origin_x, "value");
-	const json_t *origin_y = json_object_get(prop_origin_y, "value");
-
-	if (!origin_x || !json_is_integer(origin_x) ||
-	    !origin_y || !json_is_integer(origin_y))
+	if (!prop_origin_x || !json_is_integer(prop_origin_x) ||
+	    !prop_origin_y || !json_is_integer(prop_origin_y))
 		return;
 
 	printf("origin|%d|%d\n",
-	    (int)json_integer_value(origin_x),
-	    (int)json_integer_value(origin_y));
+	    (int)json_integer_value(prop_origin_x),
+	    (int)json_integer_value(prop_origin_y));
 }
 
 static void
@@ -164,7 +127,7 @@ write_object(const json_t *object)
 	json_t *width = json_object_get(object, "width");
 	json_t *height = json_object_get(object, "height");
 	json_t *props = json_object_get(object, "properties");
-	const json_t *exec;
+	const json_t *exec, *block;
 
 	if (!x || !json_is_number(x))
 		die("invalid 'x' property in object\n");
@@ -175,16 +138,20 @@ write_object(const json_t *object)
 	if (!height || !json_is_number(height))
 		die("invalid 'height' property in object\n");
 
+	/* This is optional and set to 0 if not present. */
+	block = find_property(props, "block");
+
 	/* In tiled, those properties are float but we only use ints in MA */
-	printf("%d|%d|%d|%d|",
+	printf("%d|%d|%d|%d|%d",
 	    (int)json_integer_value(x),
 	    (int)json_integer_value(y),
 	    (int)json_integer_value(width),
-	    (int)json_integer_value(height)
+	    (int)json_integer_value(height),
+	    (int)json_is_true(block)
 	);
 
-	if ((exec = find_action_exec(props)))
-		printf("%s", json_string_value(exec));
+	if ((exec = find_property(props, "exec")) && json_is_string(exec))
+		printf("|%s", json_string_value(exec));
 
 	printf("\n");
 }

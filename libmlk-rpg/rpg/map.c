@@ -42,7 +42,7 @@
  * SPEED represents the number of pixels it must move per SEC.
  * SEC simply represends the number of milliseconds in one second.
  */
-#define SPEED 220
+#define SPEED 150
 #define SEC   1000
 
 /*
@@ -92,15 +92,16 @@ static unsigned int orientations[16] = {
 	[0xC] = 5
 };
 
-struct collision {
-	int x;
-	int y;
-	unsigned int w;
-	unsigned int h;
-};
-
+/*
+ * Check if this block is usable for collision detection. For example if the
+ * player is moving upwards but the collision shape is below it is unnecessary
+ * to check.
+ */
 static bool
-is_collision_out(const struct map *map, struct collision *block, int drow, int dcol)
+is_block_relevant(const struct map *map,
+                    const struct map_block *block,
+                    int drow,
+                    int dcol)
 {
 	if (drow) {
 		/* Object outside of left-right bounds. */
@@ -123,6 +124,23 @@ is_collision_out(const struct map *map, struct collision *block, int drow, int d
 	}
 
 	return true;
+}
+
+/*
+ * Determine if this collision shape is "closer" to the player by checking the
+ * new block coordinates with the previous one.
+ */
+static bool
+is_block_better(const struct map_block *now,
+                const struct map_block *new,
+                int drow,
+                int dcol)
+{
+	return ((drow < 0 && new->y + new->h > now->y + now->h) ||
+	        (drow > 0 && new->y < now->y) ||
+	        (dcol < 0 && new->x + new->w > now->x + now->w) ||
+		(dcol > 0 && new->x < now->x));
+		
 }
 
 static void
@@ -263,7 +281,7 @@ find_tiledef_by_row_column(const struct map *map, int row, int col)
 
 static void
 find_block_iterate(const struct map *map,
-                   struct collision *block,
+                   struct map_block *block,
                    int rowstart,
                    int rowend,
                    int colstart,
@@ -274,10 +292,11 @@ find_block_iterate(const struct map *map,
 	assert(map);
 	assert(block);
 
+	/* First, check with tiledefs. */
 	for (int r = rowstart; r <= rowend; ++r) {
 		for (int c = colstart; c <= colend; ++c) {
 			struct tileset_tiledef *td;
-			struct collision tmp;
+			struct map_block tmp;
 
 			if (!(td = find_tiledef_by_row_column(map, r, c)))
 				continue;
@@ -289,13 +308,10 @@ find_block_iterate(const struct map *map,
 			tmp.h = td->h;
 
 			/* This tiledef is out of context. */
-			if (!is_collision_out(map, &tmp, drow, dcol))
+			if (!is_block_relevant(map, &tmp, drow, dcol))
 				continue;
 
-			if ((drow < 0 && tmp.y + tmp.h > block->y + block->h) ||
-			    (drow > 0 && tmp.y < block->y) ||
-			    (dcol < 0 && tmp.x + tmp.w > block->x + block->w) ||
-			    (dcol > 0 && tmp.x < block->x)) {
+			if (is_block_better(block, &tmp, drow, dcol)) {
 				block->x = tmp.x;
 				block->y = tmp.y;
 				block->w = tmp.w;
@@ -303,10 +319,23 @@ find_block_iterate(const struct map *map,
 			}
 		}
 	}
+
+	/* Now check if there are objects closer than tiledefs. */
+	for (size_t i = 0; i < map->blocksz; ++i) {
+		const struct map_block *new = &map->blocks[i];
+
+		if (is_block_relevant(map, new, drow, dcol) &&
+		    is_block_better(block, new, drow, dcol)) {
+			block->x = new->x;
+			block->y = new->y;
+			block->w = new->w;
+			block->h = new->h;
+		}
+	}
 }
 
 static void
-find_collision(const struct map *map, struct collision *block, int drow, int dcolumn)
+find_collision(const struct map *map, struct map_block *block, int drow, int dcolumn)
 {
 	assert((drow && !dcolumn) || (dcolumn && !drow));
 
@@ -360,7 +389,7 @@ find_collision(const struct map *map, struct collision *block, int drow, int dco
 static void
 move_x(struct map *map, int delta)
 {
-	struct collision block;
+	struct map_block block;
 
 	find_collision(map, &block, 0, delta < 0 ? -1 : +1);
 
@@ -384,7 +413,7 @@ move_x(struct map *map, int delta)
 static void
 move_y(struct map *map, int delta)
 {
-	struct collision block;
+	struct map_block block;
 
 	find_collision(map, &block, delta < 0 ? -1 : +1, 0);
 
@@ -562,18 +591,54 @@ map_update(struct map *map, unsigned int ticks)
 {
 	assert(map);
 
-	action_stack_update(&map->actions, ticks);
+	action_stack_update(&map->astack_par, ticks);
+	action_stack_update(&map->astack_seq, ticks);
 
 	tileset_update(map->tileset, ticks);
-	move(map, ticks);
+
+	/* No movements if the sequential actions are running. */
+	if (action_stack_completed(&map->astack_seq))
+		move(map, ticks);
+}
+
+static void
+draw_collide(const struct map *map)
+{
+	struct texture box = {0};
+
+	if (map->flags & MAP_FLAGS_SHOW_COLLIDE && texture_new(&box, 64, 64)) {
+		/* Draw collide box around player if requested. */
+		texture_set_alpha_mod(&box, 100);
+		texture_set_blend_mode(&box, TEXTURE_BLEND_BLEND);
+		PAINTER_BEGIN(&box);
+		painter_set_color(0x4f8fbaff);
+		painter_clear();
+		PAINTER_END();
+		texture_scale(&box, 0, 0, 64, 64,
+		    map->player_x - map->view_x, map->player_y - map->view_y,
+			      map->player_sprite->cellw, map->player_sprite->cellh, 0.f);
+
+		/* Do the same for every objects. */
+		PAINTER_BEGIN(&box);
+		painter_set_color(0xa8ca58ff);
+		painter_clear();
+		PAINTER_END();
+
+		for (size_t i = 0; i < map->blocksz; ++i) {
+			texture_scale(&box, 0, 0, 64, 64,
+			    map->blocks[i].x - map->view_x, map->blocks[i].y - map->view_y,
+			    map->blocks[i].w, map->blocks[i].h,
+			    0.f);
+		}
+
+		texture_finish(&box);
+	}
 }
 
 void
 map_draw(const struct map *map)
 {
 	assert(map);
-
-	struct texture box = {0};
 
 	/* Draw the texture about background/foreground. */
 	draw_layer(map, &map->layers[MAP_LAYER_TYPE_BACKGROUND]);
@@ -586,21 +651,10 @@ map_draw(const struct map *map)
 		map->player_y - map->view_y);
 
 	draw_layer(map, &map->layers[MAP_LAYER_TYPE_ABOVE]);
+	draw_collide(map);
 
-	action_stack_draw(&map->actions);
-
-	/* Draw collide box around player if requested. */
-	if (map->flags & MAP_FLAGS_SHOW_COLLIDE &&
-	    texture_new(&box, map->player_sprite->cellw, map->player_sprite->cellh)) {
-		texture_set_alpha_mod(&box, 100);
-		texture_set_blend_mode(&box, TEXTURE_BLEND_BLEND);
-		PAINTER_BEGIN(&box);
-		painter_set_color(0x4f8fbaff);
-		painter_clear();
-		PAINTER_END();
-		texture_draw(&box, map->player_x - map->view_x, map->player_y - map->view_y);
-		texture_finish(&box);
-	}
+	action_stack_draw(&map->astack_par);
+	action_stack_draw(&map->astack_seq);
 }
 
 void
@@ -608,7 +662,8 @@ map_finish(struct map *map)
 {
 	assert(map);
 
-	action_stack_finish(&map->actions);
+	action_stack_finish(&map->astack_par);
+	action_stack_finish(&map->astack_seq);
 
 	memset(map, 0, sizeof (*map));
 }

@@ -39,6 +39,7 @@
 
 #include <stdbool.h>
 
+#include <core/alloc.h>
 #include <core/sprite.h>
 #include <core/texture.h>
 
@@ -65,32 +66,14 @@ struct map_file {
 	/**
 	 * (+?) User function to create an action when it is listed in the map
 	 * definition.
-	 *
-	 * The returned value is owned by the user and is never free'ed from the
-	 * map file itself. If the function is present and return a non-NULL
-	 * action it is added into map.
 	 */
-	struct action *(*load_action)(struct map *map, int x, int y, int w, int h, const char *exec);
+	void (*load_action)(struct map *map, int x, int y, int w, int h, const char *exec);
 
-	/**
-	 * (*) Map title loaded from file.
-	 */
-	char title[MAP_FILE_TITLE_MAX];
-
-	/**
-	 * (*) Map layers stored dynamically here.
-	 */
-	struct map_layer layers[MAP_LAYER_TYPE_NUM];
-
-	/**
-	 * (*) Tileset file loader.
-	 */
-	struct tileset_file tileset_file;
-
-	/**
-	 * (*) Tileset referenced from the map.
-	 */
-	struct tileset tileset;
+	char title[MAP_FILE_TITLE_MAX];                 /*!< \private */
+	struct map_layer layers[MAP_LAYER_TYPE_NUM];    /*!< \private */
+	struct tileset_file tileset_file;               /*!< \private */
+	struct tileset tileset;                         /*!< \private */
+	struct alloc_pool blocks;                       /*!< \private */
 };
 
 /**

@@ -61,6 +61,16 @@ enum map_flags {
 };
 
 /**
+ * \brief Map collision block.
+ */
+struct map_block {
+	int x;                                  /*!< (+) Position in x. */
+	int y;                                  /*!< (+) Position in y. */
+	unsigned int w;                         /*!< (+) Width. */
+	unsigned int h;                         /*!< (+) Height. */
+};
+
+/**
  * \brief Map object.
  *
  * The map object is used to move a player within the map according to the
@@ -80,8 +90,13 @@ struct map {
 	/* View options. */
 	enum map_flags flags;           /*!< (+) View options. */
 
+	/* Extra collisions blocks. */
+	struct map_block *blocks;       /*!< (+&?) Extra collisions. */
+	size_t blocksz;                 /*!< (+) Number of collisions. */
+
 	/* List of actions. */
-	struct action_stack actions;    /*!< (+) */
+	struct action_stack astack_par; /*!< (+) Parallel actions. */
+	struct action_stack astack_seq; /*!< (+) Blocking actions. */
 
 	/* Player. */
 	struct sprite *player_sprite;   /*!< (+) The sprite to use */
