@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://projects.malikania.fr/molko/doc/",
+  "baseUrl": "/",
   "indexInFolders": true,
   "linkSuffix": "/",
   "indexClassesName": "index",
