@@ -50,6 +50,15 @@ load_cursors(void)
 }
 
 static void
+load_framerate(void)
+{
+	SDL_DisplayMode mode;
+
+	if (SDL_GetWindowDisplayMode(handle.win, &mode) == 0)
+		window.framerate = mode.refresh_rate;
+}
+
+static void
 finish_cursors(void)
 {
 	for (size_t i = 0; i < NELEM(cursors); ++i)
@@ -57,20 +66,30 @@ finish_cursors(void)
 			SDL_FreeCursor(cursors[i]);
 }
 
+static bool
+load_window(const char *title, unsigned int w, unsigned int h)
+{
+	return (handle.win = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, 0));
+}
+
+static bool
+load_renderer(void)
+{
+	return (handle.renderer = SDL_CreateRenderer(handle.win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
+}
+
 bool
 window_open(const char *title, unsigned int w, unsigned int h)
 {
 	assert(title);
 
-	if (SDL_CreateWindowAndRenderer(w, h, SDL_WINDOW_OPENGL,
-	    &handle.win, &handle.renderer) < 0)
+	if (!load_window(title, w, h) || !load_renderer())
 		return errorf("%s", SDL_GetError());
-
-	SDL_SetWindowTitle(handle.win, title);
 
 	window.w = w;
 	window.h = h;
 
+	load_framerate();
 	load_cursors();
 
 	return true;

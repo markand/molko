@@ -26,6 +26,7 @@
 #include "state.h"
 #include "painter.h"
 #include "util.h"
+#include "window.h"
 
 struct game game;
 
@@ -103,8 +104,14 @@ void
 game_loop(void)
 {
 	struct clock clock = {0};
-	double frametimemax = 1000.0 / 60.0;
-	unsigned int frametime = 0;
+	unsigned int elapsed = 0;
+	unsigned int frametime;
+
+	if (window.framerate > 0)
+		frametime = 1000 / window.framerate;
+	else
+		/* Assuming 50.0 FPS. */
+		frametime = 1000.0 / 50.0;
 
 	while (game.state) {
 		clock_start(&clock);
@@ -112,17 +119,17 @@ game_loop(void)
 		for (union event ev; event_poll(&ev); )
 			game_handle(&ev);
 
-		game_update(frametime);
+		game_update(elapsed);
 		game_draw();
 
 		/*
-		 * Sleep not the full left time to allow context switches and
-		 * such.
+		 * If vsync is enabled, it should have wait, otherwise sleep
+		 * a little to save CPU cycles.
 		 */
-		if (frametime < frametimemax)
-			delay((frametimemax - frametime) / 4);
+		if ((elapsed = clock_elapsed(&clock)) < frametime)
+			delay(frametime - elapsed);
 
-		frametime = clock_elapsed(&clock);
+		elapsed = clock_elapsed(&clock);
 	}
 }
 

@@ -33,6 +33,7 @@
 struct window {
 	unsigned int w;         /*!< (-) Window width. */
 	unsigned int h;         /*!< (-) Window height. */
+	unsigned int framerate; /*!< (-) Device screen refresh rate. */
 	void *handle;           /*!< (*) Native handle. */
 };
 
