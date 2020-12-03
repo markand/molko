@@ -19,41 +19,14 @@
 #ifndef MOLKO_CORE_IMAGE_H
 #define MOLKO_CORE_IMAGE_H
 
-/**
- * \file image.h
- * \brief Basic image management.
- * \ingroup drawing
- */
-
 #include <stdbool.h>
 #include <stddef.h>
 
 struct texture;
 
-/**
- * Open a file from a path.
- *
- * \pre tex != NULL
- * \pre path != NULL
- * \param tex the texture to initialize
- * \param path the path to the file
- * \return False on errors.
- */
 bool
 image_open(struct texture *tex, const char *path);
 
-/**
- * Open a file from a memory buffer.
- *
- * The buffer must be valid until the image is no longer used.
- *
- * \pre tex != NULL
- * \pre buffer != NULL
- * \param tex the texture to initialize
- * \param buffer the memory buffer
- * \param size the memory size
- * \return False on errors.
- */
 bool
 image_openmem(struct texture *tex, const void *buffer, size_t size);
 

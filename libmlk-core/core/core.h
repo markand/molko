@@ -19,28 +19,11 @@
 #ifndef MOLKO_CORE_CORE_H
 #define MOLKO_CORE_CORE_H
 
-/**
- * \file core.h
- *\brief libcore convenient header.
- */
-
 #include <stdbool.h>
 
-/**
- * Initialize the core library.
- *
- * \pre organization != NULL
- * \pre name != NULL
- * \param organization the name of the organization
- * \param name the game name
- * \return False on errors.
- */
 bool
 core_init(const char *organization, const char *name);
 
-/**
- * Close the core library.
- */
 void
 core_finish(void);
 

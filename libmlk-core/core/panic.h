@@ -19,66 +19,18 @@
 #ifndef MOLKO_CORE_PANIC_H
 #define MOLKO_CORE_PANIC_H
 
-/**
- * \file panic.h
- * \brief Unrecoverable error handling.
- * \ingroup basics
- *
- * This set of functions should be used to detect runtime errors that are
- * unexpected. They should be used only when the game cannot continue because
- * it is in a unrecoverable state.
- *
- * Examples of appropriate use cases:
- *
- * - Game saved data is corrupt,
- * - Assets are missing,
- * - No more memory.
- *
- * In other contexts, use asserts to indicates programming error and
- * appropriate solutions to recover the game otherwise.
- */
-
 #include <stdarg.h>
+#include <stdnoreturn.h>
 
-/**
- * \brief Global panic handler.
- *
- * The default implementation shows the last error and exit with code 1. The
- * function must not return so you have to implement a setjmp/longjmp or a
- * exception to be thrown.
- *
- * If the user defined function returns, panic routines will finally exit with
- * code 1.
- */
 extern void (*panic_handler)(void);
 
-/**
- * Terminate the program using the \ref panic_handler routine.
- *
- * This function will first set the global error with the provided format
- * string and then call the handler.
- *
- * \pre fmt != NULL
- * \param fmt the printf(3) format string
- */
-void
+noreturn void
 panicf(const char *fmt, ...);
 
-/**
- * Similar to \ref panicf but with a arguments pointer.
- *
- * \pre fmt != NULL
- * \param fmt the printf(3) format string
- * \param ap the arguments pointer
- */
-void
-vpanicf(const char *fmt, va_list ap);
+noreturn void
+panicva(const char *fmt, va_list ap);
 
-/**
- * Similar to \ref panicf but use last error stored using \ref error.h
- * routines.
- */
-void
+noreturn void
 panic(void);
 
 #endif /* !MOLKO_CORE_PANIC_H */

@@ -19,15 +19,6 @@
 #ifndef MOLKO_CORE_KEY_H
 #define MOLKO_CORE_KEY_H
 
-/**
- * \file key.h
- * \brief Keyboard definitions.
- * \ingroup input
- */
-
-/**
- * \brief Key codes.
- */
 enum key {
 	KEY_UNKNOWN,
 	KEY_ENTER,
@@ -125,7 +116,7 @@ enum key {
 	KEY_F23,
 	KEY_F24,
 	KEY_PRINTSCREEN,
-	KEY_SCROLLLOCK,
+	KEY_SCROLL_LOCK,
 	KEY_PAUSE,
 	KEY_INSERT,
 	KEY_HOME,
@@ -171,21 +162,15 @@ enum key {
 	KEY_RSUPER,
 };
 
-/**
- * \brief Keybord modifiers.
- *
- * This enumeration is usually stored as OR'ed flags as several modifiers can
- * be pressed at a time.
- */
 enum keymod {
-	KEYMOD_LSHIFT   = 1 << 0,       /*!< Left shift */
-	KEYMOD_LCTRL    = 1 << 1,       /*!< Left control */
-	KEYMOD_LALT     = 1 << 2,       /*!< Left alt */
-	KEYMOD_LSUPER   = 1 << 3,       /*!< Left super (logo) */
-	KEYMOD_RSHIFT   = 1 << 4,       /*!< Right shift */
-	KEYMOD_RCTRL    = 1 << 5,       /*!< Right control */
-	KEYMOD_RALT     = 1 << 6,       /*!< Right alt */
-	KEYMOD_RSUPER   = 1 << 7        /*!< Right super (logo) */
+	KEYMOD_LSHIFT   = 1 << 0,
+	KEYMOD_LCTRL    = 1 << 1,
+	KEYMOD_LALT     = 1 << 2,
+	KEYMOD_LSUPER   = 1 << 3,
+	KEYMOD_RSHIFT   = 1 << 4,
+	KEYMOD_RCTRL    = 1 << 5,
+	KEYMOD_RALT     = 1 << 6,
+	KEYMOD_RSUPER   = 1 << 7 
 };
 
 #endif /* !MOLKO_CORE_KEY_H */

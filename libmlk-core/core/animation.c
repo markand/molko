@@ -36,7 +36,7 @@ draw(struct drawable *dw)
 }
 
 void
-animation_init(struct animation *an, struct sprite *sprite, unsigned int delay)
+animation_init(struct animation *an, const struct sprite *sprite, unsigned int delay)
 {
 	assert(an);
 	assert(sprite);

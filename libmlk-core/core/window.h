@@ -19,69 +19,34 @@
 #ifndef MOLKO_CORE_WINDOW_H
 #define MOLKO_CORE_WINDOW_H
 
-/**
- * \file window.h
- * \brief Basic window management.
- * \ingroup drawing
- */
-
 #include <stdbool.h>
 
-/**
- * \brief Global exposed window structure.
- */
 struct window {
-	unsigned int w;         /*!< (-) Window width. */
-	unsigned int h;         /*!< (-) Window height. */
-	unsigned int framerate; /*!< (-) Device screen refresh rate. */
-	void *handle;           /*!< (*) Native handle. */
+	unsigned int w;
+	unsigned int h;
+	unsigned int framerate;
+	void *handle;
 };
 
-/**
- * \brief Window mouse cursor.
- */
 enum window_cursor {
-	WINDOW_CURSOR_ARROW,            /*!< Standard arrow.*/
-	WINDOW_CURSOR_EDIT,             /*!< Text edit cursor "I". */
-	WINDOW_CURSOR_WAIT,             /*!< Busy cursor. */
-	WINDOW_CURSOR_CROSSHAIR,        /*!< Cross-hair for selection. */
-	WINDOW_CURSOR_SIZE,             /*!< Size/moving. */
-	WINDOW_CURSOR_NO,               /*!< Action forbidden. */
-	WINDOW_CURSOR_HAND,             /*!< Hand. */
-	WINDOW_CURSOR_LAST              /*!< Number of cursors. */
+	WINDOW_CURSOR_ARROW,
+	WINDOW_CURSOR_EDIT,
+	WINDOW_CURSOR_WAIT,
+	WINDOW_CURSOR_CROSSHAIR,
+	WINDOW_CURSOR_SIZE,
+	WINDOW_CURSOR_NO,
+	WINDOW_CURSOR_HAND,
+	WINDOW_CURSOR_LAST
 };
 
-/**
- * \brief Access to global window structure.
- */
 extern struct window window;
 
-/**
- * Initialize window.
- *
- * \pre title != NULL
- * \param title the window title
- * \param width the desired width
- * \param height the desired height
- * \return true on success
- */
 bool
 window_open(const char *title, unsigned int width, unsigned int height);
 
-/**
- * Change the window cursor.
- *
- * You must open a window before calling this function.
- *
- * \pre cursor < WINDOW_CURSOR_LAST
- * \param cursor the cursor
- */
 void
 window_set_cursor(enum window_cursor cursor);
 
-/**
- * Close the window and destroy associated resources.
- */
 void
 window_finish(void);
 

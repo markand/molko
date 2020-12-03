@@ -21,22 +21,6 @@
 
 #include <stdbool.h>
 
-/**
- * \file maths.h
- * \brief Basic maths.
- */
-
-/**
- * Tells if a coordinate is within a rectangle region.
- *
- * \param x the region start
- * \param y the region start
- * \param w the region width
- * \param h the region height
- * \param px the point to test
- * \param py the point to test
- * \return True if within the region
- */
 bool
 maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py);
 

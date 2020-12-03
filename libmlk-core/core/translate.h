@@ -21,19 +21,9 @@
 
 #include <stdbool.h>
 
-/**
- * Initialize native language support.
- *
- * \pre name != NULL
- * \param name the domain name to initialize (e.g mlk-libcore)
- * \return True if correctly initialized.
- */
 bool
 translate_init(const char *name);
 
-/**
- * Close the native language support.
- */
 void
 translate_finish(void);
 

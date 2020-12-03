@@ -19,25 +19,11 @@
 #ifndef MOLKO_CORE_MOUSE_H
 #define MOLKO_CORE_MOUSE_H
 
-/**
- * \file mouse.h
- * \brief Mouse definitions.
- * \ingroup input
- */
-
-/**
- * \brief Buttons from mouse.
- *
- * This enumeration is used as both flags or constants. For example when the
- * user press one button on the mouse it generates one constant event. On the
- * other hand, while moving the mouse the user may have one or more buttons
- * pressed, thus the OR'ed combination.
- */
 enum mouse_button {
-	MOUSE_BUTTON_UNKNOWN    = 0,            /*!< No buttons pressed */
-	MOUSE_BUTTON_LEFT       = (1 << 0),     /*!< Left button pressed */
-	MOUSE_BUTTON_MIDDLE     = (1 << 1),     /*!< Middle button pressed */
-	MOUSE_BUTTON_RIGHT      = (1 << 2)      /*!< Right button pressed */
+	MOUSE_BUTTON_NONE       = 0,
+	MOUSE_BUTTON_LEFT       = (1 << 0),
+	MOUSE_BUTTON_MIDDLE     = (1 << 1),
+	MOUSE_BUTTON_RIGHT      = (1 << 2)
 };
 
 #endif /* !MOLKO_CORE_MOUSE_H */

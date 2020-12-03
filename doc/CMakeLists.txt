@@ -18,102 +18,92 @@
 
 project(doc)
 
-find_package(Doxygen QUIET)
 find_program(MKDOCS_EXE mkdocs DOC "Path to mkdocs")
-find_program(DOXYBOOK2_EXE doxybook2 DOC "Path to doxybook2")
 find_program(SH_EXE sh DOC "Path to a POSIX shell")
 
-if (DOXYGEN_FOUND AND MKDOCS_EXE AND DOXYBOOK2_EXE AND SH_EXE)
-	set(
-		DOXYGEN_SOURCES
-		libmlk-core
-		libmlk-ui
-		libmlk-rpg
-		${doc_SOURCE_DIR}/doxygen/groups.c
-	)
-
-	set(
-		DOXYGEN_STRIP_FROM_PATH
-		${CMAKE_SOURCE_DIR}/libmlk-core
-		${CMAKE_SOURCE_DIR}/libmlk-ui
-		${CMAKE_SOURCE_DIR}/libmlk-rpg
-	)
+if (MKDOCS_EXE)
 	set(
 		DOC_SOURCES
+		${doc_SOURCE_DIR}/docs/about.md
+		${doc_SOURCE_DIR}/docs/cmake/MolkoBuildAssets.md
+		${doc_SOURCE_DIR}/docs/cmake/MolkoBuildMaps.md
+		${doc_SOURCE_DIR}/docs/cmake/MolkoBuildTilesets.md
+		${doc_SOURCE_DIR}/docs/cmake/MolkoBuildTranslations.md
+		${doc_SOURCE_DIR}/docs/cmake/MolkoDefineExecutable.md
+		${doc_SOURCE_DIR}/docs/cmake/MolkoDefineLibrary.md
+		${doc_SOURCE_DIR}/docs/cmake/MolkoDefineTest.md
+		${doc_SOURCE_DIR}/docs/cmake/MolkoSetBuildDirectories.md
+		${doc_SOURCE_DIR}/docs/cmake/MolkoSetCompilerFlags.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/action.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/alloc.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/animation.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/clock.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/color.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/core.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/drawable.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/event.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/error.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/font.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/game.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/image.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/inhibit.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/key.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/maths.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/mouse.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/music.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/painter.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/panic.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/save.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/script.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/sound.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/sprite.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/state.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/sys.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/texture.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/trace.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/translate.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/util.md
+		${doc_SOURCE_DIR}/docs/dev/api/core/window.md
+		${doc_SOURCE_DIR}/docs/dev/error.md
+		${doc_SOURCE_DIR}/docs/dev/faq.md
+		${doc_SOURCE_DIR}/docs/dev/howto/01-init.md
+		${doc_SOURCE_DIR}/docs/dev/ownership.md
+		${doc_SOURCE_DIR}/docs/index.md
+		${doc_SOURCE_DIR}/docs/install.md
 		${doc_SOURCE_DIR}/docs/specs/map.md
 		${doc_SOURCE_DIR}/docs/specs/tileset.md
 		${doc_SOURCE_DIR}/docs/tools/bcc.md
 		${doc_SOURCE_DIR}/docs/tools/map.md
 		${doc_SOURCE_DIR}/docs/tools/tileset.md
-		${doc_SOURCE_DIR}/docs/about.md
-		${doc_SOURCE_DIR}/docs/index.md
-		${doc_SOURCE_DIR}/docs/install.md
 		${doc_SOURCE_DIR}/mkdocs.yml
 	)
 
-	# 1. Generate XML structure with Doxygen.
-	set(DOXYGEN_ALLOW_UNICODE_NAMES YES)
-	set(DOXYGEN_AUTOLINK_SUPPORT NO)
-	set(DOXYGEN_ENABLE_PREPROCESSING YES)
-	set(DOXYGEN_EXAMPLE_PATH examples)
-	set(DOXYGEN_EXCLUDE_PATTERNS *_p.h)
-	set(DOXYGEN_FILE_PATTERNS *.h)
-	set(DOXYGEN_GENERATE_HTML YES)
-	set(DOXYGEN_GENERATE_LATEX NO)
-	set(DOXYGEN_GENERATE_MAN NO)
-	set(DOXYGEN_GENERATE_XML YES)
-	set(DOXYGEN_HIDE_SCOPE_NAMES YES)
-	set(DOXYGEN_INPUT_ENCODING UTF-8)
-	set(DOXYGEN_MAX_INITIALIZER_LINES 0)
-	set(DOXYGEN_OPTIMIZE_OUTPUT_FOR_C YES)
-	set(DOXYGEN_OUTPUT_DIRECTORY doxygen)
-	set(DOXYGEN_PREDEFINED DOXYGEN)
-	set(DOXYGEN_QUIET YES)
-	set(DOXYGEN_RECURSIVE YES)
-	set(DOXYGEN_SHOW_GROUPED_MEMB_INC NO)
-	set(DOXYGEN_SHOW_INCLUDE_FILES NO)
-	set(DOXYGEN_SHOW_USED_FILES NO)
-	set(DOXYGEN_TAB_SIZE 8)
-	set(DOXYGEN_WARNINGS YES)
-
-	set(DOXYGEN_HTML_OUTPUT ${doc_BINARY_DIR}/doxygen/html)
-	set(DOXYGEN_XML_OUTPUT ${doc_BINARY_DIR}/doxygen/xml)
-
-	# 0. Create commands to prepare the output build directory.
-	list(
-		APPEND commands
+	add_custom_target(
+		doc
+		VERBATIM
+		SOURCES ${DOC_SOURCES}
+		WORKING_DIRECTORY ${doc_SOURCE_DIR}
 		COMMAND
-			${CMAKE_COMMAND} -E make_directory ${doc_BINARY_DIR}/docs/cmake
-		COMMAND
-			${CMAKE_COMMAND} -E copy_directory
-				${doc_SOURCE_DIR}/docs
-				${doc_BINARY_DIR}/docs
-		COMMAND
-			${CMAKE_COMMAND} -E copy
-				${doc_SOURCE_DIR}/mkdocs.yml
-				${doc_BINARY_DIR}
+			${MKDOCS_EXE} build -d ${doc_BINARY_DIR}/html
 	)
 
-	# 1. Generate HTML/XML from doxygen.
-	doxygen_add_docs(
-		doc-doxygen
-		${DOXYGEN_SOURCES}
-		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+	add_custom_target(
+		doc-serve
+		VERBATIM
+		SOURCES ${DOC_SOURCES}
+		WORKING_DIRECTORY ${doc_SOURCE_DIR}
+		COMMAND
+			${MKDOCS_EXE} serve
 	)
 
-	# 2. Use doxybook2 to convert doxygen XML to markdown files.
-	list(
-		APPEND commands
-		COMMAND ${DOXYBOOK2_EXE} -q
-			-t ${doc_SOURCE_DIR}/templates
-			-i ${doc_BINARY_DIR}/doxygen/xml
-			-o ${doc_BINARY_DIR}/docs
-			-c ${doc_SOURCE_DIR}/doxybook.json
-	)
+	set_target_properties(doc doc-serve PROPERTIES FOLDER doc)
+	source_group(TREE ${doc_SOURCE_DIR} FILES ${DOC_SOURCES})
+endif ()
 
-	# 3. Convert our CMake macros into documentation.
+if (SH_EXE)
+	# Our CMake macros are extracted from the source code itself.
 	set(
-		MACROS
+		DOC_MACROS
 		${cmake_SOURCE_DIR}/MolkoBuildAssets.cmake
 		${cmake_SOURCE_DIR}/MolkoBuildMaps.cmake
 		${cmake_SOURCE_DIR}/MolkoBuildTilesets.cmake
@@ -125,38 +115,26 @@ if (DOXYGEN_FOUND AND MKDOCS_EXE AND DOXYBOOK2_EXE AND SH_EXE)
 		${cmake_SOURCE_DIR}/MolkoSetCompilerFlags.cmake
 	)
 
-	foreach (m ${MACROS})
+	foreach (m ${DOC_MACROS})
 		get_filename_component(file ${m} NAME_WE)
-		set(output ${doc_BINARY_DIR}/docs/cmake/${file}.md)
+		set(output ${doc_SOURCE_DIR}/docs/cmake/${file}.md)
+
 		list(
 			APPEND commands
-			COMMAND ${SH_EXE} ${doc_SOURCE_DIR}/cmake-extract.sh ${m} > ${output}
+			COMMAND
+				${SH_EXE} ${doc_SOURCE_DIR}/scripts/cmake-extract.sh ${m} > ${output}
 		)
 	endforeach ()
 
-	# Create our final targets.
+	# Create a non-ALL target to update CMake documentation in the source
+	# tree.
 	add_custom_target(
-		doc
+		doc-cmake
 		VERBATIM
-		DEPENDS doc-doxygen
-		SOURCES ${DOC_SOURCES} ${cmake_outputs}
-		WORKING_DIRECTORY ${doc_BINARY_DIR}
-		${commands}
-		COMMAND
-			${MKDOCS_EXE} build -d ${doc_BINARY_DIR}/html
+		DEPENDS ${doc_SOURCE_DIR}/scripts/cmake-extract.sh
+		COMMENT "Updating in-source ${doc_SOURCE_DIR}/docs/cmake"
+		COMMAND ${commands}
 	)
 
-	add_custom_target(
-		doc-serve
-		VERBATIM
-		DEPENDS doc-doxygen
-		SOURCES ${DOC_SOURCES}
-		WORKING_DIRECTORY ${doc_BINARY_DIR}
-		${commands}
-		COMMAND
-			${MKDOCS_EXE} serve
-	)
-
-	set_target_properties(doc doc-doxygen doc-serve PROPERTIES FOLDER doc)
-	source_group(TREE ${doc_SOURCE_DIR}  FILES ${DOC_SOURCES})
+	set_target_properties(doc-cmake PROPERTIES FOLDER doc)
 endif ()

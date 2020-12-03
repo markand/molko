@@ -19,56 +19,22 @@
 #ifndef MOLKO_CORE_SYS_H
 #define MOLKO_CORE_SYS_H
 
-/**
- * \file sys.h
- * \brief System routines.
- * \ingroup basics
- */
-
 #include <stdarg.h>
 #include <stdbool.h>
 
-/**
- * \brief Kind of special directories.
- */
 enum sys_dir {
-	SYS_DIR_BIN,            /*!< Path to binaries. */
-	SYS_DIR_DATA,           /*!< Directory containing data. */
-	SYS_DIR_LOCALE,         /*!< Path to NLS catalogs. */
-	SYS_DIR_SAVE,           /*!< User directory for save databases. */
+	SYS_DIR_BIN,
+	SYS_DIR_DATA,
+	SYS_DIR_LOCALE,
+	SYS_DIR_SAVE,
 };
 
-/**
- * Initialize the system.
- *
- * This function is automatically called from \ref core_init and thus not
- * necessary from user.
- *
- * \pre organization != NULL
- * \pre name != NULL
- * \param organization the name of the organization
- * \param name the game name
- * \return False on error.
- */
 bool
 sys_init(const char *organization, const char *name);
 
-/**
- * Get a system or user directory preferred for this platform.
- *
- * \pre kind must be valid
- * \param kind kind of special directory
- * \return A non-NULL pointer to a static storage path.
- */
 const char *
 sys_dir(enum sys_dir kind);
 
-/**
- * Close the system.
- *
- * This function is automatically called from \ref core_finish and thus not
- * necessary from user.
- */
 void
 sys_finish(void);
 

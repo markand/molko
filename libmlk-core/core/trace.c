@@ -42,12 +42,12 @@ tracef(const char *fmt, ...)
 		return;
 
 	va_start(ap, fmt);
-	vtracef(fmt, ap);
+	traceva(fmt, ap);
 	va_end(ap);
 }
 
 void
-vtracef(const char *fmt, va_list ap)
+traceva(const char *fmt, va_list ap)
 {
 	assert(fmt);
 

@@ -19,168 +19,51 @@
 #ifndef MOLKO_CORE_DRAWABLE_H
 #define MOLKO_CORE_DRAWABLE_H
 
-/**
- * \file drawable.h
- * \brief Automatic drawable objects.
- */
-
 #include <stdbool.h>
 
-/**
- * \brief Maximum number of drawable object into a stack.
- */
-#define DRAWABLE_STACK_MAX      128
+#define DRAWABLE_STACK_MAX (128)
 
-/**
- * \brief Abstract drawable object.
- *
- * This structure is used to
- */
 struct drawable {
-	void *data;     /*!< (+&?) Drawable data. */
-	int x;          /*!< (+) X coordinate if necessary. */
-	int y;          /*!< (+) Y coordinate if necessary. */
-
-	/**
-	 * (+?) Update this drawable.
-	 *
-	 * \param dw the drawable object
-	 * \param ticks the number of ticks since last frame
-	 * \return true if object has ended
-	 */
+	void *data;
+	int x;
+	int y;
 	bool (*update)(struct drawable *dw, unsigned int ticks);
-
-	/**
-	 * (+?) Draw this drawable.
-	 *
-	 * \param dw the drawable object
-	 */
 	void (*draw)(struct drawable *dw);
-
-	/**
-	 * (+?) Called when drawable finished.
-	 *
-	 * \param act this action
-	 */
 	void (*end)(struct drawable *act);
-	
-	/**
-	 * (+?) Destroy the drawable if necessary.
-	 *
-	 * \note This function is optional and can be NULL.
-	 * \param dw the drawable object
-	 */
 	void (*finish)(struct drawable *dw);
 };
 
-/**
- * Shortcut for dw->update (if not NULL).
- *
- * \pre dw != NULL
- * \param dw the drawable object
- * \param ticks elapsed milliseconds since last frame
- * \return true if the drawable ended
- */
+struct drawable_stack {
+	struct drawable *objects[DRAWABLE_STACK_MAX];
+};
+
 bool
 drawable_update(struct drawable *dw, unsigned int ticks);
 
-/**
- * Shortcut for dw->draw (if not NULL).
- *
- * \pre dw != NULL
- * \param dw the drawable object
- */
 void
 drawable_draw(struct drawable *dw);
 
-/**
- * Shortcut for dw->end (if not NULL).
- *
- * \pre dw != NULL
- * \param dw the drawable object
- */
 void
 drawable_end(struct drawable *dw);
 
-/**
- * Shortcut for dw->finish (if not NULL).
- *
- * \pre dw != NULL
- * \param dw the drawable object
- */
 void
 drawable_finish(struct drawable *dw);
 
-/**
- * \brief Stack of drawable objects.
- *
- * This stack of drawable object can be used to store drawable objects within
- * a specific transition (state, battle, menu, etc).
- *
- * You can add, clear, update and draw them.
- */
-struct drawable_stack {
-	struct drawable *objects[DRAWABLE_STACK_MAX];   /*!< (+&?) Drawables. */
-};
-
-/**
- * Initialize the stack.
- *
- * \pre st != NULL
- * \param st the drawable stack
- */
 void
 drawable_stack_init(struct drawable_stack *st);
 
-/**
- * Add a drawable object into the stack.
- *
- * The drawable object must be kept alive until the stack uses it.
- *
- * \pre st != NULL
- * \pre dw != NULL
- * \param st the stack
- * \param dw the drawable to reference
- * \return True if the drawable was added correctly (enough space).
- */
 bool
 drawable_stack_add(struct drawable_stack *st, struct drawable *dw);
 
-/**
- * Update all drawable objects.
- *
- * Also remove drawable objects if they were finished.
- *
- * \pre st != NULL
- * \param st the drawable stack
- * \param ticks the number of ticks since last frame
- * \return True if all drawable were rendered.
- */
 bool
 drawable_stack_update(struct drawable_stack *st, unsigned int ticks);
 
-/**
- * Draw all drawable objects.
- *
- * \pre st != NULL
- * \param st the drawable stack
- */
 void
 drawable_stack_draw(struct drawable_stack *st);
 
-/**
- * Tells if there is any pending drawable in the stack.
- *
- * \pre st != NULL
- * \param st the stack
- * \return False if there is at least one drawable in the stack.
- */
 bool
 drawable_stack_completed(const struct drawable_stack *st);
 
-/**
- * Clear all drawable objects into the stack.
- */
 void
 drawable_stack_finish(struct drawable_stack *st);
 

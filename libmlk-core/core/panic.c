@@ -46,19 +46,19 @@ panicf(const char *fmt, ...)
 	 * called.
 	 */
 	va_start(ap, fmt);
-	verrorf(fmt, ap);
+	errorva(fmt, ap);
 	va_end(ap);
 
 	panic();
 }
 
 void
-vpanicf(const char *fmt, va_list ap)
+panicva(const char *fmt, va_list ap)
 {
 	assert(fmt);
 	assert(panic_handler);
 
-	verrorf(fmt, ap);
+	errorva(fmt, ap);
 	panic();
 }
 

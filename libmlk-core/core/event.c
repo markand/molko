@@ -120,7 +120,7 @@ static const struct {
 	{ SDLK_F23,             KEY_F23                 },
 	{ SDLK_F24,             KEY_F24                 },
 	{ SDLK_PRINTSCREEN,     KEY_PRINTSCREEN         },
-	{ SDLK_SCROLLLOCK,      KEY_SCROLLLOCK          },
+	{ SDLK_SCROLLLOCK,      KEY_SCROLL_LOCK         },
 	{ SDLK_PAUSE,           KEY_PAUSE               },
 	{ SDLK_INSERT,          KEY_INSERT              },
 	{ SDLK_HOME,            KEY_HOME                },
@@ -172,7 +172,7 @@ static const struct {
 	{ SDL_BUTTON_LEFT,      MOUSE_BUTTON_LEFT       },
 	{ SDL_BUTTON_MIDDLE,    MOUSE_BUTTON_MIDDLE     },
 	{ SDL_BUTTON_RIGHT,     MOUSE_BUTTON_RIGHT      },
-	{ -1,                   MOUSE_BUTTON_UNKNOWN    }
+	{ -1,                   MOUSE_BUTTON_NONE       }
 };
 
 static void
@@ -209,11 +209,11 @@ static void
 convert_click(const SDL_Event *event, union event *ev)
 {
 	ev->type = event->type == SDL_MOUSEBUTTONDOWN ? EVENT_CLICKDOWN : EVENT_CLICKUP;
-	ev->click.button = MOUSE_BUTTON_UNKNOWN;
+	ev->click.button = MOUSE_BUTTON_NONE;
 	ev->click.x = event->button.x;
 	ev->click.y = event->button.y;
 
-	for (size_t i = 0; buttons[i].value != MOUSE_BUTTON_UNKNOWN; ++i) {
+	for (size_t i = 0; buttons[i].value != MOUSE_BUTTON_NONE; ++i) {
 		if (buttons[i].key == event->button.button) {
 			ev->click.button = buttons[i].value;
 			break;

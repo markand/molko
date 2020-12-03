@@ -92,8 +92,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/core/translate.h
 	${libmlk-core_SOURCE_DIR}/core/util.c
 	${libmlk-core_SOURCE_DIR}/core/util.h
-	${libmlk-core_SOURCE_DIR}/core/wait.c
-	${libmlk-core_SOURCE_DIR}/core/wait.h
 	${libmlk-core_SOURCE_DIR}/core/window.c
 	${libmlk-core_SOURCE_DIR}/core/window.h
 	${libmlk-core_SOURCE_DIR}/core/window_p.h

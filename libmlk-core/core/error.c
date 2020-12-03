@@ -39,14 +39,14 @@ errorf(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	verrorf(fmt, ap);
+	errorva(fmt, ap);
 	va_end(ap);
 
 	return false;
 }
 
 bool
-verrorf(const char *fmt, va_list ap)
+errorva(const char *fmt, va_list ap)
 {
 	assert(fmt);
 

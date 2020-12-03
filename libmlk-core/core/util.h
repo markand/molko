@@ -19,59 +19,17 @@
 #ifndef MOLKO_CORE_UTIL_H
 #define MOLKO_CORE_UTIL_H
 
-/**
- * \file util.h
- * \brief Utilities.
- * \ingroup basics
- *
- * This file contains several utilities.
- *
- * \note In contrast to other files, identifiers are not prefixed with `util_`
- *       for convenience.
- */
-
 #include <stdarg.h>
 #include <stddef.h>
 
-/**
- * Get the number of elements in a static array.
- *
- * \param x the array
- * \return the number of elements
- */
 #define NELEM(x) sizeof ((x)) / sizeof ((x)[0])
 
-/**
- * Put the thread to sleep for a given amount of milliseconds.
- *
- * \param ms the number of milliseconds to wait
- */
 void
 delay(unsigned int ms);
 
-/**
- * Construct a temporary path to a file that can fit in a PATH_MAX array.
- *
- * This function is useful when specifying paths into a function invocation such
- * as `fopen(pprintf("%s.png", i), "r"))`.
- *
- * \pre fmt != NULL
- * \param fmt the format string
- * \warning This function is not reentrant, it returns a static storage path.
- * \return A non null path to a file.
- * \post Returned string is never NULL.
- */
 const char *
 pprintf(const char *fmt, ...);
 
-/**
- * Generate a random number between lower and upper (included).
- *
- * \pre upper must be <= RAND_MAX
- * \param lower the lower bound
- * \param upper the upper bound
- * \return The generated number.
- */
 unsigned int
 nrand(unsigned int lower, unsigned int upper);
 

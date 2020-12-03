@@ -19,35 +19,13 @@
 #ifndef MOLKO_CORE_CLOCK_H
 #define MOLKO_CORE_CLOCK_H
 
-/**
- * \file clock.h
- * \brief Track elapsed time.
- * \ingroup basics
- */
-
-/**
- * \brief Clock structure.
- */
 struct clock {
-	unsigned int ticks;     /*!< (-) Time point on initialization. */
+	unsigned int ticks;
 };
 
-/**
- * Start the clock and track elapsed time.
- *
- * \pre clock != NULL
- * \param clock the clock
- */
 void
 clock_start(struct clock *clock);
 
-/**
- * Tell the measured time.
- *
- * \pre clock != NULL
- * \param clock the clock
- * \return the elapsed time in milliseconds
- */
 unsigned int
 clock_elapsed(const struct clock *clock);
 

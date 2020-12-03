@@ -19,11 +19,6 @@
 #ifndef MOLKO_CORE_GAME_H
 #define MOLKO_CORE_GAME_H
 
-/**
- * \file game.h
- * \brief Main game object.
- */
-
 #include <stdbool.h>
 
 #include "inhibit.h"
@@ -32,73 +27,32 @@ struct state;
 
 union event;
 
-/**
- * \brief Main game object.
- */
 struct game {
 	/* Inhibition */
-	enum inhibit inhibit;           /*!< (+) What to disable. */
+	enum inhibit inhibit;
 
 	/* Game states. */
-	struct state *state;            /*!< (-) Current state  */
-	struct state *state_next;       /*!< (-) Next state */
+	struct state *state;
+	struct state *state_next;
 };
 
-/**
- * Global game object.
- */
 extern struct game game;
 
-/**
- * Request to change state.
- *
- * This function will only update state after the next \ref  game_update call
- * unless quick is set to true.
- *
- * \warning Passing true to quick will immediately call end/finish state
- *          functions which can destroy your state while still running it.
- * \pre state != NULL
- * \param state the new state
- * \param quick quickly change the state
- */
 void
 game_switch(struct state *state, bool quick);
 
-/**
- * Handle input event.
- *
- * \param event the event
- */
 void
 game_handle(const union event *event);
 
-/**
- * Update the game state.
- *
- * \param ticks the number of milliseconds between last frame
- */
 void
 game_update(unsigned int ticks);
 
-/**
- * Draw the game using the current state.
- */
 void
 game_draw(void);
 
-/**
- * Start a game loop that calls game_handle, game_update and game_draw until
- * game_quit has been called.
- */
 void
 game_loop(void);
 
-/**
- * Stop the game.
- *
- * This will effectively stop the current state but the main loop may continue
- * until it has completed.
- */
 void
 game_quit(void);
 

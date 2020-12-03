@@ -19,52 +19,10 @@
 #ifndef MOLKO_CORE_COLOR_H
 #define MOLKO_CORE_COLOR_H
 
-/**
- * \file color.h
- * \brief Basic color routines.
- */
-
-/**
- * Get red component of hexadecimal color.
- *
- * \param c the hexadecimal color
- * \return the red component
- */
 #define COLOR_R(c)              (c >> 24 & 0xff)
-
-/**
- * Get green component of hexadecimal color.
- *
- * \param c the hexadecimal color
- * \return the green component
- */
 #define COLOR_G(c)              (c >> 16 & 0xff)
-
-/**
- * Get blue component of hexadecimal color.
- *
- * \param c the hexadecimal color
- * \return the blue component
- */
 #define COLOR_B(c)              (c >> 8  & 0xff)
-
-/**
- * Get alpha component of hexadecimal color.
- *
- * \param c the hexadecimal color
- * \return the alpha component
- */
 #define COLOR_A(c)              (c       & 0xff)
-
-/**
- * Convert individual RGBA components into a hexadecimal color.
- *
- * \param r the red component
- * \param g the green component
- * \param b the blue component
- * \param a the alpha component
- * \return the hexadecimal color
- */
 #define COLOR_HEX(r, g, b, a)   \
         ((r << 24 & 0xff000000) | \
          (g << 16 & 0x00ff0000) | \

@@ -19,42 +19,16 @@
 #ifndef MOLKO_CORE_ERROR_H
 #define MOLKO_CORE_ERROR_H
 
-/**
- * \file error.h
- * \brief Error routines.
- * \ingroup basics
- */
-
 #include <stdarg.h>
 #include <stdbool.h>
 
-/**
- * Get the last error returned.
- *
- * \return The error string.
- */
 const char *
 error(void);
 
-/**
- * Set the game error with a printf-like format.
- *
- * \pre fmt != NULL
- * \param fmt the format string
- * \return Always false.
- */
 bool
 errorf(const char *fmt, ...);
 
-/**
- * Similar to \ref errorf.
- *
- * \pre fmt != NULL
- * \param fmt the format stinrg
- * \param ap the variadic arguments pointer
- * \return Always false.
- */
 bool
-verrorf(const char *fmt, va_list ap);
+errorva(const char *fmt, va_list ap);
 
 #endif /* !MOLKO_CORE_ERROR_H */

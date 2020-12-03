@@ -22,6 +22,8 @@ markdown_extensions:
   - admonition
   - tables
   - def_list
+  - pymdownx.highlight
+  - pymdownx.superfences
 nav:
   - Home: index.md
   - About: about.md
@@ -41,15 +43,45 @@ nav:
     - Howto:
       - dev/howto/01-init.md
     - CMake macros:
-      - cmake/MolkoBuildAssets.md
-      - cmake/MolkoBuildMaps.md
+      # Don't edit manually, generated from top cmake/*.cmake files.
       - cmake/MolkoBuildTilesets.md
       - cmake/MolkoBuildTranslations.md
-      - cmake/MolkoDefineExecutable.md
-      - cmake/MolkoDefineLibrary.md
+      - cmake/MolkoBuildAssets.md
+      - cmake/MolkoBuildMaps.md
       - cmake/MolkoDefineTest.md
-      - cmake/MolkoSetBuildDirectories.md
       - cmake/MolkoSetCompilerFlags.md
+      - cmake/MolkoDefineExecutable.md
+      - cmake/MolkoSetBuildDirectories.md
+      - cmake/MolkoDefineLibrary.md
     - API Reference:
-      - Modules: modules/index.md
-      - Files: files/index.md
+      - libmlk-core:
+        - action: dev/api/core/action.md
+        - alloc: dev/api/core/alloc.md
+        - animation: dev/api/core/animation.md
+        - clock: dev/api/core/clock.md
+        - color: dev/api/core/color.md
+        - core: dev/api/core/core.md
+        - drawable: dev/api/core/drawable.md
+        - error: dev/api/core/error.md
+        - event: dev/api/core/event.md
+        - font: dev/api/core/font.md
+        - game: dev/api/core/game.md
+        - image: dev/api/core/image.md
+        - inhibit: dev/api/core/inhibit.md
+        - key: dev/api/core/key.md
+        - maths: dev/api/core/maths.md
+        - mouse: dev/api/core/mouse.md
+        - music: dev/api/core/music.md
+        - painter: dev/api/core/painter.md
+        - panic: dev/api/core/panic.md
+        - save: dev/api/core/save.md
+        - script: dev/api/core/script.md
+        - sound: dev/api/core/sound.md
+        - sprite: dev/api/core/sprite.md
+        - state: dev/api/core/state.md
+        - sys: dev/api/core/sys.md
+        - texture: dev/api/core/texture.md
+        - trace: dev/api/core/trace.md
+        - translate: dev/api/core/translate.md
+        - util: dev/api/core/util.md
+        - window: dev/api/core/window.md
