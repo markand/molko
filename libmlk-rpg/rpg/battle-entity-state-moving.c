@@ -25,7 +25,6 @@
 
 #include "battle-entity.h"
 #include "battle-entity-state.h"
-#include "battle-entity-state-moving.h"
 #include "character.h"
 #include "walksprite.h"
 

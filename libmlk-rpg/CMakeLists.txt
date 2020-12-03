@@ -29,37 +29,23 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-attacking.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-attacking.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-blinking.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-blinking.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-moving.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-moving.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-normal.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-normal.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-indicator.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-indicator.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-ai.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-ai.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-attacking.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-attacking.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-check.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-check.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-closing.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-closing.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-menu.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-menu.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-lost.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-lost.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-opening.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-opening.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-selection.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-selection.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-sub.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-sub.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-victory.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-victory.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/character.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/character.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/equipment.c

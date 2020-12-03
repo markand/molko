@@ -23,14 +23,9 @@
 #include <core/panic.h>
 #include <core/sprite.h>
 
-#include "battle-state-check.h"
-#include "battle-entity-state-attacking.h"
-#include "battle-entity-state-blinking.h"
-#include "battle-entity-state-moving.h"
-#include "battle-entity-state-normal.h"
-#include "battle-state-attacking.h"
 #include "battle.h"
 #include "battle-state.h"
+#include "battle-entity-state.h"
 #include "character.h"
 
 enum substate {

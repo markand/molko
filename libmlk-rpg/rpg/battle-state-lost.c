@@ -27,8 +27,6 @@
 
 #include "battle.h"
 #include "battle-state.h"
-#include "battle-state-closing.h"
-#include "battle-state-victory.h"
 #include "rpg_p.h"
 
 struct lost {

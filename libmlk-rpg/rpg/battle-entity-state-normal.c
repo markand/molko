@@ -18,9 +18,8 @@
 
 #include <assert.h>
 
-#include "battle-entity-state-normal.h"
-#include "battle-entity-state.h"
 #include "battle-entity.h"
+#include "battle-entity-state.h"
 
 void
 battle_entity_state_normal(struct battle_entity *et)

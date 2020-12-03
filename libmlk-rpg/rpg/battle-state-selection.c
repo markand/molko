@@ -30,10 +30,6 @@
 #include "battle.h"
 #include "battle-bar.h"
 #include "battle-state.h"
-#include "battle-state-check.h"
-#include "battle-state-menu.h"
-#include "battle-state-selection.h"
-#include "battle-state-sub.h"
 #include "character.h"
 #include "spell.h"
 

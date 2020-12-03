@@ -20,8 +20,6 @@
 
 #include "battle.h"
 #include "battle-state.h"
-#include "battle-state-ai.h"
-#include "battle-state-check.h"
 #include "character.h"
 
 static bool

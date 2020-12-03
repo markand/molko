@@ -26,7 +26,6 @@
 #include <core/sprite.h>
 
 #include "battle-entity.h"
-#include "battle-entity-state-attacking.h"
 #include "battle-entity-state.h"
 
 struct data {

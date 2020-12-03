@@ -33,105 +33,67 @@
 
 #include <stdbool.h>
 
+#include "selection.h"
+
 struct battle;
+struct character;
 
 union event;
 
-/**
- * \brief Battle abstract state.
- */
 struct battle_state {
-	/**
-	 * (+&?) Optional data for the state.
-	 */
 	void *data;
-
-	/**
-	 * (+?) Handle an event.
-	 *
-	 * \pre bt != NULL
-	 * \pre ev != NULL
-	 * \param bt the current battle
-	 * \param ev the event
-	 */
 	void (*handle)(struct battle_state *st, struct battle *bt, const union event *ev);
-
-	/**
-	 * (+?) Update the battle state.
-	 *
-	 * \pre bt != NULL
-	 * \param bt the current battle
-	 * \param ticks the number of milliseconds since last frame
-	 * \return True if the battle is considered complete.
-	 */
 	bool (*update)(struct battle_state *st, struct battle *bt, unsigned int ticks);
-
-	/**
-	 * (+?) Draw the battle state.
-	 *
-	 * Note, the battle itself already draw the background and game
-	 * entities.
-	 *
-	 * \pre bt != NULL
-	 * \param bt the current battle
-	 */
 	void (*draw)(const struct battle_state *st, const struct battle *bt);
-
-	/**
-	 * (+?) Close internal resources if necessary.
-	 *
-	 * \pre bt != NULL
-	 * \param bt the current battle
-	 */
 	void (*finish)(struct battle_state *st, struct battle *bt);
 };
 
-/**
- * Shortcut for st->handle (if not NULL).
- *
- * \pre st != NULL
- * \pre bt != NULL
- * \pre ev != NULL
- * \param st this state
- * \param bt the current battle
- * \param ev the input event
- */
 void
 battle_state_handle(struct battle_state *st, struct battle *bt, const union event *ev);
 
-/**
- * Shortcut for st->update (if not NULL).
- *
- * \pre st != NULL
- * \pre bt != NULL
- * \param st this state
- * \param bt the current battle
- * \param ticks the number of milliseconds since last frame
- * \return The result of st->update if not NULL or false otherwise.
- */
 bool
 battle_state_update(struct battle_state *st, struct battle *bt, unsigned int ticks);
 
-/**
- * Shortcut for st->draw (if not NULL).
- *
- * \pre st != NULL
- * \pre bt != NULL
- * \param st this state
- * \param bt the current battle
- */
 void
 battle_state_draw(const struct battle_state *st, const struct battle *bt);
 
-/**
- * Shortcut for st->finish (if not NULL).
- *
- * \pre st != NULL
- * \pre bt != NULL
- * \param st this state
- * \param bt the current battle
- */
 void
 battle_state_finish(struct battle_state *st, struct battle *bt);
+
+/* States switchers, defined in their own files. */
+void
+battle_state_ai(struct battle *bt);
+
+void
+battle_state_attacking(struct battle *bt, struct character *source, struct character *target);
+
+void
+battle_state_check(struct battle *bt);
+
+void
+battle_state_check(struct battle *bt);
+
+void
+battle_state_closing(struct battle *bt);
+
+void
+battle_state_lost(struct battle *bt);
+
+void
+battle_state_menu(struct battle *bt);
+
+void
+battle_state_opening(struct battle *bt);
+
+void
+battle_state_selection(struct battle *bt,
+		       enum selection type,
+		       unsigned int selection);
+
+void
+battle_state_sub(struct battle *bt);
+
+void
+battle_state_victory(struct battle *bt);
 
 #endif /* !MOLKO_RPG_BATTLE_STATE_H */

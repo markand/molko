@@ -25,7 +25,6 @@
 #include <core/texture.h>
 
 #include "battle-entity.h"
-#include "battle-entity-state-blinking.h"
 #include "battle-entity-state.h"
 #include "character.h"
 

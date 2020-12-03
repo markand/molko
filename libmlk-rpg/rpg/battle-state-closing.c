@@ -27,7 +27,6 @@
 #include <core/window.h>
 
 #include "battle.h"
-#include "battle-state-closing.h"
 
 struct closing {
 	struct battle_state self;

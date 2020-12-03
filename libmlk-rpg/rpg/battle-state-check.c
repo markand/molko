@@ -27,9 +27,6 @@
 
 #include "battle.h"
 #include "battle-state.h"
-#include "battle-state-check.h"
-#include "battle-state-lost.h"
-#include "battle-state-victory.h"
 #include "character.h"
 
 struct fadeout {
