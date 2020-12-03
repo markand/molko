@@ -35,6 +35,9 @@ sys_init(const char *organization, const char *name);
 const char *
 sys_dir(enum sys_dir kind);
 
+bool
+sys_mkdir(const char *path);
+
 void
 sys_finish(void);
 

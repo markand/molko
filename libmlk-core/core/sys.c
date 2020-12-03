@@ -25,6 +25,11 @@
 
 #if defined(_WIN32)
 #       include <shlwapi.h>
+#       include <windows.h>
+#else
+#       include <sys/stat.h>
+#       include <errno.h>
+#       include <string.h>
 #endif
 
 #include <SDL.h>
@@ -192,6 +197,21 @@ user_directory(enum sys_dir kind)
 	return NULL;
 }
 
+static bool
+mkpath(const char *path)
+{
+#ifdef _WIN32
+	/* TODO: add error using the convenient FormatMessage function. */
+	if (!CreateDirectoryA(path, NULL) && GetLastError() != ERROR_ALREADY_EXISTS)
+		return errorf("unable to create directory: %s", path);
+#else
+	if (mkdir(path, 0755) < 0 && errno != EEXIST)
+		return errorf("%s", strerror(errno));
+#endif
+
+	return true;
+}
+
 const char *
 sys_dir(enum sys_dir kind)
 {
@@ -203,6 +223,39 @@ sys_dir(enum sys_dir kind)
 	default:
 		return user_directory(kind);
 	}
+}
+
+bool
+sys_mkdir(const char *directory)
+{
+	char path[PATH_MAX], *p;
+
+	/* Copy the directory to normalize and iterate over '/'. */
+	snprintf(path, sizeof (path), "%s", directory);
+	normalize(path);
+
+#if defined(_WIN32)
+	/* Remove drive letter that we don't need. */
+	if ((p = strchr(path, ':')))
+		++p;
+	else
+		p = path;
+#else
+	p = path;
+#endif
+
+	for (p = p + 1; *p; ++p) {
+		if (*p == '/') {
+			*p = 0;
+
+			if (!mkpath(path))
+				return false;
+
+			*p = '/';
+		}
+	}
+
+	return mkpath(path);
 }
 
 void

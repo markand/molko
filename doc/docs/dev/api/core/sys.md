@@ -51,6 +51,16 @@ const char *
 sys_dir(enum sys_dir kind)
 ```
 
+### sys\_mkdir
+
+Create the directory `path` recursively. Returns false on errors other than
+already existing.
+
+```c
+bool
+sys_mkdir(const char *path)
+```
+
 ### sys\_finish
 
 This function is automatically called from [core_finish](core.md#core_finish)
