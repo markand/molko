@@ -16,7 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define _XOPEN_SOURCE 700
 #include <assert.h>
 #include <errno.h>
 #include <libgen.h>
@@ -224,8 +223,8 @@ parse(struct context *ctx, const char *path)
 	char line[1024];
 	char basedir[PATH_MAX];
 
-	snprintf(basedir, sizeof (basedir), "%s", path);
-	snprintf(ctx->basedir, sizeof (ctx->basedir), "%s", dirname(basedir));
+	strlcpy(basedir, path, sizeof (basedir));
+	strlcpy(ctx->basedir, dirname(basedir), sizeof (ctx->basedir));
 
 	while (fgets(line, sizeof (line), ctx->fp)) {
 		/* Remove \n if any */

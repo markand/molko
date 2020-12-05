@@ -48,6 +48,7 @@ add_subdirectory(cmake)
 
 add_subdirectory(extern/libgreatest)
 add_subdirectory(extern/libsqlite)
+add_subdirectory(extern/libcompat)
 
 add_subdirectory(tools/bcc)
 add_subdirectory(tools/map)

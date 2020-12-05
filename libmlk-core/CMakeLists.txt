@@ -117,6 +117,7 @@ molko_define_library(
 	LIBRARIES
 		${LIBS}
 		$<$<BOOL:${LIBM}>:m>
+		libcompat
 		libsqlite
 		SDL2::SDL2
 		SDL2::image
@@ -126,8 +127,6 @@ molko_define_library(
 		BINDIR="${CMAKE_INSTALL_BINDIR}"
 		PREFIX="${CMAKE_INSTALL_PREFIX}"
 		SHAREDIR="${CMAKE_INSTALL_DATADIR}"
-	PUBLIC_FLAGS
-		_XOPEN_SOURCE=700
 	PUBLIC_INCLUDES
 		${INCS}
 		$<BUILD_INTERFACE:${libmlk-core_SOURCE_DIR}>

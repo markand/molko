@@ -98,8 +98,8 @@ sys_init(const char *organization, const char *name)
 	setbuf(stdout, NULL);
 #endif
 
-	snprintf(info.organization, sizeof (info.organization), "%s", organization);
-	snprintf(info.name, sizeof (info.name), "%s", name);
+	strlcpy(info.organization, organization, sizeof (info.organization));
+	strlcpy(info.name, name, sizeof (info.name));
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 		return errorf("%s", SDL_GetError());
@@ -122,7 +122,7 @@ absolute(const char *which)
 {
 	static char path[PATH_MAX];
 
-	snprintf(path, sizeof (path), "%s", which);
+	strlcpy(path, which, sizeof (path));
 
 	return normalize(path);
 }
@@ -164,7 +164,7 @@ system_directory(enum sys_dir kind)
 	 *   from: /usr/local/bin
 	 *   to:   /usr/local
 	 */
-	snprintf(path, sizeof (path), "%s", base);
+	strlcpy(path, base, sizeof (path));
 	SDL_free(base);
 
 	if ((binsect = strstr(path, paths[SYS_DIR_BIN])))
@@ -189,10 +189,10 @@ user_directory(enum sys_dir kind)
 	char *pref;
 
 	if ((pref = SDL_GetPrefPath(info.organization, info.name))) {
-		snprintf(path, sizeof (path), "%s", pref);
+		strlcpy(path, pref, sizeof (path));
 		SDL_free(pref);
 	} else
-		snprintf(path, sizeof (path), "./");
+		strlcpy(path, "./", sizeof (path));
 
 	return NULL;
 }
@@ -231,7 +231,7 @@ sys_mkdir(const char *directory)
 	char path[PATH_MAX], *p;
 
 	/* Copy the directory to normalize and iterate over '/'. */
-	snprintf(path, sizeof (path), "%s", directory);
+	strlcpy(path, directory, sizeof (path));
 	normalize(path);
 
 #if defined(_WIN32)

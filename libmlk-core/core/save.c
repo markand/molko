@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <compat.h>
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -176,7 +178,8 @@ save_get_property(struct save *db, struct save_property *prop)
 		break;
 	case SQLITE_ROW:
 		/* Found. */
-		snprintf(prop->value, sizeof (prop->value), "%s", sqlite3_column_text(stmt, 0));
+		strlcpy(prop->value, (const char *)sqlite3_column_text(stmt, 0),
+		    sizeof (prop->value));
 		break;
 	default:
 		/* Error. */
