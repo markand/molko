@@ -152,9 +152,9 @@ function(molko_define_library)
 		if (NOT ${LIB_EXTERNAL})
 			molko_set_compiler_flags(${LIB_TARGET})
 		endif ()
-	endif ()
 
-	molko_set_build_directories(${LIB_TARGET})
+		molko_set_build_directories(${LIB_TARGET})
+	endif ()
 
 	if (LIB_FOLDER)
 		set_target_properties(${LIB_TARGET} PROPERTIES FOLDER ${LIB_FOLDER})
