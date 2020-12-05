@@ -34,9 +34,8 @@
 #include "map-file.h"
 #include "rpg_p.h"
 
-/* Create %<v>c string literal for scanf */
 #define MAX_F(v) MAX_F_(v)
-#define MAX_F_(v) "%" #v "c"
+#define MAX_F_(v) "%" #v "[^\n|]"
 
 struct context {
 	struct map_file *mf;            /* Map loader. */

@@ -37,7 +37,7 @@
 #include "tileset.h"
 
 #define MAX_F(v) MAX_F_(v)
-#define MAX_F_(v) "%" #v "[^|]"
+#define MAX_F_(v) "%" #v "[^\n|]"
 
 /*
  * This is how memory for animations is allocated in the tileset_file
