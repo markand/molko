@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stddef.h>
+
 #include <core/core.h>
 #include <core/event.h>
 #include <core/game.h>
@@ -107,7 +109,7 @@ init(void)
 	if (!window_open("Example - Label", W, H))
 		panic();
 
-	for (size_t i = 0; i < NELEM(table); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
 		struct label *l = &table[i].label;
 		unsigned int w, h;
 
@@ -150,7 +152,7 @@ draw(struct state *st)
 	painter_set_color(0x4f8fbaff);
 	painter_clear();
 
-	for (size_t i = 0; i < NELEM(table); ++i)
+	for (size_t i = 0; i < UTIL_SIZE(table); ++i)
 		label_draw(&table[i].label);
 
 	label_draw(&mlabel);

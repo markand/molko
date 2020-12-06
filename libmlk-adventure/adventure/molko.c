@@ -56,34 +56,6 @@ crash(void)
 	longjmp(panic_buf, 1);
 }
 
-static void
-loop(void)
-{
-	struct clock clock = {0};
-
-	while (game.state) {
-		unsigned int elapsed = clock_elapsed(&clock);
-
-		clock_start(&clock);
-
-		for (union event ev; event_poll(&ev); ) {
-			switch (ev.type) {
-			case EVENT_QUIT:
-				return;
-			default:
-				game_handle(&ev);
-				break;
-			}
-		}
-
-		game_update(elapsed);
-		game_draw();
-
-		if ((elapsed = clock_elapsed(&clock)) < 20)
-			delay(20 - elapsed);
-	}
-}
-
 void
 molko_init(void)
 {
@@ -115,14 +87,14 @@ molko_run(void)
 {
 	if (setjmp(panic_buf) == 0) {
 		/* Initial game run. */
-		loop();
+		game_loop();
 	} else {
 		/* Clear event queue to avoid accidental key presses. */
 		for (union event ev; event_poll(&ev); )
 			continue;
 
 		game_switch(molko.panic, true);
-		loop();
+		game_loop();
 	}
 }
 
@@ -139,7 +111,7 @@ molko_path(const char *file)
 	assert(file);
 
 	/* TODO: libmlk-adventure must be renamed. */
-	return pprintf("%s/libmlk-adventure/%s", sys_dir(SYS_DIR_DATA), file);
+	return util_pathf("%s/libmlk-adventure/%s", sys_dir(SYS_DIR_DATA), file);
 }
 
 void

@@ -79,7 +79,7 @@ load_action(struct map *map, int x, int y, int w, int h, const char *value)
 		{ "spawner|",   load_spawner }
 	};
 
-	for (size_t i = 0; i < NELEM(table); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
 		size_t len = strlen(table[i].name);
 
 		if (strncmp(table[i].name, value, len) == 0) {

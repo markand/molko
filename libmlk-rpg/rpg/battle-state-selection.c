@@ -69,11 +69,11 @@ select_adj(struct select *select, const struct battle *bt, int step)
 	switch (select->type) {
 	case SELECTION_TEAM_ONE:
 	case SELECTION_TEAM_COMBINED:
-		select_adj_in(select, bt->team, NELEM(bt->team), step);
+		select_adj_in(select, bt->team, UTIL_SIZE(bt->team), step);
 		break;
 	case SELECTION_ENEMY_ONE:
 	case SELECTION_ENEMY_COMBINED:
-		select_adj_in(select, bt->enemies, NELEM(bt->enemies), step);
+		select_adj_in(select, bt->enemies, UTIL_SIZE(bt->enemies), step);
 	default:
 		break;
 	}
@@ -181,12 +181,12 @@ draw(const struct battle_state *st, const struct battle *bt)
 	case SELECTION_ENEMY_ALL:
 	case SELECTION_ENEMY_ONE:
 	case SELECTION_ENEMY_COMBINED:
-		draw_cursors(st, bt, bt->enemies, NELEM(bt->enemies));
+		draw_cursors(st, bt, bt->enemies, UTIL_SIZE(bt->enemies));
 		break;
 	case SELECTION_TEAM_ALL:
 	case SELECTION_TEAM_ONE:
 	case SELECTION_TEAM_COMBINED:
-		draw_cursors(st, bt, bt->team, NELEM(bt->team));
+		draw_cursors(st, bt, bt->team, UTIL_SIZE(bt->team));
 		break;
 	default:
 		break;

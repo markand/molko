@@ -196,7 +196,7 @@ parse_animations(struct context *ctx, const char *line)
 
 		if (!(anim = alloc_pool_new(&ctx->tf->anims[0])))
 			return false;
-		if (!image_open(&anim->texture, pprintf("%s/%s", ctx->basedir, filename)))
+		if (!image_open(&anim->texture, util_pathf("%s/%s", ctx->basedir, filename)))
 			return false;
 
 		sprite_init(&anim->sprite, &anim->texture, ctx->tilewidth, ctx->tileheight);
@@ -239,7 +239,7 @@ parse_image(struct context *ctx, const char *line)
 	if (!(p = strchr(line, '|')))
 		return errorf(_("could not parse image"));
 
-	if (!image_open(&ctx->tf->image, pprintf("%s/%s", ctx->basedir, p + 1)))
+	if (!image_open(&ctx->tf->image, util_pathf("%s/%s", ctx->basedir, p + 1)))
 		return false;
 
 	sprite_init(&ctx->tf->sprite, &ctx->tf->image, ctx->tilewidth, ctx->tileheight);
@@ -262,7 +262,7 @@ parse_line(struct context *ctx, const char *line)
 		{ "image",      parse_image             }
 	};
 
-	for (size_t i = 0; i < NELEM(props); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(props); ++i) {
 		if (strncmp(line, props[i].property, strlen(props[i].property)) == 0)
 			return props[i].read(ctx, line);
 	}

@@ -85,7 +85,7 @@ spawner_new(struct map *map, unsigned int low, unsigned int high)
 	self->map = map;
 	self->last_x = map->player_x;
 	self->last_y = map->player_y;
-	self->steps = nrand(low, high);
+	self->steps = util_nrand(low, high);
 
 	self->action.data = self;
 	self->action.update = update;

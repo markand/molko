@@ -83,7 +83,7 @@ static const struct {
 static void
 load_images(void)
 {
-	for (size_t i = 0; i < NELEM(images); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(images); ++i) {
 		struct texture *texture = &registry_images[images[i].index];
 
 		if (!image_openmem(texture, images[i].data, images[i].datasz))
@@ -94,7 +94,7 @@ load_images(void)
 static void
 load_textures_and_sprites(void)
 {
-	for (size_t i = 0; i < NELEM(textures); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(textures); ++i) {
 		struct texture *texture = &registry_textures[textures[i].index];
 		struct sprite *sprite = &registry_sprites[textures[i].index];
 
@@ -111,7 +111,7 @@ load_textures_and_sprites(void)
 static void
 load_sounds(void)
 {
-	for (size_t i = 0; i < NELEM(sounds); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(sounds); ++i) {
 		struct sound *sound = &registry_sounds[sounds[i].index];
 
 		if (!sound_openmem(sound, sounds[i].data, sounds[i].datasz))
@@ -130,10 +130,10 @@ registry_init(void)
 void
 registry_finish(void)
 {
-	for (size_t i = 0; i < NELEM(registry_images); ++i)
+	for (size_t i = 0; i < UTIL_SIZE(registry_images); ++i)
 		texture_finish(&registry_images[i]);
-	for (size_t i = 0; i < NELEM(registry_textures); ++i)
+	for (size_t i = 0; i < UTIL_SIZE(registry_textures); ++i)
 		texture_finish(&registry_textures[i]);
-	for (size_t i = 0; i < NELEM(registry_sounds); ++i)
+	for (size_t i = 0; i < UTIL_SIZE(registry_sounds); ++i)
 		sound_finish(&registry_sounds[i]);
 }

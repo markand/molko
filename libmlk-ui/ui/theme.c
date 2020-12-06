@@ -73,7 +73,7 @@ bool
 theme_init(void)
 {
 	/* Open all fonts. */
-	for (size_t i = 0; i < NELEM(default_fonts); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(default_fonts); ++i) {
 		struct font_catalog *fc = &default_fonts[i];
 
 		if (!font_openmem(&fc->font, fc->data, fc->datasz, fc->size))
@@ -146,7 +146,7 @@ theme_draw_checkbox(const struct theme *t, const struct checkbox *cb)
 void
 theme_finish(void)
 {
-	for (size_t i = 0; i < NELEM(default_fonts); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(default_fonts); ++i) {
 		font_finish(&default_fonts[i].font);
 		*default_fonts[i].dest = NULL;
 	}

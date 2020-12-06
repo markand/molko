@@ -52,7 +52,7 @@ exec(struct save *db, const char *sql)
 static const char *
 path(unsigned int idx)
 {
-	return pprintf("%s/%u", sys_dir(SYS_DIR_SAVE), idx);
+	return util_pathf("%s/%u", sys_dir(SYS_DIR_SAVE), idx);
 }
 
 static bool
@@ -81,7 +81,7 @@ verify(struct save *db)
 	};
 
 	/* Ensure create and update dates are present. */
-	for (size_t i = 0; i < NELEM(table); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
 		if (!save_get_property(db, &table[i].prop)) {
 			sqlite3_close(db->handle);
 			return errorf(_("database not initialized correctly"));

@@ -368,8 +368,8 @@ battle_update(struct battle *bt, unsigned int ticks)
 	action_stack_update(&bt->actions[1], ticks);
 	drawable_stack_update(&bt->effects, ticks);
 
-	update_entities(bt->team, NELEM(bt->team), ticks);
-	update_entities(bt->enemies, NELEM(bt->enemies), ticks);
+	update_entities(bt->team, UTIL_SIZE(bt->team), ticks);
+	update_entities(bt->enemies, UTIL_SIZE(bt->enemies), ticks);
 
 	/* Game cannot update if the actions[0] stack isn't completed. */
 	if (!action_stack_completed(&bt->actions[0]))
@@ -393,8 +393,8 @@ battle_draw(struct battle *bt)
 		    0.f);
 
 	/* Draw entities. */
-	draw_entities(bt, bt->team, NELEM(bt->team));
-	draw_entities(bt, bt->enemies, NELEM(bt->enemies));
+	draw_entities(bt, bt->team, UTIL_SIZE(bt->team));
+	draw_entities(bt, bt->enemies, UTIL_SIZE(bt->enemies));
 
 	battle_bar_draw(&bt->bar, bt);
 

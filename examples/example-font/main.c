@@ -71,7 +71,7 @@ handle(struct state *st, const union event *ev)
 				ci--;
 			break;
 		case KEY_RIGHT:
-			if ((size_t)ci < NELEM(colors))
+			if ((size_t)ci < UTIL_SIZE(colors))
 				ci++;
 			break;
 		case KEY_SPACE:

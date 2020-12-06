@@ -19,18 +19,15 @@
 #ifndef MOLKO_CORE_UTIL_H
 #define MOLKO_CORE_UTIL_H
 
-#include <stdarg.h>
-#include <stddef.h>
-
-#define NELEM(x) sizeof ((x)) / sizeof ((x)[0])
+#define UTIL_SIZE(x) sizeof ((x)) / sizeof ((x)[0])
 
 void
-delay(unsigned int ms);
+util_delay(unsigned int ms);
 
 const char *
-pprintf(const char *fmt, ...);
+util_pathf(const char *fmt, ...);
 
 unsigned int
-nrand(unsigned int lower, unsigned int upper);
+util_nrand(unsigned int lower, unsigned int upper);
 
 #endif /* !MOLKO_CORE_UTIL_H */

@@ -171,7 +171,7 @@ draw(struct state *state)
 	painter_set_color(0xffffffff);
 	painter_clear();
 
-	for (size_t i = 0; i < NELEM(self->texts); ++i)
+	for (size_t i = 0; i < UTIL_SIZE(self->texts); ++i)
 		texture_draw(&self->texts[i].tex, self->texts[i].x, self->texts[i].y);
 
 	/* TODO: a sword here. */
@@ -187,7 +187,7 @@ finish(struct state *state)
 {
 	struct self *self = state->data;
 
-	for (size_t i = 0; i < NELEM(self->texts); ++i)
+	for (size_t i = 0; i < UTIL_SIZE(self->texts); ++i)
 		texture_finish(&self->texts[i].tex);
 
 	free(self);

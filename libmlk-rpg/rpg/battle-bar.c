@@ -167,7 +167,7 @@ draw_menu(const struct battle_bar *bar, const struct battle *bt)
 	/* Draw menu frame. */
 	frame_draw(&bar->menu_frame);
 
-	for (size_t i = 0; i < NELEM(buttons); ++i) {
+	for (size_t i = 0; i < UTIL_SIZE(buttons); ++i) {
 		buttons[i].label.theme = &theme;
 
 		label_query(&buttons[i].label, &buttons[i].w, &buttons[i].h);

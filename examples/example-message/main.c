@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stddef.h>
+
 #include <core/core.h>
 #include <core/event.h>
 #include <core/game.h>

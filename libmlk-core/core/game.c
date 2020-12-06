@@ -141,7 +141,7 @@ game_loop(void)
 		 * a little to save CPU cycles.
 		 */
 		if ((elapsed = clock_elapsed(&clock)) < frametime)
-			delay(frametime - elapsed);
+			util_delay(frametime - elapsed);
 
 		elapsed = clock_elapsed(&clock);
 	}

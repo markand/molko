@@ -61,7 +61,7 @@ load_framerate(void)
 static void
 finish_cursors(void)
 {
-	for (size_t i = 0; i < NELEM(cursors); ++i)
+	for (size_t i = 0; i < UTIL_SIZE(cursors); ++i)
 		if (cursors[i])
 			SDL_FreeCursor(cursors[i]);
 }

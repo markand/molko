@@ -10,26 +10,26 @@ Miscellaneous utilities.
 
 ## Macros
 
-### NELEM
+### UTIL_SIZE
 
 Get the number of elements in the static C array `x`.
 
 ```c
-#define NELEM(x) sizeof ((x)) / sizeof ((x)[0])
+#define UTIL_SIZE(x) sizeof ((x)) / sizeof ((x)[0])
 ```
 
 ## functions
 
-### delay
+### util_delay
 
 Put the thread to sleep for a given amount `ms` milliseconds.
 
 ```c
 void
-delay(unsigned int ms)
+util_delay(unsigned int ms)
 ```
 
-### pprintf
+### util_pathf
 
 Construct a temporary path to a file that can fit in a `PATH_MAX` array.
 
@@ -40,16 +40,16 @@ Format string is similar to [printf][]
 
 ```c
 const char *
-pprintf(const char *fmt, ...)
+util_pathf(const char *fmt, ...)
 ```
 
-### nrand
+### util_nrand
 
 Returns a random number between `lower` and `upper` (included).
 
 ```c
 unsigned int
-nrand(unsigned int lower, unsigned int upper)
+util_nrand(unsigned int lower, unsigned int upper)
 ```
 
 [printf]: https://en.cppreference.com/w/c/io/fprintf
