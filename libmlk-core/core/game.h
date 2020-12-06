@@ -41,6 +41,9 @@ extern struct game game;
 void
 game_switch(struct state *state, bool quick);
 
+struct state *
+game_replace(struct state *state);
+
 void
 game_handle(const union event *event);
 

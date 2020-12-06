@@ -31,6 +31,7 @@
 #include <rpg/map.h>
 #include <rpg/map-file.h>
 
+#include <adventure/actions/spawner.h>
 #include <adventure/actions/teleport.h>
 
 #include "molko.h"
@@ -44,6 +45,18 @@ struct self {
 	struct map map;
 	struct map_file map_file;
 };
+
+static void
+load_spawner(struct map *map, int x, int y, int w, int h, const char *value)
+{
+	(void)x;
+	(void)y;
+	(void)w;
+	(void)h;
+	(void)value;
+
+	action_stack_add(&map->astack_par, spawner_new(map, 100, 300));
+}
 
 static void
 load_teleport(struct map *map, int x, int y, int w, int h, const char *value)
@@ -62,7 +75,8 @@ load_action(struct map *map, int x, int y, int w, int h, const char *value)
 		const char *name;
 		void (*load)(struct map *, int, int, int, int, const char *);
 	} table[] = {
-		{ "teleport|", load_teleport }
+		{ "teleport|",  load_teleport },
+		{ "spawner|",   load_spawner }
 	};
 
 	for (size_t i = 0; i < NELEM(table); ++i) {

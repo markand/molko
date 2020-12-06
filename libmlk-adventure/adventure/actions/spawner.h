@@ -1,5 +1,5 @@
 /*
- * teleport.h -- teleport contact
+ * spawner.h -- spawn battle while moving
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,17 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_ACTIONS_TELEPORT_H
-#define MOLKO_ADVENTURE_ACTIONS_TELEPORT_H
+#ifndef MOLKO_ADVENTURE_ACTIONS_SPAWNER_H
+#define MOLKO_ADVENTURE_ACTIONS_SPAWNER_H
 
 struct action *
-teleport_new(struct map *map,
-             const char *destination,
-             int x,
-             int y,
-             unsigned int w,
-             unsigned int h,
-             int origin_x,
-             int origin_y);
+spawner_new(struct map *, unsigned int, unsigned int);
 
-#endif /* !MOLKO_ADVENTURE_ACTIONS_TELEPORT_H */
+#endif /* !MOLKO_ADVENTURE_ACTIONS_SPAWNER_H */

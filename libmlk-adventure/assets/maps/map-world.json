@@ -54,6 +54,23 @@
                  "width":48,
                  "x":4272,
                  "y":864
+                }, 
+                {
+                 "height":108.722510501606,
+                 "id":3,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"exec",
+                         "type":"string",
+                         "value":"spawner|"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":233.506300963677,
+                 "x":3973.31356560415,
+                 "y":447.244872745243
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -62,7 +79,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":3,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "properties":[
         {

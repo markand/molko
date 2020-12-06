@@ -19,9 +19,11 @@
 #include <compat.h>
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <core/action.h>
 #include <core/alloc.h>
 #include <core/maths.h>
 #include <core/painter.h>
@@ -33,6 +35,21 @@
 
 #include "molko.h"
 #include "teleport.h"
+
+struct teleport {
+	struct action action;
+	struct texture overlay;
+	struct map *map;
+	char destination[FILENAME_MAX];
+	unsigned int elapsed;
+	unsigned int alpha;
+	int origin_x;
+	int origin_y;
+	int x;
+	int y;
+	unsigned int w;
+	unsigned int h;
+};
 
 static void
 draw(struct action *act)

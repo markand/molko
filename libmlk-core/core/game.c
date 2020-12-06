@@ -51,6 +51,20 @@ game_switch(struct state *state, bool quick)
 		game.state_next = state;
 }
 
+struct state *
+game_replace(struct state *state)
+{
+	assert(state);
+
+	struct state *save = game.state;
+
+	game.state = state;
+
+	state_start(state);
+
+	return save;
+}
+
 void
 game_handle(const union event *ev)
 {
