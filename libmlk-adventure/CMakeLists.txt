@@ -20,6 +20,8 @@ project(libadventure)
 
 set(
 	SOURCES
+	${libadventure_SOURCE_DIR}/adventure/actions/teleport.c
+	${libadventure_SOURCE_DIR}/adventure/actions/teleport.h
 	${libadventure_SOURCE_DIR}/adventure/adventure_p.h
 	${libadventure_SOURCE_DIR}/adventure/molko.c
 	${libadventure_SOURCE_DIR}/adventure/molko.h
@@ -27,6 +29,8 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.h
 	${libadventure_SOURCE_DIR}/adventure/state/mainmenu.c
 	${libadventure_SOURCE_DIR}/adventure/state/mainmenu.h
+	${libadventure_SOURCE_DIR}/adventure/state/map.c
+	${libadventure_SOURCE_DIR}/adventure/state/map.h
 	${libadventure_SOURCE_DIR}/adventure/state/panic.c
 	${libadventure_SOURCE_DIR}/adventure/state/panic.h
 	${libadventure_SOURCE_DIR}/adventure/state/splashscreen.c
@@ -43,6 +47,23 @@ set(
 )
 
 set(
+	MAPS
+	${libadventure_SOURCE_DIR}/assets/maps/map-world.json
+)
+
+set(
+	TILESETS
+	${libadventure_SOURCE_DIR}/assets/maps/tileset-world.json
+)
+
+set(
+	DATA
+	${libadventure_SOURCE_DIR}/assets/maps/animation-water.png
+	${libadventure_SOURCE_DIR}/assets/maps/sprite-world.png
+	${libadventure_SOURCE_DIR}/assets/sprites/john.png
+)
+
+set(
 	PO
 	${libadventure_SOURCE_DIR}/nls/fr.po
 )
@@ -50,8 +71,11 @@ set(
 molko_define_library(
 	TARGET libmlk-adventure
 	TRANSLATIONS fr
-	SOURCES ${SOURCES} ${PO} ${ASSETS}
+	SOURCES ${SOURCES} ${PO} ${ASSETS} ${MAPS} ${TILESETS}
+	MAPS ${MAPS}
+	TILESETS ${TILESETS}
 	ASSETS ${ASSETS}
+	DATA ${DATA}
 	LIBRARIES libmlk-core libmlk-ui libmlk-rpg
 	PRIVATE_INCLUDES
 		${libadventure_SOURCE_DIR}/adventure

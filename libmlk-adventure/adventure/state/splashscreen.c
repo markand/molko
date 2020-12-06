@@ -40,80 +40,76 @@
 
 #define DELAY 3000
 
-struct splashscreen {
+struct self {
+	struct state state;
 	struct texture tex;
 	int x;
 	int y;
-	struct state *next;
 	unsigned int elapsed;
 };
 
-static struct splashscreen *
-init(struct state *next)
+static void
+start(struct state *state)
 {
-	struct splashscreen *splash;
+	struct self *self = state->data;
 	struct font font;
-
-	splash = alloc_new0(sizeof (*splash));
-	splash->next = next;
 
 	if (!font_openmem(&font, fonts_cubic, sizeof (fonts_cubic), 80))
 		panic();
 
 	font.style = FONT_STYLE_ANTIALIASED;
 
-	if (!font_render(&font, &splash->tex, "malikania", 0x19332dff))
+	if (!font_render(&font, &self->tex, "malikania", 0x19332dff))
 		panic();
 
-	align(ALIGN_CENTER, &splash->x, &splash->y, splash->tex.w, splash->tex.h,
+	align(ALIGN_CENTER, &self->x, &self->y, self->tex.w, self->tex.h,
 	    0, 0, window.w, window.h);
 	font_finish(&font);
-
-	return splash;
 }
 
 static void
 update(struct state *state, unsigned int ticks)
 {
-	struct splashscreen *splash = state->data;
+	struct self *self = state->data;
 
-	splash->elapsed += ticks;
+	self->elapsed += ticks;
 
-	if (splash->elapsed >= DELAY)
-		game_switch(splash->next, false);
+	if (self->elapsed >= DELAY)
+		game_switch(mainmenu_state_new(), false);
 }
 
 static void
 draw(struct state *state)
 {
-	struct splashscreen *splash = state->data;
+	struct self *self = state->data;
 
 	painter_set_color(0xffffffff);
 	painter_clear();
-	texture_draw(&splash->tex, splash->x, splash->y);
+	texture_draw(&self->tex, self->x, self->y);
 	painter_present();
 }
 
 static void
 finish(struct state *state)
 {
-	struct splashscreen *splash = state->data;
+	struct self *self = state->data;
 
-	texture_finish(&splash->tex);
+	texture_finish(&self->tex);
 
-	free(splash);
-	memset(state, 0, sizeof (*state));
+	free(self);
 }
 
-void
-splashscreen_state(struct state *state, struct state *next)
+struct state *
+splashscreen_state_new(void)
 {
-	assert(state);
-	assert(next);
+	struct self *self;
 
-	memset(state, 0, sizeof (*state));
-	state->data = init(next);
-	state->update = update;
-	state->draw = draw;
-	state->finish = finish;
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.start = start;
+	self->state.update = update;
+	self->state.draw = draw;
+	self->state.finish = finish;
+
+	return &self->state;
 }

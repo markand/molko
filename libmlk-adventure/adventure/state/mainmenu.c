@@ -43,7 +43,9 @@
 #include "mainmenu.h"
 #include "molko.h"
 
-struct mainmenu {
+struct self {
+	struct state state;
+
 	struct {
 		struct texture tex;
 		int x;
@@ -56,21 +58,7 @@ struct mainmenu {
 static void
 new(void)
 {
-	/* TODO: implement here. */
-	if (!map_file_open(&molko.map_file, &molko.map, DIRECTORY "/maps/overworld.map"))
-		panic();
-
-	/* Put a sprite. */
-	if (!image_open(&molko.map_player_texture, DIRECTORY "/sprites/john.png"))
-		panic();
-
-	sprite_init(&molko.map_player_sprite, &molko.map_player_texture, 48, 48);
-	molko.map.player_sprite = &molko.map_player_sprite;
-
-	if (!map_init(&molko.map))
-		panic();
-
-	game_switch(&molko.states[MOLKO_STATE_MAP], false);
+	molko_teleport("assets/maps/map-world.map", -1, -1);
 }
 
 static void
@@ -86,9 +74,9 @@ quit(void)
 }
 
 static void
-perform(struct mainmenu *main)
+perform(struct self *self)
 {
-	assert(main->itemsel < 3);
+	assert(self->itemsel < 3);
 
 	static void (*handlers[])(void) = {
 		[0] = new,
@@ -96,48 +84,45 @@ perform(struct mainmenu *main)
 		[2] = quit
 	};
 
-	handlers[main->itemsel]();
+	handlers[self->itemsel]();
 }
 
 static void
-init_title(struct mainmenu *main, struct font *font)
+init_title(struct self *self, struct font *font)
 {
-	if (!font_render(font, &main->texts[3].tex, "Molko's Adventure", 0x000000ff))
+	if (!font_render(font, &self->texts[3].tex, "Molko's Adventure", 0x000000ff))
 		panic();
 	
 	/* Align header. */
-	align(ALIGN_CENTER, &main->texts[3].x, NULL, main->texts[3].tex.w, main->texts[3].tex.h,
+	align(ALIGN_CENTER, &self->texts[3].x, NULL, self->texts[3].tex.w, self->texts[3].tex.h,
 	    0, 0, window.w, window.h);
 
-	main->texts[3].y = main->texts[3].x;
+	self->texts[3].y = self->texts[3].x;
 }
 
 static void
-init_items(struct mainmenu *main, struct font *font)
+init_items(struct self *self, struct font *font)
 {
-	if (!font_render(font, &main->texts[0].tex, _("New"), 0x000000ff) ||
-	    !font_render(font, &main->texts[1].tex, _("Continue"), 0x000000ff) ||
-	    !font_render(font, &main->texts[2].tex, _("Quit"), 0x000000ff))
+	if (!font_render(font, &self->texts[0].tex, _("New"), 0x000000ff) ||
+	    !font_render(font, &self->texts[1].tex, _("Continue"), 0x000000ff) ||
+	    !font_render(font, &self->texts[2].tex, _("Quit"), 0x000000ff))
 		panic();
 
-	main->texts[0].x = (window.w / 2) - (main->texts[0].tex.w / 2);
-	main->texts[0].y = window.h * 0.75;
+	self->texts[0].x = (window.w / 2) - (self->texts[0].tex.w / 2);
+	self->texts[0].y = window.h * 0.75;
 
-	main->texts[1].x = main->texts[0].x;
-	main->texts[1].y = main->texts[0].y + main->texts[0].tex.h;
+	self->texts[1].x = self->texts[0].x;
+	self->texts[1].y = self->texts[0].y + self->texts[0].tex.h;
 
-	main->texts[2].x = main->texts[0].x;
-	main->texts[2].y = main->texts[1].y + main->texts[1].tex.h;
+	self->texts[2].x = self->texts[0].x;
+	self->texts[2].y = self->texts[1].y + self->texts[1].tex.h;
 }
 
 static void
 start(struct state *state)
 {
-	struct mainmenu *main;
+	struct self *self = state->data;
 	struct font fonts[2];
-
-	/* Allocate the main menu data. */
-	main = (state->data = alloc_new0(sizeof (*main)));
 
 	if (!font_openmem(&fonts[0], fonts_teutonic, sizeof (fonts_teutonic), 130) ||
 	    !font_openmem(&fonts[1], fonts_pirata_one, sizeof (fonts_pirata_one), 30))
@@ -145,8 +130,8 @@ start(struct state *state)
 
 	fonts[0].style = fonts[1].style = FONT_STYLE_ANTIALIASED;
 
-	init_title(main, &fonts[0]);
-	init_items(main, &fonts[1]);
+	init_title(self, &fonts[0]);
+	init_items(self, &fonts[1]);
 
 	font_finish(&fonts[0]);
 	font_finish(&fonts[1]);
@@ -155,19 +140,19 @@ start(struct state *state)
 static void
 handle(struct state *state, const union event *event)
 {
-	struct mainmenu *main = state->data;
+	struct self *self = state->data;
 
 	switch (event->type) {
 	case EVENT_KEYDOWN:
 		switch (event->key.key) {
 		case KEY_UP:
-			main->itemsel = main->itemsel == 0 ? 2 : main->itemsel - 1;
+			self->itemsel = self->itemsel == 0 ? 2 : self->itemsel - 1;
 			break;
 		case KEY_DOWN:
-			main->itemsel = (main->itemsel + 1) % 3;
+			self->itemsel = (self->itemsel + 1) % 3;
 			break;
 		case KEY_ENTER:
-			perform(main);
+			perform(self);
 			break;
 		default:
 			break;
@@ -181,45 +166,44 @@ handle(struct state *state, const union event *event)
 static void
 draw(struct state *state)
 {
-	struct mainmenu *main = state->data;
+	struct self *self = state->data;
 
 	painter_set_color(0xffffffff);
 	painter_clear();
 
-	for (size_t i = 0; i < NELEM(main->texts); ++i)
-		texture_draw(&main->texts[i].tex, main->texts[i].x, main->texts[i].y);
+	for (size_t i = 0; i < NELEM(self->texts); ++i)
+		texture_draw(&self->texts[i].tex, self->texts[i].x, self->texts[i].y);
 
 	/* TODO: a sword here. */
 	painter_set_color(0x000000ff);
 	painter_draw_rectangle(
-	    main->texts[main->itemsel].x - 30,
-	    main->texts[main->itemsel].y + 11, 15, 15);
+	    self->texts[self->itemsel].x - 30,
+	    self->texts[self->itemsel].y + 11, 15, 15);
 	painter_present();
 }
 
 static void
 finish(struct state *state)
 {
-	struct mainmenu *main = state->data;
+	struct self *self = state->data;
 
-	if (!main)
-		return;
+	for (size_t i = 0; i < NELEM(self->texts); ++i)
+		texture_finish(&self->texts[i].tex);
 
-	for (size_t i = 0; i < NELEM(main->texts); ++i)
-		texture_finish(&main->texts[i].tex);
-
-	free(main);
-	memset(state, 0, sizeof (*state));
+	free(self);
 }
 
-void
-mainmenu_state(struct state *state)
+struct state *
+mainmenu_state_new(void)
 {
-	assert(state);
+	struct self *self;
 
-	memset(state, 0, sizeof (*state));
-	state->start = start;
-	state->handle = handle;
-	state->draw = draw;
-	state->finish = finish;
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.start = start;
+	self->state.handle = handle;
+	self->state.draw = draw;
+	self->state.finish = finish;
+
+	return &self->state;
 }

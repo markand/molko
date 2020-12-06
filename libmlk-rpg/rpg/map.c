@@ -42,7 +42,7 @@
  * SPEED represents the number of pixels it must move per SEC.
  * SEC simply represends the number of milliseconds in one second.
  */
-#define SPEED 150
+#define SPEED 100
 #define SEC   1000
 
 /*

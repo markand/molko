@@ -16,16 +16,20 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include <stddef.h>
 #include <setjmp.h>
+#include <string.h>
 #include <locale.h>
 
 #include <core/clock.h>
 #include <core/core.h>
 #include <core/event.h>
+#include <core/image.h>
 #include <core/panic.h>
 #include <core/translate.h>
 #include <core/util.h>
+#include <core/sys.h>
 #include <core/window.h>
 
 #include <ui/ui.h>
@@ -35,6 +39,7 @@
 #include <adventure/state/panic.h>
 #include <adventure/state/splashscreen.h>
 #include <adventure/state/mainmenu.h>
+#include <adventure/state/map.h>
 
 #include "molko.h"
 
@@ -98,15 +103,11 @@ molko_init(void)
 	 */
 
 	/* Init unrecoverable panic state. */
-	panic_state(&molko.states[MOLKO_STATE_PANIC]);
+	molko.panic = panic_state_new();
 	panic_handler = crash;
 
-	/* Init states. */
-	splashscreen_state(&molko.states[MOLKO_STATE_SPLASH], &molko.states[MOLKO_STATE_MAINMENU]);
-	mainmenu_state(&molko.states[MOLKO_STATE_MAINMENU]);
-
 	/* Start to splash. */
-	game_switch(&molko.states[MOLKO_STATE_SPLASH], true);
+	game_switch(splashscreen_state_new(), true);
 }
 
 void
@@ -120,17 +121,30 @@ molko_run(void)
 		for (union event ev; event_poll(&ev); )
 			continue;
 
-		game_switch(&molko.states[MOLKO_STATE_PANIC], true);
+		game_switch(molko.panic, true);
 		loop();
 	}
 }
 
 void
+molko_teleport(const char *map, int origin_x, int origin_y)
+{
+	game_switch(map_state_new(map, origin_x, origin_y), false);
+	game.inhibit = INHIBIT_NONE;
+}
+
+const char *
+molko_path(const char *file)
+{
+	assert(file);
+
+	/* TODO: libmlk-adventure must be renamed. */
+	return pprintf("%s/libmlk-adventure/%s", sys_dir(SYS_DIR_DATA), file);
+}
+
+void
 molko_finish(void)
 {
-	for (size_t i = 0; i < MOLKO_STATE_NUM; ++i)
-		state_finish(&molko.states[i]);
-
 	window_finish();
 	rpg_finish();
 	ui_finish();

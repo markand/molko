@@ -1,5 +1,5 @@
 /*
- * splashscreen.h -- splash screen state
+ * teleport.h -- teleport contact
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,12 +16,37 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H
-#define MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H
+#ifndef MOLKO_ADVENTURE_ACTIONS_TELEPORT_H
+#define MOLKO_ADVENTURE_ACTIONS_TELEPORT_H
 
-struct state;
+#include <stdio.h>
 
-struct state *
-splashscreen_state_new(void);
+#include <core/action.h>
+#include <core/texture.h>
 
-#endif /* !MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H */
+struct teleport {
+	struct action action;
+	struct texture overlay;
+	struct map *map;
+	char destination[FILENAME_MAX];
+	unsigned int elapsed;
+	unsigned int alpha;
+	int origin_x;
+	int origin_y;
+	int x;
+	int y;
+	unsigned int w;
+	unsigned int h;
+};
+
+struct action *
+teleport_new(struct map *map,
+             const char *destination,
+             int x,
+             int y,
+             unsigned int w,
+             unsigned int h,
+             int origin_x,
+             int origin_y);
+
+#endif /* !MOLKO_ADVENTURE_ACTIONS_TELEPORT_H */

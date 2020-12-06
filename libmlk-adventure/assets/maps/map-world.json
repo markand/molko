@@ -32,9 +32,37 @@
          "width":300,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":8,
+         "name":"actions",
+         "objects":[
+                {
+                 "height":25,
+                 "id":2,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"exec",
+                         "type":"string",
+                         "value":"teleport|village"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":48,
+                 "x":4272,
+                 "y":864
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":8,
- "nextobjectid":2,
+ "nextlayerid":9,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "properties":[
         {

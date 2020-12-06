@@ -19,23 +19,9 @@
 #ifndef MOLKO_ADVENTURE_STATE_MAINMENU_H
 #define MOLKO_ADVENTURE_STATE_MAINMENU_H
 
-/**
- * \file mainmenu.h
- * \brief Game main menu.
- */
+struct state;
 
-/**
- * Create a state about the main game menu.
- *
- * \pre state != NULL
- * \param state the state to initialize
- * \post state->data is set internal data
- * \post state->handle is set
- * \post state->draw is set
- * \post state->update is set
- * \post state->finish is set
- */
-void
-mainmenu_state(struct state *state);
+struct state *
+mainmenu_state_new(void);
 
 #endif /* !MOLKO_ADVENTURE_STATE_PANIC_H */

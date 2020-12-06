@@ -64,8 +64,6 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/selection.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/spell.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/spell.h
-	${libmlk-rpg_SOURCE_DIR}/rpg/teleport.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/teleport.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/tileset.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/tileset.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/tileset-file.c

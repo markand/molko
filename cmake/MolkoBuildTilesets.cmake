@@ -36,18 +36,25 @@
 # directories.
 #
 
-macro(molko_build_tilesets inputs outputs)
+macro(molko_build_tilesets target inputs outputs)
 	set(${outputs})
 
 	foreach (t ${inputs})
 		file(RELATIVE_PATH basename ${CMAKE_CURRENT_SOURCE_DIR} ${t})
 		string(REGEX REPLACE "\\.json$" ".tileset" output ${basename})
-		set(output ${CMAKE_CURRENT_BINARY_DIR}/${output})
+
+		if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_DATADIR})
+			set(output ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_INSTALL_DATADIR}/${target}/${output})
+		else ()
+			set(output ${CMAKE_CURRENT_BINARY_DIR}/${output})
+		endif ()
+
 		get_filename_component(outputdir ${output} DIRECTORY)
-		file(MAKE_DIRECTORY ${outputdir})
 
 		add_custom_command(
 			OUTPUT ${output}
+			COMMAND
+				${CMAKE_COMMAND} -E make_directory ${outputdir}
 			COMMAND
 				$<TARGET_FILE:mlk-tileset> < ${t} > ${output}
 			COMMENT

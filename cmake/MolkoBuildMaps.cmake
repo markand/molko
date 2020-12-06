@@ -25,7 +25,7 @@
 # ## Synopsis
 #
 # ```cmake
-# molko_build_maps(input outputs)
+# molko_build_maps(target input outputs)
 # ```
 #
 # Argument outputs will be set with the generated output files in the binary
@@ -35,18 +35,24 @@
 # directories.
 #
 
-macro(molko_build_maps inputs outputs)
+macro(molko_build_maps target inputs outputs)
 	set(${outputs})
 
 	foreach (t ${inputs})
 		file(RELATIVE_PATH basename ${CMAKE_CURRENT_SOURCE_DIR} ${t})
 		string(REGEX REPLACE "\\.json$" ".map" output ${basename})
-		set(output ${CMAKE_CURRENT_BINARY_DIR}/${output})
+		if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_DATADIR})
+			set(output ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_INSTALL_DATADIR}/${target}/${output})
+		else ()
+			set(output ${CMAKE_CURRENT_BINARY_DIR}/${output})
+		endif ()
+
 		get_filename_component(outputdir ${output} DIRECTORY)
-		file(MAKE_DIRECTORY ${outputdir})
 
 		add_custom_command(
 			OUTPUT ${output}
+			COMMAND
+				${CMAKE_COMMAND} -E make_directory ${outputdir}
 			COMMAND
 				$<TARGET_FILE:mlk-map> < ${t} > ${output}
 			COMMENT

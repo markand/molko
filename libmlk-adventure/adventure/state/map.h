@@ -1,5 +1,5 @@
 /*
- * splashscreen.h -- splash screen state
+ * map.h -- map state
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,12 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H
-#define MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H
+#ifndef MOLKO_ADVENTURE_STATE_MAP_H
+#define MOLKO_ADVENTURE_STATE_MAP_H
 
 struct state;
 
 struct state *
-splashscreen_state_new(void);
+map_state_new(const char *, int, int);
 
-#endif /* !MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H */
+#endif /* !MOLKO_ADVENTURE_STATE_MAP_H */
+

@@ -22,28 +22,14 @@
 #include <core/game.h>
 #include <core/texture.h>
 #include <core/sprite.h>
-#include <core/state.h>
-
-#include <rpg/map-file.h>
-#include <rpg/map.h>
-
-enum molko_state {
-	MOLKO_STATE_SPLASH,
-	MOLKO_STATE_MAINMENU,
-	MOLKO_STATE_PANIC,
-	MOLKO_STATE_MAP,
-	MOLKO_STATE_NUM
-};
 
 struct molko {
 	struct game engine;
-	struct state states[MOLKO_STATE_NUM];
+	struct state *panic;
 
-	/* MOLKO_STATE_MAP. */
+	/* For map state. */
 	struct texture map_player_texture;
 	struct sprite map_player_sprite;
-	struct map_file map_file;
-	struct map map;
 };
 
 extern struct molko molko;
@@ -53,6 +39,12 @@ molko_init(void);
 
 void
 molko_run(void);
+
+void
+molko_teleport(const char *map, int origin_x, int origin_y);
+
+const char *
+molko_path(const char *file);
 
 void
 molko_finish(void);

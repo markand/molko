@@ -43,7 +43,9 @@
 
 #define OUT "molko-adventure.txt"
 
-struct view {
+struct self {
+	struct state state;
+
 	struct {
 		struct texture tex;
 		int x;
@@ -86,38 +88,6 @@ dump(void)
 	abort();
 }
 
-static struct view *
-init(void)
-{
-	struct theme *theme;
-	struct view *view;
-	struct font *font;
-
-	theme = theme_default();
-	font = theme->fonts[THEME_FONT_INTERFACE];
-	view = alloc_new0(sizeof (*view));
-
-	if (!font_render(font, &view->texts[0].tex, "An unrecoverable error occured and the game cannot continue.", FOREGROUND) ||
-	    !font_render(font, &view->texts[1].tex, "Please report the detailed error as provided below.", FOREGROUND) ||
-	    !font_render(font, &view->texts[2].tex, "Press <s> to save information and generate a core dump.", FOREGROUND) ||
-	    !font_render(font, &view->texts[3].tex, "Press <q> to quit without saving information.", FOREGROUND))
-		die("%s", error());
-
-	/* All align x the same. */
-	for (size_t i = 0; i < NELEM(view->texts); ++i)
-		view->texts[i].x = theme->padding;
-
-	/* Header (0-1). */
-	view->texts[0].y = theme->padding;
-	view->texts[1].y = view->texts[0].y + view->texts[0].tex.h + theme->padding;
-
-	/* Footer. (2-3). */
-	view->texts[3].y = window.h - view->texts[2].tex.h - theme->padding;
-	view->texts[2].y = view->texts[3].y - view->texts[3].tex.h - theme->padding;
-
-	return view;
-}
-
 static void
 handle_keydown(const struct event_key *ev)
 {
@@ -138,10 +108,33 @@ handle_keydown(const struct event_key *ev)
 static void
 start(struct state *state)
 {
-	(void)state;
+	struct self *self = state->data;
+	struct theme *theme;
+	struct font *font;
 
 	/* We remove the panic handler to avoid infinite recursion. */
 	panic_handler = stop;
+
+	theme = theme_default();
+	font = theme->fonts[THEME_FONT_INTERFACE];
+
+	if (!font_render(font, &self->texts[0].tex, "An unrecoverable error occured and the game cannot continue.", FOREGROUND) ||
+	    !font_render(font, &self->texts[1].tex, "Please report the detailed error as provided below.", FOREGROUND) ||
+	    !font_render(font, &self->texts[2].tex, "Press <s> to save information and generate a core dump.", FOREGROUND) ||
+	    !font_render(font, &self->texts[3].tex, "Press <q> to quit without saving information.", FOREGROUND))
+		die("%s", error());
+
+	/* All align x the same. */
+	for (size_t i = 0; i < NELEM(self->texts); ++i)
+		self->texts[i].x = theme->padding;
+
+	/* Header (0-1). */
+	self->texts[0].y = theme->padding;
+	self->texts[1].y = self->texts[0].y + self->texts[0].tex.h + theme->padding;
+
+	/* Footer. (2-3). */
+	self->texts[3].y = window.h - self->texts[2].tex.h - theme->padding;
+	self->texts[2].y = self->texts[3].y - self->texts[3].tex.h - theme->padding;
 }
 
 static void
@@ -163,8 +156,8 @@ handle(struct state *state, const union event *ev)
 static void
 draw(struct state *state)
 {
+	struct self *self = state->data;
 	struct theme *theme = theme_default();
-	struct view *view = state->data;
 	struct texture tex;
 	struct font *font;
 	int x, y;
@@ -172,8 +165,8 @@ draw(struct state *state)
 	painter_set_color(BACKGROUND);
 	painter_clear();
 
-	for (size_t i = 0; i < NELEM(view->texts); ++i)
-		texture_draw(&view->texts[i].tex, view->texts[i].x, view->texts[i].y);
+	for (size_t i = 0; i < NELEM(self->texts); ++i)
+		texture_draw(&self->texts[i].tex, self->texts[i].x, self->texts[i].y);
 
 	/* The error is only available here. */
 	font = theme->fonts[THEME_FONT_INTERFACE];
@@ -185,32 +178,32 @@ draw(struct state *state)
 
 	texture_draw(&tex, x + theme->padding, y);
 	texture_finish(&tex);
+
+	painter_present();
 }
 
 static void
 finish(struct state *state)
 {
-	struct view *view = state->data;
+	struct self *self = state->data;
 
-	if (!view)
-		return;
+	for (size_t i = 0; i < NELEM(self->texts); ++i)
+		texture_finish(&self->texts[i].tex);
 
-	for (size_t i = 0; i < NELEM(view->texts); ++i)
-		texture_finish(&view->texts[i].tex);
-
-	free(view);
-	memset(state, 0, sizeof (*state));
+	free(self);
 }
 
-void
-panic_state(struct state *state)
+struct state *
+panic_state_new(void)
 {
-	assert(state);
+	struct self *self;
 
-	memset(state, 0, sizeof (*state));
-	state->data = init();
-	state->start = start;
-	state->handle = handle;
-	state->draw = draw;
-	state->finish = finish;
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.start = start;
+	self->state.handle = handle;
+	self->state.draw = draw;
+	self->state.finish = finish;
+
+	return &self->state;
 }

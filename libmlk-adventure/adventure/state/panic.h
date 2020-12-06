@@ -19,20 +19,9 @@
 #ifndef MOLKO_ADVENTURE_STATE_PANIC_H
 #define MOLKO_ADVENTURE_STATE_PANIC_H
 
-/**
- * \file panic.h
- * \brief Panic state.
- */
-
 struct state;
 
-/**
- * Create a state in case of panic.
- *
- * \pre state != NULL
- * \param state the state to initialize
- */
-void
-panic_state(struct state *state);
+struct state *
+panic_state_new(void);
 
 #endif /* !MOLKO_ADVENTURE_STATE_PANIC_H */

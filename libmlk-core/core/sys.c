@@ -170,11 +170,7 @@ system_directory(enum sys_dir kind)
 	if ((binsect = strstr(path, paths[SYS_DIR_BIN])))
 		*binsect = '\0';
 
-	/* 4. For data directories, we append the program name. */
-	if (kind == SYS_DIR_DATA)
-		snprintf(ret, sizeof (ret), "%s%s/%s", path, paths[kind], info.name);
-	else
-		snprintf(ret, sizeof (ret), "%s%s", path, paths[kind]);
+	snprintf(ret, sizeof (ret), "%s%s", path, paths[kind]);
 
 	return normalize(ret);
 }

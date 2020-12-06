@@ -27,8 +27,6 @@ set(
 
 set(
 	ASSETS_MAPS
-	${examples_SOURCE_DIR}/assets/maps/map-rebonai.json
-	${examples_SOURCE_DIR}/assets/maps/map-world.json
 )
 
 set(
@@ -44,8 +42,6 @@ set(
 
 set(
 	ASSETS_TILESETS
-	${examples_SOURCE_DIR}/assets/maps/tileset-town.json
-	${examples_SOURCE_DIR}/assets/maps/tileset-world.json
 )
 
 set(
