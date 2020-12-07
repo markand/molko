@@ -25,7 +25,7 @@
 #       include <libintl.h>
 #       define _(s) dgettext("libmlk-core", s)
 #else
-#       define _(s)
+#       define _(s) s
 #endif
 
 #endif /* !MOLKO_CORE_CORE_P_H */

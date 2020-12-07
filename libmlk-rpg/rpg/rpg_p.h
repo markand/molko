@@ -25,7 +25,7 @@
 #       include <libintl.h>
 #       define _(s) dgettext("libmlk-rpg", s)
 #else
-#       define _(s)
+#       define _(s) s
 #endif
 
 #endif /* !MOLKO_RPG_RPG_P_H */

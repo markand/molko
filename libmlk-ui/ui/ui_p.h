@@ -25,7 +25,7 @@
 #       include <libintl.h>
 #       define _(s) dgettext("libmlk-ui", s)
 #else
-#       define _(s)
+#       define _(s) s
 #endif
 
 #endif /* !MOLKO_UI_UI_P_H */

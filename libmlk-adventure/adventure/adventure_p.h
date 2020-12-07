@@ -25,7 +25,7 @@
 #       include <libintl.h>
 #       define _(s) dgettext("libmlk-adventure", s)
 #else
-#       define _(s)
+#       define _(s) s
 #endif
 
 #endif /* !MOLKO_ADVENTURE_ADVENTURE_P_H */
