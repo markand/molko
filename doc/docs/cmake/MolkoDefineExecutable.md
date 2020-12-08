@@ -14,6 +14,7 @@ ASSETS              (Optional) list of assets to build
 FLAGS               (Optional) C flags (without -D)
 LIBRARIES           (Optional) libraries to link
 INCLUDES            (Optional) includes
+INSTALL             (Optional) create install target
 )
 ```
 

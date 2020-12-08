@@ -19,48 +19,80 @@
 #
 # # molko_build_maps
 #
-# Generate .map files from tiled .json files using the mlk-map tool. The file
-# hierarchy is kept and only extension is changed from .json to .map.
+# Convert [Tiled][] maps and tilesets into textual representations that can be
+# loaded from Molko's Adventure API.
 #
 # ## Synopsis
 #
 # ```cmake
-# molko_build_maps(target input outputs)
+# molko_build_maps(
+#   OUTPUT_DIR  output directory
+#   OUTPUTS     output variables
+#   MAPS        (Optional) List of maps
+#   TILESETS    (Optional) List of tilesets
+# )
 # ```
 #
-# Argument outputs will be set with the generated output files in the binary
-# directory to be added as target sources.
+# Argument MAPS and TILESETS should contain list of .json files generated from
+# [Tiled][tiled] and store the result in OUTPUT_DIR
 #
-# Make sure to add `${CMAKE_CURRENT_BINARY_DIR}` into the target include
-# directories.
+# Arguments OUTPUTS will be filled with genereted files from CMake and can be
+# used as executable and input.
+#
+# [Tiled]: http://mapeditor.org
 #
 
-macro(molko_build_maps target inputs outputs)
-	set(${outputs})
+macro(molko_build_maps)
+	set(options)
+	set(oneValueArgs OUTPUTS OUTPUT_DIR)
+	set(multiValueArgs MAPS TILESETS)
 
-	foreach (t ${inputs})
-		file(RELATIVE_PATH basename ${CMAKE_CURRENT_SOURCE_DIR} ${t})
-		string(REGEX REPLACE "\\.json$" ".map" output ${basename})
+	cmake_parse_arguments(CV "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+	if (NOT CV_OUTPUT_DIR)
+		message(FATAL_ERROR "Missing OUTPUT_DIR argument")
+	endif ()
+	if (NOT CV_OUTPUTS)
+		message(FATAL_ERROR "Missing OUTPUTS argument")
+	endif ()
+
+	set(${CV_OUTPUTS})
+
+	foreach (i ${CV_MAPS} ${CV_TILESETS})
 		if (NOT IS_ABSOLUTE ${CMAKE_INSTALL_DATADIR})
-			set(output ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_INSTALL_DATADIR}/${target}/${output})
+			set(outputdir ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_INSTALL_DATADIR}/${CV_OUTPUT_DIR})
 		else ()
-			set(output ${CMAKE_CURRENT_BINARY_DIR}/${output})
+			set(outputdir ${CMAKE_CURRENT_BINARY_DIR}/${CV_OUTPUT_DIR})
 		endif ()
 
-		get_filename_component(outputdir ${output} DIRECTORY)
+		if (${i} IN_LIST CV_MAPS)
+			set(tool mlk-map)
+			set(ext .map)
+		else ()
+			set(tool mlk-tileset)
+			set(ext .tileset)
+		endif ()
+
+		string(REGEX REPLACE "\\.json$" ${ext} output ${i})
+		get_filename_component(output ${output} NAME)
 
 		add_custom_command(
-			OUTPUT ${output}
+			OUTPUT ${outputdir}/${output}
+			VERBATIM
 			COMMAND
 				${CMAKE_COMMAND} -E make_directory ${outputdir}
 			COMMAND
-				$<TARGET_FILE:mlk-map> < ${t} > ${output}
+				$<TARGET_FILE:${tool}> < ${i} > ${outputdir}/${output}
 			COMMENT
-				"Generating map from ${basename}"
-			DEPENDS $<TARGET_FILE:mlk-map> ${t}
-			VERBATIM
+				"Generating object from ${i}"
+			DEPENDS $<TARGET_FILE:${tool}> ${i}
 		)
 
-		list(APPEND ${outputs} ${output})
+		list(APPEND ${CV_OUTPUTS} ${outputdir}/${output})
+
+		install(
+			FILES ${outputdir}/${output}
+			DESTINATION ${CMAKE_INSTALL_DATADIR}/${CV_OUTPUT_DIR}
+		)
 	endforeach ()
 endmacro ()

@@ -40,32 +40,6 @@ set(
 )
 
 set(
-	ASSETS
-	${libadventure_SOURCE_DIR}/assets/fonts/cubic.ttf
-	${libadventure_SOURCE_DIR}/assets/fonts/lato.ttf
-	${libadventure_SOURCE_DIR}/assets/fonts/teutonic.ttf
-	${libadventure_SOURCE_DIR}/assets/fonts/pirata-one.ttf
-	${libadventure_SOURCE_DIR}/assets/sprites/john.png
-)
-
-set(
-	MAPS
-	${libadventure_SOURCE_DIR}/assets/maps/map-world.json
-)
-
-set(
-	TILESETS
-	${libadventure_SOURCE_DIR}/assets/maps/tileset-world.json
-)
-
-set(
-	DATA
-	${libadventure_SOURCE_DIR}/assets/maps/animation-water.png
-	${libadventure_SOURCE_DIR}/assets/maps/sprite-world.png
-	${libadventure_SOURCE_DIR}/assets/sprites/john.png
-)
-
-set(
 	PO
 	${libadventure_SOURCE_DIR}/nls/fr.po
 )
@@ -73,12 +47,8 @@ set(
 molko_define_library(
 	TARGET libmlk-adventure
 	TRANSLATIONS fr
-	SOURCES ${SOURCES} ${PO} ${ASSETS} ${MAPS} ${TILESETS}
-	MAPS ${MAPS}
-	TILESETS ${TILESETS}
-	ASSETS ${ASSETS}
-	DATA ${DATA}
-	LIBRARIES libmlk-core libmlk-ui libmlk-rpg
+	SOURCES ${SOURCES} ${PO}
+	LIBRARIES libmlk-core libmlk-ui libmlk-rpg libmlk-data
 	PRIVATE_INCLUDES
 		${libadventure_SOURCE_DIR}/adventure
 	PUBLIC_INCLUDES

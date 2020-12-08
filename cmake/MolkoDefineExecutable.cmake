@@ -33,6 +33,7 @@
 #   FLAGS               (Optional) C flags (without -D)
 #   LIBRARIES           (Optional) libraries to link
 #   INCLUDES            (Optional) includes
+#   INSTALL             (Optional) create install target
 # )
 # ```
 #
@@ -54,7 +55,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetCompilerFlags.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetBuildDirectories.cmake)
 
 function(molko_define_executable)
-	set(options)
+	set(options INSTALL)
 	set(oneValueArgs FOLDER TARGET)
 	set(multiValueArgs ASSETS FLAGS INCLUDES LIBRARIES SOURCES TRANSLATIONS)
 
@@ -93,6 +94,9 @@ function(molko_define_executable)
 
 	if (EXE_FOLDER)
 		set_target_properties(${EXE_TARGET} PROPERTIES FOLDER ${EXE_FOLDER})
+	endif ()
+	if (EXE_INSTALL)
+		install(TARGETS ${EXE_TARGET} DESTINATION ${CMAKE_INSTALL_BINDIR})
 	endif ()
 
 	molko_set_compiler_flags(${EXE_TARGET})

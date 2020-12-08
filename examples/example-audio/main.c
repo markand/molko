@@ -32,12 +32,9 @@
 #include <ui/theme.h>
 #include <ui/ui.h>
 
-/* https://freesound.org/people/VABsounds/sounds/423658 */
-#include <assets/music/vabsounds-romance.h>
-#include <assets/sounds/fire.h>
-
-#define W 1280
-#define H 720
+#define W       1280
+#define H       720
+#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
 
 static struct music music;
 static struct sound sound;
@@ -63,8 +60,8 @@ init(void)
 		panic();
 	if (!window_open("Example - Audio", W, H))
 		panic();
-	if (!music_openmem(&music, music_vabsounds_romance, sizeof (music_vabsounds_romance)) ||
-	    !sound_openmem(&sound, sounds_fire, sizeof (sounds_fire)))
+	if (!music_open(&music, PATH("music/vabsounds-romance.ogg")) ||
+	    !sound_open(&sound, PATH("sounds/fire.wav")))
 		panic();
 }
 

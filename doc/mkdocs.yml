@@ -44,15 +44,14 @@ nav:
       - dev/howto/01-init.md
     - CMake macros:
       # Don't edit manually, generated from top cmake/*.cmake files.
-      - cmake/MolkoBuildTilesets.md
-      - cmake/MolkoBuildTranslations.md
       - cmake/MolkoBuildAssets.md
       - cmake/MolkoBuildMaps.md
-      - cmake/MolkoDefineTest.md
-      - cmake/MolkoSetCompilerFlags.md
+      - cmake/MolkoBuildTranslations.md
       - cmake/MolkoDefineExecutable.md
-      - cmake/MolkoSetBuildDirectories.md
       - cmake/MolkoDefineLibrary.md
+      - cmake/MolkoDefineTest.md
+      - cmake/MolkoSetBuildDirectories.md
+      - cmake/MolkoSetCompilerFlags.md
     - API Reference:
       - libmlk-core:
         - action: dev/api/core/action.md

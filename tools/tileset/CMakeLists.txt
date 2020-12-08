@@ -23,4 +23,5 @@ molko_define_executable(
 	SOURCES main.c
 	FOLDER tools
 	LIBRARIES Jansson::Jansson
+	INSTALL
 )

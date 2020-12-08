@@ -40,10 +40,9 @@
 #include <ui/theme.h>
 #include <ui/ui.h>
 
-#include <assets/sprites/explosion.h>
-
-#define W 1280
-#define H 720
+#define W       1280
+#define H       720
+#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
 
 static struct label help = {
 	.x = 10,
@@ -77,7 +76,7 @@ init(void)
 		panic();
 
 	/* 0: Explosion animation. */
-	if (!image_openmem(&explosion_tex, sprites_explosion, sizeof (sprites_explosion)))
+	if (!image_open(&explosion_tex, PATH("sprites/explosion.png")))
 		panic();
 
 	sprite_init(&explosion_sprite, &explosion_tex, 256, 256);

@@ -22,4 +22,5 @@ molko_define_executable(
 	TARGET mlk-adventure
 	SOURCES main.c
 	LIBRARIES libmlk-adventure
+	INSTALL
 )

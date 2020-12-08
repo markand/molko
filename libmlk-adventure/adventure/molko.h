@@ -24,7 +24,6 @@
 #include <core/sprite.h>
 
 struct molko {
-	struct game engine;
 	struct state *panic;
 
 	/* For map state. */

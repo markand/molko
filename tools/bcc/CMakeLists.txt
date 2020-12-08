@@ -17,4 +17,4 @@
 #
 
 project(molko-bcc)
-molko_define_executable(TARGET mlk-bcc SOURCES main.c FOLDER tools)
+molko_define_executable(TARGET mlk-bcc SOURCES main.c FOLDER tools INSTALL)

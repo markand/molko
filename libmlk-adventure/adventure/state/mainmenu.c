@@ -36,12 +36,10 @@
 #include <ui/label.h>
 #include <ui/theme.h>
 
-#include <assets/fonts/teutonic.h>
-#include <assets/fonts/pirata-one.h>
+#include <adventure/molko.h>
 
 #include "adventure_p.h"
 #include "mainmenu.h"
-#include "molko.h"
 
 struct self {
 	struct state state;
@@ -58,7 +56,7 @@ struct self {
 static void
 new(void)
 {
-	molko_teleport("assets/maps/map-world.map", -1, -1);
+	molko_teleport("maps/map-world.map", -1, -1);
 }
 
 static void
@@ -124,8 +122,8 @@ start(struct state *state)
 	struct self *self = state->data;
 	struct font fonts[2];
 
-	if (!font_openmem(&fonts[0], fonts_teutonic, sizeof (fonts_teutonic), 130) ||
-	    !font_openmem(&fonts[1], fonts_pirata_one, sizeof (fonts_pirata_one), 30))
+	if (!font_open(&fonts[0], molko_path("fonts/teutonic.ttf"), 130) ||
+	    !font_open(&fonts[1], molko_path("fonts/pirata-one.ttf"), 30))
 		panic();
 
 	fonts[0].style = fonts[1].style = FONT_STYLE_ANTIALIASED;

@@ -28,6 +28,7 @@
 #include <core/image.h>
 #include <core/sprite.h>
 #include <core/state.h>
+#include <core/sys.h>
 #include <core/texture.h>
 #include <core/util.h>
 #include <core/window.h>
@@ -36,10 +37,9 @@
 #include <ui/label.h>
 #include <ui/ui.h>
 
-#include <assets/sprites/people.h>
-
-#define W      1280
-#define H      720
+#define W       1280
+#define H       720
+#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
 #define HEADER "Keys: <Left>/<Right> and <Up/Down> to select a column/row. Current: %u, %u (total %u/%u)"
 
 static char msg[512];
@@ -67,7 +67,7 @@ init(void)
 		panic();
 	if (!window_open("Example - Sprite", W, H))
 		panic();
-	if (!image_openmem(&texture, sprites_people, sizeof (sprites_people)))
+	if (!image_open(&texture, PATH("sprites/people.png")))
 		panic();
 
 	sprite_init(&sprite, &texture, 48, 48);

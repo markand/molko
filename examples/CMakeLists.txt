@@ -18,55 +18,6 @@
 
 project(examples)
 
-set(
-	ASSETS_IMAGES
-	${examples_SOURCE_DIR}/assets/images/battle-background.png
-	${examples_SOURCE_DIR}/assets/images/black-cat.png
-	${examples_SOURCE_DIR}/assets/images/haunted-wood.png
-)
-
-set(
-	ASSETS_MUSIC
-	${examples_SOURCE_DIR}/assets/music/vabsounds-romance.ogg
-)
-
-set(
-	ASSETS_SOUNDS
-	${examples_SOURCE_DIR}/assets/sounds/fire.wav
-)
-
-set(
-	ASSETS_SPRITES
-	${examples_SOURCE_DIR}/assets/sprites/chest.png
-	${examples_SOURCE_DIR}/assets/sprites/cursor.png
-	${examples_SOURCE_DIR}/assets/sprites/explosion.png
-	${examples_SOURCE_DIR}/assets/sprites/john.png
-	${examples_SOURCE_DIR}/assets/sprites/john-sword.png
-	${examples_SOURCE_DIR}/assets/sprites/john-walk.png
-	${examples_SOURCE_DIR}/assets/sprites/numbers.png
-	${examples_SOURCE_DIR}/assets/sprites/people.png
-)
-
-set(
-	ASSETS
-	${ASSETS_IMAGES}
-	${ASSETS_MUSIC}
-	${ASSETS_SOUNDS}
-	${ASSETS_SPRITES}
-)
-
-# Can't use an interface library as examples live in subdirectories.
-file(WRITE ${examples_BINARY_DIR}/none.c "void molko() {}")
-
-molko_define_library(
-	TARGET libexamples
-	FOLDER examples
-	SOURCES
-		${examples_BINARY_DIR}/none.c
-		${ASSETS}
-	ASSETS ${ASSETS}
-)
-
 add_subdirectory(example-action)
 add_subdirectory(example-animation)
 add_subdirectory(example-audio)
@@ -81,8 +32,3 @@ add_subdirectory(example-message)
 add_subdirectory(example-sprite)
 add_subdirectory(example-trace)
 add_subdirectory(example-ui)
-
-source_group("assets/images" FILES ${ASSETS_IMAGES})
-source_group("assets/music" FILES ${ASSETS_MUSIC})
-source_group("assets/sounds" FILES ${ASSETS_SOUNDS})
-source_group("assets/sprites" FILES ${ASSETS_SPRITES})

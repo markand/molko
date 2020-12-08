@@ -22,5 +22,5 @@ molko_define_executable(
 	TARGET example-sprite
 	SOURCES ${example-sprite_SOURCE_DIR}/main.c
 	FOLDER examples
-	LIBRARIES libmlk-ui libexamples
+	LIBRARIES libmlk-ui libmlk-data
 )

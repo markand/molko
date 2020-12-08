@@ -33,7 +33,7 @@
 
 #include <ui/align.h>
 
-#include <assets/fonts/cubic.h>
+#include <adventure/molko.h>
 
 #include "splashscreen.h"
 #include "mainmenu.h"
@@ -54,7 +54,7 @@ start(struct state *state)
 	struct self *self = state->data;
 	struct font font;
 
-	if (!font_openmem(&font, fonts_cubic, sizeof (fonts_cubic), 80))
+	if (!font_open(&font, molko_path("fonts/cubic.ttf"), 80))
 		panic();
 
 	font.style = FONT_STYLE_ANTIALIASED;

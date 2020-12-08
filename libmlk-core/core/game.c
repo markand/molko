@@ -89,10 +89,10 @@ game_update(unsigned int ticks)
 			state_end(previous);
 
 		/* Change the state and tell we're starting it. */
-		if ((game.state = game.state_next))
+		if ((game.state = game.state_next)) {
+			game.state_next = NULL;
 			state_start(game.state);
-
-		game.state_next = NULL;
+		}
 
 		/*
 		 * Only call finish at the end of the process because

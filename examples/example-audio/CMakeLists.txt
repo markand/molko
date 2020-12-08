@@ -22,5 +22,5 @@ molko_define_executable(
 	TARGET example-audio
 	SOURCES ${example-audio_SOURCE_DIR}/main.c
 	FOLDER examples
-	LIBRARIES libmlk-ui libexamples
+	LIBRARIES libmlk-data libmlk-ui
 )

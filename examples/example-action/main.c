@@ -40,11 +40,9 @@
 #include <rpg/message.h>
 #include <rpg/rpg.h>
 
-#include <assets/sprites/chest.h>
-#include <assets/sprites/people.h>
-
-#define W       (1280)
-#define H       (720)
+#define W       1280
+#define H       720
+#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
 
 #define MW      (W * 0.75)
 #define MX      ((W / 2) - (MW / 2))
@@ -254,7 +252,7 @@ guide_draw(struct action *act)
 static void
 guide_init(void)
 {
-	if (!image_openmem(&guide.image, sprites_people, sizeof (sprites_people)))
+	if (!image_open(&guide.image, PATH("sprites/people.png")))
 		panic();
 
 	sprite_init(&guide.sprite, &guide.image, 48, 48);
@@ -301,7 +299,7 @@ chest_draw(struct action *act)
 static void
 chest_init(void)
 {
-	if (!image_openmem(&chest.image, sprites_chest, sizeof (sprites_chest)))
+	if (!image_open(&chest.image, PATH("sprites/chest.png")))
 		panic();
 
 	sprite_init(&chest.sprite, &chest.image, 32, 32);

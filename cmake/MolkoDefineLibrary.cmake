@@ -31,7 +31,6 @@
 #   FOLDER              (Optional) optional subfolder to organize
 #   TYPE                (Optional) type of library
 #   ASSETS              (Optional) list of assets
-#   DATA                (Optional) list of data to install
 #   LIBRARIES           (Optional) libraries to link
 #   PRIVATE_FLAGS       (Optional) C flags (without -D)
 #   PRIVATE_INCLUDES    (Optional) local includes for the target only
@@ -65,16 +64,13 @@
 #
 
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildAssets.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildTilesets.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/MolkoBuildMaps.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/MolkoLinkData.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetCompilerFlags.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MolkoSetBuildDirectories.cmake)
 
 function(molko_define_library)
 	set(options EXTERNAL)
 	set(oneValueArgs FOLDER TARGET TYPE)
-	set(multiValueArgs ASSETS DATA LIBRARIES MAPS PRIVATE_FLAGS PRIVATE_INCLUDES PUBLIC_FLAGS PUBLIC_INCLUDES TILESETS SOURCES TRANSLATIONS)
+	set(multiValueArgs ASSETS LIBRARIES PRIVATE_FLAGS PRIVATE_INCLUDES PUBLIC_FLAGS PUBLIC_INCLUDES SOURCES TRANSLATIONS)
 
 	cmake_parse_arguments(LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -86,9 +82,6 @@ function(molko_define_library)
 	endif ()
 
 	molko_build_assets("${LIB_ASSETS}" ASSETS_OUTPUTS)
-	molko_build_tilesets(${LIB_TARGET} "${LIB_TILESETS}" TILESETS_OUTPUTS)
-	molko_build_maps(${LIB_TARGET} "${LIB_MAPS}" MAPS_OUTPUTS)
-	molko_link_data(${LIB_TARGET} "${LIB_DATA}" DATA_OUTPUTS)
 
 	if (${LIB_TYPE} MATCHES "INTERFACE")
 		add_library(${LIB_TARGET} INTERFACE)
@@ -96,11 +89,8 @@ function(molko_define_library)
 			${LIB_TARGET}
 			INTERFACE
 				${ASSETS_OUTPUTS}
-				${DATA_OUTPUTS}
 				${LIB_SOURCES}
-				${MAPS_OUTPUTS}
 				${NLS_OUTPUTS}
-				${TILESETS_OUTPUTS}
 		)
 		target_include_directories(
 			${LIB_TARGET}
@@ -121,12 +111,9 @@ function(molko_define_library)
 		add_library(
 			${LIB_TARGET}
 			${ASSETS_OUTPUTS}
-			${DATA_OUTPUTS}
 			${LIB_SOURCES}
 			${LIB_TYPE}
-			${MAPS_OUTPUTS}
 			${NLS_OUTPUTS}
-			${TILESETS_OUTPUTS}
 		)
 
 		target_include_directories(

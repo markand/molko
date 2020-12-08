@@ -79,7 +79,8 @@ molko_init(void)
 	panic_handler = crash;
 
 	/* Start to splash. */
-	game_switch(splashscreen_state_new(), true);
+	//game_switch(splashscreen_state_new(), true);
+	game_switch(mainmenu_state_new(), true);
 }
 
 void
@@ -110,8 +111,7 @@ molko_path(const char *file)
 {
 	assert(file);
 
-	/* TODO: libmlk-adventure must be renamed. */
-	return util_pathf("%s/libmlk-adventure/%s", sys_dir(SYS_DIR_DATA), file);
+	return util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), file);
 }
 
 void

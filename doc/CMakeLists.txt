@@ -27,7 +27,6 @@ if (MKDOCS_EXE)
 		${doc_SOURCE_DIR}/docs/about.md
 		${doc_SOURCE_DIR}/docs/cmake/MolkoBuildAssets.md
 		${doc_SOURCE_DIR}/docs/cmake/MolkoBuildMaps.md
-		${doc_SOURCE_DIR}/docs/cmake/MolkoBuildTilesets.md
 		${doc_SOURCE_DIR}/docs/cmake/MolkoBuildTranslations.md
 		${doc_SOURCE_DIR}/docs/cmake/MolkoDefineExecutable.md
 		${doc_SOURCE_DIR}/docs/cmake/MolkoDefineLibrary.md
@@ -106,7 +105,6 @@ if (SH_EXE)
 		DOC_MACROS
 		${cmake_SOURCE_DIR}/MolkoBuildAssets.cmake
 		${cmake_SOURCE_DIR}/MolkoBuildMaps.cmake
-		${cmake_SOURCE_DIR}/MolkoBuildTilesets.cmake
 		${cmake_SOURCE_DIR}/MolkoBuildTranslations.cmake
 		${cmake_SOURCE_DIR}/MolkoDefineExecutable.cmake
 		${cmake_SOURCE_DIR}/MolkoDefineLibrary.cmake

@@ -100,7 +100,7 @@ start(struct state *state)
 		panic();
 
 	/* TODO: find this from team maybe. */
-	if (!image_open(&molko.map_player_texture, molko_path("assets/sprites/john.png")))
+	if (!image_open(&molko.map_player_texture, molko_path("sprites/john.png")))
 		panic();
 
 	sprite_init(&molko.map_player_sprite, &molko.map_player_texture, 48, 48);

@@ -22,5 +22,5 @@ molko_define_executable(
 	TARGET example-animation
 	SOURCES ${example-animation_SOURCE_DIR}/main.c
 	FOLDER examples
-	LIBRARIES libmlk-ui libexamples
+	LIBRARIES libmlk-data libmlk-ui
 )

@@ -33,10 +33,9 @@
 #include <ui/label.h>
 #include <ui/ui.h>
 
-#include <assets/sprites/numbers.h>
-
-#define W 1280
-#define H 720
+#define W       1280
+#define H       720
+#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
 
 static struct label label = {
 	.text = "Keys: <Space> start or reset the animation.",
@@ -57,7 +56,7 @@ init(void)
 		panic();
 	if (!window_open("Example - Animation", W, H))
 		panic();
-	if (!image_openmem(&numbers, sprites_numbers, sizeof (sprites_numbers)))
+	if (!image_open(&numbers, PATH("sprites/numbers.png")))
 		panic();
 }
 
