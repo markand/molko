@@ -37,8 +37,8 @@
 #include <ui/theme.h>
 
 #include <adventure/molko.h>
+#include <adventure/adventure_p.h>
 
-#include "adventure_p.h"
 #include "mainmenu.h"
 
 struct self {

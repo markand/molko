@@ -59,8 +59,9 @@ molko_define_library(
 	ASSETS ${ASSETS}
 	LIBRARIES
 		libmlk-core
-	PUBLIC_INCLUDES
-		$<BUILD_INTERFACE:${libmlk-ui_SOURCE_DIR}>
+	INCLUDES
+		PUBLIC
+			$<BUILD_INTERFACE:${libmlk-ui_SOURCE_DIR}>
 )
 
 source_group(TREE ${libmlk-ui_SOURCE_DIR} FILES ${SOURCES})

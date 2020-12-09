@@ -82,10 +82,15 @@ molko_define_library(
 	TRANSLATIONS fr
 	SOURCES ${SOURCES} ${PO}
 	LIBRARIES
-		libmlk-core
-		libmlk-ui
-	PUBLIC_INCLUDES
-		$<BUILD_INTERFACE:${libmlk-rpg_SOURCE_DIR}>
+		PUBLIC
+			libmlk-core
+			libmlk-ui
+	FLAGS
+		PRIVATE
+			_BSD_SOURCE
+	INCLUDES
+		PUBLIC
+			$<BUILD_INTERFACE:${libmlk-rpg_SOURCE_DIR}>
 )
 
 source_group(TREE ${libmlk-rpg_SOURCE_DIR} FILES ${SOURCES})

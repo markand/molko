@@ -33,7 +33,8 @@
 
 #include <rpg/map.h>
 
-#include "molko.h"
+#include <adventure/molko.h>
+
 #include "teleport.h"
 
 struct teleport {

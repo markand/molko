@@ -115,22 +115,26 @@ molko_define_library(
 	ASSETS ${ASSETS}
 	TRANSLATIONS fr
 	LIBRARIES
-		${LIBS}
-		$<$<BOOL:${LIBM}>:m>
-		libcompat
-		libsqlite
-		SDL2::SDL2
-		SDL2::image
-		SDL2::mixer
-		SDL2::ttf
-	PRIVATE_FLAGS
-		BINDIR="${CMAKE_INSTALL_BINDIR}"
-		PREFIX="${CMAKE_INSTALL_PREFIX}"
-		SHAREDIR="${CMAKE_INSTALL_DATADIR}"
-	PUBLIC_INCLUDES
-		${INCS}
-		$<BUILD_INTERFACE:${libmlk-core_SOURCE_DIR}>
-		$<BUILD_INTERFACE:${libmlk-core_BINARY_DIR}>
+		PUBLIC
+			${LIBS}
+			$<$<BOOL:${LIBM}>:m>
+			libcompat
+			libsqlite
+			SDL2::SDL2
+			SDL2::image
+			SDL2::mixer
+			SDL2::ttf
+	FLAGS
+		PRIVATE
+			_BSD_SOURCE
+			BINDIR="${CMAKE_INSTALL_BINDIR}"
+			PREFIX="${CMAKE_INSTALL_PREFIX}"
+			SHAREDIR="${CMAKE_INSTALL_DATADIR}"
+	INCLUDES
+		PUBLIC
+			${INCS}
+			$<BUILD_INTERFACE:${libmlk-core_SOURCE_DIR}>
+			$<BUILD_INTERFACE:${libmlk-core_BINARY_DIR}>
 )
 
 source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${SOURCES})

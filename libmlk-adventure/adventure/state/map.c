@@ -34,7 +34,8 @@
 #include <adventure/actions/spawner.h>
 #include <adventure/actions/teleport.h>
 
-#include "molko.h"
+#include <adventure/molko.h>
+
 #include "map.h"
 
 struct self {

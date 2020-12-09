@@ -99,4 +99,8 @@ molko_build_maps(
 	TILESETS ${TILESETS}
 )
 
-add_library(libmlk-data INTERFACE ${directories} ${objects})
+molko_define_library(
+	TARGET libmlk-data
+	TYPE INTERFACE
+	SOURCES ${directories} ${objects}
+)

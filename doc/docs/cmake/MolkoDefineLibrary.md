@@ -11,12 +11,9 @@ SOURCES             src1, src2, srcn
 EXTERNAL            (Optional) set to true for external libraries
 FOLDER              (Optional) optional subfolder to organize
 TYPE                (Optional) type of library
-ASSETS              (Optional) list of assets
 LIBRARIES           (Optional) libraries to link
-PRIVATE_FLAGS       (Optional) C flags (without -D)
-PRIVATE_INCLUDES    (Optional) local includes for the target only
-PUBLIC_FLAGS        (Optional) C flags (without -D)
-PUBLIC_INCLUDES     (Optional) includes to share with target dependencies
+FLAGS               (Optional) C flags (without -D)
+INCLUDES            (Optional) local includes for the target only
 )
 ```
 
@@ -33,13 +30,16 @@ directory.
 Optional argument *EXTERNAL* should be set for targets that are not
 maintained here (e.g. third party libraries embedded).
 
-Optional argument *PRIVATE_FLAGS*, *PUBLIC_FLAGS*, *PRIVATE_INCLUDES*,
-*PUBLIC_INCLUDES*, *LIBRARIES* may be passed to set compile flags, includes
-and libraries respectively.
-
-The arguments *ASSETS* contains a list of assets to be converted during the
-build. The file hierarchy is conserved in the `${CMAKE_CURRENT_BINARY_DIR}`.
+The optional arguments *LIBRARIES*, *FLAGS* and *INCLUDES* are passed to the
+respective CMake command [target_link_libraries][],
+[target_compile_definitions][] and [target_include_directories][]
+respectively. As such, it is necessary to specify the scope (PUBLIC, PRIVATE
+or INTERFACE) for every argument.
 
 If *FOLDER* option is set, it is organized into its name under the IDE if
 supported.
+
+[target_compile_definitions]: https://cmake.org/cmake/help/latest/command/target_compile_definitions.html
+[target_include_directories]: https://cmake.org/cmake/help/latest/command/target_include_directories.html
+[target_link_libraries]: https://cmake.org/cmake/help/latest/command/target_link_libraries.html
 
