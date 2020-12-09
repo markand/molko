@@ -79,8 +79,7 @@ molko_init(void)
 	panic_handler = crash;
 
 	/* Start to splash. */
-	//game_switch(splashscreen_state_new(), true);
-	game_switch(mainmenu_state_new(), true);
+	game_switch(splashscreen_state_new(), true);
 }
 
 void

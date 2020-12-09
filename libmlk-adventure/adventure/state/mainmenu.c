@@ -141,6 +141,9 @@ handle(struct state *state, const union event *event)
 	struct self *self = state->data;
 
 	switch (event->type) {
+	case EVENT_QUIT:
+		game_quit();
+		break;
 	case EVENT_KEYDOWN:
 		switch (event->key.key) {
 		case KEY_UP:

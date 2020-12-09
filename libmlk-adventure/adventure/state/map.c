@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <core/event.h>
 #include <core/image.h>
 #include <core/painter.h>
 #include <core/panic.h>
@@ -122,7 +123,10 @@ handle(struct state *state, const union event *ev)
 {
 	struct self *self = state->data;
 
-	map_handle(&self->map, ev);
+	if (ev->type == EVENT_QUIT)
+		game_quit();
+	else
+		map_handle(&self->map, ev);
 }
 
 static void
