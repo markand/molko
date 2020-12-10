@@ -25,6 +25,8 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/actions/teleport.c
 	${libadventure_SOURCE_DIR}/adventure/actions/teleport.h
 	${libadventure_SOURCE_DIR}/adventure/adventure_p.h
+	${libadventure_SOURCE_DIR}/adventure/assets.c
+	${libadventure_SOURCE_DIR}/adventure/assets.h
 	${libadventure_SOURCE_DIR}/adventure/molko.c
 	${libadventure_SOURCE_DIR}/adventure/molko.h
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.c

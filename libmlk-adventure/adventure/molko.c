@@ -41,6 +41,7 @@
 #include <adventure/state/mainmenu.h>
 #include <adventure/state/map.h>
 
+#include "assets.h"
 #include "molko.h"
 
 #define WINDOW_WIDTH    1280
@@ -77,6 +78,9 @@ molko_init(void)
 	/* Init unrecoverable panic state. */
 	molko.panic = panic_state_new();
 	panic_handler = crash;
+
+	/* Init other stuff. */
+	assets_init();
 
 	/* Start to splash. */
 	game_switch(splashscreen_state_new(), true);

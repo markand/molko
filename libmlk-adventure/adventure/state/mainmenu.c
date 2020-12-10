@@ -36,6 +36,7 @@
 #include <ui/label.h>
 #include <ui/theme.h>
 
+#include <adventure/assets.h>
 #include <adventure/molko.h>
 #include <adventure/adventure_p.h>
 
@@ -168,6 +169,8 @@ static void
 draw(struct state *state)
 {
 	struct self *self = state->data;
+	struct sprite *cursor = assets_sprites[ASSETS_SPRITE_UI_CURSOR];
+	int x, y;
 
 	painter_set_color(0xffffffff);
 	painter_clear();
@@ -175,11 +178,13 @@ draw(struct state *state)
 	for (size_t i = 0; i < UTIL_SIZE(self->texts); ++i)
 		texture_draw(&self->texts[i].tex, self->texts[i].x, self->texts[i].y);
 
-	/* TODO: a sword here. */
-	painter_set_color(0x000000ff);
-	painter_draw_rectangle(
-	    self->texts[self->itemsel].x - 30,
-	    self->texts[self->itemsel].y + 11, 15, 15);
+	x  = self->texts[self->itemsel].x;
+	x -= cursor->cellw * 2;
+	y  = self->texts[self->itemsel].y;
+	y += self->texts[self->itemsel].tex.h / 2;
+	y -= cursor->cellh / 2;
+
+	sprite_draw(cursor, 1, 2, x, y);
 	painter_present();
 }
 
