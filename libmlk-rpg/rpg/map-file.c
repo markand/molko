@@ -279,7 +279,7 @@ map_file_open(struct map_file *file, struct map *map, const char *path)
 		return false;
 
 	if (!(ctx.fp = fopen(path, "r")))
-		return errorf("%s", strerror(errno));
+		return errorf("%s: %s", path, strerror(errno));
 
 	if (!(ret = parse(&ctx, path)) || !(ret = check(map))) {
 		map_finish(map);

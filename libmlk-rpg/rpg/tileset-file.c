@@ -315,7 +315,7 @@ tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *
 	memset(tileset, 0, sizeof (*tileset));
 
 	if (!(ctx.fp = fopen(path, "r")))
-		return errorf("%s", strerror(errno));
+		return errorf("%s: %s", path, strerror(errno));
 	if (!(ret = parse(&ctx, path)) || !(ret = check(tileset)))
 		tileset_file_finish(tf);
 
