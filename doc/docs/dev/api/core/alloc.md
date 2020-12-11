@@ -185,12 +185,12 @@ alloc_new0(size_t size)
 
 ### alloc\_array
 
-Allocate an uninitialized array of `n` elements of `size` individually. Returns
-the result of the current [alloc](#alloc) function set.
+Allocate an uninitialized array of `len` elements of `elemsize` individually.
+Returns the result of the current [alloc](#alloc) function set.
 
 ```c
 void *
-alloc_array(size_t n, size_t size)
+alloc_array(size_t len, size_t elemsize)
 ```
 
 ### alloc\_array0
@@ -199,27 +199,40 @@ Invoke [alloc_array](#alloc_array) but zero initialize the memory.
 
 ```c
 void *
-alloc_array0(size_t n, size_t size)
+alloc_array0(size_t len, size_t elemsize)
 ```
 
 ### alloc\_renew
 
-Reallocate the pointer `ptr` (which may be NULL) to the new `amount` size. The
+Reallocate the pointer `ptr` (which may be NULL) to the new `size` size. The
 size can be 0. Returns the result of the current [alloc](#alloc) function set.
 
 ```c
 void *
-alloc_renew(void *ptr, size_t amount)
+alloc_renew(void *ptr, size_t size)
 ```
 
 ### alloc\_rearray
 
-Reallocate the `ptr` (which may be NULL) as an array of `n` elements of `size`
-individually. Returns the result of the current [alloc](#alloc) function set.
+Reallocate the pointer `ptr` (which may be NULL) as an array of `newlen`
+elements of `elemsize` individually. Returns the result of the current
+[realloc](#realloc) function set.
 
 ```c
 void *
-alloc_rearray(void *ptr, size_t n, size_t size)
+alloc_rearray(void *ptr, size_t newlen, size_t elemsize)
+```
+
+### alloc\_rearray0
+
+Reallocate the `ptr` (which maybe NULL) with the `oldlen` as current number of
+elements of `elemsize` to the `newlen`. If the `newlen` is greater than oldlen,
+the new region is cleared with 0. Returns the result of the current
+[realloc](#realloc) function set.
+
+```c
+void *
+alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize)
 ```
 
 ### alloc\_dup
@@ -229,6 +242,16 @@ Duplicate the `ptr` region with the given `size`.
 ```c
 void *
 alloc_dup(const void *ptr, size_t size)
+```
+
+### alloc\_sdup
+
+Duplicate the string `src`. Returns the result of current [alloc](#alloc)
+function set.
+
+```c
+char *
+alloc_sdup(const char *src)
 ```
 
 ### alloc\_pool\_init

@@ -54,19 +54,25 @@ void *
 alloc_new0(size_t size);
 
 void *
-alloc_array(size_t n, size_t size);
+alloc_array(size_t len, size_t elemsize);
 
 void *
-alloc_array0(size_t n, size_t size);
+alloc_array0(size_t len, size_t elemsize);
 
 void *
-alloc_renew(void *ptr, size_t amount);
+alloc_renew(void *ptr, size_t size);
 
 void *
-alloc_rearray(void *ptr, size_t n, size_t size);
+alloc_rearray(void *ptr, size_t newlen, size_t elemsize);
+
+void *
+alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize);
 
 void *
 alloc_dup(const void *ptr, size_t size);
+
+char *
+alloc_sdup(const char *src);
 
 /* alloc_pool functions. */
 bool

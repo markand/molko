@@ -27,7 +27,41 @@ struct point {
 };
 
 GREATEST_TEST
-test_basics_simple(void)
+test_array_simple(void)
+{
+	struct point *points;
+
+	GREATEST_ASSERT((points = alloc_array0(2, sizeof (*points))));
+	GREATEST_ASSERT_EQ(0, points[0].x);
+	GREATEST_ASSERT_EQ(0, points[0].y);
+	GREATEST_ASSERT_EQ(0, points[1].x);
+	GREATEST_ASSERT_EQ(0, points[1].y);
+
+	points[0].x = 10;
+	points[0].y = 20;
+	points[1].x = 30;
+	points[1].y = 40;
+
+	GREATEST_ASSERT((points = alloc_rearray0(points, 2, 4, sizeof (*points))));
+	GREATEST_ASSERT_EQ(10, points[0].x);
+	GREATEST_ASSERT_EQ(20, points[0].y);
+	GREATEST_ASSERT_EQ(30, points[1].x);
+	GREATEST_ASSERT_EQ(40, points[1].y);
+	GREATEST_ASSERT_EQ(0,  points[2].x);
+	GREATEST_ASSERT_EQ(0,  points[2].y);
+	GREATEST_ASSERT_EQ(0,  points[3].x);
+	GREATEST_ASSERT_EQ(0,  points[3].y);
+
+	GREATEST_PASS();
+}
+
+GREATEST_SUITE(suite_basics)
+{
+	GREATEST_RUN_TEST(test_array_simple);
+}
+
+GREATEST_TEST
+test_pool_simple(void)
 {
 	struct alloc_pool pool;
 	struct point *p;
@@ -71,9 +105,9 @@ test_basics_simple(void)
 	GREATEST_PASS();
 }
 
-GREATEST_SUITE(suite_basics)
+GREATEST_SUITE(suite_pool)
 {
-	GREATEST_RUN_TEST(test_basics_simple);
+	GREATEST_RUN_TEST(test_pool_simple);
 }
 
 GREATEST_MAIN_DEFS();
@@ -83,6 +117,7 @@ main(int argc, char **argv)
 {
 	GREATEST_MAIN_BEGIN();
 	GREATEST_RUN_SUITE(suite_basics);
+	GREATEST_RUN_SUITE(suite_pool);
 	GREATEST_MAIN_END();
 
 	return 0;

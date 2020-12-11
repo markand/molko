@@ -93,52 +93,68 @@ alloc_new0(size_t size)
 }
 
 void *
-alloc_array(size_t n, size_t size)
+alloc_array(size_t len, size_t elemsize)
 {
-	assert(n != 0);
-	assert(size != 0);
+	assert(len != 0);
+	assert(elemsize != 0);
 
-	size_t total = n * size;
+	size_t size = len * elemsize;
 
-	if (total / n != size)
+	if (size / len != elemsize)
 		return errorf("%s", strerror(ENOMEM)), NULL;
 
-	return funcs->alloc(total);
+	return funcs->alloc(size);
 }
 
 void *
-alloc_array0(size_t n, size_t size)
+alloc_array0(size_t len, size_t elemsize)
 {
-	assert(n != 0);
-	assert(size != 0);
+	assert(len != 0);
+	assert(elemsize != 0);
 
 	void *mem;
-	size_t total = n * size;
+	size_t size = len * elemsize;
 
-	if (total / n != size)
+	if (size / len != elemsize)
 		return errorf("%s", strerror(ENOMEM)), NULL;
 
-	if ((mem = funcs->alloc(total)))
-		memset(mem, 0, total);
+	if ((mem = funcs->alloc(size)))
+		memset(mem, 0, size);
 
 	return mem;
 }
 
 void *
-alloc_renew(void *ptr, size_t amount)
+alloc_renew(void *ptr, size_t size)
 {
-	return funcs->realloc(ptr, amount);
+	return funcs->realloc(ptr, size);
 }
 
 void *
-alloc_rearray(void *ptr, size_t n, size_t size)
+alloc_rearray(void *ptr, size_t len, size_t elemsize)
 {
-	size_t total = n * size;
+	size_t size = len * elemsize;
 
-	if (total / n != size)
+	if (size / len != elemsize)
 		return errorf("%s", strerror(ENOMEM)), NULL;
 
-	return funcs->realloc(ptr, total);
+	return funcs->realloc(ptr, size);
+}
+
+void *
+alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize)
+{
+	size_t size = newlen * elemsize;
+
+	if (size / newlen != elemsize)
+		return errorf("%s", strerror(ENOMEM)), NULL;
+	if (!(ptr = funcs->realloc(ptr, size)))
+		return false;
+
+	if (newlen > oldlen)
+		memset((unsigned char *)ptr + (oldlen * elemsize), 0, (newlen - oldlen) * elemsize);
+
+	return ptr;
 }
 
 void *
