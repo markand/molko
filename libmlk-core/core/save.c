@@ -61,15 +61,7 @@ execu(struct save *db, const unsigned char *sql)
 	return exec(db, (const char *)sql);
 }
 
-bool
-save_open(struct save *db, unsigned int idx, enum save_mode mode)
-{
-	assert(db);
-
-	return save_open_path(db, path(idx), mode);
-}
-
-bool
+static bool
 verify(struct save *db)
 {
 	struct {
@@ -91,6 +83,14 @@ verify(struct save *db)
 	}
 
 	return true;
+}
+
+bool
+save_open(struct save *db, unsigned int idx, enum save_mode mode)
+{
+	assert(db);
+
+	return save_open_path(db, path(idx), mode);
 }
 
 bool
