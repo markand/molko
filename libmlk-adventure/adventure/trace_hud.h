@@ -16,61 +16,30 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_MOLKO_TRACE_HUD_H
-#define MOLKO_MOLKO_TRACE_HUD_H
+#ifndef MOLKO_ADVENTURE_TRACE_HUD_H
+#define MOLKO_ADVENTURE_TRACE_HUD_H
 
-/**
- * \file trace_hud.h
- * \brief On screen hud
- */
+#define TRACE_HUD_TIMEOUT_DEFAULT (3000)
 
 struct theme;
 
-/**
- * \brief Default time to remove messages.
- */
-#define TRACE_HUD_TIMEOUT_DEFAULT (3000)
-
-/**
- * \brief Trace HUD options.
- */
 struct trace_hud {
-	struct theme *theme;	/*!< (+&?) Theme to use. */
-	unsigned int timeout;   /*!< (+) Timeout to remove messages. */
+	struct theme *theme;
+	unsigned int timeout;
 };
 
-/**
- * Global trace HUD options.
- */
 extern struct trace_hud trace_hud;
 
-/**
- * Handler to use as \ref trace_handler.
- *
- * \pre str != NULL
- * \param str the line to store
- */
 void
-trace_hud_handler(const char *str);
+trace_hud_handler(const char *);
 
-/**
- * Update the HUD.
- *
- * \param ticks elapsed milliseconds since last frame.
- */
 void
-trace_hud_update(unsigned int ticks);
+trace_hud_update(unsigned int);
 
-/**
- * Draw the HUD.
- */
 void
 trace_hud_draw(void);
 
-/**
- * Clear the hud.
- */
 void
 trace_hud_clear(void);
 
-#endif /* !MOLKO_MOLKO_TRACE_HUD_H */
+#endif /* !MOLKO_ADVENTURE_TRACE_HUD_H */

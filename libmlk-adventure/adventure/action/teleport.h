@@ -19,14 +19,27 @@
 #ifndef MOLKO_ADVENTURE_ACTIONS_TELEPORT_H
 #define MOLKO_ADVENTURE_ACTIONS_TELEPORT_H
 
+#include <core/action.h>
+#include <core/texture.h>
+
+struct map;
+
+struct teleport {
+	int x;
+	int y;
+	unsigned int w;
+	unsigned int h;
+	struct map *map;
+	const char *destination;
+	int origin_x;
+	int origin_y;
+	struct action action;
+	struct texture overlay;
+	unsigned int elapsed;
+	unsigned int alpha;
+};
+
 struct action *
-teleport_new(struct map *map,
-             const char *destination,
-             int x,
-             int y,
-             unsigned int w,
-             unsigned int h,
-             int origin_x,
-             int origin_y);
+teleport_action(struct teleport *);
 
 #endif /* !MOLKO_ADVENTURE_ACTIONS_TELEPORT_H */

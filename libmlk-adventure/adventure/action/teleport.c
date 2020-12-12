@@ -37,21 +37,6 @@
 
 #include "teleport.h"
 
-struct teleport {
-	struct action action;
-	struct texture overlay;
-	struct map *map;
-	char destination[FILENAME_MAX];
-	unsigned int elapsed;
-	unsigned int alpha;
-	int origin_x;
-	int origin_y;
-	int x;
-	int y;
-	unsigned int w;
-	unsigned int h;
-};
-
 static void
 draw(struct action *act)
 {
@@ -77,7 +62,7 @@ update_fadeout(struct action *act, unsigned int ticks)
 
 	if (tp->elapsed >= 10) {
 		if (tp->alpha >= 255) {
-			molko_teleport("assets/maps/map-world.map", tp->origin_x, tp->origin_y);
+			molko_teleport(tp->destination, tp->origin_x, tp->origin_y);
 			return true;
 		}
 
@@ -93,7 +78,7 @@ update_touch(struct action *act, unsigned int ticks)
 {
 	(void)ticks;
 
-	struct teleport *tp = act->data;
+	struct teleport *tp  = act->data;
 	const int x          = tp->x - tp->map->player_sprite->cellw;
 	const int y          = tp->y - tp->map->player_sprite->cellh;
 	const unsigned int w = tp->w + tp->map->player_sprite->cellw;
@@ -121,37 +106,17 @@ update_touch(struct action *act, unsigned int ticks)
 static void
 finish(struct action *act)
 {
-	struct teleport *self = act->data;
+	struct teleport *tp = act->data;
 
-	texture_finish(&self->overlay);
+	texture_finish(&tp->overlay);
 
 	free(act->data);
 }
 
 struct action *
-teleport_new(struct map *map,
-             const char *destination,
-             int x,
-             int y,
-             unsigned int w,
-             unsigned int h,
-             int origin_x,
-             int origin_y)
+teleport_new(struct teleport *tp)
 {
-	assert(map);
-	assert(destination);
-
-	struct teleport *tp;
-
-	tp = alloc_new0(sizeof (*tp));
-	tp->map = map;
-	tp->x = x;
-	tp->y = y;
-	tp->w = w;
-	tp->h = h;
-	tp->origin_x = origin_x;
-	tp->origin_y = origin_y;
-	strlcpy(tp->destination, destination, sizeof (tp->destination));
+	assert(tp);
 
 	tp->action.data = tp;
 	tp->action.update = update_touch;

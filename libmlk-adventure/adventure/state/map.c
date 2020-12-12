@@ -49,54 +49,9 @@ struct self {
 };
 
 static void
-load_spawner(struct map *map, int x, int y, int w, int h, const char *value)
-{
-	(void)x;
-	(void)y;
-	(void)w;
-	(void)h;
-	(void)value;
-
-	action_stack_add(&map->astack_par, spawner_new(map, 100, 300));
-}
-
-static void
-load_teleport(struct map *map, int x, int y, int w, int h, const char *value)
-{
-	char name[128] = {0};
-	int origin_x = -1, origin_y = -1;
-
-	sscanf(value, "%127[^|]|%d|%d", name, &origin_x, &origin_y);
-	action_stack_add(&map->astack_par, teleport_new(map, name, x, y, w, h, origin_x, origin_y));
-}
-
-static void
-load_action(struct map *map, int x, int y, int w, int h, const char *value)
-{
-	static const struct {
-		const char *name;
-		void (*load)(struct map *, int, int, int, int, const char *);
-	} table[] = {
-		{ "teleport|",  load_teleport },
-		{ "spawner|",   load_spawner }
-	};
-
-	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
-		size_t len = strlen(table[i].name);
-
-		if (strncmp(table[i].name, value, len) == 0) {
-			table[i].load(map, x, y, w, h, value + len);
-			break;
-		}
-	}
-}
-
-static void
 start(struct state *state)
 {
 	struct self *self = state->data;
-
-	self->map_file.load_action = load_action;
 
 	if (!map_file_open(&self->map_file, &self->map, molko_path(self->name)))
 		panic();

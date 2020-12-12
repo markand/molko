@@ -28,23 +28,15 @@
 
 #include "spawner.h"
 
-struct self {
-	struct action action;
-	struct map *map;
-	int last_x;
-	int last_y;
-	unsigned int steps;
-};
-
 static inline unsigned int
-distance(const struct self *self)
+distance(const struct spawner *s)
 {
-	unsigned int gap_x = fmax(self->last_x, self->map->player_x) -
-	                     fmin(self->last_x, self->map->player_x);
-	unsigned int gap_y = fmax(self->last_y, self->map->player_y) -
-			     fmin(self->last_y, self->map->player_y);
+	unsigned int gap_x = fmax(s->last_x, s->map->player_x) -
+	                     fmin(s->last_x, s->map->player_x);
+	unsigned int gap_y = fmax(s->last_y, s->map->player_y) -
+			     fmin(s->last_y, s->map->player_y);
 
-	return fmin(self->steps, gap_x + gap_y);
+	return fmin(s->steps, gap_x + gap_y);
 }
 
 static bool
@@ -52,14 +44,16 @@ update(struct action *act, unsigned int ticks)
 {
 	(void)ticks;
 
-	struct self *self = act->data;
+	struct spawner *s = act->data;
 
-	if (self->map->player_movement) {
-		self->steps -= distance(self);
-		self->last_x = self->map->player_x;
-		self->last_y = self->map->player_y;
+	if (s->map->player_movement) {
+		s->steps -= distance(s);
+		s->last_x = s->map->player_x;
+		s->last_y = s->map->player_y;
 
-		if (self->steps == 0) {
+		if (s->steps == 0) {
+			s->steps = util_nrand(s->low, s->high);
+
 			/* TODO: start battle here. */
 			return false;
 		}
@@ -68,28 +62,23 @@ update(struct action *act, unsigned int ticks)
 	return false;
 }
 
-static void
-finish(struct action *act)
+void
+spawner_init(struct spawner *s)
 {
-	free(act->data);
+	assert(s);
+
+	s->last_x = s->map->player_x;
+	s->last_y = s->map->player_y;
+	s->steps = util_nrand(s->low, s->high);
 }
 
 struct action *
-spawner_new(struct map *map, unsigned int low, unsigned int high)
+spawner_new(struct spawner *s)
 {
-	assert(map);
+	assert(s);
 
-	struct self *self;
+	s->action.data = s;
+	s->action.update = update;
 
-	self = alloc_new0(sizeof (*self));
-	self->map = map;
-	self->last_x = map->player_x;
-	self->last_y = map->player_y;
-	self->steps = util_nrand(low, high);
-
-	self->action.data = self;
-	self->action.update = update;
-	self->action.finish = finish;
-
-	return &self->action;
+	return &s->action;
 }

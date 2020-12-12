@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_ACTIONS_CHEST_H
-#define MOLKO_ADVENTURE_ACTIONS_CHEST_H
+#ifndef MOLKO_ADVENTURE_ACTION_CHEST_H
+#define MOLKO_ADVENTURE_ACTION_CHEST_H
 
 #include <core/action.h>
 #include <core/animation.h>
@@ -56,4 +56,4 @@ chest_init(struct chest *c);
 struct action *
 chest_action(struct chest *c);
 
-#endif /* !MOLKO_ADVENTURE_ACTIONS_CHEST_H */
+#endif /* !MOLKO_ADVENTURE_ACTION_CHEST_H */

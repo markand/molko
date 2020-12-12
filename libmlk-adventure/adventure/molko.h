@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_MOLKO_H
-#define MOLKO_MOLKO_H
+#ifndef MOLKO_ADVENTURE_MOLKO_H
+#define MOLKO_ADVENTURE_MOLKO_H
 
 #include <core/game.h>
 #include <core/texture.h>
@@ -48,4 +48,4 @@ molko_path(const char *file);
 void
 molko_finish(void);
 
-#endif /* !MOLKO_MOLKO_H */
+#endif /* !MOLKO_ADVENTURE_MOLKO_H */

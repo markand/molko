@@ -16,10 +16,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_ACTIONS_SPAWNER_H
-#define MOLKO_ADVENTURE_ACTIONS_SPAWNER_H
+#ifndef MOLKO_ADVENTURE_ACTION_SPAWNER_H
+#define MOLKO_ADVENTURE_ACTION_SPAWNER_H
+
+#include <core/action.h>
+
+struct map;
+
+struct spawner {
+	struct map *map;
+	unsigned int low;
+	unsigned int high;
+	unsigned int steps;
+	struct action action;
+	int last_x;
+	int last_y;
+};
+
+void
+spawner_init(struct spawner *);
 
 struct action *
-spawner_new(struct map *, unsigned int, unsigned int);
+spawner_action(struct spawner *);
 
-#endif /* !MOLKO_ADVENTURE_ACTIONS_SPAWNER_H */
+#endif /* !MOLKO_ADVENTURE_ACTION_SPAWNER_H */
