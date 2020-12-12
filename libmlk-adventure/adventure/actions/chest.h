@@ -1,5 +1,5 @@
 /*
- * assets.h -- global atlas for every resources
+ * chest.h -- chest object
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,27 +16,44 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_ASSETS_H
-#define MOLKO_ADVENTURE_ASSETS_H
+#ifndef MOLKO_ADVENTURE_ACTIONS_CHEST_H
+#define MOLKO_ADVENTURE_ACTIONS_CHEST_H
 
-struct sprite;
+#include <core/action.h>
+#include <core/animation.h>
 
-enum assets_sprite {
-	/* UI elements. */
-	ASSETS_SPRITE_UI_CURSOR,
+struct map;
+struct sound;
 
-	/* Actions. */
-	ASSETS_SPRITE_CHEST,
-
-	ASSETS_SPRITE_NUM
+enum chest_state {
+	CHEST_STATE_CLOSED,
+	CHEST_STATE_ANIMATE,
+	CHEST_STATE_OPEN
 };
 
-extern struct sprite *assets_sprites[ASSETS_SPRITE_NUM];
+struct chest {
+	/* Mandatory. */
+	int x;
+	int y;
+	struct map *map;
+	struct animation animation;
+
+	/* Defaulted. */
+	enum chest_state state;
+	struct action action;
+
+	/* Optional. */
+	struct save *save;
+	struct save_property *property;
+	struct sound *sound;
+	void *data;
+	void (*exec)(struct chest *);
+};
 
 void
-assets_init(void);
+chest_init(struct chest *c);
 
-void
-assets_finish(void);
+struct action *
+chest_action(struct chest *c);
 
-#endif /* !MOLKO_ADVENTURE_ASSETS_H */
+#endif /* !MOLKO_ADVENTURE_ACTIONS_CHEST_H */

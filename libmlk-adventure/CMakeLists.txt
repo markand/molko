@@ -20,6 +20,8 @@ project(libadventure)
 
 set(
 	SOURCES
+	${libadventure_SOURCE_DIR}/adventure/actions/chest.c
+	${libadventure_SOURCE_DIR}/adventure/actions/chest.h
 	${libadventure_SOURCE_DIR}/adventure/actions/spawner.c
 	${libadventure_SOURCE_DIR}/adventure/actions/spawner.h
 	${libadventure_SOURCE_DIR}/adventure/actions/teleport.c
