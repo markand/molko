@@ -557,50 +557,6 @@ draw_layer(const struct map *map, const struct map_layer *layer)
 	texture_finish(&colbox);
 }
 
-bool
-map_init(struct map *map)
-{
-	assert(map);
-
-	init(map);
-	tileset_start(map->tileset);
-
-	return true;
-}
-
-void
-map_handle(struct map *map, const union event *ev)
-{
-	assert(map);
-	assert(ev);
-
-	switch (ev->type) {
-	case EVENT_KEYDOWN:
-		handle_keydown(map, ev);
-		break;
-	case EVENT_KEYUP:
-		handle_keyup(map, ev);
-		break;
-	default:
-		break;
-	}
-}
-
-void
-map_update(struct map *map, unsigned int ticks)
-{
-	assert(map);
-
-	action_stack_update(&map->astack_par, ticks);
-	action_stack_update(&map->astack_seq, ticks);
-
-	tileset_update(map->tileset, ticks);
-
-	/* No movements if the sequential actions are running. */
-	if (action_stack_completed(&map->astack_seq))
-		move(map, ticks);
-}
-
 static void
 draw_collide(const struct map *map)
 {
@@ -633,6 +589,53 @@ draw_collide(const struct map *map)
 
 		texture_finish(&box);
 	}
+}
+
+bool
+map_init(struct map *map)
+{
+	assert(map);
+
+	init(map);
+	tileset_start(map->tileset);
+
+	return true;
+}
+
+void
+map_handle(struct map *map, const union event *ev)
+{
+	assert(map);
+	assert(ev);
+
+	switch (ev->type) {
+	case EVENT_KEYDOWN:
+		handle_keydown(map, ev);
+		break;
+	case EVENT_KEYUP:
+		handle_keyup(map, ev);
+		break;
+	default:
+		break;
+	}
+
+	action_stack_handle(&map->astack_par, ev);
+	action_stack_handle(&map->astack_seq, ev);
+}
+
+void
+map_update(struct map *map, unsigned int ticks)
+{
+	assert(map);
+
+	action_stack_update(&map->astack_par, ticks);
+	action_stack_update(&map->astack_seq, ticks);
+
+	tileset_update(map->tileset, ticks);
+
+	/* No movements if the sequential actions are running. */
+	if (action_stack_completed(&map->astack_seq))
+		move(map, ticks);
 }
 
 void
