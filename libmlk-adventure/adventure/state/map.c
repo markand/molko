@@ -32,8 +32,8 @@
 #include <rpg/map.h>
 #include <rpg/map-file.h>
 
-#include <adventure/actions/spawner.h>
-#include <adventure/actions/teleport.h>
+#include <adventure/action/spawner.h>
+#include <adventure/action/teleport.h>
 
 #include <adventure/molko.h>
 
