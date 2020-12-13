@@ -114,7 +114,7 @@ finish(struct action *act)
 }
 
 struct action *
-teleport_new(struct teleport *tp)
+teleport_action(struct teleport *tp)
 {
 	assert(tp);
 

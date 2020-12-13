@@ -73,7 +73,7 @@ spawner_init(struct spawner *s)
 }
 
 struct action *
-spawner_new(struct spawner *s)
+spawner_action(struct spawner *s)
 {
 	assert(s);
 

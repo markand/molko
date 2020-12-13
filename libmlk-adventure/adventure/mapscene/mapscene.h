@@ -1,5 +1,5 @@
 /*
- * chest.h -- chest object
+ * mapscene.h -- map scene loader with actions
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,46 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_ACTION_CHEST_H
-#define MOLKO_ADVENTURE_ACTION_CHEST_H
-
-#include <core/action.h>
-#include <core/animation.h>
+#ifndef MOLKO_ADVENTURE_MAPSCENE_MAPSCENE_H
+#define MOLKO_ADVENTURE_MAPSCENE_MAPSCENE_H
 
 struct map;
-struct save;
-struct save_property;
-struct sound;
-
-enum chest_state {
-	CHEST_STATE_CLOSED,
-	CHEST_STATE_ANIMATE,
-	CHEST_STATE_OPEN
-};
-
-struct chest {
-	/* Mandatory. */
-	int x;
-	int y;
-	struct map *map;
-	struct animation animation;
-
-	/* Defaulted. */
-	enum chest_state state;
-	struct action action;
-
-	/* Optional. */
-	struct save *save;
-	struct save_property *property;
-	struct sound *sound;
-	void *data;
-	void (*exec)(struct chest *);
-};
 
 void
-chest_init(struct chest *c);
+mapscene_load_action(struct map *, int, int, int, int, const char *);
 
-struct action *
-chest_action(struct chest *c);
+void
+mapscene_load(struct map *);
 
-#endif /* !MOLKO_ADVENTURE_ACTION_CHEST_H */
+#endif /* !MOLKO_ADVENTURE_MAPSCENE_MAPSCENE_H */

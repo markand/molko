@@ -30,7 +30,7 @@ struct teleport {
 	unsigned int w;
 	unsigned int h;
 	struct map *map;
-	const char *destination;
+	char destination[256];
 	int origin_x;
 	int origin_y;
 	struct action action;

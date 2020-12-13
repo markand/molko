@@ -32,8 +32,7 @@
 #include <rpg/map.h>
 #include <rpg/map-file.h>
 
-#include <adventure/action/spawner.h>
-#include <adventure/action/teleport.h>
+#include <adventure/mapscene/mapscene.h>
 
 #include <adventure/molko.h>
 
@@ -52,6 +51,8 @@ static void
 start(struct state *state)
 {
 	struct self *self = state->data;
+
+	self->map_file.load_action = mapscene_load_action;
 
 	if (!map_file_open(&self->map_file, &self->map, molko_path(self->name)))
 		panic();
