@@ -19,7 +19,6 @@
 cmake_minimum_required(VERSION 3.19)
 project(molko)
 
-
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS Off)
