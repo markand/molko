@@ -49,8 +49,8 @@
  * Those are margins within the edge of the screen. The camera always try to
  * keep those padding between the player and the screen.
  */
-#define MARGIN_WIDTH    80
-#define MARGIN_HEIGHT   80
+#define MARGIN_WIDTH    160
+#define MARGIN_HEIGHT   90
 
 #define WIDTH(map)      ((map)->columns * (map)->tileset->sprite->cellw)
 #define HEIGHT(map)     ((map)->rows * (map)->tileset->sprite->cellh)
