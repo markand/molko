@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <core/action.h>
 #include <core/font.h>
 #include <core/trace.h>
 #include <core/window.h>
@@ -112,4 +113,33 @@ void
 trace_hud_clear(void)
 {
 	memset(&data, 0, sizeof (data));
+}
+
+static bool
+update(struct action *a, unsigned int ticks)
+{
+	(void)a;
+
+	trace_hud_update(ticks);
+
+	return false;
+}
+
+static void
+draw(struct action *a)
+{
+	(void)a;
+
+	trace_hud_draw();
+}
+
+struct action *
+trace_hud_action(void)
+{
+	static struct action a = {
+		.update = update,
+		.draw = draw
+	};
+
+	return &a;
 }

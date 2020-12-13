@@ -30,6 +30,8 @@
 #include <adventure/action/teleport.h>
 #include <adventure/action/spawner.h>
 
+#include <adventure/trace_hud.h>
+
 #include "mapscene.h"
 
 #define SEARCH(key, array, size, cmp) \
@@ -139,4 +141,7 @@ mapscene_load(struct map *m)
 	/* Same layout, can use cmp_title as well. */
 	if ((ld = SEARCH(m->title, mapscenes, sizeof (*ld), cmp_title)))
 		ld->load(m);
+
+	/* Add the trace hud. */
+	action_stack_add(&m->astack_par, trace_hud_action());
 }

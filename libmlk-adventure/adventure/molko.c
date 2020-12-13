@@ -27,9 +27,10 @@
 #include <core/event.h>
 #include <core/image.h>
 #include <core/panic.h>
+#include <core/sys.h>
+#include <core/trace.h>
 #include <core/translate.h>
 #include <core/util.h>
-#include <core/sys.h>
 #include <core/window.h>
 
 #include <ui/ui.h>
@@ -43,6 +44,7 @@
 
 #include "assets.h"
 #include "molko.h"
+#include "trace_hud.h"
 
 #define WINDOW_WIDTH    1280
 #define WINDOW_HEIGHT   720
@@ -78,6 +80,7 @@ molko_init(void)
 	/* Init unrecoverable panic state. */
 	molko.panic = panic_state_new();
 	panic_handler = crash;
+	trace_handler = trace_hud_handler;
 
 	/* Init other stuff. */
 	assets_init();

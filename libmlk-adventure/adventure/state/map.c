@@ -70,6 +70,8 @@ start(struct state *state)
 	if (self->origin_y >= 0)
 		self->map.player_y = self->origin_y;
 
+	mapscene_load(&self->map);
+
 	if (!map_init(&self->map))
 		panic();
 }

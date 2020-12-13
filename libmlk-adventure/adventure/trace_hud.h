@@ -21,6 +21,7 @@
 
 #define TRACE_HUD_TIMEOUT_DEFAULT (3000)
 
+struct action;
 struct theme;
 
 struct trace_hud {
@@ -41,5 +42,8 @@ trace_hud_draw(void);
 
 void
 trace_hud_clear(void);
+
+struct action *
+trace_hud_action(void);
 
 #endif /* !MOLKO_ADVENTURE_TRACE_HUD_H */
