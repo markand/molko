@@ -52,7 +52,7 @@ exec(struct save *db, const char *sql)
 static const char *
 path(unsigned int idx)
 {
-	return util_pathf("%s/%u", sys_dir(SYS_DIR_SAVE), idx);
+	return util_pathf("%s%u.db", sys_dir(SYS_DIR_SAVE), idx);
 }
 
 static bool
@@ -111,16 +111,28 @@ save_open_path(struct save *db, const char *path, enum save_mode mode)
 	}
 
 	if (sqlite3_open_v2(path, (sqlite3**)&db->handle, flags, NULL) != SQLITE_OK)
-		return errorf("%s", sqlite3_errmsg(db->handle));
+		goto sqlite3_err;
 
-	if (mode == SAVE_MODE_WRITE) {
-		if (!execu(db, sql_init)) {
-			sqlite3_close(db->handle);
-			return false;
-		}
-	}
+	if (mode == SAVE_MODE_WRITE && !execu(db, sql_init))
+		goto sqlite3_err;
 
 	return verify(db);
+
+sqlite3_err:
+	errorf("%s", sqlite3_errmsg(db->handle));
+	sqlite3_close(db->handle);
+
+	memset(db, 0, sizeof (*db));
+
+	return false;
+}
+
+bool
+save_ok(const struct save *db)
+{
+	assert(db);
+
+	return db && db->handle;
 }
 
 bool

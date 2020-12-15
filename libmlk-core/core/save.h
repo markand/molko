@@ -48,6 +48,9 @@ bool
 save_open_path(struct save *db, const char *path, enum save_mode mode);
 
 bool
+save_ok(const struct save *db);
+
+bool
 save_set_property(struct save *db, const struct save_property *prop);
 
 bool
