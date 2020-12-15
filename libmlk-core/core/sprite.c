@@ -49,6 +49,18 @@ sprite_ok(const struct sprite *sprite)
 bool
 sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
 {
+	return sprite_scale(sprite, r, c, x, y, sprite->cellw, sprite->cellh);
+}
+
+bool
+sprite_scale(const struct sprite *sprite,
+	     unsigned int r,
+	     unsigned int c,
+	     int x,
+	     int y,
+	     unsigned int w,
+	     unsigned int h)
+{
 	assert(sprite_ok(sprite));
 	assert(r < sprite->nrows);
 	assert(c < sprite->ncols);
@@ -61,8 +73,8 @@ sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, 
 		sprite->cellh,          /* src height */
 		x,                      /* dst x */
 		y,                      /* dst y */
-		sprite->cellw,          /* dst width */
-		sprite->cellh,          /* dst height */
+		w,                      /* dst width */
+		h,                      /* dst height */
 		0.0                     /* angle */
 	);
 }

@@ -73,13 +73,23 @@ sprite_ok(const struct sprite *sprite)
 
 ### sprite\_draw
 
+Similar to [sprite_scale](#sprite_scale) but use sprite cell dimensions for
+scaling.
+
+```c
+bool
+sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
+```
+
+### sprite_scale
+
 Draw an individual cell from row `r` and column `c` at the coordinates `x`, `y`
-from the sprite `sprite`.
+from the sprite `sprite` and scale the image to dimensions `w`, `h`.
 
 !!! caution
     Argument `r` and `c` must be out of bounds.
 
 ```c
 bool
-sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
+sprite_scale(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y, unsigned int w, unsigned int h)
 ```

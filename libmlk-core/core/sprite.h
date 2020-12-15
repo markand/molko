@@ -43,4 +43,13 @@ sprite_ok(const struct sprite *sprite);
 bool
 sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y);
 
+bool
+sprite_scale(const struct sprite *sprite,
+             unsigned int r,
+             unsigned int c,
+             int x,
+             int y,
+             unsigned int w,
+             unsigned int h);
+
 #endif /* !MOLKO_CORE_SPRITE_H */
