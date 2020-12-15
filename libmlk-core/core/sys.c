@@ -190,7 +190,7 @@ user_directory(enum sys_dir kind)
 	} else
 		strlcpy(path, "./", sizeof (path));
 
-	return NULL;
+	return path;
 }
 
 static bool
