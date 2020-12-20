@@ -27,6 +27,7 @@ set(
 set(
 	PO
 	${libmlk-ui_SOURCE_DIR}/nls/fr.po
+	${libmlk-ui_SOURCE_DIR}/nls/libmlk-ui.pot
 )
 
 set(
@@ -64,6 +65,4 @@ molko_define_library(
 			$<BUILD_INTERFACE:${libmlk-ui_SOURCE_DIR}>
 )
 
-source_group(TREE ${libmlk-ui_SOURCE_DIR} FILES ${SOURCES})
-source_group(TREE ${libmlk-ui_SOURCE_DIR} FILES ${ASSETS})
-source_group(TREE ${libmlk-ui_SOURCE_DIR} FILES ${PO})
+source_group(TREE ${libmlk-ui_SOURCE_DIR} FILES ${ASSETS} ${PO} ${SOURCES})

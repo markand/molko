@@ -89,6 +89,7 @@ set(
 set(
 	PO
 	${libmlk-rpg_SOURCE_DIR}/nls/fr.po
+	${libmlk-rpg_SOURCE_DIR}/nls/libmlk-rpg.pot
 )
 
 molko_define_library(
@@ -109,5 +110,4 @@ molko_define_library(
 			$<BUILD_INTERFACE:${libmlk-rpg_BINARY_DIR}>
 )
 
-source_group(TREE ${libmlk-rpg_SOURCE_DIR} FILES ${SOURCES})
-source_group(TREE ${libmlk-rpg_SOURCE_DIR} FILES ${PO})
+source_group(TREE ${libmlk-rpg_SOURCE_DIR} FILES ${ASSETS} ${PO} ${SOURCES})

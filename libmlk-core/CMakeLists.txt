@@ -18,11 +18,10 @@
 
 project(libmlk-core)
 
-include(CheckLibraryExists)
-
 set(
 	PO
 	${libmlk-core_SOURCE_DIR}/nls/fr.po
+	${libmlk-core_SOURCE_DIR}/nls/libmlk-core.pot
 )
 
 set(
@@ -92,8 +91,6 @@ configure_file(
 	${libmlk-core_BINARY_DIR}/sysconfig.h
 )
 
-check_library_exists(m sqrt "" LIBM)
-
 if (MOLKO_WITH_NLS AND Intl_FOUND)
 	list(APPEND LIBS ${Intl_LIBRARIES})
 	list(APPEND INCS ${Intl_INCLUDE_DIRS})
@@ -105,8 +102,8 @@ molko_define_library(
 	TRANSLATIONS fr
 	LIBRARIES
 		PUBLIC
+			m
 			${LIBS}
-			$<$<BOOL:${LIBM}>:m>
 			libcompat
 			libsqlite
 			SDL2::SDL2
@@ -116,9 +113,6 @@ molko_define_library(
 	FLAGS
 		PRIVATE
 			_BSD_SOURCE
-			BINDIR="${CMAKE_INSTALL_BINDIR}"
-			PREFIX="${CMAKE_INSTALL_PREFIX}"
-			SHAREDIR="${CMAKE_INSTALL_DATADIR}"
 	INCLUDES
 		PUBLIC
 			${INCS}
@@ -126,6 +120,4 @@ molko_define_library(
 			$<BUILD_INTERFACE:${libmlk-core_BINARY_DIR}>
 )
 
-source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${SOURCES})
-source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${ASSETS})
-source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${PO})
+source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${ASSETS} ${PO} ${SOURCES})

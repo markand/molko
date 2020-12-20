@@ -52,6 +52,7 @@ set(
 set(
 	PO
 	${libadventure_SOURCE_DIR}/nls/fr.po
+	${libadventure_SOURCE_DIR}/nls/libmlk-adventure.pot
 )
 
 molko_define_library(
@@ -63,6 +64,4 @@ molko_define_library(
 	INCLUDES PUBLIC $<BUILD_INTERFACE:${libadventure_SOURCE_DIR}>
 )
 
-source_group(TREE ${libadventure_SOURCE_DIR} FILES ${SOURCES})
-source_group(TREE ${libadventure_SOURCE_DIR} FILES ${ASSETS})
-source_group(TREE ${libadventure_SOURCE_DIR} FILES ${PO})
+source_group(TREE ${libadventure_SOURCE_DIR} FILES ${PO} ${SOURCES})
