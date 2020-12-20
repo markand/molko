@@ -41,6 +41,7 @@
 #include <adventure/adventure_p.h>
 
 #include "mainmenu.h"
+#include "continue.h"
 
 struct self {
 	struct state state;
@@ -63,7 +64,7 @@ new(void)
 static void
 resume(void)
 {
-	/* TODO: implement here. */
+	game_switch(continue_state_new(), false);
 }
 
 static void

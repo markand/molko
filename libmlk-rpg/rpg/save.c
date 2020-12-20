@@ -25,16 +25,17 @@
 
 #include <sqlite3.h>
 
+#include <core/error.h>
+#include <core/sys.h>
+#include <core/util.h>
+
 #include <assets/sql/init.h>
 #include <assets/sql/property-get.h>
 #include <assets/sql/property-remove.h>
 #include <assets/sql/property-set.h>
 
-#include "core_p.h"
-#include "error.h"
+#include "rpg_p.h"
 #include "save.h"
-#include "sys.h"
-#include "util.h"
 
 #define SQL_BEGIN       "BEGIN EXCLUSIVE TRANSACTION"
 #define SQL_COMMIT      "COMMIT"
@@ -83,6 +84,81 @@ verify(struct save *db)
 	}
 
 	return true;
+}
+
+static bool
+prepare(struct save *s, struct save_stmt *stmt, const char *sql, const char *args, va_list ap)
+{
+	stmt->parent = s;
+	stmt->handle = NULL;
+
+	if (sqlite3_prepare(s->handle, sql, -1, (sqlite3_stmt **)&stmt->handle, NULL) != SQLITE_OK)
+		goto sqlite3_err;
+
+	for (int i = 1; args && *args; ++args) {
+		switch (*args) {
+		case 'i':
+		case 'u':
+			if (sqlite3_bind_int(stmt->handle, i++, va_arg(ap, int)) != SQLITE_OK)
+				return false;
+			break;
+		case 's':
+			if (sqlite3_bind_text(stmt->handle, i++, va_arg(ap, const char *), -1, NULL) != SQLITE_OK)
+				return false;
+			break;
+		case 't':
+			if (sqlite3_bind_int64(stmt->handle, i++, va_arg(ap, time_t)) != SQLITE_OK)
+				return false;
+			break;
+		case ' ':
+			break;
+		default:
+			return errorf("invalid format: %c", *args);
+		}
+	}
+
+	return true;
+
+sqlite3_err:
+	return errorf("%s", sqlite3_errmsg(s->handle));
+}
+
+static bool
+extract(struct save_stmt *stmt, const char *args, va_list ap)
+{
+	const int ncols = sqlite3_column_count(stmt->handle);
+
+	for (int c = 0; args && *args; ++args) {
+		if (c >= ncols)
+			return errorf("too many arguments");
+
+		/* TODO: type check. */
+		switch (*args) {
+		case 'i':
+		case 'u':
+			*va_arg(ap, int *) = sqlite3_column_int(stmt->handle, c++);
+			break;
+		case 's': {
+			char *str = va_arg(ap, char *);
+			size_t max = va_arg(ap, size_t);
+
+			strlcpy(str, (const char *)sqlite3_column_text(stmt->handle, c++), max);
+			break;
+		}
+		case 't':
+			*va_arg(ap, time_t *) = sqlite3_column_int64(stmt->handle, c++);
+			break;
+		case ' ':
+			break;
+		default:
+			return errorf("invalid format: %c", *args);
+		}
+	}
+
+	return true;
+
+sqlite3_err:
+	return errorf("%s", sqlite3_errmsg(stmt->parent->handle));
 }
 
 bool
@@ -244,6 +320,29 @@ sqlite3_err:
 	return false;
 }
 
+bool
+save_exec(struct save *db, const char *sql, const char *args, ...)
+{
+	assert(save_ok(db));
+	assert(sql && args);
+
+	struct save_stmt stmt;
+	bool ret;
+	va_list ap;
+
+	va_start(ap, args);
+	ret = prepare(db, &stmt, sql, args, ap);
+	va_end(ap);
+
+	if (!ret)
+		return false;
+
+	ret = save_stmt_next(&stmt, NULL) == 0;
+	save_stmt_finish(&stmt);
+
+	return ret;
+}
+
 void
 save_finish(struct save *db)
 {
@@ -253,4 +352,57 @@ save_finish(struct save *db)
 		sqlite3_close(db->handle);
 
 	memset(db, 0, sizeof (*db));
+}
+
+bool
+save_stmt_init(struct save *db, struct save_stmt *stmt, const char *sql, const char *args, ...)
+{
+	assert(save_ok(db));
+	assert(stmt);
+	assert(args);
+
+	va_list ap;
+	bool ret;
+
+	va_start(ap, args);
+	ret = prepare(db, stmt, sql, args, ap);
+	va_end(ap);
+
+	return ret;
+}
+
+int
+save_stmt_next(struct save_stmt *stmt, const char *args, ...)
+{
+	assert(stmt);
+
+	va_list ap;
+	bool ret = -1;
+
+	switch (sqlite3_step(stmt->handle)) {
+	case SQLITE_ROW:
+		va_start(ap, args);
+
+		if (extract(stmt, args, ap))
+			ret = 1;
+
+		va_end(ap);
+		break;
+	case SQLITE_DONE:
+		ret = 0;
+		break;
+	default:
+		break;
+	}
+
+	return ret;
+}
+
+void
+save_stmt_finish(struct save_stmt *stmt)
+{
+	assert(stmt);
+
+	sqlite3_finalize(stmt->handle);
+	memset(stmt, 0, sizeof (*stmt));
 }

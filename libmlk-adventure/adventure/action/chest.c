@@ -24,11 +24,11 @@
 #include <core/event.h>
 #include <core/maths.h>
 #include <core/panic.h>
-#include <core/save.h>
 #include <core/sound.h>
 #include <core/sprite.h>
 
 #include <rpg/map.h>
+#include <rpg/save.h>
 
 #include "chest.h"
 

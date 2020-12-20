@@ -22,6 +22,7 @@ molko_define_library(
 	TARGET libgreatest
 	TYPE INTERFACE
 	SOURCES greatest.h
+	FOLDER extern
 	EXTERNAL
 	INCLUDES INTERFACE $<BUILD_INTERFACE:${libgreatest_SOURCE_DIR}>
 )

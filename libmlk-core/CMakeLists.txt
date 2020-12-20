@@ -21,14 +21,6 @@ project(libmlk-core)
 include(CheckLibraryExists)
 
 set(
-	ASSETS
-	${libmlk-core_SOURCE_DIR}/assets/sql/init.sql
-	${libmlk-core_SOURCE_DIR}/assets/sql/property-get.sql
-	${libmlk-core_SOURCE_DIR}/assets/sql/property-remove.sql
-	${libmlk-core_SOURCE_DIR}/assets/sql/property-set.sql
-)
-
-set(
 	PO
 	${libmlk-core_SOURCE_DIR}/nls/fr.po
 )
@@ -70,8 +62,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/core/painter.h
 	${libmlk-core_SOURCE_DIR}/core/panic.c
 	${libmlk-core_SOURCE_DIR}/core/panic.h
-	${libmlk-core_SOURCE_DIR}/core/save.c
-	${libmlk-core_SOURCE_DIR}/core/save.h
 	${libmlk-core_SOURCE_DIR}/core/script.c
 	${libmlk-core_SOURCE_DIR}/core/script.h
 	${libmlk-core_SOURCE_DIR}/core/sound.c
@@ -112,7 +102,6 @@ endif ()
 molko_define_library(
 	TARGET libmlk-core
 	SOURCES ${SOURCES} ${ASSETS} ${PO}
-	ASSETS ${ASSETS}
 	TRANSLATIONS fr
 	LIBRARIES
 		PUBLIC

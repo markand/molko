@@ -20,11 +20,15 @@
 
 #include <core/sprite.h>
 
+#include <assets/sql/character-save.h>
+#include <assets/sql/character-load.h>
+
 #include "character.h"
 #include "equipment.h"
+#include "save.h"
 
 bool
-character_ok(struct character *ch)
+character_ok(const struct character *ch)
 {
 	return ch && ch->name && ch->type && ch->reset && sprite_ok(ch->sprites[CHARACTER_SPRITE_NORMAL]);
 }
@@ -64,4 +68,55 @@ character_exec(struct character *ch, struct battle *bt)
 
 	if (ch->exec)
 		ch->exec(ch, bt);
+}
+
+bool
+character_save(const struct character *ch, struct save *s)
+{
+	assert(ch);
+	assert(save_ok(s));
+
+	return save_exec(s, (const char *)sql_character_save, "s iii i iiiiii",
+	    ch->name,
+	    ch->hp,
+	    ch->mp,
+	    ch->level,
+	    ch->team_order,
+	    ch->hpbonus,
+	    ch->mpbonus,
+	    ch->atkbonus,
+	    ch->defbonus,
+	    ch->agtbonus,
+	    ch->luckbonus
+	);
+}
+
+bool
+character_load(struct character *ch, struct save *s)
+{
+	assert(ch);
+	assert(save_ok(s));
+
+	struct save_stmt stmt;
+	bool ret;
+
+	if (!save_stmt_init(s, &stmt, (const char *)sql_character_load, "s", ch->name))
+		return false;
+
+	ret = save_stmt_next(&stmt, "iii i iiiiii",
+	    &ch->hp,
+	    &ch->mp,
+	    &ch->level,
+	    &ch->team_order,
+	    &ch->hpbonus,
+	    &ch->mpbonus,
+	    &ch->atkbonus,
+	    &ch->defbonus,
+	    &ch->agtbonus,
+	    &ch->luckbonus
+	);
+
+	save_stmt_finish(&stmt);
+
+	return ret;
 }

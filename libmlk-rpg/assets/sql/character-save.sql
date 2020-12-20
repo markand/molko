@@ -1,5 +1,5 @@
 --
--- init.sql -- initialize database
+-- character-save.sql -- save or replace character
 --
 -- Copyright (c) 2020 David Demelier <markand@malikania.fr>
 --
@@ -16,15 +16,29 @@
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 --
 
-BEGIN EXCLUSIVE TRANSACTION;
-
-CREATE TABLE IF NOT EXISTS property(
-	id      INTEGER PRIMARY KEY AUTOINCREMENT,
-	key     TEXT NOT NULL UNIQUE,
-	value   TEXT NOT NULL
-);
-
-INSERT OR IGNORE INTO property(key, value) VALUES ('molko.create-date', strftime('%s','now'));
-INSERT OR IGNORE INTO property(key, value) VALUES ('molko.update-date', strftime('%s','now'));
-
-COMMIT;
+INSERT OR REPLACE INTO character(
+	name,
+	hp,
+	mp,
+	level,
+	team_order,
+	bonus_hp,
+	bonus_mp,
+	bonus_atk,
+	bonus_def,
+	bonus_agt,
+	bonus_luck
+)
+VALUES(
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?
+)

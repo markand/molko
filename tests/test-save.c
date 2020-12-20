@@ -21,7 +21,7 @@
 #define GREATEST_USE_ABBREVS 0
 #include <greatest.h>
 
-#include <core/save.h>
+#include <rpg/save.h>
 
 static void
 clean(void *data)

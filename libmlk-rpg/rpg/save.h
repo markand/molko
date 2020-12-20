@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_SAVE_H
-#define MOLKO_CORE_SAVE_H
+#ifndef MOLKO_RPG_SAVE_H
+#define MOLKO_RPG_SAVE_H
 
 #include <stdbool.h>
 #include <time.h>
@@ -41,6 +41,11 @@ struct save_property {
 	char value[SAVE_PROPERTY_VALUE_MAX + 1];
 };
 
+struct save_stmt {
+	struct save *parent;
+	void *handle;
+};
+
 bool
 save_open(struct save *db, unsigned int idx, enum save_mode mode);
 
@@ -59,7 +64,20 @@ save_get_property(struct save *db, struct save_property *prop);
 bool
 save_remove_property(struct save *db, const struct save_property *prop);
 
+bool
+save_exec(struct save *db, const char *sql, const char *args, ...);
+
 void
 save_finish(struct save *db);
 
-#endif /* !MOLKO_CORE_SAVE_H */
+/* Prepared statements. */
+bool
+save_stmt_init(struct save *db, struct save_stmt *stmt, const char *sql, const char *args, ...);
+
+int
+save_stmt_next(struct save_stmt *stmt, const char *args, ...);
+
+void
+save_stmt_finish(struct save_stmt *stmt);
+
+#endif /* !MOLKO_RPG_SAVE_H */

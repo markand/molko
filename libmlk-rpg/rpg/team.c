@@ -1,5 +1,5 @@
 /*
- * event.h -- event management
+ * team.c -- team storage
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,51 +16,4 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_EVENT_H
-#define MOLKO_CORE_EVENT_H
-
-#include <stdbool.h>
-
-#include "key.h"
-#include "mouse.h"
-
-enum event_type {
-	EVENT_CLICKDOWN,
-	EVENT_CLICKUP,
-	EVENT_KEYDOWN,
-	EVENT_KEYUP,
-	EVENT_MOUSE,
-	EVENT_QUIT,
-};
-
-struct event_key {
-	enum event_type type;
-	enum key key;
-};
-
-struct event_mouse {
-	enum event_type type;
-	enum mouse_button buttons;
-	int x;
-	int y;
-};
-
-struct event_click {
-	enum event_type type;
-	enum mouse_button button;
-	int x;
-	int y;
-	unsigned int clicks;
-};
-
-union event {
-	enum event_type type;
-	struct event_key key;
-	struct event_mouse mouse;
-	struct event_click click;
-};
-
-bool
-event_poll(union event *ev);
-
-#endif /* !MOLKO_CORE_EVENT_H */
+/* Nothing yet. */

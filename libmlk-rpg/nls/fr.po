@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-30 09:48+0100\n"
+"POT-Creation-Date: 2020-12-20 10:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,33 +33,37 @@ msgstr ""
 msgid "Special"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-state-victory.c:88
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-state-victory.c:86
 msgid "Victory!"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-state-lost.c:87
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-state-lost.c:85
 msgid "You have been defeated..."
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:241
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:240
 msgid "could not parse image"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:130
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:148
 msgid "could not parse tileset"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:92
-#, c-format
-msgid "ignoring action %d,%d,%u,%u,%s"
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/save.c:80
+msgid "database not initialized correctly"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:61
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:90
+#, c-format
+msgid "ignoring action %d,%d,%u,%u,%d,%s"
+msgstr ""
+
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:59
 #, c-format
 msgid "invalid layer type: %s"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:175
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:193
 msgid "invalid origin"
 msgstr ""
 
@@ -81,54 +85,59 @@ msgstr ""
 msgid "message width too small: %u < %u"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:236
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:254
 msgid "missing background layer"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:238
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:256
 msgid "missing foreground layer"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:114
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:132
 msgid "missing layer type definition"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:110
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:128
 msgid "missing map dimensions before layer"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:239
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:238
 msgid "missing tile dimensions before image"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:240
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:258
 msgid "missing tileset"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:298
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:297
 msgid "missing tileset image"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:229
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:247
 msgid "missing title"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:157
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:175
 msgid "null map columns"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:166
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:184
 msgid "null map rows"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:146
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:164
 msgid "null map title"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:142
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/save.c:265
+#, c-format
+msgid "property '%s' was not found"
+msgstr ""
+
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:141
 msgid "tileheight is null"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:133
+#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:132
 msgid "tilewidth is null"
 msgstr ""

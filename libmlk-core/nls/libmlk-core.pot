@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-30 09:42+0100\n"
+"POT-Creation-Date: 2020-12-20 10:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,13 +25,4 @@ msgstr ""
 #: /Users/markand/Dev/molko/libmlk-core/core/panic.c:76
 #, c-format
 msgid "abort: panic handler returned\n"
-msgstr ""
-
-#: /Users/markand/Dev/molko/libmlk-core/core/save.c:85
-msgid "database not initialized correctly"
-msgstr ""
-
-#: /Users/markand/Dev/molko/libmlk-core/core/save.c:175
-#, c-format
-msgid "property '%s' was not found"
 msgstr ""

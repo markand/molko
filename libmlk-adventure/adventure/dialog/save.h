@@ -1,5 +1,5 @@
 /*
- * event.h -- event management
+ * save.h -- select a save slot
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,51 +16,38 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_EVENT_H
-#define MOLKO_CORE_EVENT_H
+#ifndef MOLKO_ADVENTURE_SAVE_H
+#define MOLKO_ADVENTURE_SAVE_H
 
 #include <stdbool.h>
 
-#include "key.h"
-#include "mouse.h"
+#include <rpg/save.h>
 
-enum event_type {
-	EVENT_CLICKDOWN,
-	EVENT_CLICKUP,
-	EVENT_KEYDOWN,
-	EVENT_KEYUP,
-	EVENT_MOUSE,
-	EVENT_QUIT,
+#define DIALOG_SAVE_MAX (6)
+
+union event;
+
+struct theme;
+
+struct dialog_save {
+	const struct theme *theme;
+	struct save saves[DIALOG_SAVE_MAX];
+	size_t selected;
 };
 
-struct event_key {
-	enum event_type type;
-	enum key key;
-};
-
-struct event_mouse {
-	enum event_type type;
-	enum mouse_button buttons;
-	int x;
-	int y;
-};
-
-struct event_click {
-	enum event_type type;
-	enum mouse_button button;
-	int x;
-	int y;
-	unsigned int clicks;
-};
-
-union event {
-	enum event_type type;
-	struct event_key key;
-	struct event_mouse mouse;
-	struct event_click click;
-};
+void
+dialog_save_init(struct dialog_save *);
 
 bool
-event_poll(union event *ev);
+dialog_save_handle(struct dialog_save *, const union event *);
 
-#endif /* !MOLKO_CORE_EVENT_H */
+void
+dialog_save_update(struct dialog_save *, unsigned int);
+
+void
+dialog_save_draw(const struct dialog_save *);
+
+void
+dialog_save_finish(struct dialog_save *);
+
+#endif /* !MOLKO_ADVENTURE_SAVE_H */

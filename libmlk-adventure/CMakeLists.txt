@@ -29,6 +29,8 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/adventure_p.h
 	${libadventure_SOURCE_DIR}/adventure/assets.c
 	${libadventure_SOURCE_DIR}/adventure/assets.h
+	${libadventure_SOURCE_DIR}/adventure/dialog/save.c
+	${libadventure_SOURCE_DIR}/adventure/dialog/save.h
 	${libadventure_SOURCE_DIR}/adventure/mapscene/mapscene.c
 	${libadventure_SOURCE_DIR}/adventure/mapscene/mapscene.h
 	${libadventure_SOURCE_DIR}/adventure/molko.c
@@ -41,6 +43,8 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/state/panic.h
 	${libadventure_SOURCE_DIR}/adventure/state/splashscreen.c
 	${libadventure_SOURCE_DIR}/adventure/state/splashscreen.h
+	${libadventure_SOURCE_DIR}/adventure/state/continue.c
+	${libadventure_SOURCE_DIR}/adventure/state/continue.h
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.c
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.h
 )

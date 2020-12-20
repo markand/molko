@@ -212,6 +212,7 @@ convert_click(const SDL_Event *event, union event *ev)
 	ev->click.button = MOUSE_BUTTON_NONE;
 	ev->click.x = event->button.x;
 	ev->click.y = event->button.y;
+	ev->click.clicks = event->button.clicks;
 
 	for (size_t i = 0; buttons[i].value != MOUSE_BUTTON_NONE; ++i) {
 		if (buttons[i].key == event->button.button) {

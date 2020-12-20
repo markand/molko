@@ -37,7 +37,8 @@ static struct {
 	struct sprite sprite;
 } table_sprites[] = {
 	SPRITE(ASSETS_SPRITE_UI_CURSOR, "sprites/ui-cursor.png", 24, 24),
-	SPRITE(ASSETS_SPRITE_CHEST, "sprites/chest.png", 32, 32)
+	SPRITE(ASSETS_SPRITE_CHEST, "sprites/chest.png", 32, 32),
+	SPRITE(ASSETS_SPRITE_FACES, "sprites/faces.png", 144, 144)
 };
 
 struct sprite *assets_sprites[ASSETS_SPRITE_NUM] = {0};

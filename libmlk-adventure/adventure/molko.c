@@ -86,7 +86,12 @@ molko_init(void)
 	assets_init();
 
 	/* Start to splash. */
+#if 0
+	// TODO: put back this.
 	game_switch(splashscreen_state_new(), true);
+#else
+	game_switch(mainmenu_state_new(), true);
+#endif
 }
 
 void

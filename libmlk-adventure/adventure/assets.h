@@ -28,6 +28,9 @@ enum assets_sprite {
 	/* Actions. */
 	ASSETS_SPRITE_CHEST,
 
+	/* Team assets. */
+	ASSETS_SPRITE_FACES,
+
 	ASSETS_SPRITE_NUM
 };
 
