@@ -22,6 +22,6 @@
 struct state;
 
 struct state *
-splashscreen_state_new(void);
+state_splashscreen_new(void);
 
 #endif /* !MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H */

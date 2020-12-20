@@ -64,7 +64,7 @@ new(void)
 static void
 resume(void)
 {
-	game_switch(continue_state_new(), false);
+	game_switch(state_continue_new(), false);
 }
 
 static void
@@ -201,7 +201,7 @@ finish(struct state *state)
 }
 
 struct state *
-mainmenu_state_new(void)
+state_mainmenu_new(void)
 {
 	struct self *self;
 

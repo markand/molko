@@ -22,7 +22,7 @@
 struct state;
 
 struct state *
-map_state_new(const char *, int, int);
+state_map_new(const char *, int, int);
 
 #endif /* !MOLKO_ADVENTURE_STATE_MAP_H */
 

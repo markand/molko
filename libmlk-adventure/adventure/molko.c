@@ -78,7 +78,7 @@ molko_init(void)
 	 */
 
 	/* Init unrecoverable panic state. */
-	molko.panic = panic_state_new();
+	molko.panic = state_panic_new();
 	panic_handler = crash;
 	trace_handler = trace_hud_handler;
 
@@ -88,9 +88,9 @@ molko_init(void)
 	/* Start to splash. */
 #if 0
 	// TODO: put back this.
-	game_switch(splashscreen_state_new(), true);
+	game_switch(state_splashscreen_ne(), true);
 #else
-	game_switch(mainmenu_state_new(), true);
+	game_switch(state_mainmenu_new(), true);
 #endif
 }
 
@@ -113,7 +113,7 @@ molko_run(void)
 void
 molko_teleport(const char *map, int origin_x, int origin_y)
 {
-	game_switch(map_state_new(map, origin_x, origin_y), false);
+	game_switch(state_map_new(map, origin_x, origin_y), false);
 	game.inhibit = INHIBIT_NONE;
 }
 

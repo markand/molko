@@ -22,6 +22,6 @@
 struct state;
 
 struct state *
-mainmenu_state_new(void);
+state_mainmenu_new(void);
 
-#endif /* !MOLKO_ADVENTURE_STATE_PANIC_H */
+#endif /* !MOLKO_ADVENTURE_STATE_MAINMENU_H */

@@ -75,7 +75,7 @@ update(struct state *state, unsigned int ticks)
 	self->elapsed += ticks;
 
 	if (self->elapsed >= DELAY)
-		game_switch(mainmenu_state_new(), false);
+		game_switch(state_mainmenu_new(), false);
 }
 
 static void
@@ -100,7 +100,7 @@ finish(struct state *state)
 }
 
 struct state *
-splashscreen_state_new(void)
+state_splashscreen_new(void)
 {
 	struct self *self;
 

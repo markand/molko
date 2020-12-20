@@ -16,12 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_CONTINUE_H
-#define MOLKO_ADVENTURE_CONTINUE_H
+#ifndef MOLKO_ADVENTURE_STATE_CONTINUE_H
+#define MOLKO_ADVENTURE_STATE_CONTINUE_H
 
 struct state;
 
 struct state *
-continue_state_new(void);
+state_continue_new(void);
 
-#endif /* !MOLKO_ADVENTURE_CONTINUE_H */
+#endif /* !MOLKO_ADVENTURE_STATE_CONTINUE_H */

@@ -194,7 +194,7 @@ finish(struct state *state)
 }
 
 struct state *
-panic_state_new(void)
+state_panic_new(void)
 {
 	struct self *self;
 

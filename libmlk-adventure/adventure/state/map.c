@@ -117,7 +117,7 @@ finish(struct state *state)
 }
 
 struct state *
-map_state_new(const char *name, int origin_x, int origin_y)
+state_map_new(const char *name, int origin_x, int origin_y)
 {
 	(void)origin_x;
 	(void)origin_y;

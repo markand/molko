@@ -22,6 +22,6 @@
 struct state;
 
 struct state *
-panic_state_new(void);
+state_panic_new(void);
 
 #endif /* !MOLKO_ADVENTURE_STATE_PANIC_H */
