@@ -74,6 +74,7 @@ target_include_directories(
 	PUBLIC
 		$<BUILD_INTERFACE:${libcompat_BINARY_DIR}>
 )
+target_compile_definitions(libcompat PUBLIC _BSD_SOURCE)
 set_target_properties(libcompat PROPERTIES PREFIX "" FOLDER extern)
 
 foreach (i ${INCLUDES})

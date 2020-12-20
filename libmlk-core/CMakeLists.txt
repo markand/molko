@@ -110,9 +110,6 @@ molko_define_library(
 			SDL2::image
 			SDL2::mixer
 			SDL2::ttf
-	FLAGS
-		PRIVATE
-			_BSD_SOURCE
 	INCLUDES
 		PUBLIC
 			${INCS}

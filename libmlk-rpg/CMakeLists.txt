@@ -101,9 +101,6 @@ molko_define_library(
 		PUBLIC
 			libmlk-core
 			libmlk-ui
-	FLAGS
-		PRIVATE
-			_BSD_SOURCE
 	INCLUDES
 		PUBLIC
 			$<BUILD_INTERFACE:${libmlk-rpg_SOURCE_DIR}>

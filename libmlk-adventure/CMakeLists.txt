@@ -59,7 +59,6 @@ molko_define_library(
 	TARGET libmlk-adventure
 	TRANSLATIONS fr
 	SOURCES ${SOURCES} ${PO}
-	FLAGS PRIVATE _BSD_SOURCE
 	LIBRARIES PUBLIC libmlk-core libmlk-ui libmlk-rpg libmlk-data
 	INCLUDES PUBLIC $<BUILD_INTERFACE:${libadventure_SOURCE_DIR}>
 )
