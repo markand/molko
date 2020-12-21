@@ -11,6 +11,12 @@ Molko's Adventure there is three kinds of errors:
 2. Recoverable error at runtime.
 3. Unexpected error at runtime.
 
+## About logs
+
+By itself, the core API never write anything to stdout/stderr. Instead it uses
+the [trace][] and [panic][] functions which by default can write to the console,
+if this is undesired, you can replace both handlers to use your custom logs.
+
 ## Kind of errors
 
 ### Assertions
@@ -70,3 +76,6 @@ The following table shows what is used and when.
 | libmlk-core | Programming errors | As much as possible | Only in memory utilities from util.h      | Never called from libcore itself. |
 | libmlk-ui   | Programming errors | When applicable     | Mostly in rendering errors                | None.                             |
 | libmlk-rpg  | Programming errors | When applicable     | Mostly in rendering errors                | None.                             |
+
+[panic]: api/core/panic.md
+[trace]: api/core/trace.md
