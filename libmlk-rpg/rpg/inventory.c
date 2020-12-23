@@ -1,5 +1,5 @@
 /*
- * item.c -- inventory items
+ * inventory.c -- item inventory
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -17,23 +17,48 @@
  */
 
 #include <assert.h>
+#include <stddef.h>
 
-#include "item.h"
+#include "inventory.h"
 
-void
-item_exec(const struct item *item, struct character *ch)
+static struct inventory_slot *
+find(struct inventory *iv, const struct item *item)
 {
-	assert(item);
-	assert(ch);
+	for (size_t i = 0; i < INVENTORY_ITEM_MAX; ++i)
+		if (iv->items[i].item == item)
+			return &iv->items[i];
 
-	return item->exec(item, ch);
+	return NULL;
 }
 
 bool
-item_allowed(const struct item *item, struct character *ch)
+inventory_add(struct inventory *iv, const struct item *item, unsigned int amount)
 {
+	assert(iv);
 	assert(item);
-	assert(ch);
 
-	return item->allowed ? item->allowed(item, ch) : true;
+	struct inventory_slot *slot;
+
+	/* Find one existing, otherwise find one empty. */
+	if (!(slot = find(iv, item)))
+		slot = find(iv, NULL);
+
+	if (!slot)
+		return false;
+
+	slot->amount += amount;
+
+	return true;
+}
+
+void
+inventory_consume(struct inventory *iv, const struct item *item, unsigned int amount)
+{
+	assert(iv);
+	assert(item);
+
+	struct inventory_slot *slot;
+
+	if (!(slot = find(iv, item)))
+		slot->amount -= amount;
 }

@@ -58,9 +58,8 @@ enum character_equipment {
 
 struct character {
 	const char *name;
-	const char *type;
-	unsigned int level;
 	enum character_status status;
+	unsigned int level;
 	int hp;
 	unsigned int hpmax;
 	unsigned int hpbonus;

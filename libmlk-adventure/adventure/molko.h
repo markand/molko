@@ -23,8 +23,24 @@
 #include <core/texture.h>
 #include <core/sprite.h>
 
+#include <rpg/inventory.h>
+#include <rpg/team.h>
+
+struct battle;
+
+enum molko_state {
+	MOLKO_STATE_MAP,
+	MOLKO_STATE_BATTLE,
+};
+
 struct molko {
 	struct state *panic;
+
+	/* Make sure to set this accordingly when changing states. */
+	enum molko_state state;
+
+	struct team team;
+	struct inventory inventory;
 
 	/* For map state. */
 	struct texture map_player_texture;
@@ -41,6 +57,9 @@ molko_run(void);
 
 void
 molko_teleport(const char *map, int origin_x, int origin_y);
+
+void
+molko_fight(struct battle *bt);
 
 const char *
 molko_path(const char *file);

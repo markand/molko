@@ -18,15 +18,19 @@
 
 #include <core/image.h>
 #include <core/panic.h>
+#include <core/sound.h>
 #include <core/sprite.h>
 #include <core/texture.h>
 #include <core/util.h>
+
+#include <ui/theme.h>
 
 #include <adventure/molko.h>
 
 #include "assets.h"
 
-#define SPRITE(which, file, w, h) { which, file, w, h }
+#define SPRITE(which, file, w, h)       { which, file, w, h }
+#define SOUND(which, file)              { which, file }
 
 static struct {
 	enum assets_sprite index;
@@ -34,14 +38,24 @@ static struct {
 	unsigned int cellw;
 	unsigned int cellh;
 	struct texture texture;
-	struct sprite sprite;
 } table_sprites[] = {
 	SPRITE(ASSETS_SPRITE_UI_CURSOR, "sprites/ui-cursor.png", 24, 24),
 	SPRITE(ASSETS_SPRITE_CHEST, "sprites/chest.png", 32, 32),
+	SPRITE(ASSETS_SPRITE_CHARACTER_BLACK_CAT, "images/black-cat.png", 123, 161),
+	SPRITE(ASSETS_SPRITE_CHARACTER_NETH, "sprites/john-walk.png", 256, 256),
+	SPRITE(ASSETS_SPRITE_CHARACTER_NETH_SWORD, "sprites/john-sword.png", 256, 256),
 	SPRITE(ASSETS_SPRITE_FACES, "sprites/faces.png", 144, 144)
 };
 
-struct sprite *assets_sprites[ASSETS_SPRITE_NUM] = {0};
+static struct {
+	enum assets_sound index;
+	const char *path;
+} table_sounds[] = {
+	SOUND(ASSETS_SOUND_ITEM_POTION, "sounds/potion.wav")
+};
+
+struct sprite assets_sprites[ASSETS_SPRITE_NUM];
+struct sound assets_sounds[ASSETS_SOUND_NUM];
 
 static void
 init_sprites(void)
@@ -50,10 +64,18 @@ init_sprites(void)
 		if (!image_open(&table_sprites[i].texture, molko_path(table_sprites[i].path)))
 			panic();
 
-		sprite_init(&table_sprites[i].sprite, &table_sprites[i].texture,
+		sprite_init(&assets_sprites[table_sprites[i].index],
+		    &table_sprites[i].texture,
 		    table_sprites[i].cellw, table_sprites[i].cellh);
+	}
+}
 
-		assets_sprites[table_sprites[i].index] = &table_sprites[i].sprite;
+static void
+init_sounds(void)
+{
+	for (size_t i = 0; i < UTIL_SIZE(assets_sounds); ++i) {
+		if (!sound_open(&assets_sounds[table_sounds[i].index], molko_path(table_sounds[i].path)))
+			panic();
 	}
 }
 
@@ -61,6 +83,10 @@ void
 assets_init(void)
 {
 	init_sprites();
+	init_sounds();
+
+	/* Prepare the theme. */
+	theme_default()->sprites[THEME_SPRITE_CURSOR] = &assets_sprites[ASSETS_SPRITE_UI_CURSOR];
 }
 
 void
@@ -68,4 +94,6 @@ assets_finish(void)
 {
 	for (size_t i = 0; i < UTIL_SIZE(table_sprites); ++i)
 		texture_finish(&table_sprites[i].texture);
+	for (size_t i = 0; i < UTIL_SIZE(table_sounds); ++i)
+		sound_finish(&assets_sounds[i]);
 }

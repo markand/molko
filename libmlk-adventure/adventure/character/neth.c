@@ -1,5 +1,5 @@
 /*
- * item.c -- inventory items
+ * neth.c -- Neth
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,24 +16,31 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
+#include <rpg/character.h>
 
-#include "item.h"
+#include <adventure/adventure_p.h>
+#include <adventure/assets.h>
 
-void
-item_exec(const struct item *item, struct character *ch)
+#include "neth.h"
+
+static void
+reset(struct character *ch)
 {
-	assert(item);
-	assert(ch);
-
-	return item->exec(item, ch);
+	/* TODO: compute hpmax given the level. */
+	ch->hpmax = 570;
+	ch->mpmax = 50;
+	ch->atk = 22;
+	ch->def = 19;
+	ch->agt = 16;
+	ch->luck = 3;
 }
 
-bool
-item_allowed(const struct item *item, struct character *ch)
-{
-	assert(item);
-	assert(ch);
-
-	return item->allowed ? item->allowed(item, ch) : true;
-}
+struct character character_neth = {
+	.name = N_("Neth"),
+	.level = 1,
+	.sprites = {
+		[CHARACTER_SPRITE_NORMAL] = &assets_sprites[ASSETS_SPRITE_CHARACTER_NETH],
+		[CHARACTER_SPRITE_SWORD] = &assets_sprites[ASSETS_SPRITE_CHARACTER_NETH_SWORD]
+	},
+	.reset = reset
+};

@@ -1,5 +1,5 @@
 /*
- * item.c -- inventory items
+ * black-cat.c -- Black Cat enemy
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,24 +16,36 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
+#include <rpg/battle.h>
+#include <rpg/character.h>
 
-#include "item.h"
+#include <adventure/adventure_p.h>
+#include <adventure/assets.h>
 
-void
-item_exec(const struct item *item, struct character *ch)
+#include "black-cat.h"
+
+static void
+reset(struct character *ch)
 {
-	assert(item);
-	assert(ch);
-
-	return item->exec(item, ch);
+	ch->hpmax = ch->hp = 126;
+	ch->mpmax = ch->mp = 12;
+	ch->atk = 10;
+	ch->def = 8;
+	ch->agt = 13;
 }
 
-bool
-item_allowed(const struct item *item, struct character *ch)
+static void
+exec(struct character *ch, struct battle *bt)
 {
-	assert(item);
-	assert(ch);
-
-	return item->allowed ? item->allowed(item, ch) : true;
+	battle_attack(bt, ch, NULL);
 }
+
+struct character character_black_cat = {
+	.name = N_("Black Cat"),
+	.level = 4,
+	.sprites = {
+		[CHARACTER_SPRITE_NORMAL] = &assets_sprites[ASSETS_SPRITE_CHARACTER_BLACK_CAT]
+	},
+	.reset = reset,
+	.exec = exec
+};

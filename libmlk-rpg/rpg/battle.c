@@ -87,6 +87,21 @@ find(struct battle *bt, const struct character *ch)
 	return NULL;
 }
 
+static struct battle_entity *
+random_select(struct battle_entity *group, size_t groupsz)
+{
+	struct battle_entity *ret = NULL, *et = NULL;
+
+	do {
+		et = &group[util_nrand(0, groupsz - 1)];
+
+		if (et->ch)
+			ret = et;
+	} while (!ret);
+
+	return ret;
+}
+
 static int
 cmp_order(const void *d1, const void *d2)
 {
@@ -97,10 +112,10 @@ cmp_order(const void *d1, const void *d2)
 }
 
 static bool
-is_team(const struct battle *bt, const struct battle_entity *et)
+is_team(const struct battle *bt, const struct character *ch)
 {
 	for (size_t i = 0; i < BATTLE_TEAM_MAX; ++i)
-		if (&bt->team[i] == et)
+		if (bt->team[i].ch == ch)
 			return true;
 
 	return false;
@@ -257,11 +272,16 @@ battle_attack(struct battle *bt,
               struct character *source,
               struct character *target)
 {
-	(void)source;
-
 	assert(bt);
 	assert(character_ok(source));
-	assert(character_ok(target));
+
+	/* Target is empty? select randomly. */
+	if (!target) {
+		if (is_team(bt, source))
+			target = random_select(bt->enemies, BATTLE_ENEMY_MAX)->ch;
+		else
+			target = random_select(bt->team, BATTLE_TEAM_MAX)->ch;
+	}
 
 	battle_state_attacking(bt, source, target);
 }
@@ -303,7 +323,7 @@ battle_next(struct battle *bt)
 	}
 
 	/* Change state depending on the kind of entity. */
-	if (is_team(bt, bt->order_cur)) {
+	if (is_team(bt, bt->order_cur->ch)) {
 		battle_bar_open_menu(&bt->bar);
 		battle_state_menu(bt);
 	} else

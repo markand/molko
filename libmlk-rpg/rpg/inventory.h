@@ -1,5 +1,5 @@
 /*
- * item.c -- inventory items
+ * inventory.h -- item inventory
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,24 +16,28 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
+#ifndef MOLKO_RPG_INVENTORY_H
+#define MOLKO_RPG_INVENTORY_H
 
-#include "item.h"
+#include <stdbool.h>
 
-void
-item_exec(const struct item *item, struct character *ch)
-{
-	assert(item);
-	assert(ch);
+#define INVENTORY_ITEM_MAX (512)
 
-	return item->exec(item, ch);
-}
+struct item;
+
+struct inventory_slot {
+	unsigned int amount;
+	const struct item *item;
+};
+
+struct inventory {
+	struct inventory_slot items[INVENTORY_ITEM_MAX];
+};
 
 bool
-item_allowed(const struct item *item, struct character *ch)
-{
-	assert(item);
-	assert(ch);
+inventory_add(struct inventory *iv, const struct item *item, unsigned int amount);
 
-	return item->allowed ? item->allowed(item, ch) : true;
-}
+void
+inventory_consume(struct inventory *iv, const struct item *item, unsigned int amount);
+
+#endif /* !MOLKO_RPG_INVENTORY_H */

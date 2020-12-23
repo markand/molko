@@ -49,6 +49,13 @@ open_attack(struct battle *bt)
 }
 
 static void
+open_items(struct battle *bt)
+{
+	battle_bar_open_items(&bt->bar, bt);
+	battle_state_sub(bt);
+}
+
+static void
 handle(struct battle_state *st, struct battle *bt, const union event *ev)
 {
 	(void)st;
@@ -62,6 +69,7 @@ handle(struct battle_state *st, struct battle *bt, const union event *ev)
 			open_spells(bt);
 			break;
 		case BATTLE_BAR_MENU_OBJECTS:
+			open_items(bt);
 			break;
 		case BATTLE_BAR_MENU_SPECIAL:
 			break;

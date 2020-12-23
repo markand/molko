@@ -29,12 +29,22 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/adventure_p.h
 	${libadventure_SOURCE_DIR}/adventure/assets.c
 	${libadventure_SOURCE_DIR}/adventure/assets.h
+	${libadventure_SOURCE_DIR}/adventure/character/black-cat.c
+	${libadventure_SOURCE_DIR}/adventure/character/black-cat.h
+	${libadventure_SOURCE_DIR}/adventure/character/neth.c
+	${libadventure_SOURCE_DIR}/adventure/character/neth.h
 	${libadventure_SOURCE_DIR}/adventure/dialog/save.c
 	${libadventure_SOURCE_DIR}/adventure/dialog/save.h
+	${libadventure_SOURCE_DIR}/adventure/item/potion.c
+	${libadventure_SOURCE_DIR}/adventure/item/potion.h
 	${libadventure_SOURCE_DIR}/adventure/mapscene/mapscene.c
 	${libadventure_SOURCE_DIR}/adventure/mapscene/mapscene.h
 	${libadventure_SOURCE_DIR}/adventure/molko.c
 	${libadventure_SOURCE_DIR}/adventure/molko.h
+	${libadventure_SOURCE_DIR}/adventure/state/battle.c
+	${libadventure_SOURCE_DIR}/adventure/state/battle.h
+	${libadventure_SOURCE_DIR}/adventure/state/continue.c
+	${libadventure_SOURCE_DIR}/adventure/state/continue.h
 	${libadventure_SOURCE_DIR}/adventure/state/mainmenu.c
 	${libadventure_SOURCE_DIR}/adventure/state/mainmenu.h
 	${libadventure_SOURCE_DIR}/adventure/state/map.c
@@ -43,8 +53,6 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/state/panic.h
 	${libadventure_SOURCE_DIR}/adventure/state/splashscreen.c
 	${libadventure_SOURCE_DIR}/adventure/state/splashscreen.h
-	${libadventure_SOURCE_DIR}/adventure/state/continue.c
-	${libadventure_SOURCE_DIR}/adventure/state/continue.h
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.c
 	${libadventure_SOURCE_DIR}/adventure/trace_hud.h
 )

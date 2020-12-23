@@ -60,6 +60,8 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/character.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/equipment.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/equipment.h
+	${libmlk-rpg_SOURCE_DIR}/rpg/inventory.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/inventory.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/item.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/item.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/map-file.c

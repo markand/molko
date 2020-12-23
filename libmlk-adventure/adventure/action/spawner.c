@@ -24,7 +24,12 @@
 #include <core/game.h>
 #include <core/util.h>
 
+#include <rpg/battle.h>
 #include <rpg/map.h>
+
+#include <adventure/molko.h>
+
+#include <adventure/character/black-cat.h>
 
 #include "spawner.h"
 
@@ -37,6 +42,24 @@ distance(const struct spawner *s)
 			     fmin(s->last_y, s->map->player_y);
 
 	return fmin(s->steps, gap_x + gap_y);
+}
+
+static void
+fight(void)
+{
+	/* TODO: */
+	struct battle *bt;
+
+	bt = alloc_new0(sizeof (*bt));
+	bt->enemies[0].ch = &character_black_cat;
+	bt->enemies[0].x = 400;
+	bt->enemies[0].y = 50;
+	bt->inventory = &molko.inventory;
+
+	for (size_t i = 0; i < TEAM_MEMBER_MAX; ++i)
+		bt->team[i].ch = molko.team.members[i];
+
+	molko_fight(bt);
 }
 
 static bool
@@ -53,9 +76,7 @@ update(struct action *act, unsigned int ticks)
 
 		if (s->steps == 0) {
 			s->steps = util_nrand(s->low, s->high);
-
-			/* TODO: start battle here. */
-			return false;
+			fight();
 		}
 	}
 
@@ -79,6 +100,8 @@ spawner_action(struct spawner *s)
 
 	s->action.data = s;
 	s->action.update = update;
+
+	spawner_init(s);
 
 	return &s->action;
 }

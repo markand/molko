@@ -1,5 +1,5 @@
 /*
- * item.c -- inventory items
+ * potion.h -- give some heal points
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,24 +16,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
+#include <math.h>
 
-#include "item.h"
+#include <core/sound.h>
 
-void
-item_exec(const struct item *item, struct character *ch)
+#include <rpg/character.h>
+#include <rpg/item.h>
+
+#include <adventure/adventure_p.h>
+#include <adventure/assets.h>
+
+#include "potion.h"
+
+static void
+exec(const struct item *i, struct character *ch)
 {
-	assert(item);
-	assert(ch);
-
-	return item->exec(item, ch);
+	sound_play(&assets_sounds[ASSETS_SOUND_ITEM_POTION], -1, 0);
+	ch->hp = fmin(ch->hp + 50, ch->hpmax);
 }
 
-bool
-item_allowed(const struct item *item, struct character *ch)
-{
-	assert(item);
-	assert(ch);
-
-	return item->allowed ? item->allowed(item, ch) : true;
-}
+const struct item item_potion = {
+	.name = N_("Potion"),
+	.description = N_("Recover 50 HP."),
+	.exec = exec
+};

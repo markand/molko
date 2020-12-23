@@ -36,9 +36,13 @@
 #include <ui/label.h>
 #include <ui/theme.h>
 
+#include <rpg/character.h>
+
 #include <adventure/assets.h>
 #include <adventure/molko.h>
 #include <adventure/adventure_p.h>
+
+#include <adventure/character/neth.h>
 
 #include "mainmenu.h"
 #include "continue.h"
@@ -58,6 +62,11 @@ struct self {
 static void
 new(void)
 {
+	/* TODO: temporary. */
+	molko.team.members[0] = &character_neth;
+	character_reset(molko.team.members[0]);
+	molko.team.members[0]->hp = molko.team.members[0]->hpmax;
+	molko.team.members[0]->mp = molko.team.members[0]->mpmax;
 	molko_teleport("maps/map-world.map", -1, -1);
 }
 
@@ -170,7 +179,7 @@ static void
 draw(struct state *state)
 {
 	struct self *self = state->data;
-	struct sprite *cursor = assets_sprites[ASSETS_SPRITE_UI_CURSOR];
+	struct sprite *cursor = &assets_sprites[ASSETS_SPRITE_UI_CURSOR];
 	int x, y;
 
 	painter_set_color(0xffffffff);

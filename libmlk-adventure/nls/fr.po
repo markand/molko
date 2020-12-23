@@ -15,13 +15,12 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-28 21:19+0100\n"
+"POT-Creation-Date: 2020-12-22 10:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,14 +29,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/state/mainmenu.c:119
+#: /Users/markand/Dev/molko/libmlk-adventure/adventure/state/mainmenu.c:107
 msgid "Continue"
 msgstr "Continuer"
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/state/mainmenu.c:118
+#: /Users/markand/Dev/molko/libmlk-adventure/adventure/dialog/save.c:162
+#, c-format
+msgid "Last played: %s"
+msgstr ""
+
+#: /Users/markand/Dev/molko/libmlk-adventure/adventure/state/mainmenu.c:106
 msgid "New"
 msgstr "Nouvelle partie"
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/state/mainmenu.c:120
+#: /Users/markand/Dev/molko/libmlk-adventure/adventure/item/potion.c:36
+msgid "Potion"
+msgstr ""
+
+#: /Users/markand/Dev/molko/libmlk-adventure/adventure/state/mainmenu.c:108
 msgid "Quit"
 msgstr "Quitter"
+
+#: /Users/markand/Dev/molko/libmlk-adventure/adventure/item/potion.c:37
+msgid "Recover 50 HP."
+msgstr ""
+
+#: /Users/markand/Dev/molko/libmlk-adventure/adventure/dialog/save.c:168
+#, c-format
+msgid "Time played: %s"
+msgstr ""

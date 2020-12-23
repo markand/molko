@@ -131,7 +131,7 @@ draw_save_faces(const struct dialog_save *dlg, const struct geo *geo, size_t i)
 {
 	/* TODO: determine face. */
 	for (size_t f = 0; f < TEAM_MAX; ++f) {
-		sprite_scale(assets_sprites[ASSETS_SPRITE_FACES], 0, f,
+		sprite_scale(&assets_sprites[ASSETS_SPRITE_FACES], 0, f,
 		    geo->saves[i].faces[f].x,
 		    geo->saves[i].faces[f].y,
 		    geo->saves[i].faces[f].w,
@@ -194,7 +194,7 @@ draw_saves(const struct dialog_save *dlg, const struct geo *geo)
 static void
 draw_cursor(const struct dialog_save *dlg, const struct geo *geo)
 {
-	const struct sprite *sprite =assets_sprites[ASSETS_SPRITE_UI_CURSOR];
+	const struct sprite *sprite = &assets_sprites[ASSETS_SPRITE_UI_CURSOR];
 	const int x = geo->saves[dlg->selected].x - sprite->cellw;
 	const int y = geo->saves[dlg->selected].y;
 

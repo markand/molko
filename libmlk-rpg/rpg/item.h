@@ -19,61 +19,22 @@
 #ifndef MOLKO_RPG_ITEM_H
 #define MOLKO_RPG_ITEM_H
 
-/**
- * \file item.h
- * \brief Inventory items.
- */
-
 #include <stdbool.h>
 
 struct character;
 struct texture;
 
-/**
- * \brief Inventory items.
- */
 struct item {
-	const char *name;               /*!< (+) Name of item. */
-	const char *summary;            /*!< (+) Summary description. */
-	struct texture *icon;           /*!< (+&) Icon to show. */
-
-	/**
-	 * (+) Execute the action for this character.
-	 *
-	 * \param item this item
-	 * \param ch the character owner
-	 */
-	void (*exec)(struct item *item, struct character *ch);
-
-	/**
-	 * (+?) Tells if the item can be used in this context.
-	 *
-	 * \param item this item
-	 * \param ch the character owner
-	 */
+	const char *name;
+	const char *description;
+	struct texture *icon;
+	void (*exec)(const struct item *item, struct character *ch);
 	bool (*allowed)(const struct item *item, const struct character *ch);
 };
 
-/**
- * Shortcut for item->exec (if not NULL).
- *
- * \pre item != NULL
- * \pre ch != NULL
- * \param item the item to use
- * \param ch the character owner
- */
 void
-item_exec(struct item *item, struct character *ch);
+item_exec(const struct item *item, struct character *ch);
 
-/**
- * Shortcut for item->allowed (if not NULL).
- *
- * \pre item != NULL
- * \pre ch != NULL
- * \param item the item to use
- * \param ch the character owner
- * \return The return value of item->allowed or true if NULL.
- */
 bool
 item_allowed(const struct item *item, struct character *ch);
 

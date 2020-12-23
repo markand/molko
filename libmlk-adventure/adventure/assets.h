@@ -19,7 +19,8 @@
 #ifndef MOLKO_ADVENTURE_ASSETS_H
 #define MOLKO_ADVENTURE_ASSETS_H
 
-struct sprite;
+#include <core/sound.h>
+#include <core/sprite.h>
 
 enum assets_sprite {
 	/* UI elements. */
@@ -28,13 +29,26 @@ enum assets_sprite {
 	/* Actions. */
 	ASSETS_SPRITE_CHEST,
 
+	/* Characters enemies. */
+	ASSETS_SPRITE_CHARACTER_BLACK_CAT,
+
 	/* Team assets. */
+	ASSETS_SPRITE_CHARACTER_NETH,
+	ASSETS_SPRITE_CHARACTER_NETH_SWORD,
 	ASSETS_SPRITE_FACES,
 
 	ASSETS_SPRITE_NUM
 };
 
-extern struct sprite *assets_sprites[ASSETS_SPRITE_NUM];
+enum assets_sound {
+	/* Items. */
+	ASSETS_SOUND_ITEM_POTION,
+
+	ASSETS_SOUND_NUM
+};
+
+extern struct sprite assets_sprites[ASSETS_SPRITE_NUM];
+extern struct sound assets_sounds[ASSETS_SOUND_NUM];
 
 void
 assets_init(void);

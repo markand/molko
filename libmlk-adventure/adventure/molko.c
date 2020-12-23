@@ -37,6 +37,7 @@
 
 #include <rpg/rpg.h>
 
+#include <adventure/state/battle.h>
 #include <adventure/state/panic.h>
 #include <adventure/state/splashscreen.h>
 #include <adventure/state/mainmenu.h>
@@ -113,8 +114,18 @@ molko_run(void)
 void
 molko_teleport(const char *map, int origin_x, int origin_y)
 {
+	molko.state = MOLKO_STATE_MAP;
+
 	game_switch(state_map_new(map, origin_x, origin_y), false);
 	game.inhibit = INHIBIT_NONE;
+}
+
+void
+molko_fight(struct battle *bt)
+{
+	molko.state = MOLKO_STATE_BATTLE;
+
+	game_switch(state_battle_new(bt), false);
 }
 
 const char *

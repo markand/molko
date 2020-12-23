@@ -1,5 +1,5 @@
 /*
- * item.c -- inventory items
+ * black-cat.h -- Black Cat enemy
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,24 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
+#ifndef MOLKO_ADVENTURE_CHARACTER_BLACK_CAT_H
+#define MOLKO_ADVENTURE_CHARACTER_BLACK_CAT_H
 
-#include "item.h"
+extern struct character character_black_cat;
 
-void
-item_exec(const struct item *item, struct character *ch)
-{
-	assert(item);
-	assert(ch);
-
-	return item->exec(item, ch);
-}
-
-bool
-item_allowed(const struct item *item, struct character *ch)
-{
-	assert(item);
-	assert(ch);
-
-	return item->allowed ? item->allowed(item, ch) : true;
-}
+#endif /* !MOLKO_ADVENTURE_CHARACTER_BLACK_CAT_H */

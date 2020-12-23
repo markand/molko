@@ -31,8 +31,24 @@
 #include "battle.h"
 #include "battle-bar.h"
 #include "character.h"
+#include "inventory.h"
+#include "item.h"
 #include "spell.h"
 #include "rpg_p.h"
+
+static void
+init_gridmenu(struct battle_bar *bar, const struct battle *bt)
+{
+	bar->sub_grid.x = bar->x;
+	bar->sub_grid.y = bar->menu_frame.y;
+	bar->sub_grid.w = bar->status_frame.w;
+	bar->sub_grid.h = bar->h;
+	bar->sub_grid.theme = bt->theme;
+	bar->sub_grid.nrows = 3;
+	bar->sub_grid.ncols = 4;
+
+	memset(bar->sub_grid.menu, 0, sizeof (bar->sub_grid.menu));
+}
 
 static void
 draw_status_character_stats(const struct battle *bt,
@@ -314,20 +330,26 @@ battle_bar_open_menu(struct battle_bar *bar)
 void
 battle_bar_open_spells(struct battle_bar *bar, const struct battle *bt, struct character *ch)
 {
-	/* Sub menu bar on the left, take same space as status. */
-	bar->sub_grid.x = bar->x;
-	bar->sub_grid.y = bar->menu_frame.y;
-	bar->sub_grid.w = bar->status_frame.w;
-	bar->sub_grid.h = bar->h;
-	bar->sub_grid.theme = bt->theme;
-	bar->sub_grid.nrows = 3;
-	bar->sub_grid.ncols = 4;
-
-	memset(bar->sub_grid.menu, 0, sizeof (bar->sub_grid.menu));
+	init_gridmenu(bar, bt);
 
 	for (size_t i = 0; i < CHARACTER_SPELL_MAX; ++i) {
 		if (ch->spells[i])
 			bar->sub_grid.menu[i] = ch->spells[i]->name;
+	}
+
+	gridmenu_repaint(&bar->sub_grid);
+
+	bar->state = BATTLE_BAR_STATE_SUB;
+}
+
+void
+battle_bar_open_items(struct battle_bar *bar, const struct battle *bt)
+{
+	init_gridmenu(bar, bt);
+
+	for (size_t i = 0; i < INVENTORY_ITEM_MAX; ++i) {
+		if (bt->inventory->items[i].item)
+			bar->sub_grid.menu[i] = bt->inventory->items[i].item->name;
 	}
 
 	gridmenu_repaint(&bar->sub_grid);

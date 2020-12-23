@@ -23,9 +23,11 @@
 
 #if defined(MOLKO_WITH_NLS)
 #       include <libintl.h>
-#       define _(s) dgettext("libmlk-adventure", s)
+#       define _(s)     dgettext("libmlk-adventure", s)
+#       define N_(s)    s
 #else
-#       define _(s) s
+#       define _(s)     s
+#       define N_(s)    s
 #endif
 
 #endif /* !MOLKO_ADVENTURE_ADVENTURE_P_H */

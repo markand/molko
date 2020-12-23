@@ -1,5 +1,5 @@
 /*
- * item.c -- inventory items
+ * battle.h -- manage a battle
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,24 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
+#ifndef MOLKO_ADVENTURE_STATE_BATTLE_H
+#define MOLKO_ADVENTURE_STATE_BATTLE_H
 
-#include "item.h"
+struct battle;
+struct state;
 
-void
-item_exec(const struct item *item, struct character *ch)
-{
-	assert(item);
-	assert(ch);
+struct state *
+state_battle_new(struct battle *);
 
-	return item->exec(item, ch);
-}
-
-bool
-item_allowed(const struct item *item, struct character *ch)
-{
-	assert(item);
-	assert(ch);
-
-	return item->allowed ? item->allowed(item, ch) : true;
-}
+#endif /* !MOLKO_ADVENTURE_STATE_BATTLE_H */
