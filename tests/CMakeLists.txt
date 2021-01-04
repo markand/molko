@@ -40,3 +40,5 @@ molko_define_test(
 	SOURCES test-tileset.c
 	FLAGS DIRECTORY="${tests_SOURCE_DIR}/assets/maps/"
 )
+
+molko_define_test(TARGET util SOURCES test-util.c)

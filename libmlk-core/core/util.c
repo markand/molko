@@ -48,5 +48,5 @@ util_nrand(unsigned int lower, unsigned int upper)
 {
 	assert(upper <= RAND_MAX);
 
-	return (rand() % (upper - lower + 1)) + lower;
+	return (rand() % (upper - lower)) + lower;
 }
