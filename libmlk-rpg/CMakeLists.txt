@@ -75,6 +75,7 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/rpg_p.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/save.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/save.h
+	${libmlk-rpg_SOURCE_DIR}/rpg/selection.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/selection.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/spell.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/spell.h

@@ -21,21 +21,32 @@
 #include "spell.h"
 
 void
-spell_action(const struct spell *s, struct battle *bt, struct character *owner, unsigned int selection)
+spell_select(const struct spell *s, const struct battle *bt, struct selection *slt)
+{
+	assert(s && s->select);
+	assert(bt);
+	assert(slt);
+
+	s->select(bt, slt);
+}
+
+void
+spell_action(const struct spell *s, struct battle *bt, struct character *owner, const struct selection *slt)
 {
 	assert(s && s->action);
 	assert(bt);
 	assert(owner);
+	assert(slt);
 
-	s->action(bt, owner, selection);
+	s->action(bt, owner, slt);
 }
 
 void
-spell_use(struct spell *s, struct character *owner, int selection)
+spell_use(struct spell *s, struct character *owner, const struct selection *slt)
 {
 	assert(s && s->use);
 	assert(owner);
+	assert(slt);
 
-	if (s->use)
-		s->use(owner, selection);
+	s->use(owner, slt);
 }

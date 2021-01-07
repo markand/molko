@@ -19,17 +19,36 @@
 #ifndef MOLKO_RPG_SELECTION_H
 #define MOLKO_RPG_SELECTION_H
 
-/**
- * \brief Kind of selection.
- */
-enum selection {
-	SELECTION_SELF,           /*!< Owner only. */
-	SELECTION_TEAM_ONE,       /*!< One member of the team. */
-	SELECTION_TEAM_ALL,       /*!< All members of the team. */
-	SELECTION_TEAM_COMBINED,  /*!< One or all members of the team. */
-	SELECTION_ENEMY_ONE,      /*!< One enemy. */
-	SELECTION_ENEMY_ALL,      /*!< All enemies. */
-	SELECTION_ENEMY_COMBINED  /*!< One or all enemies. */
+struct battle;
+
+enum selection_kind {
+	SELECTION_KIND_SELF,
+	SELECTION_KIND_ONE,
+	SELECTION_KIND_ALL,
+	SELECTION_KIND_BOTH
 };
+
+enum selection_side {
+	/* Which side allowed (can be both). */
+	SELECTION_SIDE_TEAM     = (1 << 0),
+	SELECTION_SIDE_ENEMY    = (1 << 1)
+};
+
+struct selection {
+	enum selection_kind allowed_kinds;
+	enum selection_side allowed_sides;
+	
+	/* Character index in battle entity array. */
+	unsigned int index_character;
+
+	/* Side index (0 = enemy, 1 = team). */
+	unsigned int index_side;
+};
+
+void
+selection_first(struct selection *, const struct battle *);
+
+void
+selection_random(struct selection *, const struct battle *);
 
 #endif /* !MOLKO_RPG_SELECTION_H */

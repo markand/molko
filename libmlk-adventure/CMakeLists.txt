@@ -41,6 +41,8 @@ set(
 	${libadventure_SOURCE_DIR}/adventure/mapscene/mapscene.h
 	${libadventure_SOURCE_DIR}/adventure/molko.c
 	${libadventure_SOURCE_DIR}/adventure/molko.h
+	${libadventure_SOURCE_DIR}/adventure/spell/fire-minor.c
+	${libadventure_SOURCE_DIR}/adventure/spell/fire-minor.h
 	${libadventure_SOURCE_DIR}/adventure/state/battle.c
 	${libadventure_SOURCE_DIR}/adventure/state/battle.h
 	${libadventure_SOURCE_DIR}/adventure/state/continue.c

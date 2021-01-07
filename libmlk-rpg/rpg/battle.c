@@ -290,7 +290,7 @@ void
 battle_cast(struct battle *bt,
             struct character *source,
             const struct spell *spell,
-            unsigned int selection)
+            const struct selection *selection)
 {
 	assert(bt);
 	assert(source);
@@ -314,12 +314,18 @@ battle_next(struct battle *bt)
 		battle_order(bt);
 		bt->order_cur = bt->order[bt->order_curindex = 0];
 	} else {
-		/* End of turn. */
-		if (++bt->order_curindex >= BATTLE_ENTITY_MAX || !bt->order[bt->order_curindex]) {
+		for (++bt->order_curindex; bt->order_curindex < BATTLE_ENTITY_MAX; ++bt->order_curindex) {
+			if (battle_entity_ok(bt->order[bt->order_curindex])) {
+				bt->order_cur = bt->order[bt->order_curindex];
+				break;
+			}
+		}
+
+		/* End of "turn". */
+		if (bt->order_curindex >= BATTLE_ENTITY_MAX) {
 			battle_order(bt);
 			bt->order_cur = bt->order[bt->order_curindex = 0];
-		} else
-			bt->order_cur = bt->order[bt->order_curindex];
+		}
 	}
 
 	/* Change state depending on the kind of entity. */

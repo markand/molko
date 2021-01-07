@@ -35,17 +35,12 @@ open_spells(struct battle *bt)
 static void
 open_attack(struct battle *bt)
 {
-	unsigned int selection = 0;
+	struct selection slt = {
+		.allowed_sides = SELECTION_SIDE_ENEMY
+	};
 
-	/* Find first enemy to attack. */
-	for (size_t i = 0; i < BATTLE_ENEMY_MAX; ++i) {
-		if (character_ok(bt->enemies[i].ch)) {
-			selection = i;
-			break;
-		}
-	}
-
-	battle_state_selection(bt, SELECTION_ENEMY_ONE, selection);
+	selection_first(&slt, bt);
+	battle_state_selection(bt, &slt);
 }
 
 static void

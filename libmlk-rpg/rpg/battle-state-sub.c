@@ -36,46 +36,18 @@ start_select_spell(struct battle *bt)
 {
 	const struct character *ch = bt->order_cur->ch;
 	const struct spell *sp = ch->spells[bt->bar.sub_grid.selected];
-	unsigned int selection = 0;
+	struct selection slt = {0};
 
 	/* Don't forget to reset the gridmenu state. */
 	gridmenu_reset(&bt->bar.sub_grid);
 
-	if (!sp || sp->mp > (unsigned int)(ch->mp))
+	if (bt->bar.sub_grid.selected > CHARACTER_SPELL_MAX)
+		return;
+	if (!(sp = ch->spells[bt->bar.sub_grid.selected]) || sp->mp > (unsigned int)(ch->mp))
 		return;
 
-	/*
-	 * When starting the selection state we need to initialize the first
-	 * selection depending on the spell selection type. For example, if the
-	 * spell require to select exactly one enemy, we need to find the first
-	 * one in the battle that is not NULL.
-	 */
-	switch (sp->selection) {
-	case SELECTION_SELF:
-	case SELECTION_TEAM_COMBINED:
-	case SELECTION_TEAM_ONE:
-		selection = bt->order_cur - bt->team;
-		break;
-	case SELECTION_TEAM_ALL:
-	case SELECTION_ENEMY_ALL:
-		selection = -1;
-		break;
-	case SELECTION_ENEMY_COMBINED:
-	case SELECTION_ENEMY_ONE:
-		/* Find first available. */
-		for (size_t i = 0; i < BATTLE_ENEMY_MAX; ++i) {
-			if (character_ok(bt->enemies[i].ch)) {
-				selection = i;
-				break;
-			}
-		}
-		break;
-	default:
-		selection = 0;
-		break;
-	}
-
-	battle_state_selection(bt, sp->selection, selection);
+	spell_select(sp, bt, &slt);
+	battle_state_selection(bt, &slt);
 
 	/* A cursor should be present. */
 	if (!sprite_ok(BATTLE_THEME(bt)->sprites[THEME_SPRITE_CURSOR]))

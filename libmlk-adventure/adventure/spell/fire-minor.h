@@ -1,5 +1,5 @@
 /*
- * neth.c -- Neth
+ * fire-minor.h -- minor fire
  *
  * Copyright (c) 2020 David Demelier <markand@malikania.fr>
  *
@@ -16,36 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rpg/character.h>
+#ifndef MOLKO_ADVENTURE_FIRE_MINOR_H
+#define MOLKO_ADVENTURE_FIRE_MINOR_H
 
-#include <adventure/adventure_p.h>
-#include <adventure/assets.h>
+extern const struct spell spell_fire_minor;
 
-#include <adventure/spell/fire-minor.h>
-
-#include "neth.h"
-
-static void
-reset(struct character *ch)
-{
-	/* TODO: compute hpmax given the level. */
-	ch->hpmax = 570;
-	ch->mpmax = 50;
-	ch->atk = 22;
-	ch->def = 19;
-	ch->agt = 16;
-	ch->luck = 3;
-}
-
-struct character character_neth = {
-	.name = N_("Neth"),
-	.level = 1,
-	.sprites = {
-		[CHARACTER_SPRITE_NORMAL] = &assets_sprites[ASSETS_SPRITE_CHARACTER_NETH],
-		[CHARACTER_SPRITE_SWORD] = &assets_sprites[ASSETS_SPRITE_CHARACTER_NETH_SWORD]
-	},
-	.spells = {
-		&spell_fire_minor
-	},
-	.reset = reset
-};
+#endif /* !MOLKO_ADVENTURE_FIRE_MINOR_H */

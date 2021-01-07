@@ -50,6 +50,9 @@
 #define WINDOW_WIDTH    1280
 #define WINDOW_HEIGHT   720
 
+
+#include "character/neth.h"
+
 static jmp_buf panic_buf;
 
 struct molko molko;
@@ -92,6 +95,9 @@ molko_init(void)
 	game_switch(state_splashscreen_ne(), true);
 #else
 	game_switch(state_mainmenu_new(), true);
+	molko.team.members[0] = &character_neth;
+	molko.team.members[1] = &character_neth;
+	molko_teleport("maps/map-world.map", -1, -1);
 #endif
 }
 

@@ -45,7 +45,7 @@ util_pathf(const char *fmt, ...)
 
 ### util_nrand
 
-Returns a random number between `lower` and `upper` (included).
+Returns a random number between `lower` and `upper` (excluded).
 
 ```c
 unsigned int

@@ -18,6 +18,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <core/alloc.h>
 #include <core/event.h>
@@ -35,28 +36,49 @@
 
 struct select {
 	struct battle_state state;
-	enum selection type;
-	unsigned int selection;
+	struct selection slt;
 };
 
 static void
-select_adj_in(struct select *select, const struct battle_entity entities[], size_t entitiesz, int step)
+attack(struct select *select, struct battle *bt)
 {
-	assert(select->selection != (unsigned int)-1);
+	struct character *target;
 
-	unsigned int newselection = select->selection;
+	if (select->slt.index_side == 0)
+		target = bt->enemies[select->slt.index_character].ch;
+	else
+		target = bt->team[select->slt.index_character].ch;
+
+	battle_attack(bt, bt->order_cur->ch, target);
+}
+
+static void
+cast(struct select *select, struct battle *bt)
+{
+	struct character *source = bt->order_cur->ch;
+	const struct spell *spell = source->spells[bt->bar.sub_grid.selected];
+
+	battle_cast(bt, source, spell, &select->slt);
+}
+
+static void
+select_adj_in(struct select *select, const struct battle_entity *entities, size_t entitiesz, int step)
+{
+	assert(select->slt.index_character != (unsigned int)-1);
+
+	unsigned int newselection = select->slt.index_character;
 
 	if (step < 0) {
 		while (newselection > 0) {
 			if (character_ok(entities[--newselection].ch)) {
-				select->selection = newselection;
+				select->slt.index_character = newselection;
 				break;
 			}
 		}
 	} else {
 		while (newselection < entitiesz) {
 			if (character_ok(entities[++newselection].ch)) {
-				select->selection = newselection;
+				select->slt.index_character = newselection;
 				break;
 			}
 		}
@@ -66,17 +88,10 @@ select_adj_in(struct select *select, const struct battle_entity entities[], size
 static void
 select_adj(struct select *select, const struct battle *bt, int step)
 {
-	switch (select->type) {
-	case SELECTION_TEAM_ONE:
-	case SELECTION_TEAM_COMBINED:
-		select_adj_in(select, bt->team, UTIL_SIZE(bt->team), step);
-		break;
-	case SELECTION_ENEMY_ONE:
-	case SELECTION_ENEMY_COMBINED:
+	if (select->slt.index_side == 0)
 		select_adj_in(select, bt->enemies, UTIL_SIZE(bt->enemies), step);
-	default:
-		break;
-	}
+	else
+		select_adj_in(select, bt->team, UTIL_SIZE(bt->team), step);
 }
 
 static void
@@ -85,32 +100,48 @@ handle_keydown(struct battle_state *st, struct battle *bt, const union event *ev
 	assert(ev->type == EVENT_KEYDOWN);
 
 	struct select *select = st->data;
-	struct character *source = bt->order_cur->ch;
-	const struct spell *sp = source->spells[bt->bar.sub_grid.selected];
 
 	switch (ev->key.key) {
 	case KEY_ESCAPE:
-		battle_state_sub(bt);
+		switch (bt->bar.menu) {
+		case BATTLE_BAR_MENU_MAGIC:
+		case BATTLE_BAR_MENU_OBJECTS:
+			battle_state_sub(bt);
+			break;
+		default:
+			battle_state_menu(bt);
+			break;
+		}
 		break;
 	case KEY_ENTER:
 		switch (bt->bar.menu) {
 		case BATTLE_BAR_MENU_ATTACK:
-			battle_attack(bt, source, bt->enemies[select->selection].ch);
+			attack(select, bt);
 			break;
 		case BATTLE_BAR_MENU_MAGIC:
-			battle_cast(bt, source, sp, select->selection);
+			cast(select, bt);
 			break;
 		default:
 			break;
 		}
 		break;
 	case KEY_LEFT:
+		if (select->slt.allowed_sides & SELECTION_SIDE_ENEMY)
+			select->slt.index_side = 0;
+		break;
+	case KEY_RIGHT:
+		if (select->slt.allowed_sides & SELECTION_SIDE_TEAM)
+			select->slt.index_side = 1;
+		break;
 	case KEY_UP:
 		select_adj(select, bt, -1);
 		break;
-	case KEY_RIGHT:
 	case KEY_DOWN:
 		select_adj(select, bt, +1);
+		break;
+	case KEY_TAB:
+		if (select->slt.allowed_kinds == SELECTION_KIND_BOTH)
+			select->slt.index_character = -1;
 		break;
 	default:
 		break;
@@ -138,21 +169,16 @@ draw_cursor(const struct battle *bt, const struct battle_entity *et)
 
 static void
 draw_cursors(const struct battle_state *st,
-            const struct battle *bt,
-            const struct battle_entity entities[],
-            size_t entitiesz)
+             const struct battle *bt,
+             const struct battle_entity *entities,
+             size_t entitiesz)
 {
-	const struct select *select = st->data;
+	for (size_t i = 0; i < entitiesz; ++i) {
+		const struct battle_entity *et = &entities[i];
 
-	if (select->selection == (unsigned int)-1) {
-		for (size_t i = 0; i < entitiesz; ++i) {
-			const struct battle_entity *et = &entities[i];
-
-			if (character_ok(et->ch))
-				draw_cursor(bt, et);
-		}
-	} else
-		draw_cursor(bt, &entities[select->selection]);
+		if (character_ok(et->ch))
+			draw_cursor(bt, et);
+	}
 }
 
 static void
@@ -174,24 +200,19 @@ draw(const struct battle_state *st, const struct battle *bt)
 {
 	const struct select *select = st->data;
 
-	switch (select->type) {
-	case SELECTION_SELF:
-		draw_cursor(bt, bt->order_cur);
-		break;
-	case SELECTION_ENEMY_ALL:
-	case SELECTION_ENEMY_ONE:
-	case SELECTION_ENEMY_COMBINED:
-		draw_cursors(st, bt, bt->enemies, UTIL_SIZE(bt->enemies));
-		break;
-	case SELECTION_TEAM_ALL:
-	case SELECTION_TEAM_ONE:
-	case SELECTION_TEAM_COMBINED:
-		draw_cursors(st, bt, bt->team, UTIL_SIZE(bt->team));
-		break;
-	default:
-		break;
+	if (select->slt.index_character == -1) {
+		/* All selected. */
+		if (select->slt.index_side == 0)
+			draw_cursors(st, bt, bt->enemies, UTIL_SIZE(bt->enemies));
+		else
+			draw_cursors(st, bt, bt->team, UTIL_SIZE(bt->team));
+	} else {
+		/* Select one. */
+		if (select->slt.index_side == 0)
+			draw_cursor(bt, &bt->enemies[select->slt.index_character]);
+		else
+			draw_cursor(bt, &bt->team[select->slt.index_character]);
 	}
-
 }
 
 static void
@@ -203,9 +224,7 @@ finish(struct battle_state *st, struct battle *bt)
 }
 
 void
-battle_state_selection(struct battle *bt,
-		       enum selection type,
-		       unsigned int selection)
+battle_state_selection(struct battle *bt, const struct selection *slt)
 {
 	assert(bt);
 
@@ -214,12 +233,11 @@ battle_state_selection(struct battle *bt,
 	if (!(select = alloc_new0(sizeof (*select))))
 		panic();
 
-	select->type = type;
-	select->selection = selection;
 	select->state.data = select;
 	select->state.handle = handle;
 	select->state.draw = draw;
 	select->state.finish = finish;
+	memcpy(&select->slt, slt, sizeof (*slt));
 
 	battle_switch(bt, &select->state);
 }

@@ -53,7 +53,6 @@ fadeout_update(struct action *act, unsigned int ticks)
 			return true;
 
 		fade->alpha -= 10;
-		texture_set_alpha_mod(ch->sprites[CHARACTER_SPRITE_NORMAL]->texture, fade->alpha);
 	}
 
 	return false;
@@ -63,8 +62,11 @@ static void
 fadeout_draw(struct action *act)
 {
 	const struct fadeout *fade = act->data;
+	struct sprite *sprite = fade->ch->sprites[CHARACTER_SPRITE_NORMAL];
 
-	sprite_draw(fade->ch->sprites[CHARACTER_SPRITE_NORMAL], 0, 0, fade->x, fade->y);
+	texture_set_alpha_mod(sprite->texture, fade->alpha);
+	sprite_draw(sprite, 0, 0, fade->x, fade->y);
+	texture_set_alpha_mod(sprite->texture, 255);
 }
 
 static void

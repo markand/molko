@@ -28,81 +28,39 @@
 
 struct character;
 struct battle;
+struct selection;
 
-/**
- * \brief Kind of spell.
- */
 enum spell_type {
-	SPELL_TYPE_NEUTRAL,     /*!< No type. */
-	SPELL_TYPE_FIRE,        /*!< Fire (affected by attack). */
-	SPELL_TYPE_WIND,        /*!< Wind (affected by agility). */
-	SPELL_TYPE_WATER,       /*!< Water (affected by luck). */
-	SPELL_TYPE_EARTH,       /*!< Earth (affected by defense). */
-	SPELL_TYPE_CHAOS,       /*!< Chaotic. */
-	SPELL_TYPE_HOLY,        /*!< Holy. */
-	SPELL_TYPE_TIME         /*!< Chrono. */
+	SPELL_TYPE_NEUTRAL,
+	SPELL_TYPE_FIRE,
+	SPELL_TYPE_WIND,
+	SPELL_TYPE_WATER,
+	SPELL_TYPE_EARTH,
+	SPELL_TYPE_CHAOS,
+	SPELL_TYPE_HOLY,
+	SPELL_TYPE_TIME
 };
 
-/**
- * \brief Spell structure.
- *
- * A spell is a magical object owned by a character and can be used in a battle
- * and/or outside of a battle. It costs a certain amount of magic points and is
- * typed into a category (earth, fire, etc, …).
- *
- * A spell can select one character or all.
- */
 struct spell {
-	const char *name;               /*!< (+&) Spell name. */
-	const char *description;        /*!< (+&) Long description. */
-	unsigned int mp;                /*!< (+) Number of MP required. */
-	enum spell_type type;           /*!< (+) Kind of spell. */
-	enum selection selection;       /*!< (+) Kind of selection. */
+	const char *name;
+	const char *description;
+	unsigned int mp;
+	enum spell_type type;
+	enum selection_kind select_kind;
+	enum selection_side select_side;
 
-	/**
-	 * (+) Execute the spell in a battle.
-	 *
-	 * \param bt the current battle
-	 * \param owner the spell owner
-	 * \param selection the selection (-1 == all)
-	 */
-	void (*action)(struct battle *bt, struct character *owner, unsigned int selection);
-
-	/**
-	 * (+) Use the spell outside of a battle.
-	 *
-	 * This function is optional.
-	 *
-	 * \param owner the spell owner
-	 * \param selection the selection flags
-	 */
-	void (*use)(struct character *owner, int selection);
+	void (*select)(const struct battle *, struct selection *);
+	void (*action)(struct battle *, struct character *, const struct selection *);
+	void (*use)(struct character *, const struct selection *);
 };
 
-/**
- * Cast this spell within a battle.
- *
- * \pre s != NULL && s->action
- * \pre bt != NULL
- * \pre owner != NULL
- * \param s the spell
- * \param bt the battle
- * \param owner the owner
- * \param selection the selection (index or -1 for all)
- */
 void
-spell_action(const struct spell *s, struct battle *bt, struct character *owner, unsigned int selection);
+spell_select(const struct spell *s, const struct battle *bt, struct selection *slt);
 
-/**
- * Use this spell immediately.
- *
- * \pre s != NULL && s->use
- * \pre owner != NULL
- * \param s the spell
- * \param owner the owner
- * \param selection the selection flags
- */
 void
-spell_use(struct spell *s, struct character *owner, int selection);
+spell_action(const struct spell *s, struct battle *bt, struct character *owner, const struct selection *slt);
+
+void
+spell_use(struct spell *s, struct character *owner, const struct selection *slt);
 
 #endif /* !MOLKO_RPG_SPELL_H */

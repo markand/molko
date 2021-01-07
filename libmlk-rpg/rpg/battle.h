@@ -38,6 +38,7 @@ union event;
 struct character;
 struct inventory;
 struct music;
+struct selection;
 struct spell;
 struct theme;
 
@@ -100,7 +101,7 @@ void
 battle_cast(struct battle *bt,
             struct character *source,
             const struct spell *spell,
-            unsigned int selection);
+            const struct selection *slt);
 
 void
 battle_indicator_hp(struct battle *bt, const struct character *target, unsigned int amount);

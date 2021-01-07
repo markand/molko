@@ -44,7 +44,8 @@ static struct {
 	SPRITE(ASSETS_SPRITE_CHARACTER_BLACK_CAT, "images/black-cat.png", 123, 161),
 	SPRITE(ASSETS_SPRITE_CHARACTER_NETH, "sprites/john-walk.png", 256, 256),
 	SPRITE(ASSETS_SPRITE_CHARACTER_NETH_SWORD, "sprites/john-sword.png", 256, 256),
-	SPRITE(ASSETS_SPRITE_FACES, "sprites/faces.png", 144, 144)
+	SPRITE(ASSETS_SPRITE_FACES, "sprites/faces.png", 144, 144),
+	SPRITE(ASSETS_SPRITE_EXPLOSION, "sprites/explosion.png", 256, 256)
 };
 
 static struct {

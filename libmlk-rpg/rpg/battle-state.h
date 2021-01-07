@@ -86,9 +86,7 @@ void
 battle_state_opening(struct battle *bt);
 
 void
-battle_state_selection(struct battle *bt,
-		       enum selection type,
-		       unsigned int selection);
+battle_state_selection(struct battle *bt, const struct selection *slt);
 
 void
 battle_state_sub(struct battle *bt);

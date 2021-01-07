@@ -25,6 +25,7 @@
 #include <core/util.h>
 
 #include <rpg/battle.h>
+#include <rpg/character.h>
 #include <rpg/map.h>
 
 #include <adventure/molko.h>
@@ -51,13 +52,24 @@ fight(void)
 	struct battle *bt;
 
 	bt = alloc_new0(sizeof (*bt));
-	bt->enemies[0].ch = &character_black_cat;
+
+	bt->enemies[0].ch = alloc_dup(&character_black_cat, sizeof (character_black_cat));
 	bt->enemies[0].x = 400;
 	bt->enemies[0].y = 50;
+	bt->enemies[1].ch = alloc_dup(&character_black_cat, sizeof (character_black_cat));
+	bt->enemies[1].x = 200;
+	bt->enemies[1].y = 100;
+
 	bt->inventory = &molko.inventory;
 
-	for (size_t i = 0; i < TEAM_MEMBER_MAX; ++i)
-		bt->team[i].ch = molko.team.members[i];
+	for (size_t i = 0; i < TEAM_MEMBER_MAX; ++i) {
+		if (molko.team.members[i]) {
+			bt->team[i].ch = alloc_dup(molko.team.members[i], sizeof (*molko.team.members[i]));
+			character_reset(bt->team[i].ch);
+			bt->team[i].ch->hp = bt->team[i].ch->hpmax;
+			bt->team[i].ch->mp = bt->team[i].ch->mpmax;
+		}
+	}
 
 	molko_fight(bt);
 }
