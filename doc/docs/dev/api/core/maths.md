@@ -19,3 +19,12 @@ by `x`, `y`, `w` and `h`.
 bool
 maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
 ```
+
+### maths\_scale
+
+Scale a the value `v` from the range `[omin..omax]` to `[nmin..nmax]`.
+
+```c
+float
+maths_scale(float v, float omin, float omax, float nmin, float nmax)
+```

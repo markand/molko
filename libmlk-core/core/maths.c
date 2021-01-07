@@ -26,3 +26,9 @@ maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
 	       px < x + (int)w &&
 	       py < y + (int)h;
 }
+
+float
+maths_scale(float in, float old_min, float old_max, float new_min, float new_max)
+{
+	return (in / ((old_max - old_min) / (new_max - new_min))) + new_min;
+}

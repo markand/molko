@@ -24,4 +24,7 @@
 bool
 maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py);
 
+float
+maths_scale(float v, float omin, float omax, float nmin, float nmax);
+
 #endif /* !MOLKO_CORE_MATHS_H */
