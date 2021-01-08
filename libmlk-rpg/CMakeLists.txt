@@ -46,6 +46,7 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-attacking.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-check.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-closing.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-item.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-lost.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-menu.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-opening.c

@@ -32,12 +32,33 @@
 #include "battle-bar.h"
 #include "battle-state.h"
 #include "character.h"
+#include "inventory.h"
+#include "selection.h"
 #include "spell.h"
 
 struct select {
 	struct battle_state state;
 	struct selection slt;
 };
+
+static void
+use(const struct select *select, struct battle *bt)
+{
+	struct inventory_slot *slot;
+	struct character *source, *target;
+
+	if (bt->bar.sub_grid.selected >= INVENTORY_ITEM_MAX)
+		return;
+	if (!(slot = &bt->inventory->items[bt->bar.sub_grid.selected]))
+		return;
+
+	source = bt->order_cur->ch;
+	target = select->slt.index_side == 0
+		? bt->enemies[select->slt.index_character].ch
+		: bt->team[select->slt.index_character].ch;
+
+	battle_state_item(bt, source, target, slot);
+}
 
 static void
 attack(struct select *select, struct battle *bt)
@@ -120,6 +141,9 @@ handle_keydown(struct battle_state *st, struct battle *bt, const union event *ev
 			break;
 		case BATTLE_BAR_MENU_MAGIC:
 			cast(select, bt);
+			break;
+		case BATTLE_BAR_MENU_OBJECTS:
+			use(select, bt);
 			break;
 		default:
 			break;

@@ -40,6 +40,8 @@
 #include "battle-indicator.h"
 #include "battle-state.h"
 #include "character.h"
+#include "inventory.h"
+#include "item.h"
 #include "spell.h"
 
 struct indicator {
@@ -304,6 +306,24 @@ battle_cast(struct battle *bt,
 }
 
 void
+battle_use(struct battle *bt, const struct item *item, struct character *owner, struct character *target)
+{
+	assert(bt);
+	assert(item);
+	assert(owner);
+	assert(target);
+
+	/*
+	 * Change the state to check prior to execute the item so it can change to something else
+	 * if needed.
+	 */
+	battle_state_check(bt);
+
+	inventory_consume(bt->inventory, item, 1);
+	item_exec_battle(item, bt, owner, target);
+}
+
+void
 battle_next(struct battle *bt)
 {
 	assert(bt);
@@ -345,7 +365,7 @@ battle_find(struct battle *bt, const struct character *ch)
 }
 
 void
-battle_indicator_hp(struct battle *bt, const struct character *target, unsigned int amount)
+battle_indicator_hp(struct battle *bt, const struct character *target, long amount)
 {
 	assert(bt);
 	assert(target);
@@ -354,7 +374,7 @@ battle_indicator_hp(struct battle *bt, const struct character *target, unsigned 
 	struct indicator *id = alloc_new0(sizeof (*id));
 
 	id->bti.color = BATTLE_INDICATOR_HP_COLOR;
-	id->bti.amount = amount;
+	id->bti.amount = labs(amount);
 
 	/* TODO: positionate better. */
 	id->dw.x = et->x + target->sprites[CHARACTER_SPRITE_NORMAL]->cellw;

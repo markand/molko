@@ -52,6 +52,7 @@
 
 
 #include "character/neth.h"
+#include "item/potion.h"
 
 static jmp_buf panic_buf;
 
@@ -97,6 +98,7 @@ molko_init(void)
 	game_switch(state_mainmenu_new(), true);
 	molko.team.members[0] = &character_neth;
 	molko.team.members[1] = &character_neth;
+	inventory_add(&molko.inventory, &item_potion, 100);
 	molko_teleport("maps/map-world.map", -1, -1);
 #endif
 }

@@ -83,5 +83,6 @@ battle_state_menu(struct battle *bt)
 		.handle = handle,
 	};
 
+	battle_bar_open_menu(&bt->bar);
 	battle_switch(bt, &self);
 }

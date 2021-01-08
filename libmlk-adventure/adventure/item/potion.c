@@ -20,6 +20,7 @@
 
 #include <core/sound.h>
 
+#include <rpg/battle.h>
 #include <rpg/character.h>
 #include <rpg/item.h>
 
@@ -29,14 +30,32 @@
 #include "potion.h"
 
 static void
-exec(const struct item *i, struct character *ch)
+heal(struct character *ch)
 {
-	sound_play(&assets_sounds[ASSETS_SOUND_ITEM_POTION], -1, 0);
 	ch->hp = fmin(ch->hp + 50, ch->hpmax);
+	sound_play(&assets_sounds[ASSETS_SOUND_ITEM_POTION], -1, 0);
+}
+
+static void
+exec_menu(const struct item *item, struct character *ch)
+{
+	(void)item;
+
+	heal(ch);
+}
+
+static void
+exec_battle(const struct item *item, struct battle *bt, struct character *src, struct character *tgt)
+{
+	(void)item;
+
+	heal(tgt);
+	battle_indicator_hp(bt, tgt, 50);
 }
 
 const struct item item_potion = {
 	.name = N_("Potion"),
 	.description = N_("Recover 50 HP."),
-	.exec = exec
+	.exec_menu = exec_menu,
+	.exec_battle = exec_battle
 };

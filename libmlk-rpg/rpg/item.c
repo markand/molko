@@ -21,19 +21,24 @@
 #include "item.h"
 
 void
-item_exec(const struct item *item, struct character *ch)
+item_exec_menu(const struct item *item, struct character *ch)
 {
 	assert(item);
 	assert(ch);
 
-	return item->exec(item, ch);
+	item->exec_menu(item, ch);
 }
 
-bool
-item_allowed(const struct item *item, struct character *ch)
+void
+item_exec_battle(const struct item *item,
+		 struct battle *bt,
+		 struct character *src,
+		 struct character *tgt)
 {
 	assert(item);
-	assert(ch);
+	assert(bt);
+	assert(src);
+	assert(tgt);
 
-	return item->allowed ? item->allowed(item, ch) : true;
+	item->exec_battle(item, bt, src, tgt);
 }

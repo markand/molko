@@ -42,6 +42,7 @@
 #include <adventure/molko.h>
 #include <adventure/adventure_p.h>
 
+#include <adventure/item/potion.h>
 #include <adventure/character/neth.h>
 
 #include "mainmenu.h"
@@ -67,6 +68,8 @@ new(void)
 	character_reset(molko.team.members[0]);
 	molko.team.members[0]->hp = molko.team.members[0]->hpmax;
 	molko.team.members[0]->mp = molko.team.members[0]->mpmax;
+	inventory_add(&molko.inventory, &item_potion, 10);
+
 	molko_teleport("maps/map-world.map", -1, -1);
 }
 

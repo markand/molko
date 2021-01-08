@@ -19,8 +19,7 @@
 #ifndef MOLKO_RPG_ITEM_H
 #define MOLKO_RPG_ITEM_H
 
-#include <stdbool.h>
-
+struct battle;
 struct character;
 struct texture;
 
@@ -28,14 +27,22 @@ struct item {
 	const char *name;
 	const char *description;
 	struct texture *icon;
-	void (*exec)(const struct item *item, struct character *ch);
-	bool (*allowed)(const struct item *item, const struct character *ch);
+
+	void (*exec_menu)(const struct item *item, struct character *ch);
+
+	void (*exec_battle)(const struct item *item,
+	                    struct battle *bt,
+	                    struct character *src,
+	                    struct character *tgt);
 };
 
 void
-item_exec(const struct item *item, struct character *ch);
+item_exec_menu(const struct item *item, struct character *ch);
 
-bool
-item_allowed(const struct item *item, struct character *ch);
+void
+item_exec_battle(const struct item *item,
+                 struct battle *bt,
+                 struct character *src,
+                 struct character *tgt);
 
 #endif /* !MOLKO_RPG_ITEM_H */

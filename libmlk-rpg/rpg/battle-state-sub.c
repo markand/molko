@@ -25,6 +25,9 @@
 
 #include <ui/theme.h>
 
+#include <rpg/inventory.h>
+#include <rpg/item.h>
+
 #include "battle.h"
 #include "battle-bar.h"
 #include "battle-state.h"
@@ -57,26 +60,58 @@ start_select_spell(struct battle *bt)
 static void
 start_select_object(struct battle *bt)
 {
-	(void)bt;
+	const struct selection slt = {
+		.allowed_kinds = SELECTION_KIND_ONE,
+		.allowed_sides = SELECTION_SIDE_TEAM | SELECTION_SIDE_ENEMY,
+		.index_side = 1,
+		.index_character = bt->order_curindex
+	};
+
+	battle_state_selection(bt, &slt);
+}
+
+static void
+draw_help(const struct battle *bt, const char *what)
+{
+	struct label label = {0};
+	unsigned int lw = 0, lh = 0;
+
+	label.flags = LABEL_FLAGS_SHADOW;
+	label.text = what;
+	label_query(&label, &lw, &lh);
+	label.x = bt->bar.sub_grid.x + (bt->bar.sub_grid.w / 2) - (lw / 2);
+	label.y = bt->bar.sub_grid.y - lh - BATTLE_THEME(bt)->padding;
+	label_draw(&label);
 }
 
 static void
 draw_spell_help(const struct battle *bt)
 {
 	const struct character *ch = bt->order_cur->ch;
-	const struct spell *sp = ch->spells[bt->bar.sub_grid.selected];
-	struct label label = {0};
-	unsigned int lw, lh;
+	const struct spell *sp;
 
-	if (!sp)
+	if (bt->bar.sub_grid.selected >= CHARACTER_SPELL_MAX)
+		return;
+	if ((sp = ch->spells[bt->bar.sub_grid.selected]))
 		return;
 
-	label.flags = LABEL_FLAGS_SHADOW;
-	label.text = sp->description;
-	label_query(&label, &lw, &lh);
-	label.x = bt->bar.sub_grid.x + (bt->bar.sub_grid.w / 2) - (lw / 2);
-	label.y = bt->bar.sub_grid.y - lh - BATTLE_THEME(bt)->padding;
-	label_draw(&label);
+	draw_help(bt, sp->description);
+}
+
+static void
+draw_object_help(const struct battle *bt)
+{
+	const struct inventory_slot *slot;
+
+	if (bt->bar.sub_grid.selected >= INVENTORY_ITEM_MAX)
+		return;
+
+	slot = &bt->inventory->items[bt->bar.sub_grid.selected];
+
+	if (!slot->item)
+		return;
+
+	draw_help(bt, slot->item->description);
 }
 
 static void
@@ -89,7 +124,6 @@ handle(struct battle_state *st, struct battle *bt, const union event *ev)
 		switch (ev->key.key) {
 		case KEY_ESCAPE:
 			/* Escape go to the previous state. */
-			bt->bar.state = BATTLE_BAR_STATE_MENU;
 			battle_state_menu(bt);
 			return;
 		default:
@@ -120,6 +154,8 @@ draw(const struct battle_state *st, const struct battle *bt)
 
 	if (bt->bar.menu == BATTLE_BAR_MENU_MAGIC)
 		draw_spell_help(bt);
+	else if (bt->bar.menu == BATTLE_BAR_MENU_OBJECTS)
+		draw_object_help(bt);
 }
 
 void

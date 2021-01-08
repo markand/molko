@@ -37,6 +37,7 @@ union event;
 
 struct character;
 struct inventory;
+struct item;
 struct music;
 struct selection;
 struct spell;
@@ -78,44 +79,42 @@ struct battle {
 };
 
 void
-battle_start(struct battle *bt);
+battle_start(struct battle *);
 
 void
-battle_next(struct battle *bt);
+battle_next(struct battle *);
 
 struct battle_entity *
-battle_find(struct battle *bt, const struct character *ch);
+battle_find(struct battle *, const struct character *);
 
 void
-battle_switch(struct battle *bt, struct battle_state *st);
+battle_switch(struct battle *, struct battle_state *);
 
 void
-battle_order(struct battle *bt);
+battle_order(struct battle *);
 
 void
-battle_attack(struct battle *bt,
-              struct character *source,
-              struct character *target);
+battle_attack(struct battle *, struct character *, struct character *);
 
 void
-battle_cast(struct battle *bt,
-            struct character *source,
-            const struct spell *spell,
-            const struct selection *slt);
+battle_cast(struct battle *, struct character *, const struct spell *, const struct selection *);
 
 void
-battle_indicator_hp(struct battle *bt, const struct character *target, unsigned int amount);
+battle_use(struct battle *, const struct item *, struct character *, struct character *);
 
 void
-battle_handle(struct battle *bt, const union event *ev);
+battle_indicator_hp(struct battle *, const struct character *, long);
+
+void
+battle_handle(struct battle *, const union event *);
 
 bool
-battle_update(struct battle *bt, unsigned int ticks);
+battle_update(struct battle *, unsigned int);
 
 void
-battle_draw(struct battle *bt);
+battle_draw(struct battle *);
 
 void
-battle_finish(struct battle *bt);
+battle_finish(struct battle *);
 
 #endif /* MOLKO_RPG_BATTLE_H */

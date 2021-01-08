@@ -46,6 +46,7 @@ inventory_add(struct inventory *iv, const struct item *item, unsigned int amount
 	if (!slot)
 		return false;
 
+	slot->item = item;
 	slot->amount += amount;
 
 	return true;
@@ -59,6 +60,10 @@ inventory_consume(struct inventory *iv, const struct item *item, unsigned int am
 
 	struct inventory_slot *slot;
 
-	if (!(slot = find(iv, item)))
+	if ((slot = find(iv, item))) {
 		slot->amount -= amount;
+
+		if (slot->amount == 0)
+			slot->item = NULL;
+	}
 }

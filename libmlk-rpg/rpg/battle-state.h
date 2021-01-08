@@ -33,10 +33,10 @@
 
 #include <stdbool.h>
 
-#include "selection.h"
-
 struct battle;
 struct character;
+struct inventory_slot;
+struct selection;
 
 union event;
 
@@ -68,7 +68,10 @@ void
 battle_state_attacking(struct battle *bt, struct character *source, struct character *target);
 
 void
-battle_state_check(struct battle *bt);
+battle_state_item(struct battle *bt,
+                  struct character *source,
+                  struct character *target,
+                  struct inventory_slot *slot);
 
 void
 battle_state_check(struct battle *bt);

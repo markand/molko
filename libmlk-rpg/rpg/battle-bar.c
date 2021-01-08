@@ -323,6 +323,8 @@ battle_bar_reset(struct battle_bar *bar)
 void
 battle_bar_open_menu(struct battle_bar *bar)
 {
+	gridmenu_reset(&bar->sub_grid);
+
 	bar->state = BATTLE_BAR_STATE_MENU;
 	bar->menu = BATTLE_BAR_MENU_ATTACK;
 }
@@ -348,8 +350,11 @@ battle_bar_open_items(struct battle_bar *bar, const struct battle *bt)
 	init_gridmenu(bar, bt);
 
 	for (size_t i = 0; i < INVENTORY_ITEM_MAX; ++i) {
-		if (bt->inventory->items[i].item)
-			bar->sub_grid.menu[i] = bt->inventory->items[i].item->name;
+		if (bt->inventory->items[i].item) {
+			snprintf(bar->sub_items[i], sizeof (bar->sub_items[i]), "%-16s %u",
+			    bt->inventory->items[i].item->name, bt->inventory->items[i].amount);
+			bar->sub_grid.menu[i] = bar->sub_items[i];
+		}
 	}
 
 	gridmenu_repaint(&bar->sub_grid);
