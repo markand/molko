@@ -42,6 +42,8 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-indicator.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-indicator.h
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-message.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-message.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-ai.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-attacking.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-check.c

@@ -21,16 +21,12 @@
 
 #include <core/alloc.h>
 #include <core/panic.h>
-#include <core/window.h>
 
 #include <rpg/inventory.h>
 #include <rpg/item.h>
 
-#include <ui/align.h>
-#include <ui/frame.h>
-#include <ui/label.h>
-
 #include "battle-entity-state.h"
+#include "battle-message.h"
 #include "battle-state.h"
 #include "battle.h"
 
@@ -40,15 +36,9 @@ enum substate {
 	SUBSTATE_RETURNING
 };
 
-struct msg {
-	struct frame frame;
-	struct label label;
-	unsigned int elapsed;
-};
-
 struct self {
 	enum substate substate;
-	struct msg msg;
+	struct battle_message msg;
 	struct battle_entity *source;
 	struct battle_entity *target;
 	struct battle_state state;
@@ -70,9 +60,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 		}
 		break;
 	case SUBSTATE_MESSAGE:
-		self->msg.elapsed += ticks;
-
-		if (self->msg.elapsed >= 2000) {
+		if (battle_message_update(&self->msg, ticks)) {
 			self->substate = SUBSTATE_RETURNING;
 			battle_entity_state_moving(self->source, self->origin_x, self->source->y);
 		}
@@ -93,10 +81,8 @@ draw(const struct battle_state *st, const struct battle *bt)
 {
 	struct self *self = st->data;
 
-	if (self->substate == SUBSTATE_MESSAGE) {
-		frame_draw(&self->msg.frame);
-		label_draw(&self->msg.label);
-	}
+	if (self->substate == SUBSTATE_MESSAGE)
+		battle_message_draw(&self->msg);
 }
 
 static void
@@ -129,24 +115,8 @@ battle_state_item(struct battle *bt,
 	self->slot = slot;
 	self->origin_x = self->source->x;
 
-	/* Prepare message frame. */
-	self->msg.frame.w = window.w / 3;
-	self->msg.frame.h = window.h / 15;
-	self->msg.frame.theme = bt->theme;
-
-	align(ALIGN_TOP,
-	    &self->msg.frame.x, &self->msg.frame.y, self->msg.frame.w, self->msg.frame.h,
-	    0, 20, window.w, window.h);
-
-	/* Prepare message label box. */
-	self->msg.label.text = slot->item->name;
-	self->msg.label.flags = LABEL_FLAGS_SHADOW;
-	self->msg.label.theme = bt->theme;
-	label_query(&self->msg.label, &lw, &lh);
-
-	align(ALIGN_CENTER,
-	    &self->msg.label.x, &self->msg.label.y, lw, lh,
-	    self->msg.frame.x, self->msg.frame.y, self->msg.frame.w, self->msg.frame.h);
+	self->msg.text = slot->item->name;
+	self->msg.theme = bt->theme;
 
 	self->state.data = self;
 	self->state.update = update;

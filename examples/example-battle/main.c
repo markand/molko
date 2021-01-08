@@ -88,7 +88,6 @@ black_cat_reset(struct character *ch)
 static struct character team[] = {
 	{
 		.name = "Molko",
-		.type = "Adventurer",
 		.level = 1,
 		.hp = 120,
 		.mp = 50,
@@ -123,7 +122,6 @@ black_cat_strat(struct character *ch, struct battle *bt)
 
 static struct character haunted_wood = {
 	.name = "Haunted Wood",
-	.type = "Wood",
 	.level = 30,
 	.reset = haunted_wood_reset,
 	.sprites = {
@@ -134,7 +132,6 @@ static struct character haunted_wood = {
 
 static struct character black_cat = {
 	.name = "Black Cat",
-	.type = "Cat",
 	.level = 6,
 	.reset = black_cat_reset,
 	.sprites = {
