@@ -21,7 +21,11 @@
 
 #include <stdbool.h>
 
+#include "core.h"
+
 struct texture;
+
+CORE_BEGIN_DECLS
 
 struct texture *
 painter_get_target(void);
@@ -52,6 +56,8 @@ painter_clear(void);
 
 void
 painter_present(void);
+
+CORE_END_DECLS
 
 #define PAINTER_BEGIN(tex)                                              \
 do {                                                                    \

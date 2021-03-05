@@ -19,10 +19,16 @@
 #ifndef MOLKO_ADVENTURE_STATE_MAP_H
 #define MOLKO_ADVENTURE_STATE_MAP_H
 
+#include <core/core.h>
+
 struct state;
+
+CORE_BEGIN_DECLS
 
 struct state *
 state_map_new(const char *, int, int);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_STATE_MAP_H */
 

@@ -21,10 +21,16 @@
 
 #include <stdbool.h>
 
+#include "core.h"
+
+CORE_BEGIN_DECLS
+
 bool
 translate_init(const char *name);
 
 void
 translate_finish(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_TRANSLATE_H */

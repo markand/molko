@@ -22,6 +22,7 @@
 #include <stdbool.h>
 
 #include <core/action.h>
+#include <core/core.h>
 #include <core/drawable.h>
 
 #include <ui/frame.h>
@@ -78,6 +79,8 @@ struct battle {
 	struct battle_bar bar;
 };
 
+CORE_BEGIN_DECLS
+
 void
 battle_start(struct battle *);
 
@@ -116,5 +119,7 @@ battle_draw(struct battle *);
 
 void
 battle_finish(struct battle *);
+
+CORE_END_DECLS
 
 #endif /* MOLKO_RPG_BATTLE_H */

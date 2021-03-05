@@ -19,6 +19,8 @@
 #ifndef MOLKO_RPG_ITEM_H
 #define MOLKO_RPG_ITEM_H
 
+#include <core/core.h>
+
 struct battle;
 struct character;
 struct texture;
@@ -36,6 +38,8 @@ struct item {
 	                    struct character *tgt);
 };
 
+CORE_BEGIN_DECLS
+
 void
 item_exec_menu(const struct item *item, struct character *ch);
 
@@ -44,5 +48,7 @@ item_exec_battle(const struct item *item,
                  struct battle *bt,
                  struct character *src,
                  struct character *tgt);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_ITEM_H */

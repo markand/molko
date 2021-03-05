@@ -22,6 +22,8 @@
 #include <stdbool.h>
 #include <time.h>
 
+#include <core/core.h>
+
 #define SAVE_PROPERTY_KEY_MAX   (64)
 #define SAVE_PROPERTY_VALUE_MAX (1024)
 
@@ -45,6 +47,8 @@ struct save_stmt {
 	struct save *parent;
 	void *handle;
 };
+
+CORE_BEGIN_DECLS
 
 bool
 save_open(struct save *db, unsigned int idx, enum save_mode mode);
@@ -79,5 +83,7 @@ save_stmt_next(struct save_stmt *stmt, const char *args, ...);
 
 void
 save_stmt_finish(struct save_stmt *stmt);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_SAVE_H */

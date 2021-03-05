@@ -76,6 +76,7 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
 #include <core/texture.h>
 
 struct action;
@@ -138,6 +139,8 @@ struct message {
 	unsigned int elapsed;                   /*!< (-) Time elapsed. */
 	double scale;                           /*!< (-) Current scale [0-1]. */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Start opening the message. This function will reset the message state and
@@ -221,5 +224,7 @@ message_hide(struct message *msg);
  */
 void
 message_action(struct message *msg, struct action *act);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_MESSAGE_H */

@@ -20,6 +20,7 @@
 #define MOLKO_ADVENTURE_ACTIONS_TELEPORT_H
 
 #include <core/action.h>
+#include <core/core.h>
 #include <core/texture.h>
 
 struct map;
@@ -39,7 +40,11 @@ struct teleport {
 	unsigned int alpha;
 };
 
+CORE_BEGIN_DECLS
+
 struct action *
 teleport_action(struct teleport *);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_ACTIONS_TELEPORT_H */

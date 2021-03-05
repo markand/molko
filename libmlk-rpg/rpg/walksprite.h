@@ -25,6 +25,8 @@
  * \ingroup drawing
  */
 
+#include <core/core.h>
+
 struct sprite;
 
 /**
@@ -63,6 +65,8 @@ struct walksprite {
 	unsigned int index;     /*!< (-) Current column index */
 	unsigned int elapsed;   /*!< (-) Elapsed time since last frame */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Initialize the walking sprite.
@@ -108,5 +112,7 @@ walksprite_update(struct walksprite *ws, unsigned int ticks);
  */
 void
 walksprite_draw(const struct walksprite *ws, unsigned int orientation, int x, int y);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_WALKSPRITE_H */

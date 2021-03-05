@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include "core.h"
+
 struct window {
 	unsigned int w;
 	unsigned int h;
@@ -41,6 +43,8 @@ enum window_cursor {
 
 extern struct window window;
 
+CORE_BEGIN_DECLS
+
 bool
 window_open(const char *title, unsigned int width, unsigned int height);
 
@@ -49,5 +53,7 @@ window_set_cursor(enum window_cursor cursor);
 
 void
 window_finish(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_WINDOW_H */

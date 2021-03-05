@@ -21,14 +21,20 @@
 
 #include <stdarg.h>
 
+#include "core.h"
+
 #define TRACE_LINE_MAX (1024)
 
 extern void (*trace_handler)(const char *);
+
+CORE_BEGIN_DECLS
 
 void
 tracef(const char *fmt, ...);
 
 void
 traceva(const char *fmt, va_list ap);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_TRACE_H */

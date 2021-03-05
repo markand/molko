@@ -40,6 +40,7 @@
 #include <stdbool.h>
 
 #include <core/alloc.h>
+#include <core/core.h>
 #include <core/sprite.h>
 #include <core/texture.h>
 
@@ -76,6 +77,8 @@ struct map_file {
 	struct alloc_pool blocks;                       /*!< \private */
 };
 
+CORE_BEGIN_DECLS
+
 /**
  * Try to open a map from a file path.
  *
@@ -99,5 +102,7 @@ map_file_open(struct map_file *file, struct map *map, const char *path);
  */
 void
 map_file_finish(struct map_file *file);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_MAP_FILE_H */

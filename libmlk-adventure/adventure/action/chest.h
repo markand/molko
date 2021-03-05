@@ -21,6 +21,7 @@
 
 #include <core/action.h>
 #include <core/animation.h>
+#include <core/core.h>
 
 struct map;
 struct save;
@@ -52,10 +53,14 @@ struct chest {
 	void (*exec)(struct chest *);
 };
 
+CORE_BEGIN_DECLS
+
 void
 chest_init(struct chest *c);
 
 struct action *
 chest_action(struct chest *c);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_ACTION_CHEST_H */

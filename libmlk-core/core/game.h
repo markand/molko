@@ -21,6 +21,7 @@
 
 #include <stdbool.h>
 
+#include "core.h"
 #include "inhibit.h"
 
 struct state;
@@ -37,6 +38,8 @@ struct game {
 };
 
 extern struct game game;
+
+CORE_BEGIN_DECLS
 
 void
 game_switch(struct state *state, bool quick);
@@ -58,5 +61,7 @@ game_loop(void);
 
 void
 game_quit(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_GAME_H */

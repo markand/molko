@@ -19,12 +19,18 @@
 #ifndef MOLKO_ADVENTURE_MAPSCENE_MAPSCENE_H
 #define MOLKO_ADVENTURE_MAPSCENE_MAPSCENE_H
 
+#include <core/core.h>
+
 struct map;
+
+CORE_BEGIN_DECLS
 
 void
 mapscene_load_action(struct map *, int, int, int, int, const char *);
 
 void
 mapscene_load(struct map *);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_MAPSCENE_MAPSCENE_H */

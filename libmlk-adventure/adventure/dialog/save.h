@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 #include <rpg/save.h>
 
 #define DIALOG_SAVE_MAX (6)
@@ -34,6 +36,8 @@ struct dialog_save {
 	struct save saves[DIALOG_SAVE_MAX];
 	size_t selected;
 };
+
+CORE_BEGIN_DECLS
 
 void
 dialog_save_init(struct dialog_save *);
@@ -49,5 +53,7 @@ dialog_save_draw(const struct dialog_save *);
 
 void
 dialog_save_finish(struct dialog_save *);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_SAVE_H */

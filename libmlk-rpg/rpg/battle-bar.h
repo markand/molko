@@ -45,6 +45,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 #include <ui/frame.h>
 #include <ui/gridmenu.h>
 
@@ -85,6 +87,8 @@ struct battle_bar {
 	struct gridmenu sub_grid;
 };
 
+CORE_BEGIN_DECLS
+
 void
 battle_bar_positionate(struct battle_bar *bar, const struct battle *bt);
 
@@ -110,5 +114,7 @@ battle_bar_draw(const struct battle_bar *bar, const struct battle *bt);
 
 void
 battle_bar_finish(struct battle_bar *bar);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_BATTLE_BAR_H */

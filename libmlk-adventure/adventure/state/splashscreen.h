@@ -19,9 +19,15 @@
 #ifndef MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H
 #define MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H
 
+#include <core/core.h>
+
 struct state;
+
+CORE_BEGIN_DECLS
 
 struct state *
 state_splashscreen_new(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_STATE_SPLASHSCREEN_H */

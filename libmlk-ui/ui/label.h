@@ -27,6 +27,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 struct action;
 struct theme;
 
@@ -48,6 +50,8 @@ struct label {
 	enum label_flags flags;         /*!< (+) Optional flags. */
 	const struct theme *theme;      /*!< (+&?) Theme to use. */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Default drawing function.
@@ -108,5 +112,7 @@ label_draw(const struct label *label);
  */
 void
 label_action(struct label *label, struct action *act);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_UI_LABEL_H */

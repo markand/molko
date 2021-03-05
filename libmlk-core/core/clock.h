@@ -19,14 +19,20 @@
 #ifndef MOLKO_CORE_CLOCK_H
 #define MOLKO_CORE_CLOCK_H
 
+#include "core.h"
+
 struct clock {
 	unsigned int ticks;
 };
+
+CORE_BEGIN_DECLS
 
 void
 clock_start(struct clock *clock);
 
 unsigned int
 clock_elapsed(const struct clock *clock);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_CLOCK_H */

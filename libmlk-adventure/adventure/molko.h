@@ -19,6 +19,7 @@
 #ifndef MOLKO_ADVENTURE_MOLKO_H
 #define MOLKO_ADVENTURE_MOLKO_H
 
+#include <core/core.h>
 #include <core/game.h>
 #include <core/texture.h>
 #include <core/sprite.h>
@@ -47,6 +48,8 @@ struct molko {
 	struct sprite map_player_sprite;
 };
 
+CORE_BEGIN_DECLS
+
 extern struct molko molko;
 
 void
@@ -66,5 +69,7 @@ molko_path(const char *file);
 
 void
 molko_finish(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_MOLKO_H */

@@ -19,10 +19,16 @@
 #ifndef MOLKO_ADVENTURE_STATE_BATTLE_H
 #define MOLKO_ADVENTURE_STATE_BATTLE_H
 
+#include <core/core.h>
+
 struct battle;
 struct state;
 
+CORE_BEGIN_DECLS
+
 struct state *
 state_battle_new(struct battle *);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_STATE_BATTLE_H */

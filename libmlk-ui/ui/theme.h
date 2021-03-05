@@ -27,6 +27,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 struct button;
 struct checkbox;
 struct font;
@@ -117,6 +119,8 @@ struct theme {
 	 */
 	void (*draw_checkbox)(const struct theme *t, const struct checkbox *);
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Initialize the theming system.
@@ -228,5 +232,7 @@ theme_draw_checkbox(const struct theme *t, const struct checkbox *cb);
  */
 void
 theme_finish(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_UI_THEME_H */

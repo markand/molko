@@ -25,6 +25,8 @@
  * \ingroup ui
  */
 
+#include <core/core.h>
+
 union event;
 
 struct action;
@@ -51,6 +53,8 @@ struct button {
 	enum button_state state;        /*!< (+) Button state. */
 	const struct theme *theme;      /*!< (+&?) Theme to use. */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Handle the event.
@@ -116,5 +120,7 @@ button_draw(const struct button *button);
  */
 void
 button_action(struct button *button, struct action *act);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_UI_BUTTON_H */

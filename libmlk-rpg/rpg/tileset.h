@@ -22,6 +22,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include <core/core.h>
+
 struct sprite;
 
 /**
@@ -58,6 +60,8 @@ struct tileset {
 	size_t animsz;                          /*!< (+) Number of tile animations. */
 	struct sprite *sprite;                  /*!< (+&) Sprite to generate the terrain. */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Tells if the tileset is correctly initialized.
@@ -110,5 +114,7 @@ tileset_update(struct tileset *ts, unsigned int ticks);
  */
 void
 tileset_draw(const struct tileset *ts, unsigned int r, unsigned int c, int x, int y);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_TILESET_H */

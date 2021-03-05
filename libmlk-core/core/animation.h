@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include "core.h"
+
 struct drawable;
 struct sprite;
 
@@ -31,6 +33,8 @@ struct animation {
 	unsigned int delay;
 	unsigned int elapsed;
 };
+
+CORE_BEGIN_DECLS
 
 void
 animation_init(struct animation *an, const struct sprite *sprite, unsigned int delay);
@@ -49,5 +53,7 @@ animation_draw(const struct animation *an, int x, int y);
 
 void
 animation_drawable(struct animation *an, struct drawable *dw, int x, int y);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_ANIMATION_H */

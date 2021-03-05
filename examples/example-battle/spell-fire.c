@@ -33,6 +33,7 @@
 
 struct data {
 	struct battle *battle;
+	struct character *target;
 	struct animation animation;
 	struct action action;
 	unsigned int selection;
@@ -69,6 +70,7 @@ end(struct action *act)
 
 	/* TODO: compute damage. */
 	const unsigned int damage = 100;
+
 	if ((unsigned int)ch->hp < damage)
 		ch->hp = 0;
 	else
@@ -84,15 +86,23 @@ finish(struct action *act)
 }
 
 static void
-fire_action(struct battle *bt, struct character *owner, unsigned int selection)
+fire_select(const struct battle *bt, struct selection *slt)
+{
+	slt->index_side = 0;
+
+	selection_first(slt, bt);
+}
+
+static void
+fire_action(struct battle *bt, struct character *owner, const struct selection *slt)
 {
 	struct data *data;
 
 	(void)owner;
 
 	data = alloc_new0(sizeof (*data));
+	data->selection = slt->index_character;
 	data->battle = bt;
-	data->selection = selection;
 	data->action.data = data;
 	data->action.update = update;
 	data->action.draw = draw;
@@ -112,6 +122,8 @@ const struct spell spell_fire = {
 	.description = "A delicate fire.",
 	.mp = 5,
 	.type = SPELL_TYPE_FIRE,
-	.selection = SELECTION_ENEMY_ONE,
+	.select = fire_select,
+	.select_kind = SELECTION_KIND_ONE,
+	.select_side = SELECTION_SIDE_ENEMY,
 	.action = fire_action
 };

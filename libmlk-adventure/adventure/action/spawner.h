@@ -20,6 +20,7 @@
 #define MOLKO_ADVENTURE_ACTION_SPAWNER_H
 
 #include <core/action.h>
+#include <core/core.h>
 
 struct map;
 
@@ -33,10 +34,14 @@ struct spawner {
 	int last_y;
 };
 
+CORE_BEGIN_DECLS
+
 void
 spawner_init(struct spawner *);
 
 struct action *
 spawner_action(struct spawner *);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_ACTION_SPAWNER_H */

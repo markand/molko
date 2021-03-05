@@ -26,6 +26,10 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
+CORE_BEGIN_DECLS
+
 /**
  * Initialize the rpg library.
  *
@@ -39,5 +43,7 @@ rpg_init(void);
  */
 void
 rpg_finish(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_H */

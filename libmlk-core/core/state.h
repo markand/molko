@@ -19,6 +19,8 @@
 #ifndef MOLKO_CORE_STATE_H
 #define MOLKO_CORE_STATE_H
 
+#include "core.h"
+
 union event;
 
 struct state {
@@ -30,6 +32,8 @@ struct state {
 	void (*end)(struct state *state);
 	void (*finish)(struct state *state);
 };
+
+CORE_BEGIN_DECLS
 
 void
 state_start(struct state *state);
@@ -48,5 +52,7 @@ state_end(struct state *state);
 
 void
 state_finish(struct state *state);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_STATE_H */

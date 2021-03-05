@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 #define CHARACTER_SPELL_MAX (64)
 
 struct battle;
@@ -84,6 +86,8 @@ struct character {
 	void (*exec)(struct character *owner, struct battle *bt);
 };
 
+CORE_BEGIN_DECLS
+
 bool
 character_ok(const struct character *ch);
 
@@ -101,5 +105,7 @@ character_save(const struct character *ch, struct save *s);
 
 bool
 character_load(struct character *, struct save *);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_CHARACTER_H */

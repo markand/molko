@@ -19,7 +19,11 @@
 #ifndef MOLKO_CORE_UTIL_H
 #define MOLKO_CORE_UTIL_H
 
+#include "core.h"
+
 #define UTIL_SIZE(x) sizeof ((x)) / sizeof ((x)[0])
+
+CORE_BEGIN_DECLS
 
 void
 util_delay(unsigned int ms);
@@ -29,5 +33,7 @@ util_pathf(const char *fmt, ...);
 
 unsigned int
 util_nrand(unsigned int lower, unsigned int upper);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_UTIL_H */

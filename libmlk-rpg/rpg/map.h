@@ -27,6 +27,7 @@
 #include <stddef.h>
 
 #include <core/action.h>
+#include <core/core.h>
 
 #include "walksprite.h"
 
@@ -124,6 +125,8 @@ struct map {
 	struct map_layer layers[MAP_LAYER_TYPE_NUM];
 };
 
+CORE_BEGIN_DECLS
+
 /**
  * Initialize the map.
  *
@@ -174,5 +177,7 @@ map_draw(const struct map *map);
  */
 void
 map_finish(struct map *map);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_MAP_H */

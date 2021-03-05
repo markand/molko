@@ -24,6 +24,8 @@
  * \brief Magic spells.
  */
 
+#include <core/core.h>
+
 #include "selection.h"
 
 struct character;
@@ -54,6 +56,8 @@ struct spell {
 	void (*use)(struct character *, const struct selection *);
 };
 
+CORE_BEGIN_DECLS
+
 void
 spell_select(const struct spell *s, const struct battle *bt, struct selection *slt);
 
@@ -62,5 +66,7 @@ spell_action(const struct spell *s, struct battle *bt, struct character *owner, 
 
 void
 spell_use(struct spell *s, struct character *owner, const struct selection *slt);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_SPELL_H */

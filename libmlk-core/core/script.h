@@ -22,6 +22,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "core.h"
+
 #define SCRIPT_ACTION_MAX (128)
 
 struct action;
@@ -33,6 +35,8 @@ struct script {
 	size_t actionsz;
 	size_t cur;
 };
+
+CORE_BEGIN_DECLS
 
 void
 script_init(struct script *s);
@@ -57,5 +61,7 @@ script_finish(struct script *s);
 
 void
 script_action(struct script *s, struct action *dst);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_SCRIPT_H */

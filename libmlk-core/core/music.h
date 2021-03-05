@@ -22,6 +22,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "core.h"
+
 enum music_flags {
 	MUSIC_NONE      = 0,
 	MUSIC_LOOP      = (1 << 0)
@@ -30,6 +32,8 @@ enum music_flags {
 struct music {
 	void *handle;
 };
+
+CORE_BEGIN_DECLS
 
 bool
 music_open(struct music *mus, const char *path);
@@ -57,5 +61,7 @@ music_stop(unsigned int fadeout);
 
 void
 music_finish(struct music *mus);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_MUSIC_H */

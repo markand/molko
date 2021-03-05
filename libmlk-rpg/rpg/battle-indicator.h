@@ -29,6 +29,7 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
 #include <core/texture.h>
 
 /**
@@ -59,6 +60,8 @@ struct battle_indicator {
 	unsigned int alpha;             /*!< (-) Current alpha. */
 	struct texture tex[2];          /*!< (*) Rendered texture. */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Start the battle indicator. You must call this function only once.
@@ -118,5 +121,7 @@ battle_indicator_draw(const struct battle_indicator *bti, int x, int y);
  */
 void
 battle_indicator_finish(struct battle_indicator *bti);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_BATTLE_INDICATOR_H */

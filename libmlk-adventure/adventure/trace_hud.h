@@ -19,6 +19,8 @@
 #ifndef MOLKO_ADVENTURE_TRACE_HUD_H
 #define MOLKO_ADVENTURE_TRACE_HUD_H
 
+#include <core/core.h>
+
 #define TRACE_HUD_TIMEOUT_DEFAULT (3000)
 
 struct action;
@@ -28,6 +30,8 @@ struct trace_hud {
 	struct theme *theme;
 	unsigned int timeout;
 };
+
+CORE_BEGIN_DECLS
 
 extern struct trace_hud trace_hud;
 
@@ -45,5 +49,7 @@ trace_hud_clear(void);
 
 struct action *
 trace_hud_action(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_TRACE_HUD_H */

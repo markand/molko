@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 #define INVENTORY_ITEM_MAX (512)
 
 struct item;
@@ -34,10 +36,14 @@ struct inventory {
 	struct inventory_slot items[INVENTORY_ITEM_MAX];
 };
 
+CORE_BEGIN_DECLS
+
 bool
 inventory_add(struct inventory *iv, const struct item *item, unsigned int amount);
 
 void
 inventory_consume(struct inventory *iv, const struct item *item, unsigned int amount);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_INVENTORY_H */

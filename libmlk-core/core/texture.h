@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include "core.h"
+
 struct texture {
 	unsigned int w;
 	unsigned int h;
@@ -34,6 +36,8 @@ enum texture_blend {
 	TEXTURE_BLEND_MODULATE,
 	TEXTURE_BLEND_LAST
 };
+
+CORE_BEGIN_DECLS
 
 bool
 texture_new(struct texture *tex, unsigned int w, unsigned int h);
@@ -67,5 +71,7 @@ texture_scale(const struct texture *tex,
 
 void
 texture_finish(struct texture *tex);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_TEXTURE_H */

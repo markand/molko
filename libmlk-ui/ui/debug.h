@@ -40,6 +40,7 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
+#include <core/core.h>
 #include <core/font.h>
 
 /**
@@ -69,6 +70,8 @@ struct debug_report {
 	unsigned int count;             /*!< (-) Number of messages already printed. */
 };
 
+CORE_BEGIN_DECLS
+
 /**
  * Global debugging options.
  */
@@ -97,5 +100,7 @@ debugf(struct debug_report *report, const char *fmt, ...);
  */
 void
 vdebugf(struct debug_report *report, const char *fmt, va_list ap);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_UI_DEBUG_H */

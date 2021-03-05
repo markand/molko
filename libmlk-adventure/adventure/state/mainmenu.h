@@ -19,9 +19,15 @@
 #ifndef MOLKO_ADVENTURE_STATE_MAINMENU_H
 #define MOLKO_ADVENTURE_STATE_MAINMENU_H
 
+#include <core/core.h>
+
 struct state;
+
+CORE_BEGIN_DECLS
 
 struct state *
 state_mainmenu_new(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_STATE_MAINMENU_H */

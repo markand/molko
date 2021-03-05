@@ -22,12 +22,16 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
+#include "core.h"
+
 enum sys_dir {
 	SYS_DIR_BIN,
 	SYS_DIR_DATA,
 	SYS_DIR_LOCALE,
 	SYS_DIR_SAVE,
 };
+
+CORE_BEGIN_DECLS
 
 bool
 sys_init(const char *organization, const char *name);
@@ -40,5 +44,7 @@ sys_mkdir(const char *path);
 
 void
 sys_finish(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_SYS_H */

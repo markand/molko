@@ -21,10 +21,22 @@
 
 #include <stdbool.h>
 
+#if defined(__cplusplus)
+#       define CORE_BEGIN_DECLS extern "C" {
+#       define CORE_END_DECLS   }
+#else
+#       define CORE_BEGIN_DECLS
+#       define CORE_END_DECLS
+#endif
+
+CORE_BEGIN_DECLS
+
 bool
 core_init(const char *organization, const char *name);
 
 void
 core_finish(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_CORE_H */

@@ -27,6 +27,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 union event;
 
 struct action;
@@ -43,6 +45,8 @@ struct checkbox {
 	bool checked;                   /*!< (+) Is activated? */
 	const struct theme *theme;      /*!< (+&?) Theme to use. */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Default drawing function.
@@ -96,5 +100,7 @@ checkbox_draw(const struct checkbox *cb);
  */
 void
 checkbox_action(struct checkbox *cb, struct action *act);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_UI_CHECKBOX_H */

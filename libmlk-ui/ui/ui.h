@@ -26,6 +26,10 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
+CORE_BEGIN_DECLS
+
 /**
  * Initialize the ui library.
  *
@@ -39,5 +43,7 @@ ui_init(void);
  */
 void
 ui_finish(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_UI_UI_H */

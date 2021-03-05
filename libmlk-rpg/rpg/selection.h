@@ -19,6 +19,8 @@
 #ifndef MOLKO_RPG_SELECTION_H
 #define MOLKO_RPG_SELECTION_H
 
+#include <core/core.h>
+
 struct battle;
 
 enum selection_kind {
@@ -45,10 +47,14 @@ struct selection {
 	unsigned int index_side;
 };
 
+CORE_BEGIN_DECLS
+
 void
 selection_first(struct selection *, const struct battle *);
 
 void
 selection_random(struct selection *, const struct battle *);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_SELECTION_H */

@@ -24,6 +24,8 @@
  * \brief User interface alignment.
  */
 
+#include <core/core.h>
+
 /**
  * \brief Label alignment in bounding box.
  *
@@ -53,6 +55,8 @@ enum align {
 	ALIGN_BOTTOM_LEFT,      /*!< Bottom left. */
 	ALIGN_LEFT              /*!< Left (aligned vertically). */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Align the given object relative to its parent region.
@@ -98,5 +102,7 @@ align(enum align align,
       int py,
       unsigned int pw,
       unsigned int ph);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_UI_ALIGN_H */

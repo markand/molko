@@ -22,6 +22,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "core.h"
+
 struct texture;
 
 enum font_style {
@@ -33,6 +35,8 @@ struct font {
 	enum font_style style;
 	void *handle;
 };
+
+CORE_BEGIN_DECLS
 
 bool
 font_open(struct font *font, const char *path, unsigned int size);
@@ -54,5 +58,7 @@ font_query(const struct font *font, const char *text, unsigned int *w, unsigned 
 
 void
 font_finish(struct font *font);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_FONT_H */

@@ -22,6 +22,10 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
+#include "core.h"
+
+CORE_BEGIN_DECLS
+
 const char *
 error(void);
 
@@ -30,5 +34,7 @@ errorf(const char *fmt, ...);
 
 bool
 errorva(const char *fmt, va_list ap);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_ERROR_H */

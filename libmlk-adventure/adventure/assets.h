@@ -19,6 +19,7 @@
 #ifndef MOLKO_ADVENTURE_ASSETS_H
 #define MOLKO_ADVENTURE_ASSETS_H
 
+#include <core/core.h>
 #include <core/sound.h>
 #include <core/sprite.h>
 
@@ -50,6 +51,8 @@ enum assets_sound {
 	ASSETS_SOUND_NUM
 };
 
+CORE_BEGIN_DECLS
+
 extern struct sprite assets_sprites[ASSETS_SPRITE_NUM];
 extern struct sound assets_sounds[ASSETS_SOUND_NUM];
 
@@ -58,5 +61,7 @@ assets_init(void);
 
 void
 assets_finish(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_ASSETS_H */

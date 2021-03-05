@@ -25,6 +25,8 @@
  * \ingroup ui
  */
 
+#include <core/core.h>
+
 struct action;
 struct theme;
 
@@ -47,6 +49,8 @@ struct frame {
 	enum frame_style style;         /*!< (+) Frame style. */
 	const struct theme *theme;      /*!< (+&?) Theme to use. */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Default drawing function.
@@ -86,5 +90,7 @@ frame_draw(const struct frame *frame);
  */
 void
 frame_action(struct frame *frame, struct action *act);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_UI_FRAME_H */

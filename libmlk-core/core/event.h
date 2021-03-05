@@ -21,6 +21,7 @@
 
 #include <stdbool.h>
 
+#include "core.h"
 #include "key.h"
 #include "mouse.h"
 
@@ -60,7 +61,11 @@ union event {
 	struct event_click click;
 };
 
+CORE_BEGIN_DECLS
+
 bool
 event_poll(union event *ev);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_EVENT_H */

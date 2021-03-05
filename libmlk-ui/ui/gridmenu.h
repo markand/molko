@@ -26,6 +26,7 @@
 
 #include <stddef.h>
 
+#include <core/core.h>
 #include <core/texture.h>
 
 #include "label.h"
@@ -117,6 +118,8 @@ struct gridmenu {
 	struct gridmenu_texture tex;
 };
 
+CORE_BEGIN_DECLS
+
 /**
  * Reset the menu->state flag.
  *
@@ -168,5 +171,7 @@ gridmenu_draw(const struct gridmenu *menu);
  */
 void
 gridmenu_finish(struct gridmenu *menu);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_UI_GRIDMENU_H */

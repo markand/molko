@@ -22,6 +22,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "core.h"
 
 #define SOUND_CHANNELS_MAX (256)
 
@@ -29,6 +30,8 @@ struct sound {
 	void *handle;
 	int channel;
 };
+
+CORE_BEGIN_DECLS
 
 bool
 sound_open(struct sound *snd, const char *path);
@@ -53,5 +56,7 @@ sound_stop(struct sound *snd, unsigned int fadeout);
 
 void
 sound_finish(struct sound *snd);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_SOUND_H */

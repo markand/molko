@@ -22,7 +22,11 @@
 #include <stdarg.h>
 #include <stdnoreturn.h>
 
+#include "core.h"
+
 extern void (*panic_handler)(void);
+
+CORE_BEGIN_DECLS
 
 noreturn void
 panicf(const char *fmt, ...);
@@ -32,5 +36,7 @@ panicva(const char *fmt, va_list ap);
 
 noreturn void
 panic(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_PANIC_H */

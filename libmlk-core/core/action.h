@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include "core.h"
+
 #define ACTION_STACK_MAX (128)
 
 union event;
@@ -37,6 +39,8 @@ struct action {
 struct action_stack {
 	struct action *actions[ACTION_STACK_MAX];
 };
+
+CORE_BEGIN_DECLS
 
 void
 action_handle(struct action *act, const union event *ev);
@@ -73,5 +77,7 @@ action_stack_completed(const struct action_stack *st);
 
 void
 action_stack_finish(struct action_stack *st);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_ACTION_H */

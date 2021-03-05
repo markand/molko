@@ -22,6 +22,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "core.h"
 #include "util.h"
 
 /* Must be power of 2. */
@@ -42,6 +43,8 @@ struct alloc_pool {
 	size_t capacity;
 	void (*finalizer)(void *data);
 };
+
+CORE_BEGIN_DECLS
 
 /* allocator functions. */
 void
@@ -86,5 +89,7 @@ alloc_pool_get(const struct alloc_pool *pool, size_t index);
 
 void
 alloc_pool_finish(struct alloc_pool *pool);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_ALLOC_H */

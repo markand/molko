@@ -19,9 +19,15 @@
 #ifndef MOLKO_ADVENTURE_STATE_PANIC_H
 #define MOLKO_ADVENTURE_STATE_PANIC_H
 
+#include <core/core.h>
+
 struct state;
+
+CORE_BEGIN_DECLS
 
 struct state *
 state_panic_new(void);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_ADVENTURE_STATE_PANIC_H */

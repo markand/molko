@@ -22,12 +22,18 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "core.h"
+
 struct texture;
+
+CORE_BEGIN_DECLS
 
 bool
 image_open(struct texture *tex, const char *path);
 
 bool
 image_openmem(struct texture *tex, const void *buffer, size_t size);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_IMAGE_H */

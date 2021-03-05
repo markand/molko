@@ -26,6 +26,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 struct character;
 struct texture;
 
@@ -74,6 +76,8 @@ struct equipment {
 	void (*equip)(const struct equipment *eq, struct character *ch);
 };
 
+CORE_BEGIN_DECLS
+
 /**
  * Tells if this equipment object is valid.
  *
@@ -93,5 +97,7 @@ equipment_ok(const struct equipment *eq);
  */
 void
 equipment_equip(const struct equipment *eq, struct character *ch);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_EQUIPMENT_H */

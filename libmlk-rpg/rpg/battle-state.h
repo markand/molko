@@ -33,6 +33,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 struct battle;
 struct character;
 struct inventory_slot;
@@ -47,6 +49,8 @@ struct battle_state {
 	void (*draw)(const struct battle_state *st, const struct battle *bt);
 	void (*finish)(struct battle_state *st, struct battle *bt);
 };
+
+CORE_BEGIN_DECLS
 
 void
 battle_state_handle(struct battle_state *st, struct battle *bt, const union event *ev);
@@ -96,5 +100,7 @@ battle_state_sub(struct battle *bt);
 
 void
 battle_state_victory(struct battle *bt);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_BATTLE_STATE_H */

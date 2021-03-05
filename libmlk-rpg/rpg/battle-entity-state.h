@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 struct battle_entity;
 struct sprite;
 
@@ -30,6 +32,8 @@ struct battle_entity_state {
 	void (*draw)(const struct battle_entity_state *st, const struct battle_entity *et);
 	void (*finish)(struct battle_entity_state *st, struct battle_entity *et);
 };
+
+CORE_BEGIN_DECLS
 
 bool
 battle_entity_state_update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks);
@@ -52,5 +56,7 @@ battle_entity_state_blinking(struct battle_entity *et);
 
 void
 battle_entity_state_attacking(struct battle_entity *et, struct sprite *which);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_BATTLE_ENTITY_STATE_H */

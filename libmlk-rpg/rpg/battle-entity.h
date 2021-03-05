@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include <core/core.h>
+
 #include <ui/label.h>
 
 struct battle;
@@ -37,6 +39,8 @@ struct battle_entity {
 	struct label name;                      /*!< (*) Where its name label is located. */
 	struct battle_entity_state *state;      /*!< (+&) Update/draw state. */
 };
+
+CORE_BEGIN_DECLS
 
 void
 battle_entity_init(struct battle_entity *et);
@@ -58,5 +62,7 @@ battle_entity_draw_sprite(const struct battle_entity *et);
 
 void
 battle_entity_finish(struct battle_entity *et);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_BATTLE_ENTITY_H */

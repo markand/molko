@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include "core.h"
+
 struct texture;
 
 struct sprite {
@@ -30,6 +32,8 @@ struct sprite {
 	unsigned int nrows;
 	unsigned int ncols;
 };
+
+CORE_BEGIN_DECLS
 
 void
 sprite_init(struct sprite *sprite,
@@ -51,5 +55,7 @@ sprite_scale(const struct sprite *sprite,
              int y,
              unsigned int w,
              unsigned int h);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_SPRITE_H */

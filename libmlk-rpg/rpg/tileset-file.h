@@ -28,6 +28,7 @@
 #include <stddef.h>
 
 #include <core/alloc.h>
+#include <core/core.h>
 #include <core/sprite.h>
 #include <core/texture.h>
 
@@ -50,6 +51,8 @@ struct tileset_file {
 	struct texture image;                   /*!< (*) Image file. */
 	struct sprite sprite;                   /*!< (*) Sprite. */
 };
+
+CORE_BEGIN_DECLS
 
 /**
  * Try to load a tileset from a file.
@@ -77,5 +80,7 @@ tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *
  */
 void
 tileset_file_finish(struct tileset_file *tf);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_TILESET_FILE_H */

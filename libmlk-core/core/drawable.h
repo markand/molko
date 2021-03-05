@@ -21,6 +21,8 @@
 
 #include <stdbool.h>
 
+#include "core.h"
+
 #define DRAWABLE_STACK_MAX (128)
 
 struct drawable {
@@ -36,6 +38,8 @@ struct drawable {
 struct drawable_stack {
 	struct drawable *objects[DRAWABLE_STACK_MAX];
 };
+
+CORE_BEGIN_DECLS
 
 bool
 drawable_update(struct drawable *dw, unsigned int ticks);
@@ -66,5 +70,7 @@ drawable_stack_completed(const struct drawable_stack *st);
 
 void
 drawable_stack_finish(struct drawable_stack *st);
+
+CORE_END_DECLS
 
 #endif /* !MOLKO_CORE_DRAWABLE_H */

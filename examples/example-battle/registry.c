@@ -51,7 +51,7 @@ static const struct {
 	unsigned int cellw;
 	unsigned int cellh;
 } textures[] = {
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CURSOR, "sprites/cursor.png", 24, 24),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CURSOR, "sprites/ui-cursor.png", 24, 24),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_EXPLOSION, "sprites/explosion.png", 256, 256),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_SWORD, "sprites/john-sword.png", 256, 256),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_WALK, "sprites/john-walk.png", 256, 256),
