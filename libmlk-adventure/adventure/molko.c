@@ -99,7 +99,7 @@ molko_init(void)
 	molko.team.members[0] = &character_neth;
 	molko.team.members[1] = &character_neth;
 	inventory_add(&molko.inventory, &item_potion, 100);
-	molko_teleport("maps/map-world.map", -1, -1);
+	molko_teleport("maps/map-world.map.zst", -1, -1);
 #endif
 }
 

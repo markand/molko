@@ -105,6 +105,7 @@ molko_define_library(
 	SOURCES ${SOURCES} ${PO} ${ASSETS}
 	LIBRARIES
 		PUBLIC
+			ZSTD::ZSTD
 			libmlk-core
 			libmlk-ui
 	INCLUDES

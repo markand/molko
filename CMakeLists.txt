@@ -40,6 +40,7 @@ include(cmake/MolkoDefineLibrary.cmake)
 include(cmake/MolkoDefineTest.cmake)
 
 find_package(Jansson REQUIRED)
+find_package(ZSTD REQUIRED)
 find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
 find_package(Intl)
 

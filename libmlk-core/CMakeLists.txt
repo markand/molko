@@ -84,6 +84,8 @@ set(
 	${libmlk-core_SOURCE_DIR}/core/window.c
 	${libmlk-core_SOURCE_DIR}/core/window.h
 	${libmlk-core_SOURCE_DIR}/core/window_p.h
+	${libmlk-core_SOURCE_DIR}/core/zfile.c
+	${libmlk-core_SOURCE_DIR}/core/zfile.h
 )
 
 configure_file(

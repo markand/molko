@@ -30,6 +30,7 @@
 #include <core/error.h>
 #include <core/image.h>
 #include <core/util.h>
+#include <core/zfile.h>
 
 #include "rpg_p.h"
 #include "tileset-file.h"
@@ -310,14 +311,20 @@ tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *
 		.tf = tf,
 		.tileset = tileset
 	};
+	struct zfile zf;
 	bool ret = true;
 
 	memset(tileset, 0, sizeof (*tileset));
 
-	if (!(ctx.fp = fopen(path, "r")))
+	if (zfile_open(&zf, path) < 0)
 		return errorf("%s: %s", path, strerror(errno));
+
+	ctx.fp = zf.fp;
+
 	if (!(ret = parse(&ctx, path)) || !(ret = check(tileset)))
 		tileset_file_finish(tf);
+
+	zfile_close(&zf);
 
 	return ret;
 }

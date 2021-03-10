@@ -29,6 +29,7 @@
 #include <core/error.h>
 #include <core/image.h>
 #include <core/trace.h>
+#include <core/zfile.h>
 
 #include "map-file.h"
 #include "rpg_p.h"
@@ -271,24 +272,31 @@ map_file_open(struct map_file *file, struct map *map, const char *path)
 		.mf = file,
 		.map = map,
 	};
+	struct zfile zf;
 	bool ret = true;
 
 	memset(map, 0, sizeof (*map));
 
 	if (!alloc_pool_init(&file->blocks, sizeof (*map->blocks), NULL))
-		return false;
+		goto fail;
+	if (zfile_open(&zf, path) < 0)
+		goto fail;
 
-	if (!(ctx.fp = fopen(path, "r")))
-		return errorf("%s: %s", path, strerror(errno));
+	ctx.fp = zf.fp;
 
-	if (!(ret = parse(&ctx, path)) || !(ret = check(map))) {
-		map_finish(map);
-		map_file_finish(file);
-	}
+	if (!(ret = parse(&ctx, path)) || !(ret = check(map)))
+		goto fail;
 
-	fclose(ctx.fp);
+	zfile_close(&zf);
 
-	return ret;
+	return true;
+
+fail:
+	map_finish(map);
+	map_file_finish(file);
+	zfile_close(&zf);
+
+	return false;
 }
 
 void
