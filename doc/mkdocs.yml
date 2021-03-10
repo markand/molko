@@ -84,3 +84,4 @@ nav:
         - translate: dev/api/core/translate.md
         - util: dev/api/core/util.md
         - window: dev/api/core/window.md
+        - zfile: dev/api/core/zfile.md
