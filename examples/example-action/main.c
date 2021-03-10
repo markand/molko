@@ -291,9 +291,10 @@ chest_draw(struct action *act)
 {
 	(void)act;
 
-	const int row = chest.opened ? 3 : 0;
+	const int row = chest.opened ? chest.sprite.nrows - 1 : 0;
+	const int col = chest.opened ? chest.sprite.ncols - 1 : 0;
 
-	sprite_draw(&chest.sprite, row, 0, chest.x, chest.y);
+	sprite_draw(&chest.sprite, row, col, chest.x, chest.y);
 }
 
 static void
