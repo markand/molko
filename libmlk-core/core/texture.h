@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_TEXTURE_H
 #define MOLKO_CORE_TEXTURE_H
 
-#include <stdbool.h>
-
 #include "core.h"
 
 struct texture {
@@ -39,38 +37,38 @@ enum texture_blend {
 
 CORE_BEGIN_DECLS
 
-bool
-texture_new(struct texture *tex, unsigned int w, unsigned int h);
+int
+texture_new(struct texture *, unsigned int, unsigned int);
 
-bool
-texture_ok(const struct texture *tex);
+int
+texture_ok(const struct texture *);
 
-bool
-texture_set_blend_mode(struct texture *tex, enum texture_blend blend);
+int
+texture_set_blend_mode(struct texture *, enum texture_blend);
 
-bool
-texture_set_alpha_mod(struct texture *tex, unsigned int alpha);
+int
+texture_set_alpha_mod(struct texture *, unsigned int);
 
-bool
-texture_set_color_mod(struct texture *tex, unsigned long color);
+int
+texture_set_color_mod(struct texture *, unsigned long);
 
-bool
-texture_draw(const struct texture *tex, int x, int y);
+int
+texture_draw(const struct texture *, int, int);
 
-bool
-texture_scale(const struct texture *tex,
-              int src_x,
-              int src_y,
-              unsigned src_w,
-              unsigned src_h,
-              int dst_x,
-              int dst_y,
-              unsigned dst_w,
-              unsigned dst_h,
-              double angle);
+int
+texture_scale(const struct texture *,
+              int,
+              int,
+              unsigned int,
+              unsigned int,
+              int,
+              int,
+              unsigned int,
+              unsigned int,
+              double);
 
 void
-texture_finish(struct texture *tex);
+texture_finish(struct texture *);
 
 CORE_END_DECLS
 

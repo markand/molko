@@ -19,14 +19,12 @@
 #ifndef MOLKO_CORE_TRANSLATE_H
 #define MOLKO_CORE_TRANSLATE_H
 
-#include <stdbool.h>
-
 #include "core.h"
 
 CORE_BEGIN_DECLS
 
-bool
-translate_init(const char *name);
+int
+translate_init(const char *);
 
 void
 translate_finish(void);

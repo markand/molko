@@ -31,34 +31,36 @@ allow stack allocation.
 
 ### music\_open
 
-Open a music file from `path` and store the result into `mus`. Returns false on
-errors, in this case `mus` remains uninitialized and must not be used.
+Open a music file from `path` and store the result into `mus`.
+
+Returns -1 in case of errors and 0 otherwise.
 
 ```c
-bool
+int
 music_open(struct music *mus, const char *path)
 ```
 
 ### music\_openmem
 
 Open a music from the memory `buffer` of size `buffersz` and store the result
-into `mus`. Returns false on errors, in this case `mus` remains uninitialized
-and must not be used.
+into `mus`.
+
+Returns -1 in case of errors and 0 otherwise.
 
 !!! note
     The argument `buffer` must stay valid until the music is no longer used.
 
 ```c
-bool
+int
 music_openmem(struct music *mus, const void *buffer, size_t buffersz)
 ```
 
 ### music\_ok
 
-Returns true if the music `mus` is properly initialized.
+Returns non-zero if the music `mus` is properly initialized.
 
 ```c
-bool
+int
 music_ok(const struct music *mus)
 ```
 
@@ -73,17 +75,19 @@ This function will resume the playback since the beginning and will stop the
 current music. If the music playing is currently fading out the playback will
 not start until it has finished.
 
+Returns -1 in case of errors and 0 otherwise.
+
 ```
-bool
+int
 music_play(struct music *mus, enum music_flags flags, unsigned int fadein)
 ```
 
 ### music\_playing
 
-Returns true if a music is playing.
+Returns non-zero if a music is playing.
 
 ```c
-bool
+int
 music_playing(void)
 ```
 

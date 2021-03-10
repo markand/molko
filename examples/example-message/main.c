@@ -46,9 +46,9 @@
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "message") || !ui_init() || !rpg_init())
+	if (core_init("fr.malikania", "message") < 0 || ui_init() < 0 || rpg_init() < 0)
 		panic();
-	if (!window_open("Example - Message", W, H))
+	if (window_open("Example - Message", W, H) < 0)
 		panic();
 }
 
@@ -102,7 +102,7 @@ run(struct message *msg)
 
 	message_start(msg);
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

@@ -75,7 +75,7 @@ load_images(void)
 	for (size_t i = 0; i < UTIL_SIZE(images); ++i) {
 		struct texture *texture = &registry_images[images[i].index];
 
-		if (!image_open(texture, PATH(images[i].path)))
+		if (image_open(texture, PATH(images[i].path)) < 0)
 			panic();
 	}
 }
@@ -87,7 +87,7 @@ load_textures_and_sprites(void)
 		struct texture *texture = &registry_textures[textures[i].index];
 		struct sprite *sprite = &registry_sprites[textures[i].index];
 
-		if (!image_open(texture, PATH(textures[i].path)))
+		if (image_open(texture, PATH(textures[i].path)) < 0)
 			panic();
 
 		if (textures[i].cellw == 0 || textures[i].cellh == 0)
@@ -103,7 +103,7 @@ load_sounds(void)
 	for (size_t i = 0; i < UTIL_SIZE(sounds); ++i) {
 		struct sound *sound = &registry_sounds[sounds[i].index];
 
-		if (!sound_open(sound, PATH(sounds[i].path)))
+		if (sound_open(sound, PATH(sounds[i].path)) < 0)
 			panic();
 	}
 }

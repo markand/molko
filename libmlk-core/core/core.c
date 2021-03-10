@@ -25,7 +25,7 @@
 #include "sys.h"
 #include "translate.h"
 
-bool
+int
 core_init(const char *organization, const char *name)
 {
 	assert(organization);
@@ -33,12 +33,12 @@ core_init(const char *organization, const char *name)
 
 	srand(time(NULL));
 
-	if (!sys_init(organization, name))
-		return false;
+	if (sys_init(organization, name) < 0)
+		return -1;
 
 	translate_init("libmlk-core");
 
-	return true;
+	return 0;
 }
 
 void

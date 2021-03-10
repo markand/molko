@@ -70,20 +70,20 @@ animation_start(struct animation *an)
 
 ### animation\_completed
 
-Returns true if the animation `an` was completely shown.
+Returns non-zero if the animation `an` was completely shown.
 
 ```c
-bool
+int
 animation_completed(const struct animation *an)
 ```
 
 ### animation\_update
 
-Update the animation `an` with `ticks` since last frame. Returns true if it has
-completed.
+Update the animation `an` with `ticks` since last frame. Returns non-zero if it
+has completed.
 
 ```c
-bool
+int
 animation_update(struct animation *an, unsigned int ticks)
 ```
 
@@ -91,11 +91,13 @@ animation_update(struct animation *an, unsigned int ticks)
 
 Draw the animation `an` to the given `x`, `y` coordinates.
 
+Returns -1 in case of errors and 0 otherwise.
+
 !!! warning
     You must not call this function is the animation is complete.
 
 ```c
-bool
+int
 animation_draw(const struct animation *an, int x, int y)
 ```
 

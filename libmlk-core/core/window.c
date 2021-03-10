@@ -66,19 +66,19 @@ finish_cursors(void)
 			SDL_FreeCursor(cursors[i]);
 }
 
-static bool
+static int
 load_window(const char *title, unsigned int w, unsigned int h)
 {
-	return (handle.win = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, 0));
+	return (handle.win = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, 0)) != NULL;
 }
 
-static bool
+static int
 load_renderer(void)
 {
-	return (handle.renderer = SDL_CreateRenderer(handle.win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
+	return (handle.renderer = SDL_CreateRenderer(handle.win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) != NULL;
 }
 
-bool
+int
 window_open(const char *title, unsigned int w, unsigned int h)
 {
 	assert(title);
@@ -92,7 +92,7 @@ window_open(const char *title, unsigned int w, unsigned int h)
 	load_framerate();
 	load_cursors();
 
-	return true;
+	return 0;
 }
 
 void

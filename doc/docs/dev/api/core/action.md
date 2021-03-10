@@ -41,7 +41,7 @@ All members can be NULL.
 |-------------------|--------|--------------------------------------------------|
 | [data](#data)     | (+&?)  | `void *`                                         |
 | [handle](#handle) | (+?)   | `void (*)(struct action *, const union event *)` |
-| [update](#update) | (+?)   | `bool (*)(struct action *, unsigned int)`        |
+| [update](#update) | (+?)   | `int (*)(struct action *, unsigned int)`        |
 | [draw](#draw)     | (+?)   | `void (*)(struct action *)`                      |
 | [end](#end)       | (+?)   | `void (*)(struct action *)`                      |
 | [finish](#finish) | (+?)   | `void (*)(struct action *)`                      |
@@ -65,10 +65,10 @@ void (*handle)(struct action *self, const union event *ev)
 #### update
 
 Update the action `self` with the `ticks` since last frame. The callback should
-return true if it is considered complete.
+return non-zero if it is considered complete.
 
 ```c
-bool (*update)(struct action *self, unsigned int ticks)
+int (*update)(struct action *self, unsigned int ticks)
 ```
 
 #### draw
@@ -140,7 +140,7 @@ Invoke and return the `act` [update callback](#update) with `ticks` since last
 frame if it is not NULL.
 
 ```c
-bool
+int
 action_update(struct action *act, unsigned int ticks)
 ```
 
@@ -185,11 +185,11 @@ action_stack_init(struct action_stack *st)
 
 ### action\_stack\_add
 
-Add the action `act` to the stack pointed by `st`. Returns true if there was
+Add the action `act` to the stack pointed by `st`. Returns -1 if there wasn't
 enough room to insert.
 
 ```c
-bool
+int
 action_stack_add(struct action_stack *st, struct action *act)
 ```
 
@@ -207,7 +207,7 @@ action_stack_handle(struct action_stack *st, const union event *ev)
 Update all actions with `ticks` since last frame in the stack `st`.
 
 ```c
-bool
+int
 action_stack_update(struct action_stack *st, unsigned int ticks)
 ```
 
@@ -222,11 +222,11 @@ action_stack_draw(const struct action_stack *st)
 
 ### action\_stack\_completed
 
-Tells if there is any pending action in the stack `st`. Returns true if there
-are no actions or if they have all completed.
+Tells if there is any pending action in the stack `st`. Returns non-zero if
+there are no actions or if they have all completed.
 
 ```c
-bool
+int
 action_stack_completed(const struct action_stack *st)
 ```
 

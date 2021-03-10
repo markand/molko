@@ -44,7 +44,7 @@ handle(struct battle_state *st, struct battle *bt, const union event *ev)
 	message_handle(&lost->msg, ev);
 }
 
-static bool
+static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	(void)bt;
@@ -54,7 +54,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	if (message_update(&lost->msg, ticks))
 		battle_state_closing(bt);
 
-	return false;
+	return 0;
 }
 
 static void

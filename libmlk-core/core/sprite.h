@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_SPRITE_H
 #define MOLKO_CORE_SPRITE_H
 
-#include <stdbool.h>
-
 #include "core.h"
 
 struct texture;
@@ -36,25 +34,22 @@ struct sprite {
 CORE_BEGIN_DECLS
 
 void
-sprite_init(struct sprite *sprite,
-            struct texture *tex,
-            unsigned int cellw,
-            unsigned int cellh);
+sprite_init(struct sprite *, struct texture *, unsigned int, unsigned int);
 
-bool
-sprite_ok(const struct sprite *sprite);
+int
+sprite_ok(const struct sprite *);
 
-bool
-sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y);
+int
+sprite_draw(const struct sprite *, unsigned int, unsigned int, int, int);
 
-bool
-sprite_scale(const struct sprite *sprite,
-             unsigned int r,
-             unsigned int c,
-             int x,
-             int y,
-             unsigned int w,
-             unsigned int h);
+int
+sprite_scale(const struct sprite *,
+             unsigned int,
+             unsigned int,
+             int,
+             int,
+             unsigned int,
+             unsigned int);
 
 CORE_END_DECLS
 

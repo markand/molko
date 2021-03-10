@@ -74,7 +74,7 @@ fight(void)
 	molko_fight(bt);
 }
 
-static bool
+static int
 update(struct action *act, unsigned int ticks)
 {
 	(void)ticks;
@@ -92,7 +92,7 @@ update(struct action *act, unsigned int ticks)
 		}
 	}
 
-	return false;
+	return 0;
 }
 
 void

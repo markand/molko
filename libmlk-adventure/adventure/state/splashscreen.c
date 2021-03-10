@@ -54,7 +54,7 @@ start(struct state *state)
 	struct self *self = state->data;
 	struct font font;
 
-	if (!font_open(&font, molko_path("fonts/cubic.ttf"), 80))
+	if (font_open(&font, molko_path("fonts/cubic.ttf"), 80) < 0)
 		panic();
 
 	font.style = FONT_STYLE_ANTIALIASED;
@@ -75,7 +75,7 @@ update(struct state *state, unsigned int ticks)
 	self->elapsed += ticks;
 
 	if (self->elapsed >= DELAY)
-		game_switch(state_mainmenu_new(), false);
+		game_switch(state_mainmenu_new(), 0);
 }
 
 static void

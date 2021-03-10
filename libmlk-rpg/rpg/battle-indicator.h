@@ -19,108 +19,43 @@
 #ifndef MOLKO_RPG_BATTLE_INDICATOR_H
 #define MOLKO_RPG_BATTLE_INDICATOR_H
 
-/**
- * \file battle-indicator.h
- * \brief Drawable for rendering a hp/mp count usage.
- *
- * This small module creates an animation drawable that shows a label with a
- * smooth color/fading transition, used to display hp/mp damage.
- */
-
-#include <stdbool.h>
-
 #include <core/core.h>
 #include <core/texture.h>
 
-/**
- * \brief Default color for HP indicator.
- */
 #define BATTLE_INDICATOR_HP_COLOR (0xa5303000)
-
-/**
- * \brief Default color for MP indicator.
- */
 #define BATTLE_INDICATOR_MP_COLOR (0xa23e8c00)
 
 struct theme;
 
-/**
- * \brief Structure context for indicator animation.
- *
- * You must zero-initialize this structure and fill the color and amount field
- * with the color target and the amount of damage to show respectively. Then use
- * start, update and draw function in order until it completes.
- */
 struct battle_indicator {
-	unsigned int color;             /*!< (+) Destination color. */
-	unsigned int amount;            /*!< (+) Amount text to draw. */
-	const struct theme *theme;      /*!< (+&?) Optional theme to use. */
-	unsigned int cur;               /*!< (-) Current color target. */
-	unsigned int elapsed;           /*!< (-) Elapsed time in transition. */
-	unsigned int alpha;             /*!< (-) Current alpha. */
-	struct texture tex[2];          /*!< (*) Rendered texture. */
+	unsigned int color;
+	unsigned int amount;
+	const struct theme *theme;
+	unsigned int cur;
+	unsigned int elapsed;
+	unsigned int alpha;
+	struct texture tex[2];
 };
 
 CORE_BEGIN_DECLS
 
-/**
- * Start the battle indicator. You must call this function only once.
- *
- * \pre bti != NULL
- * \param bti the indicator
- */
 void
-battle_indicator_start(struct battle_indicator *bti);
+battle_indicator_start(struct battle_indicator *);
 
-/**
- * Tells if the indicator has completed.
- *
- * \pre battle_indicator_ok(bti)
- * \param bti the indicator to check
- * \return True if completed.
- */
-bool
-battle_indicator_completed(const struct battle_indicator *bti);
+int
+battle_indicator_completed(const struct battle_indicator *);
 
-/**
- * Tells if the indicator is valid.
- *
- * \param bti the indicator to check (may be NULL)
- * \return True if correctly initialized.
- */
-bool
-battle_indicator_ok(const struct battle_indicator *bti);
+int
+battle_indicator_ok(const struct battle_indicator *);
 
-/**
- * Update the indicator.
- *
- * \pre battle_indicator_ok(bti)
- * \param bti the indicator
- * \param ticks the elapsed milliseconds since last frame
- * \return True if completed.
- */
-bool
-battle_indicator_update(struct battle_indicator *bti, unsigned int ticks);
+int
+battle_indicator_update(struct battle_indicator *, unsigned int);
 
-/**
- * Draw the indicator.
- *
- * \pre battle_indicator_ok(bti)
- * \param bti the indicator
- * \param x the x coordinate
- * \param y the y coordinate
- */
 void
-battle_indicator_draw(const struct battle_indicator *bti, int x, int y);
+battle_indicator_draw(const struct battle_indicator *, int, int);
 
-/**
- * Dispose resources.
- *
- * \pre battle_indicator_ok(bti)
- * \param bti the indicator
- */
 void
-battle_indicator_finish(struct battle_indicator *bti);
+battle_indicator_finish(struct battle_indicator *);
 
 CORE_END_DECLS
 

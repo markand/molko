@@ -19,7 +19,6 @@
 #ifndef MOLKO_CORE_FONT_H
 #define MOLKO_CORE_FONT_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 #include "core.h"
@@ -38,26 +37,26 @@ struct font {
 
 CORE_BEGIN_DECLS
 
-bool
-font_open(struct font *font, const char *path, unsigned int size);
+int
+font_open(struct font *, const char *, unsigned int);
 
-bool
-font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size);
+int
+font_openmem(struct font *, const void *, size_t, unsigned int);
 
-bool
-font_ok(const struct font *font);
+int
+font_ok(const struct font *);
 
-bool
-font_render(struct font *font, struct texture *tex, const char *text, unsigned int color);
+int
+font_render(struct font *, struct texture *, const char *, unsigned int);
 
 unsigned int
-font_height(const struct font *font);
+font_height(const struct font *);
 
-bool
-font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h);
+int
+font_query(const struct font *, const char *, unsigned int *, unsigned int *);
 
 void
-font_finish(struct font *font);
+font_finish(struct font *);
 
 CORE_END_DECLS
 

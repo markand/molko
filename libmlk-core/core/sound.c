@@ -24,7 +24,7 @@
 #include "error.h"
 #include "sound.h"
 
-bool
+int
 sound_open(struct sound *snd, const char *path)
 {
 	assert(snd);
@@ -33,10 +33,10 @@ sound_open(struct sound *snd, const char *path)
 	if (!(snd->handle = Mix_LoadWAV(path)))
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 sound_openmem(struct sound *snd, const void *buffer, size_t buffersz)
 {
 	assert(snd);
@@ -45,19 +45,19 @@ sound_openmem(struct sound *snd, const void *buffer, size_t buffersz)
 	SDL_RWops *ops;
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buffersz)) ||
-	    !(snd->handle = Mix_LoadWAV_RW(ops, true)))
+	    !(snd->handle = Mix_LoadWAV_RW(ops, 1)))
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 sound_ok(const struct sound *snd)
 {
 	return snd && snd->handle;
 }
 
-bool
+int
 sound_play(struct sound *snd, int channel, unsigned int fadein)
 {
 	assert(sound_ok(snd));
@@ -74,7 +74,7 @@ sound_play(struct sound *snd, int channel, unsigned int fadein)
 
 	snd->channel = channel;
 
-	return true;
+	return 0;
 }
 
 void

@@ -64,12 +64,12 @@ Set `state` for the next frame.
 The state will only be effective after the next call to
 [game_update](#game_update).
 
-If argument `quick` is set to true, the state is changed immediately and the
+If argument `quick` is non-zero, the state is changed immediately and the
 current state code should immediately return.
 
 ```c
 void
-game_switch(struct state *state, bool quick)
+game_switch(struct state *state, int quick)
 ```
 
 #### game\_handle

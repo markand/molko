@@ -19,8 +19,6 @@
 #ifndef MOLKO_RPG_BATTLE_H
 #define MOLKO_RPG_BATTLE_H
 
-#include <stdbool.h>
-
 #include <core/action.h>
 #include <core/core.h>
 #include <core/drawable.h>
@@ -111,7 +109,7 @@ battle_indicator_hp(struct battle *, const struct character *, long);
 void
 battle_handle(struct battle *, const union event *);
 
-bool
+int
 battle_update(struct battle *, unsigned int);
 
 void

@@ -115,14 +115,14 @@ trace_hud_clear(void)
 	memset(&data, 0, sizeof (data));
 }
 
-static bool
+static int
 update(struct action *a, unsigned int ticks)
 {
 	(void)a;
 
 	trace_hud_update(ticks);
 
-	return false;
+	return 0;
 }
 
 static void

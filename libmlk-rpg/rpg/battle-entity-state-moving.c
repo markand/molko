@@ -49,7 +49,7 @@ orientation(const struct position *pos, const struct battle_entity *et)
 	return pos->x < et->x ? 6 : 2;
 }
 
-static bool
+static int
 update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks)
 {
 	struct position *pos = st->data;

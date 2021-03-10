@@ -118,10 +118,10 @@ start(struct state *state)
 	theme = theme_default();
 	font = theme->fonts[THEME_FONT_INTERFACE];
 
-	if (!font_render(font, &self->texts[0].tex, "An unrecoverable error occured and the game cannot continue.", FOREGROUND) ||
-	    !font_render(font, &self->texts[1].tex, "Please report the detailed error as provided below.", FOREGROUND) ||
-	    !font_render(font, &self->texts[2].tex, "Press <s> to save information and generate a core dump.", FOREGROUND) ||
-	    !font_render(font, &self->texts[3].tex, "Press <q> to quit without saving information.", FOREGROUND))
+	if (font_render(font, &self->texts[0].tex, "An unrecoverable error occured and the game cannot continue.", FOREGROUND) < 0||
+	    font_render(font, &self->texts[1].tex, "Please report the detailed error as provided below.", FOREGROUND) < 0||
+	    font_render(font, &self->texts[2].tex, "Press <s> to save information and generate a core dump.", FOREGROUND) < 0||
+	    font_render(font, &self->texts[3].tex, "Press <q> to quit without saving information.", FOREGROUND) < 0)
 		die("%s", error());
 
 	/* All align x the same. */
@@ -171,7 +171,7 @@ draw(struct state *state)
 	/* The error is only available here. */
 	font = theme->fonts[THEME_FONT_INTERFACE];
 
-	if (!font_render(font, &tex, error(), FOREGROUND))
+	if (font_render(font, &tex, error(), FOREGROUND) < 0)
 		die("%s\n", error());
 
 	align(ALIGN_LEFT, &x, &y, tex.w, tex.h, 0, 0, window.w, window.h);

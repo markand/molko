@@ -44,7 +44,7 @@ struct context {
 	char basedir[PATH_MAX];         /* Parent map directory */
 };
 
-static bool
+static int
 parse_layer_tiles(struct context *ctx, const char *layer_name)
 {
 	enum map_layer_type layer_type;
@@ -67,17 +67,17 @@ parse_layer_tiles(struct context *ctx, const char *layer_name)
 	 * that fill the layer tiles.
 	 */
 	if (!(ctx->mf->layers[layer_type].tiles = alloc_array0(amount, sizeof (unsigned short))))
-		return false;
+		return -1;
 
 	for (int tile; fscanf(ctx->fp, "%d\n", &tile) && current < amount; ++current)
 		ctx->mf->layers[layer_type].tiles[current] = tile;
 
 	ctx->map->layers[layer_type].tiles = ctx->mf->layers[layer_type].tiles;
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_actions(struct context *ctx)
 {
 	char exec[128 + 1];
@@ -103,7 +103,7 @@ parse_actions(struct context *ctx)
 		 */
 		if (block) {
 			if (!(reg = alloc_pool_new(&ctx->mf->blocks)))
-				return false;
+				return -1;
 
 			reg->x = x;
 			reg->y = y;
@@ -116,10 +116,10 @@ parse_actions(struct context *ctx)
 	ctx->map->blocks = ctx->mf->blocks.data;
 	ctx->map->blocksz = ctx->mf->blocks.size;
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_layer(struct context *ctx, const char *line)
 {
 	char layer_name[32 + 1] = {0};
@@ -138,7 +138,7 @@ parse_layer(struct context *ctx, const char *line)
 	return parse_layer_tiles(ctx, layer_name);
 }
 
-static bool
+static int
 parse_tileset(struct context *ctx, const char *line)
 {
 	char path[PATH_MAX] = {0}, *p;
@@ -150,15 +150,15 @@ parse_tileset(struct context *ctx, const char *line)
 
 	snprintf(path, sizeof (path), "%s/%s", ctx->basedir, p + 1);
 
-	if (!tileset_file_open(tf, &mf->tileset, path))
-		return false;
+	if (tileset_file_open(tf, &mf->tileset, path) < 0)
+		return -1;
 
 	ctx->map->tileset = &mf->tileset;
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_title(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "title|" MAX_F(MAP_FILE_TITLE_MAX), ctx->mf->title) != 1 || strlen(ctx->mf->title) == 0)
@@ -166,42 +166,42 @@ parse_title(struct context *ctx, const char *line)
 
 	ctx->map->title = ctx->mf->title;
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_columns(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "columns|%u", &ctx->map->columns) != 1 || ctx->map->columns == 0)
 		return errorf(_("null map columns"));
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_rows(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "rows|%u", &ctx->map->rows) != 1 || ctx->map->rows == 0)
 		return errorf(_("null map rows"));
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_origin(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "origin|%d|%d", &ctx->map->player_x, &ctx->map->player_y) != 2)
 		return errorf(_("invalid origin"));
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_line(struct context *ctx, const char *line)
 {
 	static const struct {
 		const char *property;
-		bool (*read)(struct context *, const char *);
+		int (*read)(struct context *, const char *);
 	} props[] = {
 		{ "title",      parse_title             },
 		{ "columns",    parse_columns           },
@@ -215,10 +215,10 @@ parse_line(struct context *ctx, const char *line)
 		if (strncmp(line, props[i].property, strlen(props[i].property)) == 0)
 			return props[i].read(ctx, line);
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse(struct context *ctx, const char *path)
 {
 	char line[1024];
@@ -231,14 +231,14 @@ parse(struct context *ctx, const char *path)
 		/* Remove \n if any */
 		line[strcspn(line, "\n")] = '\0';
 
-		if (!parse_line(ctx, line))
-			return false;
+		if (parse_line(ctx, line) < 0)
+			return -1;
 	}
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 check(struct map *map)
 {
 	/*
@@ -258,10 +258,10 @@ check(struct map *map)
 	if (!tileset_ok(map->tileset))
 		return errorf(_("missing tileset"));
 
-	return true;
+	return 0;
 }
 
-bool
+int
 map_file_open(struct map_file *file, struct map *map, const char *path)
 {
 	assert(file);
@@ -273,30 +273,30 @@ map_file_open(struct map_file *file, struct map *map, const char *path)
 		.map = map,
 	};
 	struct zfile zf;
-	bool ret = true;
+	int ret = 0;
 
 	memset(map, 0, sizeof (*map));
 
-	if (!alloc_pool_init(&file->blocks, sizeof (*map->blocks), NULL))
+	if (alloc_pool_init(&file->blocks, sizeof (*map->blocks), NULL) < 0)
 		goto fail;
 	if (zfile_open(&zf, path) < 0)
 		goto fail;
 
 	ctx.fp = zf.fp;
 
-	if (!(ret = parse(&ctx, path)) || !(ret = check(map)))
+	if ((ret = parse(&ctx, path)) < 0 || (ret = check(map)) < 0)
 		goto fail;
 
 	zfile_close(&zf);
 
-	return true;
+	return 0;
 
 fail:
 	map_finish(map);
 	map_file_finish(file);
 	zfile_close(&zf);
 
-	return false;
+	return -1;
 }
 
 void

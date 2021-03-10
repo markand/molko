@@ -62,7 +62,7 @@ static void
 init_sprites(void)
 {
 	for (size_t i = 0; i < UTIL_SIZE(table_sprites); ++i) {
-		if (!image_open(&table_sprites[i].texture, molko_path(table_sprites[i].path)))
+		if (image_open(&table_sprites[i].texture, molko_path(table_sprites[i].path)) < 0)
 			panic();
 
 		sprite_init(&assets_sprites[table_sprites[i].index],
@@ -75,7 +75,7 @@ static void
 init_sounds(void)
 {
 	for (size_t i = 0; i < UTIL_SIZE(assets_sounds); ++i) {
-		if (!sound_open(&assets_sounds[table_sounds[i].index], molko_path(table_sounds[i].path)))
+		if (sound_open(&assets_sounds[table_sounds[i].index], molko_path(table_sounds[i].path)) < 0)
 			panic();
 	}
 }

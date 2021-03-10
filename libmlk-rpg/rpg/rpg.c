@@ -21,14 +21,15 @@
 #include "rpg.h"
 #include "rpg_p.h"
 
-bool
+int
 rpg_init(void)
 {
 #if defined(MOLKO_WITH_NLS)
-	translate_init("libmlk-rpg");
+	if (translate_init("libmlk-rpg") < 0)
+		return -1;
 #endif
 
-	return true;
+	return 0;
 }
 
 void

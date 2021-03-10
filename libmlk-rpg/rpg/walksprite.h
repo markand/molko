@@ -19,12 +19,6 @@
 #ifndef MOLKO_RPG_WALKSPRITE_H
 #define MOLKO_RPG_WALKSPRITE_H
 
-/**
- * \file walksprite.h
- * \brief Sprite designed for walking entities.
- * \ingroup drawing
- */
-
 #include <core/core.h>
 
 struct sprite;
@@ -60,58 +54,25 @@ struct sprite;
  * ```
  */
 struct walksprite {
-	struct sprite *sprite;  /*!< (+&) The sprite to use */
-	unsigned int delay;     /*!< (+) The delay between frames */
-	unsigned int index;     /*!< (-) Current column index */
-	unsigned int elapsed;   /*!< (-) Elapsed time since last frame */
+	struct sprite *sprite;
+	unsigned int delay;
+	unsigned int index;
+	unsigned int elapsed;
 };
 
 CORE_BEGIN_DECLS
 
-/**
- * Initialize the walking sprite.
- *
- * \pre ws != NULL
- * \pre sprite != NULL
- * \param ws the walking sprite
- * \param sprite the sprite to use
- * \param delay the delay between sprites
- */
 void
-walksprite_init(struct walksprite *ws, struct sprite *sprite, unsigned int delay);
+walksprite_init(struct walksprite *, struct sprite *, unsigned int);
 
-/**
- * Reset current column to inactive (aka no longer walking).
- *
- * \pre ws != NULL
- * \param ws the walking sprite
- */
 void
-walksprite_reset(struct walksprite *ws);
+walksprite_reset(struct walksprite *);
 
-/**
- * Update the walking sprite
- *
- * \pre ws != NULL
- * \param ws the walking sprite
- * \param ticks the number of milliseconds between last frame
- */
 void
-walksprite_update(struct walksprite *ws, unsigned int ticks);
+walksprite_update(struct walksprite *, unsigned int);
 
-/**
- * Draw the appropriate sprite cell to the screen according to the orientation
- * given.
- *
- * \pre ws != NULL
- * \pre orientation < 8
- * \param ws the walking sprite
- * \param orientation the orientation (or the row between 0 and 7)
- * \param x the x coordinate
- * \param y the y coordinate
- */
 void
-walksprite_draw(const struct walksprite *ws, unsigned int orientation, int x, int y);
+walksprite_draw(const struct walksprite *, unsigned int, int, int);
 
 CORE_END_DECLS
 

@@ -38,7 +38,7 @@ open_read(void)
 	struct save db;
 
 	/* Non-existent should return false. */
-	GREATEST_ASSERT(!save_open_path(&db, "1.db", SAVE_MODE_READ));
+	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_READ) < 0);
 
 	save_finish(&db);
 
@@ -51,8 +51,8 @@ open_write(void)
 	struct save db[2] = {0};
 
 	/* Write should work on both non-existent and existent database. */
-	GREATEST_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE));
-	GREATEST_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE));
+	GREATEST_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE) == 0);
+	GREATEST_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE) == 0);
 
 	/* Update and create date must not be 0. */
 	GREATEST_ASSERT(db[0].created > 0);
@@ -64,8 +64,8 @@ open_write(void)
 	save_finish(&db[1]);
 
 	/* Should work again. */
-	GREATEST_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE));
-	GREATEST_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE));
+	GREATEST_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE) == 0);
+	GREATEST_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE) == 0);
 	GREATEST_ASSERT(db[0].created > 0);
 	GREATEST_ASSERT(db[0].updated > 0);
 	GREATEST_ASSERT(db[1].created > 0);
@@ -91,20 +91,20 @@ properties_set(void)
 	struct save db;
 	struct save_property prop;
 
-	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE));
+	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
 
 	/* Insert a new property 'state'. */
 	prop = (struct save_property){.key = "state", .value = "intro"};
-	GREATEST_ASSERT(save_set_property(&db, &prop));
+	GREATEST_ASSERT(save_set_property(&db, &prop) == 0);
 	prop = (struct save_property){.key = "state"};
-	GREATEST_ASSERT(save_get_property(&db, &prop));
+	GREATEST_ASSERT(save_get_property(&db, &prop) == 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "intro");
 
 	/* Now we replace the value. */
 	prop = (struct save_property){.key = "state", .value = "map"};
-	GREATEST_ASSERT(save_set_property(&db, &prop));
+	GREATEST_ASSERT(save_set_property(&db, &prop) == 0);
 	prop = (struct save_property){.key = "state"};
-	GREATEST_ASSERT(save_get_property(&db, &prop));
+	GREATEST_ASSERT(save_get_property(&db, &prop) == 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "map");
 
 	save_finish(&db);
@@ -118,8 +118,8 @@ properties_notfound(void)
 	struct save db;
 	struct save_property prop = {.key = "state"};
 
-	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE));
-	GREATEST_ASSERT(!save_get_property(&db, &prop));
+	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
+	GREATEST_ASSERT(save_get_property(&db, &prop) < 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "");
 
 	GREATEST_PASS();
@@ -131,15 +131,15 @@ properties_remove(void)
 	struct save db;
 	struct save_property prop;
 
-	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE));
+	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
 
 	/* Insert a new property 'initialized'. */
 	prop = (struct save_property){.key = "state", .value = "intro"};
-	GREATEST_ASSERT(save_set_property(&db, &prop));
+	GREATEST_ASSERT(save_set_property(&db, &prop) == 0);
 	prop = (struct save_property){.key = "state"};
-	GREATEST_ASSERT(save_remove_property(&db, &prop));
+	GREATEST_ASSERT(save_remove_property(&db, &prop) == 0);
 	prop = (struct save_property){.key = "state"};
-	GREATEST_ASSERT(!save_get_property(&db, &prop));
+	GREATEST_ASSERT(save_get_property(&db, &prop) < 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "");
 
 	GREATEST_PASS();

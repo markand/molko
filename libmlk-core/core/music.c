@@ -24,7 +24,7 @@
 #include "error.h"
 #include "music.h"
 
-bool
+int
 music_open(struct music *mus, const char *path)
 {
 	assert(mus);
@@ -33,10 +33,10 @@ music_open(struct music *mus, const char *path)
 	if (!(mus->handle = Mix_LoadMUS(path)))
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 music_openmem(struct music *mus, const void *buffer, size_t buffersz)
 {
 	assert(mus);
@@ -45,19 +45,19 @@ music_openmem(struct music *mus, const void *buffer, size_t buffersz)
 	SDL_RWops *ops;
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buffersz)) ||
-	    !(mus->handle = Mix_LoadMUS_RW(ops, true)))
+	    !(mus->handle = Mix_LoadMUS_RW(ops, 1)))
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 music_ok(const struct music *mus)
 {
 	return mus && mus->handle;
 }
 
-bool
+int
 music_play(struct music *mus, enum music_flags flags, unsigned int fadein)
 {
 	assert(mus);
@@ -73,10 +73,10 @@ music_play(struct music *mus, enum music_flags flags, unsigned int fadein)
 	if (ret < 0)
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 music_playing(void)
 {
 	return Mix_PlayingMusic();

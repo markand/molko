@@ -29,10 +29,10 @@ extern void (*panic_handler)(void);
 CORE_BEGIN_DECLS
 
 noreturn void
-panicf(const char *fmt, ...);
+panicf(const char *, ...);
 
 noreturn void
-panicva(const char *fmt, va_list ap);
+panicva(const char *, va_list);
 
 noreturn void
 panic(void);

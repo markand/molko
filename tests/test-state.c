@@ -209,7 +209,7 @@ switch_startup(void *data)
 }
 
 GREATEST_TEST
-switch_quick_true(void)
+switch_quick_1(void)
 {
 	struct {
 		struct invokes inv;
@@ -220,11 +220,11 @@ switch_quick_true(void)
 	};
 
 	/*
-	 * When set to true, switching quickly state will immediately set the
+	 * When set to 1, switching quickly state will immediately set the
 	 * current state to the specified one and call start on it. However,
 	 * if there was already a planned state, it is finished immediately.
 	 */
-	game_switch(&table[0].state, true);
+	game_switch(&table[0].state, 1);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 1);
 	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
@@ -242,7 +242,7 @@ switch_quick_true(void)
 
 	/* Switch from [0] to [1] quickly, [0] should be closed immediately. */
 	zero(&table[0].inv);
-	game_switch(&table[1].state, true);
+	game_switch(&table[1].state, 1);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 0);
 	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
@@ -262,7 +262,7 @@ switch_quick_true(void)
 }
 
 GREATEST_TEST
-switch_quick_false(void)
+switch_quick_0(void)
 {
 	struct {
 		struct invokes inv;
@@ -272,7 +272,7 @@ switch_quick_false(void)
 		{ .state = INIT(&table[1]) }
 	};
 
-	game_switch(&table[0].state, true);
+	game_switch(&table[0].state, 1);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 1);
 	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
@@ -293,7 +293,7 @@ switch_quick_false(void)
 	 * be done on the next game_update call instead.
 	 */
 	zero(&table[0].inv);
-	game_switch(&table[1].state, false);
+	game_switch(&table[1].state, 0);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 0);
 	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
@@ -324,11 +324,11 @@ switch_invoke(void)
 	};
 
 	/* Start with 0. */
-	game_switch(&table[0].state, true);
+	game_switch(&table[0].state, 1);
 
 	/* Ask to switch to 1. */
 	zero(&table[0].inv);
-	game_switch(&table[1].state, true);
+	game_switch(&table[1].state, 1);
 	game_update(0);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 0);
@@ -351,8 +351,8 @@ switch_invoke(void)
 GREATEST_SUITE(suite_switch)
 {
 	GREATEST_SET_SETUP_CB(switch_startup, &game);
-	GREATEST_RUN_TEST(switch_quick_true);
-	GREATEST_RUN_TEST(switch_quick_false);
+	GREATEST_RUN_TEST(switch_quick_1);
+	GREATEST_RUN_TEST(switch_quick_0);
 	GREATEST_RUN_TEST(switch_invoke);
 }
 

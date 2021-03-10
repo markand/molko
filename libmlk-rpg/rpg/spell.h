@@ -19,11 +19,6 @@
 #ifndef MOLKO_RPG_SPELL_H
 #define MOLKO_RPG_SPELL_H
 
-/**
- * \file spell.h
- * \brief Magic spells.
- */
-
 #include <core/core.h>
 
 #include "selection.h"
@@ -59,13 +54,13 @@ struct spell {
 CORE_BEGIN_DECLS
 
 void
-spell_select(const struct spell *s, const struct battle *bt, struct selection *slt);
+spell_select(const struct spell *, const struct battle *, struct selection *);
 
 void
-spell_action(const struct spell *s, struct battle *bt, struct character *owner, const struct selection *slt);
+spell_action(const struct spell *, struct battle *, struct character *, const struct selection *);
 
 void
-spell_use(struct spell *s, struct character *owner, const struct selection *slt);
+spell_use(struct spell *, struct character *, const struct selection *);
 
 CORE_END_DECLS
 

@@ -22,7 +22,7 @@
 #include "battle-state.h"
 #include "character.h"
 
-static bool
+static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	(void)st;
@@ -36,7 +36,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	 */
 	character_exec(ch, bt);
 
-	return false;
+	return 0;
 }
 
 void

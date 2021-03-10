@@ -38,9 +38,9 @@
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "trace") || !ui_init())
+	if (core_init("fr.malikania", "trace") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - Trace", W, H))
+	if (window_open("Example - Trace", W, H) < 0)
 		panic();
 
 	trace_handler = trace_hud_handler;
@@ -101,7 +101,7 @@ run(void)
 		.draw = draw
 	};
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

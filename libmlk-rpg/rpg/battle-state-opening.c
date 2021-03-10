@@ -17,7 +17,6 @@
  */
 
 #include <assert.h>
-#include <stdbool.h>
 #include <stdlib.h>
 
 #include <core/alloc.h>
@@ -35,7 +34,7 @@ struct opening {
 	unsigned int elapsed;
 };
 
-static bool
+static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	assert(bt);
@@ -51,7 +50,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	if (opening->elapsed >= DELAY)
 		battle_state_check(bt);
 
-	return false;
+	return 0;
 }
 
 static void

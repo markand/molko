@@ -30,10 +30,10 @@ extern void (*trace_handler)(const char *);
 CORE_BEGIN_DECLS
 
 void
-tracef(const char *fmt, ...);
+tracef(const char *, ...);
 
 void
-traceva(const char *fmt, va_list ap);
+traceva(const char *, va_list);
 
 CORE_END_DECLS
 

@@ -222,7 +222,7 @@ convert_click(const SDL_Event *event, union event *ev)
 	}
 }
 
-bool
+int
 event_poll(union event *ev)
 {
 	SDL_Event event;
@@ -235,22 +235,22 @@ event_poll(union event *ev)
 		switch (event.type) {
 		case SDL_QUIT:
 			ev->type = EVENT_QUIT;
-			return true;
+			return 1;
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
 			convert_key(&event, ev);
-			return true;
+			return 1;
 		case SDL_MOUSEMOTION:
 			convert_mouse(&event, ev);
-			return true;
+			return 1;
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
 			convert_click(&event, ev);
-			return true;
+			return 1;
 		default:
 			continue;
 		}
 	}
 
-	return false;
+	return 0;
 }

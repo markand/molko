@@ -19,8 +19,10 @@ Translation support.
 Initialize native language support for the given domain `name`. Returns false on
 errors.
 
+Returns -1 in case of errors and 0 otherwise.
+
 ```c
-bool
+int
 translate_init(const char *name)
 ```
 

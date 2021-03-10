@@ -17,7 +17,6 @@
  */
 
 #include <assert.h>
-#include <stdbool.h>
 
 #include <SDL_image.h>
 
@@ -39,7 +38,7 @@ dimensions(struct texture *tex)
 	}
 }
 
-bool
+int
 image_open(struct texture *tex, const char *path)
 {
 	assert(tex);
@@ -50,20 +49,20 @@ image_open(struct texture *tex, const char *path)
 
 	dimensions(tex);
 
-	return true;
+	return 0;
 }
 
-bool
+int
 image_openmem(struct texture *tex, const void *buffer, size_t size)
 {
 	assert(buffer);
 
 	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
 
-	if (!ops || !(tex->handle = IMG_LoadTexture_RW(RENDERER(), ops, true)))
+	if (!ops || !(tex->handle = IMG_LoadTexture_RW(RENDERER(), ops, 1)))
 		return errorf("%s", SDL_GetError());
 
 	dimensions(tex);
 
-	return true;
+	return 0;
 }

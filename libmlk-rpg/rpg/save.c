@@ -41,13 +41,13 @@
 #define SQL_COMMIT      "COMMIT"
 #define SQL_ROLLBACK    "ROLLBACK"
 
-static bool
+static int
 exec(struct save *db, const char *sql)
 {
 	if (sqlite3_exec(db->handle, sql, NULL, NULL, NULL) != SQLITE_OK)
 		return errorf("%s", sqlite3_errmsg(db->handle));
 
-	return true;
+	return 0;
 }
 
 static const char *
@@ -56,13 +56,13 @@ path(unsigned int idx)
 	return util_pathf("%s%u.db", sys_dir(SYS_DIR_SAVE), idx);
 }
 
-static bool
+static int
 execu(struct save *db, const unsigned char *sql)
 {
 	return exec(db, (const char *)sql);
 }
 
-static bool
+static int
 verify(struct save *db)
 {
 	struct {
@@ -75,7 +75,7 @@ verify(struct save *db)
 
 	/* Ensure create and update dates are present. */
 	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
-		if (!save_get_property(db, &table[i].prop)) {
+		if (save_get_property(db, &table[i].prop) < 0) {
 			sqlite3_close(db->handle);
 			return errorf(_("database not initialized correctly"));
 		}
@@ -83,10 +83,10 @@ verify(struct save *db)
 		*table[i].date = strtoull(table[i].prop.value, NULL, 10);
 	}
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 prepare(struct save *s, struct save_stmt *stmt, const char *sql, const char *args, va_list ap)
 {
 	stmt->parent = s;
@@ -100,15 +100,15 @@ prepare(struct save *s, struct save_stmt *stmt, const char *sql, const char *arg
 		case 'i':
 		case 'u':
 			if (sqlite3_bind_int(stmt->handle, i++, va_arg(ap, int)) != SQLITE_OK)
-				return false;
+				return -1;
 			break;
 		case 's':
 			if (sqlite3_bind_text(stmt->handle, i++, va_arg(ap, const char *), -1, NULL) != SQLITE_OK)
-				return false;
+				return -1;
 			break;
 		case 't':
 			if (sqlite3_bind_int64(stmt->handle, i++, va_arg(ap, time_t)) != SQLITE_OK)
-				return false;
+				return -1;
 			break;
 		case ' ':
 			break;
@@ -117,13 +117,13 @@ prepare(struct save *s, struct save_stmt *stmt, const char *sql, const char *arg
 		}
 	}
 
-	return true;
+	return 0;
 
 sqlite3_err:
 	return errorf("%s", sqlite3_errmsg(s->handle));
 }
 
-static bool
+static int
 extract(struct save_stmt *stmt, const char *args, va_list ap)
 {
 	const int ncols = sqlite3_column_count(stmt->handle);
@@ -155,13 +155,13 @@ extract(struct save_stmt *stmt, const char *args, va_list ap)
 		}
 	}
 
-	return true;
+	return 0;
 
 sqlite3_err:
 	return errorf("%s", sqlite3_errmsg(stmt->parent->handle));
 }
 
-bool
+int
 save_open(struct save *db, unsigned int idx, enum save_mode mode)
 {
 	assert(db);
@@ -169,7 +169,7 @@ save_open(struct save *db, unsigned int idx, enum save_mode mode)
 	return save_open_path(db, path(idx), mode);
 }
 
-bool
+int
 save_open_path(struct save *db, const char *path, enum save_mode mode)
 {
 	assert(db);
@@ -189,7 +189,7 @@ save_open_path(struct save *db, const char *path, enum save_mode mode)
 	if (sqlite3_open_v2(path, (sqlite3**)&db->handle, flags, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 
-	if (mode == SAVE_MODE_WRITE && !execu(db, sql_init))
+	if (mode == SAVE_MODE_WRITE && execu(db, sql_init) < 0)
 		goto sqlite3_err;
 
 	return verify(db);
@@ -200,10 +200,10 @@ sqlite3_err:
 
 	memset(db, 0, sizeof (*db));
 
-	return false;
+	return -1;
 }
 
-bool
+int
 save_ok(const struct save *db)
 {
 	assert(db);
@@ -211,7 +211,7 @@ save_ok(const struct save *db)
 	return db && db->handle;
 }
 
-bool
+int
 save_set_property(struct save *db, const struct save_property *prop)
 {
 	assert(db);
@@ -219,8 +219,8 @@ save_set_property(struct save *db, const struct save_property *prop)
 
 	sqlite3_stmt *stmt = NULL;
 
-	if (!exec(db, SQL_BEGIN))
-		return false;
+	if (exec(db, SQL_BEGIN) < 0)
+		return -1;
 	if (sqlite3_prepare(db->handle, (const char *)sql_property_set, -1, &stmt, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 	if (sqlite3_bind_text(stmt, 1, prop->key, -1, NULL) != SQLITE_OK ||
@@ -241,17 +241,17 @@ sqlite3_err:
 
 	exec(db, SQL_ROLLBACK);
 
-	return false;
+	return -1;
 }
 
-bool
+int
 save_get_property(struct save *db, struct save_property *prop)
 {
 	assert(db);
 	assert(prop);
 
 	sqlite3_stmt *stmt = NULL;
-	bool ret = true;
+	int ret = 0;
 
 	if (sqlite3_prepare(db->handle, (const char *)sql_property_get,
 	    sizeof (sql_property_get), &stmt, NULL) != SQLITE_OK)
@@ -284,10 +284,10 @@ sqlite3_err:
 	if (stmt)
 		sqlite3_finalize(stmt);
 
-	return false;
+	return -1;
 }
 
-bool
+int
 save_remove_property(struct save *db, const struct save_property *prop)
 {
 	assert(db);
@@ -295,8 +295,8 @@ save_remove_property(struct save *db, const struct save_property *prop)
 
 	sqlite3_stmt *stmt = NULL;
 
-	if (!exec(db, SQL_BEGIN))
-		return false;
+	if (exec(db, SQL_BEGIN) < 0)
+		return -1;
 	if (sqlite3_prepare(db->handle, (const char *)sql_property_remove,
 	    sizeof (sql_property_remove), &stmt, NULL) != SQLITE_OK)
 		goto sqlite3_err;
@@ -317,25 +317,25 @@ sqlite3_err:
 
 	exec(db, SQL_ROLLBACK);
 
-	return false;
+	return -1;
 }
 
-bool
+int
 save_exec(struct save *db, const char *sql, const char *args, ...)
 {
 	assert(save_ok(db));
 	assert(sql && args);
 
 	struct save_stmt stmt;
-	bool ret;
+	int ret;
 	va_list ap;
 
 	va_start(ap, args);
 	ret = prepare(db, &stmt, sql, args, ap);
 	va_end(ap);
 
-	if (!ret)
-		return false;
+	if (ret < 0)
+		return -1;
 
 	ret = save_stmt_next(&stmt, NULL) == 0;
 	save_stmt_finish(&stmt);
@@ -354,7 +354,7 @@ save_finish(struct save *db)
 	memset(db, 0, sizeof (*db));
 }
 
-bool
+int
 save_stmt_init(struct save *db, struct save_stmt *stmt, const char *sql, const char *args, ...)
 {
 	assert(save_ok(db));
@@ -362,7 +362,7 @@ save_stmt_init(struct save *db, struct save_stmt *stmt, const char *sql, const c
 	assert(args);
 
 	va_list ap;
-	bool ret;
+	int ret;
 
 	va_start(ap, args);
 	ret = prepare(db, stmt, sql, args, ap);
@@ -377,7 +377,7 @@ save_stmt_next(struct save_stmt *stmt, const char *args, ...)
 	assert(stmt);
 
 	va_list ap;
-	bool ret = -1;
+	int ret = -1;
 
 	switch (sqlite3_step(stmt->handle)) {
 	case SQLITE_ROW:

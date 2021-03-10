@@ -23,10 +23,10 @@
 #include <core/event.h>
 
 struct invokes {
-	bool update;
-	bool draw;
-	bool end;
-	bool finish;
+	int update;
+	int draw;
+	int end;
+	int finish;
 };
 
 #define INIT(dat, up) {         \
@@ -37,42 +37,42 @@ struct invokes {
         .finish = my_finish     \
 }
 
-static bool
+static int
 my_update_false(struct drawable *dw, unsigned int ticks)
 {
 	(void)ticks;
 
-	((struct invokes *)dw->data)->update = true;
+	((struct invokes *)dw->data)->update = 1;
 
-	return false;
+	return 0;
 }
 
-static bool
+static int
 my_update_true(struct drawable *dw, unsigned int ticks)
 {
 	(void)ticks;
 
-	((struct invokes *)dw->data)->update = true;
+	((struct invokes *)dw->data)->update = 1;
 
-	return true;
+	return 1;
 }
 
 static void
 my_draw(struct drawable *dw)
 {
-	((struct invokes *)dw->data)->draw = true;
+	((struct invokes *)dw->data)->draw = 1;
 }
 
 static void
 my_end(struct drawable *dw)
 {
-	((struct invokes *)dw->data)->end = true;
+	((struct invokes *)dw->data)->end = 1;
 }
 
 static void
 my_finish(struct drawable *dw)
 {
-	((struct invokes *)dw->data)->finish = true;
+	((struct invokes *)dw->data)->finish = 1;
 }
 
 GREATEST_TEST
@@ -162,14 +162,14 @@ stack_add(void)
 	struct drawable_stack st = {0};
 	struct drawable dw = {0};
 
-	GREATEST_ASSERT(drawable_stack_add(&st, &dw));
+	GREATEST_ASSERT(drawable_stack_add(&st, &dw) == 0);
 
 	/* Now fill up. */
 	for (int i = 0; i < DRAWABLE_STACK_MAX - 1; ++i)
-		GREATEST_ASSERT(drawable_stack_add(&st, &dw));
+		GREATEST_ASSERT(drawable_stack_add(&st, &dw) == 0);
 
 	/* This one should not fit in. */
-	GREATEST_ASSERT(!drawable_stack_add(&st, &dw));
+	GREATEST_ASSERT(drawable_stack_add(&st, &dw) < 0);
 
 	GREATEST_PASS();
 }
@@ -246,7 +246,7 @@ stack_update(void)
 	GREATEST_ASSERT_EQ(st.objects[5], NULL);
 	
 	/*
-	 * Now make all actions to return true and check if it cleans the stack.
+	 * Now make all actions to return 1 and check if it cleans the stack.
 	 */
 	table[0].dw.update =
 	    table[2].dw.update =

@@ -63,11 +63,11 @@ changed(void)
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "sprite") || !ui_init())
+	if (core_init("fr.malikania", "sprite") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - Sprite", W, H))
+	if (window_open("Example - Sprite", W, H) < 0)
 		panic();
-	if (!image_open(&texture, PATH("sprites/people.png")))
+	if (image_open(&texture, PATH("sprites/people.png")) < 0)
 		panic();
 
 	sprite_init(&sprite, &texture, 48, 48);
@@ -136,7 +136,7 @@ run(void)
 
 	changed();
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

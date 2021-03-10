@@ -56,12 +56,12 @@ static struct label label_sound = {
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "audio") || !ui_init())
+	if (core_init("fr.malikania", "audio") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - Audio", W, H))
+	if (window_open("Example - Audio", W, H) < 0)
 		panic();
-	if (!music_open(&music, PATH("music/vabsounds-romance.ogg")) ||
-	    !sound_open(&sound, PATH("sounds/fire.wav")))
+	if (music_open(&music, PATH("music/vabsounds-romance.ogg")) < 0 ||
+	    sound_open(&sound, PATH("sounds/fire.wav")) < 0)
 		panic();
 }
 
@@ -80,7 +80,7 @@ handle(struct state *st, const union event *ev)
 
 	switch (ev->type) {
 	case EVENT_CLICKDOWN:
-		if (!sound_play(&sound, -1, 0))
+		if (sound_play(&sound, -1, 0) < 0)
 			panic();
 		break;
 	case EVENT_KEYDOWN:
@@ -138,7 +138,7 @@ run(void)
 		.draw = draw
 	};
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 
 	music_finish(&music);

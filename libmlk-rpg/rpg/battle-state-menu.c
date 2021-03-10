@@ -17,7 +17,6 @@
  */
 
 #include <assert.h>
-#include <stdbool.h>
 
 #include "battle.h"
 #include "battle-bar.h"

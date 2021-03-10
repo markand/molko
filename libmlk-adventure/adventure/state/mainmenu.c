@@ -76,7 +76,7 @@ new(void)
 static void
 resume(void)
 {
-	game_switch(state_continue_new(), false);
+	game_switch(state_continue_new(), 0);
 }
 
 static void
@@ -102,7 +102,7 @@ perform(struct self *self)
 static void
 init_title(struct self *self, struct font *font)
 {
-	if (!font_render(font, &self->texts[3].tex, "Molko's Adventure", 0x000000ff))
+	if (font_render(font, &self->texts[3].tex, "Molko's Adventure", 0x000000ff) < 0)
 		panic();
 	
 	/* Align header. */
@@ -115,9 +115,9 @@ init_title(struct self *self, struct font *font)
 static void
 init_items(struct self *self, struct font *font)
 {
-	if (!font_render(font, &self->texts[0].tex, _("New"), 0x000000ff) ||
-	    !font_render(font, &self->texts[1].tex, _("Continue"), 0x000000ff) ||
-	    !font_render(font, &self->texts[2].tex, _("Quit"), 0x000000ff))
+	if (font_render(font, &self->texts[0].tex, _("New"), 0x000000ff) < 0 ||
+	    font_render(font, &self->texts[1].tex, _("Continue"), 0x000000ff) < 0 ||
+	    font_render(font, &self->texts[2].tex, _("Quit"), 0x000000ff) < 0)
 		panic();
 
 	self->texts[0].x = (window.w / 2) - (self->texts[0].tex.w / 2);
@@ -136,8 +136,8 @@ start(struct state *state)
 	struct self *self = state->data;
 	struct font fonts[2];
 
-	if (!font_open(&fonts[0], molko_path("fonts/teutonic.ttf"), 130) ||
-	    !font_open(&fonts[1], molko_path("fonts/pirata-one.ttf"), 30))
+	if (font_open(&fonts[0], molko_path("fonts/teutonic.ttf"), 130) < 0||
+	    font_open(&fonts[1], molko_path("fonts/pirata-one.ttf"), 30) < 0)
 		panic();
 
 	fonts[0].style = fonts[1].style = FONT_STYLE_ANTIALIASED;

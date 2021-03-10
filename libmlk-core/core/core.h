@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_CORE_H
 #define MOLKO_CORE_CORE_H
 
-#include <stdbool.h>
-
 #if defined(__cplusplus)
 #       define CORE_BEGIN_DECLS extern "C" {
 #       define CORE_END_DECLS   }
@@ -31,8 +29,8 @@
 
 CORE_BEGIN_DECLS
 
-bool
-core_init(const char *organization, const char *name);
+int
+core_init(const char *, const char *);
 
 void
 core_finish(void);

@@ -38,7 +38,7 @@ struct blink {
 	unsigned int count;
 };
 
-static bool
+static int
 update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks)
 {
 	(void)et;

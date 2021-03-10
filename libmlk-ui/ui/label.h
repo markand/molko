@@ -19,99 +19,40 @@
 #ifndef MOLKO_UI_LABEL_H
 #define MOLKO_UI_LABEL_H
 
-/**
- * \file label.h
- * \brief GUI label.
- * \ingroup ui
- */
-
-#include <stdbool.h>
-
 #include <core/core.h>
 
 struct action;
 struct theme;
 
-/**
- * \brief Label flags.
- */
 enum label_flags {
-	LABEL_FLAGS_NONE,                       /*!< No flags. */
-	LABEL_FLAGS_SHADOW      = (1 << 0),     /*!< Enable shadow. */
+	LABEL_FLAGS_NONE,
+	LABEL_FLAGS_SHADOW      = (1 << 0),
 };
 
-/**
- * \brief GUI label.
- */
 struct label {
-	int x;                          /*!< (+) Position in x. */
-	int y;                          /*!< (+) Position in y. */
-	const char *text;               /*!< (+&) Text to show. */
-	enum label_flags flags;         /*!< (+) Optional flags. */
-	const struct theme *theme;      /*!< (+&?) Theme to use. */
+	int x;
+	int y;
+	const char *text;
+	enum label_flags flags;
+	const struct theme *theme;
 };
 
 CORE_BEGIN_DECLS
 
-/**
- * Default drawing function.
- *
- * \pre t != NULL
- * \pre label != NULL
- * \param t the theme
- * \param label the label
- */
 void
-label_draw_default(const struct theme *t, const struct label *label);
+label_draw_default(const struct theme *, const struct label *);
 
-/**
- * Tells if the label is usable.
- *
- * \param label the label to check (may be NULL)
- * \return False if label is null or as empty text.
- */
-bool
-label_ok(const struct label *label);
+int
+label_ok(const struct label *);
 
-/**
- * Update the `w` and `h` fields with the dimensions the text would needs with
- * the current theme.
- *
- * \pre label != NULL
- * \param label the label
- * \param w the pointer to width (may be NULL)
- * \param h the pointer to height (may be NULL)
- */
 void
-label_query(const struct label *label, unsigned int *w, unsigned int *h);
+label_query(const struct label *, unsigned int *, unsigned int *);
 
-/**
- * Draw the label.
- *
- * \pre label != NULL
- * \param label the label to draw
- */
 void
-label_draw(const struct label *label);
+label_draw(const struct label *);
 
-/**
- * Convert the label into an action.
- *
- * The following field will be set into the action:
- *
- * - act->data: points to label (reference),
- * - act->draw: a wrapper to label_draw.
- *
- * The label being an UI element is considered to never completes, as such
- * you will need to handle this case or to use a custom update function.
- *
- * \pre frame != NULL
- * \pre act != NULL
- * \param label the label to reference
- * \param act the action to fill
- */
 void
-label_action(struct label *label, struct action *act);
+label_action(struct label *, struct action *);
 
 CORE_END_DECLS
 

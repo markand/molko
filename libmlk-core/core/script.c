@@ -39,7 +39,7 @@ handle(struct action *a, const union event *ev)
 	script_handle(a->data, ev);
 }
 
-static bool
+static int
 update(struct action *a, unsigned int ticks)
 {
 	return script_update(a->data, ticks);
@@ -65,7 +65,7 @@ script_init(struct script *s)
 	memset(s, 0, sizeof (*s));
 }
 
-bool
+int
 script_append(struct script *s, struct action *a)
 {
 	assert(s);
@@ -76,7 +76,7 @@ script_append(struct script *s, struct action *a)
 
 	s->actions[s->actionsz++] = a;
 
-	return true;
+	return 0;
 }
 
 void
@@ -91,7 +91,7 @@ script_handle(struct script *s, const union event *ev)
 		action_handle(a, ev);
 }
 
-bool
+int
 script_update(struct script *s, unsigned int ticks)
 {
 	assert(s);
@@ -99,7 +99,7 @@ script_update(struct script *s, unsigned int ticks)
 	struct action *a = current(s);
 
 	if (!a)
-		return true;
+		return 1;
 
 	if (action_update(a, ticks)) {
 		action_end(a);
@@ -120,7 +120,7 @@ script_draw(struct script *s)
 		action_draw(a);
 }
 
-bool
+int
 script_completed(const struct script *s)
 {
 	assert(s);

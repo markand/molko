@@ -19,7 +19,6 @@
 #ifndef MOLKO_CORE_IMAGE_H
 #define MOLKO_CORE_IMAGE_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 #include "core.h"
@@ -28,11 +27,11 @@ struct texture;
 
 CORE_BEGIN_DECLS
 
-bool
-image_open(struct texture *tex, const char *path);
+int
+image_open(struct texture *, const char *);
 
-bool
-image_openmem(struct texture *tex, const void *buffer, size_t size);
+int
+image_openmem(struct texture *, const void *, size_t);
 
 CORE_END_DECLS
 

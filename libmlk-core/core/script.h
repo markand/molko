@@ -19,7 +19,6 @@
 #ifndef MOLKO_CORE_SCRIPT_H
 #define MOLKO_CORE_SCRIPT_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 #include "core.h"
@@ -39,28 +38,28 @@ struct script {
 CORE_BEGIN_DECLS
 
 void
-script_init(struct script *s);
+script_init(struct script *);
 
-bool
-script_append(struct script *s, struct action *a);
-
-void
-script_handle(struct script *s, const union event *ev);
-
-bool
-script_update(struct script *s, unsigned int ticks);
+int
+script_append(struct script *, struct action *);
 
 void
-script_draw(struct script *s);
+script_handle(struct script *, const union event *);
 
-bool
-script_completed(const struct script *s);
-
-void
-script_finish(struct script *s);
+int
+script_update(struct script *, unsigned int);
 
 void
-script_action(struct script *s, struct action *dst);
+script_draw(struct script *);
+
+int
+script_completed(const struct script *);
+
+void
+script_finish(struct script *);
+
+void
+script_action(struct script*s, struct action *);
 
 CORE_END_DECLS
 

@@ -31,7 +31,7 @@
 struct game game;
 
 void
-game_switch(struct state *state, bool quick)
+game_switch(struct state *state, int quick)
 {
 	assert(state);
 

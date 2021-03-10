@@ -38,12 +38,12 @@ static int mouse_y;
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "debug") || !ui_init())
+	if (core_init("fr.malikania", "debug") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - Debug", W, H))
+	if (window_open("Example - Debug", W, H) < 0)
 		panic();
 
-	debug_options.enable = true;
+	debug_options.enable = 1;
 }
 
 static void
@@ -86,7 +86,7 @@ run(void)
 		.draw = draw
 	};
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

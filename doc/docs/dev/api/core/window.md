@@ -57,10 +57,10 @@ Display framerate if supported, otherwise set to 0.
 Open a window with dimensions `width`, `height`. The argument `title` will set
 the window title if the platform supports it.
 
-Returns false on errors, otherwise the global `window` object will be set.
+Returns -1 in case of errors and 0 otherwise.
 
 ```c
-bool
+int
 window_open(const char *title, unsigned int width, unsigned int height)
 ```
 

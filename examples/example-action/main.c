@@ -62,7 +62,7 @@ static struct {
 	struct action msg_act;
 	int x;
 	int y;
-	bool opened;
+	int opened;
 	struct texture image;
 	struct sprite sprite;
 	struct action event;
@@ -176,14 +176,14 @@ static struct {
 	}
 };
 
-static bool
+static int
 guide_response_update(struct action *act, unsigned int ticks)
 {
 	/* Immediately return to get access to end. */
 	(void)act;
 	(void)ticks;
 
-	return true;
+	return 1;
 }
 
 static void
@@ -252,7 +252,7 @@ guide_draw(struct action *act)
 static void
 guide_init(void)
 {
-	if (!image_open(&guide.image, PATH("sprites/people.png")))
+	if (image_open(&guide.image, PATH("sprites/people.png")) < 0)
 		panic();
 
 	sprite_init(&guide.sprite, &guide.image, 48, 48);
@@ -276,7 +276,7 @@ chest_handle(struct action *act, const union event *ev)
 	case EVENT_CLICKDOWN:
 		if (maths_is_boxed(chest.x, chest.y, chest.sprite.cellw, chest.sprite.cellh,
 		    ev->click.x, ev->click.y)) {
-			chest.opened = true;
+			chest.opened = 1;
 			message_action(&chest.msg, &chest.msg_act);
 			message_query(&chest.msg, NULL, &chest.msg.h);
 			action_stack_add(&modal, &chest.msg_act);
@@ -300,7 +300,7 @@ chest_draw(struct action *act)
 static void
 chest_init(void)
 {
-	if (!image_open(&chest.image, PATH("sprites/chest.png")))
+	if (image_open(&chest.image, PATH("sprites/chest.png")) < 0)
 		panic();
 
 	sprite_init(&chest.sprite, &chest.image, 32, 32);
@@ -314,9 +314,9 @@ chest_init(void)
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "actions") || !ui_init() || !rpg_init())
+	if (core_init("fr.malikania", "actions") < 0 || ui_init() < 0 || rpg_init() < 0)
 		panic();
-	if (!window_open("Example - Action", W, H))
+	if (window_open("Example - Action", W, H) < 0)
 		panic();
 
 	guide_init();
@@ -372,7 +372,7 @@ run(void)
 	action_stack_add(&events, &chest.event);
 	action_stack_add(&events, &guide.event);
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

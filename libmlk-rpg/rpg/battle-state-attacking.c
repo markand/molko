@@ -68,7 +68,7 @@ damage(const struct battle_entity *source, struct battle_entity *target, struct 
 	battle_indicator_hp(bt, target->ch, 50);
 }
 
-static bool
+static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	(void)bt;
@@ -77,7 +77,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	struct data *data = st->data;
 
 	if (!battle_entity_update(data->source, 0))
-		return false;
+		return 0;
 
 	switch (data->substate) {
 	case SUBSTATE_ADVANCING:
@@ -107,7 +107,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 		break;
 	}
 
-	return false;
+	return 0;
 }
 
 static void

@@ -31,7 +31,7 @@
 #include "theme.h"
 #include "ui_p.h"
 
-static bool
+static int
 is_boxed(const struct button *button, const struct event_click *click)
 {
 	assert(button);

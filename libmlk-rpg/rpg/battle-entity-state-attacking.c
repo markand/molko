@@ -17,7 +17,6 @@
  */
 
 #include <assert.h>
-#include <stdbool.h>
 #include <stdlib.h>
 
 #include <core/alloc.h>
@@ -33,7 +32,7 @@ struct data {
 	struct animation anim;
 };
 
-static bool
+static int
 update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks)
 {
 	(void)et;

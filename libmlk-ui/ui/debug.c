@@ -26,7 +26,7 @@
 
 struct debug_options debug_options = {
 #if !defined(NDEBUG)
-	.enable = true
+	.enable = 1
 #endif
 };
 
@@ -66,7 +66,7 @@ vdebugf(struct debug_report *report, const char *fmt, va_list ap)
 	theme = report->theme ? report->theme : theme_default();
 	font = theme->fonts[THEME_FONT_DEBUG];
 
-	if (!font_render(font, &tex, line, theme->colors[THEME_COLOR_DEBUG]))
+	if (font_render(font, &tex, line, theme->colors[THEME_COLOR_DEBUG]) < 0)
 		return;
 
 	x = theme->padding;

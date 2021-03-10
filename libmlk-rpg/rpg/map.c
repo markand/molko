@@ -97,7 +97,7 @@ static unsigned int orientations[16] = {
  * player is moving upwards but the collision shape is below it is unnecessary
  * to check.
  */
-static bool
+static int
 is_block_relevant(const struct map *map,
                     const struct map_block *block,
                     int drow,
@@ -107,30 +107,30 @@ is_block_relevant(const struct map *map,
 		/* Object outside of left-right bounds. */
 		if (block->x + (int)block->w <= map->player_x ||
 		    block->x                 >= map->player_x + (int)map->player_sprite->cellw)
-			return false;
+			return 0;
 
 		if ((drow < 0 && block->y            >= map->player_y + (int)map->player_sprite->cellh) ||
 		    (drow > 0 && block->y + block->h <= map->player_y + map->player_sprite->cellh))
-			return false;
+			return 0;
 	} else if (dcol) {
 		/* Object outside of up-down bounds. */
 		if (block->y + (int)block->h <= map->player_y ||
 		    block->y                 >= map->player_y + (int)map->player_sprite->cellh)
-			return false;
+			return 0;
 
 		if ((dcol < 0 && block->x            >= map->player_x + (int)map->player_sprite->cellw) ||
 		    (dcol > 0 && block->x + block->w <= map->player_x + map->player_sprite->cellw))
-			return false;
+			return 0;
 	}
 
-	return true;
+	return 1;
 }
 
 /*
  * Determine if this collision shape is "closer" to the player by checking the
  * new block coordinates with the previous one.
  */
-static bool
+static int
 is_block_better(const struct map_block *now,
                 const struct map_block *new,
                 int drow,
@@ -259,7 +259,7 @@ find_tiledef_by_row_column_in_layer(const struct map *map,
 
 	if (row < 0 || (unsigned int)row >= map->rows ||
 	    col < 0 || (unsigned int)col >= map->columns)
-		return false;
+		return 0;
 
 	if ((id = layer->tiles[col + row * map->columns]) == 0)
 		return NULL;
@@ -535,7 +535,7 @@ draw_layer(const struct map *map, const struct map_layer *layer)
 		return;
 
 	/* Show collision box if requested. */
-	if (map->flags & MAP_FLAGS_SHOW_COLLIDE && texture_new(&colbox, 16, 16)) {
+	if (map->flags & MAP_FLAGS_SHOW_COLLIDE && texture_new(&colbox, 16, 16) == 0) {
 		texture_set_blend_mode(&colbox, TEXTURE_BLEND_BLEND);
 		texture_set_alpha_mod(&colbox, 100);
 		PAINTER_BEGIN(&colbox);
@@ -562,7 +562,7 @@ draw_collide(const struct map *map)
 {
 	struct texture box = {0};
 
-	if (map->flags & MAP_FLAGS_SHOW_COLLIDE && texture_new(&box, 64, 64)) {
+	if (map->flags & MAP_FLAGS_SHOW_COLLIDE && texture_new(&box, 64, 64) == 0) {
 		/* Draw collide box around player if requested. */
 		texture_set_alpha_mod(&box, 100);
 		texture_set_blend_mode(&box, TEXTURE_BLEND_BLEND);
@@ -591,7 +591,7 @@ draw_collide(const struct map *map)
 	}
 }
 
-bool
+int
 map_init(struct map *map)
 {
 	assert(map);
@@ -599,7 +599,7 @@ map_init(struct map *map)
 	init(map);
 	tileset_start(map->tileset);
 
-	return true;
+	return 0;
 }
 
 void

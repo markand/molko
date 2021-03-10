@@ -19,84 +19,47 @@
 #ifndef MOLKO_RPG_EQUIPMENT_H
 #define MOLKO_RPG_EQUIPMENT_H
 
-/**
- * \file equipment.h
- * \brief Character equipment.
- */
-
-#include <stdbool.h>
-
 #include <core/core.h>
 
 struct character;
 struct texture;
 
-/**
- * \brief Kind of equipment.
- *
- * There are different kind of equipments. Weapons are listed in this
- * enumeration even though a character can carry only one of them at a time. On
- * the other hand, a character is able to carry each of the defensive item.
- */
 enum equipment_type {
 	/* Attack weapons. */
-	EQUIPMENT_TYPE_AXE,             /*!< Axe. */
-	EQUIPMENT_TYPE_BOW,             /*!< Bow. */
-	EQUIPMENT_TYPE_CROSSBOW,        /*!< Cross bow. */
-	EQUIPMENT_TYPE_DAGGER,          /*!< Small dagger. */
-	EQUIPMENT_TYPE_HAMMER,          /*!< Large hammer. */
-	EQUIPMENT_TYPE_SPIKE,           /*!< Spike. */
-	EQUIPMENT_TYPE_SWORD,           /*!< Sword. */
-	EQUIPMENT_TYPE_WAND,            /*!< Magic wands. */
+	EQUIPMENT_TYPE_AXE,
+	EQUIPMENT_TYPE_BOW,
+	EQUIPMENT_TYPE_CROSSBOW,
+	EQUIPMENT_TYPE_DAGGER,
+	EQUIPMENT_TYPE_HAMMER,
+	EQUIPMENT_TYPE_SPIKE,
+	EQUIPMENT_TYPE_SWORD,
+	EQUIPMENT_TYPE_WAND,
 
 	/* Defense equipment. */
-	EQUIPMENT_TYPE_GLOVES,          /*!< Hand gloves. */
-	EQUIPMENT_TYPE_HELMET,          /*!< Head helmet. */
-	EQUIPMENT_TYPE_SHIELD,          /*!< Shield. */
-	EQUIPMENT_TYPE_TOP,             /*!< Top protection. */
-	EQUIPMENT_TYPE_TROUSERS,        /*!< Trousers. */
+	EQUIPMENT_TYPE_GLOVES,
+	EQUIPMENT_TYPE_HELMET,
+	EQUIPMENT_TYPE_SHIELD,
+	EQUIPMENT_TYPE_TOP,
+	EQUIPMENT_TYPE_TROUSERS,
 };
 
-/**
- * \brief Equipment structure.
- */
 struct equipment {
-	const char *name;               /*!< (+&) Equipment short name. */
-	const char *description;        /*!< (+&) Longer description. */
-	unsigned int price;             /*!< (+) Standard price. */
-	enum equipment_type type;       /*!< (+) Kind of equipment. */
-	struct texture *icon;           /*!< (+&) Icon to show in menus. */
+	const char *name;
+	const char *description;
+	unsigned int price;
+	enum equipment_type type;
+	struct texture *icon;
 
-	/**
-	 * (+?) Function called when user equip the object.
-	 *
-	 * \param eq this equipment
-	 * \param ch the character owner
-	 */
-	void (*equip)(const struct equipment *eq, struct character *ch);
+	void (*equip)(const struct equipment *, struct character *);
 };
 
 CORE_BEGIN_DECLS
 
-/**
- * Tells if this equipment object is valid.
- *
- * \param eq the equipment to check (may be NULL)
- * \return True if valid.
- */
-bool
-equipment_ok(const struct equipment *eq);
+int
+equipment_ok(const struct equipment *);
 
-/**
- * Shortcut for eq->equip (if not NULL).
- *
- * \pre equipment_ok(eq)
- * \pre character_ok(ch)
- * \param eq this equipment
- * \param ch the character owner
- */
 void
-equipment_equip(const struct equipment *eq, struct character *ch);
+equipment_equip(const struct equipment *, struct character *);
 
 CORE_END_DECLS
 

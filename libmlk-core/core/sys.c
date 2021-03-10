@@ -63,7 +63,7 @@ static const char *abspaths[] = {
 
 #if defined(_WIN32)
 
-static bool
+static inline int
 is_absolute(const char *path)
 {
 	return !PathIsRelativeA(path);
@@ -71,7 +71,7 @@ is_absolute(const char *path)
 
 #else
 
-static bool
+static inline int
 is_absolute(const char *path)
 {
 	return path[0] == '/';
@@ -79,7 +79,7 @@ is_absolute(const char *path)
 
 #endif
 
-static char *
+static inline char *
 normalize(char *str)
 {
 	for (char *p = str; *p; ++p)
@@ -89,35 +89,7 @@ normalize(char *str)
 	return str;
 }
 
-bool
-sys_init(const char *organization, const char *name)
-{
-#if defined(__MINGW64__)
-	/* On MinGW buffering leads to painful debugging. */
-	setbuf(stderr, NULL);
-	setbuf(stdout, NULL);
-#endif
-
-	strlcpy(info.organization, organization, sizeof (info.organization));
-	strlcpy(info.name, name, sizeof (info.name));
-
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
-		return errorf("%s", SDL_GetError());
-	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
-		return errorf("%s", SDL_GetError());
-	if (TTF_Init() < 0)
-		return errorf("%s", SDL_GetError());
-	if (Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG)
-		return errorf("%s", SDL_GetError());
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
-		return errorf("%s", SDL_GetError());
-
-	Mix_AllocateChannels(SOUND_CHANNELS_MAX);
-
-	return true;
-}
-
-static const char *
+static inline const char *
 absolute(const char *which)
 {
 	static char path[PATH_MAX];
@@ -193,7 +165,7 @@ user_directory(enum sys_dir kind)
 	return path;
 }
 
-static bool
+static inline int
 mkpath(const char *path)
 {
 #ifdef _WIN32
@@ -205,7 +177,35 @@ mkpath(const char *path)
 		return errorf("%s", strerror(errno));
 #endif
 
-	return true;
+	return 0;
+}
+
+int
+sys_init(const char *organization, const char *name)
+{
+#if defined(__MINGW64__)
+	/* On MinGW buffering leads to painful debugging. */
+	setbuf(stderr, NULL);
+	setbuf(stdout, NULL);
+#endif
+
+	strlcpy(info.organization, organization, sizeof (info.organization));
+	strlcpy(info.name, name, sizeof (info.name));
+
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+		return errorf("%s", SDL_GetError());
+	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
+		return errorf("%s", SDL_GetError());
+	if (TTF_Init() < 0)
+		return errorf("%s", SDL_GetError());
+	if (Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG)
+		return errorf("%s", SDL_GetError());
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+		return errorf("%s", SDL_GetError());
+
+	Mix_AllocateChannels(SOUND_CHANNELS_MAX);
+
+	return 0;
 }
 
 const char *
@@ -221,7 +221,7 @@ sys_dir(enum sys_dir kind)
 	}
 }
 
-bool
+int
 sys_mkdir(const char *directory)
 {
 	char path[PATH_MAX], *p;
@@ -244,8 +244,8 @@ sys_mkdir(const char *directory)
 		if (*p == '/') {
 			*p = 0;
 
-			if (!mkpath(path))
-				return false;
+			if (mkpath(path) < 0)
+				return -1;
 
 			*p = '/';
 		}

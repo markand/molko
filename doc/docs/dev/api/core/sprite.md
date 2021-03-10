@@ -64,10 +64,10 @@ sprite_init(struct sprite *sprite, struct texture *tex, unsigned int cellw, unsi
 
 ### sprite\_ok
 
-Returns true if the `sprite` is properly initialized.
+Returns non-zero if the `sprite` is properly initialized.
 
 ```c
-bool
+int
 sprite_ok(const struct sprite *sprite)
 ```
 
@@ -76,8 +76,10 @@ sprite_ok(const struct sprite *sprite)
 Similar to [sprite_scale](#sprite_scale) but use sprite cell dimensions for
 scaling.
 
+Returns -1 in case of errors and 0 otherwise.
+
 ```c
-bool
+int
 sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
 ```
 
@@ -86,10 +88,12 @@ sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, 
 Draw an individual cell from row `r` and column `c` at the coordinates `x`, `y`
 from the sprite `sprite` and scale the image to dimensions `w`, `h`.
 
+Returns -1 in case of errors and 0 otherwise.
+
 !!! caution
     Argument `r` and `c` must be out of bounds.
 
 ```c
-bool
+int
 sprite_scale(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y, unsigned int w, unsigned int h)
 ```

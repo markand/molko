@@ -39,7 +39,7 @@ struct data {
 	unsigned int selection;
 };
 
-static bool
+static int
 update(struct action *act, unsigned int ticks)
 {
 	struct data *data = act->data;

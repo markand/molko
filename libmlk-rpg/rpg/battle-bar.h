@@ -19,32 +19,6 @@
 #ifndef MOLKO_RPG_BATTLE_BAR_H
 #define MOLKO_RPG_BATTLE_BAR_H
 
-/*
- * The bar is split into three individual pieces.
- *
- * +------------+--------+------------+
- * | Grid menu  |  Menu  |   Status   |
- * +------------+--------+------------+
- *
- *
- * The left grid menu is only shown when member field state is set to \ref
- * BATTLE_BAR_STATE_SUB, it is usually opened when user select a magic or an
- * object.
- *
- * The menu in the middle is the main selection and contains the enumeration
- * battle_bar_menu using top, right, bottom left edges for short selection.
- *
- * The last part on the right is the status pane where the team characters stats
- * are listed.
- *
- * By itself, the bar never modify the battle object, it is the responsability
- * of the battle object or the battle state to change the bar object and to
- * track change on events. As such, the battle object is always passed as const
- * parameter.
- */
-
-#include <stdbool.h>
-
 #include <core/core.h>
 
 #include <ui/frame.h>
@@ -92,7 +66,7 @@ CORE_BEGIN_DECLS
 void
 battle_bar_positionate(struct battle_bar *bar, const struct battle *bt);
 
-bool
+int
 battle_bar_handle(struct battle_bar *bar,
                   const struct battle *bt,
                   const union event *ev);

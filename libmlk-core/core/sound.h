@@ -19,7 +19,6 @@
 #ifndef MOLKO_CORE_SOUND_H
 #define MOLKO_CORE_SOUND_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 #include "core.h"
@@ -33,29 +32,29 @@ struct sound {
 
 CORE_BEGIN_DECLS
 
-bool
-sound_open(struct sound *snd, const char *path);
+int
+sound_open(struct sound *, const char *);
 
-bool
-sound_openmem(struct sound *snd, const void *buffer, size_t buffersz);
+int
+sound_openmem(struct sound *, const void *, size_t);
 
-bool
-sound_ok(const struct sound *snd);
+int
+sound_ok(const struct sound *);
 
-bool
-sound_play(struct sound *snd, int channel, unsigned int fadein);
-
-void
-sound_pause(struct sound *snd);
+int
+sound_play(struct sound *, int, unsigned int);
 
 void
-sound_resume(struct sound *snd);
+sound_pause(struct sound *);
 
 void
-sound_stop(struct sound *snd, unsigned int fadeout);
+sound_resume(struct sound *);
 
 void
-sound_finish(struct sound *snd);
+sound_stop(struct sound *, unsigned int);
+
+void
+sound_finish(struct sound *);
 
 CORE_END_DECLS
 

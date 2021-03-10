@@ -34,7 +34,7 @@ Abstract drawable object.
 | [data](#data)     | (+&?)  | `void *`                                    |
 | [x](#x)           | (+)    | `int`                                       |
 | [y](#y)           | (+)    | `int`                                       |
-| [update](#update) | (+?)   | `bool (*)(struct drawable *, unsigned int)` |
+| [update](#update) | (+?)   | `int (*)(struct drawable *, unsigned int)` |
 | [draw](#draw)     | (+?)   | `void (*)(struct drawable *)`               |
 | [end](#end)       | (+?)   | `void (*)(struct drawable *)`               |
 | [finish](#finish) | (+?)   | `void (*)(struct drawable *)`               |
@@ -50,10 +50,10 @@ Position on screen.
 #### update
 
 Update the drawable `self` with the `ticks` since last frame. The callback
-should return true if it is considered complete.
+should return non-zero if it is considered complete.
 
 ```c
-bool (*update)(struct drawable *self, unsigned int ticks)
+int (*update)(struct drawable *self, unsigned int ticks)
 ```
 
 #### draw
@@ -109,7 +109,7 @@ Invoke and return the `dw` [update callback](#update) with the given event `ev`
 and `ticks` since last frame if it is not NULL.
 
 ```c
-bool
+int
 drawable_update(struct drawable *dw, unsigned int ticks)
 ```
 
@@ -154,11 +154,11 @@ drawable_stack_init(struct drawable_stack *st)
 
 ### drawable\_stack\_add
 
-Add the drawable `dw` to the stack pointed by `st`. Returns true if there was
+Add the drawable `dw` to the stack pointed by `st`. Returns -1 if there wasn't
 enough room to insert.
 
 ```c
-bool
+int
 drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 ```
 
@@ -167,7 +167,7 @@ drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 Update all drawables with `ticks` since last frame in the stack `st`.
 
 ```c
-bool
+int
 drawable_stack_update(struct drawable_stack *st, unsigned int ticks)
 ```
 
@@ -182,11 +182,11 @@ drawable_stack_draw(const struct drawable_stack *st)
 
 ### drawable\_stack\_completed
 
-Tells if there is any pending drawable in the stack `st`. Returns true if there
-are no drawables or if they have all completed.
+Tells if there is any pending drawable in the stack `st`. Returns non-zero if
+there are no drawables or if they have all completed.
 
 ```c
-bool
+int
 drawable_stack_completed(const struct drawable_stack *st)
 ```
 

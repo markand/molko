@@ -20,7 +20,6 @@
 #define MOLKO_CORE_ERROR_H
 
 #include <stdarg.h>
-#include <stdbool.h>
 
 #include "core.h"
 
@@ -29,11 +28,11 @@ CORE_BEGIN_DECLS
 const char *
 error(void);
 
-bool
-errorf(const char *fmt, ...);
+int
+errorf(const char *, ...);
 
-bool
-errorva(const char *fmt, va_list ap);
+int
+errorva(const char *, va_list);
 
 CORE_END_DECLS
 

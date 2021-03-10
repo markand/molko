@@ -19,8 +19,6 @@
 #ifndef MOLKO_ADVENTURE_BATTLE_MESSAGE_H
 #define MOLKO_ADVENTURE_BATTLE_MESSAGE_H
 
-#include <stdbool.h>
-
 #include <core/core.h>
 
 struct theme;
@@ -33,7 +31,7 @@ struct battle_message {
 
 CORE_BEGIN_DECLS
 
-bool
+int
 battle_message_update(struct battle_message *, unsigned int);
 
 void

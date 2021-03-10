@@ -26,13 +26,13 @@
 CORE_BEGIN_DECLS
 
 void
-util_delay(unsigned int ms);
+util_delay(unsigned int);
 
 const char *
-util_pathf(const char *fmt, ...);
+util_pathf(const char *, ...);
 
 unsigned int
-util_nrand(unsigned int lower, unsigned int upper);
+util_nrand(unsigned int, unsigned int);
 
 CORE_END_DECLS
 

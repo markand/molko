@@ -46,7 +46,7 @@ label_draw_default(const struct theme *t, const struct label *label)
 
 	/* Shadow text, only if enabled. */
 	if (label->flags & LABEL_FLAGS_SHADOW) {
-		if (!font_render(font, &tex, label->text, t->colors[THEME_COLOR_SHADOW]))
+		if (font_render(font, &tex, label->text, t->colors[THEME_COLOR_SHADOW]) < 0)
 			panic();
 
 		texture_draw(&tex, label->x + 1, label->y + 1);
@@ -54,14 +54,14 @@ label_draw_default(const struct theme *t, const struct label *label)
 	}
 
 	/* Normal text. */
-	if (!font_render(font, &tex, label->text, t->colors[THEME_COLOR_NORMAL]))
+	if (font_render(font, &tex, label->text, t->colors[THEME_COLOR_NORMAL]) < 0)
 		panic();
 
 	texture_draw(&tex, label->x, label->y);
 	texture_finish(&tex);
 }
 
-bool
+int
 label_ok(const struct label *label)
 {
 	return label && label->text && strlen(label->text) > 0;
@@ -75,7 +75,7 @@ label_query(const struct label *label, unsigned int *w, unsigned int *h)
 
 	const struct theme *t = label->theme ? label->theme : theme_default();
 
-	if (!font_query(t->fonts[THEME_FONT_INTERFACE], label->text, w, h))
+	if (font_query(t->fonts[THEME_FONT_INTERFACE], label->text, w, h) < 0)
 		panic();
 }
 

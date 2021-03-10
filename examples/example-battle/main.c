@@ -143,9 +143,9 @@ static struct character black_cat = {
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "battle") || !ui_init() || !rpg_init())
+	if (core_init("fr.malikania", "battle") < 0 || ui_init() < 0 || rpg_init() < 0)
 		panic();
-	if (!window_open("Example - Battle", W, H))
+	if (window_open("Example - Battle", W, H) < 0)
 		panic();
 
 	registry_init();
@@ -182,7 +182,7 @@ prepare_to_fight(void)
 	battle_start(bt);
 
 	fight_state.data = bt;
-	game_switch(&fight_state, false);
+	game_switch(&fight_state, 0);
 }
 
 
@@ -239,7 +239,7 @@ fight_update(struct state *st, unsigned int ticks)
 	struct battle *bt = st->data;
 
 	if (battle_update(bt, ticks))
-		game_switch(&empty_state, false);
+		game_switch(&empty_state, 0);
 }
 
 static void
@@ -268,7 +268,7 @@ static struct state fight_state = {
 static void
 run(void)
 {
-	game_switch(&empty_state, true);
+	game_switch(&empty_state, 1);
 	game_loop();
 }
 

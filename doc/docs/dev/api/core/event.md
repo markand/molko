@@ -121,9 +121,9 @@ Absolute coordinates.
 
 ### event\_poll
 
-Fetch the next event into `ev` or return false if there are not.
+Fetch the next event into `ev` or returns 0 if there are none.
 
 ```c
-bool
+int
 event_poll(union event *ev)
 ```

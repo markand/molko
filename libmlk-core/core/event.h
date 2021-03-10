@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_EVENT_H
 #define MOLKO_CORE_EVENT_H
 
-#include <stdbool.h>
-
 #include "core.h"
 #include "key.h"
 #include "mouse.h"
@@ -63,8 +61,8 @@ union event {
 
 CORE_BEGIN_DECLS
 
-bool
-event_poll(union event *ev);
+int
+event_poll(union event *);
 
 CORE_END_DECLS
 

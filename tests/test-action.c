@@ -23,11 +23,11 @@
 #include <core/event.h>
 
 struct invokes {
-	bool handle;
-	bool update;
-	bool draw;
-	bool end;
-	bool finish;
+	int handle;
+	int update;
+	int draw;
+	int end;
+	int finish;
 };
 
 static union event dummy;
@@ -46,45 +46,45 @@ my_handle(struct action *act, const union event *ev)
 {
 	(void)ev;
 
-	((struct invokes *)act->data)->handle = true;
+	((struct invokes *)act->data)->handle = 1;
 }
 
-static bool
+static int
 my_update_false(struct action *act, unsigned int ticks)
 {
 	(void)ticks;
 
-	((struct invokes *)act->data)->update = true;
+	((struct invokes *)act->data)->update = 1;
 
-	return false;
+	return 0;
 }
 
-static bool
+static int
 my_update_true(struct action *act, unsigned int ticks)
 {
 	(void)ticks;
 
-	((struct invokes *)act->data)->update = true;
+	((struct invokes *)act->data)->update = 1;
 
-	return true;
+	return 1;
 }
 
 static void
 my_draw(struct action *act)
 {
-	((struct invokes *)act->data)->draw = true;
+	((struct invokes *)act->data)->draw = 1;
 }
 
 static void
 my_end(struct action *act)
 {
-	((struct invokes *)act->data)->end = true;
+	((struct invokes *)act->data)->end = 1;
 }
 
 static void
 my_finish(struct action *act)
 {
-	((struct invokes *)act->data)->finish = true;
+	((struct invokes *)act->data)->finish = 1;
 }
 
 GREATEST_TEST
@@ -196,14 +196,14 @@ stack_add(void)
 	struct action_stack st = {0};
 	struct action act = {0};
 
-	GREATEST_ASSERT(action_stack_add(&st, &act));
+	GREATEST_ASSERT(action_stack_add(&st, &act) == 0);
 
 	/* Now fill up. */
 	for (int i = 0; i < ACTION_STACK_MAX - 1; ++i)
-		GREATEST_ASSERT(action_stack_add(&st, &act));
+		GREATEST_ASSERT(action_stack_add(&st, &act) == 0);
 
 	/* This one should not fit in. */
-	GREATEST_ASSERT(!action_stack_add(&st, &act));
+	GREATEST_ASSERT(action_stack_add(&st, &act) < 0);
 
 	GREATEST_PASS();
 }
@@ -212,12 +212,12 @@ GREATEST_TEST
 stack_handle(void)
 {
 	struct {
-		bool called;
+		int called;
 		struct action act;
 	} table[] = {
-		{ false, { .data = &table[0].called, .handle = my_handle } },
-		{ false, { .data = &table[1].called, .handle = my_handle } },
-		{ false, { .data = &table[2].called, .handle = my_handle } },
+		{ 0, { .data = &table[0].called, .handle = my_handle } },
+		{ 0, { .data = &table[1].called, .handle = my_handle } },
+		{ 0, { .data = &table[2].called, .handle = my_handle } },
 	};
 
 	struct action_stack st = {0};
@@ -313,7 +313,7 @@ stack_update(void)
 	GREATEST_ASSERT_EQ(st.actions[5], NULL);
 	
 	/*
-	 * Now make all actions to return true and check if it cleans the stack.
+	 * Now make all actions to return 1 and check if it cleans the stack.
 	 */
 	table[0].act.update =
 	    table[2].act.update =

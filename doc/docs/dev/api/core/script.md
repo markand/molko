@@ -68,14 +68,14 @@ script_init(struct script *s)
 
 ### script\_append
 
-Add the action `a` into the script `s`. Returns true if there was enough room
+Add the action `a` into the script `s`. Returns -1 if there wasn't enough room
 to insert.
 
 !!! note
     The argument `a` must stay valid until the script is no longer used.
 
 ```c
-bool
+int
 script_append(struct script *s, struct action *a)
 ```
 
@@ -91,10 +91,11 @@ script_handle(struct script *s, const union event *ev)
 ### script\_update
 
 Update the current action in the script `s` with `ticks` since last frame.
-Returns true if the script completed.
+
+Returns non-zero if the script completed.
 
 ```c
-bool
+int
 script_update(struct script *s, unsigned int ticks)
 ```
 
@@ -109,10 +110,10 @@ script_draw(struct script *s)
 
 ### script\_completed
 
-Returns true if the script `s` is complete.
+Returns non-zero if the script `s` is complete.
 
 ```c
-bool
+int
 script_completed(const struct script *s)
 ```
 

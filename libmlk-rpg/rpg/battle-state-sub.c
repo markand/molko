@@ -17,7 +17,6 @@
  */
 
 #include <assert.h>
-#include <stdbool.h>
 
 #include <core/event.h>
 #include <core/sprite.h>

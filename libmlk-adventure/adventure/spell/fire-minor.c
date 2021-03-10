@@ -41,7 +41,7 @@ struct rendering {
 	struct animation animation;
 };
 
-static bool
+static int
 update(struct action *act, unsigned int ticks)
 {
 	struct rendering *rdr = act->data;

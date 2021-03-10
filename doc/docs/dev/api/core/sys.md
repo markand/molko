@@ -33,8 +33,10 @@ Initialize the system.
 This function is automatically called from [core_init](core.md#core_init) with
 the same arguments and not necessary from the user.
 
+Returns -1 in case of errors and 0 otherwise.
+
 ```c
-bool
+int
 sys_init(const char *organization, const char *name)
 ```
 
@@ -53,11 +55,11 @@ sys_dir(enum sys_dir kind)
 
 ### sys\_mkdir
 
-Create the directory `path` recursively. Returns false on errors other than
-already existing.
+Create the directory `path` recursively. Returns -1 on errors other than
+already existing or 0 otherwise.
 
 ```c
-bool
+int
 sys_mkdir(const char *path)
 ```
 

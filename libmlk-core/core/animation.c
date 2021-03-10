@@ -23,7 +23,7 @@
 #include "animation.h"
 #include "sprite.h"
 
-static bool
+static int
 update(struct drawable *dw, unsigned int ticks)
 {
 	return animation_update(dw->data, ticks);
@@ -58,7 +58,7 @@ animation_start(struct animation *an)
 	an->elapsed = 0;
 }
 
-bool
+int
 animation_completed(const struct animation *an)
 {
 	assert(an);
@@ -68,7 +68,7 @@ animation_completed(const struct animation *an)
 	       an->column >= an->sprite->ncols;
 }
 
-bool
+int
 animation_update(struct animation *an, unsigned int ticks)
 {
 	assert(an);
@@ -76,7 +76,7 @@ animation_update(struct animation *an, unsigned int ticks)
 	an->elapsed += ticks;
 
 	if (an->elapsed < an->delay)
-		return false;
+		return 0;
 
 	/* Increment column first */
 	if (++an->column >= an->sprite->ncols) {
@@ -94,7 +94,7 @@ animation_update(struct animation *an, unsigned int ticks)
 	return animation_completed(an);
 }
 
-bool
+int
 animation_draw(const struct animation *an, int x, int y)
 {
 	assert(an);

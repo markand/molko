@@ -23,10 +23,10 @@ used. It will also determine the path to the preferred directories on certain
 platforms so make sure to not use characters that may be illegal on some
 filesystems.
 
-Returns false in case of errors.
+Returns -1 in case of errors and 0 otherwise.
 
 ```c
-bool
+int
 core_init(const char *organization, const char *name)
 ```
 

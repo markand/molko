@@ -201,7 +201,7 @@ draw_cursor(const struct dialog_save *dlg, const struct geo *geo)
 	sprite_draw(sprite, 1, 2, x, y + (geo->saves[dlg->selected].h / 2) - (sprite->cellh / 2));
 }
 
-static bool
+static int
 handle_keydown(struct dialog_save *s, const struct event_key *key)
 {
 	assert(key->type == EVENT_KEYDOWN);
@@ -225,10 +225,10 @@ handle_keydown(struct dialog_save *s, const struct event_key *key)
 		break;
 	}
 
-	return false;
+	return 0;
 }
 
-static bool
+static int
 handle_clickdown(struct dialog_save *s, const struct geo *geo, const struct event_click *clk)
 {
 	assert(clk->type == EVENT_CLICKDOWN);
@@ -254,7 +254,7 @@ dialog_save_init(struct dialog_save *s)
 		save_open(&s->saves[i], i, SAVE_MODE_READ);
 }
 
-bool
+int
 dialog_save_handle(struct dialog_save *dlg, const union event *ev)
 {
 	assert(dlg);
@@ -271,7 +271,7 @@ dialog_save_handle(struct dialog_save *dlg, const union event *ev)
 		break;
 	}
 
-	return false;
+	return 0;
 }
 
 void

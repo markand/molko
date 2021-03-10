@@ -19,7 +19,6 @@
 #ifndef MOLKO_RPG_SAVE_H
 #define MOLKO_RPG_SAVE_H
 
-#include <stdbool.h>
 #include <time.h>
 
 #include <core/core.h>
@@ -50,39 +49,39 @@ struct save_stmt {
 
 CORE_BEGIN_DECLS
 
-bool
-save_open(struct save *db, unsigned int idx, enum save_mode mode);
-
-bool
-save_open_path(struct save *db, const char *path, enum save_mode mode);
-
-bool
-save_ok(const struct save *db);
-
-bool
-save_set_property(struct save *db, const struct save_property *prop);
-
-bool
-save_get_property(struct save *db, struct save_property *prop);
-
-bool
-save_remove_property(struct save *db, const struct save_property *prop);
-
-bool
-save_exec(struct save *db, const char *sql, const char *args, ...);
-
-void
-save_finish(struct save *db);
-
-/* Prepared statements. */
-bool
-save_stmt_init(struct save *db, struct save_stmt *stmt, const char *sql, const char *args, ...);
+int
+save_open(struct save *, unsigned int, enum save_mode);
 
 int
-save_stmt_next(struct save_stmt *stmt, const char *args, ...);
+save_open_path(struct save *, const char *, enum save_mode);
+
+int
+save_ok(const struct save *);
+
+int
+save_set_property(struct save *, const struct save_property *);
+
+int
+save_get_property(struct save *, struct save_property *);
+
+int
+save_remove_property(struct save *, const struct save_property *);
+
+int
+save_exec(struct save *, const char *, const char *, ...);
 
 void
-save_stmt_finish(struct save_stmt *stmt);
+save_finish(struct save *);
+
+/* Prepared statements. */
+int
+save_stmt_init(struct save *, struct save_stmt *, const char *, const char *, ...);
+
+int
+save_stmt_next(struct save_stmt *, const char *, ...);
+
+void
+save_stmt_finish(struct save_stmt *);
 
 CORE_END_DECLS
 

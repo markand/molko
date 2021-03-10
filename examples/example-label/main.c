@@ -104,9 +104,9 @@ static struct label mlabel = {
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "label") || !ui_init())
+	if (core_init("fr.malikania", "label") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - Label", W, H))
+	if (window_open("Example - Label", W, H) < 0)
 		panic();
 
 	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
@@ -167,7 +167,7 @@ run(void)
 		.draw = draw
 	};
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

@@ -31,7 +31,7 @@ error(void)
 	return buffer;
 }
 
-bool
+int
 errorf(const char *fmt, ...)
 {
 	assert(fmt);
@@ -42,15 +42,15 @@ errorf(const char *fmt, ...)
 	errorva(fmt, ap);
 	va_end(ap);
 
-	return false;
+	return -1;
 }
 
-bool
+int
 errorva(const char *fmt, va_list ap)
 {
 	assert(fmt);
 
 	vsnprintf(buffer, sizeof (buffer), fmt, ap);
 
-	return false;
+	return -1;
 }

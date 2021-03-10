@@ -21,7 +21,7 @@
 #include "battle-entity.h"
 #include "battle-entity-state.h"
 
-bool
+int
 battle_entity_state_update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks)
 {
 	assert(st);
@@ -30,7 +30,7 @@ battle_entity_state_update(struct battle_entity_state *st, struct battle_entity 
 	if (st->update)
 		return st->update(st, et, ticks);
 
-	return true;
+	return 1;
 }
 
 void

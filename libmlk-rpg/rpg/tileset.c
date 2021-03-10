@@ -48,7 +48,7 @@ find(const struct tileset *ts, unsigned int r, unsigned int c)
 	return bsearch(&key, ts->anims, ts->animsz, sizeof (key), anim_cmp);
 }
 
-bool
+int
 tileset_ok(const struct tileset *ts)
 {
 	return ts && sprite_ok(ts->sprite);

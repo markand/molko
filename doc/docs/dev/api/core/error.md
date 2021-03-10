@@ -24,11 +24,11 @@ error(void)
 
 ### errorf
 
-Set the global error using [printf][] format string. Also return false for
+Set the global error using [printf][] format string. Also return -1 for
 convenience.
 
 ```c
-bool
+int
 errorf(const char *fmt, ...)
 ```
 
@@ -37,7 +37,7 @@ errorf(const char *fmt, ...)
 Similar to [errorf](#errorf) but using a `va_list` argument instead.
 
 ```c
-bool
+int
 errorva(const char *fmt, va_list ap)
 ```
 

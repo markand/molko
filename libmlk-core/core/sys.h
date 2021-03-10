@@ -20,7 +20,6 @@
 #define MOLKO_CORE_SYS_H
 
 #include <stdarg.h>
-#include <stdbool.h>
 
 #include "core.h"
 
@@ -33,14 +32,14 @@ enum sys_dir {
 
 CORE_BEGIN_DECLS
 
-bool
-sys_init(const char *organization, const char *name);
+int
+sys_init(const char *, const char *);
 
 const char *
-sys_dir(enum sys_dir kind);
+sys_dir(enum sys_dir);
 
-bool
-sys_mkdir(const char *path);
+int
+sys_mkdir(const char *);
 
 void
 sys_finish(void);

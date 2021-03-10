@@ -19,20 +19,6 @@
 #ifndef MOLKO_RPG_BATTLE_STATE_H
 #define MOLKO_RPG_BATTLE_STATE_H
 
-/**
- * \file battle-state.h
- * \brief Battle abstract state.
- *
- * As a game battle is split into different steps, they are implemented as
- * multiple states to facilitate transitions and have a less complicated code.
- *
- * Each state can handle, update and draw the game logic. The battle itself
- * does only few things by itself like playing music, handling custom actions
- * and drawables and dispatch the rest to the current state.
- */
-
-#include <stdbool.h>
-
 #include <core/core.h>
 
 struct battle;
@@ -44,62 +30,62 @@ union event;
 
 struct battle_state {
 	void *data;
-	void (*handle)(struct battle_state *st, struct battle *bt, const union event *ev);
-	bool (*update)(struct battle_state *st, struct battle *bt, unsigned int ticks);
-	void (*draw)(const struct battle_state *st, const struct battle *bt);
-	void (*finish)(struct battle_state *st, struct battle *bt);
+	void (*handle)(struct battle_state *, struct battle *, const union event *);
+	int (*update)(struct battle_state *, struct battle *, unsigned int);
+	void (*draw)(const struct battle_state *, const struct battle *);
+	void (*finish)(struct battle_state *, struct battle *);
 };
 
 CORE_BEGIN_DECLS
 
 void
-battle_state_handle(struct battle_state *st, struct battle *bt, const union event *ev);
+battle_state_handle(struct battle_state *, struct battle *, const union event *);
 
-bool
-battle_state_update(struct battle_state *st, struct battle *bt, unsigned int ticks);
-
-void
-battle_state_draw(const struct battle_state *st, const struct battle *bt);
+int
+battle_state_update(struct battle_state *, struct battle *, unsigned int);
 
 void
-battle_state_finish(struct battle_state *st, struct battle *bt);
+battle_state_draw(const struct battle_state *, const struct battle *);
+
+void
+battle_state_finish(struct battle_state *, struct battle *);
 
 /* States switchers, defined in their own files. */
 void
-battle_state_ai(struct battle *bt);
+battle_state_ai(struct battle *);
 
 void
-battle_state_attacking(struct battle *bt, struct character *source, struct character *target);
+battle_state_attacking(struct battle *, struct character *, struct character *);
 
 void
-battle_state_item(struct battle *bt,
-                  struct character *source,
-                  struct character *target,
-                  struct inventory_slot *slot);
+battle_state_item(struct battle *,
+                  struct character *,
+                  struct character *,
+                  struct inventory_slot *);
 
 void
-battle_state_check(struct battle *bt);
+battle_state_check(struct battle *);
 
 void
-battle_state_closing(struct battle *bt);
+battle_state_closing(struct battle *);
 
 void
-battle_state_lost(struct battle *bt);
+battle_state_lost(struct battle *);
 
 void
-battle_state_menu(struct battle *bt);
+battle_state_menu(struct battle *);
 
 void
-battle_state_opening(struct battle *bt);
+battle_state_opening(struct battle *);
 
 void
-battle_state_selection(struct battle *bt, const struct selection *slt);
+battle_state_selection(struct battle *, const struct selection *);
 
 void
-battle_state_sub(struct battle *bt);
+battle_state_sub(struct battle *);
 
 void
-battle_state_victory(struct battle *bt);
+battle_state_victory(struct battle *);
 
 CORE_END_DECLS
 

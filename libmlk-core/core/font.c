@@ -27,7 +27,7 @@
 #include "texture_p.h"
 #include "util.h"
 
-bool
+int
 font_open(struct font *font, const char *path, unsigned int size)
 {
 	assert(font);
@@ -36,10 +36,10 @@ font_open(struct font *font, const char *path, unsigned int size)
 	if (!(font->handle = TTF_OpenFont(path, size)))
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size)
 {
 	assert(font);
@@ -48,28 +48,19 @@ font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int 
 	SDL_RWops *ops;
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buflen)) ||
-	   (!(font->handle = TTF_OpenFontRW(ops, true, size))))
+	   (!(font->handle = TTF_OpenFontRW(ops, 1, size))))
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-void
-font_shallow(struct font *dst, const struct font *src)
-{
-	assert(dst);
-	assert(src);
-
-	memcpy(dst, src, sizeof (*src));
-}
-
-bool
+int
 font_ok(const struct font *font)
 {
 	return font && font->handle;
 }
 
-bool
+int
 font_render(struct font *font, struct texture *tex, const char *text, unsigned int color)
 {
 	assert(font_ok(font));
@@ -107,16 +98,21 @@ font_height(const struct font *font)
 	return TTF_FontHeight(font->handle);
 }
 
-bool
+int
 font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h)
 {
 	assert(font_ok(font));
 	assert(text);
 
+	if (w)
+		*w = 0;
+	if (h)
+		*h = 0;
+
 	if (TTF_SizeUTF8(font->handle, text, (int *)w, (int *)h) != 0)
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
 void

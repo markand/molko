@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_DRAWABLE_H
 #define MOLKO_CORE_DRAWABLE_H
 
-#include <stdbool.h>
-
 #include "core.h"
 
 #define DRAWABLE_STACK_MAX (128)
@@ -29,10 +27,10 @@ struct drawable {
 	void *data;
 	int x;
 	int y;
-	bool (*update)(struct drawable *dw, unsigned int ticks);
-	void (*draw)(struct drawable *dw);
-	void (*end)(struct drawable *act);
-	void (*finish)(struct drawable *dw);
+	int (*update)(struct drawable *, unsigned int);
+	void (*draw)(struct drawable *);
+	void (*end)(struct drawable *);
+	void (*finish)(struct drawable *);
 };
 
 struct drawable_stack {
@@ -41,35 +39,35 @@ struct drawable_stack {
 
 CORE_BEGIN_DECLS
 
-bool
-drawable_update(struct drawable *dw, unsigned int ticks);
+int
+drawable_update(struct drawable *, unsigned int);
 
 void
-drawable_draw(struct drawable *dw);
+drawable_draw(struct drawable *);
 
 void
-drawable_end(struct drawable *dw);
+drawable_end(struct drawable *);
 
 void
-drawable_finish(struct drawable *dw);
+drawable_finish(struct drawable *);
 
 void
-drawable_stack_init(struct drawable_stack *st);
+drawable_stack_init(struct drawable_stack *);
 
-bool
-drawable_stack_add(struct drawable_stack *st, struct drawable *dw);
+int
+drawable_stack_add(struct drawable_stack *, struct drawable *);
 
-bool
-drawable_stack_update(struct drawable_stack *st, unsigned int ticks);
-
-void
-drawable_stack_draw(struct drawable_stack *st);
-
-bool
-drawable_stack_completed(const struct drawable_stack *st);
+int
+drawable_stack_update(struct drawable_stack *, unsigned int);
 
 void
-drawable_stack_finish(struct drawable_stack *st);
+drawable_stack_draw(struct drawable_stack *);
+
+int
+drawable_stack_completed(const struct drawable_stack *);
+
+void
+drawable_stack_finish(struct drawable_stack *);
 
 CORE_END_DECLS
 

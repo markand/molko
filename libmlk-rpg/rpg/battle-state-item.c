@@ -46,7 +46,7 @@ struct self {
 	int origin_x;
 };
 
-static bool
+static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	struct self *self = st->data;
@@ -73,7 +73,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 		break;
 	}
 
-	return false;
+	return 0;
 }
 
 static void

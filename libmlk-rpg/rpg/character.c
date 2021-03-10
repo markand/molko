@@ -27,7 +27,7 @@
 #include "equipment.h"
 #include "save.h"
 
-bool
+int
 character_ok(const struct character *ch)
 {
 	return ch && ch->name && ch->reset && sprite_ok(ch->sprites[CHARACTER_SPRITE_NORMAL]);
@@ -70,7 +70,7 @@ character_exec(struct character *ch, struct battle *bt)
 		ch->exec(ch, bt);
 }
 
-bool
+int
 character_save(const struct character *ch, struct save *s)
 {
 	assert(ch);
@@ -91,17 +91,17 @@ character_save(const struct character *ch, struct save *s)
 	);
 }
 
-bool
+int
 character_load(struct character *ch, struct save *s)
 {
 	assert(ch);
 	assert(save_ok(s));
 
 	struct save_stmt stmt;
-	bool ret;
+	int ret;
 
-	if (!save_stmt_init(s, &stmt, (const char *)sql_character_load, "s", ch->name))
-		return false;
+	if (save_stmt_init(s, &stmt, (const char *)sql_character_load, "s", ch->name) < 0)
+		return -1;
 
 	ret = save_stmt_next(&stmt, "iii i iiiiii",
 	    &ch->hp,
@@ -118,5 +118,5 @@ character_load(struct character *ch, struct save *s)
 
 	save_stmt_finish(&stmt);
 
-	return ret;
+	return 0;
 }

@@ -19,8 +19,6 @@
 #ifndef MOLKO_RPG_BATTLE_ENTITY_H
 #define MOLKO_RPG_BATTLE_ENTITY_H
 
-#include <stdbool.h>
-
 #include <core/core.h>
 
 #include <ui/label.h>
@@ -29,39 +27,36 @@ struct battle;
 struct battle_entity_state;
 struct character;
 
-/**
- * \brief In battle entity.
- */
 struct battle_entity {
-	struct character *ch;                   /*!< (+&?) Character to use. */
-	int x;                                  /*!< (+) Position on screen. */
-	int y;                                  /*!< (+) Position on screen. */
-	struct label name;                      /*!< (*) Where its name label is located. */
-	struct battle_entity_state *state;      /*!< (+&) Update/draw state. */
+	struct character *ch;
+	int x;
+	int y;
+	struct label name;
+	struct battle_entity_state *state;
 };
 
 CORE_BEGIN_DECLS
 
 void
-battle_entity_init(struct battle_entity *et);
+battle_entity_init(struct battle_entity *);
 
-bool
-battle_entity_ok(const struct battle_entity *et);
-
-void
-battle_entity_switch(struct battle_entity *et, struct battle_entity_state *st);
-
-bool
-battle_entity_update(struct battle_entity *et, unsigned int ticks);
+int
+battle_entity_ok(const struct battle_entity *);
 
 void
-battle_entity_draw(const struct battle_entity *et, const struct battle *bt);
+battle_entity_switch(struct battle_entity *, struct battle_entity_state *);
+
+int
+battle_entity_update(struct battle_entity *, unsigned int);
 
 void
-battle_entity_draw_sprite(const struct battle_entity *et);
+battle_entity_draw(const struct battle_entity *, const struct battle *);
 
 void
-battle_entity_finish(struct battle_entity *et);
+battle_entity_draw_sprite(const struct battle_entity *);
+
+void
+battle_entity_finish(struct battle_entity *);
 
 CORE_END_DECLS
 

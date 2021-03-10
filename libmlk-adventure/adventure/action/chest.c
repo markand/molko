@@ -38,7 +38,7 @@
 #define H(c)            ((c)->animation.sprite->cellh)
 #define TOLERANCE       (10)
 
-static bool
+static int
 is_near(const struct chest *c)
 {
 	const int x          = c->x - c->map->player_sprite->cellw - TOLERANCE;
@@ -82,13 +82,13 @@ handle(struct action *act, const union event *ev)
 	}
 }
 
-static bool
+static int
 update(struct action *act, unsigned int ticks)
 {
 	struct chest *c = act->data;
 
 	if (c->state != CHEST_STATE_ANIMATE)
-		return false;
+		return 0;
 
 	if (animation_update(&c->animation, ticks)) {
 		c->state = CHEST_STATE_OPEN;
@@ -97,7 +97,7 @@ update(struct action *act, unsigned int ticks)
 			c->exec(c);
 	}
 
-	return false;
+	return 0;
 }
 
 static void
@@ -130,7 +130,7 @@ chest_init(struct chest *c)
 	assert(c);
 
 	if (c->save && c->property) {
-		if (!save_get_property(c->save, c->property))
+		if (save_get_property(c->save, c->property) < 0)
 			panic();
 
 		/* TODO: add an utility. */

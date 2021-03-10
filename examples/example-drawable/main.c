@@ -70,19 +70,19 @@ struct explosion {
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "drawable") || !ui_init())
+	if (core_init("fr.malikania", "drawable") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - Drawable", W, H))
+	if (window_open("Example - Drawable", W, H) < 0)
 		panic();
 
 	/* 0: Explosion animation. */
-	if (!image_open(&explosion_tex, PATH("sprites/explosion.png")))
+	if (image_open(&explosion_tex, PATH("sprites/explosion.png")) < 0)
 		panic();
 
 	sprite_init(&explosion_sprite, &explosion_tex, 256, 256);
 }
 
-static bool
+static int
 explosion_update(struct drawable *dw, unsigned int ticks)
 {
 	struct explosion *ex = dw->data;
@@ -177,7 +177,7 @@ run(void)
 		.draw = draw
 	};
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

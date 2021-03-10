@@ -31,7 +31,7 @@ find(struct inventory *iv, const struct item *item)
 	return NULL;
 }
 
-bool
+int
 inventory_add(struct inventory *iv, const struct item *item, unsigned int amount)
 {
 	assert(iv);
@@ -44,12 +44,12 @@ inventory_add(struct inventory *iv, const struct item *item, unsigned int amount
 		slot = find(iv, NULL);
 
 	if (!slot)
-		return false;
+		return 0;
 
 	slot->item = item;
 	slot->amount += amount;
 
-	return true;
+	return -1;
 }
 
 void

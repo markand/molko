@@ -19,17 +19,15 @@
 #ifndef MOLKO_CORE_MATHS_H
 #define MOLKO_CORE_MATHS_H
 
-#include <stdbool.h>
-
 #include "core.h"
 
 CORE_BEGIN_DECLS
 
-bool
-maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py);
+int
+maths_is_boxed(int, int, unsigned int, unsigned int, int, int);
 
 float
-maths_scale(float v, float omin, float omax, float nmin, float nmax);
+maths_scale(float, float, float, float, float);
 
 CORE_END_DECLS
 

@@ -39,7 +39,7 @@ inc(int cmp, int tgt)
 	return tgt > cmp ? fmin(cmp + STEP, tgt) : fmax(cmp - STEP, tgt);
 }
 
-static inline bool
+static inline int
 colored(const struct battle_indicator *bti)
 {
 	/* Only check r, g, b and ignore alpha. */
@@ -62,12 +62,12 @@ battle_indicator_start(struct battle_indicator *bti)
 	bti->elapsed = 0;
 	bti->alpha = 250;
 	
-	if (!font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[0], buf, bti->cur) ||
-	    !font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[1], buf, 0x000000ff))
+	if (font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[0], buf, bti->cur) < 0||
+	    font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[1], buf, 0x000000ff) < 0)
 		panic();
 }
 
-bool
+int
 battle_indicator_completed(const struct battle_indicator *bti)
 {
 	assert(battle_indicator_ok(bti));
@@ -75,13 +75,13 @@ battle_indicator_completed(const struct battle_indicator *bti)
 	return colored(bti) && bti->alpha == 0;
 }
 
-bool
+int
 battle_indicator_ok(const struct battle_indicator *bti)
 {
 	return bti && texture_ok(&bti->tex[0]) && texture_ok(&bti->tex[1]);
 }
 
-bool
+int
 battle_indicator_update(struct battle_indicator *bti, unsigned int ticks)
 {
 	assert(battle_indicator_ok(bti));

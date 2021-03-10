@@ -66,7 +66,7 @@ test_pool_simple(void)
 	struct alloc_pool pool;
 	struct point *p;
 
-	GREATEST_ASSERT(alloc_pool_init(&pool, sizeof (*p), NULL));
+	GREATEST_ASSERT(alloc_pool_init(&pool, sizeof (*p), NULL) == 0);
 	GREATEST_ASSERT_EQ(sizeof (*p), pool.elemsize);
 	GREATEST_ASSERT_EQ(0, pool.size);
 	GREATEST_ASSERT_EQ(ALLOC_POOL_INIT_DEFAULT, pool.capacity);

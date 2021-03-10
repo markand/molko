@@ -31,7 +31,7 @@ test_basics_sample(void)
 	struct tileset_file loader = {0};
 	struct tileset tileset;
 
-	GREATEST_ASSERT(tileset_file_open(&loader, &tileset, DIRECTORY "sample-tileset.tileset"));
+	GREATEST_ASSERT(tileset_file_open(&loader, &tileset, DIRECTORY "sample-tileset.tileset") == 0);
 	GREATEST_ASSERT_EQ(64U, tileset.sprite->cellw);
 	GREATEST_ASSERT_EQ(32U, tileset.sprite->cellh);
 
@@ -77,7 +77,7 @@ test_error_tilewidth(void)
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
 
-	GREATEST_ASSERT(!tileset_file_open(&loader, &tileset, DIRECTORY "error-tilewidth.tileset"));
+	GREATEST_ASSERT(tileset_file_open(&loader, &tileset, DIRECTORY "error-tilewidth.tileset") < 0);
 	GREATEST_PASS();
 }
 
@@ -87,7 +87,7 @@ test_error_tileheight(void)
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
 
-	GREATEST_ASSERT(!tileset_file_open(&loader, &tileset, DIRECTORY "error-tileheight.tileset"));
+	GREATEST_ASSERT(tileset_file_open(&loader, &tileset, DIRECTORY "error-tileheight.tileset") < 0);
 	GREATEST_PASS();
 }
 
@@ -97,7 +97,7 @@ test_error_image(void)
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
 
-	GREATEST_ASSERT(!tileset_file_open(&loader, &tileset, DIRECTORY "error-image.tileset"));
+	GREATEST_ASSERT(tileset_file_open(&loader, &tileset, DIRECTORY "error-image.tileset") < 0);
 	GREATEST_PASS();
 }
 
@@ -115,7 +115,7 @@ main(int argc, char **argv)
 {
 	GREATEST_MAIN_BEGIN();
 
-	if (core_init("fr.malikania", "test") && window_open("test-tileset", 100, 100)) {
+	if (core_init("fr.malikania", "test") == 0 && window_open("test-tileset", 100, 100)) {
 		GREATEST_RUN_SUITE(suite_basics);
 		GREATEST_RUN_SUITE(suite_errors);
 	}

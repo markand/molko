@@ -19,8 +19,6 @@
 #ifndef MOLKO_RPG_CHARACTER_H
 #define MOLKO_RPG_CHARACTER_H
 
-#include <stdbool.h>
-
 #include <core/core.h>
 
 #define CHARACTER_SPELL_MAX (64)
@@ -88,7 +86,7 @@ struct character {
 
 CORE_BEGIN_DECLS
 
-bool
+int
 character_ok(const struct character *ch);
 
 const char *
@@ -100,10 +98,10 @@ character_reset(struct character *ch);
 void
 character_exec(struct character *ch, struct battle *bt);
 
-bool
+int
 character_save(const struct character *ch, struct save *s);
 
-bool
+int
 character_load(struct character *, struct save *);
 
 CORE_END_DECLS

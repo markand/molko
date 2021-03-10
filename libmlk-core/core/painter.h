@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_PAINTER_H
 #define MOLKO_CORE_PAINTER_H
 
-#include <stdbool.h>
-
 #include "core.h"
 
 struct texture;
@@ -31,25 +29,25 @@ struct texture *
 painter_get_target(void);
 
 void
-painter_set_target(struct texture *tex);
+painter_set_target(struct texture *);
 
 unsigned long
 painter_get_color(void);
 
 void
-painter_set_color(unsigned long color);
+painter_set_color(unsigned long);
 
 void
-painter_draw_line(int x1, int y1, int x2, int y2);
+painter_draw_line(int, int, int, int);
 
 void
-painter_draw_point(int x, int y);
+painter_draw_point(int, int);
 
 void
-painter_draw_rectangle(int x, int y, unsigned int w, unsigned int h);
+painter_draw_rectangle(int, int, unsigned int, unsigned int);
 
 void
-painter_draw_circle(int x, int y, int radius);
+painter_draw_circle(int, int, int);
 
 void
 painter_clear(void);

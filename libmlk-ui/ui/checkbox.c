@@ -28,7 +28,7 @@
 #include "checkbox.h"
 #include "theme.h"
 
-static bool
+static int
 is_boxed(const struct checkbox *cb, const struct event_click *click)
 {
 	assert(cb);

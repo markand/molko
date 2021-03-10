@@ -207,7 +207,7 @@ draw_sub(const struct battle_bar *bar)
 	gridmenu_draw(&bar->sub_grid);
 }
 
-static bool
+static int
 handle_keydown(struct battle_bar *bar, const union event *ev)
 {
 	assert(ev->type == EVENT_KEYDOWN);
@@ -229,7 +229,7 @@ handle_keydown(struct battle_bar *bar, const union event *ev)
 			bar->menu = BATTLE_BAR_MENU_SPECIAL;
 			break;
 		case KEY_ENTER:
-			return true;
+			return 1;
 		default:
 			break;
 		}
@@ -242,10 +242,10 @@ handle_keydown(struct battle_bar *bar, const union event *ev)
 		break;
 	}
 
-	return false;
+	return 0;
 }
 
-static bool
+static int
 handle_clickdown(struct battle_bar *bar, const union event *ev)
 {
 	assert(ev->type == EVENT_CLICKDOWN);
@@ -263,7 +263,7 @@ handle_clickdown(struct battle_bar *bar, const union event *ev)
 		break;
 	}
 
-	return false;
+	return 0;
 }
 
 void
@@ -286,7 +286,7 @@ battle_bar_positionate(struct battle_bar *bar, const struct battle *bt)
 	bar->status_frame.theme = bt->theme;
 }
 
-bool
+int
 battle_bar_handle(struct battle_bar *bar, const struct battle *bt, const union event *ev)
 {
 	/* Not needed yet. */
@@ -297,7 +297,7 @@ battle_bar_handle(struct battle_bar *bar, const struct battle *bt, const union e
 	assert(ev);
 
 	if (bar->state == BATTLE_BAR_STATE_NONE)
-		return false;
+		return 0;
 
 	switch (ev->type) {
 	case EVENT_KEYDOWN:
@@ -308,7 +308,7 @@ battle_bar_handle(struct battle_bar *bar, const struct battle *bt, const union e
 		break;
 	}
 
-	return false;
+	return 0;
 }
 
 void

@@ -19,28 +19,13 @@
 #ifndef MOLKO_RPG_RPG_H
 #define MOLKO_RPG_RPG_H
 
-/**
- * \file rpg.h
- * \brief librpg convenient header
- */
-
-#include <stdbool.h>
-
 #include <core/core.h>
 
 CORE_BEGIN_DECLS
 
-/**
- * Initialize the rpg library.
- *
- * \return False on errors.
- */
-bool
+int
 rpg_init(void);
 
-/**
- * Close the rpg library.
- */
 void
 rpg_finish(void);
 

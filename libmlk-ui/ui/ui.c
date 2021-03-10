@@ -22,11 +22,12 @@
 #include "ui.h"
 #include "theme.h"
 
-bool
+int
 ui_init(void)
 {
 #if defined(MOLKO_WITH_NLS)
-	translate_init("libmlk-ui");
+	if (translate_init("libmlk-ui") < 0)
+		return -1;
 #endif
 
 	return theme_init();

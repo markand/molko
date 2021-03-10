@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_WINDOW_H
 #define MOLKO_CORE_WINDOW_H
 
-#include <stdbool.h>
-
 #include "core.h"
 
 struct window {
@@ -45,11 +43,11 @@ extern struct window window;
 
 CORE_BEGIN_DECLS
 
-bool
-window_open(const char *title, unsigned int width, unsigned int height);
+int
+window_open(const char *, unsigned int, unsigned int);
 
 void
-window_set_cursor(enum window_cursor cursor);
+window_set_cursor(enum window_cursor);
 
 void
 window_finish(void);

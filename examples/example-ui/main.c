@@ -65,7 +65,7 @@ static struct {
 	struct action_stack st;
 
 	struct {
-		bool active;
+		int active;
 		int x;
 		int y;
 	} motion;
@@ -129,9 +129,9 @@ static struct {
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "ui") || !ui_init())
+	if (core_init("fr.malikania", "ui") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - UI", W, H))
+	if (window_open("Example - UI", W, H) < 0)
 		panic();
 }
 
@@ -213,7 +213,7 @@ prepare(void)
 	action_stack_add(&ui.st, &ui.quit.act);
 }
 
-static bool
+static int
 headerclick(int x, int y)
 {
 	return maths_is_boxed(
@@ -246,7 +246,7 @@ handle(struct state *st, const union event *ev)
 		break;
 	case EVENT_CLICKDOWN:
 		if (headerclick(ev->click.x, ev->click.y)) {
-			ui.motion.active = true;
+			ui.motion.active = 1;
 			ui.motion.x = ev->click.x;
 			ui.motion.y = ev->click.y;
 			window_set_cursor(WINDOW_CURSOR_SIZE);
@@ -255,7 +255,7 @@ handle(struct state *st, const union event *ev)
 			action_stack_handle(&ui.st, ev);
 		break;
 	case EVENT_CLICKUP:
-		ui.motion.active = false;
+		ui.motion.active = 0;
 		window_set_cursor(WINDOW_CURSOR_ARROW);
 		/* Fallthrough. */
 	default:
@@ -298,7 +298,7 @@ run(void)
 	prepare();
 	resize();
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

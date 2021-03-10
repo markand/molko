@@ -28,7 +28,7 @@
 
 #define DELAY 1500
 
-bool
+int
 battle_message_update(struct battle_message *msg, unsigned int ticks)
 {
 	assert(msg);

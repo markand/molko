@@ -146,7 +146,7 @@ repaint(struct gridmenu *menu)
 {
 	struct texture *tex = &menu->tex.texture;
 
-	if (!texture_ok(tex) && !texture_new(tex, menu->w, menu->tex.relh))
+	if (!texture_ok(tex) && texture_new(tex, menu->w, menu->tex.relh) < 0)
 		panic();
 
 	PAINTER_BEGIN(tex);

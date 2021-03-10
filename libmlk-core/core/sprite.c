@@ -37,22 +37,19 @@ sprite_init(struct sprite *sprite,
 	sprite->ncols = tex->w / cellw;
 }
 
-bool
+int
 sprite_ok(const struct sprite *sprite)
 {
-	if (!sprite)
-		return false;
-
-	return texture_ok(sprite->texture) && sprite->cellw != 0 && sprite->cellh != 0;
+	return sprite && texture_ok(sprite->texture) && sprite->cellw != 0 && sprite->cellh != 0;
 }
 
-bool
+int
 sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
 {
 	return sprite_scale(sprite, r, c, x, y, sprite->cellw, sprite->cellh);
 }
 
-bool
+int
 sprite_scale(const struct sprite *sprite,
 	     unsigned int r,
 	     unsigned int c,

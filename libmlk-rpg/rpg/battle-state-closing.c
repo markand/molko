@@ -35,7 +35,7 @@ struct closing {
 	unsigned int elapsed;
 };
 
-static bool
+static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	(void)bt;
@@ -49,14 +49,14 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 
 		if (closing->alpha == 255) {
 			music_stop(0);
-			return true;
+			return 1;
 		}
 
 		closing->alpha += 5;
 		texture_set_alpha_mod(&closing->texture, closing->alpha);
 	}
 
-	return false;
+	return 0;
 }
 
 static void
@@ -88,7 +88,7 @@ battle_state_closing(struct battle *bt)
 	struct closing *closing;
 
 	if (!(closing = alloc_new0(sizeof (*closing))) ||
-	    !texture_new(&closing->texture, window.w, window.h))
+	    texture_new(&closing->texture, window.w, window.h) < 0)
 		panic();
 
 	PAINTER_BEGIN(&closing->texture);

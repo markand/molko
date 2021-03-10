@@ -29,7 +29,7 @@
 #define DRAWABLE_FOREACH(st, iter) \
 	for (size_t i = 0; i < DRAWABLE_STACK_MAX && ((iter) = (st)->objects[i], 1); ++i)
 
-bool
+int
 drawable_update(struct drawable *dw, unsigned int ticks)
 {
 	assert(dw);
@@ -71,7 +71,7 @@ drawable_stack_init(struct drawable_stack *st)
 	memset(st, 0, sizeof (*st));
 }
 
-bool
+int
 drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 {
 	assert(st);
@@ -80,14 +80,14 @@ drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
 		if (!st->objects[i]) {
 			st->objects[i] = dw;
-			return true;
+			return 0;
 		}
 	}
 
-	return false;
+	return -1;
 }
 
-bool
+int
 drawable_stack_update(struct drawable_stack *st, unsigned int ticks)
 {
 	assert(st);
@@ -121,7 +121,7 @@ drawable_stack_draw(struct drawable_stack *st)
 			drawable_draw(dw);
 }
 
-bool
+int
 drawable_stack_completed(const struct drawable_stack *st)
 {
 	assert(st);
@@ -130,9 +130,9 @@ drawable_stack_completed(const struct drawable_stack *st)
 
 	DRAWABLE_FOREACH(st, dw)
 		if (dw)
-			return false;
+			return 0;
 
-	return true;
+	return 1;
 }
 
 void

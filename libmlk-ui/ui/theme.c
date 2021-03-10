@@ -69,26 +69,26 @@ static struct font_catalog {
 	FONT(fonts_opensans_regular, 14, THEME_FONT_INTERFACE)
 };
 
-bool
+int
 theme_init(void)
 {
 	/* Open all fonts. */
 	for (size_t i = 0; i < UTIL_SIZE(default_fonts); ++i) {
 		struct font_catalog *fc = &default_fonts[i];
 
-		if (!font_openmem(&fc->font, fc->data, fc->datasz, fc->size))
+		if (font_openmem(&fc->font, fc->data, fc->datasz, fc->size) < 0)
 			goto failed;
 
 		/* Reference this font into the catalog. */
 		*default_fonts[i].dest = &default_fonts[i].font;
 	}
 
-	return true;
+	return 0;
 
 failed:
 	theme_finish();
 
-	return false;
+	return -1;
 }
 
 struct theme *

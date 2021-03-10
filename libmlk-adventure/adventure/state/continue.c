@@ -44,7 +44,7 @@ static void
 handle(struct state *state, const union event *ev)
 {
 	struct self *self = state->data;
-	bool selected = false;
+	int selected = 0;
 
 	switch (ev->type) {
 	case EVENT_QUIT:
@@ -52,7 +52,7 @@ handle(struct state *state, const union event *ev)
 		break;
 	case EVENT_KEYDOWN:
 		if (ev->key.key == KEY_ESCAPE)
-			game_switch(state_mainmenu_new(), false);
+			game_switch(state_mainmenu_new(), 0);
 		else
 			selected = dialog_save_handle(&self->dialog, ev);
 		break;

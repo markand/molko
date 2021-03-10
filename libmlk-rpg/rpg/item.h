@@ -30,24 +30,24 @@ struct item {
 	const char *description;
 	struct texture *icon;
 
-	void (*exec_menu)(const struct item *item, struct character *ch);
+	void (*exec_menu)(const struct item *, struct character *);
 
-	void (*exec_battle)(const struct item *item,
-	                    struct battle *bt,
-	                    struct character *src,
-	                    struct character *tgt);
+	void (*exec_battle)(const struct item *,
+	                    struct battle *,
+	                    struct character *,
+	                    struct character *);
 };
 
 CORE_BEGIN_DECLS
 
 void
-item_exec_menu(const struct item *item, struct character *ch);
+item_exec_menu(const struct item *, struct character *);
 
 void
-item_exec_battle(const struct item *item,
-                 struct battle *bt,
-                 struct character *src,
-                 struct character *tgt);
+item_exec_battle(const struct item *,
+                 struct battle *,
+                 struct character *,
+                 struct character *);
 
 CORE_END_DECLS
 

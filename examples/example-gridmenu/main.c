@@ -39,9 +39,9 @@
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "grid-menu") || !ui_init())
+	if (core_init("fr.malikania", "grid-menu") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - Grid menu", W, H))
+	if (window_open("Example - Grid menu", W, H) < 0)
 		panic();
 }
 
@@ -123,7 +123,7 @@ run(void)
 	/* Need to repaint at least once. */
 	gridmenu_repaint(&menu);
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

@@ -19,8 +19,6 @@
 #ifndef MOLKO_RPG_BATTLE_ENTITY_STATE_H
 #define MOLKO_RPG_BATTLE_ENTITY_STATE_H
 
-#include <stdbool.h>
-
 #include <core/core.h>
 
 struct battle_entity;
@@ -28,34 +26,34 @@ struct sprite;
 
 struct battle_entity_state {
 	void *data;
-	bool (*update)(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks);
-	void (*draw)(const struct battle_entity_state *st, const struct battle_entity *et);
-	void (*finish)(struct battle_entity_state *st, struct battle_entity *et);
+	int (*update)(struct battle_entity_state *, struct battle_entity *, unsigned int);
+	void (*draw)(const struct battle_entity_state *, const struct battle_entity *);
+	void (*finish)(struct battle_entity_state *, struct battle_entity *);
 };
 
 CORE_BEGIN_DECLS
 
-bool
-battle_entity_state_update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks);
+int
+battle_entity_state_update(struct battle_entity_state *, struct battle_entity *, unsigned int);
 
 void
-battle_entity_state_draw(const struct battle_entity_state *st, const struct battle_entity *et);
+battle_entity_state_draw(const struct battle_entity_state *, const struct battle_entity *);
 
 void
-battle_entity_state_finish(struct battle_entity_state *st, struct battle_entity *et);
+battle_entity_state_finish(struct battle_entity_state *, struct battle_entity *);
 
 /* Defined in their own files. */
 void
-battle_entity_state_normal(struct battle_entity *et);
+battle_entity_state_normal(struct battle_entity *);
 
 void
-battle_entity_state_moving(struct battle_entity *et, int destx, int desty);
+battle_entity_state_moving(struct battle_entity *, int, int);
 
 void
-battle_entity_state_blinking(struct battle_entity *et);
+battle_entity_state_blinking(struct battle_entity *);
 
 void
-battle_entity_state_attacking(struct battle_entity *et, struct sprite *which);
+battle_entity_state_attacking(struct battle_entity *, struct sprite *);
 
 CORE_END_DECLS
 

@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_ACTION_H
 #define MOLKO_CORE_ACTION_H
 
-#include <stdbool.h>
-
 #include "core.h"
 
 #define ACTION_STACK_MAX (128)
@@ -29,11 +27,11 @@ union event;
 
 struct action {
 	void *data;
-	void (*handle)(struct action *act, const union event *ev);
-	bool (*update)(struct action *act, unsigned int ticks);
-	void (*draw)(struct action *act);
-	void (*end)(struct action *act);
-	void (*finish)(struct action *act);
+	void (*handle)(struct action *, const union event *);
+	int (*update)(struct action *, unsigned int);
+	void (*draw)(struct action *);
+	void (*end)(struct action *);
+	void (*finish)(struct action *);
 };
 
 struct action_stack {
@@ -43,40 +41,40 @@ struct action_stack {
 CORE_BEGIN_DECLS
 
 void
-action_handle(struct action *act, const union event *ev);
+action_handle(struct action *, const union event *);
 
-bool
-action_update(struct action *act, unsigned int ticks);
-
-void
-action_draw(struct action *act);
+int
+action_update(struct action *, unsigned int);
 
 void
-action_end(struct action *act);
+action_draw(struct action *);
 
 void
-action_finish(struct action *act);
+action_end(struct action *);
 
 void
-action_stack_init(struct action_stack *st);
-
-bool
-action_stack_add(struct action_stack *st, struct action *act);
+action_finish(struct action *);
 
 void
-action_stack_handle(struct action_stack *st, const union event *ev);
+action_stack_init(struct action_stack *);
 
-bool
-action_stack_update(struct action_stack *st, unsigned int ticks);
-
-void
-action_stack_draw(const struct action_stack *st);
-
-bool
-action_stack_completed(const struct action_stack *st);
+int
+action_stack_add(struct action_stack *, struct action *);
 
 void
-action_stack_finish(struct action_stack *st);
+action_stack_handle(struct action_stack *, const union event *);
+
+int
+action_stack_update(struct action_stack *, unsigned int);
+
+void
+action_stack_draw(const struct action_stack *);
+
+int
+action_stack_completed(const struct action_stack *);
+
+void
+action_stack_finish(struct action_stack *);
 
 CORE_END_DECLS
 

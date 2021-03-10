@@ -52,9 +52,9 @@ static enum font_style style = FONT_STYLE_ANTIALIASED;
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "font") || !ui_init())
+	if (core_init("fr.malikania", "font") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - Font", W, H))
+	if (window_open("Example - Font", W, H) < 0)
 		panic();
 }
 
@@ -104,7 +104,7 @@ draw(struct state *st)
 	painter_set_color(0xffffffff);
 	painter_clear();
 
-	if (!font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]))
+	if (font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]) < 0)
 		panic();
 
 	texture_draw(&tex, 10, 10);
@@ -120,7 +120,7 @@ run(void)
 		.draw = draw
 	};
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

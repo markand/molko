@@ -19,12 +19,6 @@
 #ifndef MOLKO_UI_BUTTON_H
 #define MOLKO_UI_BUTTON_H
 
-/**
- * \file button.h
- * \brief GUI button.
- * \ingroup ui
- */
-
 #include <core/core.h>
 
 union event;
@@ -32,94 +26,38 @@ union event;
 struct action;
 struct theme;
 
-/**
- * \brief Button state.
- */
 enum button_state {
-	BUTTON_STATE_NONE,              /*!< Button is inactive. */
-	BUTTON_STATE_PRESSED,           /*!< Button is currently pressed. */
-	BUTTON_STATE_ACTIVATED          /*!< Button is considered activated. */
+	BUTTON_STATE_NONE,
+	BUTTON_STATE_PRESSED,
+	BUTTON_STATE_ACTIVATED
 };
 
-/**
- * \brief GUI button.
- */
 struct button {
-	int x;                          /*!< (+) Position in x. */
-	int y;                          /*!< (+) Position in y. */
-	unsigned int w;                 /*!< (+) Width. */
-	unsigned int h;                 /*!< (+) Height. */
-	const char *text;               /*!< (+&) Text to draw. */
-	enum button_state state;        /*!< (+) Button state. */
-	const struct theme *theme;      /*!< (+&?) Theme to use. */
+	int x;
+	int y;
+	unsigned int w;
+	unsigned int h;
+	const char *text;
+	enum button_state state;
+	const struct theme *theme;
 };
 
 CORE_BEGIN_DECLS
 
-/**
- * Handle the event.
- *
- * You should always call this function even if the event is completely
- * unrelated.
- *
- * \pre button != NULL
- * \pre ev != NULL
- * \param button the button
- * \param ev the event
- */
 void
-button_handle(struct button *button, const union event *ev);
+button_handle(struct button *, const union event *);
 
-/**
- * Use this function once the button has been considered activated.
- *
- * \pre button != NULL
- * \param button the button
- */
 void
-button_reset(struct button *button);
+button_reset(struct button *);
 
-/**
- * Default drawing function.
- *
- * \pre t != NULL
- * \pre frame != NULL
- * \param t the theme
- * \param button the button
- */
 void
-button_draw_default(const struct theme *t, const struct button *button);
+button_draw_default(const struct theme *, const struct button *);
 
-/**
- * Draw the button.
- *
- * \pre button != NULL
- * \param button the button
- */
 void
-button_draw(const struct button *button);
+button_draw(const struct button *);
 
-/**
- * Convert the button into an action.
- *
- * The following field will be set into the action:
- *
- * - act->data: points to button (reference),
- * - act->handle: a wrapper to button_handle,
- * - act->draw: a wrapper to button_draw.
- *
- * The button being an UI element is considered to never completes, as such
- * you will need to handle this case or to use a custom update function.
- *
- * \note You will still need to check the button state and reset it at some
- *       point.
- * \pre button != NULL
- * \pre act != NULL
- * \param button the button to reference
- * \param act the action to fill
- */
 void
-button_action(struct button *button, struct action *act);
+button_action(struct button *, struct action *);
 
 CORE_END_DECLS
 

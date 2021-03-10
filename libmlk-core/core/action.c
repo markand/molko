@@ -35,7 +35,7 @@ action_handle(struct action *act, const union event *ev)
 		act->handle(act, ev);
 }
 
-bool
+int
 action_update(struct action *act, unsigned int ticks)
 {
 	assert(act);
@@ -43,7 +43,8 @@ action_update(struct action *act, unsigned int ticks)
 	if (act->update)
 		return act->update(act, ticks);
 
-	return false;
+	/* No function means immortal action. */
+	return 0;
 }
 
 void
@@ -81,7 +82,7 @@ action_stack_init(struct action_stack *st)
 	memset(st, 0, sizeof (*st));
 }
 
-bool
+int
 action_stack_add(struct action_stack *st, struct action *act)
 {
 	assert(st);
@@ -90,11 +91,11 @@ action_stack_add(struct action_stack *st, struct action *act)
 	for (size_t i = 0; i < ACTION_STACK_MAX; ++i) {
 		if (!st->actions[i]) {
 			st->actions[i] = act;
-			return true;
+			return 0;
 		}
 	}
 
-	return false;
+	return -1;
 }
 
 void
@@ -110,7 +111,7 @@ action_stack_handle(struct action_stack *st, const union event *ev)
 			action_handle(act, ev);
 }
 
-bool
+int
 action_stack_update(struct action_stack *st, unsigned int ticks)
 {
 	assert(st);
@@ -146,7 +147,7 @@ action_stack_draw(const struct action_stack *st)
 			action_draw(act);
 }
 
-bool
+int
 action_stack_completed(const struct action_stack *st)
 {
 	assert(st);
@@ -155,9 +156,9 @@ action_stack_completed(const struct action_stack *st)
 
 	ACTION_FOREACH(st, act)
 		if (act)
-			return false;
+			return 0;
 
-	return true;
+	return 1;
 }
 
 void

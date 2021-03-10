@@ -26,7 +26,7 @@
 #include "window.h"
 #include "window_p.h"
 
-bool
+int
 texture_new(struct texture *tex, unsigned int w, unsigned int h)
 {
 	assert(tex);
@@ -42,16 +42,16 @@ texture_new(struct texture *tex, unsigned int w, unsigned int h)
 	tex->w = w;
 	tex->h = h;
 
-	return true;
+	return 0;
 }
 
-bool
+int
 texture_ok(const struct texture *tex)
 {
 	return tex && tex->handle && tex->w && tex->h;
 }
 
-bool
+int
 texture_set_blend_mode(struct texture *tex, enum texture_blend blend)
 {
 	assert(tex);
@@ -67,10 +67,10 @@ texture_set_blend_mode(struct texture *tex, enum texture_blend blend)
 	if (SDL_SetTextureBlendMode(tex->handle, table[blend]) < 0)
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 texture_set_alpha_mod(struct texture *tex, unsigned int alpha)
 {
 	assert(texture_ok(tex));
@@ -79,10 +79,10 @@ texture_set_alpha_mod(struct texture *tex, unsigned int alpha)
 	if (SDL_SetTextureAlphaMod(tex->handle, alpha) < 0)
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 texture_set_color_mod(struct texture *tex, unsigned long color)
 {
 	assert(texture_ok(tex));
@@ -90,10 +90,10 @@ texture_set_color_mod(struct texture *tex, unsigned long color)
 	if (SDL_SetTextureColorMod(tex->handle, COLOR_R(color), COLOR_G(color), COLOR_B(color)) < 0)
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 texture_draw(const struct texture *tex, int x, int y)
 {
 	assert(tex);
@@ -108,10 +108,10 @@ texture_draw(const struct texture *tex, int x, int y)
 	if (SDL_RenderCopy(RENDERER(), tex->handle, NULL, &dst) < 0)
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
-bool
+int
 texture_scale(const struct texture *tex,
               int src_x,
               int src_y,
@@ -139,7 +139,7 @@ texture_scale(const struct texture *tex,
 	if (SDL_RenderCopyEx(RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE) < 0)
 		return errorf("%s", SDL_GetError());
 
-	return true;
+	return 0;
 }
 
 void
@@ -155,7 +155,7 @@ texture_finish(struct texture *tex)
 
 /* private */
 
-bool
+int
 texture_from_surface(struct texture *tex, SDL_Surface *surface)
 {
 	assert(tex);
@@ -171,5 +171,5 @@ texture_from_surface(struct texture *tex, SDL_Surface *surface)
 
 	SDL_FreeSurface(surface);
 
-	return true;
+	return 0;
 }

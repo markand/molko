@@ -19,28 +19,13 @@
 #ifndef MOLKO_UI_UI_H
 #define MOLKO_UI_UI_H
 
-/**
- * \file ui.h
- * \brief libui convenient header.
- */
-
-#include <stdbool.h>
-
 #include <core/core.h>
 
 CORE_BEGIN_DECLS
 
-/**
- * Initialize the ui library.
- *
- * \return False on errors.
- */
-bool
+int
 ui_init(void);
 
-/**
- * Close the ui library.
- */
 void
 ui_finish(void);
 

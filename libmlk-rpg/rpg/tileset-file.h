@@ -19,12 +19,6 @@
 #ifndef MOLKO_RPG_TILESET_FILE_H
 #define MOLKO_RPG_TILESET_FILE_H
 
-/**
- * \file tileset-file.h
- * \brief Tileset file loader.
- */
-
-#include <stdbool.h>
 #include <stddef.h>
 
 #include <core/alloc.h>
@@ -35,51 +29,20 @@
 struct tileset;
 struct tileset_tiledef;
 
-/**
- * \brief Context for loading tileset from files
- *
- * This structure own animations, tile definitions and sprites that are
- * associated with the tileset. By this mean, the structure must be kept until
- * the tileset is no longer used.
- *
- * Structure members should not be modified directly but only one exposed in
- * the final tileset destination.
- */
 struct tileset_file {
-	struct alloc_pool tiledefs;             /*!< (*) Tile definitions. */
-	struct alloc_pool anims[2];             /*!< (*) Animations data. */
-	struct texture image;                   /*!< (*) Image file. */
-	struct sprite sprite;                   /*!< (*) Sprite. */
+	struct alloc_pool tiledefs;
+	struct alloc_pool anims[2];
+	struct texture image;
+	struct sprite sprite;
 };
 
 CORE_BEGIN_DECLS
 
-/**
- * Try to load a tileset from a file.
- *
- * This function will load the tileset file along with optional animations in
- * the same directory.
- *
- * \pre tf != NULL
- * \pre tileset != NULL
- * \pre path != NULL
- * \param tf the context file
- * \param tileset the destination tileset
- * \param path path to the tileset
- * \return False on errors.
- */
-bool
-tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *path);
+int
+tileset_file_open(struct tileset_file *, struct tileset *, const char *);
 
-/**
- * Close all resources allocated from the tileset file context.
- *
- * \warning The tileset that was created must not be used anymore.
- * \pre tf != NULL
- * \param tf the tileset to clear
- */
 void
-tileset_file_finish(struct tileset_file *tf);
+tileset_file_finish(struct tileset_file *);
 
 CORE_END_DECLS
 

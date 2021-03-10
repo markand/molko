@@ -149,7 +149,7 @@ alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize)
 	if (size / newlen != elemsize)
 		return errorf("%s", strerror(ENOMEM)), NULL;
 	if (!(ptr = funcs->realloc(ptr, size)))
-		return false;
+		return NULL;
 
 	if (newlen > oldlen)
 		memset((unsigned char *)ptr + (oldlen * elemsize), 0, (newlen - oldlen) * elemsize);
@@ -185,21 +185,21 @@ alloc_sdup(const char *src)
 	return ret;
 }
 
-bool
+int
 alloc_pool_init(struct alloc_pool *pool, size_t elemsize, void (*finalizer)(void *))
 {
 	assert(pool);
 	assert(elemsize != 0);
 
 	if (!(pool->data = alloc_array(ALLOC_POOL_INIT_DEFAULT, elemsize)))
-		return false;
+		return -1;
 
 	pool->elemsize = elemsize;
 	pool->size = 0;
 	pool->capacity = ALLOC_POOL_INIT_DEFAULT;
 	pool->finalizer = finalizer;
 
-	return true;
+	return 0;
 }
 
 void *

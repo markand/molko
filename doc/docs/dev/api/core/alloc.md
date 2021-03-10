@@ -35,9 +35,9 @@ Allocator functions.
 
 | Field               | Access | Type                                        |
 |---------------------|--------|---------------------------------------------|
-| [alloc](#alloc)     | (+?)   | `void *(*)(size_t)`               |
-| [realloc](#realloc) | (+?)   | `void *(*)(void *, size_t)`  |
-| [free](#free)       | (+?)   | `void (*)(void *)`                   |
+| [alloc](#alloc)     | (+?)   | `void *(*)(size_t)`                         |
+| [realloc](#realloc) | (+?)   | `void *(*)(void *, size_t)`                 |
+| [free](#free)       | (+?)   | `void (*)(void *)`                          |
 
 #### alloc
 
@@ -263,8 +263,8 @@ clearing the pool.
 This will effectively create a initial storage according to
 [ALLOC_POOL_INIT_DEFAULT](#alloc_pool_init_default).
 
-Returns false on errors depending on the result of the of the current
-[alloc](#alloc) function set.
+Returns -1 on error depending on the result of the of the current
+[alloc](#alloc) function set or 0 otherwise.
 
 ```c
 bool

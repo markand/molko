@@ -19,7 +19,6 @@
 #ifndef MOLKO_CORE_ALLOC_H
 #define MOLKO_CORE_ALLOC_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 #include "core.h"
@@ -30,9 +29,9 @@
 
 /* Custom allocator. */
 struct alloc_funcs {
-	void *(*alloc)(size_t size);
-	void *(*realloc)(void *ptr, size_t size);
-	void (*free)(void *ptr);
+	void *(*alloc)(size_t);
+	void *(*realloc)(void *, size_t);
+	void (*free)(void *);
 };
 
 /* Minimalist growable array for loading data. */
@@ -41,54 +40,54 @@ struct alloc_pool {
 	size_t elemsize;
 	size_t size;
 	size_t capacity;
-	void (*finalizer)(void *data);
+	void (*finalizer)(void *);
 };
 
 CORE_BEGIN_DECLS
 
 /* allocator functions. */
 void
-alloc_set(const struct alloc_funcs *funcs);
+alloc_set(const struct alloc_funcs *);
 
 void *
-alloc_new(size_t size);
+alloc_new(size_t);
 
 void *
-alloc_new0(size_t size);
+alloc_new0(size_t);
 
 void *
-alloc_array(size_t len, size_t elemsize);
+alloc_array(size_t, size_t);
 
 void *
-alloc_array0(size_t len, size_t elemsize);
+alloc_array0(size_t, size_t);
 
 void *
-alloc_renew(void *ptr, size_t size);
+alloc_renew(void *, size_t);
 
 void *
-alloc_rearray(void *ptr, size_t newlen, size_t elemsize);
+alloc_rearray(void *, size_t, size_t);
 
 void *
-alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize);
+alloc_rearray0(void *, size_t, size_t, size_t);
 
 void *
-alloc_dup(const void *ptr, size_t size);
+alloc_dup(const void *, size_t);
 
 char *
-alloc_sdup(const char *src);
+alloc_sdup(const char *);
 
 /* alloc_pool functions. */
-bool
-alloc_pool_init(struct alloc_pool *pool, size_t elemsize, void (*finalizer)(void *));
+int
+alloc_pool_init(struct alloc_pool *, size_t , void (*)(void *));
 
 void *
-alloc_pool_new(struct alloc_pool *pool);
+alloc_pool_new(struct alloc_pool *);
 
 void *
-alloc_pool_get(const struct alloc_pool *pool, size_t index);
+alloc_pool_get(const struct alloc_pool *, size_t);
 
 void
-alloc_pool_finish(struct alloc_pool *pool);
+alloc_pool_finish(struct alloc_pool *);
 
 CORE_END_DECLS
 

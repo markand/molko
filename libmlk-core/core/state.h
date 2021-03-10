@@ -25,33 +25,33 @@ union event;
 
 struct state {
 	void *data;
-	void (*start)(struct state *state);
-	void (*handle)(struct state *state, const union event *ev);
-	void (*update)(struct state *state, unsigned int ticks);
-	void (*draw)(struct state *state);
-	void (*end)(struct state *state);
-	void (*finish)(struct state *state);
+	void (*start)(struct state *);
+	void (*handle)(struct state *, const union event *);
+	void (*update)(struct state *, unsigned int);
+	void (*draw)(struct state *);
+	void (*end)(struct state *);
+	void (*finish)(struct state *);
 };
 
 CORE_BEGIN_DECLS
 
 void
-state_start(struct state *state);
+state_start(struct state *);
 
 void
-state_handle(struct state *state, const union event *ev);
+state_handle(struct state *, const union event *);
 
 void
-state_update(struct state *state, unsigned int ticks);
+state_update(struct state *, unsigned int);
 
 void
-state_draw(struct state *state);
+state_draw(struct state *);
 
 void
-state_end(struct state *state);
+state_end(struct state *);
 
 void
-state_finish(struct state *state);
+state_finish(struct state *);
 
 CORE_END_DECLS
 

@@ -53,7 +53,7 @@ draw(struct action *act)
 	texture_draw(&tp->overlay, 0, 0);
 }
 
-static bool
+static int
 update_fadeout(struct action *act, unsigned int ticks)
 {
 	struct teleport *tp = act->data;
@@ -63,17 +63,17 @@ update_fadeout(struct action *act, unsigned int ticks)
 	if (tp->elapsed >= 10) {
 		if (tp->alpha >= 255) {
 			molko_teleport(tp->destination, tp->origin_x, tp->origin_y);
-			return true;
+			return 1;
 		}
 
 		tp->elapsed = 0;
 		tp->alpha += 5;
 	}
 
-	return false;
+	return 0;
 }
 
-static bool
+static int
 update_touch(struct action *act, unsigned int ticks)
 {
 	(void)ticks;
@@ -93,14 +93,14 @@ update_touch(struct action *act, unsigned int ticks)
 		 * We change our update function and add a draw function that
 		 * fade the screen out.
 		 */
-		if (!texture_new(&tp->overlay, window.w, window.h))
+		if (texture_new(&tp->overlay, window.w, window.h) < 0)
 			panic();
 
 		act->update = update_fadeout;
 		act->draw = draw;
 	}
 
-	return false;
+	return 0;
 }
 
 static void

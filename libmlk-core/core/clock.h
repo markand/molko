@@ -28,10 +28,10 @@ struct clock {
 CORE_BEGIN_DECLS
 
 void
-clock_start(struct clock *clock);
+clock_start(struct clock *);
 
 unsigned int
-clock_elapsed(const struct clock *clock);
+clock_elapsed(const struct clock *);
 
 CORE_END_DECLS
 

@@ -69,12 +69,11 @@ molko_init(void)
 {
 	setlocale(LC_ALL, "");
 
-	if (!core_init("fr.malikania", "molko") || !ui_init() || !rpg_init())
+	if (core_init("fr.malikania", "molko") < 0 || ui_init() < 0|| rpg_init() < 0)
 		panic();
-
-	translate_init("libmlk-adventure");
-
-	if (!window_open("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT))
+	if (translate_init("libmlk-adventure") < 0)
+		panic();
+	if (window_open("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT) < 0)
 		panic();
 
 	/*
@@ -82,25 +81,20 @@ molko_init(void)
 	 * to be running.
 	 */
 
-	/* Init unrecoverable panic state. */
-	molko.panic = state_panic_new();
-	panic_handler = crash;
-	trace_handler = trace_hud_handler;
-
 	/* Init other stuff. */
 	assets_init();
 
 	/* Start to splash. */
-#if 0
-	// TODO: put back this.
-	game_switch(state_splashscreen_ne(), true);
-#else
-	game_switch(state_mainmenu_new(), true);
+	game_switch(state_mainmenu_new(), 1);
 	molko.team.members[0] = &character_neth;
 	molko.team.members[1] = &character_neth;
 	inventory_add(&molko.inventory, &item_potion, 100);
-	molko_teleport("maps/map-world.map.zst", -1, -1);
-#endif
+	molko_teleport("maps/map-world.map", -1, -1);
+
+	/* Init unrecoverable panic state. */
+	molko.panic = state_panic_new();
+	panic_handler = crash;
+	trace_handler = trace_hud_handler;
 }
 
 void
@@ -114,7 +108,7 @@ molko_run(void)
 		for (union event ev; event_poll(&ev); )
 			continue;
 
-		game_switch(molko.panic, true);
+		game_switch(molko.panic, 1);
 		game_loop();
 	}
 }
@@ -124,7 +118,7 @@ molko_teleport(const char *map, int origin_x, int origin_y)
 {
 	molko.state = MOLKO_STATE_MAP;
 
-	game_switch(state_map_new(map, origin_x, origin_y), false);
+	game_switch(state_map_new(map, origin_x, origin_y), 0);
 	game.inhibit = INHIBIT_NONE;
 }
 
@@ -133,7 +127,7 @@ molko_fight(struct battle *bt)
 {
 	molko.state = MOLKO_STATE_BATTLE;
 
-	game_switch(state_battle_new(bt), false);
+	game_switch(state_battle_new(bt), 0);
 }
 
 const char *

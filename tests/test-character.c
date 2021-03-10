@@ -51,14 +51,14 @@ test_save_simple(void)
 		.luckbonus = 1004
 	};
 
-	GREATEST_ASSERT(save_open_path(&db, "test.db", SAVE_MODE_WRITE));
+	GREATEST_ASSERT(save_open_path(&db, "test.db", SAVE_MODE_WRITE) == 0);
 	GREATEST_ASSERT(character_save(&ch, &db));
 
 	/* Restore. */
 	memset(&ch, 0, sizeof (ch));
 	ch.name = "david";
 
-	GREATEST_ASSERT(character_load(&ch, &db));
+	GREATEST_ASSERT(character_load(&ch, &db) == 0);
 	GREATEST_ASSERT_EQ(1989, ch.hp);
 	GREATEST_ASSERT_EQ(1, ch.mp);
 	GREATEST_ASSERT_EQ(18, ch.level);

@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stdio.h>
+
 #include "sysconfig.h"
 
 #if defined(MOLKO_WITH_NLS)
@@ -26,16 +28,14 @@
 #include "translate.h"
 #include "util.h"
 
-#include <stdio.h>
-
-bool
+int
 translate_init(const char *name)
 {
 #if defined(MOLKO_WITH_NLS)
 	if (!bindtextdomain(name, sys_dir(SYS_DIR_LOCALE)))
-		return false;
+		return -1;
 #endif
-	return true;
+	return 0;
 }
 
 void

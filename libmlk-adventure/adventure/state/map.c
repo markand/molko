@@ -54,11 +54,11 @@ start(struct state *state)
 
 	self->map_file.load_action = mapscene_load_action;
 
-	if (!map_file_open(&self->map_file, &self->map, molko_path(self->name)))
+	if (map_file_open(&self->map_file, &self->map, molko_path(self->name)) < 0)
 		panic();
 
 	/* TODO: find this from team maybe. */
-	if (!image_open(&molko.map_player_texture, molko_path("sprites/john.png")))
+	if (image_open(&molko.map_player_texture, molko_path("sprites/john.png")) < 0)
 		panic();
 
 	sprite_init(&molko.map_player_sprite, &molko.map_player_texture, 48, 48);
@@ -72,7 +72,7 @@ start(struct state *state)
 
 	mapscene_load(&self->map);
 
-	if (!map_init(&self->map))
+	if (map_init(&self->map) < 0)
 		panic();
 }
 

@@ -48,24 +48,24 @@ my_handle(struct action *act, const union event *ev)
 	((struct invokes *)act->data)->handle++;
 }
 
-static bool
+static int
 my_update_false(struct action *act, unsigned int ticks)
 {
 	(void)ticks;
 
 	((struct invokes *)act->data)->update++;
 
-	return false;
+	return 0;
 }
 
-static bool
+static int
 my_update_true(struct action *act, unsigned int ticks)
 {
 	(void)ticks;
 
 	((struct invokes *)act->data)->update++;
 
-	return true;
+	return 1;
 }
 
 static void
@@ -105,18 +105,18 @@ basics_append(void)
 	struct action act[3] = {0};
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &act[0]));
+	GREATEST_ASSERT(script_append(&sc, &act[0]) == 0);
 	GREATEST_ASSERT_EQ(sc.cur, 0U);
 	GREATEST_ASSERT_EQ(sc.actionsz, 1U);
 	GREATEST_ASSERT_EQ(sc.actions[0], &act[0]);
 
-	GREATEST_ASSERT(script_append(&sc, &act[1]));
+	GREATEST_ASSERT(script_append(&sc, &act[1]) == 0);
 	GREATEST_ASSERT_EQ(sc.cur, 0U);
 	GREATEST_ASSERT_EQ(sc.actionsz, 2U);
 	GREATEST_ASSERT_EQ(sc.actions[0], &act[0]);
 	GREATEST_ASSERT_EQ(sc.actions[1], &act[1]);
 
-	GREATEST_ASSERT(script_append(&sc, &act[2]));
+	GREATEST_ASSERT(script_append(&sc, &act[2]) == 0);
 	GREATEST_ASSERT_EQ(sc.cur, 0U);
 	GREATEST_ASSERT_EQ(sc.actionsz, 3U);
 	GREATEST_ASSERT_EQ(sc.actions[0], &act[0]);
@@ -142,9 +142,9 @@ basics_handle(void)
 	
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act));
-	GREATEST_ASSERT(script_append(&sc, &table[1].act));
-	GREATEST_ASSERT(script_append(&sc, &table[2].act));
+	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
 	script_handle(&sc, &(union event){0});
@@ -221,9 +221,9 @@ basics_update(void)
 	
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act));
-	GREATEST_ASSERT(script_append(&sc, &table[1].act));
-	GREATEST_ASSERT(script_append(&sc, &table[2].act));
+	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* 0 -> 1 */
 	GREATEST_ASSERT(!script_update(&sc, 0));
@@ -317,9 +317,9 @@ basics_draw(void)
 	
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act));
-	GREATEST_ASSERT(script_append(&sc, &table[1].act));
-	GREATEST_ASSERT(script_append(&sc, &table[2].act));
+	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
 	script_draw(&sc);
@@ -396,9 +396,9 @@ basics_finish(void)
 	
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act));
-	GREATEST_ASSERT(script_append(&sc, &table[1].act));
-	GREATEST_ASSERT(script_append(&sc, &table[2].act));
+	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* Update once so that the current action goes to 1. */
 	GREATEST_ASSERT(!script_update(&sc, 0));
@@ -449,9 +449,9 @@ action_simple(void)
 	struct script sc = {0};
 	struct action act;
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act));
-	GREATEST_ASSERT(script_append(&sc, &table[1].act));
-	GREATEST_ASSERT(script_append(&sc, &table[2].act));
+	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
+	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* Now convert this script into an action itself. */
 	script_action(&sc, &act);

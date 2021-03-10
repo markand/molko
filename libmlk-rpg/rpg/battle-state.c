@@ -31,7 +31,7 @@ battle_state_handle(struct battle_state *st, struct battle *bt, const union even
 		st->handle(st, bt, ev);
 }
 
-bool
+int
 battle_state_update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	assert(st);
@@ -40,7 +40,7 @@ battle_state_update(struct battle_state *st, struct battle *bt, unsigned int tic
 	if (st->update)
 		return st->update(st, bt, ticks);
 
-	return false;
+	return 0;
 }
 
 void

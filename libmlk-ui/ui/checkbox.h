@@ -19,14 +19,6 @@
 #ifndef MOLKO_UI_CHECKBOX_H
 #define MOLKO_UI_CHECKBOX_H
 
-/**
- * \file checkbox.h
- * \brief GUI checkbox.
- * \ingroup ui
- */
-
-#include <stdbool.h>
-
 #include <core/core.h>
 
 union event;
@@ -34,72 +26,28 @@ union event;
 struct action;
 struct theme;
 
-/**
- * \brief GUI checkbox.
- */
 struct checkbox {
-	int x;                          /*!< (+) Position in x. */
-	int y;                          /*!< (+) Position in y. */
-	unsigned int w;                 /*!< (+) Width. */
-	unsigned int h;                 /*!< (+) Height. */
-	bool checked;                   /*!< (+) Is activated? */
-	const struct theme *theme;      /*!< (+&?) Theme to use. */
+	int x;
+	int y;
+	unsigned int w;
+	unsigned int h;
+	int checked;
+	const struct theme *theme;
 };
 
 CORE_BEGIN_DECLS
 
-/**
- * Default drawing function.
- *
- * \pre t != NULL
- * \pre cb != NULL
- * \param t the theme
- * \param cb the checkbox
- */
 void
-checkbox_draw_default(const struct theme *t, const struct checkbox *cb);
+checkbox_draw_default(const struct theme *, const struct checkbox *);
 
-/**
- * Draw the checkbox.
- *
- * \pre cb != NULL
- * \pre ev != NULL
- * \param cb the checkbox
- * \param ev the event
- */
 void
-checkbox_handle(struct checkbox *cb, const union event *ev);
+checkbox_handle(struct checkbox *, const union event *);
 
-/**
- * Draw the checkbox.
- *
- * \pre cb != NULL
- * \param cb the checkbox
- */
 void
-checkbox_draw(const struct checkbox *cb);
+checkbox_draw(const struct checkbox *);
 
-/**
- * Convert the checkbox into an action.
- *
- * The following field will be set into the action:
- *
- * - act->data: points to cb (reference),
- * - act->handle: a wrapper to checkbox_handle,
- * - act->draw: a wrapper to checkbox_draw.
- *
- * The checkbox being an UI element is considered to never completes, as such
- * you will need to handle this case or to use a custom update function.
- *
- * \note You will still need to check the checkbox state and reset it at some
- *       point.
- * \pre cb != NULL
- * \pre act != NULL
- * \param cb the checkbox to reference
- * \param act the action to fill
- */
 void
-checkbox_action(struct checkbox *cb, struct action *act);
+checkbox_action(struct checkbox *, struct action *);
 
 CORE_END_DECLS
 

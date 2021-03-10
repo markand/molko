@@ -37,33 +37,36 @@ Font [style](#font_style) to use for the next rendering operations.
 
 ### font\_open
 
-Open and load `font` of the given pixel `size` from file `path`. Returns false
-on errors.
+Open and load `font` of the given pixel `size` from file `path`.
+
+Returns -1 in case of errors and 0 otherwise.
 
 ```c
-bool
+int
 font_open(struct font *font, const char *path, unsigned int size)
 ```
 
 ### font\_openmem
 
 Open font and load `font` from the const memory buffer pointed by `buffer` and
-of size `buflen` using a pixel size of `size`. Returns false on errors.
+of size `buflen` using a pixel size of `size`.
+
+Returns -1 in case of errors and 0 otherwise.
 
 !!! note
     The argument `buffer` must stay valid until the font is no longer used.
 
 ```c
-bool
+int
 font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size)
 ```
 
 ### font\_ok
 
-Returns true if the `font` is properly loaded.
+Returns non-zero if the `font` is properly loaded.
 
 ```c
-bool
+int
 font_ok(const struct font *font)
 ```
 
@@ -72,11 +75,11 @@ font_ok(const struct font *font)
 Render the UTF-8 `text` into the texture `tex` using the font pointed by `font`.
 The foreground `color` will be used to draw the text.
 
-Returns false in case of rendering error, in this case `tex` remains
+Returns -1 in case of rendering error, in this case `tex` remains
 uninitialized and must not be used.
 
 ```c
-bool
+int
 font_render(struct font *font, struct texture *tex, const char *text, unsigned int color)
 ```
 
@@ -94,11 +97,11 @@ font_height(const struct font *font)
 Query the dimensions that the UTF-8 `text` would require with this `font`. Store
 the dimensions into the `w`, `h` pointers which can be both NULL.
 
-Return false in case of error, in this case both `w` and `h` remain
-uninitialized and must not be used.
+Returns -1 in case of errors, in this case `w` and `h` are set to 0 if they are
+not null.
 
 ```c
-bool
+int
 font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h)
 ```
 

@@ -19,8 +19,6 @@
 #ifndef MOLKO_RPG_INVENTORY_H
 #define MOLKO_RPG_INVENTORY_H
 
-#include <stdbool.h>
-
 #include <core/core.h>
 
 #define INVENTORY_ITEM_MAX (512)
@@ -38,11 +36,11 @@ struct inventory {
 
 CORE_BEGIN_DECLS
 
-bool
-inventory_add(struct inventory *iv, const struct item *item, unsigned int amount);
+int
+inventory_add(struct inventory *, const struct item *, unsigned int);
 
 void
-inventory_consume(struct inventory *iv, const struct item *item, unsigned int amount);
+inventory_consume(struct inventory *, const struct item *, unsigned int);
 
 CORE_END_DECLS
 

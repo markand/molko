@@ -126,25 +126,25 @@ tileset_animation_cmp(const void *d1, const void *d2)
 	return 0;
 }
 
-static bool
+static int
 parse_tilewidth(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "tilewidth|%u", &ctx->tilewidth) != 1 || ctx->tilewidth == 0)
 		return errorf(_("tilewidth is null"));
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_tileheight(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "tileheight|%u", &ctx->tileheight) != 1 || ctx->tileheight == 0)
 		return errorf(_("tileheight is null"));
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_tiledefs(struct context *ctx, const char *line)
 {
 	(void)line;
@@ -153,12 +153,12 @@ parse_tiledefs(struct context *ctx, const char *line)
 	unsigned short id, w, h;
 	struct tileset_tiledef *td;
 
-	if (!alloc_pool_init(&ctx->tf->tiledefs, sizeof (*td), NULL))
-		return false;
+	if (alloc_pool_init(&ctx->tf->tiledefs, sizeof (*td), NULL) < 0)
+		return -1;
 
 	while (fscanf(ctx->fp, "%hu|%hd|%hd|%hu|%hu\n", &id, &x, &y, &w, &h) == 5) {
 		if (!(td = alloc_pool_new(&ctx->tf->tiledefs)))
-			return false;
+			return -1;
 
 		td->id = id;
 		td->x = x;
@@ -172,10 +172,10 @@ parse_tiledefs(struct context *ctx, const char *line)
 	ctx->tileset->tiledefs = ctx->tf->tiledefs.data;
 	ctx->tileset->tiledefsz = ctx->tf->tiledefs.size;
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_animations(struct context *ctx, const char *line)
 {
 	(void)line;
@@ -184,9 +184,9 @@ parse_animations(struct context *ctx, const char *line)
 	unsigned int delay;
 	char filename[FILENAME_MAX + 1];
 
-	if (!alloc_pool_init(&ctx->tf->anims[0], sizeof (struct tileset_animation_block), tileset_animation_block_finish) ||
-	    !alloc_pool_init(&ctx->tf->anims[1], sizeof (struct tileset_animation), NULL))
-		return false;
+	if (alloc_pool_init(&ctx->tf->anims[0], sizeof (struct tileset_animation_block), tileset_animation_block_finish) < 0 ||
+	    alloc_pool_init(&ctx->tf->anims[1], sizeof (struct tileset_animation), NULL) < 0)
+		return -1;
 
 	/*
 	 * 1. Create the first array of animation, sprite and texture that are
@@ -196,9 +196,9 @@ parse_animations(struct context *ctx, const char *line)
 		struct tileset_animation_block *anim;
 
 		if (!(anim = alloc_pool_new(&ctx->tf->anims[0])))
-			return false;
-		if (!image_open(&anim->texture, util_pathf("%s/%s", ctx->basedir, filename)))
-			return false;
+			return -1;
+		if (image_open(&anim->texture, util_pathf("%s/%s", ctx->basedir, filename)) < 0)
+			return -1;
 
 		sprite_init(&anim->sprite, &anim->texture, ctx->tilewidth, ctx->tileheight);
 		animation_init(&anim->animation, &anim->sprite, delay);
@@ -213,7 +213,7 @@ parse_animations(struct context *ctx, const char *line)
 		struct tileset_animation *ta;
 
 		if (!(ta = alloc_pool_new(&ctx->tf->anims[1])))
-			return false;
+			return -1;
 
 		ta->id = id;
 		ta->animation = &anim->animation;
@@ -227,10 +227,10 @@ parse_animations(struct context *ctx, const char *line)
 	ctx->tileset->anims  = ctx->tf->anims[1].data;
 	ctx->tileset->animsz = ctx->tf->anims[1].size;
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_image(struct context *ctx, const char *line)
 {
 	char *p;
@@ -240,21 +240,21 @@ parse_image(struct context *ctx, const char *line)
 	if (!(p = strchr(line, '|')))
 		return errorf(_("could not parse image"));
 
-	if (!image_open(&ctx->tf->image, util_pathf("%s/%s", ctx->basedir, p + 1)))
-		return false;
+	if (image_open(&ctx->tf->image, util_pathf("%s/%s", ctx->basedir, p + 1)) < 0)
+		return -1;
 
 	sprite_init(&ctx->tf->sprite, &ctx->tf->image, ctx->tilewidth, ctx->tileheight);
 	ctx->tileset->sprite = &ctx->tf->sprite;
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_line(struct context *ctx, const char *line)
 {
 	static const struct {
 		const char *property;
-		bool (*read)(struct context *, const char *);
+		int (*read)(struct context *, const char *);
 	} props[] = {
 		{ "tilewidth",  parse_tilewidth         },
 		{ "tileheight", parse_tileheight        },
@@ -268,10 +268,10 @@ parse_line(struct context *ctx, const char *line)
 			return props[i].read(ctx, line);
 	}
 	
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse(struct context *ctx, const char *path)
 {
 	char line[1024];
@@ -284,23 +284,23 @@ parse(struct context *ctx, const char *path)
 		/* Remove \n if any */
 		line[strcspn(line, "\n")] = '\0';
 
-		if (!parse_line(ctx, line))
-			return false;
+		if (parse_line(ctx, line) < 0)
+			return -1;
 	}
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 check(const struct tileset *tileset)
 {
 	if (!tileset->sprite)
 		return errorf(_("missing tileset image"));
 
-	return true;
+	return 0;
 }
 
-bool
+int
 tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *path)
 {
 	assert(tf);
@@ -312,7 +312,7 @@ tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *
 		.tileset = tileset
 	};
 	struct zfile zf;
-	bool ret = true;
+	int ret = 0;
 
 	memset(tileset, 0, sizeof (*tileset));
 
@@ -321,7 +321,7 @@ tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *
 
 	ctx.fp = zf.fp;
 
-	if (!(ret = parse(&ctx, path)) || !(ret = check(tileset)))
+	if ((ret = parse(&ctx, path)) < 0 || (ret = check(tileset)) < 0)
 		tileset_file_finish(tf);
 
 	zfile_close(&zf);

@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_GAME_H
 #define MOLKO_CORE_GAME_H
 
-#include <stdbool.h>
-
 #include "core.h"
 #include "inhibit.h"
 
@@ -42,16 +40,16 @@ extern struct game game;
 CORE_BEGIN_DECLS
 
 void
-game_switch(struct state *state, bool quick);
+game_switch(struct state *, int);
 
 struct state *
-game_replace(struct state *state);
+game_replace(struct state *);
 
 void
-game_handle(const union event *event);
+game_handle(const union event *);
 
 void
-game_update(unsigned int ticks);
+game_update(unsigned int);
 
 void
 game_draw(void);

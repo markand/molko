@@ -54,7 +54,7 @@ battle_entity_init(struct battle_entity *et)
 	battle_entity_state_normal(et);
 }
 
-bool
+int
 battle_entity_ok(const struct battle_entity *et)
 {
 	return et && character_ok(et->ch);
@@ -72,7 +72,7 @@ battle_entity_switch(struct battle_entity *et, struct battle_entity_state *st)
 	et->state = st;
 }
 
-bool
+int
 battle_entity_update(struct battle_entity *et, unsigned int ticks)
 {
 	assert(et);

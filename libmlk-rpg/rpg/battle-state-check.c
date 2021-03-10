@@ -38,7 +38,7 @@ struct fadeout {
 	unsigned int elapsed;
 };
 
-static bool
+static int
 fadeout_update(struct action *act, unsigned int ticks)
 {
 	struct fadeout *fade = act->data;
@@ -50,12 +50,12 @@ fadeout_update(struct action *act, unsigned int ticks)
 		fade->elapsed = 0;
 
 		if (fade->alpha == 0)
-			return true;
+			return 1;
 
 		fade->alpha -= 10;
 	}
 
-	return false;
+	return 0;
 }
 
 static void
@@ -92,13 +92,13 @@ fadeout(struct battle *bt, struct battle_entity *et)
 	fade->action.update = fadeout_update;
 	fade->action.finish = fadeout_finish;
 
-	if (!action_stack_add(&bt->actions[1], &fade->action))
+	if (action_stack_add(&bt->actions[1], &fade->action) < 0)
 		free(fade);
 
 	memset(et, 0, sizeof (*et));
 }
 
-static bool
+static int
 is_dead(const struct battle *bt)
 {
 	const struct battle_entity *et;
@@ -107,22 +107,22 @@ is_dead(const struct battle *bt)
 		if (!character_ok(et->ch))
 			continue;
 		if (et->ch->hp > 0)
-			return false;
+			return 0;
 	}
 
-	return true;
+	return 1;
 }
 
-static bool
+static int
 is_won(const struct battle *bt)
 {
 	const struct battle_entity *et;
 
 	BATTLE_ENEMY_FOREACH(bt, et)
 		if (character_ok(et->ch))
-			return false;
+			return 0;
 
-	return true;
+	return 1;
 }
 
 static void
@@ -135,7 +135,7 @@ clean(struct battle *bt)
 			fadeout(bt, et);
 }
 
-static bool
+static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	(void)st;
@@ -150,7 +150,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	else
 		battle_next(bt);
 
-	return false;
+	return 0;
 }
 
 void

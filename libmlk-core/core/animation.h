@@ -19,8 +19,6 @@
 #ifndef MOLKO_CORE_ANIMATION_H
 #define MOLKO_CORE_ANIMATION_H
 
-#include <stdbool.h>
-
 #include "core.h"
 
 struct drawable;
@@ -37,22 +35,22 @@ struct animation {
 CORE_BEGIN_DECLS
 
 void
-animation_init(struct animation *an, const struct sprite *sprite, unsigned int delay);
+animation_init(struct animation *, const struct sprite *, unsigned int);
 
 void
-animation_start(struct animation *an);
+animation_start(struct animation *);
 
-bool
-animation_completed(const struct animation *an);
+int
+animation_completed(const struct animation *);
 
-bool
-animation_update(struct animation *an, unsigned int ticks);
+int
+animation_update(struct animation *, unsigned int);
 
-bool
-animation_draw(const struct animation *an, int x, int y);
+int
+animation_draw(const struct animation *, int, int);
 
 void
-animation_drawable(struct animation *an, struct drawable *dw, int x, int y);
+animation_drawable(struct animation *, struct drawable *, int, int);
 
 CORE_END_DECLS
 

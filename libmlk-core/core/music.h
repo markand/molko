@@ -19,7 +19,6 @@
 #ifndef MOLKO_CORE_MUSIC_H
 #define MOLKO_CORE_MUSIC_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 #include "core.h"
@@ -35,19 +34,19 @@ struct music {
 
 CORE_BEGIN_DECLS
 
-bool
-music_open(struct music *mus, const char *path);
+int
+music_open(struct music *, const char *);
 
-bool
-music_openmem(struct music *mus, const void *buffer, size_t buffersz);
+int
+music_openmem(struct music *, const void *, size_t);
 
-bool
-music_ok(const struct music *mus);
+int
+music_ok(const struct music *);
 
-bool
-music_play(struct music *mus, enum music_flags flags, unsigned int fadein);
+int
+music_play(struct music *, enum music_flags, unsigned int);
 
-bool
+int
 music_playing(void);
 
 void
@@ -57,10 +56,10 @@ void
 music_resume(void);
 
 void
-music_stop(unsigned int fadeout);
+music_stop(unsigned int);
 
 void
-music_finish(struct music *mus);
+music_finish(struct music *);
 
 CORE_END_DECLS
 

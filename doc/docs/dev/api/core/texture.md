@@ -41,20 +41,21 @@ Texture dimensions.
 
 ### texture\_new
 
-Create a new texture in `tex` with `w` and `h` as dimensions. Returns false on
-errors, in this case `tex` remains uninitialized and must not be used.
+Create a new texture in `tex` with `w` and `h` as dimensions.
+
+Returns -1 in case of errors and 0 otherwise.
 
 ```c
-bool
+int
 texture_new(struct texture *tex, unsigned int w, unsigned int h)
 ```
 
 ### texture\_ok
 
-Returns true if the texture `tex` is properly initialized.
+Returns non-zero if the texture `tex` is properly initialized.
 
 ```c
-bool
+int
 texture_ok(const struct texture *tex)
 ```
 
@@ -62,32 +63,36 @@ texture_ok(const struct texture *tex)
 
 Set the blend mode to `blend` for future blend operations for the texture `tex`.
 
+Returns -1 in case of errors and 0 otherwise.
+
 ```c
-bool
+int
 texture_set_blend_mode(struct texture *tex, enum texture_blend blend)
 ```
 
 ### texture\_set\_alpha\_mod
 
-Apply the transparency `alpha` modulation to the texture `tex`. Returns false on
-errors.
+Apply the transparency `alpha` modulation to the texture `tex`.
+
+Returns -1 in case of errors and 0 otherwise.
 
 !!! note
     You may need to use [texture_set_blend_mode](#texture_set_blend_mode) before
     this function to work.
 
 ```c
-bool
+int
 texture_set_alpha_mod(struct texture *tex, unsigned int alpha)
 ```
 
 ### texture\_set\_color\_mod
 
-Apply the color `color` modulation to the texture `tex`. Returns false on
-errors.
+Apply the color `color` modulation to the texture `tex`.
+
+Returns -1 in case of errors and 0 otherwise.
 
 ```c
-bool
+int
 texture_set_color_mod(struct texture *tex, unsigned long color)
 ```
 
@@ -95,8 +100,10 @@ texture_set_color_mod(struct texture *tex, unsigned long color)
 
 Draw whole texture `tex` at the position `x`, `y`.
 
+Returns -1 in case of errors and 0 otherwise.
+
 ```c
-bool
+int
 texture_draw(const struct texture *tex, int x, int y)
 ```
 
@@ -108,10 +115,10 @@ Copy the texture `tex` source rectangle specified by `src_x`, `src_y`, `src_w`,
 `src_h` at the region `dst_x`, `dst_y`, `dst_w`, `dst_h` with an optional
 `angle`.
 
-Returns false on rendering error.
+Returns -1 in case of errors and 0 otherwise.
 
 ```c
-bool
+int
 texture_scale(const struct texture *tex,
               int src_x,
               int src_y,

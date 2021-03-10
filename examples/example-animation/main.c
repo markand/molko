@@ -47,16 +47,16 @@ static struct label label = {
 static struct texture numbers;
 static struct animation animation;
 static struct sprite sprite;
-static bool completed = true;
+static int completed = 1;
 
 static void
 init(void)
 {
-	if (!core_init("fr.malikania", "animation") || !ui_init())
+	if (core_init("fr.malikania", "animation") < 0 || ui_init() < 0)
 		panic();
-	if (!window_open("Example - Animation", W, H))
+	if (window_open("Example - Animation", W, H) < 0)
 		panic();
-	if (!image_open(&numbers, PATH("sprites/numbers.png")))
+	if (image_open(&numbers, PATH("sprites/numbers.png")) < 0)
 		panic();
 }
 
@@ -120,7 +120,7 @@ run(void)
 	sprite_init(&sprite, &numbers, 48, 48);
 	animation_init(&animation, &sprite, 1000);
 
-	game_switch(&state, true);
+	game_switch(&state, 1);
 	game_loop();
 }
 

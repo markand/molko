@@ -21,7 +21,7 @@
 #include "character.h"
 #include "equipment.h"
 
-bool
+int
 equipment_ok(const struct equipment *eq)
 {
 	return eq && eq->name && eq->description;

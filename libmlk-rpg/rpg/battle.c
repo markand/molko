@@ -49,7 +49,7 @@ struct indicator {
 	struct battle_indicator bti;
 };
 
-static bool
+static int
 indicator_update(struct drawable *dw, unsigned int ticks)
 {
 	struct indicator *id = dw->data;
@@ -113,14 +113,14 @@ cmp_order(const void *d1, const void *d2)
 	return et1->ch->agt < et2->ch->agt;
 }
 
-static bool
+static int
 is_team(const struct battle *bt, const struct character *ch)
 {
 	for (size_t i = 0; i < BATTLE_TEAM_MAX; ++i)
 		if (bt->team[i].ch == ch)
-			return true;
+			return 1;
 
-	return false;
+	return 0;
 }
 
 static void
@@ -386,7 +386,7 @@ battle_indicator_hp(struct battle *bt, const struct character *target, long amou
 
 	battle_indicator_start(&id->bti);
 
-	if (!drawable_stack_add(&bt->effects, &id->dw))
+	if (drawable_stack_add(&bt->effects, &id->dw) < 0)
 		drawable_finish(&id->dw);
 }
 
@@ -405,7 +405,7 @@ battle_handle(struct battle *bt, const union event *ev)
 		battle_state_handle(bt->state, bt, ev);
 }
 
-bool
+int
 battle_update(struct battle *bt, unsigned int ticks)
 {
 	assert(bt && bt->state);
@@ -419,7 +419,7 @@ battle_update(struct battle *bt, unsigned int ticks)
 
 	/* Game cannot update if the actions[0] stack isn't completed. */
 	if (!action_stack_completed(&bt->actions[0]))
-		return false;
+		return 0;
 
 	return battle_state_update(bt->state, bt, ticks);
 }

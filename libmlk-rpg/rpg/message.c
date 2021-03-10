@@ -49,7 +49,7 @@ handle(struct action *action, const union event *ev)
 	message_handle(action->data, ev);
 }
 
-static bool
+static int
 update(struct action *action, unsigned int ticks)
 {
 	assert(action);
@@ -89,7 +89,7 @@ min_width(const struct message *msg)
 	for (size_t i = 0; i < MESSAGE_LINES_MAX; ++i) {
 		if (!msg->text[i])
 			continue;
-		if (!font_query(THEME(msg)->fonts[THEME_FONT_INTERFACE], msg->text[i], &w, NULL))
+		if (font_query(THEME(msg)->fonts[THEME_FONT_INTERFACE], msg->text[i], &w, NULL) < 0)
 			panic();
 		if (w > maxw)
 			maxw = w;
@@ -125,7 +125,7 @@ draw_lines(const struct message *msg)
 	for (int i = 0; i < MESSAGE_LINES_MAX; ++i) {
 		if (!msg->text[i])
 			continue;
-		if (!font_query(theme.fonts[THEME_FONT_INTERFACE], msg->text[i], &lw, &lh))
+		if (font_query(theme.fonts[THEME_FONT_INTERFACE], msg->text[i], &lw, &lh) < 0)
 			panic();
 
 		label.theme = &theme;
@@ -216,7 +216,7 @@ message_handle(struct message *msg, const union event *ev)
 	}
 }
 
-bool
+int
 message_update(struct message *msg, unsigned int ticks)
 {
 	assert(msg);
@@ -278,7 +278,7 @@ message_draw(const struct message *msg)
 		return;
 	}
 
-	if (!texture_new(&tex, msg->w, msg->h))
+	if (texture_new(&tex, msg->w, msg->h) < 0)
 		panic();
 
 	PAINTER_BEGIN(&tex);

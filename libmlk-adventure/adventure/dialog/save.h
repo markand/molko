@@ -19,8 +19,6 @@
 #ifndef MOLKO_ADVENTURE_SAVE_H
 #define MOLKO_ADVENTURE_SAVE_H
 
-#include <stdbool.h>
-
 #include <core/core.h>
 
 #include <rpg/save.h>
@@ -42,7 +40,7 @@ CORE_BEGIN_DECLS
 void
 dialog_save_init(struct dialog_save *);
 
-bool
+int
 dialog_save_handle(struct dialog_save *, const union event *);
 
 void
