@@ -372,7 +372,7 @@ run(void)
 	action_stack_add(&events, &chest.event);
 	action_stack_add(&events, &guide.event);
 
-	game_switch(&state, 1);
+	game_push(&state);
 	game_loop();
 }
 

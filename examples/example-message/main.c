@@ -102,7 +102,7 @@ run(struct message *msg)
 
 	message_start(msg);
 
-	game_switch(&state, 1);
+	game_push(&state);
 	game_loop();
 }
 

@@ -182,7 +182,7 @@ prepare_to_fight(void)
 	battle_start(bt);
 
 	fight_state.data = bt;
-	game_switch(&fight_state, 0);
+	game_push(&fight_state);
 }
 
 
@@ -239,7 +239,7 @@ fight_update(struct state *st, unsigned int ticks)
 	struct battle *bt = st->data;
 
 	if (battle_update(bt, ticks))
-		game_switch(&empty_state, 0);
+		game_push(&empty_state);
 }
 
 static void
@@ -268,7 +268,7 @@ static struct state fight_state = {
 static void
 run(void)
 {
-	game_switch(&empty_state, 1);
+	game_push(&empty_state);
 	game_loop();
 }
 

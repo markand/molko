@@ -120,7 +120,7 @@ run(void)
 		.draw = draw
 	};
 
-	game_switch(&state, 1);
+	game_push(&state);
 	game_loop();
 }
 

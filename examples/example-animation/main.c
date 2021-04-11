@@ -120,7 +120,7 @@ run(void)
 	sprite_init(&sprite, &numbers, 48, 48);
 	animation_init(&animation, &sprite, 1000);
 
-	game_switch(&state, 1);
+	game_push(&state);
 	game_loop();
 }
 

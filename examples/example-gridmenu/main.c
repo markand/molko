@@ -123,7 +123,7 @@ run(void)
 	/* Need to repaint at least once. */
 	gridmenu_repaint(&menu);
 
-	game_switch(&state, 1);
+	game_push(&state);
 	game_loop();
 }
 

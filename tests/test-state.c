@@ -224,7 +224,7 @@ switch_quick_1(void)
 	 * current state to the specified one and call start on it. However,
 	 * if there was already a planned state, it is finished immediately.
 	 */
-	game_switch(&table[0].state, 1);
+	game_push(&table[0].state);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 1);
 	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
@@ -242,7 +242,7 @@ switch_quick_1(void)
 
 	/* Switch from [0] to [1] quickly, [0] should be closed immediately. */
 	zero(&table[0].inv);
-	game_switch(&table[1].state, 1);
+	game_push(&table[1].state);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 0);
 	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
@@ -272,7 +272,7 @@ switch_quick_0(void)
 		{ .state = INIT(&table[1]) }
 	};
 
-	game_switch(&table[0].state, 1);
+	game_push(&table[0].state);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 1);
 	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
@@ -293,7 +293,7 @@ switch_quick_0(void)
 	 * be done on the next game_update call instead.
 	 */
 	zero(&table[0].inv);
-	game_switch(&table[1].state, 0);
+	game_push(&table[1].state);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 0);
 	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
@@ -324,11 +324,11 @@ switch_invoke(void)
 	};
 
 	/* Start with 0. */
-	game_switch(&table[0].state, 1);
+	game_push(&table[0].state);
 
 	/* Ask to switch to 1. */
 	zero(&table[0].inv);
-	game_switch(&table[1].state, 1);
+	game_push(&table[1].state);
 	game_update(0);
 
 	GREATEST_ASSERT_EQ(table[0].inv.start, 0);

@@ -77,7 +77,7 @@ game_update(unsigned int ticks)
 void
 game_draw(void)
 {
-	if (game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
+	if (*game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
 		state_draw(*game.state);
 }
 
@@ -94,7 +94,7 @@ game_loop(void)
 		/* Assuming 50.0 FPS. */
 		frametime = 1000.0 / 50.0;
 
-	while (game.state) {
+	while (*game.state) {
 		clock_start(&clock);
 
 		for (union event ev; event_poll(&ev); )
@@ -117,5 +117,9 @@ game_loop(void)
 void
 game_quit(void)
 {
-	// TODO: clear.
+	for (size_t i = 0; i < UTIL_SIZE(game.states); ++i)
+		if (game.states[i])
+			state_finish(game.states[i]);
+
+	*game.state = NULL;
 }

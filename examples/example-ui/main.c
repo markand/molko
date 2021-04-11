@@ -298,7 +298,7 @@ run(void)
 	prepare();
 	resize();
 
-	game_switch(&state, 1);
+	game_push(&state);
 	game_loop();
 }
 

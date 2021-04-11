@@ -122,7 +122,7 @@ run(void)
 
 	change(cursor);
 
-	game_switch(&state, 1);
+	game_push(&state);
 	game_loop();
 }
 
