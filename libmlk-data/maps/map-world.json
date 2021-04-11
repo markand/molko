@@ -63,7 +63,7 @@
                         {
                          "name":"exec",
                          "type":"string",
-                         "value":"spawner|1|2"
+                         "value":"spawner|1000|2000"
                         }],
                  "rotation":0,
                  "type":"",

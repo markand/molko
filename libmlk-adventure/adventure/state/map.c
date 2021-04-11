@@ -106,6 +106,14 @@ draw(struct state *state)
 }
 
 static void
+suspend(struct state *state)
+{
+	struct self *self = state->data;
+
+	self->map.player_movement = 0;
+}
+
+static void
 finish(struct state *state)
 {
 	struct self *self = state->data;
@@ -134,6 +142,7 @@ state_map_new(const char *name, int origin_x, int origin_y)
 	self->state.handle = handle;
 	self->state.update = update;
 	self->state.draw = draw;
+	self->state.suspend = suspend;
 	self->state.finish = finish;
 
 	return &self->state;

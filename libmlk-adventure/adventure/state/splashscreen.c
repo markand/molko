@@ -75,7 +75,7 @@ update(struct state *state, unsigned int ticks)
 	self->elapsed += ticks;
 
 	if (self->elapsed >= DELAY)
-		game_switch(state_mainmenu_new(), 0);
+		game_push(state_mainmenu_new());
 }
 
 static void

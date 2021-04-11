@@ -56,7 +56,7 @@ update(struct state *state, unsigned int ticks)
 
 	/* TODO: once we have stacked states, pop it. */
 	if (battle_update(self->battle, ticks))
-		game_quit();
+		game_pop();
 }
 
 static void

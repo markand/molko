@@ -58,6 +58,24 @@ state_draw(struct state *state)
 }
 
 void
+state_suspend(struct state *state)
+{
+	assert(state);
+
+	if (state->suspend)
+		state->suspend(state);
+}
+
+void
+state_resume(struct state *state)
+{
+	assert(state);
+
+	if (state->resume)
+		state->resume(state);
+}
+
+void
 state_end(struct state *state)
 {
 	assert(state);

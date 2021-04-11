@@ -85,7 +85,7 @@ molko_init(void)
 	assets_init();
 
 	/* Start to splash. */
-	game_switch(state_mainmenu_new(), 1);
+	game_push(state_mainmenu_new());
 	molko.team.members[0] = &character_neth;
 	molko.team.members[1] = &character_neth;
 	inventory_add(&molko.inventory, &item_potion, 100);
@@ -108,7 +108,7 @@ molko_run(void)
 		for (union event ev; event_poll(&ev); )
 			continue;
 
-		game_switch(molko.panic, 1);
+		game_push(molko.panic);
 		game_loop();
 	}
 }
@@ -118,7 +118,7 @@ molko_teleport(const char *map, int origin_x, int origin_y)
 {
 	molko.state = MOLKO_STATE_MAP;
 
-	game_switch(state_map_new(map, origin_x, origin_y), 0);
+	game_push(state_map_new(map, origin_x, origin_y));
 	game.inhibit = INHIBIT_NONE;
 }
 
@@ -127,7 +127,7 @@ molko_fight(struct battle *bt)
 {
 	molko.state = MOLKO_STATE_BATTLE;
 
-	game_switch(state_battle_new(bt), 0);
+	game_push(state_battle_new(bt));
 }
 
 const char *

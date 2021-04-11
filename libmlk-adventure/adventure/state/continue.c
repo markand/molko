@@ -52,7 +52,7 @@ handle(struct state *state, const union event *ev)
 		break;
 	case EVENT_KEYDOWN:
 		if (ev->key.key == KEY_ESCAPE)
-			game_switch(state_mainmenu_new(), 0);
+			game_push(state_mainmenu_new());
 		else
 			selected = dialog_save_handle(&self->dialog, ev);
 		break;

@@ -29,6 +29,8 @@ struct state {
 	void (*handle)(struct state *, const union event *);
 	void (*update)(struct state *, unsigned int);
 	void (*draw)(struct state *);
+	void (*suspend)(struct state *);
+	void (*resume)(struct state *);
 	void (*end)(struct state *);
 	void (*finish)(struct state *);
 };
@@ -46,6 +48,12 @@ state_update(struct state *, unsigned int);
 
 void
 state_draw(struct state *);
+
+void
+state_suspend(struct state *);
+
+void
+state_resume(struct state *);
 
 void
 state_end(struct state *);

@@ -76,7 +76,7 @@ new(void)
 static void
 resume(void)
 {
-	game_switch(state_continue_new(), 0);
+	game_push(state_continue_new());
 }
 
 static void

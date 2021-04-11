@@ -46,9 +46,8 @@ distance(const struct spawner *s)
 }
 
 static void
-fight(void)
+fight(struct spawner *s)
 {
-	/* TODO: */
 	struct battle *bt;
 
 	bt = alloc_new0(sizeof (*bt));
@@ -87,8 +86,8 @@ update(struct action *act, unsigned int ticks)
 		s->last_y = s->map->player_y;
 
 		if (s->steps == 0) {
-			s->steps = util_nrand(s->low, s->high);
-			fight();
+			spawner_init(s);
+			fight(s);
 		}
 	}
 

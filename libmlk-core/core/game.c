@@ -28,41 +28,34 @@
 #include "util.h"
 #include "window.h"
 
-struct game game;
+struct game game = {
+	.state = &game.states[0],
+};
 
 void
-game_switch(struct state *state, int quick)
+game_push(struct state *state)
 {
 	assert(state);
+	assert(game.state != &game.states[GAME_STATE_MAX]);
 
-	if (quick) {
-		if (game.state_next) {
-			state_finish(game.state_next);
-			game.state_next = NULL;
-		}
-
-		if (game.state) {
-			state_end(game.state);
-			state_finish(game.state);
-		}
-
-		state_start(game.state = state);
+	if (*game.state) {
+		state_suspend(*game.state);
+		state_start(*(++game.state) = state);
 	} else
-		game.state_next = state;
+		state_start((*game.state) = state);
 }
 
-struct state *
-game_replace(struct state *state)
+void
+game_pop(void)
 {
-	assert(state);
+	if (!*game.state)
+		return;
 
-	struct state *save = game.state;
+	state_end(*game.state);
+	state_finish(*game.state);
 
-	game.state = state;
-
-	state_start(state);
-
-	return save;
+	if (game.state != &game.states[0])
+		state_resume(*--game.state);
 }
 
 void
@@ -70,48 +63,22 @@ game_handle(const union event *ev)
 {
 	assert(ev);
 
-	if (game.state && !(game.inhibit & INHIBIT_STATE_INPUT))
-		state_handle(game.state, ev);
+	if (*game.state && !(game.inhibit & INHIBIT_STATE_INPUT))
+		state_handle(*game.state, ev);
 }
 
 void
 game_update(unsigned int ticks)
 {
-	if (game.inhibit & INHIBIT_STATE_UPDATE)
-		return;
-
-	/* Change state if any. */
-	if (game.state_next) {
-		struct state *previous;
-
-		/* Inform the current state we're gonna leave it. */
-		if ((previous = game.state))
-			state_end(previous);
-
-		/* Change the state and tell we're starting it. */
-		if ((game.state = game.state_next)) {
-			game.state_next = NULL;
-			state_start(game.state);
-		}
-
-		/*
-		 * Only call finish at the end of the process because
-		 * the user may still use resources from it during the
-		 * transition.
-		 */
-		if (previous)
-			state_finish(previous);
-	}
-
-	if (game.state)
-		state_update(game.state, ticks);
+	if (*game.state && !(game.inhibit & INHIBIT_STATE_UPDATE))
+		state_update(*game.state, ticks);
 }
 
 void
 game_draw(void)
 {
 	if (game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
-		state_draw(game.state);
+		state_draw(*game.state);
 }
 
 void
@@ -150,15 +117,5 @@ game_loop(void)
 void
 game_quit(void)
 {
-	/* Close the next state if any. */
-	if (game.state_next) {
-		state_finish(game.state_next);
-		game.state_next = NULL;
-	}
-	
-	if (game.state) {
-		state_end(game.state);
-		state_finish(game.state);
-		game.state = NULL;
-	}
+	// TODO: clear.
 }

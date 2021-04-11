@@ -22,17 +22,16 @@
 #include "core.h"
 #include "inhibit.h"
 
+#define GAME_STATE_MAX (32)
+
 struct state;
 
 union event;
 
 struct game {
-	/* Inhibition */
 	enum inhibit inhibit;
-
-	/* Game states. */
-	struct state *state;
-	struct state *state_next;
+	struct state *states[GAME_STATE_MAX + 1];
+	struct state **state;
 };
 
 extern struct game game;
@@ -40,10 +39,10 @@ extern struct game game;
 CORE_BEGIN_DECLS
 
 void
-game_switch(struct state *, int);
+game_push(struct state *);
 
-struct state *
-game_replace(struct state *);
+void
+game_pop(void);
 
 void
 game_handle(const union event *);
