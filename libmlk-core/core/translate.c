@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 
-#include "sysconfig.h"
+#include "config.h"
 
 #if defined(MOLKO_WITH_NLS)
 #	include <libintl.h>

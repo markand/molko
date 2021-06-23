@@ -19,7 +19,7 @@
 #ifndef MOLKO_UI_UI_P_H
 #define MOLKO_UI_UI_P_H
 
-#include "sysconfig.h"
+#include "config.h"
 
 #if defined(MOLKO_WITH_NLS)
 #       include <libintl.h>

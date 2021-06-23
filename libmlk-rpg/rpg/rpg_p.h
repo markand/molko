@@ -19,7 +19,7 @@
 #ifndef MOLKO_RPG_RPG_P_H
 #define MOLKO_RPG_RPG_P_H
 
-#include "sysconfig.h"
+#include "config.h"
 
 #if defined(MOLKO_WITH_NLS)
 #       include <libintl.h>

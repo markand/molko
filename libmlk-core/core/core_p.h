@@ -19,7 +19,7 @@
 #ifndef MOLKO_CORE_CORE_P_H
 #define MOLKO_CORE_CORE_P_H
 
-#include "sysconfig.h"
+#include "config.h"
 
 #if defined(MOLKO_WITH_NLS)
 #       include <libintl.h>

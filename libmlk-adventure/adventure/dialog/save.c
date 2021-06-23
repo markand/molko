@@ -20,8 +20,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <compat.h>
-
 #include <core/event.h>
 #include <core/font.h>
 #include <core/maths.h>

@@ -16,8 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <compat.h>
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -189,7 +187,7 @@ save_open_path(struct save *db, const char *path, enum save_mode mode)
 	if (sqlite3_open_v2(path, (sqlite3**)&db->handle, flags, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 
-	if (mode == SAVE_MODE_WRITE && execu(db, sql_init) < 0)
+	if (mode == SAVE_MODE_WRITE && execu(db, assets_init) < 0)
 		goto sqlite3_err;
 
 	return verify(db);
@@ -221,7 +219,7 @@ save_set_property(struct save *db, const struct save_property *prop)
 
 	if (exec(db, SQL_BEGIN) < 0)
 		return -1;
-	if (sqlite3_prepare(db->handle, (const char *)sql_property_set, -1, &stmt, NULL) != SQLITE_OK)
+	if (sqlite3_prepare(db->handle, (const char *)assets_property_set, -1, &stmt, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 	if (sqlite3_bind_text(stmt, 1, prop->key, -1, NULL) != SQLITE_OK ||
 	    sqlite3_bind_text(stmt, 2, prop->value, -1, NULL) != SQLITE_OK)
@@ -253,8 +251,8 @@ save_get_property(struct save *db, struct save_property *prop)
 	sqlite3_stmt *stmt = NULL;
 	int ret = 0;
 
-	if (sqlite3_prepare(db->handle, (const char *)sql_property_get,
-	    sizeof (sql_property_get), &stmt, NULL) != SQLITE_OK)
+	if (sqlite3_prepare(db->handle, (const char *)assets_property_get,
+	    sizeof (assets_property_get), &stmt, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 	if (sqlite3_bind_text(stmt, 1, prop->key, -1, NULL) != SQLITE_OK)
 		goto sqlite3_err;
@@ -297,8 +295,8 @@ save_remove_property(struct save *db, const struct save_property *prop)
 
 	if (exec(db, SQL_BEGIN) < 0)
 		return -1;
-	if (sqlite3_prepare(db->handle, (const char *)sql_property_remove,
-	    sizeof (sql_property_remove), &stmt, NULL) != SQLITE_OK)
+	if (sqlite3_prepare(db->handle, (const char *)assets_property_remove,
+	    sizeof (assets_property_remove), &stmt, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 	if (sqlite3_bind_text(stmt, 1, prop->key, -1, NULL) != SQLITE_OK)
 		goto sqlite3_err;
