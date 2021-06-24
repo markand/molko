@@ -151,26 +151,9 @@ LIBMLK_ADVENTURE_SRCS=  libmlk-adventure/adventure/action/chest.c \
 LIBMLK_ADVENTURE_OBJS=  ${LIBMLK_ADVENTURE_SRCS:.c=.o}
 LIBMLK_ADVENTURE_DEPS=  ${LIBMLK_ADVENTURE_SRCS:.c=.d}
 
-# Not a real target, only headers.
-LIBMLK_DATA_ASTS=       libmlk-data/fonts/cubic.h \
-                        libmlk-data/fonts/lato.h \
-                        libmlk-data/fonts/pirata-one.h \
-                        libmlk-data/fonts/teutonic.h \
-                        libmlk-data/images/battle-background.h \
-                        libmlk-data/images/black-cat.h \
-                        libmlk-data/images/haunted-wood.h \
-                        libmlk-data/music/vabsounds-romance.h \
-                        libmlk-data/sounds/fire.h \
-                        libmlk-data/sounds/potion.h \
-                        libmlk-data/sprites/chest.h \
-                        libmlk-data/sprites/explosion.h \
-                        libmlk-data/sprites/faces.h \
-                        libmlk-data/sprites/john-sword.h \
-                        libmlk-data/sprites/john-walk.h \
-                        libmlk-data/sprites/john.h \
-                        libmlk-data/sprites/numbers.h \
-                        libmlk-data/sprites/people.h \
-                        libmlk-data/sprites/ui-cursor.h
+# Not a real target, only generated maps and tilesets.
+LIBMLK_DATA_ASTS=       libmlk-data/maps/map-world.map \
+                        libmlk-data/maps/tileset-world.tileset
 
 MLK_BCC=                tools/bcc/mlk-bcc
 MLK_BCC_SRCS=           tools/bcc/main.c
@@ -191,6 +174,33 @@ MLK_ADVENTURE=          mlk-adventure/mlk-adventure
 MLK_ADVENTURE_SRCS=     mlk-adventure/main.c
 MLK_ADVENTURE_OBJS=     ${MLK_ADVENTURE_SRCS:.c=.o}
 MLK_ADVENTURE_DEPS=     ${MLK_ADVENTURE_SRCS:.c=.d}
+
+EXAMPLES=               examples/example-action/main \
+                        examples/example-animation/main \
+                        examples/example-audio/main \
+                        examples/example-cursor/main \
+                        examples/example-debug/main \
+                        examples/example-drawable/main \
+                        examples/example-font/main \
+                        examples/example-gridmenu/main \
+                        examples/example-label/main \
+                        examples/example-message/main \
+                        examples/example-sprite/main \
+                        examples/example-trace/main \
+                        examples/example-ui/main
+
+TESTS=                  tests/test-action-script \
+                        tests/test-action \
+                        tests/test-alloc \
+                        tests/test-character \
+                        tests/test-color \
+                        tests/test-drawable \
+                        tests/test-error \
+                        tests/test-map \
+                        tests/test-save \
+                        tests/test-state \
+                        tests/test-tileset \
+                        tests/test-util
 
 TARGETS=                ${LIBMLK_ADVENTURE} \
                         ${LIBMLK_CORE} \
@@ -215,11 +225,14 @@ endif
 
 INCS=                   -I. \
                         -Iextern/libsqlite \
+                        -Iextern/libgreatest \
                         -Ilibmlk-core \
                         -Ilibmlk-ui \
                         -Ilibmlk-rpg \
                         -Ilibmlk-adventure \
-                        ${SDL2_INCS}
+                        ${SDL2_INCS} \
+                        ${JANSSON_INCS} \
+                        ${ZSTD_INCS}
 DEFS=                   -DMOLKO_BINDIR=\"${BINDIR}\" \
                         -DMOLKO_DATADIR=\"${DATADIR}\" \
                         -DMOLKO_LOCALEDIR=\"${LOCALEDIR}\" \
@@ -228,14 +241,12 @@ DEFS=                   -DMOLKO_BINDIR=\"${BINDIR}\" \
                         -DMOLKO_ABS_LOCALEDIR=\"${PREFIX}/${LOCALEDIR}\"
 
 ifeq (${NLS},1)
-LIBS+=                  -lintl
 SED.nls=                s/@define WITH_NLS@/\#define MOLKO_WITH_NLS/
 else
 SED.nls=                /@define WITH_NLS@/d
 endif
 
 ifeq (${ZSTD},1)
-LIBS+=                  -lintl
 SED.zstd=               s/@define WITH_ZSTD@/\#define MOLKO_WITH_ZSTD/
 else
 SED.zstd=               /@define WITH_ZSTD@/d
@@ -250,39 +261,50 @@ TILESET.cmd=            ${MLK_TILESET} < $< > $@
 MAP.cmd=                ${MLK_MAP} < $< > $@
 endif
 
+CMD.ar=                 ${AR} -rc $@ $^
+CMD.cc=                 ${CC} ${DEFS} ${INCS} ${CFLAGS} -MMD -c $< -o $@ ${LDFLAGS}
+CMD.ccld=               ${CC} ${DEFS} ${INCS} ${CFLAGS} -o $@ $^ ${LIBS} ${LDFLAGS}
+
+# All libraries required when linking to Molko's Adventure API.
+LIBMLK_ALL:=            ${LIBMLK_ADVENTURE}
+LIBMLK_ALL+=            ${LIBMLK_RPG}
+LIBMLK_ALL+=            ${LIBMLK_UI}
+LIBMLK_ALL+=            ${LIBMLK_CORE}
+LIBMLK_ALL+=            ${LIBMLK_SQLITE}
+LIBMLK_ALL+=            ${SDL2_LIBS}
+LIBMLK_ALL+=            ${ZSTD_LIBS}
+
+ifeq (${NLS},1)
+LIBMLK_ALL+=            -lintl
+endif
+
 .SUFFIXES:
 .SUFFIXES: .c .o .h .json .map .ogg .png .sql .tileset .ttf
 
 all: ${TARGETS}
 
 config.h: config.h.in
-	@echo "SED  $<"
-	@sed -e "${SED.nls}" \
+	sed -e "${SED.nls}" \
 		-e "${SED.zstd}" < $< > $@
 
 .c.o:
-	@echo "CC   $<"
-	@${CC} -MMD ${INCS} ${DEFS} ${CFLAGS} -c $< -o $@
+	${CMD.cc}
 
 # Binary files.
 .ttf.h .png.h .ogg.h:
-	@echo "BCC  $<"
-	@${MLK_BCC} -csu $< assets_$(notdir $<) > $@
+	${MLK_BCC} -csu $< assets_$(notdir $<) > $@
 
 # Text files.
 .sql.h:
-	@echo "BCC  $<"
-	@${MLK_BCC} -0csu $< assets_$(notdir $<) > $@
+	${MLK_BCC} -0csu $< assets_$(notdir $<) > $@
 
 # Maps.
 .json.map:
-	@echo "MAP  $<"
-	@${MAP.cmd}
+	${MAP.cmd}
 
 # Tilesets.
 .json.tileset:
-	@echo "TS   $<"
-	@${TILESET.cmd}
+	${TILESET.cmd}
 
 -include ${LIBMLK_ADVENTURE_DEPS}
 -include ${LIBMLK_CORE_DEPS}
@@ -294,69 +316,126 @@ config.h: config.h.in
 -include ${MLK_MAP_DEPS}
 -include ${MLK_TILESET_DEPS}
 
+# {{{ libmlk-sqlite
+
 ${LIBMLK_SQLITE}: ${LIBMLK_SQLITE_OBJS}
-	@echo "AR   $@"
-	@${AR} -rc $@ ${LIBMLK_SQLITE_OBJS}
+	${CMD.ar}
+
+# }}}
+
+# {{{ libmlk-core
 
 ${LIBMLK_CORE_OBJS}: config.h
 
 ${LIBMLK_CORE}: ${LIBMLK_CORE_OBJS}
-	@echo "AR   $@"
-	@${AR} -rc $@ ${LIBMLK_CORE_OBJS}
+	${CMD.ar}
+
+# }}}
+
+# {{{ libmlk-ui
 
 ${LIBMLK_UI_ASTS}: ${MLK_BCC}
-${LIBMLK_UI_OBJS}: ${LIBMLK_UI_ASTS}
+${LIBMLK_UI_OBJS}: ${LIBMLK_UI_ASTS} ${LIBMLK_CORE}
 
-${LIBMLK_UI}: ${LIBMLK_CORE} ${LIBMLK_UI_OBJS}
-	@echo "AR   $@"
-	@${AR} -rc $@ ${LIBMLK_UI_OBJS}
+${LIBMLK_UI}: ${LIBMLK_UI_OBJS}
+	${CMD.ar}
+
+# }}}
+
+# {{{ libmlk-rpg
 
 ${LIBMLK_RPG_ASTS}: ${MLK_BCC}
-${LIBMLK_RPG_OBJS}: ${LIBMLK_RPG_ASTS}
+${LIBMLK_RPG_OBJS}: ${LIBMLK_RPG_ASTS} ${LIBMLK_UI} ${LIBMLK_SQLITE}
 
-${LIBMLK_RPG}: ${LIBMLK_UI} ${LIBMLK_SQLITE} ${LIBMLK_RPG_OBJS}
-	@echo "AR   $@"
-	@${AR} -rc $@ ${LIBMLK_RPG_OBJS}
+${LIBMLK_RPG}: ${LIBMLK_RPG_OBJS}
+	${CMD.ar}
+
+# }}}
+
+# {{{ libmlk-adventure
 
 ${LIBMLK_ADVENTURE_ASTS}: ${MLK_BCC}
-${LIBMLK_ADVENTURE_OBJS}: ${LIBMLK_ADVENTURE_ASTS}
+${LIBMLK_ADVENTURE_OBJS}: ${LIBMLK_ADVENTURE_ASTS} ${LIBMLK_RPG}
 
-${LIBMLK_ADVENTURE}: ${LIBMLK_RPG} ${LIBMLK_ADVENTURE_OBJS}
-	@echo "AR   $@"
-	@${AR} -rc $@ ${LIBMLK_ADVENTURE_OBJS}
+${LIBMLK_ADVENTURE}: ${LIBMLK_ADVENTURE_OBJS}
+	${CMD.ar}
 
+# }}}
+
+# {{{ libmlk-data
+
+${LIBMLK_DATA_ASTS}: ${MLK_MAP} ${MLK_TILESET}
+
+# }}}
+
+# {{{ tools
+
+${MLK_BCC}: LIBS :=
 ${MLK_BCC}: ${MLK_BCC_OBJS}
-	@echo "CCLD $@"
-	@${CC} ${CFLAGS} -o $@ ${MLK_BCC_OBJS} ${SDL2_LIBS} ${LDFLAGS}
+	${CMD.ccld}
 
+${MLK_TILESET}: LIBS := ${JANSSON_LIBS}
 ${MLK_TILESET}: ${MLK_TILESET_OBJS}
-	@echo "CCLD $@"
-	@${CC} ${CFLAGS} -o $@ ${MLK_TILESET_OBJS} ${JANSSON_LIBS} ${LDFLAGS}
+	${CMD.ccld}
 
+${MLK_MAP}: LIBS := ${JANSSON_LIBS}
 ${MLK_MAP}: ${MLK_MAP_OBJS}
-	@echo "CCLD $@"
-	@${CC} ${CFLAGS} -o $@ ${MLK_MAP_OBJS} ${JANSSON_LIBS} ${LDFLAGS}
+	${CMD.ccld}
 
-${MLK_ADVENTURE_OBJS}: ${LIBMLK_ADVENTURE}
+# }}}
 
+# {{{ mlk-adventure
+
+${MLK_ADVENTURE_OBJS}: ${LIBMLK_ADVENTURE} ${LIBMLK_DATA_ASTS}
+
+${MLK_ADVENTURE}: LIBS := ${LIBMLK_ALL}
 ${MLK_ADVENTURE}: ${MLK_ADVENTURE_OBJS}
-	@echo "CCLD $@"
-	@${CC} ${CFLAGS} -o $@ ${MLK_ADVENTURE_OBJS} ${LIBMLK_ADVENTURE} \
-		${LIBMLK_RPG} ${LIBMLK_UI} ${LIBMLK_CORE} ${LIBMLK_SQLITE} \
-		${SDL2_LIBS} ${ZSTD_LIBS} ${LIBS} ${LDFLAGS}
+	${CMD.ccld}
+
+# }}}
+
+# {{{ examples
+
+${EXAMPLES}: ${LIBMLK_ADVENTURE}
+
+examples/example-%/main: LIBS := ${LIBMLK_ALL}
+examples/example-%/main: examples/example-%/main.c
+	${CMD.ccld}
+
+examples: ${EXAMPLES}
+
+# }}}
+
+# {{{ tests
+
+${TESTS}: ${LIBMLK_ADVENTURE}
+
+tests/test-%: CFLAGS += -DDIRECTORY=\"${CURDIR}/tests/assets\"
+tests/test-%: LIBS := ${LIBMLK_ALL}
+tests/test-%: tests/test-%.c
+	${CMD.ccld}
+
+tests: ${TESTS}
+	for t in ${TESTS}; do printf "\n=> $$t <=\n" && $$t -v; done
+
+# }}}
+
+# {{{ clean
 
 clean:
-	@echo "cleaning"
-	@rm -f config.h tags
-	@rm -f ${LIBMLK_ADVENTURE} ${LIBMLK_ADVENTURE_OBJS} ${LIBMLK_ADVENTURE_DEPS}
-	@rm -f ${LIBMLK_CORE} ${LIBMLK_CORE_OBJS} ${LIBMLK_CORE_DEPS}
-	@rm -f ${LIBMLK_RPG} ${LIBMLK_RPG_OBJS} ${LIBMLK_RPG_DEPS} ${LIBMLK_RPG_ASTS}
-	@rm -f ${LIBMLK_UI} ${LIBMLK_UI_OBJS} ${LIBMLK_UI_DEPS} ${LIBMLK_UI_ASTS}
-	@rm -f ${LIBMLK_SQLITE} ${LIBMLK_SQLITE_OBJS} ${LIBMLK_SQLITE_DEPS} ${LIBMLK_SQLITE_ASTS}
-	@rm -f ${LIBMLK_DATA_ASTS}
-	@rm -f ${MLK_ADVENTURE} ${MLK_ADVENTURE_OBJS} ${MLK_ADVENTURE_DEPS}
-	@rm -f ${MLK_BCC} ${MLK_BCC_OBJS} ${MLK_BCC_DEPS}
-	@rm -f ${MLK_MAP} ${MLK_MAP_OBJS} ${MLK_MAP_DEPS}
-	@rm -f ${MLK_TILESET} ${MLK_TILESET_OBJS} ${MLK_TILESET_DEPS}
+	rm -f config.h tags
+	rm -f ${LIBMLK_ADVENTURE} ${LIBMLK_ADVENTURE_OBJS} ${LIBMLK_ADVENTURE_DEPS}
+	rm -f ${LIBMLK_CORE} ${LIBMLK_CORE_OBJS} ${LIBMLK_CORE_DEPS}
+	rm -f ${LIBMLK_RPG} ${LIBMLK_RPG_OBJS} ${LIBMLK_RPG_DEPS} ${LIBMLK_RPG_ASTS}
+	rm -f ${LIBMLK_UI} ${LIBMLK_UI_OBJS} ${LIBMLK_UI_DEPS} ${LIBMLK_UI_ASTS}
+	rm -f ${LIBMLK_SQLITE} ${LIBMLK_SQLITE_OBJS} ${LIBMLK_SQLITE_DEPS} ${LIBMLK_SQLITE_ASTS}
+	rm -f ${LIBMLK_DATA_ASTS}
+	rm -f ${MLK_ADVENTURE} ${MLK_ADVENTURE_OBJS} ${MLK_ADVENTURE_DEPS}
+	rm -f ${MLK_BCC} ${MLK_BCC_OBJS} ${MLK_BCC_DEPS}
+	rm -f ${MLK_MAP} ${MLK_MAP_OBJS} ${MLK_MAP_DEPS}
+	rm -f ${MLK_TILESET} ${MLK_TILESET_OBJS} ${MLK_TILESET_DEPS}
+	rm -f ${EXAMPLES} ${TESTS}
 
-.PHONY: all clean
+# }}}
+
+.PHONY: all clean examples tests
