@@ -29,6 +29,7 @@ LOCALEDIR=              share/locale
 
 # Compile time options.
 NLS=                    1
+COMPRESS=               1
 
 LIBMLK_SQLITE=          extern/libsqlite/libmlk-sqlite.a
 LIBMLK_SQLITE_SRCS=     extern/libsqlite/sqlite3.c
@@ -230,8 +231,17 @@ else
 SED.nls=                /@define WITH_NLS@/d
 endif
 
+# Can't use standard input otherwise frame content size isn't available.
+ifeq (${COMPRESS},1)
+TILESET.cmd=            ${MLK_TILESET} < $< > $@.tmp && zstd -17 $@.tmp --rm -fqo $@
+MAP.cmd=                ${MLK_MAP} < $< > $@.tmp && zstd -17 $@.tmp --rm -fqo $@
+else
+TILESET.cmd=            ${MLK_TILESET} < $< > $@
+MAP.cmd=                ${MLK_MAP} < $< > $@
+endif
+
 .SUFFIXES:
-.SUFFIXES: .c .o .h .map .ogg .png .sql .tileset .ttf
+.SUFFIXES: .c .o .h .json .map .ogg .png .sql .tileset .ttf
 
 all: ${TARGETS}
 
@@ -253,14 +263,15 @@ config.h: config.h.in
 	@echo "BCC  $<"
 	@${MLK_BCC} -0csu $< assets_$(notdir $<) > $@
 
-# Maps
+# Maps.
 .json.map:
 	@echo "MAP  $<"
-	@${MLK_MAP} < $< > $@
+	@${MAP.cmd}
 
-.tileset.map:
+# Tilesets.
+.json.tileset:
 	@echo "TS   $<"
-	@${MLK_TILESET} < $< > $@
+	@${TILESET.cmd}
 
 -include ${LIBMLK_ADVENTURE_DEPS}
 -include ${LIBMLK_CORE_DEPS}

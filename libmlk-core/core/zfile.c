@@ -20,6 +20,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -121,6 +122,9 @@ zfile_close(struct zfile *zf)
 	assert(zf);
 
 	free(zf->data);
-	fclose(zf->fp);
+
+	if (zf->fp)
+		fclose(zf->fp);
+
 	memset(zf, 0, sizeof (*zf));
 }
