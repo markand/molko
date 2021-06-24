@@ -30,6 +30,7 @@ LOCALEDIR=              share/locale
 # Compile time options.
 NLS=                    1
 COMPRESS=               1
+ZSTD=                   1
 
 LIBMLK_SQLITE=          extern/libsqlite/libmlk-sqlite.a
 LIBMLK_SQLITE_SRCS=     extern/libsqlite/sqlite3.c
@@ -207,8 +208,10 @@ SDL2_LIBS:=             $(shell pkg-config --libs sdl2 SDL2_mixer SDL2_ttf SDL2_
 JANSSON_INCS:=          $(shell pkg-config --cflags jansson)
 JANSSON_LIBS:=          $(shell pkg-config --libs jansson)
 
+ifeq (${ZSTD},1)
 ZSTD_INCS:=             $(shell pkg-config --cflags libzstd)
 ZSTD_LIBS:=             $(shell pkg-config --libs libzstd)
+endif
 
 INCS=                   -I. \
                         -Iextern/libsqlite \
@@ -231,6 +234,13 @@ else
 SED.nls=                /@define WITH_NLS@/d
 endif
 
+ifeq (${ZSTD},1)
+LIBS+=                  -lintl
+SED.zstd=               s/@define WITH_ZSTD@/\#define MOLKO_WITH_ZSTD/
+else
+SED.zstd=               /@define WITH_ZSTD@/d
+endif
+
 # Can't use standard input otherwise frame content size isn't available.
 ifeq (${COMPRESS},1)
 TILESET.cmd=            ${MLK_TILESET} < $< > $@.tmp && zstd -17 $@.tmp --rm -fqo $@
@@ -247,7 +257,8 @@ all: ${TARGETS}
 
 config.h: config.h.in
 	@echo "SED  $<"
-	@sed -e "${SED.nls}" < $< > $@
+	@sed -e "${SED.nls}" \
+		-e "${SED.zstd}" < $< > $@
 
 .c.o:
 	@echo "CC   $<"

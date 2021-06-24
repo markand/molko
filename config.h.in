@@ -1,1 +1,2 @@
 @define WITH_NLS@
+@define WITH_ZSTD@

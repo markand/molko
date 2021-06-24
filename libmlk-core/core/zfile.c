@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "config.h"
+
 #include <sys/stat.h>
 #include <assert.h>
 #include <errno.h>
@@ -25,7 +27,15 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <zstd.h>
+/*
+ * If not enabled, we still need to check if a file is in zstandard so we use
+ * the magic number defined in the zstd.h file or copy it if zstd is disabled.
+ */
+#if defined(MOLKO_WITH_ZSTD)
+#       include <zstd.h>
+#else
+#       define ZSTD_MAGICNUMBER 0xFD2FB528
+#endif
 
 #include "zfile.h"
 
@@ -47,6 +57,7 @@ is_zstd(int fd)
 static int
 decompress(int fd, struct zfile *zf)
 {
+#if defined(MOLKO_WITH_ZSTD)
 	char *in = NULL;
 	unsigned long long datasz;
 	struct stat st;
@@ -89,6 +100,14 @@ fail:
 	free(in);
 
 	return -1;
+#else
+	(void)fd;
+	(void)zf;
+
+	errno = ENOTSUP;
+
+	return -1;
+#endif
 }
 
 static int
