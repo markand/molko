@@ -7,10 +7,14 @@
 assets/.*\.h$
 ^config\.h$
 
+# fakeroot directory.
+^fakeroot
+
 # vim/emacs specific.
 ^tags$
-^tags.lock$
-^tags.temp$
+^tags\.lock$
+^tags\.temp$
+^cscope\.out$
 \.swp$
 \.swo$
 

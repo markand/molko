@@ -28,10 +28,31 @@ Quick install.
 
 Available general make targets:
 
-- `all`: (default): build only molko,
-- `tools`: build tools (e.g. molko-map),
-- `tests`: build tests and run them,
+- `all`: (default): build only molko.
+- `tools`: build tools (e.g. molko-map).
+- `tests`: build tests and run them.
 - `everything`: build molko, tools and tests without running them.
+- `fakeroot`: create a runnable local directory.
+
+Direct use in source tree
+-------------------------
+
+Examples and `mlk-adventure` executable searches for data into a specific
+directory, when building those are not already discoverable because targets are
+not already installed.
+
+It's still possible to build a fakeroot directory to run examples and
+`mlk-adventure` without installing. To do this you simply need to use `fakeroot`
+target.
+
+Note: you need rsync installed, in contrast to `install` with a `DESTDIR`
+      macro it only copies runtime data and avoid re-copying what didn't
+      change for a faster experience.
+
+	$ make all examples
+	$ ./fakeroot/bin/mlk-adventure
+	(or)
+	$ ./fakeroot/bin/example-action
 
 Platform: Windows
 -----------------
@@ -51,7 +72,7 @@ appropriate MinGW shell prior to the chapter above.
 - *mingw-w64-x86_64-SDL2_image*
 - *mingw-w64-x86_64-SDL2_mixer*
 - *mingw-w64-x86_64-SDL2_ttf*
-- *mingw-w64-x86_64-jansson* (only for molko-map tool)
+- *mingw-w64-x86_64-jansson* (only for mlk-map/mlk-tileset tools)
 
 Note: replace `x86_64` with `i686` if you have a deprecated system or if you
       have issues while debugging (MinGW-w64 and/or gdb have known issues in

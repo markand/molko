@@ -202,15 +202,19 @@ TESTS=                  tests/test-action-script \
                         tests/test-tileset \
                         tests/test-util
 
-TARGETS=                ${LIBMLK_ADVENTURE} \
+LIBRARIES=              ${LIBMLK_ADVENTURE} \
                         ${LIBMLK_CORE} \
                         ${LIBMLK_RPG} \
                         ${LIBMLK_SQLITE} \
-                        ${LIBMLK_UI} \
-                        ${MLK_ADVENTURE} \
-                        ${MLK_BCC} \
+                        ${LIBMLK_UI}
+
+TOOLS=                  ${MLK_BCC} \
                         ${MLK_MAP} \
                         ${MLK_TILESET}
+
+PROGS=                  ${MLK_ADVENTURE}
+
+TARGETS:=               ${LIBRARIES} ${PROGS}
 
 SDL2_INCS:=             $(shell pkg-config --cflags sdl2 SDL2_mixer SDL2_ttf SDL2_image)
 SDL2_LIBS:=             $(shell pkg-config --libs sdl2 SDL2_mixer SDL2_ttf SDL2_image)
@@ -438,4 +442,24 @@ clean:
 
 # }}}
 
-.PHONY: all clean examples tests
+# {{{ fakeroot
+
+fakeroot:
+	mkdir -p fakeroot
+	mkdir -p fakeroot/bin
+	mkdir -p fakeroot/share/mlk-adventure
+	cp ${PROGS} fakeroot/bin
+	for e in ${EXAMPLES}; do cp $$e fakeroot/bin/$$(basename $$(dirname $$e)); done
+	rsync -a libmlk-data/ fakeroot/share/mlk-adventure
+
+# }}}
+
+# {{{ meta targets
+
+tools: ${TOOLS}
+
+everything: ${TARGETS} ${TESTS} ${EXAMPLES}
+
+# }}}
+
+.PHONY: all clean examples everything fakeroot tests tools
