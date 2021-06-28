@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-28 22:34+0100\n"
+"POT-Creation-Date: 2021-06-28 21:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /Users/markand/Dev/molko/libmlk-ui/ui/button.c:75
+#: libmlk-ui/ui/button.c:75
 #, c-format
 msgid "button height is too small for text: %u < %u"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-ui/ui/button.c:73
+#: libmlk-ui/ui/button.c:73
 #, c-format
 msgid "button width is too small for text: %u < %u"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-ui/ui/gridmenu.c:86
+#: libmlk-ui/ui/gridmenu.c:86
 #, c-format
 msgid "gridmenu height is too small: %u < %u"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-ui/ui/gridmenu.c:78
+#: libmlk-ui/ui/gridmenu.c:78
 #, c-format
 msgid "gridmenu width is too small: %u < %u"
 msgstr ""

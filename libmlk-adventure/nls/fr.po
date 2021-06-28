@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-22 10:59+0100\n"
+"POT-Creation-Date: 2021-06-28 21:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,32 +29,48 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/state/mainmenu.c:107
+#: libmlk-adventure/adventure/spell/fire-minor.c:123
+msgid "A small amount of fire balls"
+msgstr ""
+
+#: libmlk-adventure/adventure/character/black-cat.c:44
+msgid "Black Cat"
+msgstr ""
+
+#: libmlk-adventure/adventure/state/mainmenu.c:119
 msgid "Continue"
 msgstr "Continuer"
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/dialog/save.c:162
+#: libmlk-adventure/adventure/spell/fire-minor.c:122
+msgid "Fire Minor"
+msgstr ""
+
+#: libmlk-adventure/adventure/dialog/save.c:160
 #, c-format
 msgid "Last played: %s"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/state/mainmenu.c:106
+#: libmlk-adventure/adventure/character/neth.c:41
+msgid "Neth"
+msgstr ""
+
+#: libmlk-adventure/adventure/state/mainmenu.c:118
 msgid "New"
 msgstr "Nouvelle partie"
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/item/potion.c:36
+#: libmlk-adventure/adventure/item/potion.c:57
 msgid "Potion"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/state/mainmenu.c:108
+#: libmlk-adventure/adventure/state/mainmenu.c:120
 msgid "Quit"
 msgstr "Quitter"
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/item/potion.c:37
+#: libmlk-adventure/adventure/item/potion.c:58
 msgid "Recover 50 HP."
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-adventure/adventure/dialog/save.c:168
+#: libmlk-adventure/adventure/dialog/save.c:166
 #, c-format
 msgid "Time played: %s"
 msgstr ""

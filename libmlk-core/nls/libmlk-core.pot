@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-20 13:12+0100\n"
+"POT-Creation-Date: 2021-06-28 21:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /Users/markand/Dev/molko/libmlk-core/core/panic.c:30
+#: libmlk-core/core/panic.c:30
 #, c-format
 msgid "abort: %s\n"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-core/core/panic.c:76
+#: libmlk-core/core/panic.c:76
 #, c-format
 msgid "abort: panic handler returned\n"
 msgstr ""

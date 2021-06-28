@@ -20,6 +20,10 @@ CC=                     cc
 CFLAGS=                 -O0 -g
 AR=                     ar
 
+MSGFMT=                 msgfmt
+MSGMERGE=               msgmerge
+XGETTEXT=               xgettext
+
 # Don't use absolute paths except for PREFIX.
 PREFIX=                 /usr/local
 BINDIR=                 bin
@@ -67,6 +71,11 @@ LIBMLK_CORE_SRCS=       libmlk-core/core/action.c \
 LIBMLK_CORE_OBJS=       ${LIBMLK_CORE_SRCS:.c=.o}
 LIBMLK_CORE_DEPS=       ${LIBMLK_CORE_SRCS:.c=.d}
 
+ifeq (${NLS},1)
+LIBMLK_CORE_PO=         libmlk-core/nls/fr.po
+LIBMLK_CORE_MO=         ${LIBMLK_CORE_PO:.po=.mo}
+endif
+
 LIBMLK_UI=              libmlk-ui/libmlk-ui.a
 LIBMLK_UI_SRCS=         libmlk-ui/ui/align.c \
                         libmlk-ui/ui/button.c \
@@ -81,6 +90,11 @@ LIBMLK_UI_OBJS=         ${LIBMLK_UI_SRCS:.c=.o}
 LIBMLK_UI_DEPS=         ${LIBMLK_UI_SRCS:.c=.d}
 LIBMLK_UI_ASTS=         libmlk-ui/assets/fonts/opensans-light.h \
                         libmlk-ui/assets/fonts/opensans-regular.h
+
+ifeq (${NLS},1)
+LIBMLK_UI_PO=           libmlk-ui/nls/fr.po
+LIBMLK_UI_MO=           ${LIBMLK_UI_PO:.po=.mo}
+endif
 
 LIBMLK_RPG=             libmlk-rpg/libmlk-rpg.a
 LIBMLK_RPG_SRCS=        libmlk-rpg/rpg/battle-bar.c \
@@ -129,6 +143,11 @@ LIBMLK_RPG_ASTS=        libmlk-rpg/assets/sql/character-load.h \
                         libmlk-rpg/assets/sql/property-remove.h \
                         libmlk-rpg/assets/sql/property-set.h
 
+ifeq (${NLS},1)
+LIBMLK_RPG_PO=          libmlk-rpg/nls/fr.po
+LIBMLK_RPG_MO=          ${LIBMLK_RPG_PO:.po=.mo}
+endif
+
 LIBMLK_ADVENTURE=       libmlk-adventure/libmlk-adventure.a
 LIBMLK_ADVENTURE_SRCS=  libmlk-adventure/adventure/action/chest.c \
                         libmlk-adventure/adventure/action/spawner.c \
@@ -150,6 +169,11 @@ LIBMLK_ADVENTURE_SRCS=  libmlk-adventure/adventure/action/chest.c \
                         libmlk-adventure/adventure/trace_hud.c
 LIBMLK_ADVENTURE_OBJS=  ${LIBMLK_ADVENTURE_SRCS:.c=.o}
 LIBMLK_ADVENTURE_DEPS=  ${LIBMLK_ADVENTURE_SRCS:.c=.d}
+
+ifeq (${NLS},1)
+LIBMLK_ADVENTURE_PO=    libmlk-adventure/nls/fr.po
+LIBMLK_ADVENTURE_MO=    ${LIBMLK_ADVENTURE_PO:.po=.mo}
+endif
 
 # Not a real target, only generated maps and tilesets.
 LIBMLK_DATA_ASTS=       libmlk-data/maps/map-world.map \
@@ -215,6 +239,13 @@ TOOLS=                  ${MLK_BCC} \
 PROGS=                  ${MLK_ADVENTURE}
 
 TARGETS:=               ${LIBRARIES} ${PROGS}
+
+ifeq (${NLS},1)
+POT:=                   libmlk-core-pot \
+                        libmlk-ui-pot \
+                        libmlk-rpg-pot \
+                        libmlk-adventure-pot
+endif
 
 SDL2_INCS:=             $(shell pkg-config --cflags sdl2 SDL2_mixer SDL2_ttf SDL2_image)
 SDL2_LIBS:=             $(shell pkg-config --libs sdl2 SDL2_mixer SDL2_ttf SDL2_image)
@@ -283,7 +314,7 @@ LIBMLK_ALL+=            -lintl
 endif
 
 .SUFFIXES:
-.SUFFIXES: .c .o .h .json .map .ogg .png .sql .tileset .ttf
+.SUFFIXES: .c .o .h .json .map .ogg .png .sql .tileset .ttf .mo .po
 
 all: ${TARGETS}
 
@@ -293,6 +324,9 @@ config.h: config.h.in
 
 .c.o:
 	${CMD.cc}
+
+.po.mo:
+	${MSGFMT} -o $@ $<
 
 # Binary files.
 .ttf.h .png.h .ogg.h:
@@ -320,6 +354,30 @@ config.h: config.h.in
 -include ${MLK_MAP_DEPS}
 -include ${MLK_TILESET_DEPS}
 
+#
+# pot(pot, sources, po)
+# ---------------------
+#
+# Regenerate .pot and update .po files.
+#
+define pot
+	${XGETTEXT} -cj -k_ -kN_ -LC -s -o ${1} ${2}
+	for po in ${3}; do \
+		${MSGMERGE} --backup=off -qU $$po ${1}; \
+	done
+endef
+
+#
+# pot-install(name, mo, destdir)
+#
+define pot-install
+	for mo in ${2}; do \
+		mkdir -p ${3}${LOCALEDIR}/$$(basename $${mo%.mo})/LC_MESSAGES; \
+		cp $$mo ${3}${LOCALEDIR}/$$(basename $${mo%.mo})/LC_MESSAGES/${1}.mo; \
+	done
+endef
+
+
 # {{{ libmlk-sqlite
 
 ${LIBMLK_SQLITE}: ${LIBMLK_SQLITE_OBJS}
@@ -331,8 +389,11 @@ ${LIBMLK_SQLITE}: ${LIBMLK_SQLITE_OBJS}
 
 ${LIBMLK_CORE_OBJS}: config.h
 
-${LIBMLK_CORE}: ${LIBMLK_CORE_OBJS}
+${LIBMLK_CORE}: ${LIBMLK_CORE_OBJS} ${LIBMLK_CORE_MO}
 	${CMD.ar}
+
+libmlk-core-pot:
+	$(call pot, libmlk-core/nls/libmlk-core.pot, ${LIBMLK_CORE_SRCS}, ${LIBMLK_CORE_PO})
 
 # }}}
 
@@ -341,8 +402,11 @@ ${LIBMLK_CORE}: ${LIBMLK_CORE_OBJS}
 ${LIBMLK_UI_ASTS}: ${MLK_BCC}
 ${LIBMLK_UI_OBJS}: ${LIBMLK_UI_ASTS} ${LIBMLK_CORE}
 
-${LIBMLK_UI}: ${LIBMLK_UI_OBJS}
+${LIBMLK_UI}: ${LIBMLK_UI_OBJS} ${LIBMLK_UI_MO}
 	${CMD.ar}
+
+libmlk-ui-pot:
+	$(call pot, libmlk-ui/nls/libmlk-ui.pot, ${LIBMLK_UI_SRCS}, ${LIBMLK_UI_PO})
 
 # }}}
 
@@ -351,8 +415,11 @@ ${LIBMLK_UI}: ${LIBMLK_UI_OBJS}
 ${LIBMLK_RPG_ASTS}: ${MLK_BCC}
 ${LIBMLK_RPG_OBJS}: ${LIBMLK_RPG_ASTS} ${LIBMLK_UI} ${LIBMLK_SQLITE}
 
-${LIBMLK_RPG}: ${LIBMLK_RPG_OBJS}
+${LIBMLK_RPG}: ${LIBMLK_RPG_OBJS} ${LIBMLK_RPG_MO}
 	${CMD.ar}
+
+libmlk-rpg-pot:
+	$(call pot, libmlk-rpg/nls/libmlk-rpg.pot, ${LIBMLK_RPG_SRCS}, ${LIBMLK_RPG_PO})
 
 # }}}
 
@@ -361,8 +428,11 @@ ${LIBMLK_RPG}: ${LIBMLK_RPG_OBJS}
 ${LIBMLK_ADVENTURE_ASTS}: ${MLK_BCC}
 ${LIBMLK_ADVENTURE_OBJS}: ${LIBMLK_ADVENTURE_ASTS} ${LIBMLK_RPG}
 
-${LIBMLK_ADVENTURE}: ${LIBMLK_ADVENTURE_OBJS}
+${LIBMLK_ADVENTURE}: ${LIBMLK_ADVENTURE_OBJS} ${LIBMLK_ADVENTURE_MO}
 	${CMD.ar}
+
+libmlk-adventure-pot:
+	$(call pot, libmlk-adventure/nls/libmlk-adventure.pot, ${LIBMLK_ADVENTURE_SRCS}, ${LIBMLK_ADVENTURE_PO})
 
 # }}}
 
@@ -427,6 +497,7 @@ tests: ${TESTS}
 # {{{ clean
 
 clean:
+	rm -rf fakeroot
 	rm -f config.h tags
 	rm -f ${LIBMLK_ADVENTURE} ${LIBMLK_ADVENTURE_OBJS} ${LIBMLK_ADVENTURE_DEPS}
 	rm -f ${LIBMLK_CORE} ${LIBMLK_CORE_OBJS} ${LIBMLK_CORE_DEPS}
@@ -446,11 +517,15 @@ clean:
 
 fakeroot:
 	mkdir -p fakeroot
-	mkdir -p fakeroot/bin
-	mkdir -p fakeroot/share/mlk-adventure
-	cp ${PROGS} fakeroot/bin
-	for e in ${EXAMPLES}; do cp $$e fakeroot/bin/$$(basename $$(dirname $$e)); done
-	rsync -a libmlk-data/ fakeroot/share/mlk-adventure
+	mkdir -p fakeroot/${BINDIR}
+	mkdir -p fakeroot/${DATADIR}/mlk-adventure
+	cp ${PROGS} fakeroot/${BINDIR}
+	for e in ${EXAMPLES}; do cp $$e fakeroot/${BINDIR}/$$(basename $$(dirname $$e)); done
+	rsync -a libmlk-data/ fakeroot/${DATADIR}/mlk-adventure
+	$(call pot-install,libmlk-core,${LIBMLK_CORE_MO},fakeroot/)
+	$(call pot-install,libmlk-ui,${LIBMLK_UI_MO},fakeroot/)
+	$(call pot-install,libmlk-rpg,${LIBMLK_RPG_MO},fakeroot/)
+	$(call pot-install,libmlk-adventure,${LIBMLK_ADVENTURE_MO},fakeroot/)
 
 # }}}
 
@@ -460,6 +535,8 @@ tools: ${TOOLS}
 
 everything: ${TARGETS} ${TESTS} ${EXAMPLES}
 
+pot: ${POT}
+
 # }}}
 
-.PHONY: all clean examples everything fakeroot tests tools
+.PHONY: all clean examples everything fakeroot nls pot tests tools

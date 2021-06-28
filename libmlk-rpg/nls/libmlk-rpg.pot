@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-22 10:58+0100\n"
+"POT-Creation-Date: 2021-06-28 21:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,127 +17,127 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-bar.c:127
+#: libmlk-rpg/rpg/battle-bar.c:143
 msgid "Attack"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-bar.c:134
+#: libmlk-rpg/rpg/battle-bar.c:150
 msgid "Magic"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-bar.c:141
+#: libmlk-rpg/rpg/battle-bar.c:157
 msgid "Objects"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-bar.c:148
+#: libmlk-rpg/rpg/battle-bar.c:164
 msgid "Special"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-state-victory.c:86
+#: libmlk-rpg/rpg/battle-state-victory.c:86
 msgid "Victory!"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/battle-state-lost.c:85
+#: libmlk-rpg/rpg/battle-state-lost.c:85
 msgid "You have been defeated..."
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:240
+#: libmlk-rpg/rpg/tileset-file.c:241
 msgid "could not parse image"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:148
+#: libmlk-rpg/rpg/map-file.c:149
 msgid "could not parse tileset"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/save.c:80
+#: libmlk-rpg/rpg/save.c:78
 msgid "database not initialized correctly"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:90
+#: libmlk-rpg/rpg/map-file.c:91
 #, c-format
 msgid "ignoring action %d,%d,%u,%u,%d,%s"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:59
+#: libmlk-rpg/rpg/map-file.c:60
 #, c-format
 msgid "invalid layer type: %s"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:193
+#: libmlk-rpg/rpg/map-file.c:194
 msgid "invalid origin"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/message.c:277
+#: libmlk-rpg/rpg/message.c:277
 msgid "message has null dimensions"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/message.c:140
+#: libmlk-rpg/rpg/message.c:140
 #, c-format
 msgid "message height too small: %u < %u"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/message.c:171
+#: libmlk-rpg/rpg/message.c:171
 msgid "message is automatic but has zero timeout"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/message.c:138
+#: libmlk-rpg/rpg/message.c:138
 #, c-format
 msgid "message width too small: %u < %u"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:254
+#: libmlk-rpg/rpg/map-file.c:255
 msgid "missing background layer"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:256
+#: libmlk-rpg/rpg/map-file.c:257
 msgid "missing foreground layer"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:132
+#: libmlk-rpg/rpg/map-file.c:133
 msgid "missing layer type definition"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:128
+#: libmlk-rpg/rpg/map-file.c:129
 msgid "missing map dimensions before layer"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:238
+#: libmlk-rpg/rpg/tileset-file.c:239
 msgid "missing tile dimensions before image"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:258
+#: libmlk-rpg/rpg/map-file.c:259
 msgid "missing tileset"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:297
+#: libmlk-rpg/rpg/tileset-file.c:298
 msgid "missing tileset image"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:247
+#: libmlk-rpg/rpg/map-file.c:248
 msgid "missing title"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:175
+#: libmlk-rpg/rpg/map-file.c:176
 msgid "null map columns"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:184
+#: libmlk-rpg/rpg/map-file.c:185
 msgid "null map rows"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/map-file.c:164
+#: libmlk-rpg/rpg/map-file.c:165
 msgid "null map title"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/save.c:265
+#: libmlk-rpg/rpg/save.c:263
 #, c-format
 msgid "property '%s' was not found"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:141
+#: libmlk-rpg/rpg/tileset-file.c:142
 msgid "tileheight is null"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-rpg/rpg/tileset-file.c:132
+#: libmlk-rpg/rpg/tileset-file.c:133
 msgid "tilewidth is null"
 msgstr ""

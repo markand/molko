@@ -2,6 +2,7 @@
 \.a$
 \.d$
 \.o$
+\.mo$
 
 # generated files.
 assets/.*\.h$
