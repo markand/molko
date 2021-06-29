@@ -268,12 +268,10 @@ INCS=                   -I. \
                         ${SDL2_INCS} \
                         ${JANSSON_INCS} \
                         ${ZSTD_INCS}
-DEFS=                   -DMOLKO_BINDIR=\"${BINDIR}\" \
+DEFS=                   -DMOLKO_PREFIX=\"${PREFIX}\" \
+                        -DMOLKO_BINDIR=\"${BINDIR}\" \
                         -DMOLKO_DATADIR=\"${DATADIR}\" \
-                        -DMOLKO_LOCALEDIR=\"${LOCALEDIR}\" \
-                        -DMOLKO_ABS_BINDIR=\"${PREFIX}/${BINDIR}\" \
-                        -DMOLKO_ABS_DATADIR=\"${PREFIX}/${DATADIR}\" \
-                        -DMOLKO_ABS_LOCALEDIR=\"${PREFIX}/${LOCALEDIR}\"
+                        -DMOLKO_LOCALEDIR=\"${LOCALEDIR}\"
 
 ifeq (${NLS},1)
 SED.nls=                s/@define WITH_NLS@/\#define MOLKO_WITH_NLS/
@@ -372,11 +370,10 @@ endef
 #
 define pot-install
 	for mo in ${2}; do \
-		mkdir -p ${3}${LOCALEDIR}/$$(basename $${mo%.mo})/LC_MESSAGES; \
-		cp $$mo ${3}${LOCALEDIR}/$$(basename $${mo%.mo})/LC_MESSAGES/${1}.mo; \
+		mkdir -p ${3}${PREFIX}/${LOCALEDIR}/$$(basename $${mo%.mo})/LC_MESSAGES; \
+		cp $$mo ${3}${PREFIX}/${LOCALEDIR}/$$(basename $${mo%.mo})/LC_MESSAGES/${1}.mo; \
 	done
 endef
-
 
 # {{{ libmlk-sqlite
 
@@ -400,7 +397,7 @@ libmlk-core-pot:
 # {{{ libmlk-ui
 
 ${LIBMLK_UI_ASTS}: ${MLK_BCC}
-${LIBMLK_UI_OBJS}: ${LIBMLK_UI_ASTS} ${LIBMLK_CORE}
+${LIBMLK_UI_OBJS}: ${LIBMLK_UI_ASTS} config.h
 
 ${LIBMLK_UI}: ${LIBMLK_UI_OBJS} ${LIBMLK_UI_MO}
 	${CMD.ar}
@@ -413,7 +410,7 @@ libmlk-ui-pot:
 # {{{ libmlk-rpg
 
 ${LIBMLK_RPG_ASTS}: ${MLK_BCC}
-${LIBMLK_RPG_OBJS}: ${LIBMLK_RPG_ASTS} ${LIBMLK_UI} ${LIBMLK_SQLITE}
+${LIBMLK_RPG_OBJS}: ${LIBMLK_RPG_ASTS} config.h
 
 ${LIBMLK_RPG}: ${LIBMLK_RPG_OBJS} ${LIBMLK_RPG_MO}
 	${CMD.ar}
@@ -426,7 +423,7 @@ libmlk-rpg-pot:
 # {{{ libmlk-adventure
 
 ${LIBMLK_ADVENTURE_ASTS}: ${MLK_BCC}
-${LIBMLK_ADVENTURE_OBJS}: ${LIBMLK_ADVENTURE_ASTS} ${LIBMLK_RPG}
+${LIBMLK_ADVENTURE_OBJS}: ${LIBMLK_ADVENTURE_ASTS} config.h
 
 ${LIBMLK_ADVENTURE}: ${LIBMLK_ADVENTURE_OBJS} ${LIBMLK_ADVENTURE_MO}
 	${CMD.ar}
@@ -460,7 +457,7 @@ ${MLK_MAP}: ${MLK_MAP_OBJS}
 
 # {{{ mlk-adventure
 
-${MLK_ADVENTURE_OBJS}: ${LIBMLK_ADVENTURE} ${LIBMLK_DATA_ASTS}
+${MLK_ADVENTURE_OBJS}: ${LIBRARIES} ${LIBMLK_DATA_ASTS}
 
 ${MLK_ADVENTURE}: LIBS := ${LIBMLK_ALL}
 ${MLK_ADVENTURE}: ${MLK_ADVENTURE_OBJS}
@@ -470,7 +467,7 @@ ${MLK_ADVENTURE}: ${MLK_ADVENTURE_OBJS}
 
 # {{{ examples
 
-${EXAMPLES}: ${LIBMLK_ADVENTURE}
+${EXAMPLES}: ${LIBRARIES}
 
 examples/example-%/main: LIBS := ${LIBMLK_ALL}
 examples/example-%/main: examples/example-%/main.c
@@ -497,7 +494,6 @@ tests: ${TESTS}
 # {{{ clean
 
 clean:
-	rm -rf fakeroot
 	rm -f config.h tags
 	rm -f ${LIBMLK_ADVENTURE} ${LIBMLK_ADVENTURE_OBJS} ${LIBMLK_ADVENTURE_DEPS}
 	rm -f ${LIBMLK_CORE} ${LIBMLK_CORE_OBJS} ${LIBMLK_CORE_DEPS}
@@ -513,21 +509,26 @@ clean:
 
 # }}}
 
-# {{{ fakeroot
+install:
+	mkdir -p ${DESTDIR}${PREFIX}/${BINDIR}
+	cp ${TOOLS} ${TARGETS} ${DESTDIR}${PREFIX}/${BINDIR}
+	mkdir -p ${DESTDIR}${PREFIX}/${LIBDIR}
+	cp ${LIBRARIES} ${DESTDIR}${PREFIX}/${LIBDIR}
 
-fakeroot:
-	mkdir -p fakeroot
-	mkdir -p fakeroot/${BINDIR}
-	mkdir -p fakeroot/${DATADIR}/mlk-adventure
-	cp ${PROGS} fakeroot/${BINDIR}
-	for e in ${EXAMPLES}; do cp $$e fakeroot/${BINDIR}/$$(basename $$(dirname $$e)); done
-	rsync -a libmlk-data/ fakeroot/${DATADIR}/mlk-adventure
-	$(call pot-install,libmlk-core,${LIBMLK_CORE_MO},fakeroot/)
-	$(call pot-install,libmlk-ui,${LIBMLK_UI_MO},fakeroot/)
-	$(call pot-install,libmlk-rpg,${LIBMLK_RPG_MO},fakeroot/)
-	$(call pot-install,libmlk-adventure,${LIBMLK_ADVENTURE_MO},fakeroot/)
-
-# }}}
+install-data:
+	mkdir -p ${DESTDIR}${PREFIX}/${DATADIR}/mlk-adventure
+	cp -R libmlk-data/fonts ${DESTDIR}${PREFIX}/${DATADIR}/mlk-adventure/fonts
+	cp -R libmlk-data/images ${DESTDIR}${PREFIX}/${DATADIR}/mlk-adventure/images
+	cp -R libmlk-data/music ${DESTDIR}${PREFIX}/${DATADIR}/mlk-adventure/music
+	cp -R libmlk-data/sounds ${DESTDIR}${PREFIX}/${DATADIR}/mlk-adventure/sounds
+	cp -R libmlk-data/sprites ${DESTDIR}${PREFIX}/${DATADIR}/mlk-adventure/sprites
+	cp -R libmlk-data/maps ${DESTDIR}${PREFIX}/${DATADIR}/mlk-adventure/maps
+ifeq (${NLS},1)
+	$(call pot-install,libmlk-core,${LIBMLK_CORE_MO},${DESTDIR})
+	$(call pot-install,libmlk-ui,${LIBMLK_UI_MO},${DESTDIR})
+	$(call pot-install,libmlk-rpg,${LIBMLK_RPG_MO},${DESTDIR})
+	$(call pot-install,libmlk-adventure,${LIBMLK_ADVENTURE_MO},${DESTDIR})
+endif
 
 # {{{ meta targets
 
@@ -539,4 +540,4 @@ pot: ${POT}
 
 # }}}
 
-.PHONY: all clean examples everything fakeroot nls pot tests tools
+.PHONY: all clean examples everything install install-data pot tests tools

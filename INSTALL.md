@@ -41,9 +41,14 @@ Examples and `mlk-adventure` executable searches for data into a specific
 directory, when building those are not already discoverable because targets are
 not already installed.
 
-It's still possible to build a fakeroot directory to run examples and
-`mlk-adventure` without installing. To do this you simply need to use `fakeroot`
-target.
+You need to install at least the data once using `install-data` target, you can
+do this without root access by using a temporary directory and set the
+`MLK_ROOT` environment variable.
+
+	$ make DESTDIR=datadir install
+	$ MLK_ROOT=datadir ./mlk-adventure/mlk-adventure
+	(or to run examples)
+	$ MLK_ROOT=datadir ./examples/
 
 Note: you need rsync installed, in contrast to `install` with a `DESTDIR`
       macro it only copies runtime data and avoid re-copying what didn't

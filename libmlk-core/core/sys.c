@@ -55,30 +55,6 @@ static const char *paths[] = {
 	[SYS_DIR_LOCALE]        = MOLKO_LOCALEDIR
 };
 
-static const char *abspaths[] = {
-	[SYS_DIR_BIN]           = MOLKO_ABS_BINDIR,
-	[SYS_DIR_DATA]          = MOLKO_ABS_DATADIR,
-	[SYS_DIR_LOCALE]        = MOLKO_ABS_LOCALEDIR
-};
-
-#if defined(_WIN32)
-
-static inline int
-is_absolute(const char *path)
-{
-	return !PathIsRelativeA(path);
-}
-
-#else
-
-static inline int
-is_absolute(const char *path)
-{
-	return path[0] == '/';
-}
-
-#endif
-
 static inline char *
 normalize(char *str)
 {
@@ -106,43 +82,46 @@ system_directory(enum sys_dir kind)
 	static char ret[PATH_MAX];
 	char *base, *binsect;
 
-	/* 1. Get current binary directory. */
-	base = SDL_GetBasePath();
+	if ((base = getenv("MLK_ROOT"))) {
+		snprintf(ret, sizeof (ret), "%s/%s/%s", base, MOLKO_PREFIX, paths[kind]);
+	} else {
+		/*
+		 * Some system does not provide support (shame on you OpenBSD)
+		 * to the executable path. In that case we use PREFIX+<dir>
+		 * instead.
+		 */
+		if (!(base = SDL_GetBasePath()))
+			snprintf(ret, sizeof (ret), "%s/%s", MOLKO_PREFIX, paths[kind]);
+		else {
+			/*
+			 * Decompose the path to the given special directory by
+			 * computing relative directory to it from where the
+			 * binary is located.
+			 *
+			 * Example:
+			 *
+			 *   PREFIX/bin/mlk
+			 *   PREFIX/share/mlk-adventure
+			 *
+			 * The path to the data is ../share/molko starting from
+			 * the binary.
+			 *
+			 * Put the base path into the path and remove the value
+			 * of MOLKO_BINDIR.
+			 *
+			 * Example:
+			 *   from: /usr/local/bin
+			 *   to:   /usr/local
+			 */
+			strlcpy(path, base, sizeof (path));
+			SDL_free(base);
 
-	/*
-	 * 2. Decompose the path to the given special directory by computing
-	 *    relative directory to it from where the binary is located.
-	 *
-	 * Example:
-	 *   PREFIX/bin/mlk
-	 *   PREFIX/share/molko
-	 *
-	 * The path to the data is ../share/molko starting from the binary.
-	 *
-	 * If path to binary is absolute we can't determine relative paths to
-	 * any other directory and use the absolute one instead.
-	 *
-	 * Also, on some platforms SDL_GetBasePath isn't implemented and returns
-	 * NULL, in that case return the fallback to the installation prefix.
-	 */
-	if (is_absolute(paths[SYS_DIR_BIN]) || is_absolute(paths[kind]) || !base)
-		return absolute(abspaths[kind]);
+			if ((binsect = strstr(path, paths[SYS_DIR_BIN])))
+				*binsect = '\0';
 
-	/*
-	 * 3. Put the base path into the path and remove the value of
-	 *    MOLKO_BINDIR.
-	 *
-	 * Example:
-	 *   from: /usr/local/bin
-	 *   to:   /usr/local
-	 */
-	strlcpy(path, base, sizeof (path));
-	SDL_free(base);
-
-	if ((binsect = strstr(path, paths[SYS_DIR_BIN])))
-		*binsect = '\0';
-
-	snprintf(ret, sizeof (ret), "%s%s", path, paths[kind]);
+			snprintf(ret, sizeof (ret), "%s%s", path, paths[kind]);
+		}
+	}
 
 	return normalize(ret);
 }
