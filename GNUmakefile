@@ -509,6 +509,18 @@ clean:
 
 # }}}
 
+# {{{ run
+
+out: ${LIBMLK_DATA_ASTS} ${TARGETS}
+	mkdir -p out
+	${MAKE} DESTDIR=out install-data install
+	touch out
+
+run: out
+	@./out/${PREFIX}/${BINDIR}/mlk-adventure
+
+# }}}
+
 install:
 	mkdir -p ${DESTDIR}${PREFIX}/${BINDIR}
 	cp ${TOOLS} ${TARGETS} ${DESTDIR}${PREFIX}/${BINDIR}
@@ -540,4 +552,4 @@ pot: ${POT}
 
 # }}}
 
-.PHONY: all clean examples everything install install-data pot tests tools
+.PHONY: all clean examples everything install install-data pot run tests tools

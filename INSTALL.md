@@ -32,7 +32,7 @@ Available general make targets:
 - `tools`: build tools (e.g. molko-map).
 - `tests`: build tests and run them.
 - `everything`: build molko, tools and tests without running them.
-- `fakeroot`: create a runnable local directory.
+- `run`: run molko with data installed in the source tree.
 
 Direct use in source tree
 -------------------------
@@ -45,19 +45,15 @@ You need to install at least the data once using `install-data` target, you can
 do this without root access by using a temporary directory and set the
 `MLK_ROOT` environment variable.
 
-	$ make DESTDIR=datadir install
-	$ MLK_ROOT=datadir ./mlk-adventure/mlk-adventure
-	(or to run examples)
-	$ MLK_ROOT=datadir ./examples/
+The directory `out` is recommended, see below.
 
-Note: you need rsync installed, in contrast to `install` with a `DESTDIR`
-      macro it only copies runtime data and avoid re-copying what didn't
-      change for a faster experience.
+	$ make DESTDIR=out install-data
+	$ MLK_ROOT=out ./mlk-adventure/mlk-adventure
+	(or to run examples:)
+	$ MLK_ROOT=out ./examples/example-action/main
 
-	$ make all examples
-	$ ./fakeroot/bin/mlk-adventure
-	(or)
-	$ ./fakeroot/bin/example-action
+There is a special target `run` that automatically create the diretory `out`
+with all data and binaries installed and runs `mlk-adventure`.
 
 Platform: Windows
 -----------------

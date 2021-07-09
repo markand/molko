@@ -8,8 +8,8 @@
 assets/.*\.h$
 ^config\.h$
 
-# fakeroot directory.
-^fakeroot
+# out directory.
+^out
 
 # vim/emacs specific.
 ^tags$
