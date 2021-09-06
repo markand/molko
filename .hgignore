@@ -3,6 +3,7 @@
 \.d$
 \.o$
 \.mo$
+\.exe$
 
 # generated files.
 assets/.*\.h$

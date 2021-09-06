@@ -57,6 +57,7 @@ LIBMLK_CORE_SRCS=       libmlk-core/core/action.c \
                         libmlk-core/core/music.c \
                         libmlk-core/core/painter.c \
                         libmlk-core/core/panic.c \
+                        libmlk-core/core/port.c \
                         libmlk-core/core/script.c \
                         libmlk-core/core/sound.c \
                         libmlk-core/core/sprite.c \
@@ -264,10 +265,7 @@ INCS=                   -I. \
                         -Ilibmlk-core \
                         -Ilibmlk-ui \
                         -Ilibmlk-rpg \
-                        -Ilibmlk-adventure \
-                        ${SDL2_INCS} \
-                        ${JANSSON_INCS} \
-                        ${ZSTD_INCS}
+                        -Ilibmlk-adventure
 DEFS=                   -DMOLKO_PREFIX=\"${PREFIX}\" \
                         -DMOLKO_BINDIR=\"${BINDIR}\" \
                         -DMOLKO_DATADIR=\"${DATADIR}\" \
@@ -386,6 +384,7 @@ ${LIBMLK_SQLITE}: ${LIBMLK_SQLITE_OBJS}
 
 ${LIBMLK_CORE_OBJS}: config.h
 
+${LIBMLK_CORE}: INCS += ${SDL2_INCS}
 ${LIBMLK_CORE}: ${LIBMLK_CORE_OBJS} ${LIBMLK_CORE_MO}
 	${CMD.ar}
 

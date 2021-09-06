@@ -38,6 +38,7 @@
 #include <SDL_ttf.h>
 
 #include "error.h"
+#include "port.h"
 #include "sound.h"
 #include "sys.h"
 

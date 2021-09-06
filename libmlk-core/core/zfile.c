@@ -37,6 +37,12 @@
 #       define ZSTD_MAGICNUMBER 0xFD2FB528
 #endif
 
+/* Windows thing. */
+#if !defined(O_BINARY)
+#       define O_BINARY
+#endif
+
+#include "port.h"
 #include "zfile.h"
 
 static int
@@ -61,11 +67,12 @@ decompress(int fd, struct zfile *zf)
 	char *in = NULL;
 	unsigned long long datasz;
 	struct stat st;
+	ssize_t nr;
 
 	/* Load uncompressed data. */
 	if (fstat(fd, &st) < 0)
 		goto fail;
-	if (!(in = calloc(1, st.st_size)) || read(fd, in, st.st_size) != st.st_size)
+	if (!(in = calloc(1, st.st_size)) || (nr = read(fd, in, st.st_size)) != st.st_size)
 		goto fail;
 
 	switch ((datasz = ZSTD_getFrameContentSize(in, st.st_size))) {
@@ -129,7 +136,7 @@ zfile_open(struct zfile *zf, const char *path)
 
 	memset(zf, 0, sizeof (*zf));
 
-	if ((fd = open(path, O_RDONLY)) < 0)
+	if ((fd = open(path, O_RDONLY | O_BINARY)) < 0)
 		return -1;
 
 	return is_zstd(fd) ? decompress(fd, zf) : reopen(fd, zf);

@@ -28,6 +28,7 @@
 #include <core/alloc.h>
 #include <core/error.h>
 #include <core/image.h>
+#include <core/port.h>
 #include <core/trace.h>
 #include <core/zfile.h>
 
@@ -229,7 +230,7 @@ parse(struct context *ctx, const char *path)
 
 	while (fgets(line, sizeof (line), ctx->fp)) {
 		/* Remove \n if any */
-		line[strcspn(line, "\n")] = '\0';
+		line[strcspn(line, "\r\n")] = '\0';
 
 		if (parse_line(ctx, line) < 0)
 			return -1;
