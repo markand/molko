@@ -39,7 +39,7 @@
 
 /* Windows thing. */
 #if !defined(O_BINARY)
-#       define O_BINARY
+#       define O_BINARY 0
 #endif
 
 #include "port.h"
