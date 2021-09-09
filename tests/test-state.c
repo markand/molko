@@ -30,6 +30,8 @@ struct invokes {
 	unsigned int handle;
 	unsigned int update;
 	unsigned int draw;
+	unsigned int suspend;
+	unsigned int resume;
 	unsigned int end;
 	unsigned int finish;
 };
@@ -38,6 +40,18 @@ static void
 zero(struct invokes *inv)
 {
 	memset(inv, 0, sizeof (*inv));
+}
+
+static void
+setup(void *data)
+{
+	game_init();
+}
+
+static void
+cleanup(void *data)
+{
+	game_quit();
 }
 
 static void
@@ -69,6 +83,18 @@ my_draw(struct state *state)
 }
 
 static void
+my_suspend(struct state *state)
+{
+	((struct invokes *)state->data)->suspend++;
+}
+
+static void
+my_resume(struct state *state)
+{
+	((struct invokes *)state->data)->resume++;
+}
+
+static void
 my_end(struct state *state)
 {
 	((struct invokes *)state->data)->end++;
@@ -86,6 +112,8 @@ my_finish(struct state *state)
 	.handle = my_handle, \
 	.update = my_update, \
 	.draw = my_draw, \
+	.suspend = my_suspend, \
+	.resume = my_resume, \
 	.end = my_end, \
 	.finish = my_finish \
 }
@@ -202,158 +230,137 @@ GREATEST_SUITE(suite_basics)
 	GREATEST_RUN_TEST(basics_finish);
 }
 
-static void
-switch_startup(void *data)
-{
-	memset(data, 0, sizeof (game));
-}
-
 GREATEST_TEST
-switch_quick_1(void)
+test_game_push(void)
 {
-	struct {
+	static struct {
 		struct invokes inv;
 		struct state state;
-	} table[2] = {
-		{ .state = INIT(&table[0]) },
-		{ .state = INIT(&table[1]) }
+	} states[] = {
+		{ .state = INIT(&states[0].inv) },
+		{ .state = INIT(&states[1].inv) }
 	};
 
-	/*
-	 * When set to 1, switching quickly state will immediately set the
-	 * current state to the specified one and call start on it. However,
-	 * if there was already a planned state, it is finished immediately.
-	 */
-	game_push(&table[0].state);
+	/* 0 becomes active and should start. */
+	game_push(&states[0].state);
+	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.handle, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.update, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.draw, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.suspend, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.resume, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
 
-	GREATEST_ASSERT_EQ(table[0].inv.start, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
+	/* Put some event, update and drawing. */
+	game_handle(&(union event) { .type = EVENT_QUIT });
+	game_update(100);
+	game_update(100);
+	game_draw();
+	game_draw();
+	game_draw();
+	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
+	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
+	GREATEST_ASSERT_EQ(states[0].inv.suspend, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.resume, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
 
-	GREATEST_ASSERT_EQ(table[1].inv.start, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
+	/* Switch to state 1, 0 must be suspended. */
+	game_push(&states[1].state);
+	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
+	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
+	GREATEST_ASSERT_EQ(states[0].inv.suspend, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.resume, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
 
-	/* Switch from [0] to [1] quickly, [0] should be closed immediately. */
-	zero(&table[0].inv);
-	game_push(&table[1].state);
+	GREATEST_ASSERT_EQ(states[1].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[1].inv.handle, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.update, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.draw, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.suspend, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.resume, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.end, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.finish, 0U);
 
-	GREATEST_ASSERT_EQ(table[0].inv.start, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 1);
+	/* Update a little this state. */
+	game_update(10);
+	game_update(10);
+	game_update(10);
+	game_update(10);
+	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
+	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
+	GREATEST_ASSERT_EQ(states[0].inv.suspend, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.resume, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
 
-	GREATEST_ASSERT_EQ(table[1].inv.start, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	
-	GREATEST_PASS();
-}
+	GREATEST_ASSERT_EQ(states[1].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[1].inv.handle, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.update, 4U);
+	GREATEST_ASSERT_EQ(states[1].inv.draw, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.suspend, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.resume, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.end, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.finish, 0U);
 
-GREATEST_TEST
-switch_quick_0(void)
-{
-	struct {
-		struct invokes inv;
-		struct state state;
-	} table[2] = {
-		{ .state = INIT(&table[0]) },
-		{ .state = INIT(&table[1]) }
-	};
+	/* Pop it, it should be finalized through end and finish. */
+	game_pop();
 
-	game_push(&table[0].state);
+	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
+	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
+	GREATEST_ASSERT_EQ(states[0].inv.suspend, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.resume, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
+	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
 
-	GREATEST_ASSERT_EQ(table[0].inv.start, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
+	GREATEST_ASSERT_EQ(states[1].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[1].inv.handle, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.update, 4U);
+	GREATEST_ASSERT_EQ(states[1].inv.draw, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.suspend, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.resume, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.end, 1U);
+	GREATEST_ASSERT_EQ(states[1].inv.finish, 1U);
 
-	GREATEST_ASSERT_EQ(table[1].inv.start, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
+	/* Pop this state as well. */
+	game_pop();
 
-	/*
-	 * Switch from [0] to [1] quickly, this should do nothing as it should
-	 * be done on the next game_update call instead.
-	 */
-	zero(&table[0].inv);
-	game_push(&table[1].state);
+	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
+	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
+	GREATEST_ASSERT_EQ(states[0].inv.suspend, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.resume, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.end, 1U);
+	GREATEST_ASSERT_EQ(states[0].inv.finish, 1U);
 
-	GREATEST_ASSERT_EQ(table[0].inv.start, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-
-	GREATEST_ASSERT_EQ(table[1].inv.start, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	
-	GREATEST_PASS();
-}
-
-GREATEST_TEST
-switch_invoke(void)
-{
-	struct {
-		struct invokes inv;
-		struct state state;
-	} table[2] = {
-		{ .state = INIT(&table[0]) },
-		{ .state = INIT(&table[1]) }
-	};
-
-	/* Start with 0. */
-	game_push(&table[0].state);
-
-	/* Ask to switch to 1. */
-	zero(&table[0].inv);
-	game_push(&table[1].state);
-	game_update(0);
-
-	GREATEST_ASSERT_EQ(table[0].inv.start, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 1);
-
-	GREATEST_ASSERT_EQ(table[1].inv.start, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
+	GREATEST_ASSERT_EQ(states[1].inv.start, 1U);
+	GREATEST_ASSERT_EQ(states[1].inv.handle, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.update, 4U);
+	GREATEST_ASSERT_EQ(states[1].inv.draw, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.suspend, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.resume, 0U);
+	GREATEST_ASSERT_EQ(states[1].inv.end, 1U);
+	GREATEST_ASSERT_EQ(states[1].inv.finish, 1U);
 
 	GREATEST_PASS();
 }
 
-GREATEST_SUITE(suite_switch)
+GREATEST_SUITE(suite_game)
 {
-	GREATEST_SET_SETUP_CB(switch_startup, &game);
-	GREATEST_RUN_TEST(switch_quick_1);
-	GREATEST_RUN_TEST(switch_quick_0);
-	GREATEST_RUN_TEST(switch_invoke);
+	GREATEST_SET_SETUP_CB(setup, NULL);
+	GREATEST_SET_TEARDOWN_CB(cleanup, NULL);
+	GREATEST_RUN_TEST(test_game_push);
 }
 
 GREATEST_MAIN_DEFS();
@@ -363,6 +370,6 @@ main(int argc, char **argv)
 {
 	GREATEST_MAIN_BEGIN();
 	GREATEST_RUN_SUITE(suite_basics);
-	GREATEST_RUN_SUITE(suite_switch);
+	GREATEST_RUN_SUITE(suite_game);
 	GREATEST_MAIN_END();
 }

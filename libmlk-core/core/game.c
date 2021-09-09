@@ -33,6 +33,14 @@ struct game game = {
 };
 
 void
+game_init(void)
+{
+	memset(&game, 0, sizeof (game));
+
+	game.state = &game.states[0];
+}
+
+void
 game_push(struct state *state)
 {
 	assert(state);
@@ -53,6 +61,8 @@ game_pop(void)
 
 	state_end(*game.state);
 	state_finish(*game.state);
+
+	*game.state = NULL;
 
 	if (game.state != &game.states[0])
 		state_resume(*--game.state);
@@ -117,9 +127,10 @@ game_loop(void)
 void
 game_quit(void)
 {
-	for (size_t i = 0; i < UTIL_SIZE(game.states); ++i)
+	for (size_t i = 0; i < UTIL_SIZE(game.states); ++i) {
 		if (game.states[i])
 			state_finish(game.states[i]);
 
-	*game.state = NULL;
+		game.states[i] = NULL;
+	}
 }

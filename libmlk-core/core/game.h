@@ -39,6 +39,9 @@ extern struct game game;
 CORE_BEGIN_DECLS
 
 void
+game_init(void);
+
+void
 game_push(struct state *);
 
 void
