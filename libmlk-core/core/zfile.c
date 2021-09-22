@@ -133,7 +133,7 @@ zfile_open(struct zfile *zf, const char *path)
 	assert(zf);
 	assert(path);
 
-	int fd, status;
+	int fd;
 
 	memset(zf, 0, sizeof (*zf));
 

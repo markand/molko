@@ -197,6 +197,8 @@ draw_cursors(const struct battle_state *st,
              const struct battle_entity *entities,
              size_t entitiesz)
 {
+	(void)st;
+
 	for (size_t i = 0; i < entitiesz; ++i) {
 		const struct battle_entity *et = &entities[i];
 
@@ -224,7 +226,7 @@ draw(const struct battle_state *st, const struct battle *bt)
 {
 	const struct select *select = st->data;
 
-	if (select->slt.index_character == -1) {
+	if (select->slt.index_character == -1U) {
 		/* All selected. */
 		if (select->slt.index_side == 0)
 			draw_cursors(st, bt, bt->enemies, UTIL_SIZE(bt->enemies));

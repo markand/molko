@@ -29,8 +29,8 @@
 
 #include "assets.h"
 
-#define SPRITE(which, file, w, h)       { which, file, w, h }
-#define SOUND(which, file)              { which, file }
+#define SPRITE(which, file, w, h)       { .index = which, .path = file, .cellw = w, .cellh = h }
+#define SOUND(which, file)              { .index = which, .path = file }
 
 static struct {
 	enum assets_sprite index;

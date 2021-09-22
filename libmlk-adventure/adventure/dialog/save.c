@@ -129,6 +129,8 @@ draw_save_box(const struct geo *geo, size_t i)
 static void
 draw_save_faces(const struct dialog_save *dlg, const struct geo *geo, size_t i)
 {
+	(void)dlg;
+
 	/* TODO: determine face. */
 	for (size_t f = 0; f < TEAM_MAX; ++f) {
 		sprite_scale(&assets_sprites[ASSETS_SPRITE_FACES], 0, f,
@@ -145,7 +147,6 @@ draw_save_times(const struct dialog_save *dlg, const struct geo *geo, size_t i)
 {
 	struct label label = {0};
 	char time[128], line[256];
-	struct save_property prop;
 
 	label.theme = dlg->theme;
 	label.x = geo->saves[i].lx;
@@ -277,7 +278,8 @@ dialog_save_handle(struct dialog_save *dlg, const union event *ev)
 void
 dialog_save_update(struct dialog_save *dlg, unsigned int ticks)
 {
-	assert(dlg);
+	(void)ticks;
+	(void)dlg;
 }
 
 void

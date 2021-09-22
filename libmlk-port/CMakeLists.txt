@@ -44,6 +44,11 @@ if (NOT MLK_HAS_UNISTD_H)
 	file(TOUCH ${CMAKE_BINARY_DIR}/unistd.h)
 endif ()
 
+configure_file(
+	${libmlk-port_SOURCE_DIR}/port/config.h.in
+	${libmlk-port_BINARY_DIR}/config.h
+)
+
 set(
 	SOURCES
 	${libmlk-port_SOURCE_DIR}/port/port.c
@@ -55,7 +60,9 @@ mlk_library(
 	SOURCES ${SOURCES}
 	TYPE STATIC
 	INCLUDES
-		PUBLIC $<BUILD_INTERFACE:${libmlk-port_SOURCE_DIR}>
+		PUBLIC
+			$<BUILD_INTERFACE:${libmlk-port_SOURCE_DIR}>
+			$<BUILD_INTERFACE:${libmlk-port_BINARY_DIR}>
 )
 
 source_group(TREE ${libmlk-port_SOURCE_DIR} FILES ${SOURCES})

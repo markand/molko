@@ -27,6 +27,8 @@
 static void
 random(struct selection *slt, const struct battle *bt, const struct battle_entity *entities, size_t entitiesz)
 {
+	(void)bt;
+
 	struct {
 		const struct battle_entity *entity;
 		size_t position;
@@ -51,6 +53,8 @@ random(struct selection *slt, const struct battle *bt, const struct battle_entit
 static void
 first(struct selection *slt, const struct battle *bt, const struct battle_entity *entities, size_t entitiesz)
 {
+	(void)bt;
+
 	for (size_t i = 0; i < entitiesz; ++i) {
 		if (battle_entity_ok(&entities[i])) {
 			slt->index_character = i;

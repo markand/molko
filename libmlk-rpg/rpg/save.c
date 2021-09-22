@@ -154,9 +154,6 @@ extract(struct save_stmt *stmt, const char *args, va_list ap)
 	}
 
 	return 0;
-
-sqlite3_err:
-	return errorf("%s", sqlite3_errmsg(stmt->parent->handle));
 }
 
 int

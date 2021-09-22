@@ -48,6 +48,8 @@ distance(const struct spawner *s)
 static void
 fight(struct spawner *s)
 {
+	(void)s;
+
 	struct battle *bt;
 
 	bt = alloc_new0(sizeof (*bt));

@@ -57,12 +57,6 @@ if (MLK_WITH_ZSTD)
 	find_package(ZSTD REQUIRED)
 endif ()
 
-configure_file(
-	${CMAKE_SOURCE_DIR}/config.h.in
-	${CMAKE_BINARY_DIR}/config.h
-)
-include_directories(${CMAKE_BINARY_DIR})
-
 add_subdirectory(extern/libsqlite)
 add_subdirectory(extern/libgreatest)
 

@@ -67,16 +67,6 @@ normalize(char *str)
 	return str;
 }
 
-static inline const char *
-absolute(const char *which)
-{
-	static char path[PATH_MAX];
-
-	strlcpy(path, which, sizeof (path));
-
-	return normalize(path);
-}
-
 static const char *
 system_directory(enum sys_dir kind)
 {

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_PORT_H
-#define MOLKO_CORE_PORT_H
+#ifndef MOLKO_PORT_H
+#define MOLKO_PORT_H
 
 #include "config.h"
 
@@ -95,4 +95,4 @@ getopt(int, char **, const char *);
 typedef long long int ssize_t;
 #endif
 
-#endif /* !MOLKO_CORE_PORT_H */
+#endif /* !MOLKO_PORT_H */

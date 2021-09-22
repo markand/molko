@@ -48,6 +48,7 @@ static void
 exec_battle(const struct item *item, struct battle *bt, struct character *src, struct character *tgt)
 {
 	(void)item;
+	(void)src;
 
 	heal(tgt);
 	battle_indicator_hp(bt, tgt, 50);

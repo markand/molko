@@ -77,6 +77,11 @@ load_teleport(struct map *m, int x, int y, int w, int h, const char *line)
 void
 load_spawner(struct map *m, int x, int y, int w, int h, const char *line)
 {
+	(void)x;
+	(void)y;
+	(void)w;
+	(void)h;
+
 	struct spawner *s;
 
 	s = alloc_new0(sizeof (*s));
@@ -112,11 +117,15 @@ cmp_name(const char *key, const struct action_loader *ld)
 	return strncmp(key, ld->name, strlen(ld->name));
 }
 
+#if 0
+
 static int
 cmp_title(const char *key, const struct action_loader *ld)
 {
 	return strcmp(key, ld->name);
 }
+
+#endif
 
 void
 mapscene_load_action(struct map *m, int x, int y, int w, int h, const char *exec)
@@ -142,9 +151,9 @@ mapscene_load(struct map *m)
 {
 	assert(m);
 
+#if 0
 	struct mapscene_loader *ld;
 
-#if 0
 	/* Same layout, can use cmp_title as well. */
 	if ((ld = SEARCH(m->title, mapscenes, sizeof (*ld), cmp_title)))
 		ld->load(m);

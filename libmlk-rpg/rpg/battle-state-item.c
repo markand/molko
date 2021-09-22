@@ -79,6 +79,8 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 static void
 draw(const struct battle_state *st, const struct battle *bt)
 {
+	(void)bt;
+
 	struct self *self = st->data;
 
 	if (self->substate == SUBSTATE_MESSAGE)
@@ -105,7 +107,6 @@ battle_state_item(struct battle *bt,
 	assert(slot);
 
 	struct self *self;
-	unsigned int lw, lh;
 
 	if (!(self = alloc_new0(sizeof (*self))))
 		panic();

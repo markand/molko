@@ -42,7 +42,6 @@ static int
 fadeout_update(struct action *act, unsigned int ticks)
 {
 	struct fadeout *fade = act->data;
-	struct character *ch = fade->ch;
 
 	fade->elapsed += ticks;
 
