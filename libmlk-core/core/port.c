@@ -20,7 +20,7 @@
 
 /* {{{ strlcpy (BSD extension, incoming in next POSIX). */
 
-#if defined(MOLKO_PORT_NEED_STRLCPY)
+#if !defined(MLK_HAS_STRLCPY)
 
 /*	$OpenBSD: strlcpy.c,v 1.16 2019/01/25 00:19:25 millert Exp $	*/
 
@@ -67,19 +67,20 @@ strlcpy(char *dst, const char *src, size_t dsize)
 			;
 	}
 
-	return(src - osrc - 1);	/* count does not include NUL */
+	return (src - osrc - 1);	/* count does not include NUL */
 }
 
-#endif /* !MOLKO_PORT_NEED_STRLCPY */
+#endif /* !MLK_HAS_STRLCPY */
 
 /* }}} */
 
 /* {{{ fmemopen (POSIX). */
 
+#if !defined(MLK_HAS_FMEMOPEN)
+
+#if defined(_WIN32)
+
 /* https://github.com/Arryboom/fmemopen_windows */
-
-#if defined(MOLKO_PORT_NEED_FMEMOPEN)
-
 #include <stdio.h>
 #include <windows.h>
 #include <share.h>
@@ -97,6 +98,7 @@ fmemopen(void *buf, size_t len, const char *type)
 	int * pfd = &fd;
 	int retner = -1;
 	char tfname[] = "MemTF_";
+
 	if (!GetTempPathA(sizeof(tp), tp))
 		return NULL;
 	if (!GetTempFileNameA(tp, tfname, 0, fn))
@@ -111,6 +113,7 @@ fmemopen(void *buf, size_t len, const char *type)
 		_close(fd);
 		return NULL;
 	}
+
 	/*
 	 * File descriptors passed into _fdopen are owned by the returned FILE
 	 * stream.If _fdopen is successful, do not call _close on the file
@@ -119,9 +122,12 @@ fmemopen(void *buf, size_t len, const char *type)
 	 */
 	fwrite(buf, len, 1, fp);
 	rewind(fp);
+
 	return fp;
 }
 
-#endif /* !MOLKO_PORT_NEED_FMEMOPEN */
+#endif /* !_WIN32 */
+
+#endif /* !MLK_HAS_FMEMOPEN */
 
 /* }}} */

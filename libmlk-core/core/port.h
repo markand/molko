@@ -19,37 +19,31 @@
 #ifndef MOLKO_CORE_PORT_H
 #define MOLKO_CORE_PORT_H
 
+#include "config.h"
+
 /* {{{ strlcpy (BSD extension, incoming in next POSIX). */
 
-#if defined(_WIN32)
-#       define MOLKO_PORT_NEED_STRLCPY
-#endif
-
-#if defined(MOLKO_PORT_NEED_STRLCPY)
+#if !defined(MLK_HAS_STRLCPY)
 
 #include <stddef.h>
 
 size_t
 strlcpy(char *, const char *, size_t);
 
-#endif
+#endif /* !MLK_HAS_STRLCPY */
 
 /* }}} */
 
 /* {{{ fmemopen (POSIX). */
 
-#if defined(_WIN32)
-#       define MOLKO_PORT_NEED_FMEMOPEN
-#endif
-
-#if defined(MOLKO_PORT_NEED_FMEMOPEN)
+#if !defined(MLK_HAS_FMEMOPEN)
 
 #include <stdio.h>
 
 FILE *
 fmemopen(void *, size_t, const char *);
 
-#endif
+#endif /* !MLK_HAS_FMEMOPEN */
 
 /* }}} */
 

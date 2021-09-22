@@ -1,2 +1,10 @@
-@define WITH_NLS@
-@define WITH_ZSTD@
+#cmakedefine MLK_WITH_NLS
+#cmakedefine MLK_WITH_ZSTD
+
+#cmakedefine MLK_HAS_STRLCPY
+#cmakedefine MLK_HAS_FMEMOPEN
+
+#define MLK_PREFIX      "@CMAKE_INSTALL_PREFIX@"
+#define MLK_BINDIR      "@CMAKE_INSTALL_BINDIR@"
+#define MLK_DATADIR     "@CMAKE_INSTALL_DATADIR@"
+#define MLK_LOCALEDIR   "@CMAKE_INSTALL_LOCALEDIR@"

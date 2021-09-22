@@ -20,7 +20,7 @@
 
 #include "config.h"
 
-#if defined(MOLKO_WITH_NLS)
+#if defined(MLK_WITH_NLS)
 #	include <libintl.h>
 #endif
 
@@ -31,7 +31,7 @@
 int
 translate_init(const char *name)
 {
-#if defined(MOLKO_WITH_NLS)
+#if defined(MLK_WITH_NLS)
 	if (!bindtextdomain(name, sys_dir(SYS_DIR_LOCALE)))
 		return -1;
 #endif

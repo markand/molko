@@ -293,6 +293,7 @@ map_file_open(struct map_file *file, struct map *map, const char *path)
 	return 0;
 
 fail:
+	errorf("%s: %s", path, strerror(errno));
 	map_finish(map);
 	map_file_finish(file);
 	zfile_close(&zf);

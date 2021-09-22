@@ -31,7 +31,7 @@
  * If not enabled, we still need to check if a file is in zstandard so we use
  * the magic number defined in the zstd.h file or copy it if zstd is disabled.
  */
-#if defined(MOLKO_WITH_ZSTD)
+#if defined(MLK_WITH_ZSTD)
 #       include <zstd.h>
 #else
 #       define ZSTD_MAGICNUMBER 0xFD2FB528
@@ -63,7 +63,7 @@ is_zstd(int fd)
 static int
 decompress(int fd, struct zfile *zf)
 {
-#if defined(MOLKO_WITH_ZSTD)
+#if defined(MLK_WITH_ZSTD)
 	char *in = NULL;
 	unsigned long long datasz;
 	struct stat st;

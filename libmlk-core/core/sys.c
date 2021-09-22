@@ -51,9 +51,9 @@ static struct {
 };
 
 static const char *paths[] = {
-	[SYS_DIR_BIN]           = MOLKO_BINDIR,
-	[SYS_DIR_DATA]          = MOLKO_DATADIR,
-	[SYS_DIR_LOCALE]        = MOLKO_LOCALEDIR
+	[SYS_DIR_BIN]           = MLK_BINDIR,
+	[SYS_DIR_DATA]          = MLK_DATADIR,
+	[SYS_DIR_LOCALE]        = MLK_LOCALEDIR
 };
 
 static inline char *
@@ -84,7 +84,7 @@ system_directory(enum sys_dir kind)
 	char *base, *binsect;
 
 	if ((base = getenv("MLK_ROOT"))) {
-		snprintf(ret, sizeof (ret), "%s/%s/%s", base, MOLKO_PREFIX, paths[kind]);
+		snprintf(ret, sizeof (ret), "%s/%s/%s", base, MLK_PREFIX, paths[kind]);
 	} else {
 		/*
 		 * Some system does not provide support (shame on you OpenBSD)
@@ -92,7 +92,7 @@ system_directory(enum sys_dir kind)
 		 * instead.
 		 */
 		if (!(base = SDL_GetBasePath()))
-			snprintf(ret, sizeof (ret), "%s/%s", MOLKO_PREFIX, paths[kind]);
+			snprintf(ret, sizeof (ret), "%s/%s", MLK_PREFIX, paths[kind]);
 		else {
 			/*
 			 * Decompose the path to the given special directory by
@@ -108,7 +108,7 @@ system_directory(enum sys_dir kind)
 			 * the binary.
 			 *
 			 * Put the base path into the path and remove the value
-			 * of MOLKO_BINDIR.
+			 * of MLK_BINDIR.
 			 *
 			 * Example:
 			 *   from: /usr/local/bin

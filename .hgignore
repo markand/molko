@@ -1,16 +1,5 @@
-# temporary files.
-\.a$
-\.d$
-\.o$
-\.mo$
-\.exe$
-
-# generated files.
-assets/.*\.h$
-^config\.h$
-
-# out directory.
-^out
+# CMake files.
+^build
 
 # vim/emacs specific.
 ^tags$
@@ -22,42 +11,3 @@ assets/.*\.h$
 
 # macOS specific.
 \.DS_Store$
-
-# examples.
-^examples/example-action/main$
-^examples/example-animation/main$
-^examples/example-audio/main$
-^examples/example-cursor/main$
-^examples/example-debug/main$
-^examples/example-drawable/main$
-^examples/example-font/main$
-^examples/example-gridmenu/main$
-^examples/example-label/main$
-^examples/example-message/main$
-^examples/example-sprite/main$
-^examples/example-trace/main$
-^examples/example-ui/main$
-
-# tests.
-^tests/test-action$
-^tests/test-action-script$
-^tests/test-alloc$
-^tests/test-character$
-^tests/test-color$
-^tests/test-drawable$
-^tests/test-error$
-^tests/test-map$
-^tests/test-save$
-^tests/test-state$
-^tests/test-tileset$
-^tests/test-util$
-
-# maps and tilesets from libmlk-data.
-^libmlk-data/maps/.*\.map$
-^libmlk-data/maps/.*\.tileset$
-
-# executables.
-^mlk-adventure/mlk-adventure$
-^tools/bcc/mlk-bcc$
-^tools/map/mlk-map$
-^tools/tileset/mlk-tileset$
