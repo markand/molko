@@ -41,7 +41,7 @@ if (ZSTD_FOUND)
 		)
 	endif ()
 
-	if (NOT TARGET ZSTD::exe)
+	if (ZSTD_EXE AND NOT TARGET ZSTD::exe)
 		add_executable(ZSTD::exe IMPORTED GLOBAL)
 		set_target_properties(ZSTD::exe PROPERTIES IMPORTED_LOCATION "${ZSTD_EXE}")
 	endif ()

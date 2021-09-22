@@ -22,6 +22,7 @@ include(CheckFunctionExists)
 include(CheckIncludeFile)
 include(CheckSymbolExists)
 include(CheckTypeSize)
+include(CheckLibraryExists)
 
 check_function_exists(strlcpy MLK_HAS_STRLCPY)
 check_function_exists(fmemopen MLK_HAS_FMEMOPEN)
@@ -33,6 +34,7 @@ check_include_file(libgen.h MLK_HAS_LIBGEN_H)
 check_include_file(unistd.h MLK_HAS_UNISTD_H)
 check_symbol_exists(PATH_MAX limits.h MLK_HAS_PATH_MAX)
 check_type_size(ssize_t MLK_HAS_SSIZE_T)
+check_library_exists(m fmin "" MLK_HAS_LIBM)
 
 if (NOT MLK_HAS_STDNORETURN_H)
 	file(WRITE ${CMAKE_BINARY_DIR}/stdnoreturn.h "#define noreturn\n")
@@ -55,10 +57,15 @@ set(
 	${libmlk-port_SOURCE_DIR}/port/port.h
 )
 
+if (MLK_HAS_LIBM)
+	list(APPEND LIBRARIES m)
+endif ()
+
 mlk_library(
 	NAME libmlk-port
 	SOURCES ${SOURCES}
 	TYPE STATIC
+	LIBRARIES ${LIBRARIES}
 	INCLUDES
 		PUBLIC
 			$<BUILD_INTERFACE:${libmlk-port_SOURCE_DIR}>

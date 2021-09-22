@@ -27,7 +27,7 @@ set(CMAKE_C_EXTENSIONS Off)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-	set(CMAKE_C_FLAGS "-Wall -Wextra -pedantic ${CMAKE_C_FLAGS}")
+	set(CMAKE_C_FLAGS "-Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L ${CMAKE_C_FLAGS}")
 elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS "/wd4090 /wd5105 /wd6031 /wd6001 /wd26451 ${CMAKE_C_FLAGS}")
 endif ()
@@ -55,6 +55,11 @@ endif ()
 
 if (MLK_WITH_ZSTD)
 	find_package(ZSTD REQUIRED)
+
+	# Compressor is required as well.
+	if (NOT TARGET ZSTD::exe)
+		message(FATAL_ERROR "Missing zstd command line utility")
+	endif ()
 endif ()
 
 add_subdirectory(extern/libsqlite)
