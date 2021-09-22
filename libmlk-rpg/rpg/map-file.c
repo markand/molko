@@ -25,10 +25,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <port/port.h>
+
 #include <core/alloc.h>
 #include <core/error.h>
 #include <core/image.h>
-#include <core/port.h>
 #include <core/trace.h>
 #include <core/zfile.h>
 

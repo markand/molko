@@ -21,5 +21,7 @@ project(mlk-bcc)
 mlk_executable(
 	NAME mlk-bcc
 	SOURCES ${mlk-bcc_SOURCE_DIR}/main.c
+	LIBRARIES libmlk-port
+	INSTALL
 	FOLDER tools
 )

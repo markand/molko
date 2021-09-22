@@ -25,6 +25,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <port/port.h>
+
 static const char *charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 static char findentchar = '\t';
 static int findent = 1;

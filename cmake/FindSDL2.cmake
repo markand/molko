@@ -34,8 +34,8 @@ find_path(
 	PATH_SUFFIXES include/SDL2 include
 )
 
-find_library(SDL2_LIBRARY NAMES SDL2 libSDL2)
-find_library(SDL2_MAIN_LIBRARY NAMES SDL2main libSDL2main)
+find_library(SDL2_LIBRARY NAMES SDL2 libSDL2 SDL2d libSDL2d)
+find_library(SDL2_MAIN_LIBRARY NAMES SDL2main libSDL2main SDL2maind libSDL2maind)
 
 # Standard components.
 foreach (c ${SDL2_FIND_COMPONENTS})

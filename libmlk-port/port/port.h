@@ -47,4 +47,52 @@ fmemopen(void *, size_t, const char *);
 
 /* }}} */
 
+/* {{{ basename (POSIX). */
+
+#if !defined(MLK_HAS_BASENAME)
+
+char *
+basename(char *);
+
+#endif /* !MLK_HAS_BASENAME */
+
+/* }}} */
+
+/* {{{ dirname (POSIX). */
+
+#if !defined(MLK_HAS_BASENAME)
+
+char *
+dirname(char *);
+
+#endif /* !MLK_HAS_DIRNAME */
+
+/* }}} */
+
+/* {{{ getopt (POSIX) */
+
+#if !defined(MLK_HAS_GETOPT)
+
+extern int opterr;
+extern int optind;
+extern int optopt;
+extern char *optarg;
+
+int
+getopt(int, char **, const char *);
+
+#endif /* !MLK_HAS_GETOPT */
+
+/* }}} */
+
+/* PATH_MAX (defined in limits.h) (POSIX) */
+#if !defined(MLK_HAS_PATH_MAX)
+#       define PATH_MAX 2048
+#endif
+
+/* ssize_t (defined in sys/types.h) (POSIX) */
+#if !defined(MLK_HAS_SSIZE_T)
+typedef long long int ssize_t;
+#endif
+
 #endif /* !MOLKO_CORE_PORT_H */

@@ -21,6 +21,7 @@ project(mlk-map)
 mlk_executable(
 	NAME mlk-map
 	SOURCES ${mlk-map_SOURCE_DIR}/main.c
-	LIBRARIES Jansson::Jansson
+	LIBRARIES Jansson::Jansson libmlk-port
 	FOLDER tools
+	INSTALL
 )

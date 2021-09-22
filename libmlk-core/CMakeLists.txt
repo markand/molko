@@ -55,8 +55,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/core/painter.h
 	${libmlk-core_SOURCE_DIR}/core/panic.c
 	${libmlk-core_SOURCE_DIR}/core/panic.h
-	${libmlk-core_SOURCE_DIR}/core/port.c
-	${libmlk-core_SOURCE_DIR}/core/port.h
 	${libmlk-core_SOURCE_DIR}/core/script.c
 	${libmlk-core_SOURCE_DIR}/core/script.h
 	${libmlk-core_SOURCE_DIR}/core/sound.c
@@ -100,7 +98,7 @@ mlk_library(
 	NAME libmlk-core
 	SOURCES ${SOURCES} ${NLS}
 	LANGS ${NLS}
-	LIBRARIES PUBLIC ${LIBRARIES} SDL2::SDL2 SDL2::image SDL2::ttf SDL2::mixer
+	LIBRARIES PUBLIC ${LIBRARIES} SDL2::SDL2 SDL2::image SDL2::ttf SDL2::mixer libmlk-port
 	INCLUDES
 		PUBLIC $<BUILD_INTERFACE:${libmlk-core_SOURCE_DIR}>
 )

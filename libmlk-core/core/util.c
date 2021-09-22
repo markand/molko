@@ -22,6 +22,8 @@
 
 #include <SDL.h>
 
+#include <port/port.h>
+
 #include "util.h"
 
 void

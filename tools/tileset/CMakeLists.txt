@@ -21,6 +21,7 @@ project(mlk-tileset)
 mlk_executable(
 	NAME mlk-tileset
 	SOURCES ${mlk-tileset_SOURCE_DIR}/main.c
-	LIBRARIES Jansson::Jansson
+	LIBRARIES Jansson::Jansson libmlk-port
 	FOLDER tools
+	INSTALL
 )

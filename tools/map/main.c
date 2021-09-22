@@ -29,6 +29,8 @@
 
 #include <jansson.h>
 
+#include <port/port.h>
+
 static void
 die(const char *fmt, ...)
 {

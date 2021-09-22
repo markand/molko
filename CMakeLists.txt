@@ -23,7 +23,14 @@ set_property(GLOBAL PROPERTY USE_FOLDERS On)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED On)
+set(CMAKE_C_EXTENSIONS Off)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
+if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+	set(CMAKE_C_FLAGS "-Wall -Wextra -pedantic ${CMAKE_C_FLAGS}")
+elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
+	set(CMAKE_C_FLAGS "/wd4090 /wd5105 /wd6031 /wd6001 /wd26451 ${CMAKE_C_FLAGS}")
+endif ()
 
 option(MLK_WITH_NLS "Enable NLS support" On)
 option(MLK_WITH_ZSTD "Enable zstd compression" On)
@@ -37,10 +44,6 @@ include(cmake/MlkNls.cmake)
 include(cmake/MlkTileset.cmake)
 
 include(GNUInstallDirs)
-include(CheckFunctionExists)
-
-check_function_exists(strlcpy MLK_HAS_STRLCPY)
-check_function_exists(fmemopen MLK_HAS_FMEMOPEN)
 
 find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
 find_package(Jansson REQUIRED)
@@ -67,6 +70,7 @@ add_subdirectory(tools/bcc)
 add_subdirectory(tools/tileset)
 add_subdirectory(tools/map)
 
+add_subdirectory(libmlk-port)
 add_subdirectory(libmlk-core)
 add_subdirectory(libmlk-ui)
 add_subdirectory(libmlk-rpg)

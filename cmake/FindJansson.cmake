@@ -13,7 +13,7 @@
 #
 
 find_path(Jansson_INCLUDE_DIR NAMES jansson.h)
-find_library(Jansson_LIBRARY NAMES libjansson jansson)
+find_library(Jansson_LIBRARY NAMES libjansson jansson jansson_d libjansson_d)
 
 include(FindPackageHandleStandardArgs)
 

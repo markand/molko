@@ -94,6 +94,8 @@ static const struct action_loader loaders[] = {
 	{ "teleport",   load_teleport   }
 };
 
+#if 0
+
 /* Per map actions, name refer to map names. Must be sorted. */
 static const struct action_loader maploaders[] = {
 };
@@ -101,6 +103,8 @@ static const struct action_loader maploaders[] = {
 /* Per map loaders, to add extra data. Must be sorted. */
 static const struct mapscene_loader mapscenes[] = {
 };
+
+#endif
 
 static int
 cmp_name(const char *key, const struct action_loader *ld)
@@ -126,9 +130,11 @@ mapscene_load_action(struct map *m, int x, int y, int w, int h, const char *exec
 	if ((ld = SEARCH(exec, loaders, sizeof (*ld), cmp_name)))
 		ld->load(m, x, y, w, h, exec + strcspn(exec, "|"));
 
+#if 0
 	/* 2. Load per map objects. */
 	if ((ld = SEARCH(m->title, maploaders, sizeof (*ld), cmp_title)))
 		ld->load(m, x, y, w, h, exec);
+#endif
 }
 
 void
@@ -138,9 +144,11 @@ mapscene_load(struct map *m)
 
 	struct mapscene_loader *ld;
 
+#if 0
 	/* Same layout, can use cmp_title as well. */
 	if ((ld = SEARCH(m->title, mapscenes, sizeof (*ld), cmp_title)))
 		ld->load(m);
+#endif
 
 	/* Add the trace hud. */
 	action_stack_add(&m->astack_par, trace_hud_action());

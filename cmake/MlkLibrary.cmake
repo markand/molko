@@ -21,7 +21,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/MlkNls.cmake)
 
 function(mlk_library)
 	set(options "")
-	set(oneValueArgs "NAME;FOLDER")
+	set(oneValueArgs "NAME;FOLDER;TYPE")
 	set(multiValueArgs "SOURCES;ASSETS;LANGS;LIBRARIES;INCLUDES;FLAGS")
 
 	cmake_parse_arguments(LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -35,7 +35,7 @@ function(mlk_library)
 		source_group(build/assets FILES ${HEADERS})
 	endif ()
 
-	if (LIB_LANGS)
+	if (LIB_LANGS AND MLK_WITH_NLS)
 		mlk_nls(
 			NAME ${LIB_NAME}
 			LANGS ${LIB_LANGS}
@@ -45,7 +45,7 @@ function(mlk_library)
 		source_group(build/nls FILES ${MO})
 	endif ()
 
-	add_library(${LIB_NAME} ${LIB_SOURCES} ${HEADERS} ${MO})
+	add_library(${LIB_NAME} ${LIB_TYPE} ${LIB_SOURCES} ${HEADERS} ${MO})
 
 	if (LIB_FOLDER)
 		set_target_properties(${LIB_NAME} PROPERTIES FOLDER extern)
@@ -63,5 +63,5 @@ function(mlk_library)
 		target_include_directories(${LIB_NAME} ${LIB_INCLUDES})
 	endif ()
 
-    set_target_properties(${LIB_NAME} PROPERTIES PREFIX "")
+	set_target_properties(${LIB_NAME} PROPERTIES PREFIX "")
 endfunction()

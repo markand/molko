@@ -449,7 +449,7 @@ battle_draw(struct battle *bt)
 
 	drawable_stack_draw(&bt->effects);
 
-	return battle_state_draw(bt->state, bt);
+	battle_state_draw(bt->state, bt);
 }
 
 void

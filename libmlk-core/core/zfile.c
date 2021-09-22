@@ -42,7 +42,8 @@
 #       define O_BINARY 0
 #endif
 
-#include "port.h"
+#include <port/port.h>
+
 #include "zfile.h"
 
 static int

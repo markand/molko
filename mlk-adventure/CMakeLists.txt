@@ -22,6 +22,7 @@ mlk_executable(
 	NAME mlk-adventure
 	SOURCES ${mlk-adventure_SOURCE_DIR}/main.c
 	LIBRARIES libmlk-adventure
+	INSTALL
 )
 
 source_group("" FILES ${mlk-adventure_SOURCE_DIR}/main.c)

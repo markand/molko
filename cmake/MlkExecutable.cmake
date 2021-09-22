@@ -17,7 +17,7 @@
 #
 
 function(mlk_executable)
-	set(options "")
+	set(options "INSTALL")
 	set(oneValueArgs "NAME;FOLDER")
 	set(multiValueArgs "SOURCES;LIBRARIES;INCLUDES;FLAGS")
 
@@ -39,5 +39,9 @@ function(mlk_executable)
 
 	if (EXE_INCLUDES)
 		target_include_directories(${EXE_NAME} ${EXE_INCLUDES})
+	endif ()
+
+	if (EXE_INSTALL)
+		install(TARGETS ${EXE_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 	endif ()
 endfunction()

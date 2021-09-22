@@ -3,6 +3,11 @@
 
 #cmakedefine MLK_HAS_STRLCPY
 #cmakedefine MLK_HAS_FMEMOPEN
+#cmakedefine MLK_HAS_BASENAME
+#cmakedefine MLK_HAS_DIRNAME
+#cmakedefine MLK_HAS_GETOPT
+#cmakedefine MLK_HAS_PATH_MAX
+#cmakedefine MLK_HAS_SSIZE_T
 
 #define MLK_PREFIX      "@CMAKE_INSTALL_PREFIX@"
 #define MLK_BINDIR      "@CMAKE_INSTALL_BINDIR@"
