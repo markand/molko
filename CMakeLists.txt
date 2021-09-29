@@ -32,6 +32,10 @@ elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS "/wd4090 /wd5105 /wd6031 /wd6001 /wd26451 ${CMAKE_C_FLAGS}")
 endif ()
 
+if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+	set(CMAKE_C_FLAGS "-D_DARWIN_C_SOURCE ${CMAKE_C_FLAGS}")
+endif ()
+
 option(MLK_WITH_NLS "Enable NLS support" On)
 option(MLK_WITH_ZSTD "Enable zstd compression" On)
 option(MLK_WITH_TESTS "Enable unit tests" On)
