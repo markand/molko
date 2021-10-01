@@ -50,7 +50,6 @@
 #define WINDOW_WIDTH    1280
 #define WINDOW_HEIGHT   720
 
-
 #include "character/neth.h"
 #include "item/potion.h"
 
@@ -61,6 +60,7 @@ struct molko molko;
 static void
 crash(void)
 {
+	game.inhibit = 0;
 	longjmp(panic_buf, 1);
 }
 
@@ -75,10 +75,6 @@ molko_init(void)
 		panic();
 	if (window_open("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT) < 0)
 		panic();
-
-	printf("bindir: %s\n", sys_dir(SYS_DIR_BIN));
-	printf("datadir: %s\n", sys_dir(SYS_DIR_DATA));
-	printf("localedir: %s\n", sys_dir(SYS_DIR_LOCALE));
 
 	/*
 	 * From here, we can setup our panic state which requires a window
