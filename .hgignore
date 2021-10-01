@@ -11,3 +11,8 @@
 
 # macOS specific.
 \.DS_Store$
+
+# Generated files.
+\.exe$
+^src/libmlk-data/maps/.*\.map$
+^src/libmlk-data/maps/.*\.tileset$

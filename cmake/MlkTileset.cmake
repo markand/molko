@@ -16,47 +16,20 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-macro(mlk_tileset)
-	set(options "")
-	set(oneValueArgs "OUTPUTS_VAR")
-	set(multiValueArgs "TILESETS")
-
-	cmake_parse_arguments(_tileset "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-	if (NOT _tileset_OUTPUTS_VAR)
-		message(FATAL_ERROR "Missing OUTPUTS_VAR")
-	elseif (NOT _tileset_TILESETS)
-		message(FATAL_ERROR "Missing TILESETS")
+function(mlk_tileset input output)
+	if (MLK_WITH_ZSTD)
+		set(cmd
+			COMMAND $<TARGET_FILE:mlk-tileset> < ${input} > ${output}.zst
+			COMMAND ZSTD::exe -17 -fq --rm ${output}.zst -o ${output}
+		)
+	else ()
+		set(cmd COMMAND $<TARGET_FILE:mlk-tileset> < ${input} > ${output})
 	endif ()
 
-	foreach (m ${_tileset_TILESETS})
-		cmake_path(GET m FILENAME name)
-		cmake_path(REMOVE_EXTENSION name)
-
-		if (MLK_WITH_ZSTD)
-			set(_tileset_cmds
-				COMMAND $<TARGET_FILE:mlk-tileset> < ${m} > ${CMAKE_CURRENT_BINARY_DIR}/${name}.tmp
-				COMMAND
-					ZSTD::exe -17 -fq
-						--rm ${CMAKE_CURRENT_BINARY_DIR}/${name}.tmp
-						-o ${CMAKE_CURRENT_BINARY_DIR}/${name}.tileset
-			)
-		else ()
-			set(_tileset_cmds
-				COMMAND $<TARGET_FILE:mlk-tileset> < ${m} > ${CMAKE_CURRENT_BINARY_DIR}/${name}.tileset
-			)
-		endif ()
-
-		add_custom_command(
-			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}.tileset
-			COMMAND
-				${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}
-			COMMAND
-				${_tileset_cmds}
-			DEPENDS $<TARGET_FILE:mlk-tileset>
-			COMMENT "Generating ${name}.tileset"
-		)
-
-		list(APPEND ${_tileset_OUTPUTS_VAR} ${CMAKE_CURRENT_BINARY_DIR}/${name}.tileset)
-	endforeach ()
-endmacro()
+	add_custom_command(
+		OUTPUT ${output}
+		COMMAND ${cmd}
+		DEPENDS $<TARGET_FILE:mlk-tileset>
+		COMMENT "Generating ${output}"
+	)
+endfunction()

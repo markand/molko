@@ -76,6 +76,10 @@ molko_init(void)
 	if (window_open("Molko's Adventure", WINDOW_WIDTH, WINDOW_HEIGHT) < 0)
 		panic();
 
+	printf("bindir: %s\n", sys_dir(SYS_DIR_BIN));
+	printf("datadir: %s\n", sys_dir(SYS_DIR_DATA));
+	printf("localedir: %s\n", sys_dir(SYS_DIR_LOCALE));
+
 	/*
 	 * From here, we can setup our panic state which requires a window
 	 * to be running.
@@ -134,7 +138,7 @@ molko_path(const char *file)
 {
 	assert(file);
 
-	return util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), file);
+	return util_pathf("%s/%s", sys_dir(SYS_DIR_DATA), file);
 }
 
 void

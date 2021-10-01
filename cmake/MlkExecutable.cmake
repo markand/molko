@@ -28,6 +28,12 @@ function(mlk_executable)
 	endif ()
 
 	add_executable(${EXE_NAME} ${EXE_SOURCES})
+	set_target_properties(${EXE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+	foreach (cfg ${CMAKE_CONFIGURATION_TYPES})
+		string(TOUPPER ${cfg} cfg)
+		set_target_properties(${EXE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${CFG} ${CMAKE_SOURCE_DIR})
+	endforeach ()
 
 	if (EXE_FOLDER)
 		set_target_properties(${EXE_NAME} PROPERTIES FOLDER ${EXE_FOLDER})

@@ -94,6 +94,10 @@ if (MLK_WITH_ZSTD)
 	list(APPEND LIBRARIES ZSTD::ZSTD)
 endif ()
 
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+	list(APPEND LIBRARIES shlwapi)
+endif ()
+
 mlk_library(
 	NAME libmlk-core
 	SOURCES ${SOURCES} ${NLS}

@@ -19,6 +19,28 @@
 project(libmlk-data)
 
 set(
+	MAPS
+	${libmlk-data_SOURCE_DIR}/maps/map-world.json
+)
+
+set(
+	TILESETS
+	${libmlk-data_SOURCE_DIR}/maps/tileset-world.json
+)
+
+foreach (m ${MAPS})
+	cmake_path(GET m STEM name)
+	mlk_map(${m} ${libmlk-data_SOURCE_DIR}/maps/${name}.map)
+	list(APPEND maps ${libmlk-data_SOURCE_DIR}/maps/${name}.map)
+endforeach ()
+
+foreach (t ${TILESETS})
+	cmake_path(GET t STEM name)
+	mlk_tileset(${t} ${libmlk-data_SOURCE_DIR}/maps/${name}.tileset)
+	list(APPEND tilesets ${libmlk-data_SOURCE_DIR}/maps/${name}.tileset)
+endforeach ()
+
+set(
 	SOURCES
 	${libmlk-data_SOURCE_DIR}/fonts/cubic.ttf
 	${libmlk-data_SOURCE_DIR}/fonts/lato.ttf
@@ -28,9 +50,7 @@ set(
 	${libmlk-data_SOURCE_DIR}/images/black-cat.png
 	${libmlk-data_SOURCE_DIR}/images/haunted-wood.png
 	${libmlk-data_SOURCE_DIR}/maps/animation-water.png
-	${libmlk-data_SOURCE_DIR}/maps/map-world.json
 	${libmlk-data_SOURCE_DIR}/maps/sprite-world.png
-	${libmlk-data_SOURCE_DIR}/maps/tileset-world.json
 	${libmlk-data_SOURCE_DIR}/music/vabsounds-romance.ogg
 	${libmlk-data_SOURCE_DIR}/sounds/fire.wav
 	${libmlk-data_SOURCE_DIR}/sounds/potion.wav
@@ -46,18 +66,6 @@ set(
 	${libmlk-data_SOURCE_DIR}/sprites/numbers.png
 	${libmlk-data_SOURCE_DIR}/sprites/people.png
 	${libmlk-data_SOURCE_DIR}/sprites/ui-cursor.png
-)
-
-mlk_map(
-	MAPS
-		${libmlk-data_SOURCE_DIR}/maps/map-world.json
-	OUTPUTS_VAR maps
-)
-
-mlk_tileset(
-	TILESETS
-		${libmlk-data_SOURCE_DIR}/maps/tileset-world.json
-	OUTPUTS_VAR tilesets
 )
 
 add_custom_target(

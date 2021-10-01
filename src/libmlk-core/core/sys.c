@@ -18,6 +18,7 @@
 
 #include "config.h"
 
+#include <sys/stat.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,11 +52,11 @@ static struct {
 	.name = "molko"
 };
 
-static const char *paths[] = {
-	[SYS_DIR_BIN]           = MLK_BINDIR,
-	[SYS_DIR_DATA]          = MLK_DATADIR,
-	[SYS_DIR_LOCALE]        = MLK_LOCALEDIR
-};
+static struct {
+	char bindir[PATH_MAX];
+	char datadir[PATH_MAX];
+	char localedir[PATH_MAX];
+} paths;
 
 static inline char *
 normalize(char *str)
@@ -67,52 +68,71 @@ normalize(char *str)
 	return str;
 }
 
+static inline int
+absolute(const char *path)
+{
+#if defined(_WIN32)
+	return !PathIsRelativeA(path);
+#else
+	/* Assuming UNIX like. */
+	if (path[0] == '/')
+		return 1;
+
+	return 0;
+#endif
+}
+
 static const char *
-system_directory(enum sys_dir kind)
+system_directory(const char *whichdir)
 {
 	static char path[PATH_MAX];
 	static char ret[PATH_MAX];
 	char *base, *binsect;
 
-	if ((base = getenv("MLK_ROOT"))) {
-		snprintf(ret, sizeof (ret), "%s/%s/%s", base, MLK_PREFIX, paths[kind]);
+	/*
+	 * Some system does not provide support (shame on you OpenBSD)
+	 * to the executable path. In that case we use PREFIX+<dir>
+	 * instead unless <dir> is already absolute.
+	 */
+
+	/* Component (e.g. MLK_BINDIR is set to /bin), return immediately. */
+	if (absolute(whichdir))
+		return whichdir;
+
+	/* Determine base executable path. */
+	if (!(base = SDL_GetBasePath())) {
+		if (absolute(whichdir))
+			strlcpy(ret, whichdir, sizeof (ret));
+		else
+			snprintf(ret, sizeof (ret), "%s/%s", MLK_PREFIX, whichdir);
 	} else {
 		/*
-		 * Some system does not provide support (shame on you OpenBSD)
-		 * to the executable path. In that case we use PREFIX+<dir>
-		 * instead.
+		 * Decompose the path to the given special directory by
+		 * computing relative directory to it from where the
+		 * binary is located.
+		 *
+		 * Example:
+		 *
+		 *   PREFIX/bin/mlk
+		 *   PREFIX/share/mlk-adventure
+		 *
+		 * The path to the data is ../share/molko starting from
+		 * the binary.
+		 *
+		 * Put the base path into the path and remove the value
+		 * of MLK_BINDIR.
+		 *
+		 * Example:
+		 *   from: /usr/local/bin
+		 *   to:   /usr/local
 		 */
-		if (!(base = SDL_GetBasePath()))
-			snprintf(ret, sizeof (ret), "%s/%s", MLK_PREFIX, paths[kind]);
-		else {
-			/*
-			 * Decompose the path to the given special directory by
-			 * computing relative directory to it from where the
-			 * binary is located.
-			 *
-			 * Example:
-			 *
-			 *   PREFIX/bin/mlk
-			 *   PREFIX/share/mlk-adventure
-			 *
-			 * The path to the data is ../share/molko starting from
-			 * the binary.
-			 *
-			 * Put the base path into the path and remove the value
-			 * of MLK_BINDIR.
-			 *
-			 * Example:
-			 *   from: /usr/local/bin
-			 *   to:   /usr/local
-			 */
-			strlcpy(path, base, sizeof (path));
-			SDL_free(base);
+		strlcpy(path, base, sizeof (path));
+		SDL_free(base);
 
-			if ((binsect = strstr(path, paths[SYS_DIR_BIN])))
-				*binsect = '\0';
+		if ((binsect = strstr(path, MLK_BINDIR)))
+			*binsect = '\0';
 
-			snprintf(ret, sizeof (ret), "%s%s", path, paths[kind]);
-		}
+		snprintf(ret, sizeof (ret), "%s%s", path, whichdir);
 	}
 
 	return normalize(ret);
@@ -151,6 +171,46 @@ mkpath(const char *path)
 	return 0;
 }
 
+static inline void
+set_bindir(void)
+{
+	strlcpy(paths.bindir, system_directory(MLK_BINDIR), sizeof (paths.bindir));
+}
+
+static void
+set_datadir(void)
+{
+	char *base, test[PATH_MAX];
+	struct stat st;
+
+	/*
+	 * For convenient purposes, if we're running executables directly from
+	 * source tree, check for libmlk-data presence and use it. Otherwise
+	 * use standard system directory with the project named concatenated.
+	 */
+	if ((base = SDL_GetBasePath())) {
+		snprintf(test, sizeof (test), "%ssrc/libmlk-data", base);
+
+		if (stat(test, &st) == 0 && S_ISDIR(st.st_mode)) {
+			strlcpy(paths.datadir, test, sizeof (paths.datadir));
+			normalize(paths.datadir);
+		}
+
+		free(base);
+	}
+
+	/* Not found, use standard. */
+	if (!paths.datadir[0])
+		snprintf(paths.datadir, sizeof (paths.datadir), "%s/%s",
+		    system_directory(MLK_DATADIR), info.name);
+}
+
+static inline void
+set_localedir(void)
+{
+	strlcpy(paths.localedir, system_directory(MLK_BINDIR), sizeof (paths.localedir));
+}
+
 int
 sys_init(const char *organization, const char *name)
 {
@@ -159,6 +219,9 @@ sys_init(const char *organization, const char *name)
 	setbuf(stderr, NULL);
 	setbuf(stdout, NULL);
 #endif
+	set_bindir();
+	set_datadir();
+	set_localedir();
 
 	strlcpy(info.organization, organization, sizeof (info.organization));
 	strlcpy(info.name, name, sizeof (info.name));
@@ -184,9 +247,11 @@ sys_dir(enum sys_dir kind)
 {
 	switch (kind) {
 	case SYS_DIR_BIN:
+		return paths.bindir;
 	case SYS_DIR_DATA:
+		return paths.datadir;
 	case SYS_DIR_LOCALE:
-		return system_directory(kind);
+		return paths.localedir;
 	default:
 		return user_directory(kind);
 	}
