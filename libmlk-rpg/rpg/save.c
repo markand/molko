@@ -23,6 +23,8 @@
 
 #include <sqlite3.h>
 
+#include <port/port.h>
+
 #include <core/error.h>
 #include <core/sys.h>
 #include <core/util.h>
