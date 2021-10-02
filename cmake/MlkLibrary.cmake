@@ -22,7 +22,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/MlkNls.cmake)
 function(mlk_library)
 	set(options "")
 	set(oneValueArgs "NAME;FOLDER;TYPE")
-	set(multiValueArgs "SOURCES;ASSETS;LANGS;LIBRARIES;INCLUDES;FLAGS")
+	set(multiValueArgs "SOURCES;ASSETS;LANGS;LIBRARIES;INCLUDES;FLAGS;OPTIONS")
 
 	cmake_parse_arguments(LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -53,6 +53,10 @@ function(mlk_library)
 
 	if (LIB_FLAGS)
 		target_compile_definitions(${LIB_NAME} ${LIB_FLAGS})
+	endif ()
+
+	if (LIB_OPTIONS)
+		target_compile_options(${LIB_NAME} ${LIB_OPTIONS})
 	endif ()
 
 	if (LIB_LIBRARIES)

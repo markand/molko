@@ -24,10 +24,15 @@ set(
 	${libmlk-sqlite_SOURCE_DIR}/sqlite3.h
 )
 
+if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+	list(APPEND OPTIONS -Wno-unused-parameter)
+endif ()
+
 mlk_library(
 	NAME libmlk-sqlite
 	SOURCES ${SOURCES}
 	FOLDER extern
+	OPTIONS PRIVATE ${OPTIONS}
 	FLAGS
 		PRIVATE
 			SQLITE_THREADSAFE=0
