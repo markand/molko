@@ -42,7 +42,7 @@
 
 #define W       1280
 #define H       720
-#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
+#define PATH(r) util_pathf("%s/%s", sys_dir(SYS_DIR_DATA), r)
 
 static struct label help = {
 	.x = 10,

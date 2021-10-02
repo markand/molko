@@ -42,7 +42,7 @@
 
 #define W       1280
 #define H       720
-#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
+#define PATH(r) util_pathf("%s/%s", sys_dir(SYS_DIR_DATA), r)
 
 #define MW      (W * 0.75)
 #define MX      ((W / 2) - (MW / 2))
@@ -314,7 +314,7 @@ chest_init(void)
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "actions") < 0 || ui_init() < 0 || rpg_init() < 0)
+	if (core_init("fr.malikania", "mlk-adventure") < 0 || ui_init() < 0 || rpg_init() < 0)
 		panic();
 	if (window_open("Example - Action", W, H) < 0)
 		panic();

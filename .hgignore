@@ -14,5 +14,7 @@
 
 # Generated files.
 \.exe$
+^mlk-
+^example-
 ^src/libmlk-data/maps/.*\.map$
 ^src/libmlk-data/maps/.*\.tileset$

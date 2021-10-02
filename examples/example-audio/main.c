@@ -34,7 +34,7 @@
 
 #define W       1280
 #define H       720
-#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
+#define PATH(r) util_pathf("%s/%s", sys_dir(SYS_DIR_DATA), r)
 
 static struct music music;
 static struct sound sound;
@@ -56,7 +56,7 @@ static struct label label_sound = {
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "audio") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "mlk-adventure") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - Audio", W, H) < 0)
 		panic();

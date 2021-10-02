@@ -39,7 +39,7 @@
 
 #define W       1280
 #define H       720
-#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
+#define PATH(r) util_pathf("%s/%s", sys_dir(SYS_DIR_DATA), r)
 #define HEADER "Keys: <Left>/<Right> and <Up/Down> to select a column/row. Current: %u, %u (total %u/%u)"
 
 static char msg[512];
@@ -63,7 +63,7 @@ changed(void)
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "sprite") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "mlk-adventure") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - Sprite", W, H) < 0)
 		panic();

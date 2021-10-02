@@ -38,7 +38,8 @@ endif ()
 
 option(MLK_WITH_NLS "Enable NLS support" On)
 option(MLK_WITH_ZSTD "Enable zstd compression" On)
-option(MLK_WITH_TESTS "Enable unit tests" On)
+option(MLK_WITH_TESTS "Enable unit tests" Off)
+option(MLK_WITH_EXAMPLES "Enable examples" Off)
 
 include(cmake/MlkBcc.cmake)
 include(cmake/MlkExecutable.cmake)
@@ -85,4 +86,8 @@ add_subdirectory(src/mlk-adventure)
 if (MLK_WITH_TESTS)
 	enable_testing()
 	add_subdirectory(tests)
+endif ()
+
+if (MLK_WITH_EXAMPLES)
+	add_subdirectory(examples)
 endif ()
