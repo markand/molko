@@ -1,7 +1,7 @@
 Molko's Adventure
 =================
 
-This is Molko's Adventure, a solo RPG game written in C.
+This is Molko's Adventure, a 2D solo RPG game written in C11.
 
 Author
 ------

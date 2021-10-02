@@ -16,6 +16,21 @@ Requirements
 - [gettext][], For translations (optional).
 - [zstd][], For compression (optional).
 
+Molko's Adventure is mostly written in pure C11 with a very limited POSIX
+extensions (including `stat`, `strlcpy`, `fmemopen`) but where support is
+missing fallback implementations are provided.
+
+Supported platforms
+-------------------
+
+The project was successfully tested on the following platforms and their
+architectures.
+
+- Windows (MinGW-w64, VS2019).
+- Linux (musl/amd64, musl/aarch64, glibc/amd64).
+- FreeBSD (amd64).
+- macOS Big Sur.
+
 Basic installation
 ------------------
 
@@ -36,18 +51,37 @@ The following options are available:
 - `MLK_WITH_NLS`: Enable Native Language Support 
 - `MLK_WITH_ZSTD`: Enable map and tileset compression through [zstd][] (default:
   on).
-- `MLK_WITH_TESTS`: Enable unit tests (default: on).
+- `MLK_WITH_TESTS`: Enable unit tests (default: off).
+- `MLK_WITH_EXAMPLES`: Enable sample programs.
 
 Direct use in source tree
 -------------------------
 
-Examples and `mlk-adventure` executable searches for data into a specific
-directory, when building those are not already discoverable because targets are
-not already installed.
+Examples and `mlk-adventure` executables are written outside of the CMake build
+tree and generated directly in the source tree. This is designed to search data
+without installing.
 
-You need to install at least the data once using `install` target, you can
-do this without root access by using a temporary directory and set the
-`MLK_ROOT` environment variable.
+Platform: Linux and BSD
+-----------------------
+
+Install dependencies using the package manager provided and use CMake to
+generate Makefiles.
+
+Platform: macOS
+---------------
+
+The recommended way to build under macOS is to install dependencies through
+[brew][] and compile using XCode or command line generated makefiles.
+
+You will need the following packages:
+
+- gettext (only if `MLK_WITH_NLS` is set)
+- jansson (only for mlk-map/mlk-tileset tools)
+- sdl2
+- sdl2_image
+- sdl2_mixer
+- sdl2_ttf
+- zstd (only if `MLK_WITH_ZSTD` is set)
 
 Platform: Windows
 -----------------
@@ -85,6 +119,7 @@ following:
 Then adding `<dir>/bin` to *PATH* and `<dir>` to *CMAKE_PREFIX_PATH* will allow
 CMake to find libraries.
 
+[brew][]: http://brew.sh
 [CMake][]: http://cmake.org
 [Jansson][]: http://www.digip.org/jansson
 [MSYS2]: http://www.msys2.org
