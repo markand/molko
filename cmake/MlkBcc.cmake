@@ -55,7 +55,7 @@ macro(mlk_bcc)
 			COMMAND
 				$<TARGET_FILE:mlk-bcc> ${args} ${a} ${outputname} > ${outputfile}
 			COMMENT "Generating ${output}"
-			DEPENDS $<TARGET_FILE:mlk-bcc>
+			DEPENDS $<TARGET_FILE:mlk-bcc> ${a}
 		)
 
 		list(APPEND ${_bcc_OUTPUTS_VAR} ${CMAKE_CURRENT_BINARY_DIR}/${output})

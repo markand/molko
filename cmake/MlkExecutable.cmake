@@ -19,7 +19,7 @@
 function(mlk_executable)
 	set(options "INSTALL")
 	set(oneValueArgs "NAME;FOLDER")
-	set(multiValueArgs "SOURCES;LIBRARIES;INCLUDES;FLAGS")
+	set(multiValueArgs "ASSETS;SOURCES;LIBRARIES;INCLUDES;FLAGS")
 
 	cmake_parse_arguments(EXE "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -27,7 +27,12 @@ function(mlk_executable)
 		message(FATAL_ERROR "Missing NAME")
 	endif ()
 
-	add_executable(${EXE_NAME} ${EXE_SOURCES})
+	if (EXE_ASSETS)
+		mlk_bcc(ASSETS ${EXE_ASSETS} OUTPUTS_VAR HEADERS)
+		source_group(build/assets FILES ${HEADERS})
+	endif ()
+
+	add_executable(${EXE_NAME} ${EXE_SOURCES} ${HEADERS})
 	set_target_properties(${EXE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 	foreach (cfg ${CMAKE_CONFIGURATION_TYPES})

@@ -42,7 +42,9 @@ label_draw_default(const struct theme *t, const struct label *label)
 	struct font *font;
 	struct texture tex;
 
-	font = t->fonts[THEME_FONT_INTERFACE];
+	font = label->flags & LABEL_FLAGS_IMPORTANT
+		? t->fonts[THEME_FONT_IMPORTANT]
+		: t->fonts[THEME_FONT_INTERFACE];
 
 	/* Shadow text, only if enabled. */
 	if (label->flags & LABEL_FLAGS_SHADOW) {
@@ -74,8 +76,11 @@ label_query(const struct label *label, unsigned int *w, unsigned int *h)
 	assert(label->text);
 
 	const struct theme *t = label->theme ? label->theme : theme_default();
+	const struct font *f = label->flags & LABEL_FLAGS_IMPORTANT
+		? t->fonts[THEME_FONT_IMPORTANT]
+		: t->fonts[THEME_FONT_INTERFACE];
 
-	if (font_query(t->fonts[THEME_FONT_INTERFACE], label->text, w, h) < 0)
+	if (font_query(f, label->text, w, h) < 0)
 		panic();
 }
 

@@ -34,6 +34,8 @@ set(
 	${libmlk-ui_SOURCE_DIR}/ui/gridmenu.h
 	${libmlk-ui_SOURCE_DIR}/ui/label.c
 	${libmlk-ui_SOURCE_DIR}/ui/label.h
+	${libmlk-ui_SOURCE_DIR}/ui/notify.c
+	${libmlk-ui_SOURCE_DIR}/ui/notify.h
 	${libmlk-ui_SOURCE_DIR}/ui/theme.c
 	${libmlk-ui_SOURCE_DIR}/ui/theme.h
 	${libmlk-ui_SOURCE_DIR}/ui/ui.c
@@ -44,6 +46,7 @@ set(
 set(
 	ASSETS
 	${libmlk-ui_SOURCE_DIR}/assets/fonts/opensans-light.ttf
+	${libmlk-ui_SOURCE_DIR}/assets/fonts/opensans-medium.ttf
 	${libmlk-ui_SOURCE_DIR}/assets/fonts/opensans-regular.ttf
 )
 

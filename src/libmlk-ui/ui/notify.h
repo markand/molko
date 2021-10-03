@@ -1,5 +1,5 @@
 /*
- * label.h -- GUI label
+ * notify.h -- in game notifications
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,45 +16,45 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_UI_LABEL_H
-#define MOLKO_UI_LABEL_H
+#ifndef MOLKO_UI_NOTIFY_H
+#define MOLKO_UI_NOTIFY_H
+
+#include <stddef.h>
 
 #include <core/core.h>
 
-struct action;
+#define NOTIFY_MAX              (4)
+#define NOTIFY_TIMEOUT_DEFAULT  (5000)
+
+struct texture;
 struct theme;
 
-enum label_flags {
-	LABEL_FLAGS_NONE,
-	LABEL_FLAGS_SHADOW      = (1 << 0),
-	LABEL_FLAGS_IMPORTANT   = (1 << 1)
+struct notify {
+	const struct texture *icon;
+	const char *title;
+	const char *body;
+	unsigned int elapsed;
 };
 
-struct label {
-	int x;
-	int y;
-	const char *text;
-	enum label_flags flags;
-	const struct theme *theme;
+struct notify_system {
+	struct theme *theme;
+	void (*draw)(const struct notify *, size_t);
 };
 
 CORE_BEGIN_DECLS
 
 void
-label_draw_default(const struct theme *, const struct label *);
-
-int
-label_ok(const struct label *);
+notify(const struct texture *, const char *, const char *);
 
 void
-label_query(const struct label *, unsigned int *, unsigned int *);
+notify_update(unsigned int ticks);
 
 void
-label_draw(const struct label *);
+notify_draw(void);
 
 void
-label_action(struct label *, struct action *);
+notify_set_system(const struct notify_system *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_UI_LABEL_H */
+#endif /*! MOLKO_UI_NOTIFY_H */

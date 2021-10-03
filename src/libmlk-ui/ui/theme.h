@@ -31,6 +31,7 @@ struct sprite;
 enum theme_font {
 	THEME_FONT_DEBUG,
 	THEME_FONT_INTERFACE,
+	THEME_FONT_IMPORTANT,
 	THEME_FONT_NUM
 };
 

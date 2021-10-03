@@ -28,6 +28,7 @@
 #include <core/util.h>
 
 #include <assets/fonts/opensans-light.h>
+#include <assets/fonts/opensans-medium.h>
 #include <assets/fonts/opensans-regular.h>
 
 #include "align.h"
@@ -66,7 +67,8 @@ static struct font_catalog {
 	struct font font;
 } default_fonts[] = {
 	FONT(assets_fonts_opensans_light, 12, THEME_FONT_DEBUG),
-	FONT(assets_fonts_opensans_regular, 14, THEME_FONT_INTERFACE)
+	FONT(assets_fonts_opensans_regular, 14, THEME_FONT_INTERFACE),
+	FONT(assets_fonts_opensans_medium, 14, THEME_FONT_IMPORTANT)
 };
 
 int

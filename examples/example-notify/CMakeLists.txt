@@ -16,27 +16,25 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(examples)
+project(example-notify)
 
 set(
-	DIRS
-	example-action
-	example-animation
-	example-audio
-#	example-battle
-	example-cursor
-	example-debug
-	example-drawable
-	example-font
-	example-gridmenu
-	example-label
-	example-message
-	example-notify
-	example-sprite
-	example-trace
-	example-ui
+	SOURCES
+	${example-notify_SOURCE_DIR}/main.c
 )
 
-foreach (d ${DIRS})
-	add_subdirectory(${d})
-endforeach ()
+set(
+	ASSETS
+	${example-notify_SOURCE_DIR}/assets/images/sword.png
+)
+
+mlk_executable(
+	NAME example-notify
+	FOLDER examples
+	LIBRARIES libmlk-rpg
+	ASSETS ${ASSETS}
+	SOURCES ${SOURCES}
+	INCLUDES PRIVATE ${example-notify_BINARY_DIR}
+)
+
+source_group("" FILES ${SOURCES} ${ASSETS})
