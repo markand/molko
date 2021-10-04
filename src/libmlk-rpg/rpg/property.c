@@ -41,23 +41,15 @@ property_load(struct property *p, struct save *s)
 	assert(save_ok(s));
 
 	struct save_stmt stmt;
-	int ret;
+	enum save_stmt_errno ret;
 
-	if (save_stmt_init(s, &stmt, (const char *)assets_sql_property_load, "s", p->key) < 0)
+	if (save_stmt_init(&stmt, s, (const char *)assets_sql_property_load, "s", p->key) < 0)
 		return -1;
 
-	switch (save_stmt_next(&stmt, "s", p->value, sizeof (p->value))) {
-	case SAVE_STMT_DONE:
-	case SAVE_STMT_ERROR:
-		ret = -1;
-		break;
-	default:
-		ret = 0;
-	}
-
+	ret = save_stmt_next(&stmt, "s", p->value, sizeof (p->value)) == SAVE_STMT_ROW;
 	save_stmt_finish(&stmt);
 
-	return ret;
+	return ret ? 0 : -1;
 }
 
 int

@@ -98,9 +98,9 @@ character_load(struct character *ch, struct save *s)
 	assert(save_ok(s));
 
 	struct save_stmt stmt;
-	int ret;
+	enum save_stmt_errno ret;
 
-	if (save_stmt_init(s, &stmt, (const char *)assets_sql_character_load, "s", ch->name) < 0)
+	if (save_stmt_init(&stmt, s, (const char *)assets_sql_character_load, "s", ch->name) < 0)
 		return -1;
 
 	ret = save_stmt_next(&stmt, "iii i iiiiii",
@@ -114,9 +114,9 @@ character_load(struct character *ch, struct save *s)
 	    &ch->defbonus,
 	    &ch->agtbonus,
 	    &ch->luckbonus
-	);
+	) == SAVE_STMT_ROW;
 
 	save_stmt_finish(&stmt);
 
-	return 0;
+	return ret ? 0 : -1;
 }

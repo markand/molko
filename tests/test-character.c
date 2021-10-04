@@ -52,7 +52,7 @@ test_save_simple(void)
 	};
 
 	GREATEST_ASSERT(save_open_path(&db, "test.db", SAVE_MODE_WRITE) == 0);
-	GREATEST_ASSERT(character_save(&ch, &db));
+	GREATEST_ASSERT(character_save(&ch, &db) == 0);
 
 	/* Restore. */
 	memset(&ch, 0, sizeof (ch));

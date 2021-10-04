@@ -64,7 +64,7 @@ save_finish(struct save *);
 
 /* Prepared statements. */
 int
-save_stmt_init(struct save *, struct save_stmt *, const char *, const char *, ...);
+save_stmt_init(struct save_stmt *, struct save *, const char *, const char *, ...);
 
 enum save_stmt_errno
 save_stmt_next(struct save_stmt *, const char *, ...);

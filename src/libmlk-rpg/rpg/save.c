@@ -241,10 +241,10 @@ save_finish(struct save *db)
 }
 
 int
-save_stmt_init(struct save *db, struct save_stmt *stmt, const char *sql, const char *args, ...)
+save_stmt_init(struct save_stmt *stmt, struct save *db, const char *sql, const char *args, ...)
 {
-	assert(save_ok(db));
 	assert(stmt);
+	assert(save_ok(db));
 	assert(args);
 
 	va_list ap;
