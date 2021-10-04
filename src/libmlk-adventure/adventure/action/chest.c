@@ -29,6 +29,7 @@
 
 #include <rpg/map.h>
 #include <rpg/save.h>
+#include <rpg/property.h>
 
 #include "chest.h"
 
@@ -130,7 +131,7 @@ chest_init(struct chest *c)
 	assert(c);
 
 	if (c->save && c->property) {
-		if (save_get_property(c->save, c->property) < 0)
+		if (property_load(c->property, c->save) < 0)
 			panic();
 
 		/* TODO: add an utility. */

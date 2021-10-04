@@ -23,9 +23,6 @@
 
 #include <core/core.h>
 
-#define SAVE_PROPERTY_KEY_MAX   (64)
-#define SAVE_PROPERTY_VALUE_MAX (1024)
-
 struct save {
 	time_t created;
 	time_t updated;
@@ -37,14 +34,15 @@ enum save_mode {
 	SAVE_MODE_WRITE
 };
 
-struct save_property {
-	char key[SAVE_PROPERTY_KEY_MAX + 1];
-	char value[SAVE_PROPERTY_VALUE_MAX + 1];
-};
-
 struct save_stmt {
 	struct save *parent;
 	void *handle;
+};
+
+enum save_stmt_errno {
+	SAVE_STMT_DONE,
+	SAVE_STMT_ROW,
+	SAVE_STMT_ERROR
 };
 
 CORE_BEGIN_DECLS
@@ -59,15 +57,6 @@ int
 save_ok(const struct save *);
 
 int
-save_set_property(struct save *, const struct save_property *);
-
-int
-save_get_property(struct save *, struct save_property *);
-
-int
-save_remove_property(struct save *, const struct save_property *);
-
-int
 save_exec(struct save *, const char *, const char *, ...);
 
 void
@@ -77,7 +66,7 @@ save_finish(struct save *);
 int
 save_stmt_init(struct save *, struct save_stmt *, const char *, const char *, ...);
 
-int
+enum save_stmt_errno
 save_stmt_next(struct save_stmt *, const char *, ...);
 
 void

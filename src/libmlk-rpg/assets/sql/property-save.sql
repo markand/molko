@@ -1,5 +1,5 @@
 --
--- property-get.sql -- get a property
+-- property-save.sql -- set a property
 --
 -- Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
 --
@@ -16,6 +16,11 @@
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 --
 
-SELECT value
-  FROM property
- WHERE key = ?
+INSERT OR REPLACE INTO property(
+	key,
+	value
+)
+VALUES(
+	?,
+	?
+)

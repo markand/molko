@@ -21,6 +21,7 @@
 #define GREATEST_USE_ABBREVS 0
 #include <greatest.h>
 
+#include <rpg/property.h>
 #include <rpg/save.h>
 
 static void
@@ -89,22 +90,22 @@ GREATEST_TEST
 properties_set(void)
 {
 	struct save db;
-	struct save_property prop;
+	struct property prop;
 
 	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
 
 	/* Insert a new property 'state'. */
-	prop = (struct save_property){.key = "state", .value = "intro"};
-	GREATEST_ASSERT(save_set_property(&db, &prop) == 0);
-	prop = (struct save_property){.key = "state"};
-	GREATEST_ASSERT(save_get_property(&db, &prop) == 0);
+	prop = (struct property){.key = "state", .value = "intro"};
+	GREATEST_ASSERT(property_save(&prop, &db) == 0);
+	prop = (struct property){.key = "state"};
+	GREATEST_ASSERT(property_load(&prop, &db) == 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "intro");
 
 	/* Now we replace the value. */
-	prop = (struct save_property){.key = "state", .value = "map"};
-	GREATEST_ASSERT(save_set_property(&db, &prop) == 0);
-	prop = (struct save_property){.key = "state"};
-	GREATEST_ASSERT(save_get_property(&db, &prop) == 0);
+	prop = (struct property){.key = "state", .value = "map"};
+	GREATEST_ASSERT(property_save(&prop, &db) == 0);
+	prop = (struct property){.key = "state"};
+	GREATEST_ASSERT(property_load(&prop, &db) == 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "map");
 
 	save_finish(&db);
@@ -116,10 +117,10 @@ GREATEST_TEST
 properties_notfound(void)
 {
 	struct save db;
-	struct save_property prop = {.key = "state"};
+	struct property prop = {.key = "state"};
 
 	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
-	GREATEST_ASSERT(save_get_property(&db, &prop) < 0);
+	GREATEST_ASSERT(property_load(&prop, &db) < 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "");
 
 	GREATEST_PASS();
@@ -129,17 +130,17 @@ GREATEST_TEST
 properties_remove(void)
 {
 	struct save db;
-	struct save_property prop;
+	struct property prop;
 
 	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
 
 	/* Insert a new property 'initialized'. */
-	prop = (struct save_property){.key = "state", .value = "intro"};
-	GREATEST_ASSERT(save_set_property(&db, &prop) == 0);
-	prop = (struct save_property){.key = "state"};
-	GREATEST_ASSERT(save_remove_property(&db, &prop) == 0);
-	prop = (struct save_property){.key = "state"};
-	GREATEST_ASSERT(save_get_property(&db, &prop) < 0);
+	prop = (struct property){.key = "state", .value = "intro"};
+	GREATEST_ASSERT(property_save(&prop, &db) == 0);
+	prop = (struct property){.key = "state"};
+	GREATEST_ASSERT(property_remove(&prop, &db) == 0);
+	prop = (struct property){.key = "state"};
+	GREATEST_ASSERT(property_load(&prop, &db) < 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "");
 
 	GREATEST_PASS();

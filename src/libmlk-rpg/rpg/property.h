@@ -1,5 +1,5 @@
 /*
- * chest.h -- chest object
+ * property.h -- manage game properties
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,51 +16,32 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_ACTION_CHEST_H
-#define MOLKO_ADVENTURE_ACTION_CHEST_H
+#ifndef MOLKO_RPG_PROPERTY_H
+#define MOLKO_RPG_PROPERTY_H
 
-#include <core/action.h>
-#include <core/animation.h>
 #include <core/core.h>
 
-struct map;
+#define PROPERTY_KEY_MAX        (64)
+#define PROPERTY_VALUE_MAX      (1024)
+
 struct save;
-struct property;
-struct sound;
 
-enum chest_state {
-	CHEST_STATE_CLOSED,
-	CHEST_STATE_ANIMATE,
-	CHEST_STATE_OPEN
-};
-
-struct chest {
-	/* Mandatory. */
-	int x;
-	int y;
-	struct map *map;
-	struct animation animation;
-
-	/* Defaulted. */
-	enum chest_state state;
-	struct action action;
-
-	/* Optional. */
-	struct save *save;
-	struct property *property;
-	struct sound *sound;
-	void *data;
-	void (*exec)(struct chest *);
+struct property {
+	char key[PROPERTY_KEY_MAX + 1];
+	char value[PROPERTY_VALUE_MAX + 1];
 };
 
 CORE_BEGIN_DECLS
 
-void
-chest_init(struct chest *c);
+int
+property_save(const struct property *, struct save *);
 
-struct action *
-chest_action(struct chest *c);
+int
+property_load(struct property *, struct save *);
+
+int
+property_remove(struct property *, struct save *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_ADVENTURE_ACTION_CHEST_H */
+#endif /* !MOLKO_RPG_PROPERTY_H */
