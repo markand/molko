@@ -1,5 +1,5 @@
 /*
- * team.c -- team storage
+ * quest.h -- in game quests
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,5 +16,36 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* Nothing yet. */
-enum { some_compiler_needs_more_than_nothing = 1 };
+#ifndef MOLKO_RPG_QUEST_H
+#define MOLKO_RPG_QUEST_H
+
+#include <stddef.h>
+
+#include <core/core.h>
+
+struct save;
+
+struct quest_step {
+	const char *name;
+	const char *description;
+	int percent;
+};
+
+struct quest {
+	const char *name;
+	const char *description;
+	struct quest_step *steps;
+	size_t stepsz;
+};
+
+CORE_BEGIN_DECLS
+
+int
+quest_save(struct quest *, struct save *);
+
+int
+quest_load(struct quest *, struct save *);
+
+CORE_END_DECLS
+
+#endif /* !MOLKO_RPG_QUEST_H */

@@ -38,6 +38,17 @@ CREATE TABLE IF NOT EXISTS character(
 	bonus_luck      INTEGER DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS quest(
+	name            TEXT PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS quest_step(
+	name            TEXT PRIMARY KEY,
+	percent         INTEGER DEFAULT 0,
+	quest_name      TEXT NOT NULL,
+	FOREIGN KEY(quest_name) REFERENCES quest(name)
+);
+
 INSERT OR IGNORE INTO property(key, value) VALUES ('molko.create-date', strftime('%s','now'));
 INSERT OR IGNORE INTO property(key, value) VALUES ('molko.update-date', strftime('%s','now'));
 

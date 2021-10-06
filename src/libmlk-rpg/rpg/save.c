@@ -210,10 +210,10 @@ int
 save_exec(struct save *db, const char *sql, const char *args, ...)
 {
 	assert(save_ok(db));
-	assert(sql && args);
+	assert(sql);
 
 	struct save_stmt stmt;
-	int ret;
+	enum save_stmt_errno ret;
 	va_list ap;
 
 	va_start(ap, args);
@@ -226,7 +226,7 @@ save_exec(struct save *db, const char *sql, const char *args, ...)
 	ret = save_stmt_next(&stmt, NULL);
 	save_stmt_finish(&stmt);
 
-	return ret;
+	return ret == SAVE_STMT_ERROR ? -1 : 0;
 }
 
 void
@@ -278,6 +278,7 @@ save_stmt_next(struct save_stmt *stmt, const char *args, ...)
 		ret = SAVE_STMT_DONE;
 		break;
 	default:
+		errorf("%s", sqlite3_errmsg(stmt->parent->handle));
 		break;
 	}
 
@@ -291,4 +292,28 @@ save_stmt_finish(struct save_stmt *stmt)
 
 	sqlite3_finalize(stmt->handle);
 	memset(stmt, 0, sizeof (*stmt));
+}
+
+int
+save_tx_begin(struct save *s)
+{
+	assert(save_ok(s));
+
+	return save_exec(s, "BEGIN EXCLUSIVE TRANSACTION", NULL);
+}
+
+void
+save_tx_rollback(struct save *s)
+{
+	assert(save_ok(s));
+
+	(void)save_exec(s, "ROLLBACK", NULL);
+}
+
+void
+save_tx_commit(struct save *s)
+{
+	assert(save_ok(s));
+
+	(void)save_exec(s, "COMMIT", NULL);
 }

@@ -65,6 +65,8 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/message.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/property.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/property.h
+	${libmlk-rpg_SOURCE_DIR}/rpg/quest.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/quest.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/rpg.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/rpg.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/rpg_p.h
@@ -92,6 +94,10 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/assets/sql/property-load.sql
 	${libmlk-rpg_SOURCE_DIR}/assets/sql/property-remove.sql
 	${libmlk-rpg_SOURCE_DIR}/assets/sql/property-save.sql
+	${libmlk-rpg_SOURCE_DIR}/assets/sql/quest-remove.sql
+	${libmlk-rpg_SOURCE_DIR}/assets/sql/quest-save.sql
+	${libmlk-rpg_SOURCE_DIR}/assets/sql/quest-step-load.sql
+	${libmlk-rpg_SOURCE_DIR}/assets/sql/quest-step-save.sql
 )
 
 set(

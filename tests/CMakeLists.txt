@@ -29,6 +29,7 @@ set(
 	error
 	map
 	save
+	save-quest
 	state
 	tileset
 	util

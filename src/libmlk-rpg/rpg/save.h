@@ -72,6 +72,16 @@ save_stmt_next(struct save_stmt *, const char *, ...);
 void
 save_stmt_finish(struct save_stmt *);
 
+/* Explicit transactions. */
+int
+save_tx_begin(struct save *);
+
+void
+save_tx_rollback(struct save *);
+
+void
+save_tx_commit(struct save *);
+
 CORE_END_DECLS
 
 #endif /* !MOLKO_RPG_SAVE_H */
