@@ -46,7 +46,7 @@ debugf(struct debug_report *, const char *, ...);
 
 
 void
-vdebugf(struct debug_report *, const char *, va_list);
+debugva(struct debug_report *, const char *, va_list);
 
 CORE_END_DECLS
 

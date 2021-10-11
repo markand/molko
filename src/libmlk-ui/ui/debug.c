@@ -42,12 +42,12 @@ debugf(struct debug_report *report, const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vdebugf(report, fmt, ap);
+	debugva(report, fmt, ap);
 	va_end(ap);
 }
 
 void
-vdebugf(struct debug_report *report, const char *fmt, va_list ap)
+debugva(struct debug_report *report, const char *fmt, va_list ap)
 {
 	assert(report);
 	assert(fmt);
