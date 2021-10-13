@@ -16,29 +16,18 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <greatest.h>
+#include <rexo.h>
 
 #include <core/error.h>
 
-TEST
-simple(void)
+RX_TEST_CASE(basics, simple)
 {
 	errorf("Failed: %d", 123);
-	ASSERT_STR_EQ("Failed: 123", error());
-	PASS();
+	RX_STR_REQUIRE_EQUAL("Failed: 123", error());
 }
-
-SUITE(errors)
-{
-	RUN_TEST(simple);
-}
-
-GREATEST_MAIN_DEFS();
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	RUN_SUITE(errors);
-	GREATEST_MAIN_END();
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }

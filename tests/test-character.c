@@ -19,22 +19,26 @@
 #include <stdio.h>
 #include <string.h>
 
-#define GREATEST_USE_ABBREVS 0
-#include <greatest.h>
+#include <rexo.h>
 
 #include <rpg/character.h>
 #include <rpg/save.h>
 
-static void
-clean(void *data)
+RX_SET_UP(setup)
 {
-	(void)data;
+	remove("test.db");
 
+	return RX_SUCCESS;
+}
+
+RX_TEAR_DOWN(teardown)
+{
 	remove("test.db");
 }
 
-GREATEST_TEST
-test_save_simple(void)
+RX_FIXTURE(basics_fixture, void *, .set_up = setup, .tear_down = teardown);
+
+RX_TEST_CASE(test, save_simple, .fixture = basics_fixture)
 {
 	struct save db;
 	struct character ch = {
@@ -51,40 +55,28 @@ test_save_simple(void)
 		.luckbonus = 1004
 	};
 
-	GREATEST_ASSERT(save_open_path(&db, "test.db", SAVE_MODE_WRITE) == 0);
-	GREATEST_ASSERT(character_save(&ch, &db) == 0);
+	RX_INT_REQUIRE_EQUAL(save_open_path(&db, "test.db", SAVE_MODE_WRITE), 0);
+	RX_INT_REQUIRE_EQUAL(character_save(&ch, &db), 0);
 
 	/* Restore. */
 	memset(&ch, 0, sizeof (ch));
 	ch.name = "david";
 
-	GREATEST_ASSERT(character_load(&ch, &db) == 0);
-	GREATEST_ASSERT_EQ(1989, ch.hp);
-	GREATEST_ASSERT_EQ(1, ch.mp);
-	GREATEST_ASSERT_EQ(18, ch.level);
-	GREATEST_ASSERT_EQ(1, ch.team_order);
-	GREATEST_ASSERT_EQ(500, ch.hpbonus);
-	GREATEST_ASSERT_EQ(50, ch.mpbonus);
-	GREATEST_ASSERT_EQ(1001, ch.atkbonus);
-	GREATEST_ASSERT_EQ(1002, ch.defbonus);
-	GREATEST_ASSERT_EQ(1003, ch.agtbonus);
-	GREATEST_ASSERT_EQ(1004, ch.luckbonus);
-	GREATEST_PASS();
+	RX_REQUIRE(character_load(&ch, &db) == 0);
+	RX_INT_REQUIRE_EQUAL(ch.hp, 1989);
+	RX_INT_REQUIRE_EQUAL(ch.mp, 1);
+	RX_INT_REQUIRE_EQUAL(ch.level, 18);
+	RX_INT_REQUIRE_EQUAL(ch.team_order, 1);
+	RX_INT_REQUIRE_EQUAL(ch.hpbonus, 500);
+	RX_INT_REQUIRE_EQUAL(ch.mpbonus, 50);
+	RX_INT_REQUIRE_EQUAL(ch.atkbonus, 1001);
+	RX_INT_REQUIRE_EQUAL(ch.defbonus, 1002);
+	RX_INT_REQUIRE_EQUAL(ch.agtbonus, 1003);
+	RX_INT_REQUIRE_EQUAL(ch.luckbonus, 1004);
 }
-
-GREATEST_SUITE(suite_save)
-{
-	GREATEST_SET_SETUP_CB(clean, NULL);
-	GREATEST_SET_TEARDOWN_CB(clean, NULL);
-	GREATEST_RUN_TEST(test_save_simple);
-}
-
-GREATEST_MAIN_DEFS();
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	GREATEST_RUN_SUITE(suite_save);
-	GREATEST_MAIN_END();
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }

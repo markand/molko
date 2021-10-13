@@ -16,8 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define GREATEST_USE_ABBREVS 0
-#include <greatest.h>
+#include <rexo.h>
 
 #include <core/alloc.h>
 
@@ -26,50 +25,41 @@ struct point {
 	int y;
 };
 
-GREATEST_TEST
-test_array_simple(void)
+RX_TEST_CASE(test, array_simple)
 {
 	struct point *points;
 
-	GREATEST_ASSERT((points = alloc_array0(2, sizeof (*points))));
-	GREATEST_ASSERT_EQ(0, points[0].x);
-	GREATEST_ASSERT_EQ(0, points[0].y);
-	GREATEST_ASSERT_EQ(0, points[1].x);
-	GREATEST_ASSERT_EQ(0, points[1].y);
+	RX_REQUIRE((points = alloc_array0(2, sizeof (*points))));
+	RX_INT_REQUIRE_EQUAL(points[0].x, 0);
+	RX_INT_REQUIRE_EQUAL(points[0].y, 0);
+	RX_INT_REQUIRE_EQUAL(points[1].x, 0);
+	RX_INT_REQUIRE_EQUAL(points[1].y, 0);
 
 	points[0].x = 10;
 	points[0].y = 20;
 	points[1].x = 30;
 	points[1].y = 40;
 
-	GREATEST_ASSERT((points = alloc_rearray0(points, 2, 4, sizeof (*points))));
-	GREATEST_ASSERT_EQ(10, points[0].x);
-	GREATEST_ASSERT_EQ(20, points[0].y);
-	GREATEST_ASSERT_EQ(30, points[1].x);
-	GREATEST_ASSERT_EQ(40, points[1].y);
-	GREATEST_ASSERT_EQ(0,  points[2].x);
-	GREATEST_ASSERT_EQ(0,  points[2].y);
-	GREATEST_ASSERT_EQ(0,  points[3].x);
-	GREATEST_ASSERT_EQ(0,  points[3].y);
-
-	GREATEST_PASS();
+	RX_REQUIRE((points = alloc_rearray0(points, 2, 4, sizeof (*points))));
+	RX_INT_REQUIRE_EQUAL(points[0].x, 10);
+	RX_INT_REQUIRE_EQUAL(points[0].y, 20);
+	RX_INT_REQUIRE_EQUAL(points[1].x, 30);
+	RX_INT_REQUIRE_EQUAL(points[1].y, 40);
+	RX_INT_REQUIRE_EQUAL(points[2].x, 0);
+	RX_INT_REQUIRE_EQUAL(points[2].y, 0);
+	RX_INT_REQUIRE_EQUAL(points[3].x, 0);
+	RX_INT_REQUIRE_EQUAL(points[3].y, 0);
 }
 
-GREATEST_SUITE(suite_basics)
-{
-	GREATEST_RUN_TEST(test_array_simple);
-}
-
-GREATEST_TEST
-test_pool_simple(void)
+RX_TEST_CASE(test, pool_simple)
 {
 	struct alloc_pool pool;
 	struct point *p;
 
-	GREATEST_ASSERT(alloc_pool_init(&pool, sizeof (*p), NULL) == 0);
-	GREATEST_ASSERT_EQ(sizeof (*p), pool.elemsize);
-	GREATEST_ASSERT_EQ(0, pool.size);
-	GREATEST_ASSERT_EQ(ALLOC_POOL_INIT_DEFAULT, pool.capacity);
+	RX_REQUIRE(alloc_pool_init(&pool, sizeof (*p), NULL) == 0);
+	RX_UINT_REQUIRE_EQUAL(pool.elemsize, sizeof (*p));
+	RX_UINT_REQUIRE_EQUAL(pool.size, 0);
+	RX_UINT_REQUIRE_EQUAL(pool.capacity, ALLOC_POOL_INIT_DEFAULT);
 
 	/* Create until we reach the capacity. */
 	for (size_t i = 0; i < pool.capacity; ++i) {
@@ -78,14 +68,14 @@ test_pool_simple(void)
 		p->y = (int)i + 1;
 	}
 
-	GREATEST_ASSERT_EQ(pool.size, pool.capacity);
+	RX_UINT_REQUIRE_EQUAL(pool.size, pool.capacity);
 
 	/* Verify values are correct. */
 	for (size_t i = 0; i < pool.size; ++i) {
 		p = ((struct point *)pool.data) + i;
 
-		GREATEST_ASSERT_EQ((int)i + 1, p->x);
-		GREATEST_ASSERT_EQ((int)i + 1, p->y);
+		RX_INT_REQUIRE_EQUAL(p->x, (int)i + 1);
+		RX_INT_REQUIRE_EQUAL(p->y, (int)i + 1);
 	}
 
 	/* Now it should reallocate. */
@@ -93,32 +83,18 @@ test_pool_simple(void)
 	p->x = 9999;
 	p->y = 9999;
 
-	GREATEST_ASSERT(pool.capacity > pool.size);
+	RX_REQUIRE(pool.capacity > pool.size);
 
 	alloc_pool_finish(&pool);
 
-	GREATEST_ASSERT_EQ(NULL, pool.data);
-	GREATEST_ASSERT_EQ(0, pool.elemsize);
-	GREATEST_ASSERT_EQ(0, pool.size);
-	GREATEST_ASSERT_EQ(0, pool.capacity);
-
-	GREATEST_PASS();
+	RX_PTR_REQUIRE_EQUAL(pool.data, NULL);
+	RX_UINT_REQUIRE_EQUAL(pool.elemsize, 0U);
+	RX_UINT_REQUIRE_EQUAL(pool.size, 0U);
+	RX_UINT_REQUIRE_EQUAL(pool.capacity, 0U);
 }
-
-GREATEST_SUITE(suite_pool)
-{
-	GREATEST_RUN_TEST(test_pool_simple);
-}
-
-GREATEST_MAIN_DEFS();
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	GREATEST_RUN_SUITE(suite_basics);
-	GREATEST_RUN_SUITE(suite_pool);
-	GREATEST_MAIN_END();
-
-	return 0;
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }

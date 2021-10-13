@@ -18,36 +18,30 @@
 
 #include <stdio.h>
 
-#define GREATEST_USE_ABBREVS 0
-#include <greatest.h>
+#include <rexo.h>
 
 #include <core/util.h>
 
 #include <rpg/quest.h>
 #include <rpg/save.h>
 
-static struct save db;
-
-static void
-clean(void *data)
+RX_SET_UP(setup)
 {
-	(void)data;
+	if (save_open_path(RX_DATA, "quest.db", SAVE_MODE_WRITE) < 0)
+		return RX_ERROR;
 
-	save_finish(&db);
+	return RX_SUCCESS;
+}
+
+RX_TEAR_DOWN(teardown)
+{
+	save_finish(RX_DATA);
 	remove("quest.db");
 }
 
-static void
-setup(void *data)
-{
-	(void)data;
+RX_FIXTURE(basics_fixture, struct save, .set_up = setup, .tear_down = teardown);
 
-	if (save_open_path(&db, "quest.db", SAVE_MODE_WRITE) < 0)
-		exit(1);
-}
-
-GREATEST_TEST
-basics_load(void)
+RX_TEST_CASE(basics, load, .fixture = basics_fixture)
 {
 	struct quest_step steps[] = {
 		{
@@ -67,31 +61,19 @@ basics_load(void)
 		.steps = steps,
 		.stepsz = UTIL_SIZE(steps)
 	};
+	struct save *save = RX_DATA;
 
-	GREATEST_ASSERT_EQ(quest_save(&quest, &db), 0);
+	RX_INT_REQUIRE_EQUAL(quest_save(&quest, save), 0);
 
 	/* Reset to inspect. */
 	steps[0].percent = steps[1].percent = 0;
-	GREATEST_ASSERT_EQ(quest_load(&quest, &db), 0);
-	GREATEST_ASSERT_EQ(steps[0].percent, 100);
-	GREATEST_ASSERT_EQ(steps[1].percent, 50);
-
-	GREATEST_PASS();
+	RX_INT_REQUIRE_EQUAL(quest_load(&quest, save), 0);
+	RX_INT_REQUIRE_EQUAL(steps[0].percent, 100);
+	RX_INT_REQUIRE_EQUAL(steps[1].percent, 50);
 }
-
-GREATEST_SUITE(suite_basics)
-{
-	GREATEST_SET_SETUP_CB(setup, NULL);
-	GREATEST_SET_TEARDOWN_CB(clean, NULL);
-	GREATEST_RUN_TEST(basics_load);
-}
-
-GREATEST_MAIN_DEFS();
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	GREATEST_RUN_SUITE(suite_basics);
-	GREATEST_MAIN_END();
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }

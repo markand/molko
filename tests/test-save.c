@@ -18,94 +18,78 @@
 
 #include <stdio.h>
 
-#define GREATEST_USE_ABBREVS 0
-#include <greatest.h>
+#include <rexo.h>
 
 #include <rpg/property.h>
 #include <rpg/save.h>
 
-static void
-clean(void *data)
+RX_TEAR_DOWN(teardown)
 {
-	(void)data;
-
 	remove("1.db");
 	remove("2.db");
 }
 
-GREATEST_TEST
-open_read(void)
+RX_FIXTURE(basics_fixture, void *, .tear_down = teardown);
+
+RX_TEST_CASE(open, read, .fixture = basics_fixture)
 {
 	struct save db;
 
-	/* Non-existent should return false. */
-	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_READ) < 0);
-
+	/* Non-existent should return error. */
+	RX_INT_REQUIRE_EQUAL(save_open_path(&db, "1.db", SAVE_MODE_READ), -1);
 	save_finish(&db);
-
-	GREATEST_PASS();
 }
 
-GREATEST_TEST
-open_write(void)
+RX_TEST_CASE(open, write, .fixture = basics_fixture)
 {
 	struct save db[2] = {0};
 
 	/* Write should work on both non-existent and existent database. */
-	GREATEST_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE) == 0);
-	GREATEST_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE) == 0);
+	RX_INT_REQUIRE_EQUAL(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE), 0);
+	RX_INT_REQUIRE_EQUAL(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE), 0);
 
 	/* Update and create date must not be 0. */
-	GREATEST_ASSERT(db[0].created > 0);
-	GREATEST_ASSERT(db[0].updated > 0);
-	GREATEST_ASSERT(db[1].created > 0);
-	GREATEST_ASSERT(db[1].updated > 0);
+	RX_REQUIRE(db[0].created > 0);
+	RX_REQUIRE(db[0].updated > 0);
+	RX_REQUIRE(db[1].created > 0);
+	RX_REQUIRE(db[1].updated > 0);
 
 	save_finish(&db[0]);
 	save_finish(&db[1]);
 
 	/* Should work again. */
-	GREATEST_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE) == 0);
-	GREATEST_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE) == 0);
-	GREATEST_ASSERT(db[0].created > 0);
-	GREATEST_ASSERT(db[0].updated > 0);
-	GREATEST_ASSERT(db[1].created > 0);
-	GREATEST_ASSERT(db[1].updated > 0);
+	RX_REQUIRE(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE) == 0);
+	RX_REQUIRE(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE) == 0);
+	RX_REQUIRE(db[0].created > 0);
+	RX_REQUIRE(db[0].updated > 0);
+	RX_REQUIRE(db[1].created > 0);
+	RX_REQUIRE(db[1].updated > 0);
 
 	save_finish(&db[0]);
 	save_finish(&db[1]);
-
-	GREATEST_PASS();
 }
 
-GREATEST_SUITE(open_suite)
-{
-	GREATEST_SET_SETUP_CB(clean, NULL);
-	GREATEST_SET_TEARDOWN_CB(clean, NULL);
-	GREATEST_RUN_TEST(open_read);
-	GREATEST_RUN_TEST(open_write);
-}
+#if 0
 
-GREATEST_TEST
-properties_set(void)
+RX_TEST_CASE(properties, set)
 {
 	struct save db;
 	struct property prop;
 
-	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
+	RX_REQUIRE(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
 
 	/* Insert a new property 'state'. */
 	prop = (struct property){.key = "state", .value = "intro"};
-	GREATEST_ASSERT(property_save(&prop, &db) == 0);
+	RX_REQUIRE(property_save(&prop, &db) == 0);
 	prop = (struct property){.key = "state"};
-	GREATEST_ASSERT(property_load(&prop, &db) == 0);
+	RX_REQUIRE(property_load(&prop, &db) == 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "intro");
 
 	/* Now we replace the value. */
 	prop = (struct property){.key = "state", .value = "map"};
-	GREATEST_ASSERT(property_save(&prop, &db) == 0);
+	RX_REQUIRE(property_save(&prop, &db) == 0);
 	prop = (struct property){.key = "state"};
-	GREATEST_ASSERT(property_load(&prop, &db) == 0);
+	RX_REQUIRE(property_load(&prop, &db) == 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "map");
 
 	save_finish(&db);
@@ -119,8 +103,8 @@ properties_notfound(void)
 	struct save db;
 	struct property prop = {.key = "state"};
 
-	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
-	GREATEST_ASSERT(property_load(&prop, &db) < 0);
+	RX_REQUIRE(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
+	RX_REQUIRE(property_load(&prop, &db) < 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "");
 
 	GREATEST_PASS();
@@ -132,36 +116,24 @@ properties_remove(void)
 	struct save db;
 	struct property prop;
 
-	GREATEST_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
+	RX_REQUIRE(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
 
 	/* Insert a new property 'initialized'. */
 	prop = (struct property){.key = "state", .value = "intro"};
-	GREATEST_ASSERT(property_save(&prop, &db) == 0);
+	RX_REQUIRE(property_save(&prop, &db) == 0);
 	prop = (struct property){.key = "state"};
-	GREATEST_ASSERT(property_remove(&prop, &db) == 0);
+	RX_REQUIRE(property_remove(&prop, &db) == 0);
 	prop = (struct property){.key = "state"};
-	GREATEST_ASSERT(property_load(&prop, &db) < 0);
-	GREATEST_ASSERT_STR_EQ(prop.value, "");
+	RX_REQUIRE(property_load(&prop, &db) < 0);
+	RX_STR_REQUIRE_EQUAL(prop.value, "");
 
 	GREATEST_PASS();
 }
 
-GREATEST_SUITE(properties_suite)
-{
-	GREATEST_SET_SETUP_CB(clean, NULL);
-	GREATEST_SET_TEARDOWN_CB(clean, NULL);
-	GREATEST_RUN_TEST(properties_set);
-	GREATEST_RUN_TEST(properties_notfound);
-	GREATEST_RUN_TEST(properties_remove);
-}
-
-GREATEST_MAIN_DEFS();
+#endif
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	GREATEST_RUN_SUITE(open_suite);
-	GREATEST_RUN_SUITE(properties_suite);
-	GREATEST_MAIN_END();
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }

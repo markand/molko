@@ -16,48 +16,31 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdbool.h>
-
-#define GREATEST_USE_ABBREVS 0
-#include <greatest.h>
+#include <rexo.h>
 
 #include <core/util.h>
 
-GREATEST_TEST
-nrand_simple(void)
+RX_TEST_CASE(nrand, simple)
 {
-	bool found[10] = {false};
+	int found[10] = {0};
 
 	/* Only try from [2..5], util_nrand does not include upper range. */
 	for (int i = 0; i < 100000; ++i)
-		found[util_nrand(2, 6)] = true;
+		found[util_nrand(2, 6)] = 1;
 
-	GREATEST_ASSERT_EQ(false, found[0]);
-	GREATEST_ASSERT_EQ(false, found[1]);
-	GREATEST_ASSERT_EQ(true,  found[2]);
-	GREATEST_ASSERT_EQ(true,  found[3]);
-	GREATEST_ASSERT_EQ(true,  found[4]);
-	GREATEST_ASSERT_EQ(true,  found[5]);
-	GREATEST_ASSERT_EQ(false, found[7]);
-	GREATEST_ASSERT_EQ(false, found[8]);
-	GREATEST_ASSERT_EQ(false, found[9]);
-
-	GREATEST_PASS();
+	RX_REQUIRE(!found[0]);
+	RX_REQUIRE(!found[1]);
+	RX_REQUIRE(found[2]);
+	RX_REQUIRE(found[3]);
+	RX_REQUIRE(found[4]);
+	RX_REQUIRE(found[5]);
+	RX_REQUIRE(!found[7]);
+	RX_REQUIRE(!found[8]);
+	RX_REQUIRE(!found[9]);
 }
-
-GREATEST_SUITE(suite_nrand)
-{
-	GREATEST_RUN_TEST(nrand_simple);
-}
-
-GREATEST_MAIN_DEFS();
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	GREATEST_RUN_SUITE(suite_nrand);
-	GREATEST_MAIN_END();
-
-	return 0;
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }

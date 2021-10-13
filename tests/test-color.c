@@ -16,65 +16,37 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <greatest.h>
+#include <rexo.h>
 
 #include <core/color.h>
 
-TEST
-red(void)
+RX_TEST_CASE(basics, red)
 {
-	ASSERT_EQ(163, COLOR_R(0xa3000000));
-	PASS();
+	RX_INT_REQUIRE_EQUAL(COLOR_R(0xa3000000), 163);
 }
 
-TEST
-green(void)
+RX_TEST_CASE(basics, green)
 {
-	ASSERT_EQ(19, COLOR_G(0x00130000));
-	PASS();
+	RX_INT_REQUIRE_EQUAL(COLOR_G(0x00130000), 19);
 }
 
-TEST
-blue(void)
+RX_TEST_CASE(basics, blue)
 {
-	ASSERT_EQ(238, COLOR_B(0x0000ee00));
-	PASS();
+	RX_INT_REQUIRE_EQUAL(COLOR_B(0x0000ee00), 238);
 }
 
-TEST
-alpha(void)
+RX_TEST_CASE(basics, alpha)
 {
-	ASSERT_EQ(255, COLOR_A(0x000000ff));
-	PASS();
+	RX_INT_REQUIRE_EQUAL(COLOR_A(0x000000ff), 255);
 }
 
-TEST
-simple(void)
+RX_TEST_CASE(basics, simple)
 {
-	ASSERT_EQ(0xaabbccee, COLOR_HEX(170, 187, 204, 238));
-	PASS();
+	RX_UINT_REQUIRE_EQUAL(COLOR_HEX(170, 187, 204, 238), 0xaabbccee);
 }
-
-SUITE(hex_to_rgb)
-{
-	RUN_TEST(red);
-	RUN_TEST(green);
-	RUN_TEST(blue);
-	RUN_TEST(alpha);
-}
-
-SUITE(rgb_to_hex)
-{
-	RUN_TEST(simple);
-}
-
-GREATEST_MAIN_DEFS();
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	RUN_SUITE(hex_to_rgb);
-	RUN_SUITE(rgb_to_hex);
-	GREATEST_MAIN_END();
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }

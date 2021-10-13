@@ -16,8 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define GREATEST_USE_ABBREVS 0
-#include <greatest.h>
+#include <rexo.h>
 
 #include <core/action.h>
 #include <core/event.h>
@@ -87,24 +86,21 @@ my_finish(struct action *act)
 	((struct invokes *)act->data)->finish = 1;
 }
 
-GREATEST_TEST
-basics_handle(void)
+RX_TEST_CASE(basics, handle)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
 
 	action_handle(&act, &dummy);
 
-	GREATEST_ASSERT(inv.handle);
-	GREATEST_ASSERT(!inv.update);
-	GREATEST_ASSERT(!inv.draw);
-	GREATEST_ASSERT(!inv.end);
-	GREATEST_ASSERT(!inv.finish);
-	GREATEST_PASS();
+	RX_REQUIRE(inv.handle);
+	RX_REQUIRE(!inv.update);
+	RX_REQUIRE(!inv.draw);
+	RX_REQUIRE(!inv.end);
+	RX_REQUIRE(!inv.finish);
 }
 
-GREATEST_TEST
-basics_update(void)
+RX_TEST_CASE(basics, update)
 {
 	struct {
 		struct invokes inv;
@@ -115,101 +111,80 @@ basics_update(void)
 	};
 
 	/* True version. */
-	GREATEST_ASSERT(action_update(&table[0].act, 0));
-	GREATEST_ASSERT(!table[0].inv.handle);
-	GREATEST_ASSERT(table[0].inv.update);
-	GREATEST_ASSERT(!table[0].inv.draw);
-	GREATEST_ASSERT(!table[0].inv.end);
-	GREATEST_ASSERT(!table[0].inv.finish);
+	RX_REQUIRE(action_update(&table[0].act, 0));
+	RX_REQUIRE(!table[0].inv.handle);
+	RX_REQUIRE(table[0].inv.update);
+	RX_REQUIRE(!table[0].inv.draw);
+	RX_REQUIRE(!table[0].inv.end);
+	RX_REQUIRE(!table[0].inv.finish);
 
 	/* False version. */
-	GREATEST_ASSERT(!action_update(&table[1].act, 0));
-	GREATEST_ASSERT(!table[1].inv.handle);
-	GREATEST_ASSERT(table[1].inv.update);
-	GREATEST_ASSERT(!table[1].inv.draw);
-	GREATEST_ASSERT(!table[1].inv.end);
-	GREATEST_ASSERT(!table[1].inv.finish);
-	
-	GREATEST_PASS();
+	RX_REQUIRE(!action_update(&table[1].act, 0));
+	RX_REQUIRE(!table[1].inv.handle);
+	RX_REQUIRE(table[1].inv.update);
+	RX_REQUIRE(!table[1].inv.draw);
+	RX_REQUIRE(!table[1].inv.end);
+	RX_REQUIRE(!table[1].inv.finish);
 }
 
-GREATEST_TEST
-basics_draw(void)
+RX_TEST_CASE(basics, draw)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
 
 	action_draw(&act);
 
-	GREATEST_ASSERT(!inv.handle);
-	GREATEST_ASSERT(!inv.update);
-	GREATEST_ASSERT(inv.draw);
-	GREATEST_ASSERT(!inv.end);
-	GREATEST_ASSERT(!inv.finish);
-	GREATEST_PASS();
+	RX_REQUIRE(!inv.handle);
+	RX_REQUIRE(!inv.update);
+	RX_REQUIRE(inv.draw);
+	RX_REQUIRE(!inv.end);
+	RX_REQUIRE(!inv.finish);
 }
 
-GREATEST_TEST
-basics_end(void)
+RX_TEST_CASE(basics, end)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
 
 	action_end(&act);
 
-	GREATEST_ASSERT(!inv.handle);
-	GREATEST_ASSERT(!inv.update);
-	GREATEST_ASSERT(!inv.draw);
-	GREATEST_ASSERT(inv.end);
-	GREATEST_ASSERT(!inv.finish);
-	GREATEST_PASS();
+	RX_REQUIRE(!inv.handle);
+	RX_REQUIRE(!inv.update);
+	RX_REQUIRE(!inv.draw);
+	RX_REQUIRE(inv.end);
+	RX_REQUIRE(!inv.finish);
 }
 
-GREATEST_TEST
-basics_finish(void)
+RX_TEST_CASE(basics, finish)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
 
 	action_finish(&act);
 
-	GREATEST_ASSERT(!inv.handle);
-	GREATEST_ASSERT(!inv.update);
-	GREATEST_ASSERT(!inv.draw);
-	GREATEST_ASSERT(!inv.end);
-	GREATEST_ASSERT(inv.finish);
-	GREATEST_PASS();
+	RX_REQUIRE(!inv.handle);
+	RX_REQUIRE(!inv.update);
+	RX_REQUIRE(!inv.draw);
+	RX_REQUIRE(!inv.end);
+	RX_REQUIRE(inv.finish);
 }
 
-GREATEST_SUITE(suite_basics)
-{
-	GREATEST_RUN_TEST(basics_handle);
-	GREATEST_RUN_TEST(basics_update);
-	GREATEST_RUN_TEST(basics_draw);
-	GREATEST_RUN_TEST(basics_end);
-	GREATEST_RUN_TEST(basics_finish);
-}
-
-GREATEST_TEST
-stack_add(void)
+RX_TEST_CASE(stack, add)
 {
 	struct action_stack st = {0};
 	struct action act = {0};
 
-	GREATEST_ASSERT(action_stack_add(&st, &act) == 0);
+	RX_INT_REQUIRE_EQUAL(action_stack_add(&st, &act), 0);
 
 	/* Now fill up. */
 	for (int i = 0; i < ACTION_STACK_MAX - 1; ++i)
-		GREATEST_ASSERT(action_stack_add(&st, &act) == 0);
+		RX_INT_REQUIRE_EQUAL(action_stack_add(&st, &act), 0);
 
 	/* This one should not fit in. */
-	GREATEST_ASSERT(action_stack_add(&st, &act) < 0);
-
-	GREATEST_PASS();
+	RX_INT_REQUIRE_EQUAL(action_stack_add(&st, &act), -1);
 }
 
-GREATEST_TEST
-stack_handle(void)
+RX_TEST_CASE(stack, handle)
 {
 	struct {
 		int called;
@@ -227,14 +202,12 @@ stack_handle(void)
 	action_stack_add(&st, &table[2].act);
 	action_stack_handle(&st, &dummy);
 
-	GREATEST_ASSERT(table[0].called);
-	GREATEST_ASSERT(table[1].called);
-	GREATEST_ASSERT(table[2].called);
-	GREATEST_PASS();
+	RX_REQUIRE(table[0].called);
+	RX_REQUIRE(table[1].called);
+	RX_REQUIRE(table[2].called);
 }
 
-GREATEST_TEST
-stack_update(void)
+RX_TEST_CASE(stack, update)
 {
 	struct {
 		struct invokes inv;
@@ -259,58 +232,58 @@ stack_update(void)
 	action_stack_add(&st, &table[5].act);
 	action_stack_add(&st, &table[6].act);
 
-	GREATEST_ASSERT(!action_stack_update(&st, 0));
+	RX_REQUIRE(!action_stack_update(&st, 0));
 
-	GREATEST_ASSERT(!table[0].inv.handle);
-	GREATEST_ASSERT(!table[1].inv.handle);
-	GREATEST_ASSERT(!table[2].inv.handle);
-	GREATEST_ASSERT(!table[3].inv.handle);
-	GREATEST_ASSERT(!table[4].inv.handle);
-	GREATEST_ASSERT(!table[5].inv.handle);
-	GREATEST_ASSERT(!table[6].inv.handle);
+	RX_REQUIRE(!table[0].inv.handle);
+	RX_REQUIRE(!table[1].inv.handle);
+	RX_REQUIRE(!table[2].inv.handle);
+	RX_REQUIRE(!table[3].inv.handle);
+	RX_REQUIRE(!table[4].inv.handle);
+	RX_REQUIRE(!table[5].inv.handle);
+	RX_REQUIRE(!table[6].inv.handle);
 
-	GREATEST_ASSERT(table[0].inv.update);
-	GREATEST_ASSERT(table[1].inv.update);
-	GREATEST_ASSERT(table[2].inv.update);
-	GREATEST_ASSERT(table[3].inv.update);
-	GREATEST_ASSERT(table[4].inv.update);
-	GREATEST_ASSERT(table[5].inv.update);
-	GREATEST_ASSERT(table[6].inv.update);
+	RX_REQUIRE(table[0].inv.update);
+	RX_REQUIRE(table[1].inv.update);
+	RX_REQUIRE(table[2].inv.update);
+	RX_REQUIRE(table[3].inv.update);
+	RX_REQUIRE(table[4].inv.update);
+	RX_REQUIRE(table[5].inv.update);
+	RX_REQUIRE(table[6].inv.update);
 
-	GREATEST_ASSERT(!table[0].inv.draw);
-	GREATEST_ASSERT(!table[1].inv.draw);
-	GREATEST_ASSERT(!table[2].inv.draw);
-	GREATEST_ASSERT(!table[3].inv.draw);
-	GREATEST_ASSERT(!table[4].inv.draw);
-	GREATEST_ASSERT(!table[5].inv.draw);
-	GREATEST_ASSERT(!table[6].inv.draw);
+	RX_REQUIRE(!table[0].inv.draw);
+	RX_REQUIRE(!table[1].inv.draw);
+	RX_REQUIRE(!table[2].inv.draw);
+	RX_REQUIRE(!table[3].inv.draw);
+	RX_REQUIRE(!table[4].inv.draw);
+	RX_REQUIRE(!table[5].inv.draw);
+	RX_REQUIRE(!table[6].inv.draw);
 
-	GREATEST_ASSERT(!table[0].inv.end);
-	GREATEST_ASSERT(table[1].inv.end);
-	GREATEST_ASSERT(!table[2].inv.end);
-	GREATEST_ASSERT(!table[3].inv.end);
-	GREATEST_ASSERT(table[4].inv.end);
-	GREATEST_ASSERT(table[5].inv.end);
-	GREATEST_ASSERT(!table[6].inv.end);
+	RX_REQUIRE(!table[0].inv.end);
+	RX_REQUIRE(table[1].inv.end);
+	RX_REQUIRE(!table[2].inv.end);
+	RX_REQUIRE(!table[3].inv.end);
+	RX_REQUIRE(table[4].inv.end);
+	RX_REQUIRE(table[5].inv.end);
+	RX_REQUIRE(!table[6].inv.end);
 
-	GREATEST_ASSERT(!table[0].inv.finish);
-	GREATEST_ASSERT(table[1].inv.finish);
-	GREATEST_ASSERT(!table[2].inv.finish);
-	GREATEST_ASSERT(!table[3].inv.finish);
-	GREATEST_ASSERT(table[4].inv.finish);
-	GREATEST_ASSERT(table[5].inv.finish);
-	GREATEST_ASSERT(!table[6].inv.finish);
+	RX_REQUIRE(!table[0].inv.finish);
+	RX_REQUIRE(table[1].inv.finish);
+	RX_REQUIRE(!table[2].inv.finish);
+	RX_REQUIRE(!table[3].inv.finish);
+	RX_REQUIRE(table[4].inv.finish);
+	RX_REQUIRE(table[5].inv.finish);
+	RX_REQUIRE(!table[6].inv.finish);
 
 	/* The following must still be there. */
-	GREATEST_ASSERT_EQ(st.actions[0], &table[0].act);
-	GREATEST_ASSERT_EQ(st.actions[2], &table[2].act);
-	GREATEST_ASSERT_EQ(st.actions[3], &table[3].act);
-	GREATEST_ASSERT_EQ(st.actions[6], &table[6].act);
+	RX_PTR_REQUIRE_EQUAL(st.actions[0], &table[0].act);
+	RX_PTR_REQUIRE_EQUAL(st.actions[2], &table[2].act);
+	RX_PTR_REQUIRE_EQUAL(st.actions[3], &table[3].act);
+	RX_PTR_REQUIRE_EQUAL(st.actions[6], &table[6].act);
 
 	/* The following must have been NULL-ed. */
-	GREATEST_ASSERT_EQ(st.actions[1], NULL);
-	GREATEST_ASSERT_EQ(st.actions[4], NULL);
-	GREATEST_ASSERT_EQ(st.actions[5], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[1], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[4], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[5], NULL);
 	
 	/*
 	 * Now make all actions to return 1 and check if it cleans the stack.
@@ -320,20 +293,17 @@ stack_update(void)
 	    table[3].act.update =
 	    table[6].act.update = my_update_true;
 
-	GREATEST_ASSERT(action_stack_update(&st, 0));
-	GREATEST_ASSERT_EQ(st.actions[0], NULL);
-	GREATEST_ASSERT_EQ(st.actions[1], NULL);
-	GREATEST_ASSERT_EQ(st.actions[2], NULL);
-	GREATEST_ASSERT_EQ(st.actions[3], NULL);
-	GREATEST_ASSERT_EQ(st.actions[4], NULL);
-	GREATEST_ASSERT_EQ(st.actions[5], NULL);
-	GREATEST_ASSERT_EQ(st.actions[6], NULL);
-
-	GREATEST_PASS();
+	RX_REQUIRE(action_stack_update(&st, 0));
+	RX_PTR_REQUIRE_EQUAL(st.actions[0], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[1], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[2], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[3], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[4], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[5], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[6], NULL);
 }
 
-GREATEST_TEST
-stack_finish(void)
+RX_TEST_CASE(stack, finish)
 {
 	struct {
 		struct invokes inv;
@@ -348,42 +318,25 @@ stack_finish(void)
 	action_stack_add(&st, &table[1].act);
 	action_stack_finish(&st);
 
-	GREATEST_ASSERT(!table[0].inv.handle);
-	GREATEST_ASSERT(!table[0].inv.update);
-	GREATEST_ASSERT(!table[0].inv.draw);
-	GREATEST_ASSERT(table[0].inv.end);
-	GREATEST_ASSERT(table[0].inv.finish);
+	RX_REQUIRE(!table[0].inv.handle);
+	RX_REQUIRE(!table[0].inv.update);
+	RX_REQUIRE(!table[0].inv.draw);
+	RX_REQUIRE(table[0].inv.end);
+	RX_REQUIRE(table[0].inv.finish);
 
-	GREATEST_ASSERT(!table[0].inv.handle);
-	GREATEST_ASSERT(!table[0].inv.update);
-	GREATEST_ASSERT(!table[0].inv.draw);
-	GREATEST_ASSERT(table[0].inv.end);
-	GREATEST_ASSERT(table[0].inv.finish);
+	RX_REQUIRE(!table[0].inv.handle);
+	RX_REQUIRE(!table[0].inv.update);
+	RX_REQUIRE(!table[0].inv.draw);
+	RX_REQUIRE(table[0].inv.end);
+	RX_REQUIRE(table[0].inv.finish);
 
 	/* They should also be NULL'ed. */
-	GREATEST_ASSERT_EQ(st.actions[0], NULL);
-	GREATEST_ASSERT_EQ(st.actions[1], NULL);
-
-	GREATEST_PASS();
+	RX_PTR_REQUIRE_EQUAL(st.actions[0], NULL);
+	RX_PTR_REQUIRE_EQUAL(st.actions[1], NULL);
 }
-
-GREATEST_SUITE(suite_stack)
-{
-	GREATEST_RUN_TEST(stack_add);
-	GREATEST_RUN_TEST(stack_handle);
-	GREATEST_RUN_TEST(stack_update);
-	GREATEST_RUN_TEST(stack_finish);
-}
-
-GREATEST_MAIN_DEFS();
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	GREATEST_RUN_SUITE(suite_basics);
-	GREATEST_RUN_SUITE(suite_stack);
-	GREATEST_MAIN_END();
-
-	return 0;
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }

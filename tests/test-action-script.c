@@ -16,8 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define GREATEST_USE_ABBREVS 0
-#include <greatest.h>
+#include <rexo.h>
 
 #include <core/action.h>
 #include <core/event.h>
@@ -86,50 +85,43 @@ my_finish(struct action *act)
 	((struct invokes *)act->data)->finish++;
 }
 
-GREATEST_TEST
-basics_init(void)
+RX_TEST_CASE(basics, init)
 {
 	struct script sc;
 
 	script_init(&sc);
 
-	GREATEST_ASSERT_EQ(sc.actionsz, 0U);
-	GREATEST_ASSERT_EQ(sc.cur, 0U);
-	
-	GREATEST_PASS();
+	RX_UINT_REQUIRE_EQUAL(sc.actionsz, 0U);
+	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
 }
 
-GREATEST_TEST
-basics_append(void)
+RX_TEST_CASE(basics, append)
 {
 	struct action act[3] = {0};
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &act[0]) == 0);
-	GREATEST_ASSERT_EQ(sc.cur, 0U);
-	GREATEST_ASSERT_EQ(sc.actionsz, 1U);
-	GREATEST_ASSERT_EQ(sc.actions[0], &act[0]);
+	RX_REQUIRE(script_append(&sc, &act[0]) == 0);
+	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
+	RX_UINT_REQUIRE_EQUAL(sc.actionsz, 1U);
+	RX_PTR_REQUIRE_EQUAL(sc.actions[0], &act[0]);
 
-	GREATEST_ASSERT(script_append(&sc, &act[1]) == 0);
-	GREATEST_ASSERT_EQ(sc.cur, 0U);
-	GREATEST_ASSERT_EQ(sc.actionsz, 2U);
-	GREATEST_ASSERT_EQ(sc.actions[0], &act[0]);
-	GREATEST_ASSERT_EQ(sc.actions[1], &act[1]);
+	RX_REQUIRE(script_append(&sc, &act[1]) == 0);
+	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
+	RX_UINT_REQUIRE_EQUAL(sc.actionsz, 2U);
+	RX_PTR_REQUIRE_EQUAL(sc.actions[0], &act[0]);
+	RX_PTR_REQUIRE_EQUAL(sc.actions[1], &act[1]);
 
-	GREATEST_ASSERT(script_append(&sc, &act[2]) == 0);
-	GREATEST_ASSERT_EQ(sc.cur, 0U);
-	GREATEST_ASSERT_EQ(sc.actionsz, 3U);
-	GREATEST_ASSERT_EQ(sc.actions[0], &act[0]);
-	GREATEST_ASSERT_EQ(sc.actions[1], &act[1]);
-	GREATEST_ASSERT_EQ(sc.actions[2], &act[2]);
+	RX_REQUIRE(script_append(&sc, &act[2]) == 0);
+	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
+	RX_UINT_REQUIRE_EQUAL(sc.actionsz, 3U);
+	RX_PTR_REQUIRE_EQUAL(sc.actions[0], &act[0]);
+	RX_PTR_REQUIRE_EQUAL(sc.actions[1], &act[1]);
+	RX_PTR_REQUIRE_EQUAL(sc.actions[2], &act[2]);
 
 	script_finish(&sc);
-
-	GREATEST_PASS();
 }
 
-GREATEST_TEST
-basics_handle(void)
+RX_TEST_CASE(basics, handle)
 {
 	struct {
 		struct invokes inv;
@@ -142,73 +134,70 @@ basics_handle(void)
 	
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
 	script_handle(&sc, &(union event){0});
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	/* [0] -> [1] */
-	GREATEST_ASSERT(!script_update(&sc, 0));
+	RX_REQUIRE(!script_update(&sc, 0));
 	script_handle(&sc, &(union event){0});
 
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	/* [2] */
-	GREATEST_ASSERT(!script_update(&sc, 0));
+	RX_REQUIRE(!script_update(&sc, 0));
 	script_handle(&sc, &(union event){0});
 
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
-
-	GREATEST_PASS();
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 }
 
-GREATEST_TEST
-basics_update(void)
+RX_TEST_CASE(basics, update)
 {
 	struct {
 		struct invokes inv;
@@ -221,90 +210,87 @@ basics_update(void)
 	
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
 
 	/* 0 -> 1 */
-	GREATEST_ASSERT(!script_update(&sc, 0));
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_REQUIRE(!script_update(&sc, 0));
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	/* 1 -> 2 */
-	GREATEST_ASSERT(!script_update(&sc, 0));
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_REQUIRE(!script_update(&sc, 0));
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	/* 2 stays, it never ends. */
-	GREATEST_ASSERT(!script_update(&sc, 0));
-	GREATEST_ASSERT(!script_update(&sc, 0));
-	GREATEST_ASSERT(!script_update(&sc, 0));
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 3);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_REQUIRE(!script_update(&sc, 0));
+	RX_REQUIRE(!script_update(&sc, 0));
+	RX_REQUIRE(!script_update(&sc, 0));
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 3);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	/* Now, change its update function to complete the script. */
 	table[2].act.update = my_update_true;
-	GREATEST_ASSERT(script_update(&sc, 0));
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 4);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
-
-	GREATEST_PASS();
+	RX_REQUIRE(script_update(&sc, 0));
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 4);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 }
 
-GREATEST_TEST
-basics_draw(void)
+RX_TEST_CASE(basics, draw)
 {
 	struct {
 		struct invokes inv;
@@ -317,73 +303,70 @@ basics_draw(void)
 	
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
 	script_draw(&sc);
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	/* [0] -> [1] */
-	GREATEST_ASSERT(!script_update(&sc, 0));
+	RX_REQUIRE(!script_update(&sc, 0));
 	script_draw(&sc);
 
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	/* [2] */
-	GREATEST_ASSERT(!script_update(&sc, 0));
+	RX_REQUIRE(!script_update(&sc, 0));
 	script_draw(&sc);
 
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
-
-	GREATEST_PASS();
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 }
 
-GREATEST_TEST
-basics_finish(void)
+RX_TEST_CASE(basics, finish)
 {
 	struct {
 		struct invokes inv;
@@ -396,46 +379,33 @@ basics_finish(void)
 	
 	struct script sc = {0};
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
 
 	/* Update once so that the current action goes to 1. */
-	GREATEST_ASSERT(!script_update(&sc, 0));
+	RX_REQUIRE(!script_update(&sc, 0));
 
 	script_finish(&sc);
 
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 1);
-
-	GREATEST_PASS();
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 1);
 }
 
-GREATEST_SUITE(suite_basics)
-{
-	GREATEST_RUN_TEST(basics_init);
-	GREATEST_RUN_TEST(basics_append);
-	GREATEST_RUN_TEST(basics_handle);
-	GREATEST_RUN_TEST(basics_update);
-	GREATEST_RUN_TEST(basics_draw);
-	GREATEST_RUN_TEST(basics_finish);
-}
-
-GREATEST_TEST
-action_simple(void)
+RX_TEST_CASE(action, simple)
 {
 	struct {
 		struct invokes inv;
@@ -449,9 +419,9 @@ action_simple(void)
 	struct script sc = {0};
 	struct action act;
 
-	GREATEST_ASSERT(script_append(&sc, &table[0].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[1].act) == 0);
-	GREATEST_ASSERT(script_append(&sc, &table[2].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
+	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
 
 	/* Now convert this script into an action itself. */
 	script_action(&sc, &act);
@@ -461,118 +431,106 @@ action_simple(void)
 	action_draw(&act);
 
 	/* [0] -> [1] */
-	GREATEST_ASSERT(!action_update(&act, 0));
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_REQUIRE(!action_update(&act, 0));
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	action_handle(&act, &(union event){0});
 	action_draw(&act);
 
 	/* [1] -> [2] */
-	GREATEST_ASSERT(!action_update(&act, 0));
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_REQUIRE(!action_update(&act, 0));
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	action_handle(&act, &(union event){0});
 	action_draw(&act);
 
 	/* 2 stays, it never ends. */
-	GREATEST_ASSERT(!action_update(&act, 0));
-	GREATEST_ASSERT(!action_update(&act, 0));
-	GREATEST_ASSERT(!action_update(&act, 0));
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 3);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_REQUIRE(!action_update(&act, 0));
+	RX_REQUIRE(!action_update(&act, 0));
+	RX_REQUIRE(!action_update(&act, 0));
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 3);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	table[2].act.update = my_update_true;
-	GREATEST_ASSERT(action_update(&act, 0));
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 0);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 4);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 0);
+	RX_REQUIRE(action_update(&act, 0));
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 4);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 
 	/* Also dispose resources. */
 	action_finish(&act);
-	GREATEST_ASSERT_EQ(table[0].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[0].inv.finish, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.update, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[1].inv.finish, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.handle, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.update, 4);
-	GREATEST_ASSERT_EQ(table[2].inv.draw, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.end, 1);
-	GREATEST_ASSERT_EQ(table[2].inv.finish, 1);
-
-	GREATEST_PASS();
+	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 4);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 1);
+	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 1);
 }
-
-GREATEST_SUITE(suite_action)
-{
-	GREATEST_RUN_TEST(action_simple);
-}
-
-GREATEST_MAIN_DEFS();
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	GREATEST_RUN_SUITE(suite_basics);
-	GREATEST_RUN_SUITE(suite_action);
-	GREATEST_MAIN_END();
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }

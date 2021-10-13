@@ -73,7 +73,6 @@ if (MLK_WITH_ZIP)
 endif ()
 
 add_subdirectory(extern/libsqlite)
-add_subdirectory(extern/libgreatest)
 add_subdirectory(extern/librexo)
 
 add_subdirectory(src/tools/bcc)

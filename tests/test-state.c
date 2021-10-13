@@ -18,8 +18,7 @@
 
 #include <string.h>
 
-#define GREATEST_USE_ABBREVS 0
-#include <greatest.h>
+#include <rexo.h>
 
 #include <core/event.h>
 #include <core/game.h>
@@ -36,20 +35,14 @@ struct invokes {
 	unsigned int finish;
 };
 
-static void
-zero(struct invokes *inv)
-{
-	memset(inv, 0, sizeof (*inv));
-}
-
-static void
-setup(void *data)
+RX_SET_UP(setup)
 {
 	game_init();
+
+	return RX_SUCCESS;
 }
 
-static void
-cleanup(void *data)
+RX_TEAR_DOWN(teardown)
 {
 	game_quit();
 }
@@ -118,120 +111,93 @@ my_finish(struct state *state)
 	.finish = my_finish \
 }
 
-GREATEST_TEST
-basics_start(void)
+RX_FIXTURE(basics_fixture, void *, .set_up = setup, .tear_down = teardown);
+
+RX_TEST_CASE(basics, start)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_start(&state);
-	GREATEST_ASSERT_EQ(inv.start, 1);
-	GREATEST_ASSERT_EQ(inv.handle, 0);
-	GREATEST_ASSERT_EQ(inv.update, 0);
-	GREATEST_ASSERT_EQ(inv.draw, 0);
-	GREATEST_ASSERT_EQ(inv.end, 0);
-	GREATEST_ASSERT_EQ(inv.finish, 0);
-
-	GREATEST_PASS();
+	RX_UINT_REQUIRE_EQUAL(inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-GREATEST_TEST
-basics_handle(void)
+RX_TEST_CASE(basics, handle)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
-	state_handle(&state, &(union event){0});
-	GREATEST_ASSERT_EQ(inv.start, 0);
-	GREATEST_ASSERT_EQ(inv.handle, 1);
-	GREATEST_ASSERT_EQ(inv.update, 0);
-	GREATEST_ASSERT_EQ(inv.draw, 0);
-	GREATEST_ASSERT_EQ(inv.end, 0);
-	GREATEST_ASSERT_EQ(inv.finish, 0);
-
-	GREATEST_PASS();
+	state_handle(&state, &(const union event){0});
+	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.handle, 1U);
+	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-GREATEST_TEST
-basics_update(void)
+RX_TEST_CASE(basics, update)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_update(&state, 0);
-	GREATEST_ASSERT_EQ(inv.start, 0);
-	GREATEST_ASSERT_EQ(inv.handle, 0);
-	GREATEST_ASSERT_EQ(inv.update, 1);
-	GREATEST_ASSERT_EQ(inv.draw, 0);
-	GREATEST_ASSERT_EQ(inv.end, 0);
-	GREATEST_ASSERT_EQ(inv.finish, 0);
-
-	GREATEST_PASS();
+	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.update, 1U);
+	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-GREATEST_TEST
-basics_draw(void)
+RX_TEST_CASE(basics, draw)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_draw(&state);
-	GREATEST_ASSERT_EQ(inv.start, 0);
-	GREATEST_ASSERT_EQ(inv.handle, 0);
-	GREATEST_ASSERT_EQ(inv.update, 0);
-	GREATEST_ASSERT_EQ(inv.draw, 1);
-	GREATEST_ASSERT_EQ(inv.end, 0);
-	GREATEST_ASSERT_EQ(inv.finish, 0);
-
-	GREATEST_PASS();
+	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.draw, 1U);
+	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-GREATEST_TEST
-basics_end(void)
+RX_TEST_CASE(basics, end)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_end(&state);
-	GREATEST_ASSERT_EQ(inv.start, 0);
-	GREATEST_ASSERT_EQ(inv.handle, 0);
-	GREATEST_ASSERT_EQ(inv.update, 0);
-	GREATEST_ASSERT_EQ(inv.draw, 0);
-	GREATEST_ASSERT_EQ(inv.end, 1);
-	GREATEST_ASSERT_EQ(inv.finish, 0);
-
-	GREATEST_PASS();
+	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.end, 1U);
+	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-GREATEST_TEST
-basics_finish(void)
+RX_TEST_CASE(basics, finish)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_finish(&state);
-	GREATEST_ASSERT_EQ(inv.start, 0);
-	GREATEST_ASSERT_EQ(inv.handle, 0);
-	GREATEST_ASSERT_EQ(inv.update, 0);
-	GREATEST_ASSERT_EQ(inv.draw, 0);
-	GREATEST_ASSERT_EQ(inv.end, 0);
-	GREATEST_ASSERT_EQ(inv.finish, 1);
-
-	GREATEST_PASS();
+	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(inv.finish, 1U);
 }
 
-GREATEST_SUITE(suite_basics)
-{
-	GREATEST_RUN_TEST(basics_start);
-	GREATEST_RUN_TEST(basics_handle);
-	GREATEST_RUN_TEST(basics_update);
-	GREATEST_RUN_TEST(basics_draw);
-	GREATEST_RUN_TEST(basics_end);
-	GREATEST_RUN_TEST(basics_finish);
-}
-
-GREATEST_TEST
-test_game_push(void)
+RX_TEST_CASE(game, game_push, .fixture = basics_fixture)
 {
 	static struct {
 		struct invokes inv;
@@ -243,14 +209,14 @@ test_game_push(void)
 
 	/* 0 becomes active and should start. */
 	game_push(&states[0].state);
-	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.handle, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.update, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.draw, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.suspend, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.resume, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
 
 	/* Put some event, update and drawing. */
 	game_handle(&(union event) { .type = EVENT_QUIT });
@@ -259,117 +225,103 @@ test_game_push(void)
 	game_draw();
 	game_draw();
 	game_draw();
-	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
-	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
-	GREATEST_ASSERT_EQ(states[0].inv.suspend, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.resume, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
 
 	/* Switch to state 1, 0 must be suspended. */
 	game_push(&states[1].state);
-	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
-	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
-	GREATEST_ASSERT_EQ(states[0].inv.suspend, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.resume, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
 
-	GREATEST_ASSERT_EQ(states[1].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[1].inv.handle, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.update, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.draw, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.suspend, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.resume, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.end, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.finish, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.update, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.suspend, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.resume, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.finish, 0U);
 
 	/* Update a little this state. */
 	game_update(10);
 	game_update(10);
 	game_update(10);
 	game_update(10);
-	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
-	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
-	GREATEST_ASSERT_EQ(states[0].inv.suspend, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.resume, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
 
-	GREATEST_ASSERT_EQ(states[1].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[1].inv.handle, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.update, 4U);
-	GREATEST_ASSERT_EQ(states[1].inv.draw, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.suspend, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.resume, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.end, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.finish, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.update, 4U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.suspend, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.resume, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.finish, 0U);
 
 	/* Pop it, it should be finalized through end and finish. */
 	game_pop();
 
-	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
-	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
-	GREATEST_ASSERT_EQ(states[0].inv.suspend, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.resume, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.end, 0U);
-	GREATEST_ASSERT_EQ(states[0].inv.finish, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
 
-	GREATEST_ASSERT_EQ(states[1].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[1].inv.handle, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.update, 4U);
-	GREATEST_ASSERT_EQ(states[1].inv.draw, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.suspend, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.resume, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.end, 1U);
-	GREATEST_ASSERT_EQ(states[1].inv.finish, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.update, 4U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.suspend, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.resume, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.end, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.finish, 1U);
 
 	/* Pop this state as well. */
 	game_pop();
 
-	GREATEST_ASSERT_EQ(states[0].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.handle, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.update, 2U);
-	GREATEST_ASSERT_EQ(states[0].inv.draw, 3U);
-	GREATEST_ASSERT_EQ(states[0].inv.suspend, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.resume, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.end, 1U);
-	GREATEST_ASSERT_EQ(states[0].inv.finish, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 1U);
 
-	GREATEST_ASSERT_EQ(states[1].inv.start, 1U);
-	GREATEST_ASSERT_EQ(states[1].inv.handle, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.update, 4U);
-	GREATEST_ASSERT_EQ(states[1].inv.draw, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.suspend, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.resume, 0U);
-	GREATEST_ASSERT_EQ(states[1].inv.end, 1U);
-	GREATEST_ASSERT_EQ(states[1].inv.finish, 1U);
-
-	GREATEST_PASS();
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.start, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.handle, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.update, 4U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.draw, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.suspend, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.resume, 0U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.end, 1U);
+	RX_UINT_REQUIRE_EQUAL(states[1].inv.finish, 1U);
 }
-
-GREATEST_SUITE(suite_game)
-{
-	GREATEST_SET_SETUP_CB(setup, NULL);
-	GREATEST_SET_TEARDOWN_CB(cleanup, NULL);
-	GREATEST_RUN_TEST(test_game_push);
-}
-
-GREATEST_MAIN_DEFS();
 
 int
 main(int argc, char **argv)
 {
-	GREATEST_MAIN_BEGIN();
-	GREATEST_RUN_SUITE(suite_basics);
-	GREATEST_RUN_SUITE(suite_game);
-	GREATEST_MAIN_END();
+	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
 }
