@@ -34,6 +34,7 @@ set(
 	tileset
 	util
 	vfs-directory
+	vfs-zip
 )
 
 foreach (t ${TESTS})

@@ -27,6 +27,8 @@ vfs_open(struct vfs *vfs, struct vfs_file *file, const char *entry, const char *
 	assert(vfs);
 	assert(entry);
 
+	memset(file, 0, sizeof (*file));
+
 	return vfs->open(vfs, file, entry, mode);
 }
 

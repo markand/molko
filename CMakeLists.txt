@@ -37,6 +37,7 @@ if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
 endif ()
 
 option(MLK_WITH_NLS "Enable NLS support" On)
+option(MLK_WITH_ZIP "Enable zip file support" On)
 option(MLK_WITH_ZSTD "Enable zstd compression" On)
 option(MLK_WITH_TESTS "Enable unit tests" Off)
 option(MLK_WITH_EXAMPLES "Enable examples" Off)
@@ -65,6 +66,10 @@ if (MLK_WITH_ZSTD)
 	if (NOT TARGET ZSTD::exe)
 		message(FATAL_ERROR "Missing zstd command line utility")
 	endif ()
+endif ()
+
+if (MLK_WITH_ZIP)
+	find_package(Libzip REQUIRED)
 endif ()
 
 add_subdirectory(extern/libsqlite)

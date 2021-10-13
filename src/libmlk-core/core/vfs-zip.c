@@ -1,5 +1,5 @@
 /*
- * vfs-directory.c -- VFS subsystem for directories
+ * vfs-zip.c -- VFS subsystem for zip archives
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -17,69 +17,79 @@
  */
 
 #include <assert.h>
-#include <errno.h>
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-#include <port/port.h>
+#include <zip.h>
 
-#include "alloc.h"
 #include "error.h"
+#include "vfs-zip.h"
 #include "vfs.h"
 
-struct self {
-	char base[PATH_MAX];
-};
-
-static inline void
-normalize(char *path)
+static inline int
+mkflags(const char *mode)
 {
-	size_t len = strlen(path);
+	/* TODO: this should check for mutual exclusions. */
+	int flags = 0;
 
-	for (char *p = path; *p; ++p)
-		if (*p == '\\')
-			*p = '/';
+	for (; *mode; ++mode) {
+		switch (*mode) {
+		case 'w':
+			flags |= ZIP_CREATE;
+			break;
+		case 'x':
+			flags |= ZIP_EXCL;
+			break;
+		case '+':
+			flags |= ZIP_TRUNCATE;
+			break;
+		case 'r':
+			flags |= ZIP_RDONLY;
+			break;
+		default:
+			break;
+		}
+	}
 
-	while (len && path[len - 1] == '/')
-		path[--len] = 0;
+	return flags;
 }
 
 static size_t
 file_read(struct vfs_file *file, void *buf, size_t bufsz)
 {
-	return fread(buf, 1, bufsz, file->data);
+	return zip_fread(file->data, buf, bufsz);
 }
 
 static size_t
 file_write(struct vfs_file *file, const void *buf, size_t bufsz)
 {
-	return fwrite(buf, 1, bufsz, file->data);
+	(void)file;
+	(void)buf;
+	(void)bufsz;
+
+	return errorf("operation not supported");
 }
 
 static int
 file_flush(struct vfs_file *file)
 {
-	return fflush(file->data) == EOF ? -1 : 0;
+	(void)file;
+
+	return 0;
 }
 
 static void
 file_finish(struct vfs_file *file)
 {
-	fclose(file->data);
+	zip_fclose(file->data);
 }
 
 static int
-dir_open(struct vfs *vfs, struct vfs_file *file, const char *entry, const char *mode)
+impl_open(struct vfs *vfs, struct vfs_file *file, const char *entry, const char *mode)
 {
-	struct self *self = vfs->data;
-	char path[PATH_MAX];
+	(void)mode;
 
-	snprintf(path, sizeof (path), "%s/%s", self->base, entry);
-
-	if (!(file->data = fopen(path, mode)))
-		return errorf("%s: %s", path, strerror(errno));
+	if (!(file->data = zip_fopen(vfs->data, entry, 0)))
+		return errorf("unable to open file in archive");
 
 	file->read = file_read;
 	file->write = file_write;
@@ -90,26 +100,24 @@ dir_open(struct vfs *vfs, struct vfs_file *file, const char *entry, const char *
 }
 
 static void
-dir_finish(struct vfs *vfs)
+impl_finish(struct vfs *vfs)
 {
-	free(vfs->data);
+	zip_close(vfs->data);
 }
 
-void
-vfs_directory(struct vfs *vfs, const char *path)
+int
+vfs_zip(struct vfs *vfs, const char *file, const char *mode)
 {
 	assert(vfs);
-	assert(path);
+	assert(file);
 
-	struct self *self;
+	memset(vfs, 0, sizeof (*vfs));
 
-	self = alloc_new(sizeof (*self));
-	strlcpy(self->base, path, sizeof (self->base));
+	if (!(vfs->data = zip_open(file, mkflags(mode), NULL)))
+		return errorf("%s: unable to open zip file", file);
 
-	/* Remove terminator and switch to UNIX paths. */
-	normalize(self->base);
+	vfs->open = impl_open;
+	vfs->finish = impl_finish;
 
-	vfs->data = self;
-	vfs->open = dir_open;
-	vfs->finish = dir_finish;
+	return 0;
 }
