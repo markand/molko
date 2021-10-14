@@ -1,5 +1,5 @@
 /*
- * js-window.c -- core window binding
+ * js-clock.c -- core clock binding
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -18,52 +18,69 @@
 
 #include <assert.h>
 
-#include <core/error.h>
-#include <core/window.h>
+#include <core/alloc.h>
+#include <core/clock.h>
 
-#include "js-window.h"
+#include "js-clock.h"
 
-#define SIGNATURE DUK_HIDDEN_SYMBOL("Mlk.Window")
+#define SIGNATURE DUK_HIDDEN_SYMBOL("Mlk.Clock")
 
-static duk_ret_t
-Window_constructor(duk_context *ctx)
+static struct clock *
+self(duk_context *ctx)
 {
-	const char *title = duk_require_string(ctx, 0);
-	const unsigned int w = duk_require_uint(ctx, 1);
-	const unsigned int h = duk_require_uint(ctx, 2);
-
-	if (window_open(title, w, h) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+	struct clock *clk;
 
 	duk_push_this(ctx);
-	duk_push_boolean(ctx, 1);
+	duk_get_prop_string(ctx, -1, SIGNATURE);
+	clk = duk_to_pointer(ctx, -1);
+	duk_pop_2(ctx);
+
+	if (!clk)
+		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Clock object");
+
+	return clk;
+}
+
+static duk_ret_t
+Clock_elapsed(duk_context *ctx)
+{
+	duk_push_number(ctx, clock_elapsed(self(ctx)));
+
+	return 1;
+}
+
+static duk_ret_t
+Clock_constructor(duk_context *ctx)
+{
+	struct clock *clk;
+
+	clk = alloc_new(sizeof (*clk));
+	clock_start(clk);
+
+	duk_push_this(ctx);
+	duk_push_pointer(ctx, clk);
 	duk_put_prop_string(ctx, -2, SIGNATURE);
+	duk_push_string(ctx, "elapsed");
+	duk_push_c_function(ctx, Clock_elapsed, 0);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_GETTER);
 	duk_pop(ctx);
 
 	return 0;
 }
 
 static duk_ret_t
-Window_setCursor(duk_context *ctx)
+Clock_start(duk_context *ctx)
 {
-	const unsigned int cursor = duk_require_uint(ctx, 0);
-
-	if (cursor >= WINDOW_CURSOR_LAST)
-		duk_error(ctx, DUK_ERR_RANGE_ERROR, "invalid cursor");
-
-	window_set_cursor(cursor);
+	clock_start(self(ctx));
 
 	return 0;
 }
 
 static duk_ret_t
-Window_destructor(duk_context *ctx)
+Clock_destructor(duk_context *ctx)
 {
 	duk_get_prop_string(ctx, 0, SIGNATURE);
-
-	if (duk_to_boolean(ctx, -1))
-		window_finish();
-
+	free(duk_to_pointer(ctx, -1));
 	duk_pop(ctx);
 	duk_del_prop_string(ctx, 0, SIGNATURE);
 
@@ -71,20 +88,20 @@ Window_destructor(duk_context *ctx)
 }
 
 static const duk_function_list_entry methods[] = {
-	{ "setCursor",  Window_setCursor,       1 },
-	{ NULL,         NULL,                   0 }
+	{ "start",      Clock_start,    0 },
+	{ NULL,         NULL,           0 }
 };
 
 void
-js_window_bind(duk_context *ctx)
+js_clock_bind(duk_context *ctx)
 {
 	assert(ctx);
 
-	duk_push_c_function(ctx, Window_constructor, 3);
+	duk_push_c_function(ctx, Clock_constructor, 0);
 	duk_push_object(ctx);
 	duk_put_function_list(ctx, -1, methods);
-	duk_put_prop_string(ctx, -2, "prototype");
-	duk_push_c_function(ctx, Window_destructor, 1);
+	duk_push_c_function(ctx, Clock_destructor, 1);
 	duk_set_finalizer(ctx, -2);
-	duk_put_global_string(ctx, "Window");
+	duk_put_prop_string(ctx, -2, "prototype");
+	duk_put_global_string(ctx, "Clock");
 }

@@ -26,6 +26,10 @@
 #include <core/vfs-zip.h>
 #include <core/vfs.h>
 
+#include <core/js-clock.h>
+#include <core/js-event.h>
+#include <core/js-painter.h>
+#include <core/js-texture.h>
 #include <core/js-window.h>
 
 /* VFS loader to support zip and directories when loading game. */
@@ -34,9 +38,21 @@ static struct vfs vfs;
 /* Javascript context. */
 static duk_context *ctx;
 
+static duk_ret_t
+print(duk_context *ctx)
+{
+	puts(duk_require_string(ctx, 0));
+
+	return 0;
+}
+
 static void
 core_bind(duk_context *ctx)
 {
+	js_clock_bind(ctx);
+	js_event_bind(ctx);
+	js_painter_bind(ctx);
+	js_texture_bind(ctx);
 	js_window_bind(ctx);
 }
 
@@ -50,6 +66,12 @@ init(void)
 	/* Fireup Javascript. */
 	ctx = duk_create_heap_default();
 	core_bind(ctx);
+
+	/* Setup some convenient global functions. */
+	duk_push_global_object(ctx);
+	duk_push_c_function(ctx, print, 1);
+	duk_put_prop_string(ctx, -2, "print");
+	duk_pop(ctx);
 }
 
 static char *

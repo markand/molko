@@ -20,6 +20,14 @@ project(libmlk-core-js)
 
 set(
 	SOURCES
+	${libmlk-core-js_SOURCE_DIR}/core/js-clock.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-clock.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-event.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-event.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-painter.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-painter.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-texture.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-texture.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-window.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-window.h
 )
