@@ -36,11 +36,12 @@ if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
 	set(CMAKE_C_FLAGS "-D_DARWIN_C_SOURCE ${CMAKE_C_FLAGS}")
 endif ()
 
+option(MLK_WITH_EXAMPLES "Enable examples" Off)
+option(MLK_WITH_JS "Enable Javascript bindings" On)
 option(MLK_WITH_NLS "Enable NLS support" On)
+option(MLK_WITH_TESTS "Enable unit tests" Off)
 option(MLK_WITH_ZIP "Enable zip file support" On)
 option(MLK_WITH_ZSTD "Enable zstd compression" On)
-option(MLK_WITH_TESTS "Enable unit tests" Off)
-option(MLK_WITH_EXAMPLES "Enable examples" Off)
 
 include(cmake/MlkBcc.cmake)
 include(cmake/MlkExecutable.cmake)
@@ -53,6 +54,10 @@ include(GNUInstallDirs)
 
 find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
 find_package(Jansson REQUIRED)
+
+if (MLK_WITH_JS)
+	add_subdirectory(extern/libduktape)
+endif ()
 
 if (MLK_WITH_NLS)
 	find_package(NLS REQUIRED)
@@ -85,6 +90,11 @@ add_subdirectory(src/libmlk-ui)
 add_subdirectory(src/libmlk-rpg)
 add_subdirectory(src/libmlk-adventure)
 add_subdirectory(src/libmlk-data)
+
+if (MLK_WITH_JS)
+	add_subdirectory(src/libmlk-core-js)
+	add_subdirectory(src/mlk-run)
+endif ()
 
 add_subdirectory(src/mlk-adventure)
 
