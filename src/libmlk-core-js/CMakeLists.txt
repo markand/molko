@@ -22,8 +22,12 @@ set(
 	SOURCES
 	${libmlk-core-js_SOURCE_DIR}/core/js-clock.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-clock.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-core.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-core.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-event.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-event.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-font.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-font.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.c

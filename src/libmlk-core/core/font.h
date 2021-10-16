@@ -24,10 +24,12 @@
 #include "core.h"
 
 struct texture;
+struct vfs_file;
 
 enum font_style {
 	FONT_STYLE_ANTIALIASED,
-	FONT_STYLE_NONE
+	FONT_STYLE_NONE,
+	FONT_STYLE_LAST
 };
 
 struct font {
@@ -44,10 +46,13 @@ int
 font_openmem(struct font *, const void *, size_t, unsigned int);
 
 int
+font_openvfs(struct font *, struct vfs_file *, unsigned int);
+
+int
 font_ok(const struct font *);
 
 int
-font_render(struct font *, struct texture *, const char *, unsigned int);
+font_render(struct font *, struct texture *, const char *, unsigned long);
 
 unsigned int
 font_height(const struct font *);

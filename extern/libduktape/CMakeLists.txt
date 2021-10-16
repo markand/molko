@@ -22,7 +22,7 @@ add_library(libmlk-duktape STATIC duk_config.h duktape.c duktape.h)
 target_include_directories(
 	libmlk-duktape
 	PUBLIC
-		$<BUILD_INTERFACE:${libduktape_SOURCE_DIR}>
+		$<BUILD_INTERFACE:${libmlk-duktape_SOURCE_DIR}>
 )
 
 set_target_properties(libmlk-duktape PROPERTIES PREFIX "")

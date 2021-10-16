@@ -17,9 +17,14 @@
  */
 
 #include <assert.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
+#include "error.h"
 #include "vfs.h"
+#include "vfs_p.h"
 
 int
 vfs_open(struct vfs *vfs, struct vfs_file *file, const char *entry, const char *mode)
@@ -32,6 +37,12 @@ vfs_open(struct vfs *vfs, struct vfs_file *file, const char *entry, const char *
 	return vfs->open(vfs, file, entry, mode);
 }
 
+int
+vfs_ok(struct vfs *vfs)
+{
+	return vfs && vfs->open && vfs->finish;
+}
+
 void
 vfs_finish(struct vfs *vfs)
 {
@@ -41,6 +52,12 @@ vfs_finish(struct vfs *vfs)
 	memset(vfs, 0, sizeof (*vfs));
 }
 
+int
+vfs_file_ok(struct vfs_file *file)
+{
+	return file && file->read && file->write && file->flush && file->finish;
+}
+
 size_t
 vfs_file_read(struct vfs_file *file, void *buf, size_t bufsz)
 {
@@ -48,6 +65,33 @@ vfs_file_read(struct vfs_file *file, void *buf, size_t bufsz)
 	assert(buf);
 
 	return file->read(file, buf, bufsz);
+}
+
+char *
+vfs_file_aread(struct vfs_file *file, size_t *outlen)
+{
+	FILE *fp;
+	char *out = NULL, buf[BUFSIZ];
+	size_t len, nr;
+
+	if (!(fp = open_memstream(&out, &len)))
+		return errorf("%s", strerror(errno)), NULL;
+
+	while ((nr = vfs_file_read(file, buf, sizeof (buf))) > 0) {
+		if (fwrite(buf, 1, nr, fp) != nr) {
+			errorf("%s", strerror(errno));
+			fclose(fp);
+			free(out);
+			return NULL;
+		}
+	}
+
+	fclose(fp);
+
+	if (outlen)
+		*outlen = len;
+
+	return out;
 }
 
 size_t
@@ -73,4 +117,34 @@ vfs_file_finish(struct vfs_file *file)
 	assert(file);
 
 	file->finish(file);
+}
+
+/* private */
+
+static int
+rw_vfs_file_close(SDL_RWops *context)
+{
+	free(context->hidden.mem.base);
+	free(context);
+
+	return 0;
+}
+
+SDL_RWops *
+vfs_to_rw(struct vfs_file *file)
+{
+	SDL_RWops *ops;
+	char *data;
+	size_t datasz;
+
+	if (!(data = vfs_file_aread(file, &datasz)))
+		return NULL;
+	if (!(ops = SDL_RWFromConstMem(data, datasz))) {
+		free(data);
+		return errorf("%s", SDL_GetError()), NULL;
+	}
+
+	ops->close = rw_vfs_file_close;
+
+	return ops;
 }

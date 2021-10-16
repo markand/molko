@@ -27,7 +27,9 @@
 #include <core/vfs.h>
 
 #include <core/js-clock.h>
+#include <core/js-core.h>
 #include <core/js-event.h>
+#include <core/js-font.h>
 #include <core/js-painter.h>
 #include <core/js-texture.h>
 #include <core/js-window.h>
@@ -50,6 +52,8 @@ static void
 core_bind(duk_context *ctx)
 {
 	js_clock_bind(ctx);
+	js_core_bind(ctx, &vfs);
+	js_font_bind(ctx);
 	js_event_bind(ctx);
 	js_painter_bind(ctx);
 	js_texture_bind(ctx);
@@ -74,25 +78,6 @@ init(void)
 	duk_pop(ctx);
 }
 
-static char *
-extract(struct vfs_file *file)
-{
-	FILE *fp;
-	char *out, buf[BUFSIZ];
-	size_t len, nr;
-
-	if (!(fp = open_memstream(&out, &len)))
-		panic();
-
-	while ((nr = vfs_file_read(file, buf, sizeof (buf))) > 0)
-		if (fwrite(buf, 1, nr, fp) <= 0)
-			panic();
-
-	fclose(fp);
-
-	return out;
-}
-
 static void
 startup(void)
 {
@@ -101,8 +86,9 @@ startup(void)
 
 	if (vfs_open(&vfs, &main, "main.js", "r") < 0)
 		panic();
+	if (!(code = vfs_file_aread(&main, NULL)))
+		panic();
 
-	code = extract(&main);
 	vfs_file_finish(&main);
 
 	if (duk_peval_string(ctx, code))

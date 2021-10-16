@@ -44,13 +44,22 @@ CORE_BEGIN_DECLS
 int
 vfs_open(struct vfs *, struct vfs_file *, const char *, const char *);
 
+int
+vfs_ok(struct vfs *);
+
 void
 vfs_finish(struct vfs *);
 
 /* vfs_file */
 
+int
+vfs_file_ok(struct vfs_file *);
+
 size_t
 vfs_file_read(struct vfs_file *, void *, size_t);
+
+char *
+vfs_file_aread(struct vfs_file *, size_t *);
 
 size_t
 vfs_file_write(struct vfs_file *, void *, size_t);

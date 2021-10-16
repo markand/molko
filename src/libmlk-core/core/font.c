@@ -26,6 +26,8 @@
 #include "font.h"
 #include "texture_p.h"
 #include "util.h"
+#include "vfs.h"
+#include "vfs_p.h"
 
 int
 font_open(struct font *font, const char *path, unsigned int size)
@@ -55,13 +57,29 @@ font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int 
 }
 
 int
+font_openvfs(struct font *font, struct vfs_file *file, unsigned int size)
+{
+	assert(font);
+	assert(vfs_file_ok(file));
+
+	SDL_RWops *ops;
+
+	if (!(ops = vfs_to_rw(file)))
+		return -1;
+	if (!(font->handle = TTF_OpenFontRW(ops, 1, size)))
+		return errorf("%s", SDL_GetError());
+
+	return 0;
+}
+
+int
 font_ok(const struct font *font)
 {
 	return font && font->handle;
 }
 
 int
-font_render(struct font *font, struct texture *tex, const char *text, unsigned int color)
+font_render(struct font *font, struct texture *tex, const char *text, unsigned long color)
 {
 	assert(font_ok(font));
 	assert(text);

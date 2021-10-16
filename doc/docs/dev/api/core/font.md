@@ -80,7 +80,7 @@ uninitialized and must not be used.
 
 ```c
 int
-font_render(struct font *font, struct texture *tex, const char *text, unsigned int color)
+font_render(struct font *font, struct texture *tex, const char *text, unsigned long color)
 ```
 
 ### font\_height
