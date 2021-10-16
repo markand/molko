@@ -32,6 +32,8 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-music.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-sound.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-sound.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-window.c
@@ -45,3 +47,5 @@ mlk_library(
 	INCLUDES
 		PUBLIC $<BUILD_INTERFACE:${libmlk-core-js_SOURCE_DIR}>
 )
+
+source_group(TREE ${libmlk-core-js_SOURCE_DIR} FILES ${SOURCES})

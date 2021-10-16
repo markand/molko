@@ -188,6 +188,7 @@ js_font_bind(duk_context *ctx)
 	duk_push_object(ctx);
 	duk_put_function_list(ctx, -1, methods);
 	duk_push_c_function(ctx, Font_destructor, 1);
+	duk_set_finalizer(ctx, -2);
 	duk_put_prop_string(ctx, -2, "prototype");
 	duk_put_global_string(ctx, "Font");
 }

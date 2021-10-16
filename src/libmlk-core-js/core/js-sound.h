@@ -1,5 +1,5 @@
 /*
- * sound.h -- sound support
+ * js-sound.h -- core sound binding
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,51 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_SOUND_H
-#define MOLKO_CORE_SOUND_H
+#ifndef MLK_CORE_JS_SOUND_H
+#define MLK_CORE_JS_SOUND_H
 
-#include <stddef.h>
-
-#include "core.h"
-
-#define SOUND_CHANNELS_MAX (256)
-
-struct vfs_file;
-
-struct sound {
-	void *handle;
-	int channel;
-};
-
-CORE_BEGIN_DECLS
-
-int
-sound_open(struct sound *, const char *);
-
-int
-sound_openmem(struct sound *, const void *, size_t);
-
-int
-sound_openvfs(struct sound *, struct vfs_file *);
-
-int
-sound_ok(const struct sound *);
-
-int
-sound_play(struct sound *, int, unsigned int);
+#include <duktape.h>
 
 void
-sound_pause(struct sound *);
+js_sound_bind(duk_context *);
 
-void
-sound_resume(struct sound *);
-
-void
-sound_stop(struct sound *, unsigned int);
-
-void
-sound_finish(struct sound *);
-
-CORE_END_DECLS
-
-#endif /* !MOLKO_CORE_SOUND_H */
+#endif /* !MLK_CORE_JS_SOUND_H */

@@ -32,6 +32,7 @@
 #include <core/js-font.h>
 #include <core/js-music.h>
 #include <core/js-painter.h>
+#include <core/js-sound.h>
 #include <core/js-texture.h>
 #include <core/js-window.h>
 
@@ -58,6 +59,7 @@ core_bind(duk_context *ctx)
 	js_event_bind(ctx);
 	js_music_bind(ctx);
 	js_painter_bind(ctx);
+	js_sound_bind(ctx);
 	js_texture_bind(ctx);
 	js_window_bind(ctx);
 }
@@ -93,8 +95,12 @@ startup(void)
 
 	vfs_file_finish(&main);
 
-	if (duk_peval_string(ctx, code))
+	if (duk_peval_string(ctx, code)) {
+		duk_get_prop_string(ctx, -1, "lineNumber");
+		printf("%d\n", duk_to_int(ctx, -1));
+		duk_pop(ctx);
 		panicf("%s", duk_safe_to_string(ctx, -1));
+	}
 
 	free(code);
 }
