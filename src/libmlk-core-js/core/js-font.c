@@ -148,6 +148,22 @@ Font_query(duk_context *ctx)
 	return 1;
 }
 
+static duk_ret_t
+Font_destructor(duk_context *ctx)
+{
+	struct font *font;
+
+	duk_get_prop_string(ctx, 0, SIGNATURE);
+
+	if ((font = duk_to_pointer(ctx, -1)))
+		font_finish(font);
+
+	duk_pop(ctx);
+	duk_del_prop_string(ctx, 0, SIGNATURE);
+
+	return 0;
+}
+
 static const struct duk_function_list_entry methods[] = {
 	{ "render",     Font_render,    2 },
 	{ "query",      Font_query,     1 },
@@ -171,6 +187,7 @@ js_font_bind(duk_context *ctx)
 	duk_put_prop_string(ctx, -2, "Style");
 	duk_push_object(ctx);
 	duk_put_function_list(ctx, -1, methods);
+	duk_push_c_function(ctx, Font_destructor, 1);
 	duk_put_prop_string(ctx, -2, "prototype");
 	duk_put_global_string(ctx, "Font");
 }
