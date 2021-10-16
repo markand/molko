@@ -22,6 +22,8 @@
 
 #include "error.h"
 #include "texture.h"
+#include "vfs.h"
+#include "vfs_p.h"
 #include "window.h"
 #include "window_p.h"
 
@@ -60,6 +62,24 @@ image_openmem(struct texture *tex, const void *buffer, size_t size)
 	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
 
 	if (!ops || !(tex->handle = IMG_LoadTexture_RW(RENDERER(), ops, 1)))
+		return errorf("%s", SDL_GetError());
+
+	dimensions(tex);
+
+	return 0;
+}
+
+int
+image_openvfs(struct texture *tex, struct vfs_file *file)
+{
+	assert(tex);
+	assert(vfs_file_ok(file));
+
+	SDL_RWops *ops;
+
+	if (!(ops = vfs_to_rw(file)))
+		return -1;
+	if (!(tex->handle = IMG_LoadTexture_RW(RENDERER(), ops, 1)))
 		return errorf("%s", SDL_GetError());
 
 	dimensions(tex);

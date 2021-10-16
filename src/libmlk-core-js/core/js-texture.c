@@ -20,8 +20,11 @@
 
 #include <core/alloc.h>
 #include <core/error.h>
+#include <core/image.h>
 #include <core/texture.h>
+#include <core/vfs.h>
 
+#include "js-core.h"
 #include "js-texture.h"
 
 #define SIGNATURE DUK_HIDDEN_SYMBOL("Mlk.Texture")
@@ -150,12 +153,41 @@ Texture_destructor(duk_context *ctx)
 	return 0;
 }
 
+static duk_ret_t
+Texture_fromImage(duk_context *ctx)
+{
+	const char *entry = duk_require_string(ctx, 0);
+	struct texture *tex;
+	struct vfs_file file;
+
+	if (vfs_open(js_core_global_vfs(ctx), &file, entry, "r") < 0)
+		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+
+	tex = alloc_new0(sizeof (*tex));
+
+	if (image_openvfs(tex, &file) < 0) {
+		free(tex);
+		vfs_file_finish(&file);
+		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+	}
+
+	vfs_file_finish(&file);
+	js_texture_push(ctx, tex);
+
+	return 1;
+}
+
 static const struct duk_function_list_entry methods[] = {
 	{ "setBlendMode",       Texture_setBlendMode,   1               },
 	{ "setAlphaMod",        Texture_setAlphaMod,    1               },
 	{ "setColorMod",        Texture_setColorMod,    1               },
 	{ "draw",               Texture_draw,           2               },
 	{ "scale",              Texture_scale,          DUK_VARARGS     },
+	{ NULL,                 NULL,                   0               }
+};
+
+static const struct duk_function_list_entry functions[] = {
+	{ "fromImage",          Texture_fromImage,      1               },
 	{ NULL,                 NULL,                   0               }
 };
 
@@ -172,8 +204,8 @@ js_texture_bind(duk_context *ctx)
 {
 	assert(ctx);
 
-	duk_push_global_object(ctx);
 	duk_push_c_function(ctx, Texture_constructor, 2);
+	duk_put_function_list(ctx, -1, functions);
 	duk_push_object(ctx);
 	duk_put_function_list(ctx, -1, methods);
 	duk_push_c_function(ctx, Texture_destructor, 1);
@@ -184,7 +216,7 @@ js_texture_bind(duk_context *ctx)
 	duk_dup(ctx, -1);
 	duk_put_global_string(ctx, PROTOTYPE);
 	duk_put_prop_string(ctx, -2, "prototype");
-	duk_pop(ctx);
+	duk_put_global_string(ctx, "Texture");
 }
 
 struct texture *

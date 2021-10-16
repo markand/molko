@@ -24,6 +24,7 @@
 #include "core.h"
 
 struct texture;
+struct vfs_file;
 
 CORE_BEGIN_DECLS
 
@@ -32,6 +33,10 @@ image_open(struct texture *, const char *);
 
 int
 image_openmem(struct texture *, const void *, size_t);
+
+int
+image_openvfs(struct texture *, struct vfs_file *);
+
 
 CORE_END_DECLS
 
