@@ -30,6 +30,7 @@
 #include <core/js-core.h>
 #include <core/js-event.h>
 #include <core/js-font.h>
+#include <core/js-music.h>
 #include <core/js-painter.h>
 #include <core/js-texture.h>
 #include <core/js-window.h>
@@ -55,6 +56,7 @@ core_bind(duk_context *ctx)
 	js_core_bind(ctx, &vfs);
 	js_font_bind(ctx);
 	js_event_bind(ctx);
+	js_music_bind(ctx);
 	js_painter_bind(ctx);
 	js_texture_bind(ctx);
 	js_window_bind(ctx);

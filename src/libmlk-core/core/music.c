@@ -23,6 +23,8 @@
 
 #include "error.h"
 #include "music.h"
+#include "vfs.h"
+#include "vfs_p.h"
 
 int
 music_open(struct music *mus, const char *path)
@@ -46,6 +48,22 @@ music_openmem(struct music *mus, const void *buffer, size_t buffersz)
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buffersz)) ||
 	    !(mus->handle = Mix_LoadMUS_RW(ops, 1)))
+		return errorf("%s", SDL_GetError());
+
+	return 0;
+}
+
+int
+music_openvfs(struct music *mus, struct vfs_file *file)
+{
+	assert(mus);
+	assert(vfs_file_ok(file));
+
+	SDL_RWops *ops;
+
+	if (!(ops = vfs_to_rw(file)))
+		return -1;
+	if (!(mus->handle = Mix_LoadMUS_RW(ops, 1)))
 		return errorf("%s", SDL_GetError());
 
 	return 0;

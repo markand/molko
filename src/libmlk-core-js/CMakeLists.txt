@@ -28,6 +28,8 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-event.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-font.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-font.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-music.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-music.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.c
