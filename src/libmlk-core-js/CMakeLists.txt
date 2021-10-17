@@ -34,6 +34,8 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-sound.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-sound.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-sprite.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-sprite.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-window.c
