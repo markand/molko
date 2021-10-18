@@ -1,5 +1,5 @@
 /*
- * js-sprite.h -- core sprite binding
+ * js-animation.h -- core animation binding
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,17 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_SPRITE_H
-#define MLK_CORE_JS_SPRITE_H
+#ifndef MLK_CORE_JS_ANIMATION_H
+#define MLK_CORE_JS_ANIMATION_H
 
 #include <duktape.h>
 
-struct sprite;
-
 void
-js_sprite_bind(duk_context *);
+js_animation_bind(duk_context *);
 
-struct sprite *
-js_sprite_require(duk_context *, duk_idx_t);
-
-#endif /* !MLK_CORE_JS_SPRITE_H */
+#endif /* !MLK_CORE_JS_ANIMATION_H */

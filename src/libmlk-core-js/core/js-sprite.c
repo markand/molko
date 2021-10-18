@@ -25,6 +25,7 @@
 #include "js-texture.h"
 
 #define SIGNATURE DUK_HIDDEN_SYMBOL("Mlk.Sprite")
+#define PROTOTYPE DUK_HIDDEN_SYMBOL("Mlk.Sprite.Prototype")
 #define TEXREF DUK_HIDDEN_SYMBOL("Mlk.Sprite.texture")
 
 static inline struct sprite *
@@ -137,6 +138,23 @@ js_sprite_bind(duk_context *ctx)
 	duk_put_function_list(ctx, -1, methods);
 	duk_push_c_function(ctx, Sprite_destructor, 1);
 	duk_set_finalizer(ctx, -2);
+	duk_dup(ctx, -1);
+	duk_put_global_string(ctx, PROTOTYPE);
 	duk_put_prop_string(ctx, -2, "prototype");
 	duk_put_global_string(ctx, "Sprite");
+}
+
+struct sprite *
+js_sprite_require(duk_context *ctx, duk_idx_t idx)
+{
+	struct sprite *sprite;
+
+	duk_get_prop_string(ctx, idx, SIGNATURE);
+	sprite = duk_to_pointer(ctx, -1);
+	duk_pop(ctx);
+
+	if (!sprite)
+		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Sprite object");
+
+	return sprite;
 }

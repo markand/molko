@@ -20,6 +20,8 @@ project(libmlk-core-js)
 
 set(
 	SOURCES
+	${libmlk-core-js_SOURCE_DIR}/core/js-animation.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-animation.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-clock.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-clock.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-core.c

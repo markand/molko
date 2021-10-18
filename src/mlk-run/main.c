@@ -26,6 +26,7 @@
 #include <core/vfs-zip.h>
 #include <core/vfs.h>
 
+#include <core/js-animation.h>
 #include <core/js-clock.h>
 #include <core/js-core.h>
 #include <core/js-event.h>
@@ -54,6 +55,7 @@ print(duk_context *ctx)
 static void
 core_bind(duk_context *ctx)
 {
+	js_animation_bind(ctx);
 	js_clock_bind(ctx);
 	js_core_bind(ctx, &vfs);
 	js_font_bind(ctx);
