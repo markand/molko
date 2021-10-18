@@ -30,6 +30,8 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-event.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-font.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-font.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-game.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-game.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-music.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-music.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.c
@@ -38,6 +40,8 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-sound.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-sprite.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-sprite.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-state.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-state.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-window.c

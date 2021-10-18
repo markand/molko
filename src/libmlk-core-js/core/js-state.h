@@ -1,5 +1,5 @@
 /*
- * js-event.h -- core event binding
+ * js-state.h -- core state binding
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,17 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_EVENT_H
-#define MLK_CORE_JS_EVENT_H
+#ifndef MLK_CORE_JS_STATE_H
+#define MLK_CORE_JS_STATE_H
 
 #include <duktape.h>
 
-union event;
-
 void
-js_event_bind(duk_context *);
+js_state_bind(duk_context *);
 
-void
-js_event_push(duk_context *, const union event *);
+struct state *
+js_state_require(duk_context *, duk_idx_t);
 
-#endif /* !MLK_CORE_JS_EVENT_H */
+#endif /* !MLK_CORE_JS_STATE_H */

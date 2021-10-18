@@ -1,5 +1,5 @@
 /*
- * js-event.h -- core event binding
+ * js-game.h -- core game binding
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,17 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_EVENT_H
-#define MLK_CORE_JS_EVENT_H
+#ifndef MLK_CORE_JS_GAME_H
+#define MLK_CORE_JS_GAME_H
 
 #include <duktape.h>
 
-union event;
-
 void
-js_event_bind(duk_context *);
+js_game_bind(duk_context *);
 
-void
-js_event_push(duk_context *, const union event *);
-
-#endif /* !MLK_CORE_JS_EVENT_H */
+#endif /* !MLK_CORE_JS_GAME_H */

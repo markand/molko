@@ -78,12 +78,8 @@ Event_poll(duk_context *ctx)
 
 	if (!event_poll(&ev))
 		duk_push_null(ctx);
-	else {
-		duk_push_object(ctx);
-		duk_push_int(ctx, ev.type);
-		duk_put_prop_string(ctx, -2, "type");
-		push[ev.type](ctx, &ev);
-	}
+	else
+		js_event_push(ctx, &ev);
 
 	return 1;
 }
@@ -288,4 +284,13 @@ js_event_bind(duk_context *ctx)
 	duk_put_prop_string(ctx, -2, "button");
 	duk_put_prop_string(ctx, -2, "Event");
 	duk_pop(ctx);
+}
+
+void
+js_event_push(duk_context *ctx, const union event *ev)
+{
+	duk_push_object(ctx);
+	duk_push_int(ctx, ev->type);
+	duk_put_prop_string(ctx, -2, "type");
+	push[ev->type](ctx, ev);
 }

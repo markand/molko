@@ -31,10 +31,12 @@
 #include <core/js-core.h>
 #include <core/js-event.h>
 #include <core/js-font.h>
+#include <core/js-game.h>
 #include <core/js-music.h>
 #include <core/js-painter.h>
 #include <core/js-sound.h>
 #include <core/js-sprite.h>
+#include <core/js-state.h>
 #include <core/js-texture.h>
 #include <core/js-window.h>
 
@@ -58,12 +60,14 @@ core_bind(duk_context *ctx)
 	js_animation_bind(ctx);
 	js_clock_bind(ctx);
 	js_core_bind(ctx, &vfs);
-	js_font_bind(ctx);
 	js_event_bind(ctx);
+	js_font_bind(ctx);
+	js_game_bind(ctx);
 	js_music_bind(ctx);
 	js_painter_bind(ctx);
 	js_sound_bind(ctx);
 	js_sprite_bind(ctx);
+	js_state_bind(ctx);
 	js_texture_bind(ctx);
 	js_window_bind(ctx);
 }
