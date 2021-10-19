@@ -1,5 +1,5 @@
 /*
- * panic.h -- unrecoverable error handling
+ * config.h -- project configuration (from CMake)
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,26 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_PANIC_H
-#define MOLKO_CORE_PANIC_H
+#ifndef MLK_CONFIG_H
+#define MLK_CONFIG_H
 
-#include <stdarg.h>
+#cmakedefine MLK_WITH_NLS
+#cmakedefine MLK_WITH_ZSTD
+#cmakedefine MLK_WITH_JS
 
-#include "core.h"
+#define MLK_PREFIX "@CMAKE_INSTALL_PREFIX@"
+#define MLK_BINDIR "@CMAKE_INSTALL_BINDIR@"
+#define MLK_DATADIR "@CMAKE_INSTaLL_DATADIR@"
 
-extern void (*panic_handler)(void);
-
-CORE_BEGIN_DECLS
-
-void
-panicf(const char *, ...);
-
-void
-panicva(const char *, va_list);
-
-void
-panic(void);
-
-CORE_END_DECLS
-
-#endif /* !MOLKO_CORE_PANIC_H */
+#endif /* !MLK_CONFIG_H */

@@ -135,7 +135,7 @@ state_map_new(const char *name, int origin_x, int origin_y)
 	self = alloc_new0(sizeof (*self));
 	self->origin_x = origin_x;
 	self->origin_y = origin_y;
-	strlcpy(self->name, name, sizeof (self->name));
+	port_strlcpy(self->name, name, sizeof (self->name));
 
 	self->state.data = self;
 	self->state.start = start;

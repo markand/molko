@@ -18,7 +18,6 @@
 
 #include <assert.h>
 #include <errno.h>
-#include <libgen.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -226,8 +225,8 @@ parse(struct context *ctx, const char *path)
 	char line[1024];
 	char basedir[PATH_MAX];
 
-	strlcpy(basedir, path, sizeof (basedir));
-	strlcpy(ctx->basedir, dirname(basedir), sizeof (ctx->basedir));
+	port_strlcpy(basedir, path, sizeof (basedir));
+	port_strlcpy(ctx->basedir, port_dirname(basedir), sizeof (ctx->basedir));
 
 	while (fgets(line, sizeof (line), ctx->fp)) {
 		/* Remove \n if any */

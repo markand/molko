@@ -21,9 +21,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include <string.h>
-#include <unistd.h>
 
 #include <port/port.h>
 
@@ -35,14 +33,14 @@ static bool fnull;
 static bool fstatic;
 static bool funsigned;
 
-noreturn static void
+static void
 usage(void)
 {
 	fprintf(stderr, "usage: bcc [-0csu] [-I tab-indent] [-i space-indent] input variable\n");
 	exit(1);
 }
 
-noreturn static void
+static void
 die(const char *fmt, ...)
 {
 	va_list ap;
@@ -141,7 +139,7 @@ main(int argc, char **argv)
 {
 	int ch;
 
-	while ((ch = getopt(argc, argv, "0cI:i:su")) != -1) {
+	while ((ch = port_getopt(argc, argv, "0cI:i:su")) != -1) {
 		switch (ch) {
 		case '0':
 			fnull = true;
@@ -151,11 +149,11 @@ main(int argc, char **argv)
 			break;
 		case 'I':
 			findentchar = '\t';
-			findent = atoi(optarg);
+			findent = atoi(port_optarg);
 			break;
 		case 'i':
 			findentchar = ' ';
-			findent = atoi(optarg);
+			findent = atoi(port_optarg);
 			break;
 		case 's':
 			fstatic = true;
@@ -168,8 +166,8 @@ main(int argc, char **argv)
 		}
 	}
 
-	argc -= optind;
-	argv += optind;
+	argc -= port_optind;
+	argv += port_optind;
 
 	if (argc < 2)
 		usage();

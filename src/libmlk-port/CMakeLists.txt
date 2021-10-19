@@ -18,48 +18,15 @@
 
 project(libmlk-port)
 
-include(CheckFunctionExists)
-include(CheckIncludeFile)
-include(CheckSymbolExists)
-include(CheckTypeSize)
-include(CheckLibraryExists)
-
-check_function_exists(strlcpy MLK_HAS_STRLCPY)
-check_function_exists(fmemopen MLK_HAS_FMEMOPEN)
-check_function_exists(basename MLK_HAS_BASENAME)
-check_function_exists(dirname MLK_HAS_DIRNAME)
-check_function_exists(getopt MLK_HAS_GETOPT)
-check_include_file(stdnoreturn.h MLK_HAS_STDNORETURN_H)
-check_include_file(libgen.h MLK_HAS_LIBGEN_H)
-check_include_file(unistd.h MLK_HAS_UNISTD_H)
-check_symbol_exists(PATH_MAX limits.h MLK_HAS_PATH_MAX)
-check_type_size(ssize_t MLK_HAS_SSIZE_T)
-check_library_exists(m fmin "" MLK_HAS_LIBM)
-
-if (NOT MLK_HAS_STDNORETURN_H)
-	file(WRITE ${CMAKE_BINARY_DIR}/stdnoreturn.h "#define noreturn\n")
-endif ()
-if (NOT MLK_HAS_LIBGEN_H)
-	file(TOUCH ${CMAKE_BINARY_DIR}/libgen.h)
-endif ()
-if (NOT MLK_HAS_UNISTD_H)
-	file(TOUCH ${CMAKE_BINARY_DIR}/unistd.h)
-endif ()
-
-configure_file(
-	${libmlk-port_SOURCE_DIR}/port/config.h.in
-	${libmlk-port_BINARY_DIR}/config.h
-)
-
 set(
 	SOURCES
-	${libmlk-port_SOURCE_DIR}/port/port.c
-	${libmlk-port_SOURCE_DIR}/port/port.h
+	${libmlk-port_SOURCE_DIR}/port/basename.c
+	${libmlk-port_SOURCE_DIR}/port/dirname.c
+	${libmlk-port_SOURCE_DIR}/port/fmemopen.c
+	${libmlk-port_SOURCE_DIR}/port/getopt.c
+	${libmlk-port_SOURCE_DIR}/port/strlcat.c
+	${libmlk-port_SOURCE_DIR}/port/strlcpy.c
 )
-
-if (MLK_HAS_LIBM)
-	list(APPEND LIBRARIES m)
-endif ()
 
 mlk_library(
 	NAME libmlk-port

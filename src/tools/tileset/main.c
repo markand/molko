@@ -19,12 +19,11 @@
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <stdnoreturn.h>
 #include <string.h>
 
 #include <jansson.h>
 
-static noreturn void
+static void
 die(const char *fmt, ...)
 {
 	assert(fmt);

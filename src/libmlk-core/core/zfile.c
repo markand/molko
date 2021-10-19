@@ -25,7 +25,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+
+#if !defined(_WIN32)
+#       include <unistd.h>
+#endif
 
 /*
  * If not enabled, we still need to check if a file is in zstandard so we use
@@ -94,7 +97,7 @@ decompress(int fd, struct zfile *zf)
 		errno = EINVAL;
 		goto fail;
 	}
-	if (!(zf->fp = fmemopen(zf->data, datasz, "r")))
+	if (!(zf->fp = port_fmemopen(zf->data, datasz, "r")))
 		goto fail;
 
 	close(fd);

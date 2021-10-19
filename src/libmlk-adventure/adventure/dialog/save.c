@@ -155,7 +155,7 @@ draw_save_times(const struct dialog_save *dlg, const struct geo *geo, size_t i)
 	label.text = line;
 
 	/* TODO: Get map position. */
-	strlcpy(line, "World", sizeof (line));
+	port_strlcpy(line, "World", sizeof (line));
 	label_draw(&label);
 	
 	/* Last time. */

@@ -1,5 +1,5 @@
 /*
- * panic.h -- unrecoverable error handling
+ * fmemopen.h -- fmemopen polyfill
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,26 +16,39 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_PANIC_H
-#define MOLKO_CORE_PANIC_H
+#if defined(_WIN32)
 
-#include <stdarg.h>
+#include <stdio.h>
+#include <windows.h>
 
-#include "core.h"
+FILE *
+port_fmemopen(void *buf, size_t size, const char *mode)
+{
+	char temppath[MAX_PATH + 1];
+	char filename[MAX_PATH + 1];
+	FILE *fp;
 
-extern void (*panic_handler)(void);
+	if (!GetTempPath(sizeof (temppath), temppath))
+		return NULL;
+	if (!GetTempFileName(temppath, "MLK", 0, filename))
+		return NULL;
+	if (!(fp = fopen(filename, "wb")))
+		return NULL;
 
-CORE_BEGIN_DECLS
+	fwrite(buf, size, 1, fp);
+	fclose(fp);
 
-void
-panicf(const char *, ...);
+	return fopen(filename, mode);
+}
 
-void
-panicva(const char *, va_list);
+#else /* !_WIN32 */
 
-void
-panic(void);
+#include <stdio.h>
 
-CORE_END_DECLS
+FILE *
+port_fmemopen(void *buf, size_t len, const char *type)
+{
+	return fmemopen(buf, len, type);
+}
 
-#endif /* !MOLKO_CORE_PANIC_H */
+#endif

@@ -16,15 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define _XOPEN_SOURCE 700
 #include <assert.h>
-#include <libgen.h>
 #include <limits.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdnoreturn.h>
 #include <string.h>
 
 #include <jansson.h>
@@ -230,7 +227,7 @@ write_tileset(const json_t *tilesets)
 
 	/* We need to replace the .json extension to .tileset. */
 	snprintf(path, sizeof (path), "%s", json_string_value(source));
-	snprintf(filename, sizeof (filename), "%s", basename(path));
+	snprintf(filename, sizeof (filename), "%s", port_basename(path));
 
 	if (!(ext = strstr(filename, ".json")))
 		die("could not determine tileset extension");

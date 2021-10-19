@@ -55,6 +55,12 @@ include(GNUInstallDirs)
 find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
 find_package(Jansson REQUIRED)
 
+configure_file(
+	${molko_SOURCE_DIR}/src/config.h.in
+	${molko_BINARY_DIR}/src/config.h
+)
+include_directories(${molko_BINARY_DIR}/src)
+
 if (MLK_WITH_JS)
 	add_subdirectory(extern/libduktape)
 endif ()
@@ -106,3 +112,4 @@ endif ()
 if (MLK_WITH_EXAMPLES)
 	add_subdirectory(examples)
 endif ()
+

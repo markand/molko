@@ -19,80 +19,45 @@
 #ifndef MOLKO_PORT_H
 #define MOLKO_PORT_H
 
-#include "config.h"
-
-/* {{{ strlcpy (BSD extension, incoming in next POSIX). */
-
-#if !defined(MLK_HAS_STRLCPY)
-
-#include <stddef.h>
-
-size_t
-strlcpy(char *, const char *, size_t);
-
-#endif /* !MLK_HAS_STRLCPY */
-
-/* }}} */
-
-/* {{{ fmemopen (POSIX). */
-
-#if !defined(MLK_HAS_FMEMOPEN)
-
+#include <limits.h>
 #include <stdio.h>
 
-FILE *
-fmemopen(void *, size_t, const char *);
-
-#endif /* !MLK_HAS_FMEMOPEN */
-
-/* }}} */
-
-/* {{{ basename (POSIX). */
-
-#if !defined(MLK_HAS_BASENAME)
-
-char *
-basename(char *);
-
-#endif /* !MLK_HAS_BASENAME */
-
-/* }}} */
-
-/* {{{ dirname (POSIX). */
-
-#if !defined(MLK_HAS_BASENAME)
-
-char *
-dirname(char *);
-
-#endif /* !MLK_HAS_DIRNAME */
-
-/* }}} */
-
-/* {{{ getopt (POSIX) */
-
-#if !defined(MLK_HAS_GETOPT)
-
-extern int opterr;
-extern int optind;
-extern int optopt;
-extern char *optarg;
-
-int
-getopt(int, char **, const char *);
-
-#endif /* !MLK_HAS_GETOPT */
-
-/* }}} */
-
 /* PATH_MAX (defined in limits.h) (POSIX) */
-#if !defined(MLK_HAS_PATH_MAX)
+#if !defined(PATH_MAX)
 #       define PATH_MAX 2048
 #endif
 
-/* ssize_t (defined in sys/types.h) (POSIX) */
-#if !defined(MLK_HAS_SSIZE_T)
+/* (POSIX) */
+#if defined(_WIN32)
 typedef long long int ssize_t;
 #endif
+
+/* OpenBSD extension (in next POSIX version). */
+size_t
+port_strlcpy(char *, const char *, size_t);
+
+/* Same as strlcpy. */
+size_t
+port_strlcat(char *, const char *, size_t);
+
+/* POSIX. */
+FILE *
+port_fmemopen(void *, size_t, const char *);
+
+/* POSIX. */
+char *
+port_basename(char *);
+
+/* POSIX. */
+char *
+port_dirname(char *);
+
+extern int port_opterr;
+extern int port_optind;
+extern int port_optopt;
+extern char *port_optarg;
+
+int
+port_getopt(int, char **, const char *);
 
 #endif /* !MOLKO_PORT_H */
