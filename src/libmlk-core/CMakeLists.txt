@@ -26,6 +26,8 @@ set(
 	${libmlk-core_SOURCE_DIR}/core/alloc.h
 	${libmlk-core_SOURCE_DIR}/core/animation.c
 	${libmlk-core_SOURCE_DIR}/core/animation.h
+	${libmlk-core_SOURCE_DIR}/core/buf.c
+	${libmlk-core_SOURCE_DIR}/core/buf.h
 	${libmlk-core_SOURCE_DIR}/core/clock.c
 	${libmlk-core_SOURCE_DIR}/core/clock.h
 	${libmlk-core_SOURCE_DIR}/core/color.h

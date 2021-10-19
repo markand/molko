@@ -18,10 +18,10 @@
 
 #include <assert.h>
 #include <errno.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "buf.h"
 #include "error.h"
 #include "vfs.h"
 #include "vfs_p.h"
@@ -70,28 +70,22 @@ vfs_file_read(struct vfs_file *file, void *buf, size_t bufsz)
 char *
 vfs_file_aread(struct vfs_file *file, size_t *outlen)
 {
-	FILE *fp;
-	char *out = NULL, buf[BUFSIZ];
-	size_t len, nr;
+	struct buf buf = {0};
+	char data[BUFSIZ];
+	size_t nr;
 
-	if (!(fp = open_memstream(&out, &len)))
-		return errorf("%s", strerror(errno)), NULL;
-
-	while ((nr = vfs_file_read(file, buf, sizeof (buf))) > 0) {
-		if (fwrite(buf, 1, nr, fp) != nr) {
+	while ((nr = vfs_file_read(file, data, sizeof (data))) > 0) {
+		if (buf_printf(&buf, "%.*s", (int)nr, data) < 0) {
 			errorf("%s", strerror(errno));
-			fclose(fp);
-			free(out);
+			buf_finish(&buf);
 			return NULL;
 		}
 	}
 
-	fclose(fp);
-
 	if (outlen)
-		*outlen = len;
+		*outlen = buf.length;
 
-	return out;
+	return buf.data;
 }
 
 size_t
