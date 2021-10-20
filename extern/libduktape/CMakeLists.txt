@@ -26,3 +26,7 @@ target_include_directories(
 )
 
 set_target_properties(libmlk-duktape PROPERTIES PREFIX "")
+
+if (M_LIBRARY)
+	target_link_libraries(libmlk-duktape ${M_LIBRARY})
+endif ()

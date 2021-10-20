@@ -55,6 +55,9 @@ include(GNUInstallDirs)
 find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
 find_package(Jansson REQUIRED)
 
+# POSIX math library isn't available everywhere.
+find_library(M_LIBRARY m)
+
 configure_file(
 	${molko_SOURCE_DIR}/src/config.h.in
 	${molko_BINARY_DIR}/src/config.h

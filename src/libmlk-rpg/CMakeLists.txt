@@ -110,7 +110,10 @@ mlk_library(
 	SOURCES ${SOURCES} ${ASSETS} ${NLS}
 	LANGS ${NLS}
 	ASSETS ${ASSETS}
-	LIBRARIES libmlk-ui libmlk-sqlite
+	LIBRARIES
+		${M_LIBRARY}
+		libmlk-ui
+		libmlk-sqlite
 	INCLUDES
 		PRIVATE $<BUILD_INTERFACE:${libmlk-rpg_BINARY_DIR}>
 		PUBLIC $<BUILD_INTERFACE:${libmlk-rpg_SOURCE_DIR}>
