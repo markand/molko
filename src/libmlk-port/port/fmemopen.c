@@ -57,7 +57,7 @@ port_fmemopen(void *buf, size_t size, const char *mode)
 	fwrite(buf, size, 1, fp);
 	rewind(fp);
 
-	return fopen(filename, mode);
+	return fp;
 }
 
 #else /* !_WIN32 */
