@@ -114,7 +114,15 @@ mlk_library(
 	NAME libmlk-core
 	SOURCES ${SOURCES} ${NLS}
 	LANGS ${NLS}
-	LIBRARIES PUBLIC ${LIBRARIES} SDL2::SDL2 SDL2::image SDL2::ttf SDL2::mixer libmlk-port
+	LIBRARIES
+		PUBLIC
+			${LIBRARIES}
+			${M_LIBRARY}
+			SDL2::SDL2
+			SDL2::image
+			SDL2::ttf
+			SDL2::mixer
+			libmlk-port
 	INCLUDES
 		PUBLIC $<BUILD_INTERFACE:${libmlk-core_SOURCE_DIR}>
 )
