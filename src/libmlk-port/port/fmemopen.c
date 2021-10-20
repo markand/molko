@@ -18,25 +18,44 @@
 
 #if defined(_WIN32)
 
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <io.h>
+#include <share.h>
 #include <stdio.h>
+#include <string.h>
 #include <windows.h>
 
 FILE *
 port_fmemopen(void *buf, size_t size, const char *mode)
 {
-	char temppath[MAX_PATH + 1];
-	char filename[MAX_PATH + 1];
+	char temppath[MAX_PATH + 1], filename[MAX_PATH + 1];
 	FILE *fp;
+	int fd, flags;
+
+	flags = _O_CREAT        |
+	        _O_SHORT_LIVED  |
+	        _O_TEMPORARY    |
+	        _O_RDWR         |
+	        _O_NOINHERIT;
+
+	if (strchr(mode, 'b'))
+		flags |= _O_BINARY;
 
 	if (!GetTempPath(sizeof (temppath), temppath))
 		return NULL;
 	if (!GetTempFileName(temppath, "MLK", 0, filename))
 		return NULL;
-	if (!(fp = fopen(filename, "wb")))
+	if ((fd = _sopen(temppath, flags, _SH_DENYRW, _S_IREAD | _S_IWRITE)) < 0)
 		return NULL;
+	if (!(fp = fdopen(fd, mode))) {
+		_close(fd);
+		return NULL;
+	}
 
 	fwrite(buf, size, 1, fp);
-	fclose(fp);
+	rewind(fp);
 
 	return fopen(filename, mode);
 }
