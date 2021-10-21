@@ -110,6 +110,10 @@ if (CMAKE_SYSTEM_NAME MATCHES "Windows")
 	list(APPEND LIBRARIES shlwapi)
 endif ()
 
+if (M_LIBRARY)
+	list(APPEND LIBRARIES ${M_LIBRARY})
+endif ()
+
 mlk_library(
 	NAME libmlk-core
 	SOURCES ${SOURCES} ${NLS}
@@ -117,7 +121,6 @@ mlk_library(
 	LIBRARIES
 		PUBLIC
 			${LIBRARIES}
-			${M_LIBRARY}
 			SDL2::SDL2
 			SDL2::image
 			SDL2::ttf

@@ -111,7 +111,6 @@ mlk_library(
 	LANGS ${NLS}
 	ASSETS ${ASSETS}
 	LIBRARIES
-		${M_LIBRARY}
 		libmlk-ui
 		libmlk-sqlite
 	INCLUDES
