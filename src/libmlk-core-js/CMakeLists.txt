@@ -24,6 +24,8 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-animation.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-clock.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-clock.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-color.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-color.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-core.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-core.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-event.c

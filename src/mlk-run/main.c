@@ -28,6 +28,7 @@
 
 #include <core/js-animation.h>
 #include <core/js-clock.h>
+#include <core/js-color.h>
 #include <core/js-core.h>
 #include <core/js-event.h>
 #include <core/js-font.h>
@@ -59,6 +60,7 @@ core_bind(duk_context *ctx)
 {
 	js_animation_bind(ctx);
 	js_clock_bind(ctx);
+	js_color_bind(ctx);
 	js_core_bind(ctx, &vfs);
 	js_event_bind(ctx);
 	js_font_bind(ctx);
