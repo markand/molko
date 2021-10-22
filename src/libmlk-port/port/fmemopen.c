@@ -49,7 +49,7 @@ port_fmemopen(void *buf, size_t size, const char *mode)
 		return NULL;
 	if ((fd = _sopen(temppath, flags, _SH_DENYRW, _S_IREAD | _S_IWRITE)) < 0)
 		return NULL;
-	if (!(fp = fdopen(fd, mode))) {
+	if (!(fp = _fdopen(fd, mode))) {
 		_close(fd);
 		return NULL;
 	}
