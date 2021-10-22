@@ -1,5 +1,5 @@
 /*
- * js-core.c -- core binding
+ * js-panic.h -- core panic binding
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,39 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
+#ifndef MLK_CORE_JS_PANIC_H
+#define MLK_CORE_JS_PANIC_H
 
-#include "js-core.h"
-
-#define VFS DUK_HIDDEN_SYMBOL("Mlk.Vfs")
+#include <duktape.h>
 
 void
-js_core_bind(duk_context *ctx, struct vfs *vfs)
-{
-	assert(ctx);
-	assert(vfs);
+js_panic_bind(duk_context *);
 
-	/* We put the VFS object. */
-	duk_push_global_stash(ctx);
-	duk_push_pointer(ctx, vfs);
-	duk_put_prop_string(ctx, -2, VFS);
-	duk_pop(ctx);
-
-	duk_push_object(ctx);
-	duk_put_global_string(ctx, "Mlk");
-}
-
-struct vfs *
-js_core_global_vfs(duk_context *ctx)
-{
-	assert(ctx);
-
-	struct vfs *vfs;
-
-	duk_push_global_stash(ctx);
-	duk_get_prop_string(ctx, -1, VFS);
-	vfs = duk_to_pointer(ctx, -1);
-	duk_pop(ctx);
-
-	return vfs;
-}
+#endif /* !MLK_CORE_JS_PANIC_H */

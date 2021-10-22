@@ -1,5 +1,5 @@
 /*
- * js-core.c -- core binding
+ * js-panic.c -- core panic binding
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -18,37 +18,32 @@
 
 #include <assert.h>
 
-#include "js-core.h"
+#include <core/panic.h>
 
-#define VFS DUK_HIDDEN_SYMBOL("Mlk.Vfs")
+#include "js-panic.h"
 
-void
-js_core_bind(duk_context *ctx, struct vfs *vfs)
+static duk_ret_t
+Mlk_panic(duk_context *ctx)
 {
-	assert(ctx);
-	assert(vfs);
+	if (duk_get_top(ctx) >= 1)
+		panicf("%s", duk_to_string(ctx, 0));
+	else
+		panic();
 
-	/* We put the VFS object. */
-	duk_push_global_stash(ctx);
-	duk_push_pointer(ctx, vfs);
-	duk_put_prop_string(ctx, -2, VFS);
-	duk_pop(ctx);
-
-	duk_push_object(ctx);
-	duk_put_global_string(ctx, "Mlk");
+	return 0;
 }
 
-struct vfs *
-js_core_global_vfs(duk_context *ctx)
+static const duk_function_list_entry functions[] = {
+	{ "panic",              Mlk_panic,              DUK_VARARGS     },
+	{ NULL,                 NULL,                   0               }
+};
+
+void
+js_panic_bind(duk_context *ctx)
 {
 	assert(ctx);
 
-	struct vfs *vfs;
-
-	duk_push_global_stash(ctx);
-	duk_get_prop_string(ctx, -1, VFS);
-	vfs = duk_to_pointer(ctx, -1);
+	duk_get_global_string(ctx, "Mlk");
+	duk_put_function_list(ctx, -1, functions);
 	duk_pop(ctx);
-
-	return vfs;
 }
