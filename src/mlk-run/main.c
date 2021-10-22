@@ -105,12 +105,8 @@ startup(void)
 
 	vfs_file_finish(&main);
 
-	if (duk_peval_string(ctx, code)) {
-		duk_get_prop_string(ctx, -1, "lineNumber");
-		printf("%d\n", duk_to_int(ctx, -1));
-		duk_pop(ctx);
+	if (duk_peval_string(ctx, code))
 		panicf("%s", duk_safe_to_string(ctx, -1));
-	}
 
 	free(code);
 }

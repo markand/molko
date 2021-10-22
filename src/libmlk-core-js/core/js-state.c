@@ -26,120 +26,132 @@
 #include "js-state.h"
 
 #define SIGNATURE DUK_HIDDEN_SYMBOL("Mlk.State")
-#define FUNCTIONS DUK_HIDDEN_SYMBOL("Mlk.State.functions")
+#define SELF DUK_HIDDEN_SYMBOL("Mlk.State.self")
 
-#define INVOKE(state, function, block)                          \
-do {                                                            \
-        struct statedata *data = state->data;                   \
-                                                                \
-        duk_push_heapptr(data->ctx, data->heapptr);             \
-        duk_get_prop_index(data->ctx, -1, function);            \
-        duk_remove(data->ctx, -2);                              \
-                                                                \
-        if (duk_is_callable(data->ctx, -1)) {                   \
-                block                                           \
-                duk_pop(data->ctx);                             \
-        } else {                                                \
-                duk_pop(data->ctx);                             \
-        }                                                       \
-} while (0)
-
-#define SET(ctx, function)                                      \
-do {                                                            \
-        struct statedata *data = self(ctx);                     \
-                                                                \
-        duk_push_heapptr(ctx, data->heapptr);                   \
-        duk_dup(ctx, 0);                                        \
-        duk_put_prop_index(ctx, -2, function);                  \
-        duk_pop(ctx);                                           \
-                                                                \
-        return 0;                                               \
-} while (0)
-
-enum statefunc {
-	FUNC_START,
-	FUNC_HANDLE,
-	FUNC_UPDATE,
-	FUNC_DRAW,
-	FUNC_SUSPEND,
-	FUNC_RESUME,
-	FUNC_END
-};
-
-struct statedata {
+struct self {
 	duk_context *ctx;
-	void *heapptr;
+	void *selfptr;
 	struct state state;
+	unsigned int refc;
 };
+
+static inline int
+callable(struct self *s, const char *prop, duk_context **ctx)
+{
+	int callable;
+
+	duk_push_heapptr(s->ctx, s->selfptr);
+	duk_get_prop_string(s->ctx, -1, prop);
+	duk_remove(s->ctx, -2);
+
+	if (duk_is_callable(s->ctx, -1)) {
+		*ctx = s->ctx;
+		callable = 1;
+	} else {
+		*ctx = NULL;
+		callable = 0;
+		duk_pop(s->ctx);
+	}
+
+	return callable;
+}
 
 static void
 start(struct state *state)
 {
-	INVOKE(state, FUNC_START, {
-		duk_call(data->ctx, 0);
-	});
+	duk_context *ctx;
+
+	if (callable(state->data, "start", &ctx)) {
+		duk_call(ctx, 0);
+		duk_pop(ctx);
+	}
 }
 
 static void
 handle(struct state *state, const union event *ev)
 {
-	INVOKE(state, FUNC_HANDLE, {
-		js_event_push(data->ctx, ev);
-		duk_call(data->ctx, 1);
-	});
+	duk_context *ctx;
+
+	if (callable(state->data, "handle", &ctx)) {
+		js_event_push(ctx, ev);
+		duk_call(ctx, 1);
+		duk_pop(ctx);
+	}
 }
 
 static void
 update(struct state *state, unsigned int ticks)
 {
-	INVOKE(state, FUNC_UPDATE, {
-		duk_push_uint(data->ctx, ticks);
-		duk_call(data->ctx, 1);
-	});
+	duk_context *ctx;
+
+	if (callable(state->data, "update", &ctx)) {
+		duk_push_uint(ctx, ticks);
+		duk_call(ctx, 1);
+		duk_pop(ctx);
+	}
 }
 
 static void
 draw(struct state *state)
 {
-	INVOKE(state, FUNC_DRAW, {
-		duk_call(data->ctx, 0);
-	});
+	duk_context *ctx;
+
+	if (callable(state->data, "draw", &ctx)) {
+		duk_call(ctx, 0);
+		duk_pop(ctx);
+	}
 }
 
 static void
 suspend(struct state *state)
 {
-	INVOKE(state, FUNC_SUSPEND, {
-		duk_call(data->ctx, 0);
-	});
+	duk_context *ctx;
+
+	if (callable(state->data, "suspend", &ctx)) {
+		duk_call(ctx, 0);
+		duk_pop(ctx);
+	}
 }
 
 static void
 resume(struct state *state)
 {
-	INVOKE(state, FUNC_RESUME, {
-		duk_call(data->ctx, 0);
-	});
+	duk_context *ctx;
+
+	if (callable(state->data, "resume", &ctx)) {
+		duk_call(ctx, 0);
+		duk_pop(ctx);
+	}
 }
 
 static void
 end(struct state *state)
 {
-	INVOKE(state, FUNC_END, {
-		duk_call(data->ctx, 0);
-	});
+	duk_context *ctx;
+
+	if (callable(state->data, "end", &ctx)) {
+		duk_call(ctx, 0);
+		duk_pop(ctx);
+	}
 }
 
 static void
 finish(struct state *state)
 {
-	free(state->data);
+	struct self *self = state->data;
+
+	if (!--self->refc) {
+		duk_push_heapptr(self->ctx, self->selfptr);
+		duk_del_prop_string(self->ctx, -1, SIGNATURE);
+		duk_pop(self->ctx);
+		free(self);
+	}
 }
 
-static inline struct statedata *
+static inline struct self *
 self(duk_context *ctx)
 {
-	struct statedata *data = NULL;
+	struct self *data = NULL;
 
 	duk_push_this(ctx);
 	duk_get_prop_string(ctx, -1, SIGNATURE);
@@ -153,91 +165,43 @@ self(duk_context *ctx)
 }
 
 static duk_ret_t
-State_setStart(duk_context *ctx)
-{
-	SET(ctx, FUNC_START);
-}
-
-static duk_ret_t
-State_setHandle(duk_context *ctx)
-{
-	SET(ctx, FUNC_HANDLE);
-}
-
-static duk_ret_t
-State_setUpdate(duk_context *ctx)
-{
-	SET(ctx, FUNC_UPDATE);
-}
-
-static duk_ret_t
-State_setDraw(duk_context *ctx)
-{
-	SET(ctx, FUNC_DRAW);
-}
-
-static duk_ret_t
-State_setSuspend(duk_context *ctx)
-{
-	SET(ctx, FUNC_SUSPEND);
-}
-
-static duk_ret_t
-State_setResume(duk_context *ctx)
-{
-	SET(ctx, FUNC_RESUME);
-}
-
-static duk_ret_t
-State_setEnd(duk_context *ctx)
-{
-	SET(ctx, FUNC_END);
-}
-
-static const struct {
-	const char *property;
-	duk_ret_t (*setter)(duk_context *ctx);
-} properties[] = {
-	{ "start",      State_setStart          },
-	{ "handle",     State_setHandle         },
-	{ "update",     State_setUpdate         },
-	{ "draw",       State_setDraw           },
-	{ "suspend",    State_setSuspend        },
-	{ "resume",     State_setResume         },
-	{ "end",        State_setEnd            },
-	{ NULL,         NULL                    }
-};
-
-static duk_ret_t
 State_constructor(duk_context *ctx)
 {
-	struct statedata *data;
+	struct self *self;
 
-	data = alloc_new0(sizeof (*data));
-	data->ctx = ctx;
-	data->state.data = data;
-	data->state.start = start;
-	data->state.handle = handle;
-	data->state.update = update;
-	data->state.draw = draw;
-	data->state.suspend = suspend;
-	data->state.resume = resume;
-	data->state.end = end;
-	data->state.finish = finish;
+	self = alloc_new0(sizeof (*self));
+	self->ctx = ctx;
+	self->refc = 1;
+	self->state.data = self;
+	self->state.start = start;
+	self->state.handle = handle;
+	self->state.update = update;
+	self->state.draw = draw;
+	self->state.suspend = suspend;
+	self->state.resume = resume;
+	self->state.end = end;
+	self->state.finish = finish;
 
 	duk_push_this(ctx);
-	duk_push_pointer(ctx, data);
+	self->selfptr = duk_get_heapptr(ctx, -1);
+	duk_dup(ctx, -1);
+	duk_put_prop_string(ctx, -2, SELF);
+	duk_push_pointer(ctx, self);
 	duk_put_prop_string(ctx, -2, SIGNATURE);
-	duk_push_array(ctx);
-	data->heapptr = duk_get_heapptr(ctx, -1);
-	duk_put_prop_string(ctx, -2, FUNCTIONS);
+	duk_pop(ctx);
 
-	/* Push every properties. */
-	for (size_t i = 0; properties[i].property; ++i) {
-		duk_push_string(ctx, properties[i].property);
-		duk_push_c_function(ctx, properties[i].setter, 1);
-		duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_SETTER);
-	}
+	return 0;
+}
+
+static duk_ret_t
+State_destructor(duk_context *ctx)
+{
+	struct self *self;
+
+	duk_get_prop_string(ctx, 0, SIGNATURE);
+
+	if ((self = duk_to_pointer(ctx, -1)))
+		state_finish(&self->state);
 
 	duk_pop(ctx);
 
@@ -250,22 +214,28 @@ js_state_bind(duk_context *ctx)
 	assert(ctx);
 
 	duk_push_c_function(ctx, State_constructor, 1);
+	duk_push_object(ctx);
+	duk_push_c_function(ctx, State_destructor, 1);
+	duk_set_finalizer(ctx, -2);
+	duk_put_prop_string(ctx, -2, "prototype");
 	duk_put_global_string(ctx, "State");
 }
 
 struct state *
 js_state_require(duk_context *ctx, duk_idx_t idx)
 {
-	struct statedata *data = NULL;
+	struct self *self = NULL;
 
 	if (duk_is_object(ctx, idx)) {
 		duk_get_prop_string(ctx, idx, SIGNATURE);
-		data = duk_to_pointer(ctx, -1);
+		self = duk_to_pointer(ctx, -1);
 		duk_pop(ctx);
 	}
 	
-	if (!data)
+	if (!self)
 		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a State object");
 
-	return &data->state;
+	self->refc++;
+
+	return &self->state;
 }

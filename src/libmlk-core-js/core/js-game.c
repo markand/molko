@@ -23,8 +23,6 @@
 #include "js-game.h"
 #include "js-state.h"
 
-#define TABLE DUK_HIDDEN_SYMBOL("Mlk.Game.table")
-
 /*
  * TODO: determine if it's worth it to add handle, update and draw functions.
  */
@@ -34,17 +32,12 @@ Game_push(duk_context *ctx)
 {
 	struct state *state = js_state_require(ctx, 0);
 
-	if (game.state == &game.states[GAME_STATE_MAX])
+	if (game.state == &game.states[GAME_STATE_MAX]) {
+		state_finish(state);
 		duk_error(ctx, DUK_ERR_RANGE_ERROR, "too many states");
+	}
 
 	game_push(state);
-
-	/* Store the state to avoid destruction. */
-	duk_push_global_stash(ctx);
-	duk_get_prop_string(ctx, -1, TABLE);
-	duk_dup(ctx, 0);
-	duk_put_prop_index(ctx, -2, duk_get_length(ctx, -2));
-	duk_pop_n(ctx, 2);
 
 	return 0;
 }
@@ -55,11 +48,7 @@ Game_pop(duk_context *ctx)
 	if (game.state == &game.states[0])
 		return 0;
 
-	/* Remove the stored reference. */
-	duk_push_global_stash(ctx);
-	duk_get_prop_string(ctx, -1, TABLE);
-	duk_del_prop_index(ctx, -1, duk_get_length(ctx, -1) - 1);
-	duk_pop_n(ctx, 2);
+	game_pop();
 
 	return 0;
 }
@@ -100,8 +89,4 @@ js_game_bind(duk_context *ctx)
 	duk_push_object(ctx);
 	duk_put_function_list(ctx, -1, functions);
 	duk_put_global_string(ctx, "Game");
-	duk_push_global_stash(ctx);
-	duk_push_array(ctx);
-	duk_put_prop_string(ctx, -2, TABLE);
-	duk_pop(ctx);
 }
