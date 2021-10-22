@@ -19,6 +19,7 @@
 #include <assert.h>
 
 #include <core/game.h>
+#include <core/state.h>
 
 #include "js-game.h"
 #include "js-state.h"
