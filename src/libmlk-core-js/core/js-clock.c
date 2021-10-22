@@ -25,7 +25,7 @@
 
 #define SIGNATURE DUK_HIDDEN_SYMBOL("Mlk.Clock")
 
-static struct clock *
+static inline struct clock *
 self(duk_context *ctx)
 {
 	struct clock *clk;
@@ -36,7 +36,7 @@ self(duk_context *ctx)
 	duk_pop_2(ctx);
 
 	if (!clk)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Clock object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Clock object"), NULL;
 
 	return clk;
 }

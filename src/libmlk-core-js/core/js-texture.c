@@ -41,7 +41,7 @@ self(duk_context *ctx)
 	duk_pop_2(ctx);
 
 	if (!tex)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Texture object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Texture object"), NULL;
 
 	return tex;
 }
@@ -56,7 +56,7 @@ Texture_constructor(duk_context *ctx)
 	tex = alloc_new(sizeof (*tex));
 
 	if (texture_new(tex, w, h) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	duk_push_this(ctx);
 	duk_push_pointer(ctx, tex);
@@ -73,9 +73,9 @@ Texture_setBlendMode(duk_context *ctx)
 	struct texture *tex = self(ctx);
 
 	if (blend < 0 || blend >= TEXTURE_BLEND_LAST)
-		duk_error(ctx, DUK_ERR_ERROR, "invalid blend");
+		return duk_error(ctx, DUK_ERR_ERROR, "invalid blend");
 	if (texture_set_blend_mode(tex, blend) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	return 0;
 }
@@ -87,7 +87,7 @@ Texture_setAlphaMod(duk_context *ctx)
 	struct texture *tex = self(ctx);
 
 	if (texture_set_alpha_mod(tex, alpha) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	return 0;
 }
@@ -99,7 +99,7 @@ Texture_setColorMod(duk_context *ctx)
 	struct texture *tex = self(ctx);
 
 	if (texture_set_color_mod(tex, color) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	return 0;
 }
@@ -112,7 +112,7 @@ Texture_draw(duk_context *ctx)
 	struct texture *tex = self(ctx);
 
 	if (texture_draw(tex, x, y) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	return 0;
 }
@@ -132,7 +132,7 @@ Texture_scale(duk_context *ctx)
 	struct texture *tex = self(ctx);
 
 	if (texture_scale(tex, srcx, srcy, srcw, srch, dstx, dsty, dstw, dsth, angle) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	return 0;
 }
@@ -161,14 +161,15 @@ Texture_fromImage(duk_context *ctx)
 	struct vfs_file file;
 
 	if (vfs_open(js_core_global_vfs(ctx), &file, entry, "r") < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	tex = alloc_new0(sizeof (*tex));
 
 	if (image_openvfs(tex, &file) < 0) {
 		free(tex);
 		vfs_file_finish(&file);
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 	}
 
 	vfs_file_finish(&file);
@@ -229,7 +230,7 @@ js_texture_require(duk_context *ctx, duk_idx_t idx)
 	duk_pop(ctx);
 
 	if (!tex)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Texture object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Texture object"), NULL;
 
 	return tex;
 }

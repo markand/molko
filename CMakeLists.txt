@@ -28,6 +28,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 	set(CMAKE_C_FLAGS "-Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L ${CMAKE_C_FLAGS}")
+
+	if (CMAKE_C_COMPILER_ID MATCHES "GNU")
+		set(CMAKE_C_FLAGS "-Wno-format-truncation ${CMAKE_C_FLAGS}")
+	endif ()
 elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS "/wd4090 /wd5105 /wd6031 /wd6001 /wd26451 ${CMAKE_C_FLAGS}")
 endif ()

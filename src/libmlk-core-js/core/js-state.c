@@ -159,7 +159,7 @@ self(duk_context *ctx)
 	duk_pop_2(ctx);
 
 	if (!data)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a State object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a State object"), NULL;
 
 	return data;
 }
@@ -231,9 +231,9 @@ js_state_require(duk_context *ctx, duk_idx_t idx)
 		self = duk_to_pointer(ctx, -1);
 		duk_pop(ctx);
 	}
-	
+
 	if (!self)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a State object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a State object"), NULL;
 
 	self->refc++;
 

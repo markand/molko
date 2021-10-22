@@ -35,7 +35,7 @@ Game_push(duk_context *ctx)
 
 	if (game.state == &game.states[GAME_STATE_MAX]) {
 		state_finish(state);
-		duk_error(ctx, DUK_ERR_RANGE_ERROR, "too many states");
+		return duk_error(ctx, DUK_ERR_RANGE_ERROR, "too many states");
 	}
 
 	game_push(state);
@@ -46,6 +46,8 @@ Game_push(duk_context *ctx)
 static duk_ret_t
 Game_pop(duk_context *ctx)
 {
+	(void)ctx;
+
 	if (game.state == &game.states[0])
 		return 0;
 

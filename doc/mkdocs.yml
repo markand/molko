@@ -42,7 +42,7 @@ nav:
       - FAQ: dev/faq.md
     - Howto:
       - dev/howto/01-init.md
-    - API Reference:
+    - C API Reference:
       - libmlk-core:
         - action: dev/api/core/action.md
         - alloc: dev/api/core/alloc.md
@@ -75,3 +75,6 @@ nav:
         - util: dev/api/core/util.md
         - window: dev/api/core/window.md
         - zfile: dev/api/core/zfile.md
+    - Javascript API Reference:
+      - Core:
+        - animation: dev/jsapi/core/animation.md

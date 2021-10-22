@@ -39,7 +39,7 @@ self(duk_context *ctx)
 	duk_pop_2(ctx);
 
 	if (!mus)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Music object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Music object"), NULL;
 
 	return mus;
 }
@@ -52,14 +52,15 @@ Music_new(duk_context *ctx)
 	struct music *mus;
 
 	if (vfs_open(js_core_global_vfs(ctx), &file, entry, "r") < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	mus = alloc_new0(sizeof (*mus));
 
 	if (music_openvfs(mus, &file) < 0) {
 		free(mus);
 		vfs_file_finish(&file);
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 	}
 
 	vfs_file_finish(&file);
@@ -79,7 +80,7 @@ Music_play(duk_context *ctx)
 	const unsigned int fadein = duk_get_uint_default(ctx, 0, 0);
 
 	if (music_play(self(ctx), flags, fadein) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	return 0;
 }

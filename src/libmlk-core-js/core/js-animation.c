@@ -38,7 +38,7 @@ self(duk_context *ctx)
 	duk_pop_2(ctx);
 
 	if (!anim)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Animation object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Animation object"), NULL;
 
 	return anim;
 }

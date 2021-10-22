@@ -39,7 +39,7 @@ self(duk_context *ctx)
 	duk_pop_2(ctx);
 
 	if (!sprite)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Sprite object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Sprite object"), NULL;
 
 	return sprite;
 }
@@ -92,9 +92,9 @@ Sprite_draw(duk_context *ctx)
 	const int y = duk_require_int(ctx, 3);
 
 	if (r >= sprite->nrows)
-		duk_error(ctx, DUK_ERR_RANGE_ERROR, "row overflow: %u >= %u", r, sprite->nrows);
+		return duk_error(ctx, DUK_ERR_RANGE_ERROR, "row overflow: %u >= %u", r, sprite->nrows);
 	if (c >= sprite->ncols)
-		duk_error(ctx, DUK_ERR_RANGE_ERROR, "column overflow: %u >= %u", c, sprite->ncols);
+		return duk_error(ctx, DUK_ERR_RANGE_ERROR, "column overflow: %u >= %u", c, sprite->ncols);
 
 	sprite_draw(sprite, r, c, x, y);
 
@@ -113,9 +113,9 @@ Sprite_scale(duk_context *ctx)
 	const unsigned int h = duk_require_uint(ctx, 5);
 
 	if (r >= sprite->nrows)
-		duk_error(ctx, DUK_ERR_RANGE_ERROR, "row overflow: %u >= %u", r, sprite->nrows);
+		return duk_error(ctx, DUK_ERR_RANGE_ERROR, "row overflow: %u >= %u", r, sprite->nrows);
 	if (c >= sprite->ncols)
-		duk_error(ctx, DUK_ERR_RANGE_ERROR, "column overflow: %u >= %u", c, sprite->ncols);
+		return duk_error(ctx, DUK_ERR_RANGE_ERROR, "column overflow: %u >= %u", c, sprite->ncols);
 
 	sprite_scale(sprite, r, c, x, y, w, h);
 
@@ -154,7 +154,7 @@ js_sprite_require(duk_context *ctx, duk_idx_t idx)
 	duk_pop(ctx);
 
 	if (!sprite)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Sprite object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Sprite object"), NULL;
 
 	return sprite;
 }

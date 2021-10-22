@@ -33,7 +33,7 @@ Window_constructor(duk_context *ctx)
 	const unsigned int h = duk_require_uint(ctx, 2);
 
 	if (window_open(title, w, h) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	duk_push_this(ctx);
 	duk_push_boolean(ctx, 1);
@@ -49,7 +49,7 @@ Window_setCursor(duk_context *ctx)
 	const unsigned int cursor = duk_require_uint(ctx, 0);
 
 	if (cursor >= WINDOW_CURSOR_LAST)
-		duk_error(ctx, DUK_ERR_RANGE_ERROR, "invalid cursor");
+		return duk_error(ctx, DUK_ERR_RANGE_ERROR, "invalid cursor");
 
 	window_set_cursor(cursor);
 

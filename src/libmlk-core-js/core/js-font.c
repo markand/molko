@@ -41,7 +41,7 @@ self(duk_context *ctx)
 	duk_pop_2(ctx);
 
 	if (!font)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Font object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Font object"), NULL;
 
 	return font;
 }
@@ -60,7 +60,7 @@ Font_setStyle(duk_context *ctx)
 	const int style = duk_require_int(ctx, 0);
 
 	if (style < 0 || style >= FONT_STYLE_LAST)
-		duk_error(ctx, DUK_ERR_ERROR, "invalid style");
+		return duk_error(ctx, DUK_ERR_ERROR, "invalid style");
 
 	self(ctx)->style = style;
 
@@ -84,14 +84,15 @@ Font_new(duk_context *ctx)
 	struct font *font;
 
 	if (vfs_open(js_core_global_vfs(ctx), &file, entry, "r") < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	font = alloc_new0(sizeof (*font));
 
 	if (font_openvfs(font, &file, size) < 0) {
 		free(font);
 		vfs_file_finish(&file);
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 	}
 
 	vfs_file_finish(&file);
@@ -122,7 +123,7 @@ Font_render(duk_context *ctx)
 
 	if (font_render(self(ctx), tex, text, color) < 0) {
 		free(tex);
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 	}
 
 	js_texture_push(ctx, tex);
@@ -137,7 +138,7 @@ Font_query(duk_context *ctx)
 	unsigned int w, h;
 
 	if (font_query(self(ctx), text, &w, &h) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	duk_push_object(ctx);
 	duk_push_uint(ctx, w);

@@ -39,7 +39,7 @@ self(duk_context *ctx)
 	duk_pop_2(ctx);
 
 	if (!snd)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Sound object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Sound object"), NULL;
 
 	return snd;
 }
@@ -52,14 +52,15 @@ Sound_constructor(duk_context *ctx)
 	struct sound *snd;
 
 	if (vfs_open(js_core_global_vfs(ctx), &file, entry, "r") < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	snd = alloc_new0(sizeof (*snd));
 
 	if (sound_openvfs(snd, &file) < 0) {
 		free(snd);
 		vfs_file_finish(&file);
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 	}
 
 	vfs_file_finish(&file);
@@ -70,8 +71,8 @@ Sound_constructor(duk_context *ctx)
 	duk_pop(ctx);
 
 	return 0;
-	
-	
+
+
 }
 
 static duk_ret_t
@@ -97,8 +98,8 @@ Sound_proto_play(duk_context *ctx)
 	const unsigned int fadein = duk_get_uint_default(ctx, 1, 0);
 
 	if (sound_play(self(ctx), channel, fadein) < 0)
-		duk_error(ctx, DUK_ERR_ERROR, "%s", error());
-	
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+
 	return 0;
 }
 
