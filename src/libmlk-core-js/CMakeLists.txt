@@ -40,6 +40,8 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-panic.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-panic.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-trace.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-trace.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-sound.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-sound.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-sprite.c

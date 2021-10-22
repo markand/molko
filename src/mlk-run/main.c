@@ -40,6 +40,7 @@
 #include <core/js-sprite.h>
 #include <core/js-state.h>
 #include <core/js-texture.h>
+#include <core/js-trace.h>
 #include <core/js-window.h>
 
 /* VFS loader to support zip and directories when loading game. */
@@ -75,6 +76,7 @@ core_bind(duk_context *ctx)
 	js_sprite_bind(ctx);
 	js_state_bind(ctx);
 	js_texture_bind(ctx);
+	js_trace_bind(ctx);
 	js_window_bind(ctx);
 }
 
