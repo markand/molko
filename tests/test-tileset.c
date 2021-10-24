@@ -29,7 +29,7 @@ RX_TEST_CASE(test, basics_sample)
 	struct tileset_file loader = {0};
 	struct tileset tileset;
 
-	RX_REQUIRE(tileset_file_open(&loader, &tileset, DIRECTORY "sample-tileset.tileset") == 0);
+	RX_REQUIRE(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/sample-tileset.tileset") == 0);
 	RX_UINT_REQUIRE_EQUAL(tileset.sprite->cellw, 64U);
 	RX_UINT_REQUIRE_EQUAL(tileset.sprite->cellh, 32U);
 
@@ -67,7 +67,7 @@ RX_TEST_CASE(test, error_tilewidth)
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
 
-	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "error-tilewidth.tileset"), -1);
+	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tilewidth.tileset"), -1);
 }
 
 RX_TEST_CASE(test, error_tileheight)
@@ -75,7 +75,7 @@ RX_TEST_CASE(test, error_tileheight)
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
 
-	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "error-tileheight.tileset"), -1);
+	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tileheight.tileset"), -1);
 }
 
 RX_TEST_CASE(test, error_image)
@@ -83,13 +83,13 @@ RX_TEST_CASE(test, error_image)
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
 
-	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "error-image.tileset"), -1);
+	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-image.tileset"), -1);
 }
 
 int
 main(int argc, char **argv)
 {
-	if (core_init("fr.malikania", "test") < 0 && window_open("test-tileset", 100, 100) < 0)
+	if (core_init("fr.malikania", "test") < 0 || window_open("test-tileset", 100, 100) < 0)
 		return 1;
 
 	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
