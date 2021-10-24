@@ -22,6 +22,7 @@
 #include <core/action.h>
 #include <core/core.h>
 #include <core/drawable.h>
+#include <core/drawable-stack.h>
 
 #include <ui/frame.h>
 #include <ui/gridmenu.h>

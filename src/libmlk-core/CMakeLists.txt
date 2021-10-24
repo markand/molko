@@ -36,6 +36,8 @@ set(
 	${libmlk-core_SOURCE_DIR}/core/core_p.h
 	${libmlk-core_SOURCE_DIR}/core/drawable.c
 	${libmlk-core_SOURCE_DIR}/core/drawable.h
+	${libmlk-core_SOURCE_DIR}/core/drawable-stack.c
+	${libmlk-core_SOURCE_DIR}/core/drawable-stack.h
 	${libmlk-core_SOURCE_DIR}/core/error.c
 	${libmlk-core_SOURCE_DIR}/core/error.h
 	${libmlk-core_SOURCE_DIR}/core/event.c

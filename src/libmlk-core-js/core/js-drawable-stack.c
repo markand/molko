@@ -20,6 +20,7 @@
 
 #include <core/alloc.h>
 #include <core/drawable.h>
+#include <core/drawable-stack.h>
 
 #include "js-drawable-stack.h"
 #include "js-drawable.h"

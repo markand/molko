@@ -25,6 +25,7 @@
 #include <core/event.h>
 #include <core/game.h>
 #include <core/drawable.h>
+#include <core/drawable-stack.h>
 #include <core/key.h>
 #include <core/painter.h>
 #include <core/panic.h>

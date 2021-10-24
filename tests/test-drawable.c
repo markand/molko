@@ -19,6 +19,7 @@
 #include <rexo.h>
 
 #include <core/drawable.h>
+#include <core/drawable-stack.h>
 #include <core/event.h>
 
 struct invokes {

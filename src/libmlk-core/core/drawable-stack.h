@@ -1,5 +1,5 @@
 /*
- * drawable.h -- automatic drawable objects
+ * drawable-stack.h -- convenient stack of drawables
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,35 +16,37 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_DRAWABLE_H
-#define MLK_CORE_DRAWABLE_H
+#ifndef MLK_CORE_DRAWABLE_STACK_H
+#define MLK_CORE_DRAWABLE_STACK_H
 
 #include "core.h"
 
-struct drawable {
-	void *data;
-	int x;
-	int y;
-	int (*update)(struct drawable *, unsigned int);
-	void (*draw)(struct drawable *);
-	void (*end)(struct drawable *);
-	void (*finish)(struct drawable *);
+#define DRAWABLE_STACK_MAX (128)
+
+struct drawable_stack {
+	struct drawable *objects[DRAWABLE_STACK_MAX];
 };
 
 CORE_BEGIN_DECLS
 
+void
+drawable_stack_init(struct drawable_stack *);
+
 int
-drawable_update(struct drawable *, unsigned int);
+drawable_stack_add(struct drawable_stack *, struct drawable *);
+
+int
+drawable_stack_update(struct drawable_stack *, unsigned int);
 
 void
-drawable_draw(struct drawable *);
+drawable_stack_draw(struct drawable_stack *);
+
+int
+drawable_stack_completed(const struct drawable_stack *);
 
 void
-drawable_end(struct drawable *);
-
-void
-drawable_finish(struct drawable *);
+drawable_stack_finish(struct drawable_stack *);
 
 CORE_END_DECLS
 
-#endif /* !MLK_CORE_DRAWABLE_H */
+#endif /* !MLK_CORE_DRAWABLE_STACK_H */

@@ -17,17 +17,8 @@
  */
 
 #include <assert.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
 
-#include "animation.h"
 #include "drawable.h"
-#include "util.h"
-#include "sprite.h"
-
-#define DRAWABLE_FOREACH(st, iter) \
-	for (size_t i = 0; i < DRAWABLE_STACK_MAX && ((iter) = (st)->objects[i], 1); ++i)
 
 int
 drawable_update(struct drawable *dw, unsigned int ticks)
@@ -61,93 +52,4 @@ drawable_finish(struct drawable *dw)
 
 	if (dw->finish)
 		dw->finish(dw);
-}
-
-void
-drawable_stack_init(struct drawable_stack *st)
-{
-	assert(st);
-
-	memset(st, 0, sizeof (*st));
-}
-
-int
-drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
-{
-	assert(st);
-	assert(dw);
-
-	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
-		if (!st->objects[i]) {
-			st->objects[i] = dw;
-			return 0;
-		}
-	}
-
-	return -1;
-}
-
-int
-drawable_stack_update(struct drawable_stack *st, unsigned int ticks)
-{
-	assert(st);
-
-	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
-		struct drawable *dw = st->objects[i];
-
-		if (dw && drawable_update(dw, ticks)) {
-			drawable_end(dw);
-			drawable_finish(dw);
-			st->objects[i] = NULL;
-		}
-	}
-
-	/*
-	 * We process the array again in case a drawable added a new drawable
-	 * within the update function.
-	 */
-	return drawable_stack_completed(st);
-}
-
-void
-drawable_stack_draw(struct drawable_stack *st)
-{
-	assert(st);
-
-	struct drawable *dw;
-
-	DRAWABLE_FOREACH(st, dw)
-		if (dw)
-			drawable_draw(dw);
-}
-
-int
-drawable_stack_completed(const struct drawable_stack *st)
-{
-	assert(st);
-
-	struct drawable *dw;
-
-	DRAWABLE_FOREACH(st, dw)
-		if (dw)
-			return 0;
-
-	return 1;
-}
-
-void
-drawable_stack_finish(struct drawable_stack *st)
-{
-	assert(st);
-
-	struct drawable *dw;
-
-	DRAWABLE_FOREACH(st, dw) {
-		if (dw) {
-			drawable_end(dw);
-			drawable_finish(dw);
-		}
-	}
-
-	memset(st, 0, sizeof (*st));
 }
