@@ -33,9 +33,10 @@
 #include <ui/label.h>
 #include <ui/ui.h>
 
+#include <assets/sprites/numbers.h>
+
 #define W       1280
 #define H       720
-#define PATH(r) util_pathf("%s/%s", sys_dir(SYS_DIR_DATA), r)
 
 static struct label label = {
 	.text = "Keys: <Space> start or reset the animation.",
@@ -56,7 +57,7 @@ init(void)
 		panic();
 	if (window_open("Example - Animation", W, H) < 0)
 		panic();
-	if (image_open(&numbers, PATH("sprites/numbers.png")) < 0)
+	if (image_openmem(&numbers, assets_sprites_numbers, sizeof (assets_sprites_numbers)) < 0)
 		panic();
 }
 

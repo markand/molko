@@ -23,11 +23,18 @@ set(
 	${example-audio_SOURCE_DIR}/main.c
 )
 
+set(
+	ASSETS
+	${example-audio_SOURCE_DIR}/assets/music/vabsounds-romance.ogg
+	${example-audio_SOURCE_DIR}/assets/sounds/fire.wav
+)
+
 mlk_executable(
 	NAME example-audio
 	FOLDER examples
 	LIBRARIES libmlk-ui
-	SOURCES ${SOURCES}
+	SOURCES ${ASSETS} ${SOURCES}
+	ASSETS ${ASSETS}
 )
 
-source_group("" FILES ${SOURCES})
+source_group(TREE ${example-audio_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})

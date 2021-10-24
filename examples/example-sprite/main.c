@@ -37,9 +37,10 @@
 #include <ui/label.h>
 #include <ui/ui.h>
 
+#include <assets/sprites/people.h>
+
 #define W       1280
 #define H       720
-#define PATH(r) util_pathf("%s/%s", sys_dir(SYS_DIR_DATA), r)
 #define HEADER "Keys: <Left>/<Right> and <Up/Down> to select a column/row. Current: %u, %u (total %u/%u)"
 
 static char msg[512];
@@ -67,7 +68,7 @@ init(void)
 		panic();
 	if (window_open("Example - Sprite", W, H) < 0)
 		panic();
-	if (image_open(&texture, PATH("sprites/people.png")) < 0)
+	if (image_openmem(&texture, assets_sprites_people, sizeof (assets_sprites_people)) < 0)
 		panic();
 
 	sprite_init(&sprite, &texture, 48, 48);

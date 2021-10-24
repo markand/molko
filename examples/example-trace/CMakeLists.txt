@@ -21,13 +21,14 @@ project(example-trace)
 set(
 	SOURCES
 	${example-trace_SOURCE_DIR}/main.c
+	${example-trace_SOURCE_DIR}/trace_hud.c
 )
 
 mlk_executable(
 	NAME example-trace
 	FOLDER examples
-	LIBRARIES libmlk-adventure
+	LIBRARIES libmlk-rpg
 	SOURCES ${SOURCES}
 )
 
-source_group("" FILES ${SOURCES})
+source_group(TREE ${example-trace_SOURCE_DIR} FILES ${SOURCES})

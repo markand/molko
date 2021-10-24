@@ -23,11 +23,17 @@ set(
 	${example-drawable_SOURCE_DIR}/main.c
 )
 
+set(
+	ASSETS
+	${example-drawable_SOURCE_DIR}/assets/sprites/explosion.png
+)
+
 mlk_executable(
 	NAME example-drawable
 	FOLDER examples
 	LIBRARIES libmlk-ui
-	SOURCES ${SOURCES}
+	SOURCES ${ASSETS} ${SOURCES}
+	ASSETS ${ASSETS}
 )
 
-source_group("" FILES ${SOURCES})
+source_group(TREE ${example-drawable_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})

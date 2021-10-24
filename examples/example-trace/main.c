@@ -30,7 +30,7 @@
 #include <ui/theme.h>
 #include <ui/ui.h>
 
-#include <adventure/trace_hud.h>
+#include "trace_hud.h"
 
 #define W 1280
 #define H 720

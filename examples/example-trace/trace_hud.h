@@ -1,5 +1,5 @@
 /*
- * fire-minor.h -- minor fire
+ * trace_hud.h -- on screen hud
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,9 +16,34 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_FIRE_MINOR_H
-#define MOLKO_ADVENTURE_FIRE_MINOR_H
+#ifndef EXAMPLES_TRACE_TRACE_HUD_H
+#define EXAMPLES_TRACE_TRACE_HUD_H
 
-extern const struct spell spell_fire_minor;
+#define TRACE_HUD_TIMEOUT_DEFAULT (3000)
 
-#endif /* !MOLKO_ADVENTURE_FIRE_MINOR_H */
+struct action;
+struct theme;
+
+struct trace_hud {
+	struct theme *theme;
+	unsigned int timeout;
+};
+
+extern struct trace_hud trace_hud;
+
+void
+trace_hud_handler(const char *);
+
+void
+trace_hud_update(unsigned int);
+
+void
+trace_hud_draw(void);
+
+void
+trace_hud_clear(void);
+
+struct action *
+trace_hud_action(void);
+
+#endif /* !EXAMPLES_TRACE_TRACE_HUD_H */

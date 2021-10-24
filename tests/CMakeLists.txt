@@ -40,7 +40,7 @@ set(
 foreach (t ${TESTS})
 	add_executable(test-${t} ${tests_SOURCE_DIR}/test-${t}.c)
 	add_test(NAME test-${t} COMMAND test-${t})
-	target_link_libraries(test-${t} libmlk-adventure libmlk-rexo)
+	target_link_libraries(test-${t} libmlk-rpg libmlk-rexo)
 	target_compile_definitions(test-${t} PRIVATE DIRECTORY="${tests_SOURCE_DIR}/assets")
 	set_target_properties(test-${t} PROPERTIES FOLDER tests)
 	source_group("" FILES test-${t}.c)

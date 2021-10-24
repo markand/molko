@@ -30,4 +30,4 @@ mlk_executable(
 	SOURCES ${SOURCES}
 )
 
-source_group("" FILES ${SOURCES})
+source_group(TREE ${example-debug_SOURCE_DIR} FILES ${SOURCES})

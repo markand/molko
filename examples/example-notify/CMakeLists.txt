@@ -33,8 +33,7 @@ mlk_executable(
 	FOLDER examples
 	LIBRARIES libmlk-rpg
 	ASSETS ${ASSETS}
-	SOURCES ${SOURCES}
-	INCLUDES PRIVATE ${example-notify_BINARY_DIR}
+	SOURCES ${ASSETS} ${SOURCES}
 )
 
-source_group("" FILES ${SOURCES} ${ASSETS})
+source_group(TREE ${example-notify_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})

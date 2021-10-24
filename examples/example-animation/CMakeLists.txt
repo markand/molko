@@ -23,11 +23,17 @@ set(
 	${example-animation_SOURCE_DIR}/main.c
 )
 
+set(
+	ASSETS
+	${example-animation_SOURCE_DIR}/assets/sprites/numbers.png
+)
+
 mlk_executable(
 	NAME example-animation
 	FOLDER examples
 	LIBRARIES libmlk-ui
-	SOURCES ${SOURCES}
+	SOURCES ${ASSETS} ${SOURCES}
+	ASSETS ${ASSETS}
 )
 
-source_group("" FILES ${SOURCES})
+source_group(TREE ${example-animation_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})

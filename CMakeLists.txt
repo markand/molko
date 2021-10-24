@@ -102,15 +102,11 @@ add_subdirectory(src/libmlk-port)
 add_subdirectory(src/libmlk-core)
 add_subdirectory(src/libmlk-ui)
 add_subdirectory(src/libmlk-rpg)
-add_subdirectory(src/libmlk-adventure)
-add_subdirectory(src/libmlk-data)
 
 if (MLK_WITH_JS)
 	add_subdirectory(src/libmlk-core-js)
 	add_subdirectory(src/mlk-run)
 endif ()
-
-add_subdirectory(src/mlk-adventure)
 
 if (MLK_WITH_TESTS)
 	enable_testing()
@@ -120,4 +116,3 @@ endif ()
 if (MLK_WITH_EXAMPLES)
 	add_subdirectory(examples)
 endif ()
-

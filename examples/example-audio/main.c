@@ -32,9 +32,11 @@
 #include <ui/theme.h>
 #include <ui/ui.h>
 
+#include <assets/music/vabsounds-romance.h>
+#include <assets/sounds/fire.h>
+
 #define W       1280
 #define H       720
-#define PATH(r) util_pathf("%s/%s", sys_dir(SYS_DIR_DATA), r)
 
 static struct music music;
 static struct sound sound;
@@ -60,8 +62,8 @@ init(void)
 		panic();
 	if (window_open("Example - Audio", W, H) < 0)
 		panic();
-	if (music_open(&music, PATH("music/vabsounds-romance.ogg")) < 0 ||
-	    sound_open(&sound, PATH("sounds/fire.wav")) < 0)
+	if (music_openmem(&music, assets_music_vabsounds_romance, sizeof (assets_music_vabsounds_romance)) < 0 ||
+	    sound_openmem(&sound, assets_sounds_fire, sizeof (assets_sounds_fire)) < 0)
 		panic();
 }
 

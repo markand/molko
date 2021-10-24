@@ -23,11 +23,18 @@ set(
 	${example-action_SOURCE_DIR}/main.c
 )
 
+set(
+	ASSETS
+	${example-action_SOURCE_DIR}/assets/sprites/chest.png
+	${example-action_SOURCE_DIR}/assets/sprites/people.png
+)
+
 mlk_executable(
 	NAME example-action
 	FOLDER examples
 	LIBRARIES libmlk-rpg
-	SOURCES ${SOURCES}
+	SOURCES ${ASSETS} ${SOURCES}
+	ASSETS ${ASSETS}
 )
 
-source_group("" FILES ${SOURCES})
+source_group(TREE ${example-action_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})
