@@ -27,10 +27,6 @@
 #if defined(_WIN32)
 #       include <shlwapi.h>
 #       include <windows.h>
-
-#       if !defined(S_ISDIR)
-#               define S_ISDIR(m) (m & _S_IFDIR)
-#       endif
 #else
 #       include <errno.h>
 #       include <string.h>
@@ -98,12 +94,21 @@ system_directory(const char *whichdir)
 	 * instead unless <dir> is already absolute.
 	 */
 
-	/* Component (e.g. MLK_BINDIR is set to /bin), return immediately. */
+	/*
+	 * If requested directory is absolute return immediately.
+	 *
+	 * e.g. whichdir == /usr/share  -> return immediately
+	 *      whichdir == bin         -> will be computed
+	 */
 	if (absolute(whichdir))
 		return whichdir;
 
-	/* Determine base executable path. */
-	if (!(base = SDL_GetBasePath()))
+	/*
+	 * If MLK_BINDIR is absolute then we're unable to compute whichdir which
+	 * now is mandatory relative. In that case return its whole path to the
+	 * prefix.
+	 */
+	if (absolute(MLK_BINDIR) || !(base = SDL_GetBasePath()))
 		snprintf(ret, sizeof (ret), "%s/%s", MLK_PREFIX, whichdir);
 	else {
 		/*
@@ -126,6 +131,7 @@ system_directory(const char *whichdir)
 		 *   from: /usr/local/bin
 		 *   to:   /usr/local
 		 */
+		printf("base=%s\n", base);
 		port_strlcpy(path, base, sizeof (path));
 		SDL_free(base);
 
@@ -172,46 +178,6 @@ mkpath(const char *path)
 	return 0;
 }
 
-static inline void
-set_bindir(void)
-{
-	port_strlcpy(paths.bindir, system_directory(MLK_BINDIR), sizeof (paths.bindir));
-}
-
-static void
-set_datadir(void)
-{
-	char *base, test[PATH_MAX];
-	struct stat st;
-
-	/*
-	 * For convenient purposes, if we're running executables directly from
-	 * source tree, check for libmlk-data presence and use it. Otherwise
-	 * use standard system directory with the project named concatenated.
-	 */
-	if ((base = SDL_GetBasePath())) {
-		snprintf(test, sizeof (test), "%ssrc/libmlk-data", base);
-
-		if (stat(test, &st) == 0 && S_ISDIR(st.st_mode)) {
-			port_strlcpy(paths.datadir, test, sizeof (paths.datadir));
-			normalize(paths.datadir);
-		}
-
-		SDL_free(base);
-	}
-
-	/* Not found, use standard. */
-	if (!paths.datadir[0])
-		snprintf(paths.datadir, sizeof (paths.datadir), "%s/%s",
-		    system_directory(MLK_DATADIR), info.name);
-}
-
-static inline void
-set_localedir(void)
-{
-	port_strlcpy(paths.localedir, system_directory(MLK_BINDIR), sizeof (paths.localedir));
-}
-
 int
 sys_init(const char *organization, const char *name)
 {
@@ -220,9 +186,9 @@ sys_init(const char *organization, const char *name)
 	setbuf(stderr, NULL);
 	setbuf(stdout, NULL);
 #endif
-	set_bindir();
-	set_datadir();
-	set_localedir();
+	port_strlcpy(paths.bindir, system_directory(MLK_BINDIR), sizeof (paths.bindir));
+	port_strlcpy(paths.datadir, system_directory(MLK_DATADIR), sizeof (paths.datadir));
+	port_strlcpy(paths.localedir, system_directory(MLK_LOCALEDIR), sizeof (paths.localedir));
 
 	port_strlcpy(info.organization, organization, sizeof (info.organization));
 	port_strlcpy(info.name, name, sizeof (info.name));
