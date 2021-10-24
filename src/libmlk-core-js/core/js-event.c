@@ -291,6 +291,6 @@ js_event_push(duk_context *ctx, const union event *ev)
 {
 	duk_push_object(ctx);
 	duk_push_int(ctx, ev->type);
-	duk_put_prop_string(ctx, -2, "type");
+	duk_put_prop_string(ctx, -2, "Type");
 	push[ev->type](ctx, ev);
 }
