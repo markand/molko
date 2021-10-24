@@ -30,6 +30,8 @@
 #include <core/js-clock.h>
 #include <core/js-color.h>
 #include <core/js-core.h>
+#include <core/js-drawable.h>
+#include <core/js-drawable-stack.h>
 #include <core/js-event.h>
 #include <core/js-font.h>
 #include <core/js-game.h>
@@ -66,6 +68,8 @@ core_bind(duk_context *ctx)
 	js_animation_bind(ctx);
 	js_clock_bind(ctx);
 	js_color_bind(ctx);
+	js_drawable_bind(ctx);
+	js_drawable_stack_bind(ctx);
 	js_event_bind(ctx);
 	js_font_bind(ctx);
 	js_game_bind(ctx);

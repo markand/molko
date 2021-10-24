@@ -28,6 +28,10 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-color.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-core.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-core.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-drawable.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-drawable.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-drawable-stack.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-drawable-stack.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-event.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-event.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-font.c

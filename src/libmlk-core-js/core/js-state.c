@@ -26,11 +26,10 @@
 #include "js-state.h"
 
 #define SIGNATURE DUK_HIDDEN_SYMBOL("Mlk.State")
-#define SELF DUK_HIDDEN_SYMBOL("Mlk.State.self")
 
 struct self {
 	duk_context *ctx;
-	void *selfptr;
+	void *ptr;
 	struct state state;
 	unsigned int refc;
 };
@@ -40,7 +39,10 @@ callable(struct self *s, const char *prop, duk_context **ctx)
 {
 	int callable;
 
-	duk_push_heapptr(s->ctx, s->selfptr);
+	if (!s->ptr)
+		return 0;
+
+	duk_push_heapptr(s->ctx, s->ptr);
 	duk_get_prop_string(s->ctx, -1, prop);
 	duk_remove(s->ctx, -2);
 
@@ -140,28 +142,8 @@ finish(struct state *state)
 {
 	struct self *self = state->data;
 
-	if (!--self->refc) {
-		duk_push_heapptr(self->ctx, self->selfptr);
-		duk_del_prop_string(self->ctx, -1, SIGNATURE);
-		duk_pop(self->ctx);
+	if (!--self->refc)
 		free(self);
-	}
-}
-
-static inline struct self *
-self(duk_context *ctx)
-{
-	struct self *data = NULL;
-
-	duk_push_this(ctx);
-	duk_get_prop_string(ctx, -1, SIGNATURE);
-	data = duk_to_pointer(ctx, -1);
-	duk_pop_2(ctx);
-
-	if (!data)
-		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a State object"), NULL;
-
-	return data;
 }
 
 static duk_ret_t
@@ -183,9 +165,7 @@ State_constructor(duk_context *ctx)
 	self->state.finish = finish;
 
 	duk_push_this(ctx);
-	self->selfptr = duk_get_heapptr(ctx, -1);
-	duk_dup(ctx, -1);
-	duk_put_prop_string(ctx, -2, SELF);
+	self->ptr = duk_get_heapptr(ctx, -1);
 	duk_push_pointer(ctx, self);
 	duk_put_prop_string(ctx, -2, SIGNATURE);
 	duk_pop(ctx);
@@ -200,8 +180,10 @@ State_destructor(duk_context *ctx)
 
 	duk_get_prop_string(ctx, 0, SIGNATURE);
 
-	if ((self = duk_to_pointer(ctx, -1)))
+	if ((self = duk_to_pointer(ctx, -1))) {
+		self->ptr = NULL;
 		state_finish(&self->state);
+	}
 
 	duk_pop(ctx);
 
