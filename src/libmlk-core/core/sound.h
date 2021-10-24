@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_SOUND_H
-#define MOLKO_CORE_SOUND_H
+#ifndef MLK_CORE_SOUND_H
+#define MLK_CORE_SOUND_H
 
 #include <stddef.h>
 
@@ -63,4 +63,4 @@ sound_finish(struct sound *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_SOUND_H */
+#endif /* !MLK_CORE_SOUND_H */

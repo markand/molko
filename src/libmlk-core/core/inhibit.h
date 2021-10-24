@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_INHIBIT_H
-#define MOLKO_CORE_INHIBIT_H
+#ifndef MLK_CORE_INHIBIT_H
+#define MLK_CORE_INHIBIT_H
 
 enum inhibit {
 	INHIBIT_NONE,
@@ -26,4 +26,4 @@ enum inhibit {
 	INHIBIT_STATE_DRAW         = (1 << 2)
 };
 
-#endif /* !MOLKO_CORE_INHIBIT_H */
+#endif /* !MLK_CORE_INHIBIT_H */

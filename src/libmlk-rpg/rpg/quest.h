@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_QUEST_H
-#define MOLKO_RPG_QUEST_H
+#ifndef MLK_RPG_QUEST_H
+#define MLK_RPG_QUEST_H
 
 #include <stddef.h>
 
@@ -48,4 +48,4 @@ quest_load(struct quest *, struct save *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_QUEST_H */
+#endif /* !MLK_RPG_QUEST_H */

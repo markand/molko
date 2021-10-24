@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_KEY_H
-#define MOLKO_CORE_KEY_H
+#ifndef MLK_CORE_KEY_H
+#define MLK_CORE_KEY_H
 
 enum key {
 	KEY_UNKNOWN,
@@ -173,4 +173,4 @@ enum keymod {
 	KEYMOD_RSUPER   = 1 << 7 
 };
 
-#endif /* !MOLKO_CORE_KEY_H */
+#endif /* !MLK_CORE_KEY_H */

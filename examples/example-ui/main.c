@@ -129,7 +129,7 @@ static struct {
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "ui") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "example-ui") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - UI", W, H) < 0)
 		panic();

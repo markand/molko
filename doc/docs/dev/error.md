@@ -5,7 +5,7 @@ How error handling is used within the API and the user code.
 ## Synopsis
 
 Error handling is always a complicated task in the software development. In
-Molko's Adventure there is three kinds of errors:
+Molko's Engine there is three kinds of errors:
 
 1. Programming error.
 2. Recoverable error at runtime.
@@ -22,7 +22,7 @@ if this is undesired, you can replace both handlers to use your custom logs.
 ### Assertions
 
 One of the easiest errors to detect are about programming errors. In the
-Molko's Adventure API they are usually detected at runtime when you use a
+Molko's Engine API they are usually detected at runtime when you use a
 function with preconditions unmet. In that case standard C `assert` is used.
 
 For example, it happens when you:
@@ -67,7 +67,7 @@ the panic_handler. The default implementation prints an error and exit with a
 code of 1. User may pass a custom function but should quit the game because the
 API does not take care of deallocating data before calling panic.
 
-## Error handling in Molko's Adventure API
+## Error handling in Molko's Engine API
 
 The following table shows what is used and when.
 

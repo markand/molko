@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_SCRIPT_H
-#define MOLKO_CORE_SCRIPT_H
+#ifndef MLK_CORE_SCRIPT_H
+#define MLK_CORE_SCRIPT_H
 
 #include <stddef.h>
 
@@ -63,4 +63,4 @@ script_action(struct script*s, struct action *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_SCRIPT_H */
+#endif /* !MLK_CORE_SCRIPT_H */

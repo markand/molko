@@ -58,7 +58,7 @@ static struct label label_sound = {
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "mlk-adventure") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "example-audio") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - Audio", W, H) < 0)
 		panic();

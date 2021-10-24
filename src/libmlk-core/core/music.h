@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_MUSIC_H
-#define MOLKO_CORE_MUSIC_H
+#ifndef MLK_CORE_MUSIC_H
+#define MLK_CORE_MUSIC_H
 
 #include <stddef.h>
 
@@ -68,4 +68,4 @@ music_finish(struct music *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_MUSIC_H */
+#endif /* !MLK_CORE_MUSIC_H */

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_GAME_H
-#define MOLKO_CORE_GAME_H
+#ifndef MLK_CORE_GAME_H
+#define MLK_CORE_GAME_H
 
 #include "core.h"
 #include "inhibit.h"
@@ -64,4 +64,4 @@ game_quit(void);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_GAME_H */
+#endif /* !MLK_CORE_GAME_H */

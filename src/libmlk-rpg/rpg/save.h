@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_SAVE_H
-#define MOLKO_RPG_SAVE_H
+#ifndef MLK_RPG_SAVE_H
+#define MLK_RPG_SAVE_H
 
 #include <time.h>
 
@@ -84,4 +84,4 @@ save_tx_commit(struct save *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_SAVE_H */
+#endif /* !MLK_RPG_SAVE_H */

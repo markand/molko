@@ -1,5 +1,5 @@
 #
-# mkdocs.yml.txt -- documentation for Molko's Adventure
+# mkdocs.yml.txt -- documentation for Molko's Engine
 #
 # Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
 #
@@ -16,7 +16,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-site_name: Molko's Adventure
+site_name: Molko's Engine
 theme: material
 markdown_extensions:
   - admonition
@@ -27,7 +27,6 @@ markdown_extensions:
 nav:
   - Home: index.md
   - About: about.md
-  - Installation: install.md
   - Specifications:
     - map: specs/map.md
     - tileset: specs/tileset.md

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_STATE_H
-#define MOLKO_CORE_STATE_H
+#ifndef MLK_CORE_STATE_H
+#define MLK_CORE_STATE_H
 
 #include "core.h"
 
@@ -63,4 +63,4 @@ state_finish(struct state *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_STATE_H */
+#endif /* !MLK_CORE_STATE_H */

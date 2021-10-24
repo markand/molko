@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_UI_FRAME_H
-#define MOLKO_UI_FRAME_H
+#ifndef MLK_UI_FRAME_H
+#define MLK_UI_FRAME_H
 
 #include <core/core.h>
 
@@ -51,4 +51,4 @@ frame_action(struct frame *, struct action *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_UI_FRAME_H */
+#endif /* !MLK_UI_FRAME_H */

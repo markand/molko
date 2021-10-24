@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_PORT_H
-#define MOLKO_PORT_H
+#ifndef MLK_PORT_H
+#define MLK_PORT_H
 
 #include <limits.h>
 #include <stdio.h>
@@ -60,4 +60,4 @@ extern char *port_optarg;
 int
 port_getopt(int, char **, const char *);
 
-#endif /* !MOLKO_PORT_H */
+#endif /* !MLK_PORT_H */

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_ZFILE_H
-#define MOLKO_CORE_ZFILE_H
+#ifndef MLK_CORE_ZFILE_H
+#define MLK_CORE_ZFILE_H
 
 #include <stdio.h>
 
@@ -38,4 +38,4 @@ zfile_close(struct zfile *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_ZFILE_H */
+#endif /* !MLK_CORE_ZFILE_H */

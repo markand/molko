@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_SPRITE_H
-#define MOLKO_CORE_SPRITE_H
+#ifndef MLK_CORE_SPRITE_H
+#define MLK_CORE_SPRITE_H
 
 #include "core.h"
 
@@ -53,4 +53,4 @@ sprite_scale(const struct sprite *,
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_SPRITE_H */
+#endif /* !MLK_CORE_SPRITE_H */

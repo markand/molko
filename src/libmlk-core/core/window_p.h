@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_WINDOW_P_H
-#define MOLKO_CORE_WINDOW_P_H
+#ifndef MLK_CORE_WINDOW_P_H
+#define MLK_CORE_WINDOW_P_H
 
 #include <SDL.h>
 
@@ -30,4 +30,4 @@ struct window_handle {
 #define WINDOW()        (((struct window_handle *)window.handle)->win)
 #define RENDERER()      (((struct window_handle *)window.handle)->renderer)
 
-#endif /* !MOLKO_CORE_WINDOW_P_H */
+#endif /* !MLK_CORE_WINDOW_P_H */

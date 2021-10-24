@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_UI_BUTTON_H
-#define MOLKO_UI_BUTTON_H
+#ifndef MLK_UI_BUTTON_H
+#define MLK_UI_BUTTON_H
 
 #include <core/core.h>
 
@@ -61,4 +61,4 @@ button_action(struct button *, struct action *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_UI_BUTTON_H */
+#endif /* !MLK_UI_BUTTON_H */

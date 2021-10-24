@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_MATHS_H
-#define MOLKO_CORE_MATHS_H
+#ifndef MLK_CORE_MATHS_H
+#define MLK_CORE_MATHS_H
 
 #include "core.h"
 
@@ -31,4 +31,4 @@ maths_scale(float, float, float, float, float);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_MATHS_H */
+#endif /* !MLK_CORE_MATHS_H */

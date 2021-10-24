@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_BATTLE_INDICATOR_H
-#define MOLKO_RPG_BATTLE_INDICATOR_H
+#ifndef MLK_RPG_BATTLE_INDICATOR_H
+#define MLK_RPG_BATTLE_INDICATOR_H
 
 #include <core/core.h>
 #include <core/texture.h>
@@ -59,4 +59,4 @@ battle_indicator_finish(struct battle_indicator *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_BATTLE_INDICATOR_H */
+#endif /* !MLK_RPG_BATTLE_INDICATOR_H */

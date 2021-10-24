@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_PAINTER_H
-#define MOLKO_CORE_PAINTER_H
+#ifndef MLK_CORE_PAINTER_H
+#define MLK_CORE_PAINTER_H
 
 #include "core.h"
 
@@ -68,4 +68,4 @@ do {                                                                    \
         painter_set_target(__current_texture__);                        \
 } while (0)
 
-#endif /* !MOLKO_CORE_PAINTER_H */
+#endif /* !MLK_CORE_PAINTER_H */

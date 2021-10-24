@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_ADVENTURE_BATTLE_MESSAGE_H
-#define MOLKO_ADVENTURE_BATTLE_MESSAGE_H
+#ifndef MLK_RPG_BATTLE_MESSAGE_H
+#define MLK_RPG_BATTLE_MESSAGE_H
 
 #include <core/core.h>
 
@@ -39,4 +39,4 @@ battle_message_draw(const struct battle_message *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_ADVENTURE_BATTLE_MESSAGE_H */
+#endif /* !MLK_RPG_BATTLE_MESSAGE_H */

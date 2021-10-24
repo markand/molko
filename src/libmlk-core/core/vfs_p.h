@@ -16,12 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_VFS_P_H
-#define MOLKO_CORE_VFS_P_H
+#ifndef MLK_CORE_VFS_P_H
+#define MLK_CORE_VFS_P_H
 
 #include <SDL.h>
 
 SDL_RWops *
 vfs_to_rw(struct vfs_file *);
 
-#endif /* !MOLKO_CORE_VFS_P_H */
+#endif /* !MLK_CORE_VFS_P_H */

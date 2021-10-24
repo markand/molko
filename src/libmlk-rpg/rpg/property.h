@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_PROPERTY_H
-#define MOLKO_RPG_PROPERTY_H
+#ifndef MLK_RPG_PROPERTY_H
+#define MLK_RPG_PROPERTY_H
 
 #include <core/core.h>
 
@@ -44,4 +44,4 @@ property_remove(struct property *, struct save *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_PROPERTY_H */
+#endif /* !MLK_RPG_PROPERTY_H */

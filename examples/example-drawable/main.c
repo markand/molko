@@ -71,7 +71,7 @@ struct explosion {
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "drawable") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "example-drawable") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - Drawable", W, H) < 0)
 		panic();

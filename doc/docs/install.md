@@ -1,6 +1,6 @@
 # Installation
 
-This page will explain how to build Molko's Adventure and libraries.
+This page will explain how to build Molko's Emgi and libraries.
 
 ## Requirements
 

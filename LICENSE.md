@@ -1,5 +1,5 @@
-Molko's Adventure ISC LICENSE
-=============================
+Molko's Engine ISC LICENSE
+==========================
 
 Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
 
@@ -21,4 +21,4 @@ Third party code
 A few other licenses are used with third party code incorporated if the system
 lacks feature.
 
-Those licenses are listed in the libmlk-port/port/port.c file.
+Those licenses are listed in the src/libmlk-port directories.

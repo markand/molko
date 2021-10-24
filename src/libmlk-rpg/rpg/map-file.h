@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_MAP_FILE_H
-#define MOLKO_RPG_MAP_FILE_H
+#ifndef MLK_RPG_MAP_FILE_H
+#define MLK_RPG_MAP_FILE_H
 
 #include <core/alloc.h>
 #include <core/core.h>
@@ -50,4 +50,4 @@ map_file_finish(struct map_file *file);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_MAP_FILE_H */
+#endif /* !MLK_RPG_MAP_FILE_H */

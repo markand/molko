@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_SYS_H
-#define MOLKO_CORE_SYS_H
+#ifndef MLK_CORE_SYS_H
+#define MLK_CORE_SYS_H
 
 #include <stdarg.h>
 
@@ -46,4 +46,4 @@ sys_finish(void);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_SYS_H */
+#endif /* !MLK_CORE_SYS_H */

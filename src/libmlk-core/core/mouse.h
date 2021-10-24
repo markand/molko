@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_MOUSE_H
-#define MOLKO_CORE_MOUSE_H
+#ifndef MLK_CORE_MOUSE_H
+#define MLK_CORE_MOUSE_H
 
 enum mouse_button {
 	MOUSE_BUTTON_NONE       = 0,
@@ -26,4 +26,4 @@ enum mouse_button {
 	MOUSE_BUTTON_RIGHT      = (1 << 2)
 };
 
-#endif /* !MOLKO_CORE_MOUSE_H */
+#endif /* !MLK_CORE_MOUSE_H */

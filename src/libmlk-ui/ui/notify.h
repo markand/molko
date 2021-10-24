@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_UI_NOTIFY_H
-#define MOLKO_UI_NOTIFY_H
+#ifndef MLK_UI_NOTIFY_H
+#define MLK_UI_NOTIFY_H
 
 #include <stddef.h>
 
@@ -57,4 +57,4 @@ notify_set_system(const struct notify_system *);
 
 CORE_END_DECLS
 
-#endif /*! MOLKO_UI_NOTIFY_H */
+#endif /*! MLK_UI_NOTIFY_H */

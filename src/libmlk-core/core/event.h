@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_EVENT_H
-#define MOLKO_CORE_EVENT_H
+#ifndef MLK_CORE_EVENT_H
+#define MLK_CORE_EVENT_H
 
 #include "core.h"
 #include "key.h"
@@ -66,4 +66,4 @@ event_poll(union event *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_EVENT_H */
+#endif /* !MLK_CORE_EVENT_H */

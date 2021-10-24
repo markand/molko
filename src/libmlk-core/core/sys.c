@@ -103,12 +103,9 @@ system_directory(const char *whichdir)
 		return whichdir;
 
 	/* Determine base executable path. */
-	if (!(base = SDL_GetBasePath())) {
-		if (absolute(whichdir))
-			port_strlcpy(ret, whichdir, sizeof (ret));
-		else
-			snprintf(ret, sizeof (ret), "%s/%s", MLK_PREFIX, whichdir);
-	} else {
+	if (!(base = SDL_GetBasePath()))
+		snprintf(ret, sizeof (ret), "%s/%s", MLK_PREFIX, whichdir);
+	else {
 		/*
 		 * Decompose the path to the given special directory by
 		 * computing relative directory to it from where the
@@ -116,10 +113,10 @@ system_directory(const char *whichdir)
 		 *
 		 * Example:
 		 *
-		 *   PREFIX/bin/mlk
-		 *   PREFIX/share/mlk-adventure
+		 *   PREFIX/bin/<executable>
+		 *   PREFIX/share/mysupergame
 		 *
-		 * The path to the data is ../share/molko starting from
+		 * The path to the data is ../share/mysupergame starting from
 		 * the binary.
 		 *
 		 * Put the base path into the path and remove the value
@@ -132,6 +129,7 @@ system_directory(const char *whichdir)
 		port_strlcpy(path, base, sizeof (path));
 		SDL_free(base);
 
+		/* TODO: remove using negative offset. */
 		if ((binsect = strstr(path, MLK_BINDIR)))
 			*binsect = '\0';
 

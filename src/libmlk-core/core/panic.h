@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_PANIC_H
-#define MOLKO_CORE_PANIC_H
+#ifndef MLK_CORE_PANIC_H
+#define MLK_CORE_PANIC_H
 
 #include <stdarg.h>
 
@@ -38,4 +38,4 @@ panic(void);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_PANIC_H */
+#endif /* !MLK_CORE_PANIC_H */

@@ -1,5 +1,5 @@
 #
-# CMakeLists.txt -- CMake build system for Molko's Adventure
+# CMakeLists.txt -- CMake build system for Molko's Engine
 #
 # Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
 #
@@ -25,6 +25,7 @@ set(
 
 mlk_executable(
 	NAME mlk-run
+	INSTALL
 	SOURCES ${SOURCES}
 	LIBRARIES libmlk-core-js
 )

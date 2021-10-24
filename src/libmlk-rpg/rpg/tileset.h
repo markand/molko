@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_TILESET_H
-#define MOLKO_RPG_TILESET_H
+#ifndef MLK_RPG_TILESET_H
+#define MLK_RPG_TILESET_H
 
 #include <stddef.h>
 
@@ -62,4 +62,4 @@ tileset_draw(const struct tileset *, unsigned int, unsigned int, int, int);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_TILESET_H */
+#endif /* !MLK_RPG_TILESET_H */

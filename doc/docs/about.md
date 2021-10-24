@@ -1,6 +1,6 @@
 # About
 
-Molko's Adventure is a 2D solo RPG game and an API to build more RPG games. It
+Molko's Engine is a 2D solo RPG game and an API to build more RPG games. It
 is designed with the following characteristics:
 
 - Turn based battle. Similar to old RPG games battle operate on a dedicated game

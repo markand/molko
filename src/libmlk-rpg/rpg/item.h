@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_ITEM_H
-#define MOLKO_RPG_ITEM_H
+#ifndef MLK_RPG_ITEM_H
+#define MLK_RPG_ITEM_H
 
 #include <core/core.h>
 
@@ -51,4 +51,4 @@ item_exec_battle(const struct item *,
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_ITEM_H */
+#endif /* !MLK_RPG_ITEM_H */

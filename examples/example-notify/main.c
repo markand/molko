@@ -37,7 +37,6 @@
 
 #define W       1280
 #define H       720
-#define PATH(r) util_pathf("%s/%s", sys_dir(SYS_DIR_DATA), r)
 
 static struct label help = {
 	.text = "Keys: <Space> to generate a notification.",
@@ -50,7 +49,7 @@ static struct texture icon;
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "mlk-adventure") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "example-notify") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - Notify", W, H) < 0)
 		panic();

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_WINDOW_H
-#define MOLKO_CORE_WINDOW_H
+#ifndef MLK_CORE_WINDOW_H
+#define MLK_CORE_WINDOW_H
 
 #include "core.h"
 
@@ -54,4 +54,4 @@ window_finish(void);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_WINDOW_H */
+#endif /* !MLK_CORE_WINDOW_H */

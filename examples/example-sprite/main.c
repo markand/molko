@@ -64,7 +64,7 @@ changed(void)
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "mlk-adventure") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "example-sprite") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - Sprite", W, H) < 0)
 		panic();

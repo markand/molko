@@ -1,12 +1,12 @@
-Molko's Adventure INSTALL
-=========================
+Molko's Engine INSTALL
+======================
 
 Installation instructions.
 
 Requirements
 ------------
 
-- C11 compliant compiler.
+- C99 compliant compiler.
 - [CMake][], CMake build system.
 - [Jansson][], JSON parsing library.
 - [SDL2][], Multimedia library.
@@ -16,7 +16,7 @@ Requirements
 - [gettext][], For translations (optional).
 - [zstd][], For compression (optional).
 
-Molko's Adventure is mostly written in pure C11 with a very limited POSIX
+Molko's Engine is mostly written in pure C99 with a very limited POSIX
 extensions (including `stat`, `strlcpy`, `fmemopen`) but where support is
 missing fallback implementations are provided.
 
@@ -41,25 +41,17 @@ Quick install.
 	$ cmake -S. -Bbuild
 	$ cmake --build build --target all
 	# cmake --build build --target install
-	$ mlk-adventure
 
 Available options
 -----------------
 
 The following options are available:
 
-- `MLK_WITH_NLS`: Enable Native Language Support 
+- `MLK_WITH_NLS`: Enable Native Language Support
 - `MLK_WITH_ZSTD`: Enable map and tileset compression through [zstd][] (default:
   on).
 - `MLK_WITH_TESTS`: Enable unit tests (default: off).
 - `MLK_WITH_EXAMPLES`: Enable sample programs.
-
-Direct use in source tree
--------------------------
-
-Examples and `mlk-adventure` executables are written outside of the CMake build
-tree and generated directly in the source tree. This is designed to search data
-without installing.
 
 Platform: Linux and BSD
 -----------------------

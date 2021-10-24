@@ -1,6 +1,6 @@
 # Tool: mlk-map
 
-Convert a map generated from [Tiled][tiled] into a Molko's Adventure compatible one.
+Convert a map generated from [Tiled][tiled] into a Molko's Engine compatible one.
 
 The utility will read standard input and write the converted map to the standard
 output.

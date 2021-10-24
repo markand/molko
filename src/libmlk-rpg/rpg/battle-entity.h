@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_BATTLE_ENTITY_H
-#define MOLKO_RPG_BATTLE_ENTITY_H
+#ifndef MLK_RPG_BATTLE_ENTITY_H
+#define MLK_RPG_BATTLE_ENTITY_H
 
 #include <core/core.h>
 
@@ -60,4 +60,4 @@ battle_entity_finish(struct battle_entity *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_BATTLE_ENTITY_H */
+#endif /* !MLK_RPG_BATTLE_ENTITY_H */

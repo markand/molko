@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_INVENTORY_H
-#define MOLKO_RPG_INVENTORY_H
+#ifndef MLK_RPG_INVENTORY_H
+#define MLK_RPG_INVENTORY_H
 
 #include <core/core.h>
 
@@ -44,4 +44,4 @@ inventory_consume(struct inventory *, const struct item *, unsigned int);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_INVENTORY_H */
+#endif /* !MLK_RPG_INVENTORY_H */

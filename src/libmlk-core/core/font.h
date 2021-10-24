@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_FONT_H
-#define MOLKO_CORE_FONT_H
+#ifndef MLK_CORE_FONT_H
+#define MLK_CORE_FONT_H
 
 #include <stddef.h>
 
@@ -65,4 +65,4 @@ font_finish(struct font *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_FONT_H */
+#endif /* !MLK_CORE_FONT_H */

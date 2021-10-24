@@ -48,7 +48,7 @@ static struct label help = {
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "cursor") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "example-cursor") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - Cursor", W, H) < 0)
 		panic();

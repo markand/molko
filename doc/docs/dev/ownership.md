@@ -1,6 +1,6 @@
 # Howto: ownership and memory management
 
-How memory and ownership is used within Molko's Adventure API.
+How memory and ownership is used within Molko's Engine API.
 
 ## Synopsis
 
@@ -17,7 +17,7 @@ You can imagine a situation with a DVD player and some movies on DVDs. You have
 one DVD player where you put some DVDs inside but the DVD player never make its
 own copy, it simply reads your disc and you get it back afterwards.
 
-Following this philosophy, the Molko's Adventure API for this scenario would
+Following this philosophy, the Molko's Engine API for this scenario would
 look like this:
 
 ```c
@@ -119,7 +119,7 @@ to a theme which is also readable/writable. The field `elapsed` is readable but
 should not be modified. Finally, the field `text` is private and should not be
 touched by the user.
 
-## Memory handling in Molko's Adventure API
+## Memory handling in Molko's Engine API
 
 |             | Dynamic allocation?         | Notes                                                   |
 |-------------|-----------------------------|---------------------------------------------------------|

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_TILESET_FILE_H
-#define MOLKO_RPG_TILESET_FILE_H
+#ifndef MLK_RPG_TILESET_FILE_H
+#define MLK_RPG_TILESET_FILE_H
 
 #include <stddef.h>
 
@@ -46,4 +46,4 @@ tileset_file_finish(struct tileset_file *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_TILESET_FILE_H */
+#endif /* !MLK_RPG_TILESET_FILE_H */

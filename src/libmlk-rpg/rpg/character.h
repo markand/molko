@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_CHARACTER_H
-#define MOLKO_RPG_CHARACTER_H
+#ifndef MLK_RPG_CHARACTER_H
+#define MLK_RPG_CHARACTER_H
 
 #include <core/core.h>
 
@@ -106,4 +106,4 @@ character_load(struct character *, struct save *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_CHARACTER_H */
+#endif /* !MLK_RPG_CHARACTER_H */

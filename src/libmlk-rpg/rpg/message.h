@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_MESSAGE_H
-#define MOLKO_RPG_MESSAGE_H
+#ifndef MLK_RPG_MESSAGE_H
+#define MLK_RPG_MESSAGE_H
 
 #include <core/core.h>
 #include <core/texture.h>
@@ -88,4 +88,4 @@ message_action(struct message *msg, struct action *act);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_MESSAGE_H */
+#endif /* !MLK_RPG_MESSAGE_H */

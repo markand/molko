@@ -1,4 +1,4 @@
-Molko's Adventure CODING STYLE
+Molko's Engine CODING STYLE
 ==============================
 
 File content

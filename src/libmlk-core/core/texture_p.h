@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_TEXTURE_P_H
-#define MOLKO_CORE_TEXTURE_P_H
+#ifndef MLK_CORE_TEXTURE_P_H
+#define MLK_CORE_TEXTURE_P_H
 
 #include <SDL.h>
 
@@ -26,4 +26,4 @@ struct texture;
 int
 texture_from_surface(struct texture *, SDL_Surface *);
 
-#endif /* !MOLKO_CORE_TEXTURE_P_H */
+#endif /* !MLK_CORE_TEXTURE_P_H */

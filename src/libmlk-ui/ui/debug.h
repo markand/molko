@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_UI_DEBUG_H
-#define MOLKO_UI_DEBUG_H
+#ifndef MLK_UI_DEBUG_H
+#define MLK_UI_DEBUG_H
 
 #include <stdarg.h>
 
@@ -50,4 +50,4 @@ debugva(struct debug_report *, const char *, va_list);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_UI_DEBUG_H */
+#endif /* !MLK_UI_DEBUG_H */

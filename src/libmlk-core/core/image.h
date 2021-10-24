@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_IMAGE_H
-#define MOLKO_CORE_IMAGE_H
+#ifndef MLK_CORE_IMAGE_H
+#define MLK_CORE_IMAGE_H
 
 #include <stddef.h>
 
@@ -40,4 +40,4 @@ image_openvfs(struct texture *, struct vfs_file *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_IMAGE_H */
+#endif /* !MLK_CORE_IMAGE_H */

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_BATTLE_BAR_H
-#define MOLKO_RPG_BATTLE_BAR_H
+#ifndef MLK_RPG_BATTLE_BAR_H
+#define MLK_RPG_BATTLE_BAR_H
 
 #include <core/core.h>
 
@@ -91,4 +91,4 @@ battle_bar_finish(struct battle_bar *bar);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_BATTLE_BAR_H */
+#endif /* !MLK_RPG_BATTLE_BAR_H */

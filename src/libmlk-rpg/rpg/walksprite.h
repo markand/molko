@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_WALKSPRITE_H
-#define MOLKO_RPG_WALKSPRITE_H
+#ifndef MLK_RPG_WALKSPRITE_H
+#define MLK_RPG_WALKSPRITE_H
 
 #include <core/core.h>
 
@@ -76,4 +76,4 @@ walksprite_draw(const struct walksprite *, unsigned int, int, int);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_WALKSPRITE_H */
+#endif /* !MLK_RPG_WALKSPRITE_H */

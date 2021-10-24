@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_TEAM_H
-#define MOLKO_RPG_TEAM_H
+#ifndef MLK_RPG_TEAM_H
+#define MLK_RPG_TEAM_H
 
 #define TEAM_MEMBER_MAX (4)
 
@@ -27,4 +27,4 @@ struct team {
 	struct character *members[TEAM_MEMBER_MAX];
 };
 
-#endif /* MOLKO_RPG_TEAM_H */
+#endif /* MLK_RPG_TEAM_H */

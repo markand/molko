@@ -143,7 +143,7 @@ static struct character black_cat = {
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "battle") < 0 || ui_init() < 0 || rpg_init() < 0)
+	if (core_init("fr.malikania", "example-battle") < 0 || ui_init() < 0 || rpg_init() < 0)
 		panic();
 	if (window_open("Example - Battle", W, H) < 0)
 		panic();

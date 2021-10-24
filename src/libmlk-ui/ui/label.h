@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_UI_LABEL_H
-#define MOLKO_UI_LABEL_H
+#ifndef MLK_UI_LABEL_H
+#define MLK_UI_LABEL_H
 
 #include <core/core.h>
 
@@ -57,4 +57,4 @@ label_action(struct label *, struct action *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_UI_LABEL_H */
+#endif /* !MLK_UI_LABEL_H */

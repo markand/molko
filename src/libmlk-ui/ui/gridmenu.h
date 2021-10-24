@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_UI_GRIDMENU_H
-#define MOLKO_UI_GRIDMENU_H
+#ifndef MLK_UI_GRIDMENU_H
+#define MLK_UI_GRIDMENU_H
 
 #include <stddef.h>
 
@@ -81,4 +81,4 @@ gridmenu_finish(struct gridmenu *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_UI_GRIDMENU_H */
+#endif /* !MLK_UI_GRIDMENU_H */

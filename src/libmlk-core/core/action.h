@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_ACTION_H
-#define MOLKO_CORE_ACTION_H
+#ifndef MLK_CORE_ACTION_H
+#define MLK_CORE_ACTION_H
 
 #include "core.h"
 
@@ -78,4 +78,4 @@ action_stack_finish(struct action_stack *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_ACTION_H */
+#endif /* !MLK_CORE_ACTION_H */

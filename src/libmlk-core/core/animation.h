@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_ANIMATION_H
-#define MOLKO_CORE_ANIMATION_H
+#ifndef MLK_CORE_ANIMATION_H
+#define MLK_CORE_ANIMATION_H
 
 #include "core.h"
 
@@ -54,4 +54,4 @@ animation_drawable(struct animation *, struct drawable *, int, int);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_ANIMATION_H */
+#endif /* !MLK_CORE_ANIMATION_H */

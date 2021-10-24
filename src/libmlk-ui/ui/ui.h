@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_UI_UI_H
-#define MOLKO_UI_UI_H
+#ifndef MLK_UI_UI_H
+#define MLK_UI_UI_H
 
 #include <core/core.h>
 
@@ -31,4 +31,4 @@ ui_finish(void);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_UI_UI_H */
+#endif /* !MLK_UI_UI_H */

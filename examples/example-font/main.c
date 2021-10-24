@@ -52,7 +52,7 @@ static enum font_style style = FONT_STYLE_ANTIALIASED;
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "font") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "example-font") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - Font", W, H) < 0)
 		panic();

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_BATTLE_ENTITY_STATE_H
-#define MOLKO_RPG_BATTLE_ENTITY_STATE_H
+#ifndef MLK_RPG_BATTLE_ENTITY_STATE_H
+#define MLK_RPG_BATTLE_ENTITY_STATE_H
 
 #include <core/core.h>
 
@@ -57,4 +57,4 @@ battle_entity_state_attacking(struct battle_entity *, struct sprite *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_BATTLE_ENTITY_STATE_H */
+#endif /* !MLK_RPG_BATTLE_ENTITY_STATE_H */

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_COLOR_H
-#define MOLKO_CORE_COLOR_H
+#ifndef MLK_CORE_COLOR_H
+#define MLK_CORE_COLOR_H
 
 #define COLOR_R(c)              (c >> 24 & 0xff)
 #define COLOR_G(c)              (c >> 16 & 0xff)
@@ -29,4 +29,4 @@
          (b << 8  & 0x0000ff00) | \
          (a       & 0x000000ff))
 
-#endif /* !MOLKO_CORE_COLOR_H */
+#endif /* !MLK_CORE_COLOR_H */

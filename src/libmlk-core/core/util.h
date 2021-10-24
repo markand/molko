@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_UTIL_H
-#define MOLKO_CORE_UTIL_H
+#ifndef MLK_CORE_UTIL_H
+#define MLK_CORE_UTIL_H
 
 #include "core.h"
 
@@ -36,4 +36,4 @@ util_nrand(unsigned int, unsigned int);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_UTIL_H */
+#endif /* !MLK_CORE_UTIL_H */

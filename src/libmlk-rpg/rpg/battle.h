@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_BATTLE_H
-#define MOLKO_RPG_BATTLE_H
+#ifndef MLK_RPG_BATTLE_H
+#define MLK_RPG_BATTLE_H
 
 #include <core/action.h>
 #include <core/core.h>
@@ -120,4 +120,4 @@ battle_finish(struct battle *);
 
 CORE_END_DECLS
 
-#endif /* MOLKO_RPG_BATTLE_H */
+#endif /* MLK_RPG_BATTLE_H */

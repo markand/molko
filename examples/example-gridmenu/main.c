@@ -39,7 +39,7 @@
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "grid-menu") < 0 || ui_init() < 0)
+	if (core_init("fr.malikania", "example-gridmenu") < 0 || ui_init() < 0)
 		panic();
 	if (window_open("Example - Grid menu", W, H) < 0)
 		panic();

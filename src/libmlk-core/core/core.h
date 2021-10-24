@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_CORE_CORE_H
-#define MOLKO_CORE_CORE_H
+#ifndef MLK_CORE_CORE_H
+#define MLK_CORE_CORE_H
 
 #if defined(__cplusplus)
 #       define CORE_BEGIN_DECLS extern "C" {
@@ -37,4 +37,4 @@ core_finish(void);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_CORE_CORE_H */
+#endif /* !MLK_CORE_CORE_H */

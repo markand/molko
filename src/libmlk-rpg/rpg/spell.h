@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_SPELL_H
-#define MOLKO_RPG_SPELL_H
+#ifndef MLK_RPG_SPELL_H
+#define MLK_RPG_SPELL_H
 
 #include <core/core.h>
 
@@ -64,4 +64,4 @@ spell_use(struct spell *, struct character *, const struct selection *);
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_RPG_SPELL_H */
+#endif /* !MLK_RPG_SPELL_H */

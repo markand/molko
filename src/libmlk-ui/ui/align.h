@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_UI_ALIGN_H
-#define MOLKO_UI_ALIGN_H
+#ifndef MLK_UI_ALIGN_H
+#define MLK_UI_ALIGN_H
 
 #include <core/core.h>
 
@@ -49,4 +49,4 @@ align(enum align,
 
 CORE_END_DECLS
 
-#endif /* !MOLKO_UI_ALIGN_H */
+#endif /* !MLK_UI_ALIGN_H */

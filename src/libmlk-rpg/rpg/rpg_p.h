@@ -16,16 +16,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MOLKO_RPG_RPG_P_H
-#define MOLKO_RPG_RPG_P_H
+#ifndef MLK_RPG_RPG_P_H
+#define MLK_RPG_RPG_P_H
 
 #include "config.h"
 
-#if defined(MOLKO_WITH_NLS)
+#if defined(MLK_WITH_NLS)
 #       include <libintl.h>
 #       define _(s) dgettext("libmlk-rpg", s)
 #else
 #       define _(s) s
 #endif
 
-#endif /* !MOLKO_RPG_RPG_P_H */
+#endif /* !MLK_RPG_RPG_P_H */
