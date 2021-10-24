@@ -1,5 +1,5 @@
 /*
- * action.h -- action states
+ * action-stack.h -- convenient stack of actions
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,39 +16,42 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_ACTION_H
-#define MLK_CORE_ACTION_H
+#ifndef MLK_CORE_ACTION_STACK_H
+#define MLK_CORE_ACTION_STACK_H
 
 #include "core.h"
 
+#define ACTION_STACK_MAX (128)
+
 union event;
 
-struct action {
-	void *data;
-	void (*handle)(struct action *, const union event *);
-	int (*update)(struct action *, unsigned int);
-	void (*draw)(struct action *);
-	void (*end)(struct action *);
-	void (*finish)(struct action *);
+struct action_stack {
+	struct action *actions[ACTION_STACK_MAX];
 };
 
 CORE_BEGIN_DECLS
 
 void
-action_handle(struct action *, const union event *);
+action_stack_init(struct action_stack *);
 
 int
-action_update(struct action *, unsigned int);
+action_stack_add(struct action_stack *, struct action *);
 
 void
-action_draw(struct action *);
+action_stack_handle(struct action_stack *, const union event *);
+
+int
+action_stack_update(struct action_stack *, unsigned int);
 
 void
-action_end(struct action *);
+action_stack_draw(const struct action_stack *);
+
+int
+action_stack_completed(const struct action_stack *);
 
 void
-action_finish(struct action *);
+action_stack_finish(struct action_stack *);
 
 CORE_END_DECLS
 
-#endif /* !MLK_CORE_ACTION_H */
+#endif /* !MLK_CORE_ACTION_STACK_H */

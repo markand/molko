@@ -22,6 +22,7 @@
 #include <stddef.h>
 
 #include <core/action.h>
+#include <core/action-stack.h>
 #include <core/core.h>
 
 #include "walksprite.h"

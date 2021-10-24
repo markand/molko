@@ -19,6 +19,7 @@
 #include <assert.h>
 
 #include <core/action.h>
+#include <core/action-stack.h>
 #include <core/core.h>
 #include <core/event.h>
 #include <core/game.h>

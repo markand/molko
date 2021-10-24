@@ -19,6 +19,7 @@
 #include <rexo.h>
 
 #include <core/action.h>
+#include <core/action-stack.h>
 #include <core/event.h>
 
 struct invokes {

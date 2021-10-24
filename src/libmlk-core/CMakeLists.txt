@@ -22,6 +22,8 @@ set(
 	SOURCES
 	${libmlk-core_SOURCE_DIR}/core/action.c
 	${libmlk-core_SOURCE_DIR}/core/action.h
+	${libmlk-core_SOURCE_DIR}/core/action-stack.c
+	${libmlk-core_SOURCE_DIR}/core/action-stack.h
 	${libmlk-core_SOURCE_DIR}/core/alloc.c
 	${libmlk-core_SOURCE_DIR}/core/alloc.h
 	${libmlk-core_SOURCE_DIR}/core/animation.c
