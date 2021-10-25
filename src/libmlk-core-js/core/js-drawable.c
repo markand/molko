@@ -25,51 +25,42 @@
 
 #define SIGNATURE DUK_HIDDEN_SYMBOL("Mlk.Drawable")
 
-struct self {
-	duk_context *ctx;
-	void *ptr;
-	struct drawable dw;
-	unsigned int refc;
-};
-
-static inline struct self *
+static inline struct js_drawable *
 self(duk_context *ctx)
 {
-	struct self *sf = NULL;
+	struct js_drawable *data = NULL;
 
 	duk_push_this(ctx);
 	duk_get_prop_string(ctx, -1, SIGNATURE);
-	sf = duk_to_pointer(ctx, -1);
+	data = duk_to_pointer(ctx, -1);
 	duk_pop_2(ctx);
 
-	if (!sf)
+	if (!data)
 		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Drawable object"), NULL;
 
-	return sf;
+	return data;
 }
 
-static inline int
-callable(struct self *s, const char *prop, duk_context **ctx)
+static inline duk_context *
+callable(struct js_drawable *data, const char *prop)
 {
-	int callable;
+	duk_context *ctx;
 
-	if (!s->ptr)
-		return 0;
+	if (!data->ptr)
+		return NULL;
 
-	duk_push_heapptr(s->ctx, s->ptr);
-	duk_get_prop_string(s->ctx, -1, prop);
-	duk_remove(s->ctx, -2);
+	duk_push_heapptr(data->ctx, data->ptr);
+	duk_get_prop_string(data->ctx, -1, prop);
+	duk_pull(data->ctx, -2);
 
-	if (duk_is_callable(s->ctx, -1)) {
-		*ctx = s->ctx;
-		callable = 1;
-	} else {
-		*ctx = NULL;
-		callable = 0;
-		duk_pop(s->ctx);
+	if (duk_is_callable(data->ctx, -2))
+		ctx = data->ctx;
+	else {
+		ctx = NULL;
+		duk_pop_n(data->ctx, 2);
 	}
 
-	return callable;
+	return ctx;
 }
 
 static int
@@ -78,10 +69,11 @@ update(struct drawable *dw, unsigned int ticks)
 	duk_context *ctx;
 	int ret = 0;
 
-	if (callable(dw->data, "update", &ctx)) {
+	if ((ctx = callable(dw->data, "update"))) {
 		duk_push_uint(ctx, ticks);
-		duk_call(ctx, 1);
+		duk_call_method(ctx, 1);
 		ret = duk_to_int(ctx, -1);
+		duk_pop(ctx);
 	}
 
 	return ret;
@@ -92,8 +84,10 @@ draw(struct drawable *dw)
 {
 	duk_context *ctx;
 
-	if (callable(dw->data, "draw", &ctx))
-		duk_call(ctx, 0);
+	if ((ctx = callable(dw->data, "draw"))) {
+		duk_call_method(ctx, 0);
+		duk_pop(ctx);
+	}
 }
 
 static void
@@ -101,17 +95,31 @@ end(struct drawable *dw)
 {
 	duk_context *ctx;
 
-	if (callable(dw->data, "end", &ctx))
-		duk_call(ctx, 0);
+	if ((ctx = callable(dw->data, "end"))) {
+		duk_call_method(ctx, 0);
+		duk_pop(ctx);
+	}
 }
 
 static void
 finish(struct drawable *dw)
 {
-	struct self *sf = dw->data;
+	struct js_drawable *data = dw->data;
 
-	if (!--sf->refc)
-		free(sf);
+	/* I must not be called anymore. */
+	data->ptr = NULL;
+
+	/* Remove myself from parent stack if any. */
+	if (data->parent) {
+		duk_push_heapptr(data->ctx, data->parent);
+		duk_push_sprintf(data->ctx, "%p", data);
+		duk_del_prop(data->ctx, -2);
+		duk_pop(data->ctx);
+		data->parent = NULL;
+	}
+
+	if (--data->refc == 0)
+		free(data);
 }
 
 static duk_ret_t
@@ -149,23 +157,23 @@ Drawable_setY(duk_context *ctx)
 static duk_ret_t
 Drawable_constructor(duk_context *ctx)
 {
-	struct self *self;
+	struct js_drawable *data;
 	const int x = duk_require_int(ctx, 0);
 	const int y = duk_require_int(ctx, 1);
 
-	self = alloc_new0(sizeof (*self));
-	self->refc = 1;
-	self->ctx = ctx;
-	self->dw.x = x;
-	self->dw.y = y;
-	self->dw.data = self;
-	self->dw.update = update;
-	self->dw.finish = finish;
-	self->dw.draw = draw;
-	self->dw.end = end;
+	data = alloc_new0(sizeof (*data));
+	data->refc = 1;
+	data->ctx = ctx;
+	data->dw.x = x;
+	data->dw.y = y;
+	data->dw.data = self;
+	data->dw.update = update;
+	data->dw.finish = finish;
+	data->dw.draw = draw;
+	data->dw.end = end;
 
 	duk_push_this(ctx);
-	self->ptr = duk_get_heapptr(ctx, -1);
+	data->ptr = duk_get_heapptr(ctx, -1);
 	duk_push_pointer(ctx, self);
 	duk_put_prop_string(ctx, -2, SIGNATURE);
 	duk_push_string(ctx, "x");
@@ -184,21 +192,18 @@ Drawable_constructor(duk_context *ctx)
 static duk_ret_t
 Drawable_destructor(duk_context *ctx)
 {
-	struct self *sf;
+	struct js_drawable *data;
 
 	duk_get_prop_string(ctx, 0, SIGNATURE);
 
-	if ((sf = duk_to_pointer(ctx, -1))) {
-		sf->ptr = NULL;
-		drawable_finish(&sf->dw);
-	}
+	if ((data = duk_to_pointer(ctx, -1)))
+		drawable_finish(&data->dw);
 
 	duk_del_prop_string(ctx, 0, SIGNATURE);
 	duk_pop(ctx);
 
 	return 0;
 }
-
 
 void
 js_drawable_bind(duk_context *ctx)
@@ -213,21 +218,21 @@ js_drawable_bind(duk_context *ctx)
 	duk_put_global_string(ctx, "Drawable");
 }
 
-struct drawable *
+struct js_drawable *
 js_drawable_require(duk_context *ctx, duk_idx_t idx)
 {
-	struct self *sf = NULL;
+	struct js_drawable *data = NULL;
 
 	if (duk_is_object(ctx, idx)) {
 		duk_get_prop_string(ctx, idx, SIGNATURE);
-		sf = duk_to_pointer(ctx, -1);
+		data = duk_to_pointer(ctx, -1);
 		duk_pop(ctx);
 	}
 
-	if (!sf)
+	if (!data)
 		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Drawable object"), NULL;
 
-	sf->refc++;
+	data->refc++;
 
-	return &sf->dw;
+	return data;
 }

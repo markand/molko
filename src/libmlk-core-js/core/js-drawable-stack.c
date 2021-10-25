@@ -76,10 +76,18 @@ static duk_ret_t
 DrawableStack_add(duk_context *ctx)
 {
 	struct drawable_stack *st = self(ctx);
-	struct drawable *dw = js_drawable_require(ctx, 0);
+	struct js_drawable *dw = js_drawable_require(ctx, 0);
 
-	if (drawable_stack_add(st, dw) < 0)
-		drawable_finish(dw);
+	if (drawable_stack_add(st, &dw->dw) < 0)
+		drawable_finish(&dw->dw);
+	else {
+		duk_push_this(ctx);
+		dw->parent = duk_get_heapptr(ctx, -1);
+		duk_push_sprintf(ctx, "%p", dw);
+		duk_dup(ctx, 0);
+		duk_put_prop(ctx, -3);
+		duk_pop(ctx);
+	}
 
 	return 0;
 }

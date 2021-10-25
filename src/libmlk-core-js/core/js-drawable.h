@@ -21,12 +21,20 @@
 
 #include <duktape.h>
 
-struct drawable;
+#include <core/drawable.h>
+
+struct js_drawable {
+	duk_context *ctx;
+	void *ptr;
+	void *parent;
+	unsigned int refc;
+	struct drawable dw;
+};
 
 void
 js_drawable_bind(duk_context *);
 
-struct drawable *
+struct js_drawable *
 js_drawable_require(duk_context *, duk_idx_t);
 
 #endif /* !MLK_CORE_JS_DRAWABLE_H */

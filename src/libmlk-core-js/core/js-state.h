@@ -21,10 +21,20 @@
 
 #include <duktape.h>
 
+#include <core/state.h>
+
+struct js_state {
+	duk_context *ctx;
+	void *ptr;
+	void *parent;
+	unsigned int refc;
+	struct state st;
+};
+
 void
 js_state_bind(duk_context *);
 
-struct state *
+struct js_state *
 js_state_require(duk_context *, duk_idx_t);
 
 #endif /* !MLK_CORE_JS_STATE_H */

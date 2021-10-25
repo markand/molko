@@ -31,14 +31,21 @@
 static duk_ret_t
 Game_push(duk_context *ctx)
 {
-	struct state *state = js_state_require(ctx, 0);
+	struct js_state *state = js_state_require(ctx, 0);
 
 	if (game.state == &game.states[GAME_STATE_MAX]) {
-		state_finish(state);
+		state_finish(&state->st);
 		return duk_error(ctx, DUK_ERR_RANGE_ERROR, "too many states");
 	}
 
-	game_push(state);
+	duk_push_this(ctx);
+	state->parent = duk_get_heapptr(ctx, -1);
+	duk_push_sprintf(ctx, "%p", state);
+	duk_dup(ctx, 0);
+	duk_put_prop(ctx, -3);
+	duk_pop(ctx);
+
+	game_push(&state->st);
 
 	return 0;
 }
