@@ -1,5 +1,5 @@
 /*
- * js-event.h -- core event binding
+ * js-action-stack.h -- core action_stack binding
  *
  * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
  *
@@ -16,20 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_EVENT_H
-#define MLK_CORE_JS_EVENT_H
+#ifndef MLK_CORE_JS_ACTION_STACK_H
+#define MLK_CORE_JS_ACTION_STACK_H
 
 #include <duktape.h>
 
-union event;
-
 void
-js_event_bind(duk_context *);
+js_action_stack_bind(duk_context *);
 
-void
-js_event_push(duk_context *, const union event *);
-
-union event *
-js_event_require(duk_context *, duk_idx_t);
-
-#endif /* !MLK_CORE_JS_EVENT_H */
+#endif /* !MLK_CORE_JS_ACTION_STACK_H */

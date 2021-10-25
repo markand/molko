@@ -20,6 +20,10 @@ project(libmlk-core-js)
 
 set(
 	SOURCES
+	${libmlk-core-js_SOURCE_DIR}/core/js-action-stack.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-action-stack.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-action.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-action.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-animation.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-animation.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-clock.c
@@ -28,10 +32,10 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-color.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-core.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-core.h
-	${libmlk-core-js_SOURCE_DIR}/core/js-drawable.c
-	${libmlk-core-js_SOURCE_DIR}/core/js-drawable.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-drawable-stack.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-drawable-stack.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-drawable.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-drawable.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-event.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-event.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-font.c
@@ -44,8 +48,6 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-painter.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-panic.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-panic.h
-	${libmlk-core-js_SOURCE_DIR}/core/js-trace.c
-	${libmlk-core-js_SOURCE_DIR}/core/js-trace.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-sound.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-sound.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-sprite.c
@@ -54,6 +56,8 @@ set(
 	${libmlk-core-js_SOURCE_DIR}/core/js-state.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-texture.h
+	${libmlk-core-js_SOURCE_DIR}/core/js-trace.c
+	${libmlk-core-js_SOURCE_DIR}/core/js-trace.h
 	${libmlk-core-js_SOURCE_DIR}/core/js-window.c
 	${libmlk-core-js_SOURCE_DIR}/core/js-window.h
 )

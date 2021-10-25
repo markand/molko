@@ -43,7 +43,7 @@ self(duk_context *ctx)
 	duk_pop_2(ctx);
 
 	if (!sf)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Drawable object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Drawable object"), NULL;
 
 	return sf;
 }
@@ -225,7 +225,7 @@ js_drawable_require(duk_context *ctx, duk_idx_t idx)
 	}
 
 	if (!sf)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Drawable object");
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not a Drawable object"), NULL;
 
 	sf->refc++;
 

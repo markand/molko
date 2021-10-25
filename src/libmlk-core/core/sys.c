@@ -131,7 +131,6 @@ system_directory(const char *whichdir)
 		 *   from: /usr/local/bin
 		 *   to:   /usr/local
 		 */
-		printf("base=%s\n", base);
 		port_strlcpy(path, base, sizeof (path));
 		SDL_free(base);
 

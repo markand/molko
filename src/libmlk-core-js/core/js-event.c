@@ -18,9 +18,12 @@
 
 #include <assert.h>
 
+#include <core/alloc.h>
 #include <core/event.h>
 
 #include "js-event.h"
+
+#define SIGNATURE DUK_HIDDEN_SYMBOL("Mlk.Event")
 
 static void
 push_click(duk_context *ctx, const union event *ev)
@@ -262,6 +265,17 @@ static const duk_number_list_entry buttons[] = {
 	{ NULL,                 0                       }
 };
 
+static duk_ret_t
+Event_destructor(duk_context *ctx)
+{
+	duk_get_prop_string(ctx, 0, SIGNATURE);
+	free(duk_to_pointer(ctx, -1));
+	duk_del_prop_string(ctx, 0, SIGNATURE);
+	duk_pop(ctx);
+
+	return 0;
+}
+
 void
 js_event_bind(duk_context *ctx)
 {
@@ -272,7 +286,7 @@ js_event_bind(duk_context *ctx)
 	duk_put_function_list(ctx, -1, functions);
 	duk_push_object(ctx);
 	duk_put_number_list(ctx, -1, types);
-	duk_put_prop_string(ctx, -2, "type");
+	duk_put_prop_string(ctx, -2, "Type");
 	duk_push_object(ctx);
 	duk_put_number_list(ctx, -1, keys);
 	duk_put_prop_string(ctx, -2, "key");
@@ -289,8 +303,33 @@ js_event_bind(duk_context *ctx)
 void
 js_event_push(duk_context *ctx, const union event *ev)
 {
+	assert(ctx);
+
 	duk_push_object(ctx);
+	duk_push_c_function(ctx, Event_destructor, 1);
+	duk_set_finalizer(ctx, -2);
+	duk_push_pointer(ctx, alloc_dup(ev, sizeof (*ev)));
+	duk_put_prop_string(ctx, -2, SIGNATURE);
 	duk_push_int(ctx, ev->type);
-	duk_put_prop_string(ctx, -2, "Type");
+	duk_put_prop_string(ctx, -2, "type");
 	push[ev->type](ctx, ev);
+}
+
+union event *
+js_event_require(duk_context *ctx, duk_idx_t idx)
+{
+	assert(ctx);
+
+	union event *ev = NULL;
+
+	if (duk_is_object(ctx, idx)) {
+		duk_get_prop_string(ctx, idx, SIGNATURE);
+		ev = duk_to_pointer(ctx, -1);
+		duk_pop(ctx);
+	}
+
+	if (!ev)
+		return (void)duk_error(ctx, DUK_ERR_TYPE_ERROR, "not an Event object"), NULL;
+
+	return ev;
 }

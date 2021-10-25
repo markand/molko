@@ -26,6 +26,8 @@
 #include <core/vfs-zip.h>
 #include <core/vfs.h>
 
+#include <core/js-action.h>
+#include <core/js-action-stack.h>
 #include <core/js-animation.h>
 #include <core/js-clock.h>
 #include <core/js-color.h>
@@ -65,6 +67,8 @@ core_bind(duk_context *ctx)
 	/* Brings Mlk global object. */
 	js_core_bind(ctx, &vfs);
 
+	js_action_bind(ctx);
+	js_action_stack_bind(ctx);
 	js_animation_bind(ctx);
 	js_clock_bind(ctx);
 	js_color_bind(ctx);
