@@ -24,6 +24,7 @@
 #include "core.h"
 
 extern void (*panic_handler)(void);
+extern void *panic_data;
 
 CORE_BEGIN_DECLS
 

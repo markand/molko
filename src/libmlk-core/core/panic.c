@@ -33,6 +33,7 @@ terminate(void)
 }
 
 void (*panic_handler)(void) = terminate;
+void *panic_data = NULL;
 
 void
 panicf(const char *fmt, ...)

@@ -166,7 +166,7 @@ Drawable_constructor(duk_context *ctx)
 	data->ctx = ctx;
 	data->dw.x = x;
 	data->dw.y = y;
-	data->dw.data = self;
+	data->dw.data = data;
 	data->dw.update = update;
 	data->dw.finish = finish;
 	data->dw.draw = draw;
@@ -174,7 +174,7 @@ Drawable_constructor(duk_context *ctx)
 
 	duk_push_this(ctx);
 	data->ptr = duk_get_heapptr(ctx, -1);
-	duk_push_pointer(ctx, self);
+	duk_push_pointer(ctx, data);
 	duk_put_prop_string(ctx, -2, SIGNATURE);
 	duk_push_string(ctx, "x");
 	duk_push_c_function(ctx, Drawable_getX, 0);

@@ -17,10 +17,31 @@
  */
 
 #include <assert.h>
+#include <stdio.h>
 
 #include <core/panic.h>
 
 #include "js-panic.h"
+
+#define PANIC_CB DUK_HIDDEN_SYMBOL("Mlk.panicHandler")
+
+static void
+handler(void)
+{
+	duk_context *ctx = panic_data;
+
+	duk_push_global_stash(ctx);
+	duk_get_prop_string(ctx, -1, PANIC_CB);
+	duk_remove(ctx, -2);
+
+	if (duk_is_callable(ctx, -1)) {
+		duk_call(ctx, 0);
+		duk_pop(ctx);
+	} else {
+		fprintf(stderr, "abort: javascript panic handler not callable\n");
+		exit(1);
+	}
+}
 
 static duk_ret_t
 Mlk_panic(duk_context *ctx)
@@ -33,8 +54,26 @@ Mlk_panic(duk_context *ctx)
 	return 0;
 }
 
+static duk_ret_t
+Mlk_setPanic(duk_context *ctx)
+{
+	if (!duk_is_callable(ctx, 0))
+		return duk_error(ctx, DUK_ERR_TYPE_ERROR, "handler not callable");
+
+	duk_push_global_stash(ctx);
+	duk_dup(ctx, 0);
+	duk_put_prop_string(ctx, -2, PANIC_CB);
+	duk_pop(ctx);
+
+	panic_handler = handler;
+	panic_data = ctx;
+
+	return 0;
+}
+
 static const duk_function_list_entry functions[] = {
 	{ "panic",              Mlk_panic,              DUK_VARARGS     },
+	{ "setPanic",           Mlk_setPanic,           1               },
 	{ NULL,                 NULL,                   0               }
 };
 
