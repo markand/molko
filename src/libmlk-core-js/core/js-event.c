@@ -289,13 +289,13 @@ js_event_bind(duk_context *ctx)
 	duk_put_prop_string(ctx, -2, "Type");
 	duk_push_object(ctx);
 	duk_put_number_list(ctx, -1, keys);
-	duk_put_prop_string(ctx, -2, "key");
+	duk_put_prop_string(ctx, -2, "Key");
 	duk_push_object(ctx);
 	duk_put_number_list(ctx, -1, keymods);
-	duk_put_prop_string(ctx, -2, "keymod");
+	duk_put_prop_string(ctx, -2, "Keymod");
 	duk_push_object(ctx);
 	duk_put_number_list(ctx, -1, buttons);
-	duk_put_prop_string(ctx, -2, "button");
+	duk_put_prop_string(ctx, -2, "Button");
 	duk_put_prop_string(ctx, -2, "Event");
 	duk_pop(ctx);
 }
