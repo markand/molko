@@ -26,6 +26,7 @@
 #define TRACE_LINE_MAX (1024)
 
 extern void (*trace_handler)(const char *);
+extern void *trace_data;
 
 CORE_BEGIN_DECLS
 

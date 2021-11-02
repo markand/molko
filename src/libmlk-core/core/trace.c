@@ -30,6 +30,7 @@ default_handler(const char *line)
 }
 
 void (*trace_handler)(const char *) = default_handler;
+void *trace_data = NULL;
 
 void
 tracef(const char *fmt, ...)

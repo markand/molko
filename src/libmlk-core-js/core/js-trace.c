@@ -22,6 +22,27 @@
 
 #include "js-trace.h"
 
+#define TRACE_CB DUK_HIDDEN_SYMBOL("Mlk.traceHandler")
+
+static void
+handler(const char *msg)
+{
+	duk_context *ctx = trace_data;
+
+	duk_push_global_stash(ctx);
+	duk_get_prop_string(ctx, -1, TRACE_CB);
+	duk_remove(ctx, -2);
+
+	if (duk_is_callable(ctx, -1)) {
+		duk_push_string(ctx, msg);
+		duk_call(ctx, 1);
+		duk_pop(ctx);
+	} else {
+		fprintf(stderr, "abort: javascript panic handler not callable\n");
+		exit(1);
+	}
+}
+
 static duk_ret_t
 Mlk_trace(duk_context *ctx)
 {
@@ -30,8 +51,26 @@ Mlk_trace(duk_context *ctx)
 	return 0;
 }
 
+static duk_ret_t
+Mlk_setTrace(duk_context *ctx)
+{
+	if (!duk_is_callable(ctx, 0))
+		return duk_error(ctx, DUK_ERR_TYPE_ERROR, "handler not callable");
+
+	duk_push_global_stash(ctx);
+	duk_dup(ctx, 0);
+	duk_put_prop_string(ctx, -2, TRACE_CB);
+	duk_pop(ctx);
+
+	trace_handler = handler;
+	trace_data = ctx;
+
+	return 0;
+}
+
 static const duk_function_list_entry functions[] = {
 	{ "trace",              Mlk_trace,              1       },
+	{ "setTrace",           Mlk_setTrace,           1       },
 	{ NULL,                 NULL,                   0       }
 };
 
