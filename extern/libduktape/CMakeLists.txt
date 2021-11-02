@@ -18,7 +18,16 @@
 
 cmake_minimum_required(VERSION 3.0)
 project(libmlk-duktape)
-add_library(libmlk-duktape STATIC duk_config.h duktape.c duktape.h)
+
+add_library(
+	libmlk-duktape
+	STATIC
+	${libmlk-duktape_SOURCE_DIR}/duk_config.h
+	${libmlk-duktape_SOURCE_DIR}/duk_module_duktape.c
+	${libmlk-duktape_SOURCE_DIR}/duk_module_duktape.h
+	${libmlk-duktape_SOURCE_DIR}/duktape.c
+	${libmlk-duktape_SOURCE_DIR}/duktape.h
+)
 target_include_directories(
 	libmlk-duktape
 	PUBLIC

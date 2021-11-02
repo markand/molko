@@ -18,9 +18,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include <duktape.h>
+#include <duk_module_duktape.h>
 
+#include <port/port.h>
+
+#include <core/error.h>
 #include <core/panic.h>
 #include <core/vfs-directory.h>
 #include <core/vfs-zip.h>
@@ -59,6 +64,29 @@ print(duk_context *ctx)
 	puts(duk_require_string(ctx, 0));
 
 	return 0;
+}
+
+static duk_ret_t
+modsearch(duk_context *ctx)
+{
+	char path[PATH_MAX], *data;
+	struct vfs_file file;
+	size_t datasz;
+
+	snprintf(path, sizeof (path), "%s.js", duk_require_string(ctx, 0));
+
+	if (vfs_open(&vfs, &file, path, "r") < 0)
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+	if (!(data = vfs_file_aread(&file, &datasz))) {
+		vfs_file_finish(&file);
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
+	}
+
+	vfs_file_finish(&file);
+	duk_push_lstring(ctx, data, datasz);
+	free(data);
+
+	return 1;
 }
 
 static void
@@ -103,6 +131,13 @@ init(void)
 	duk_push_global_object(ctx);
 	duk_push_c_function(ctx, print, 1);
 	duk_put_prop_string(ctx, -2, "print");
+	duk_pop(ctx);
+
+	/* Setup module loader. */
+	duk_module_duktape_init(ctx);
+	duk_get_global_string(ctx, "Duktape");
+	duk_push_c_function(ctx, modsearch, 4);
+	duk_put_prop_string(ctx, -2, "modSearch");
 	duk_pop(ctx);
 }
 
