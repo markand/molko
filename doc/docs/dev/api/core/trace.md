@@ -20,10 +20,15 @@ generated in that way.
 | Variable                        | Type                     |
 |---------------------------------|--------------------------|
 | [trace_handler](#trace_handler) | `void (*)(const char *)` |
+| [trace_data](#trace_data)       | `void *`                 |
 
 ### trace\_handler
 
 The default one use a simple printf on the standard output.
+
+### trace\_data
+
+Placeholder data for the handler if needed.
 
 ## Macros
 

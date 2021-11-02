@@ -26,6 +26,7 @@ solutions to recover the game otherwise.
 | Variable                        | Type             |
 |---------------------------------|------------------|
 | [panic_handler](#panic_handler) | `void (*)(void)` |
+| [panic_data](#panic_data)       | `void *`         |
 
 ### panic\_handler
 
@@ -37,6 +38,10 @@ exception to be thrown.
 
 If the user defined function returns, panic routines will finally exit with code
 1.
+
+### panic\_data
+
+Placeholder data for the handler if needed.
 
 ## Functions
 
