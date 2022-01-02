@@ -1,7 +1,7 @@
 /*
  * battle-state-opening.c -- battle state (opening)
  *
- * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
+ * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,50 +25,29 @@
 #include <core/window.h>
 
 #include "battle.h"
+#include "battle-state-opening.h"
 #include "battle-state.h"
 
 #define DELAY (1000U)
 
-struct opening {
-	struct battle_state self;
-	unsigned int elapsed;
+struct self {
+	/* Always keep first. */
+	struct battle_state_opening data;
+	struct battle_state state;
 };
 
 static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
-	assert(bt);
+	(void)bt;
 
-	struct opening *opening = st->data;
-
-	opening->elapsed += ticks;
-
-	/*
-	 * Those function will effectively change state accordingly to the
-	 * order of playing.
-	 */
-	if (opening->elapsed >= DELAY)
-		battle_state_check(bt);
-
-	return 0;
+	return battle_state_opening_update(st->data, bt, ticks);
 }
 
 static void
 draw(const struct battle_state *st, const struct battle *bt)
 {
-	(void)bt;
-
-	assert(bt);
-
-	const struct opening *opening = st->data;
-	const unsigned int w = window.w;
-	const unsigned int h = window.h / 2;
-	const unsigned int ch = opening->elapsed * h / DELAY;
-
-	/* Draw some bezels opening. */
-	painter_set_color(0x000000ff);
-	painter_draw_rectangle(0, 0, w, h - ch);
-	painter_draw_rectangle(0, h + ch, w, h - ch);
+	battle_state_opening_draw(st->data, bt);
 }
 
 static void
@@ -79,20 +58,48 @@ finish(struct battle_state *st, struct battle *bt)
 	free(st->data);
 }
 
+int
+battle_state_opening_update(struct battle_state_opening *op, struct battle *bt, unsigned int ticks)
+{
+	op->elapsed += ticks;
+
+	/*
+	 * Those function will effectively change state accordingly to the
+	 * order of playing.
+	 */
+	if (op->elapsed >= DELAY)
+		battle_state_check(bt);
+
+	return 0;
+}
+
+void
+battle_state_opening_draw(const struct battle_state_opening *op, const struct battle *bt)
+{
+	(void)bt;
+
+	const unsigned int w = window.w;
+	const unsigned int h = window.h / 2;
+	const unsigned int ch = op->elapsed * h / DELAY;
+
+	/* Draw some bezels opening. */
+	painter_set_color(0x000000ff);
+	painter_draw_rectangle(0, 0, w, h - ch);
+	painter_draw_rectangle(0, h + ch, w, h - ch);
+}
+
 void
 battle_state_opening(struct battle *bt)
 {
 	assert(bt);
 
-	struct opening *opening;
+	struct self *self;
 
-	if (!(opening = alloc_new0(sizeof (*opening))))
-		panic();
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.update = update;
+	self->state.draw = draw;
+	self->state.finish = finish;
 
-	opening->self.data = opening;
-	opening->self.update = update;
-	opening->self.draw = draw;
-	opening->self.finish = finish;
-
-	battle_switch(bt, &opening->self);
+	battle_switch(bt, &self->state);
 }

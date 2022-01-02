@@ -1,7 +1,7 @@
 /*
  * battle-state-sub.c -- battle state (sub)
  *
- * Copyright (c) 2020-2021 David Demelier <markand@malikania.fr>
+ * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
