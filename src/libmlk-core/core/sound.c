@@ -20,12 +20,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <SDL_mixer.h>
-
 #include "error.h"
 #include "sound.h"
 #include "vfs.h"
 #include "vfs_p.h"
+#include "sys_p.h"
+
+#define SOURCE(snd) ((const struct audiostream *)snd->handle)->source
 
 int
 sound_open(struct sound *snd, const char *path)
@@ -33,8 +34,8 @@ sound_open(struct sound *snd, const char *path)
 	assert(snd);
 	assert(path);
 
-	if (!(snd->handle = Mix_LoadWAV(path)))
-		return errorf("%s", SDL_GetError());
+	if (!(snd->handle = audiostream_open(path)))
+		return -1;
 
 	return 0;
 }
@@ -45,11 +46,8 @@ sound_openmem(struct sound *snd, const void *buffer, size_t buffersz)
 	assert(snd);
 	assert(buffer);
 
-	SDL_RWops *ops;
-
-	if (!(ops = SDL_RWFromConstMem(buffer, buffersz)) ||
-	    !(snd->handle = Mix_LoadWAV_RW(ops, 1)))
-		return errorf("%s", SDL_GetError());
+	if (!(snd->handle = audiostream_openmem(buffer, buffersz)))
+		return -1;
 
 	return 0;
 }
@@ -60,14 +58,18 @@ sound_openvfs(struct sound *snd, struct vfs_file *file)
 	assert(snd);
 	assert(vfs_file_ok(file));
 
-	SDL_RWops *ops;
+	char *data;
+	size_t datasz;
+	int ret = 0;
 
-	if (!(ops = vfs_to_rw(file)))
+	if (!(data = vfs_file_aread(file, &datasz)))
 		return -1;
-	if (!(snd->handle = Mix_LoadWAV_RW(ops, 1)))
-		return errorf("%s", SDL_GetError());
+	if (!(snd->handle = audiostream_openmem(data, datasz)))
+		ret = -1;
 
-	return 0;
+	free(data);
+
+	return ret;
 }
 
 int
@@ -77,21 +79,11 @@ sound_ok(const struct sound *snd)
 }
 
 int
-sound_play(struct sound *snd, int channel, unsigned int fadein)
+sound_play(struct sound *snd)
 {
 	assert(sound_ok(snd));
 
-	int ret;
-
-	if (fadein > 0)
-		ret = Mix_FadeInChannel(channel, snd->handle, 0, fadein);
-	else
-		ret = Mix_PlayChannel(channel, snd->handle, 0);
-
-	if (ret < 0)
-		return errorf("%s", SDL_GetError());
-
-	snd->channel = channel;
+	alSourcePlay(SOURCE(snd));
 
 	return 0;
 }
@@ -99,22 +91,25 @@ sound_play(struct sound *snd, int channel, unsigned int fadein)
 void
 sound_pause(struct sound *snd)
 {
-	Mix_Pause(snd ? snd->channel : -1);
+	assert(sound_ok(snd));
+
+	alSourcePause(SOURCE(snd));
 }
 
 void
 sound_resume(struct sound *snd)
 {
-	Mix_Resume(snd ? snd->channel : -1);
+	assert(sound_ok(snd));
+
+	alSourcePlay(SOURCE(snd));
 }
 
 void
-sound_stop(struct sound *snd, unsigned int fadeout)
+sound_stop(struct sound *snd)
 {
-	if (fadeout > 0)
-		Mix_FadeOutChannel(snd ? snd->channel : -1, fadeout);
-	else
-		Mix_HaltChannel(snd ? snd->channel : -1);
+	assert(sound_ok(snd));
+
+	alSourceStop(SOURCE(snd));
 }
 
 void
@@ -123,8 +118,8 @@ sound_finish(struct sound *snd)
 	assert(snd);
 
 	if (snd->handle) {
-		Mix_HaltChannel(snd->channel);
-		Mix_FreeChunk(snd->handle);
+		sound_stop(snd);
+		audiostream_finish(snd->handle);
 	}
 
 	memset(snd, 0, sizeof (*snd));

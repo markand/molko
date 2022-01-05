@@ -71,6 +71,7 @@ set(
 	${libmlk-core_SOURCE_DIR}/core/state.h
 	${libmlk-core_SOURCE_DIR}/core/sys.c
 	${libmlk-core_SOURCE_DIR}/core/sys.h
+	${libmlk-core_SOURCE_DIR}/core/sys_p.h
 	${libmlk-core_SOURCE_DIR}/core/texture.c
 	${libmlk-core_SOURCE_DIR}/core/texture.h
 	${libmlk-core_SOURCE_DIR}/core/texture_p.h
@@ -125,13 +126,16 @@ mlk_library(
 	LIBRARIES
 		PUBLIC
 			${LIBRARIES}
+			${OPENAL_LIBRARY}
+			SndFile::SndFile
 			SDL2::SDL2
 			SDL2::image
 			SDL2::ttf
-			SDL2::mixer
 			libmlk-port
 	INCLUDES
-		PUBLIC $<BUILD_INTERFACE:${libmlk-core_SOURCE_DIR}>
+		PUBLIC
+			${OPENAL_INCLUDE_DIR}
+			$<BUILD_INTERFACE:${libmlk-core_SOURCE_DIR}>
 )
 
 source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${SOURCES} ${NLS})

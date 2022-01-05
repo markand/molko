@@ -42,7 +42,7 @@ static struct music music;
 static struct sound sound;
 
 static struct label label_music = {
-	.text = "Music: <Space> play, <f> fade in, <s> fade out, <p> pause, <r> resume, <q> stop, <l> loop.",
+	.text = "Music: <Space> play, <p> pause, <r> resume, <q> stop, <l> loop.",
 	.x = 10,
 	.y = 10,
 	.flags = LABEL_FLAGS_SHADOW
@@ -82,31 +82,25 @@ handle(struct state *st, const union event *ev)
 
 	switch (ev->type) {
 	case EVENT_CLICKDOWN:
-		if (sound_play(&sound, -1, 0) < 0)
+		if (sound_play(&sound) < 0)
 			panic();
 		break;
 	case EVENT_KEYDOWN:
 		switch (ev->key.key) {
-		case KEY_f:
-			music_play(&music, 0, 500);
-			break;
-		case KEY_s:
-			music_stop(500);
-			break;
 		case KEY_p:
-			music_pause();
+			music_pause(&music);
 			break;
 		case KEY_r:
-			music_resume();
+			music_resume(&music);
 			break;
 		case KEY_q:
-			music_stop(0);
+			music_stop(&music);
 			break;
 		case KEY_l:
-			music_play(&music, MUSIC_LOOP, 0);
+			music_play(&music, MUSIC_LOOP);
 			break;
 		case KEY_SPACE:
-			music_play(&music, 0, 0);
+			music_play(&music, 0);
 			break;
 		default:
 			break;

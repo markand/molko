@@ -49,19 +49,16 @@ int
 music_ok(const struct music *);
 
 int
-music_play(struct music *, enum music_flags, unsigned int);
-
-int
-music_playing(void);
+music_play(struct music *, enum music_flags);
 
 void
-music_pause(void);
+music_pause(struct music *);
 
 void
-music_resume(void);
+music_resume(struct music *);
 
 void
-music_stop(unsigned int);
+music_stop(struct music *);
 
 void
 music_finish(struct music *);

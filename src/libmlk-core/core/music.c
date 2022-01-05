@@ -19,12 +19,13 @@
 #include <assert.h>
 #include <string.h>
 
-#include <SDL_mixer.h>
-
 #include "error.h"
 #include "music.h"
 #include "vfs.h"
 #include "vfs_p.h"
+#include "sys_p.h"
+
+#define SOURCE(mus) ((const struct audiostream *)mus->handle)->source
 
 int
 music_open(struct music *mus, const char *path)
@@ -32,8 +33,8 @@ music_open(struct music *mus, const char *path)
 	assert(mus);
 	assert(path);
 
-	if (!(mus->handle = Mix_LoadMUS(path)))
-		return errorf("%s", SDL_GetError());
+	if (!(mus->handle = audiostream_open(path)))
+		return -1;
 
 	return 0;
 }
@@ -44,11 +45,8 @@ music_openmem(struct music *mus, const void *buffer, size_t buffersz)
 	assert(mus);
 	assert(buffer);
 
-	SDL_RWops *ops;
-
-	if (!(ops = SDL_RWFromConstMem(buffer, buffersz)) ||
-	    !(mus->handle = Mix_LoadMUS_RW(ops, 1)))
-		return errorf("%s", SDL_GetError());
+	if (!(mus->handle = audiostream_openmem(buffer, buffersz)))
+		return -1;
 
 	return 0;
 }
@@ -58,13 +56,6 @@ music_openvfs(struct music *mus, struct vfs_file *file)
 {
 	assert(mus);
 	assert(vfs_file_ok(file));
-
-	SDL_RWops *ops;
-
-	if (!(ops = vfs_to_rw(file)))
-		return -1;
-	if (!(mus->handle = Mix_LoadMUS_RW(ops, 1)))
-		return errorf("%s", SDL_GetError());
 
 	return 0;
 }
@@ -76,49 +67,43 @@ music_ok(const struct music *mus)
 }
 
 int
-music_play(struct music *mus, enum music_flags flags, unsigned int fadein)
+music_play(struct music *mus, enum music_flags flags)
 {
 	assert(mus);
 
-	int loops = flags & MUSIC_LOOP ? -1 : 1;
-	int ret;
-
-	if (fadein > 0)
-		ret = Mix_FadeInMusic(mus->handle, loops, fadein);
+	if (flags & MUSIC_LOOP)
+		alSourcei(SOURCE(mus), AL_LOOPING, AL_TRUE);
 	else
-		ret = Mix_PlayMusic(mus->handle, loops);
+		alSourcei(SOURCE(mus), AL_LOOPING, AL_TRUE);
 
-	if (ret < 0)
-		return errorf("%s", SDL_GetError());
+	alSourceRewind(SOURCE(mus));
+	alSourcePlay(SOURCE(mus));
 
 	return 0;
 }
 
-int
-music_playing(void)
+void
+music_pause(struct music *mus)
 {
-	return Mix_PlayingMusic();
+	assert(music_ok(mus));
+
+	alSourcePause(SOURCE(mus));
 }
 
 void
-music_pause(void)
+music_resume(struct music *mus)
 {
-	Mix_PauseMusic();
+	assert(music_ok(mus));
+
+	alSourcePlay(SOURCE(mus));
 }
 
 void
-music_resume(void)
+music_stop(struct music *mus)
 {
-	Mix_ResumeMusic();
-}
+	assert(music_ok(mus));
 
-void
-music_stop(unsigned int fadeout)
-{
-	if (fadeout > 0)
-		Mix_FadeOutMusic(fadeout);
-	else
-		Mix_HaltMusic();
+	alSourceStop(SOURCE(mus));
 }
 
 void
@@ -127,8 +112,8 @@ music_finish(struct music *mus)
 	assert(mus);
 
 	if (mus->handle) {
-		Mix_HaltMusic();
-		Mix_FreeMusic(mus->handle);
+		music_stop(mus);
+		audiostream_finish(mus->handle);
 	}
 
 	memset(mus, 0, sizeof (*mus));

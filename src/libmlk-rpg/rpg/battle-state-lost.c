@@ -101,5 +101,5 @@ battle_state_lost(struct battle *bt)
 	battle_switch(bt, &lost->self);
 
 	if (bt->music[2])
-		music_play(bt->music[2], MUSIC_NONE, 0);
+		music_play(bt->music[2], MUSIC_NONE);
 }

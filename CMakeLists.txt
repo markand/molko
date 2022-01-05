@@ -27,7 +27,7 @@ set(CMAKE_C_EXTENSIONS Off)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-	set(CMAKE_C_FLAGS "-Wall -Wextra -pedantic -D_POSIX_C_SOURCE=200809L ${CMAKE_C_FLAGS}")
+	set(CMAKE_C_FLAGS "-Wall -Wextra -Wno-deprecated-declarations -Wno-unknown-pragmas -pedantic -D_POSIX_C_SOURCE=200809L ${CMAKE_C_FLAGS}")
 
 	if (CMAKE_C_COMPILER_ID MATCHES "GNU")
 		set(CMAKE_C_FLAGS "-Wno-format-truncation ${CMAKE_C_FLAGS}")
@@ -57,7 +57,9 @@ include(cmake/MlkTileset.cmake)
 
 include(GNUInstallDirs)
 
-find_package(SDL2 REQUIRED COMPONENTS image mixer ttf)
+find_package(SDL2 REQUIRED COMPONENTS image ttf)
+find_package(OpenAL REQUIRED)
+find_package(SndFile REQUIRED)
 find_package(Jansson REQUIRED)
 
 # POSIX math library isn't available everywhere.

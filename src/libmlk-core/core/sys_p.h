@@ -1,5 +1,5 @@
 /*
- * sound.h -- sound support
+ * sys_p.h -- libcore private definitions
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,51 +16,33 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_SOUND_H
-#define MLK_CORE_SOUND_H
+#ifndef MLK_CORE_SYS_P_H
+#define MLK_CORE_SYS_P_H
 
 #include <stddef.h>
 
-#include "core.h"
+#include <al.h>
+#include <alc.h>
 
-#define SOUND_CHANNELS_MAX (256)
+extern ALCdevice *audio_dev;
+extern ALCcontext *audio_ctx;
 
-struct vfs_file;
-
-struct sound {
-	void *handle;
-	int channel;
+struct audiostream {
+	ALshort *samples;
+	ALsizei samplesz;
+	ALsizei samplerate;
+	ALuint buffer;
+	ALuint source;
+	ALenum format;
 };
 
-CORE_BEGIN_DECLS
+struct audiostream *
+audiostream_open(const char *);
 
-int
-sound_open(struct sound *, const char *);
-
-int
-sound_openmem(struct sound *, const void *, size_t);
-
-int
-sound_openvfs(struct sound *, struct vfs_file *);
-
-int
-sound_ok(const struct sound *);
-
-int
-sound_play(struct sound *);
+struct audiostream *
+audiostream_openmem(const void *, size_t);
 
 void
-sound_pause(struct sound *);
+audiostream_finish(struct audiostream *);
 
-void
-sound_resume(struct sound *);
-
-void
-sound_stop(struct sound *);
-
-void
-sound_finish(struct sound *);
-
-CORE_END_DECLS
-
-#endif /* !MLK_CORE_SOUND_H */
+#endif /* !MLK_CORE_SYS_P_H */
