@@ -23,7 +23,6 @@
 
 #include <al.h>
 #include <alc.h>
-#include <alext.h>
 
 extern ALCdevice *audio_dev;
 extern ALCcontext *audio_ctx;
