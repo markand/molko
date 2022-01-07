@@ -298,6 +298,8 @@ audiostream_create(SNDFILE *file, const SF_INFO *info)
 	stream->samples = alloc_array(stream->samplesz, sizeof (*stream->samples));
 	stream->format = info->channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
 
+	sf_command(file, SFC_SET_SCALE_FLOAT_INT_READ, NULL, SF_TRUE);
+
 	if (sf_read_short(file, stream->samples, stream->samplesz) != stream->samplesz) {
 		free(stream->samples);
 		free(stream);
@@ -306,7 +308,7 @@ audiostream_create(SNDFILE *file, const SF_INFO *info)
 
 	alGenBuffers(1, &stream->buffer);
 	alBufferData(stream->buffer, stream->format, stream->samples,
-	    stream->samplesz * sizeof (ALushort), stream->samplerate);
+	    stream->samplesz * sizeof (*stream->samples), stream->samplerate);
 	alGenSources(1, &stream->source);
 	alSourcei(stream->source, AL_BUFFER, stream->buffer);
 	

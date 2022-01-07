@@ -23,12 +23,13 @@
 
 #include <al.h>
 #include <alc.h>
+#include <alext.h>
 
 extern ALCdevice *audio_dev;
 extern ALCcontext *audio_ctx;
 
 struct audiostream {
-	ALshort *samples;
+	short *samples;
 	ALsizei samplesz;
 	ALsizei samplerate;
 	ALuint buffer;
