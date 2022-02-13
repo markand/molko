@@ -29,12 +29,12 @@
 #include <rpg/inventory.h>
 #include <rpg/item.h>
 
-#include "battle.h"
 #include "battle-bar.h"
-#include "battle-state.h"
 #include "battle-state-menu.h"
 #include "battle-state-selection.h"
 #include "battle-state-sub.h"
+#include "battle-state.h"
+#include "battle.h"
 #include "character.h"
 #include "spell.h"
 

@@ -36,7 +36,6 @@ struct battle_state_item {
 	struct battle_message msg;
 	struct battle_entity *source;
 	struct battle_entity *target;
-	struct battle_state state;
 	struct inventory_slot *slot;
 	int origin_x;
 };

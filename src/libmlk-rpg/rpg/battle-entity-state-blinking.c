@@ -24,9 +24,9 @@
 #include <core/sprite.h>
 #include <core/texture.h>
 
-#include "battle-entity.h"
-#include "battle-entity-state.h"
 #include "battle-entity-state-blinking.h"
+#include "battle-entity-state.h"
+#include "battle-entity.h"
 #include "character.h"
 
 #define TRANSPARENT     (150)
@@ -83,7 +83,7 @@ battle_entity_state_blinking_update(struct battle_entity_state_blinking *blk, un
 void
 battle_entity_state_blinking(struct battle_entity *et)
 {
-	assert(et);
+	assert(battle_entity_ok(et));
 
 	struct self *self;
 

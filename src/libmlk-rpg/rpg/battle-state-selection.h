@@ -36,7 +36,7 @@ void
 battle_state_selection_handle(struct battle_state_selection *, struct battle *, const union event *);
 
 void
-battle_state_selection_draw(struct battle_state_selection *, const struct battle *);
+battle_state_selection_draw(const struct battle_state_selection *, const struct battle *);
 
 void
 battle_state_selection(struct battle *, const struct selection *);

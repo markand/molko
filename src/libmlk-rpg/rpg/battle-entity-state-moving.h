@@ -21,6 +21,8 @@
 
 #include <rpg/walksprite.h>
 
+struct battle_entity;
+
 struct battle_entity_state_moving {
 	struct walksprite ws;
 	int x;

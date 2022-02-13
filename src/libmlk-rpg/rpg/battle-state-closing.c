@@ -27,8 +27,8 @@
 #include <core/texture.h>
 #include <core/window.h>
 
-#include "battle.h"
 #include "battle-state-closing.h"
+#include "battle.h"
 
 struct self {
 	struct battle_state_closing data;
@@ -105,7 +105,7 @@ battle_state_closing_update(struct battle_state_closing *cls, unsigned int ticks
 }
 
 void
-battle_state_closing_draw(struct battle_state_closing *cls)
+battle_state_closing_draw(const struct battle_state_closing *cls)
 {
 	assert(cls);
 

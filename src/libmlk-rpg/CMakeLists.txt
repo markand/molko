@@ -57,7 +57,9 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-selection.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-selection.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-sub.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-sub.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-victory.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-victory.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle.c

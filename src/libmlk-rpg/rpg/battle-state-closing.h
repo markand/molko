@@ -36,7 +36,7 @@ int
 battle_state_closing_update(struct battle_state_closing *, unsigned int);
 
 void
-battle_state_closing_draw(struct battle_state_closing *);
+battle_state_closing_draw(const struct battle_state_closing *);
 
 void
 battle_state_closing_finish(struct battle_state_closing *);

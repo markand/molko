@@ -24,10 +24,10 @@
 #include <core/panic.h>
 #include <core/window.h>
 
-#include "battle.h"
-#include "battle-state.h"
 #include "battle-state-check.h"
 #include "battle-state-opening.h"
+#include "battle-state.h"
+#include "battle.h"
 
 #define DELAY (1000U)
 
@@ -48,7 +48,9 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 static void
 draw(const struct battle_state *st, const struct battle *bt)
 {
-	battle_state_opening_draw(st->data, bt);
+	(void)bt;
+
+	battle_state_opening_draw(st->data);
 }
 
 static void
@@ -75,10 +77,8 @@ battle_state_opening_update(struct battle_state_opening *op, struct battle *bt, 
 }
 
 void
-battle_state_opening_draw(const struct battle_state_opening *op, const struct battle *bt)
+battle_state_opening_draw(const struct battle_state_opening *op)
 {
-	(void)bt;
-
 	const unsigned int w = window.w;
 	const unsigned int h = window.h / 2;
 	const unsigned int ch = op->elapsed * h / DELAY;

@@ -21,12 +21,12 @@
 
 #include <core/alloc.h>
 
-#include "battle.h"
 #include "battle-bar.h"
-#include "battle-state.h"
 #include "battle-state-menu.h"
 #include "battle-state-selection.h"
 #include "battle-state-sub.h"
+#include "battle-state.h"
+#include "battle.h"
 #include "character.h"
 #include "spell.h"
 
@@ -75,6 +75,7 @@ void
 battle_state_menu_handle(struct battle *bt, const union event *ev)
 {
 	assert(bt);
+	assert(ev);
 
 	if (battle_bar_handle(&bt->bar, bt, ev)) {
 		switch (bt->bar.menu) {

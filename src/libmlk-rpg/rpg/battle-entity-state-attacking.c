@@ -24,9 +24,9 @@
 #include <core/panic.h>
 #include <core/sprite.h>
 
-#include "battle-entity.h"
-#include "battle-entity-state.h"
 #include "battle-entity-state-attacking.h"
+#include "battle-entity-state.h"
+#include "battle-entity.h"
 
 struct self {
 	struct battle_entity_state_attacking data;

@@ -21,9 +21,9 @@
 
 #include <core/alloc.h>
 
-#include "battle.h"
-#include "battle-state.h"
 #include "battle-state-ai.h"
+#include "battle-state.h"
+#include "battle.h"
 #include "character.h"
 
 static int

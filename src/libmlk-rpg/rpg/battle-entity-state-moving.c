@@ -23,9 +23,9 @@
 #include <core/alloc.h>
 #include <core/panic.h>
 
-#include "battle-entity.h"
-#include "battle-entity-state.h"
 #include "battle-entity-state-moving.h"
+#include "battle-entity-state.h"
+#include "battle-entity.h"
 #include "character.h"
 #include "walksprite.h"
 
@@ -70,7 +70,7 @@ void
 battle_entity_state_moving_init(struct battle_entity_state_moving *mv, struct battle_entity *et, int dstx, int dsty)
 {
 	assert(mv);
-	assert(et);
+	assert(battle_entity_ok(et));
 
 	walksprite_init(&mv->ws, et->ch->sprites[CHARACTER_SPRITE_NORMAL], 40);
 	mv->x = dstx;
@@ -81,7 +81,7 @@ int
 battle_entity_state_moving_update(struct battle_entity_state_moving *mv, struct battle_entity *et, unsigned int ticks)
 {
 	assert(mv);
-	assert(et);
+	assert(battle_entity_ok(et));
 
 	int step_x, step_y, delta_x, delta_y;
 
@@ -114,7 +114,7 @@ battle_entity_state_moving_draw(const struct battle_entity_state_moving *mv, con
 void
 battle_entity_state_moving(struct battle_entity *et, int dstx, int dsty)
 {
-	assert(et);
+	assert(battle_entity_ok(et));
 
 	struct self *self;
 

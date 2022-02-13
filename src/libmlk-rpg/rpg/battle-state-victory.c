@@ -23,10 +23,10 @@
 #include <core/panic.h>
 #include <core/window.h>
 
-#include "battle.h"
-#include "battle-state.h"
 #include "battle-state-closing.h"
 #include "battle-state-victory.h"
+#include "battle-state.h"
+#include "battle.h"
 #include "rpg_p.h"
 
 struct self {
@@ -105,7 +105,7 @@ battle_state_victory_update(struct battle_state_victory *vic, struct battle *bt,
 }
 
 void
-battle_state_victory_draw(struct battle_state_victory *vic)
+battle_state_victory_draw(const struct battle_state_victory *vic)
 {
 	assert(vic);
 

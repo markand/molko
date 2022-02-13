@@ -18,16 +18,16 @@
 
 #include <assert.h>
 
-#include "battle-entity.h"
-#include "battle-entity-state.h"
 #include "battle-entity-state-normal.h"
+#include "battle-entity-state.h"
+#include "battle-entity.h"
 
 /* TODO: animate characters when they are inactive. */
 
 void
 battle_entity_state_normal(struct battle_entity *et)
 {
-	assert(et);
+	assert(battle_entity_ok(et));
 
 	/* Not needed yet. */
 	static struct battle_entity_state st;

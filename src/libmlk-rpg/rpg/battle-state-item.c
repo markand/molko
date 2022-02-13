@@ -25,12 +25,12 @@
 #include <rpg/inventory.h>
 #include <rpg/item.h>
 
-#include "battle-entity-state.h"
 #include "battle-entity-state-moving.h"
 #include "battle-entity-state-normal.h"
+#include "battle-entity-state.h"
 #include "battle-message.h"
-#include "battle-state.h"
 #include "battle-state-item.h"
+#include "battle-state.h"
 #include "battle.h"
 
 struct self {
@@ -69,8 +69,8 @@ battle_state_item_init(struct battle_state_item *it,
 {
 	assert(it);
 	assert(bt);
-	assert(source);
-	assert(target);
+	assert(battle_entity_ok(source));
+	assert(battle_entity_ok(target));
 	assert(slot);
 
 	it->source = source;
@@ -130,8 +130,8 @@ battle_state_item(struct battle *bt,
                   struct battle_entity *target,
                   struct inventory_slot *slot)
 {
-	assert(source);
-	assert(target);
+	assert(battle_entity_ok(source));
+	assert(battle_entity_ok(target));
 	assert(slot);
 	assert(bt);
 

@@ -23,15 +23,15 @@
 #include <core/panic.h>
 #include <core/sprite.h>
 
-#include "battle.h"
-#include "battle-state.h"
-#include "battle-state-attacking.h"
-#include "battle-state-check.h"
-#include "battle-entity-state.h"
 #include "battle-entity-state-attacking.h"
 #include "battle-entity-state-blinking.h"
 #include "battle-entity-state-moving.h"
 #include "battle-entity-state-normal.h"
+#include "battle-entity-state.h"
+#include "battle-state-attacking.h"
+#include "battle-state-check.h"
+#include "battle-state.h"
+#include "battle.h"
 #include "character.h"
 
 struct self {
@@ -75,8 +75,8 @@ battle_state_attacking_init(struct battle_state_attacking *atk,
                             struct battle_entity *target)
 {
 	assert(atk);
-	assert(source);
-	assert(target);
+	assert(battle_entity_ok(source));
+	assert(battle_entity_ok(target));
 
 	int x, y;
 
@@ -101,6 +101,9 @@ battle_state_attacking_init(struct battle_state_attacking *atk,
 int
 battle_state_attacking_update(struct battle_state_attacking *atk, struct battle *bt)
 {
+	assert(atk);
+	assert(bt);
+
 	if (!battle_entity_update(atk->source, 0))
 		return 0;
 
@@ -139,8 +142,8 @@ battle_state_attacking_update(struct battle_state_attacking *atk, struct battle 
 void
 battle_state_attacking(struct battle_entity *source, struct battle_entity *target, struct battle *bt)
 {
-	assert(source);
-	assert(target);
+	assert(battle_entity_ok(source));
+	assert(battle_entity_ok(target));
 	assert(bt);
 
 	struct self *self;

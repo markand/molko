@@ -28,13 +28,13 @@
 
 #include <ui/theme.h>
 
-#include "battle.h"
 #include "battle-bar.h"
-#include "battle-state.h"
 #include "battle-state-item.h"
 #include "battle-state-menu.h"
 #include "battle-state-selection.h"
 #include "battle-state-sub.h"
+#include "battle-state.h"
+#include "battle.h"
 #include "character.h"
 #include "inventory.h"
 #include "selection.h"
@@ -252,8 +252,11 @@ battle_state_selection_handle(struct battle_state_selection *stl, struct battle 
 }
 
 void
-battle_state_selection_draw(struct battle_state_selection *stl, const struct battle *bt)
+battle_state_selection_draw(const struct battle_state_selection *stl, const struct battle *bt)
 {
+	assert(stl);
+	assert(bt);
+
 	if (stl->select.index_character == -1U) {
 		/* All selected. */
 		if (stl->select.index_side == 0)
@@ -273,6 +276,7 @@ void
 battle_state_selection(struct battle *bt, const struct selection *select)
 {
 	assert(bt);
+	assert(select);
 
 	struct self *self;
 

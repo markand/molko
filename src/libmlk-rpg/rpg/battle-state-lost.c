@@ -23,10 +23,10 @@
 #include <core/panic.h>
 #include <core/window.h>
 
-#include "battle.h"
-#include "battle-state.h"
 #include "battle-state-closing.h"
 #include "battle-state-lost.h"
+#include "battle-state.h"
+#include "battle.h"
 #include "rpg_p.h"
 
 struct self {

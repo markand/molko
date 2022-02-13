@@ -39,7 +39,7 @@ int
 battle_state_victory_update(struct battle_state_victory *, struct battle *, unsigned int);
 
 void
-battle_state_victory_draw(struct battle_state_victory *);
+battle_state_victory_draw(const struct battle_state_victory *);
 
 void
 battle_state_victory(struct battle *);

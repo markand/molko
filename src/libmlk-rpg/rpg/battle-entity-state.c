@@ -25,7 +25,7 @@ int
 battle_entity_state_update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks)
 {
 	assert(st);
-	assert(et);
+	assert(battle_entity_ok(et));
 
 	if (st->update)
 		return st->update(st, et, ticks);
@@ -37,6 +37,7 @@ void
 battle_entity_state_draw(const struct battle_entity_state *st, const struct battle_entity *et)
 {
 	assert(st);
+	assert(battle_entity_ok(et));
 
 	if (st->draw)
 		st->draw(st, et);
@@ -47,7 +48,7 @@ battle_entity_state_draw(const struct battle_entity_state *st, const struct batt
 void
 battle_entity_state_finish(struct battle_entity_state *st, struct battle_entity *et)
 {
-	assert(et);
+	assert(battle_entity_ok(et));
 
 	if (st->finish)
 		st->finish(st, et);

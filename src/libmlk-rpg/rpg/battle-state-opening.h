@@ -29,7 +29,7 @@ int
 battle_state_opening_update(struct battle_state_opening *, struct battle *, unsigned int);
 
 void
-battle_state_opening_draw(const struct battle_state_opening *, const struct battle *);
+battle_state_opening_draw(const struct battle_state_opening *);
 
 void
 battle_state_opening(struct battle *);
