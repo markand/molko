@@ -28,6 +28,10 @@
 #include "battle-state-attacking.h"
 #include "battle-state-check.h"
 #include "battle-entity-state.h"
+#include "battle-entity-state-attacking.h"
+#include "battle-entity-state-blinking.h"
+#include "battle-entity-state-moving.h"
+#include "battle-entity-state-normal.h"
 #include "character.h"
 
 struct self {

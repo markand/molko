@@ -26,16 +26,15 @@
 
 #include "battle-entity.h"
 #include "battle-entity-state.h"
+#include "battle-entity-state-blinking.h"
 #include "character.h"
 
 #define TRANSPARENT     (150)
 #define OPAQUE          (255)
 
-struct blink {
+struct self {
+	struct battle_entity_state_blinking data;
 	struct battle_entity_state state;
-	struct texture *tex;
-	unsigned int elapsed;
-	unsigned int count;
 };
 
 static int
@@ -43,7 +42,31 @@ update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ti
 {
 	(void)et;
 
-	struct blink *blk = st->data;
+	return battle_entity_state_blinking_update(st->data, ticks);
+}
+
+static void
+finish(struct battle_entity_state *st, struct battle_entity *et)
+{
+	(void)et;
+
+	free(st->data);
+}
+
+void
+battle_entity_state_blinking_init(struct battle_entity_state_blinking *blk, struct battle_entity *et)
+{
+	assert(blk);
+	assert(battle_entity_ok(et));
+
+	blk->tex = et->ch->sprites[CHARACTER_SPRITE_NORMAL]->texture;
+	texture_set_alpha_mod(blk->tex, TRANSPARENT);
+}
+
+int
+battle_entity_state_blinking_update(struct battle_entity_state_blinking *blk, unsigned int ticks)
+{
+	assert(blk);
 
 	blk->elapsed += ticks;
 
@@ -57,30 +80,18 @@ update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ti
 	return blk->count >= 3;
 }
 
-static void
-finish(struct battle_entity_state *st, struct battle_entity *et)
-{
-	(void)et;
-
-	free(st->data);
-}
-
 void
 battle_entity_state_blinking(struct battle_entity *et)
 {
 	assert(et);
 
-	struct blink *blk;
+	struct self *self;
 
-	if (!(blk = alloc_new0(sizeof (*blk))))
-		panic();
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.update = update;
+	self->state.finish = finish;
 
-	blk->tex = et->ch->sprites[CHARACTER_SPRITE_NORMAL]->texture;
-	texture_set_alpha_mod(blk->tex, TRANSPARENT);
-
-	blk->state.data = blk;
-	blk->state.update = update;
-	blk->state.finish = finish;
-
-	battle_entity_switch(et, &blk->state);
+	battle_entity_state_blinking_init(&self->data, et);
+	battle_entity_switch(et, &self->state);
 }

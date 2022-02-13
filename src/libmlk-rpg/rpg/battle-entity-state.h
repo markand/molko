@@ -42,19 +42,6 @@ battle_entity_state_draw(const struct battle_entity_state *, const struct battle
 void
 battle_entity_state_finish(struct battle_entity_state *, struct battle_entity *);
 
-/* Defined in their own files. */
-void
-battle_entity_state_normal(struct battle_entity *);
-
-void
-battle_entity_state_moving(struct battle_entity *, int, int);
-
-void
-battle_entity_state_blinking(struct battle_entity *);
-
-void
-battle_entity_state_attacking(struct battle_entity *, struct sprite *);
-
 CORE_END_DECLS
 
 #endif /* !MLK_RPG_BATTLE_ENTITY_STATE_H */

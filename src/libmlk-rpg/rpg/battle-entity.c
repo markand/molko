@@ -26,6 +26,7 @@
 #include "battle.h"
 #include "battle-entity.h"
 #include "battle-entity-state.h"
+#include "battle-entity-state-normal.h"
 #include "character.h"
 
 static void

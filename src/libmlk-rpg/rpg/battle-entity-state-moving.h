@@ -1,5 +1,5 @@
 /*
- * battle-entity-state-normal.c -- the entity is normal
+ * battle-entity-state-moving.h -- the entity is moving
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,21 +16,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
+#ifndef MLK_RPG_BATTLE_ENTITY_STATE_MOVING_H
+#define MLK_RPG_BATTLE_ENTITY_STATE_MOVING_H
 
-#include "battle-entity.h"
-#include "battle-entity-state.h"
-#include "battle-entity-state-normal.h"
+#include <rpg/walksprite.h>
 
-/* TODO: animate characters when they are inactive. */
+struct battle_entity_state_moving {
+	struct walksprite ws;
+	int x;
+	int y;
+};
 
 void
-battle_entity_state_normal(struct battle_entity *et)
-{
-	assert(et);
+battle_entity_state_moving_init(struct battle_entity_state_moving *, struct battle_entity *, int, int);
 
-	/* Not needed yet. */
-	static struct battle_entity_state st;
+int
+battle_entity_state_moving_update(struct battle_entity_state_moving *, struct battle_entity *, unsigned int);
 
-	battle_entity_switch(et, &st);
-}
+void
+battle_entity_state_moving_draw(const struct battle_entity_state_moving *, const struct battle_entity *);
+
+void
+battle_entity_state_moving(struct battle_entity *, int, int);
+
+#endif /* !MLK_RPG_BATTLE_ENTITY_STATE_MOVING_H */

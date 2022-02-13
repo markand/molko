@@ -1,5 +1,5 @@
 /*
- * battle-entity-state-normal.c -- the entity is normal
+ * battle-entity-state-normal.h -- the entity is normal
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,21 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <assert.h>
+#ifndef MLK_RPG_BATTLE_ENTITY_STATE_NORMAL_H
+#define MLK_RPG_BATTLE_ENTITY_STATE_NORMAL_H
 
-#include "battle-entity.h"
-#include "battle-entity-state.h"
-#include "battle-entity-state-normal.h"
-
-/* TODO: animate characters when they are inactive. */
+struct battle_entity;
 
 void
-battle_entity_state_normal(struct battle_entity *et)
-{
-	assert(et);
+battle_entity_state_normal(struct battle_entity *);
 
-	/* Not needed yet. */
-	static struct battle_entity_state st;
+#endif /* !MLK_RPG_BATTLE_ENTITY_STATE_NORMAL_H */
 
-	battle_entity_switch(et, &st);
-}

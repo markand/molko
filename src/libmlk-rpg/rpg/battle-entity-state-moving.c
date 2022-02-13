@@ -25,6 +25,7 @@
 
 #include "battle-entity.h"
 #include "battle-entity-state.h"
+#include "battle-entity-state-moving.h"
 #include "character.h"
 #include "walksprite.h"
 
@@ -32,52 +33,29 @@
 #define SEC   1000
 #define WALK  40
 
-struct position {
+struct self {
+	struct battle_entity_state_moving data;
 	struct battle_entity_state state;
-	struct walksprite ws;
-
-	/* Destination. */
-	int x;
-	int y;
 };
 
 static inline unsigned int
-orientation(const struct position *pos, const struct battle_entity *et)
+orientation(const struct battle_entity_state_moving *mv, const struct battle_entity *et)
 {
 	/* TODO: support diagonal. */
 	/* See: walksprite definitions. */
-	return pos->x < et->x ? 6 : 2;
+	return mv->x < et->x ? 6 : 2;
 }
 
 static int
 update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ticks)
 {
-	struct position *pos = st->data;
-	int step_x, step_y, delta_x, delta_y;
-
-	delta_x = pos->x < et->x ? -1 : +1;
-	delta_y = pos->y < et->y ? -1 : +1;
-	step_x = fmin(SPEED * ticks / SEC, abs(et->x - pos->x));
-	step_y = fmin(SPEED * ticks / SEC, abs(et->y - pos->y));
-
-	et->x += delta_x * step_x;
-	et->y += delta_y * step_y;
-
-	if (et->x != pos->x || et->y != pos->y)
-		walksprite_update(&pos->ws, ticks);
-	else
-		walksprite_reset(&pos->ws);
-
-	return et->x == pos->x && et->y == pos->y;
+	return battle_entity_state_moving_update(st->data, et, ticks);
 }
 
 static void
 draw(const struct battle_entity_state *st, const struct battle_entity *et)
 {
-	/* TODO: compute orientation. */
-	struct position *pos = st->data;
-
-	walksprite_draw(&pos->ws, orientation(pos, et), et->x, et->y);
+	battle_entity_state_moving_draw(st->data, et);
 }
 
 static void
@@ -89,23 +67,63 @@ finish(struct battle_entity_state *st, struct battle_entity *et)
 }
 
 void
-battle_entity_state_moving(struct battle_entity *et, int destx, int desty)
+battle_entity_state_moving_init(struct battle_entity_state_moving *mv, struct battle_entity *et, int dstx, int dsty)
+{
+	assert(mv);
+	assert(et);
+
+	walksprite_init(&mv->ws, et->ch->sprites[CHARACTER_SPRITE_NORMAL], 40);
+	mv->x = dstx;
+	mv->y = dsty;
+}
+
+int
+battle_entity_state_moving_update(struct battle_entity_state_moving *mv, struct battle_entity *et, unsigned int ticks)
+{
+	assert(mv);
+	assert(et);
+
+	int step_x, step_y, delta_x, delta_y;
+
+	delta_x = mv->x < et->x ? -1 : +1;
+	delta_y = mv->y < et->y ? -1 : +1;
+	step_x = fmin(SPEED * ticks / SEC, abs(et->x - mv->x));
+	step_y = fmin(SPEED * ticks / SEC, abs(et->y - mv->y));
+
+	et->x += delta_x * step_x;
+	et->y += delta_y * step_y;
+
+	if (et->x != mv->x || et->y != mv->y)
+		walksprite_update(&mv->ws, ticks);
+	else
+		walksprite_reset(&mv->ws);
+
+	return et->x == mv->x && et->y == mv->y;
+}
+
+void
+battle_entity_state_moving_draw(const struct battle_entity_state_moving *mv, const struct battle_entity *et)
+{
+	assert(mv);
+	assert(battle_entity_ok(et));
+
+	/* TODO: compute orientation. */
+	walksprite_draw(&mv->ws, orientation(mv, et), et->x, et->y);
+}
+
+void
+battle_entity_state_moving(struct battle_entity *et, int dstx, int dsty)
 {
 	assert(et);
 
-	struct position *pos;
+	struct self *self;
 
-	if (!(pos = alloc_new0(sizeof (*pos))))
-		panic();
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.update = update;
+	self->state.draw = draw;
+	self->state.finish = finish;
 
-	walksprite_init(&pos->ws, et->ch->sprites[CHARACTER_SPRITE_NORMAL], 40);
-	pos->x = destx;
-	pos->y = desty;
-
-	pos->state.data = pos;
-	pos->state.update = update;
-	pos->state.draw = draw;
-	pos->state.finish = finish;
-
-	battle_entity_switch(et, &pos->state);
+	battle_entity_state_moving_init(&self->data, et, dstx, dsty);
+	battle_entity_switch(et, &self->state);
 }

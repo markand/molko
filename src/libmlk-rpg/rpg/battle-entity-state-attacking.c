@@ -26,10 +26,11 @@
 
 #include "battle-entity.h"
 #include "battle-entity-state.h"
+#include "battle-entity-state-attacking.h"
 
-struct data {
+struct self {
+	struct battle_entity_state_attacking data;
 	struct battle_entity_state state;
-	struct animation anim;
 };
 
 static int
@@ -37,17 +38,13 @@ update(struct battle_entity_state *st, struct battle_entity *et, unsigned int ti
 {
 	(void)et;
 
-	struct data *data = st->data;
-
-	return animation_update(&data->anim, ticks);
+	return battle_entity_state_attacking_update(st->data, ticks);
 }
 
 static void
 draw(const struct battle_entity_state *st, const struct battle_entity *et)
 {
-	const struct data *data = st->data;
-
-	animation_draw(&data->anim, et->x, et->y);
+	battle_entity_state_attacking_draw(st->data, et);
 }
 
 static void
@@ -59,23 +56,46 @@ finish(struct battle_entity_state *st, struct battle_entity *et)
 }
 
 void
-battle_entity_state_attacking(struct battle_entity *et, struct sprite *which)
+battle_entity_state_attacking_init(struct battle_entity_state_attacking *atk, const struct sprite *which)
+{
+	assert(atk);
+	assert(sprite_ok(which));
+
+	animation_init(&atk->anim, which, 100);
+	animation_start(&atk->anim);
+}
+
+int
+battle_entity_state_attacking_update(struct battle_entity_state_attacking *atk, unsigned int ticks)
+{
+	assert(atk);
+
+	return animation_update(&atk->anim, ticks);
+}
+
+void
+battle_entity_state_attacking_draw(const struct battle_entity_state_attacking *atk, const struct battle_entity *et)
+{
+	assert(atk);
+	assert(battle_entity_ok(et));
+
+	animation_draw(&atk->anim, et->x, et->y);
+}
+
+void
+battle_entity_state_attacking(struct battle_entity *et, const struct sprite *which)
 {
 	assert(battle_entity_ok(et));
 	assert(sprite_ok(which));
 
-	struct data *data;
+	struct self *self;
 
-	if (!(data = alloc_new0(sizeof (*data))))
-		panic();
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.update = update;
+	self->state.draw = draw;
+	self->state.finish = finish;
 
-	animation_init(&data->anim, which, 100);
-	animation_start(&data->anim);
-
-	data->state.data = data;
-	data->state.update = update;
-	data->state.draw = draw;
-	data->state.finish = finish;
-
-	battle_entity_switch(et, &data->state);
+	battle_entity_state_attacking_init(&self->data, which);
+	battle_entity_switch(et, &self->state);
 }

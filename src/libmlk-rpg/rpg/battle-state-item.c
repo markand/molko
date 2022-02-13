@@ -26,6 +26,8 @@
 #include <rpg/item.h>
 
 #include "battle-entity-state.h"
+#include "battle-entity-state-moving.h"
+#include "battle-entity-state-normal.h"
 #include "battle-message.h"
 #include "battle-state.h"
 #include "battle-state-item.h"

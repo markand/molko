@@ -23,9 +23,13 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-bar.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-bar.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-attacking.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-attacking.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-blinking.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-blinking.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-moving.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-moving.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-normal.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-normal.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity.c
