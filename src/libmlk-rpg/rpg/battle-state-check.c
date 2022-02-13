@@ -27,6 +27,9 @@
 
 #include "battle.h"
 #include "battle-state.h"
+#include "battle-state-check.h"
+#include "battle-state-lost.h"
+#include "battle-state-victory.h"
 #include "character.h"
 
 struct fadeout {
@@ -140,6 +143,22 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	(void)st;
 	(void)ticks;
 
+	return battle_state_check_update(bt);
+}
+
+static void
+finish(struct battle_state *st, struct battle *bt)
+{
+	(void)bt;
+
+	free(st);
+}
+
+int
+battle_state_check_update(struct battle *bt)
+{
+	assert(bt);
+
 	clean(bt);
 
 	if (is_dead(bt))
@@ -157,9 +176,12 @@ battle_state_check(struct battle *bt)
 {
 	assert(bt);
 
-	static struct battle_state self = {
-		.update = update
-	};
+	struct battle_state *self;
 
-	battle_switch(bt, &self);
+	self = alloc_new0(sizeof (*self));
+	self->data = bt;
+	self->update = update;
+	self->finish = finish;
+
+	battle_switch(bt, self);
 }

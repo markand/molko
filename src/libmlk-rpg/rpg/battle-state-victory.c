@@ -23,15 +23,15 @@
 #include <core/panic.h>
 #include <core/window.h>
 
-#include <rpg/message.h>
-
 #include "battle.h"
 #include "battle-state.h"
+#include "battle-state-closing.h"
+#include "battle-state-victory.h"
 #include "rpg_p.h"
 
-struct victory {
-	struct battle_state self;
-	struct message msg;
+struct self {
+	struct battle_state_victory data;
+	struct battle_state state;
 };
 
 static void
@@ -39,9 +39,7 @@ handle(struct battle_state *st, struct battle *bt, const union event *ev)
 {
 	(void)bt;
 
-	struct victory *vic = st->data;
-
-	message_handle(&vic->msg, ev);
+	battle_state_victory_handle(st->data, ev);
 }
 
 static int
@@ -49,12 +47,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	(void)bt;
 
-	struct victory *vic = st->data;
-
-	if (message_update(&vic->msg, ticks))
-		battle_state_closing(bt);
-
-	return 0;
+	return battle_state_victory_update(st->data, bt, ticks);
 }
 
 static void
@@ -62,26 +55,13 @@ draw(const struct battle_state *st, const struct battle *bt)
 {
 	(void)bt;
 
-	const struct victory *vic = st->data;
-
-	message_draw(&vic->msg);
+	battle_state_victory_draw(st->data);
 }
 
 void
-battle_state_victory(struct battle *bt)
+battle_state_victory_init(struct battle_state_victory *vic, struct battle *bt)
 {
 	assert(bt);
-
-	struct victory *vic;
-
-	if (!(vic = alloc_new0(sizeof (*vic))))
-		panic();
-
-	/* TODO: compute money, xp and drop. */
-	vic->self.data = vic;
-	vic->self.handle = handle;
-	vic->self.update = update;
-	vic->self.draw = draw;
 
 	vic->msg.text[0] = _("Victory!");
 	vic->msg.theme = bt->theme;
@@ -99,8 +79,53 @@ battle_state_victory(struct battle *bt)
 	vic->msg.x = (window.w - vic->msg.w) / 2;
 
 	bt->status = BATTLE_STATUS_WON;
-	battle_switch(bt, &vic->self);
 
 	if (bt->music[1])
-		music_play(bt->music[1], MUSIC_NONE, 0);
+		music_play(bt->music[1], MUSIC_NONE);
+}
+
+void
+battle_state_victory_handle(struct battle_state_victory *vic, const union event *ev)
+{
+	assert(vic);
+
+	message_handle(&vic->msg, ev);
+}
+
+int
+battle_state_victory_update(struct battle_state_victory *vic, struct battle *bt, unsigned int ticks)
+{
+	assert(vic);
+	assert(bt);
+
+	if (message_update(&vic->msg, ticks))
+		battle_state_closing(bt);
+
+	return 0;
+}
+
+void
+battle_state_victory_draw(struct battle_state_victory *vic)
+{
+	assert(vic);
+
+	message_draw(&vic->msg);
+}
+
+void
+battle_state_victory(struct battle *bt)
+{
+	assert(bt);
+
+	struct self *self;
+
+	/* TODO: compute money, xp and drop. */
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.handle = handle;
+	self->state.update = update;
+	self->state.draw = draw;
+
+	battle_state_victory_init(&self->data, bt);
+	battle_switch(bt, &self->state);
 }

@@ -112,7 +112,7 @@ fire_action(struct battle *bt, struct character *owner, const struct selection *
 	animation_init(&data->animation, &registry_sprites[REGISTRY_TEXTURE_EXPLOSION], 12);
 	animation_start(&data->animation);
 
-	sound_play(&registry_sounds[REGISTRY_SOUND_FIRE], -1, 0);
+	sound_play(&registry_sounds[REGISTRY_SOUND_FIRE]);
 
 	action_stack_add(&bt->actions[0], &data->action);
 }

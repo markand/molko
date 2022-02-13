@@ -17,10 +17,16 @@
  */
 
 #include <assert.h>
+#include <stdlib.h>
+
+#include <core/alloc.h>
 
 #include "battle.h"
 #include "battle-bar.h"
 #include "battle-state.h"
+#include "battle-state-menu.h"
+#include "battle-state-selection.h"
+#include "battle-state-sub.h"
 #include "character.h"
 #include "spell.h"
 
@@ -54,6 +60,22 @@ handle(struct battle_state *st, struct battle *bt, const union event *ev)
 {
 	(void)st;
 
+	battle_state_menu_handle(bt, ev);
+}
+
+static void
+finish(struct battle_state *st, struct battle *bt)
+{
+	(void)bt;
+
+	free(st);
+}
+
+void
+battle_state_menu_handle(struct battle *bt, const union event *ev)
+{
+	assert(bt);
+
 	if (battle_bar_handle(&bt->bar, bt, ev)) {
 		switch (bt->bar.menu) {
 		case BATTLE_BAR_MENU_ATTACK:
@@ -78,10 +100,13 @@ battle_state_menu(struct battle *bt)
 {
 	assert(bt);
 
-	static struct battle_state self = {
-		.handle = handle,
-	};
+	struct battle_state *state;
+
+	state = alloc_new0(sizeof (*state));
+	state->data = bt;
+	state->handle = handle;
+	state->finish = finish;
 
 	battle_bar_open_menu(&bt->bar);
-	battle_switch(bt, &self);
+	battle_switch(bt, state);
 }

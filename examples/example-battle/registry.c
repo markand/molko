@@ -23,50 +23,62 @@
 #include <core/util.h>
 #include <core/sys.h>
 
-#include "registry.h"
+#include <assets/images/battle-background.h>
+#include <assets/images/black-cat.h>
+#include <assets/images/haunted-wood.h>
 
-#define PATH(r) util_pathf("%s/mlk-adventure/%s", sys_dir(SYS_DIR_DATA), r)
+#include <assets/sounds/fire.h>
+
+#include <assets/sprites/explosion.h>
+#include <assets/sprites/john-sword.h>
+#include <assets/sprites/john-walk.h>
+#include <assets/sprites/ui-cursor.h>
+
+#include "registry.h"
 
 struct texture registry_images[REGISTRY_IMAGE_NUM];
 struct texture registry_textures[REGISTRY_TEXTURE_NUM];
 struct sprite registry_sprites[REGISTRY_TEXTURE_NUM];
 struct sound registry_sounds[REGISTRY_SOUND_NUM];
 
-#define REGISTRY_IMAGE(i, path) \
-	{ (i), (path) }
+#define REGISTRY_IMAGE(i, data) \
+	{ (i), (data), sizeof (data) }
 
 static const struct {
 	enum registry_image index;
-	const char *path;
+	const unsigned char *data;
+	size_t datasz;
 } images[] = {
-	REGISTRY_IMAGE(REGISTRY_IMAGE_BATTLE_BACKGROUND, "images/battle-background.png")
+	REGISTRY_IMAGE(REGISTRY_IMAGE_BATTLE_BACKGROUND, assets_images_battle_background)
 };
 
-#define REGISTRY_TEXTURE(s, path, cw, ch) \
-	{ (s), (path), (cw), (ch) }
+#define REGISTRY_TEXTURE(s, data, cw, ch) \
+	{ (s), (data), sizeof (data), (cw), (ch) }
 
 static const struct {
 	enum registry_texture index;
-	const char *path;
+	const unsigned char *data;
+	size_t datasz;
 	unsigned int cellw;
 	unsigned int cellh;
 } textures[] = {
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CURSOR, "sprites/ui-cursor.png", 24, 24),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_EXPLOSION, "sprites/explosion.png", 256, 256),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_SWORD, "sprites/john-sword.png", 256, 256),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_WALK, "sprites/john-walk.png", 256, 256),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_HAUNTED_WOOD, "images/haunted-wood.png", 0, 0),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_BLACK_CAT, "images/black-cat.png", 0, 0)
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CURSOR, assets_sprites_ui_cursor, 24, 24),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_EXPLOSION, assets_sprites_explosion, 256, 256),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_SWORD, assets_sprites_john_sword, 256, 256),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_WALK, assets_sprites_john_walk, 256, 256),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_HAUNTED_WOOD, assets_images_haunted_wood, 0, 0),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_BLACK_CAT, assets_images_black_cat, 0, 0)
 };
 
-#define REGISTRY_SOUND(s, path) \
-	{ (s), (path) }
+#define REGISTRY_SOUND(s, data) \
+	{ (s), (data), sizeof (data) }
 
 static const struct {
 	enum registry_sound index;
-	const char *path;
+	const unsigned char *data;
+	size_t datasz;
 } sounds[] = {
-	REGISTRY_SOUND(REGISTRY_SOUND_FIRE, "sounds/fire.wav")
+	REGISTRY_SOUND(REGISTRY_SOUND_FIRE, assets_sounds_fire)
 };
 
 static void
@@ -75,7 +87,7 @@ load_images(void)
 	for (size_t i = 0; i < UTIL_SIZE(images); ++i) {
 		struct texture *texture = &registry_images[images[i].index];
 
-		if (image_open(texture, PATH(images[i].path)) < 0)
+		if (image_openmem(texture, images[i].data, images[i].datasz) < 0)
 			panic();
 	}
 }
@@ -87,7 +99,7 @@ load_textures_and_sprites(void)
 		struct texture *texture = &registry_textures[textures[i].index];
 		struct sprite *sprite = &registry_sprites[textures[i].index];
 
-		if (image_open(texture, PATH(textures[i].path)) < 0)
+		if (image_openmem(texture, textures[i].data, textures[i].datasz) < 0)
 			panic();
 
 		if (textures[i].cellw == 0 || textures[i].cellh == 0)
@@ -103,7 +115,7 @@ load_sounds(void)
 	for (size_t i = 0; i < UTIL_SIZE(sounds); ++i) {
 		struct sound *sound = &registry_sounds[sounds[i].index];
 
-		if (sound_open(sound, PATH(sounds[i].path)) < 0)
+		if (sound_openmem(sound, sounds[i].data, sounds[i].datasz) < 0)
 			panic();
 	}
 }

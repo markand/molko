@@ -17,9 +17,13 @@
  */
 
 #include <assert.h>
+#include <stdlib.h>
+
+#include <core/alloc.h>
 
 #include "battle.h"
 #include "battle-state.h"
+#include "battle-state-ai.h"
 #include "character.h"
 
 static int
@@ -27,6 +31,22 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	(void)st;
 	(void)ticks;
+
+	return battle_state_ai_update(bt);
+}
+
+static void
+finish(struct battle_state *st, struct battle *bt)
+{
+	(void)bt;
+
+	free(st);
+}
+
+int
+battle_state_ai_update(struct battle *bt)
+{
+	assert(bt);
 
 	struct character *ch = bt->order_cur->ch;
 
@@ -44,9 +64,12 @@ battle_state_ai(struct battle *bt)
 {
 	assert(bt);
 
-	static struct battle_state self = {
-		.update = update
-	};
+	struct battle_state *self;
 
-	battle_switch(bt, &self);
+	self = alloc_new0(sizeof (*self));
+	self->data = bt;
+	self->update = update;
+	self->finish = finish;
+
+	battle_switch(bt, self);
 }

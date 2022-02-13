@@ -1,5 +1,5 @@
 /*
- * battle-state-selection.h -- battle state (selection)
+ * battle-state-selection.c -- battle state (selection)
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -31,75 +31,79 @@
 #include "battle.h"
 #include "battle-bar.h"
 #include "battle-state.h"
+#include "battle-state-item.h"
+#include "battle-state-menu.h"
+#include "battle-state-selection.h"
+#include "battle-state-sub.h"
 #include "character.h"
 #include "inventory.h"
 #include "selection.h"
 #include "spell.h"
 
-struct select {
+struct self {
+	struct battle_state_selection data;
 	struct battle_state state;
-	struct selection slt;
 };
 
 static void
-use(const struct select *select, struct battle *bt)
+use(const struct battle_state_selection *slt, struct battle *bt)
 {
 	struct inventory_slot *slot;
-	struct character *source, *target;
+	struct battle_entity *source, *target;
 
 	if (bt->bar.sub_grid.selected >= INVENTORY_ITEM_MAX)
 		return;
 	if (!(slot = &bt->inventory->items[bt->bar.sub_grid.selected]))
 		return;
 
-	source = bt->order_cur->ch;
-	target = select->slt.index_side == 0
-		? bt->enemies[select->slt.index_character].ch
-		: bt->team[select->slt.index_character].ch;
+	source = bt->order_cur;
+	target = slt->select.index_side == 0
+		? &bt->enemies[slt->select.index_character]
+		: &bt->team[slt->select.index_character];
 
 	battle_state_item(bt, source, target, slot);
 }
 
 static void
-attack(struct select *select, struct battle *bt)
+attack(struct battle_state_selection *slt, struct battle *bt)
 {
 	struct character *target;
 
-	if (select->slt.index_side == 0)
-		target = bt->enemies[select->slt.index_character].ch;
+	if (slt->select.index_side == 0)
+		target = bt->enemies[slt->select.index_character].ch;
 	else
-		target = bt->team[select->slt.index_character].ch;
+		target = bt->team[slt->select.index_character].ch;
 
 	battle_attack(bt, bt->order_cur->ch, target);
 }
 
 static void
-cast(struct select *select, struct battle *bt)
+cast(struct battle_state_selection *slt, struct battle *bt)
 {
 	struct character *source = bt->order_cur->ch;
 	const struct spell *spell = source->spells[bt->bar.sub_grid.selected];
 
-	battle_cast(bt, source, spell, &select->slt);
+	battle_cast(bt, source, spell, &slt->select);
 }
 
 static void
-select_adj_in(struct select *select, const struct battle_entity *entities, size_t entitiesz, int step)
+select_adj_in(struct battle_state_selection *slt, const struct battle_entity *entities, size_t entitiesz, int step)
 {
-	assert(select->slt.index_character != (unsigned int)-1);
+	assert(slt->select.index_character != (unsigned int)-1);
 
-	unsigned int newselection = select->slt.index_character;
+	unsigned int newselection = slt->select.index_character;
 
 	if (step < 0) {
 		while (newselection > 0) {
 			if (character_ok(entities[--newselection].ch)) {
-				select->slt.index_character = newselection;
+				slt->select.index_character = newselection;
 				break;
 			}
 		}
 	} else {
 		while (newselection < entitiesz) {
 			if (character_ok(entities[++newselection].ch)) {
-				select->slt.index_character = newselection;
+				slt->select.index_character = newselection;
 				break;
 			}
 		}
@@ -107,20 +111,18 @@ select_adj_in(struct select *select, const struct battle_entity *entities, size_
 }
 
 static void
-select_adj(struct select *select, const struct battle *bt, int step)
+select_adj(struct battle_state_selection *slt, const struct battle *bt, int step)
 {
-	if (select->slt.index_side == 0)
-		select_adj_in(select, bt->enemies, UTIL_SIZE(bt->enemies), step);
+	if (slt->select.index_side == 0)
+		select_adj_in(slt, bt->enemies, UTIL_SIZE(bt->enemies), step);
 	else
-		select_adj_in(select, bt->team, UTIL_SIZE(bt->team), step);
+		select_adj_in(slt, bt->team, UTIL_SIZE(bt->team), step);
 }
 
 static void
-handle_keydown(struct battle_state *st, struct battle *bt, const union event *ev)
+handle_keydown(struct battle_state_selection *stl, struct battle *bt, const union event *ev)
 {
 	assert(ev->type == EVENT_KEYDOWN);
-
-	struct select *select = st->data;
 
 	switch (ev->key.key) {
 	case KEY_ESCAPE:
@@ -137,35 +139,35 @@ handle_keydown(struct battle_state *st, struct battle *bt, const union event *ev
 	case KEY_ENTER:
 		switch (bt->bar.menu) {
 		case BATTLE_BAR_MENU_ATTACK:
-			attack(select, bt);
+			attack(stl, bt);
 			break;
 		case BATTLE_BAR_MENU_MAGIC:
-			cast(select, bt);
+			cast(stl, bt);
 			break;
 		case BATTLE_BAR_MENU_OBJECTS:
-			use(select, bt);
+			use(stl, bt);
 			break;
 		default:
 			break;
 		}
 		break;
 	case KEY_LEFT:
-		if (select->slt.allowed_sides & SELECTION_SIDE_ENEMY)
-			select->slt.index_side = 0;
+		if (stl->select.allowed_sides & SELECTION_SIDE_ENEMY)
+			stl->select.index_side = 0;
 		break;
 	case KEY_RIGHT:
-		if (select->slt.allowed_sides & SELECTION_SIDE_TEAM)
-			select->slt.index_side = 1;
+		if (stl->select.allowed_sides & SELECTION_SIDE_TEAM)
+			stl->select.index_side = 1;
 		break;
 	case KEY_UP:
-		select_adj(select, bt, -1);
+		select_adj(stl, bt, -1);
 		break;
 	case KEY_DOWN:
-		select_adj(select, bt, +1);
+		select_adj(stl, bt, +1);
 		break;
 	case KEY_TAB:
-		if (select->slt.allowed_kinds == SELECTION_KIND_BOTH)
-			select->slt.index_character = -1;
+		if (stl->select.allowed_kinds == SELECTION_KIND_BOTH)
+			stl->select.index_character = -1;
 		break;
 	default:
 		break;
@@ -192,13 +194,10 @@ draw_cursor(const struct battle *bt, const struct battle_entity *et)
 }
 
 static void
-draw_cursors(const struct battle_state *st,
-             const struct battle *bt,
+draw_cursors(const struct battle *bt,
              const struct battle_entity *entities,
              size_t entitiesz)
 {
-	(void)st;
-
 	for (size_t i = 0; i < entitiesz; ++i) {
 		const struct battle_entity *et = &entities[i];
 
@@ -210,35 +209,13 @@ draw_cursors(const struct battle_state *st,
 static void
 handle(struct battle_state *st, struct battle *bt, const union event *ev)
 {
-	(void)st;
-
-	switch (ev->type) {
-	case EVENT_KEYDOWN:
-		handle_keydown(st, bt, ev);
-		break;
-	default:
-		break;
-	}
+	battle_state_selection_handle(st->data, bt, ev);
 }
 
 static void
 draw(const struct battle_state *st, const struct battle *bt)
 {
-	const struct select *select = st->data;
-
-	if (select->slt.index_character == -1U) {
-		/* All selected. */
-		if (select->slt.index_side == 0)
-			draw_cursors(st, bt, bt->enemies, UTIL_SIZE(bt->enemies));
-		else
-			draw_cursors(st, bt, bt->team, UTIL_SIZE(bt->team));
-	} else {
-		/* Select one. */
-		if (select->slt.index_side == 0)
-			draw_cursor(bt, &bt->enemies[select->slt.index_character]);
-		else
-			draw_cursor(bt, &bt->team[select->slt.index_character]);
-	}
+	battle_state_selection_draw(st->data, bt);
 }
 
 static void
@@ -250,20 +227,61 @@ finish(struct battle_state *st, struct battle *bt)
 }
 
 void
-battle_state_selection(struct battle *bt, const struct selection *slt)
+battle_state_selection_init(struct battle_state_selection *stl, const struct selection *select)
+{
+	assert(stl);
+	assert(select);
+
+	memcpy(&stl->select, select, sizeof (*select));
+}
+
+void
+battle_state_selection_handle(struct battle_state_selection *stl, struct battle *bt, const union event *ev)
+{
+	assert(stl);
+	assert(bt);
+	assert(ev);
+
+	switch (ev->type) {
+	case EVENT_KEYDOWN:
+		handle_keydown(stl, bt, ev);
+		break;
+	default:
+		break;
+	}
+}
+
+void
+battle_state_selection_draw(struct battle_state_selection *stl, const struct battle *bt)
+{
+	if (stl->select.index_character == -1U) {
+		/* All selected. */
+		if (stl->select.index_side == 0)
+			draw_cursors(bt, bt->enemies, UTIL_SIZE(bt->enemies));
+		else
+			draw_cursors(bt, bt->team, UTIL_SIZE(bt->team));
+	} else {
+		/* Select one. */
+		if (stl->select.index_side == 0)
+			draw_cursor(bt, &bt->enemies[stl->select.index_character]);
+		else
+			draw_cursor(bt, &bt->team[stl->select.index_character]);
+	}
+}
+
+void
+battle_state_selection(struct battle *bt, const struct selection *select)
 {
 	assert(bt);
 
-	struct select *select;
+	struct self *self;
 
-	if (!(select = alloc_new0(sizeof (*select))))
-		panic();
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.handle = handle;
+	self->state.draw = draw;
+	self->state.finish = finish;
 
-	select->state.data = select;
-	select->state.handle = handle;
-	select->state.draw = draw;
-	select->state.finish = finish;
-	memcpy(&select->slt, slt, sizeof (*slt));
-
-	battle_switch(bt, &select->state);
+	battle_state_selection_init(&self->data, select);
+	battle_switch(bt, &self->state);
 }

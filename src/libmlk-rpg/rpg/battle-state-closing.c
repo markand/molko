@@ -18,6 +18,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <core/alloc.h>
 #include <core/music.h>
@@ -27,12 +28,11 @@
 #include <core/window.h>
 
 #include "battle.h"
+#include "battle-state-closing.h"
 
-struct closing {
-	struct battle_state self;
-	struct texture texture;
-	unsigned int alpha;
-	unsigned int elapsed;
+struct self {
+	struct battle_state_closing data;
+	struct battle_state state;
 };
 
 static int
@@ -40,23 +40,7 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
 	(void)bt;
 
-	struct closing *closing = st->data;
-
-	closing->elapsed += ticks;
-
-	if (closing->elapsed > 8) {
-		closing->elapsed = 0;
-
-		if (closing->alpha == 255) {
-			music_stop(0);
-			return 1;
-		}
-
-		closing->alpha += 5;
-		texture_set_alpha_mod(&closing->texture, closing->alpha);
-	}
-
-	return 0;
+	return battle_state_closing_update(st->data, ticks);
 }
 
 static void
@@ -64,9 +48,7 @@ draw(const struct battle_state *st, const struct battle *bt)
 {
 	(void)bt;
 
-	const struct closing *closing = st->data;
-
-	texture_draw(&closing->texture, 0, 0);
+	battle_state_closing_draw(st->data);
 }
 
 static void
@@ -74,10 +56,69 @@ finish(struct battle_state *st, struct battle *bt)
 {
 	(void)bt;
 
-	struct closing *closing = st->data;
+	battle_state_closing_finish(st->data);
+	free(st->data);
+}
 
-	texture_finish(&closing->texture);
-	free(closing);
+void
+battle_state_closing_init(struct battle_state_closing *cls)
+{
+	assert(cls);
+
+	if (texture_new(&cls->texture, window.w, window.h) < 0)
+		panic();
+
+	PAINTER_BEGIN(&cls->texture);
+	texture_set_blend_mode(&cls->texture, TEXTURE_BLEND_BLEND);
+	painter_set_color(0x000000ff);
+	painter_clear();
+	painter_draw_rectangle(0, 0, window.w, window.h);
+	PAINTER_END();
+	
+	texture_set_alpha_mod(&cls->texture, 0);
+}
+
+int
+battle_state_closing_update(struct battle_state_closing *cls, unsigned int ticks)
+{
+	assert(cls);
+
+	cls->elapsed += ticks;
+
+	/* TODO: ??? */
+	if (cls->elapsed > 8) {
+		cls->elapsed = 0;
+
+		if (cls->alpha == 255) {
+			/* TODO: since OpenAL, no notion of global music. */
+#if 0
+			music_stop(0);
+#endif
+			return 1;
+		}
+
+		cls->alpha += 5;
+		texture_set_alpha_mod(&cls->texture, cls->alpha);
+	}
+
+	return 0;
+}
+
+void
+battle_state_closing_draw(struct battle_state_closing *cls)
+{
+	assert(cls);
+
+	texture_draw(&cls->texture, 0, 0);
+}
+
+void
+battle_state_closing_finish(struct battle_state_closing *cls)
+{
+	assert(cls);
+
+	texture_finish(&cls->texture);
+	memset(cls, 0, sizeof (*cls));
 }
 
 void
@@ -85,25 +126,14 @@ battle_state_closing(struct battle *bt)
 {
 	assert(bt);
 
-	struct closing *closing;
+	struct self *self;
 
-	if (!(closing = alloc_new0(sizeof (*closing))) ||
-	    texture_new(&closing->texture, window.w, window.h) < 0)
-		panic();
+	self = alloc_new0(sizeof (*self));
+	self->state.data = self;
+	self->state.update = update;
+	self->state.draw = draw;
+	self->state.finish = finish;
 
-	PAINTER_BEGIN(&closing->texture);
-	texture_set_blend_mode(&closing->texture, TEXTURE_BLEND_BLEND);
-	painter_set_color(0x000000ff);
-	painter_clear();
-	painter_draw_rectangle(0, 0, window.w, window.h);
-	PAINTER_END();
-
-	texture_set_alpha_mod(&closing->texture, 0);
-
-	closing->self.data = closing;
-	closing->self.update = update;
-	closing->self.draw = draw;
-	closing->self.finish = finish;
-
-	battle_switch(bt, &closing->self);
+	battle_state_closing_init(&self->data);
+	battle_switch(bt, &self->state);
 }

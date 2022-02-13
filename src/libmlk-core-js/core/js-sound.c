@@ -94,10 +94,7 @@ Sound_destructor(duk_context *ctx)
 static duk_ret_t
 Sound_proto_play(duk_context *ctx)
 {
-	const int channel = duk_get_int_default(ctx, 0, 0);
-	const unsigned int fadein = duk_get_uint_default(ctx, 1, 0);
-
-	if (sound_play(self(ctx), channel, fadein) < 0)
+	if (sound_play(self(ctx)) < 0)
 		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
 
 	return 0;
@@ -122,37 +119,7 @@ Sound_proto_resume(duk_context *ctx)
 static duk_ret_t
 Sound_proto_stop(duk_context *ctx)
 {
-	const unsigned int fadeout = duk_get_uint_default(ctx, 0, 0);
-
-	sound_stop(self(ctx), fadeout);
-
-	return 0;
-}
-
-static duk_ret_t
-Sound_pause(duk_context *ctx)
-{
-	(void)ctx;
-
-	sound_pause(NULL);
-
-	return 0;
-}
-
-static duk_ret_t
-Sound_resume(duk_context *ctx)
-{
-	(void)ctx;
-
-	sound_resume(NULL);
-
-	return 0;
-}
-
-static duk_ret_t
-Sound_stop(duk_context *ctx)
-{
-	sound_stop(NULL, duk_get_uint_default(ctx, 0, 0));
+	sound_stop(self(ctx));
 
 	return 0;
 }
@@ -165,20 +132,12 @@ static const duk_function_list_entry methods[] = {
 	{ NULL,                 NULL,                   0               }
 };
 
-static const duk_function_list_entry functions[] = {
-	{ "pause",              Sound_pause,            0               },
-	{ "resume",             Sound_resume,           0               },
-	{ "stop",               Sound_stop,             DUK_VARARGS     },
-	{ NULL,                 NULL,                   0               }
-};
-
 void
 js_sound_bind(duk_context *ctx)
 {
 	assert(ctx);
 
 	duk_push_c_function(ctx, Sound_constructor, 1);
-	duk_put_function_list(ctx, -1, functions);
 	duk_push_object(ctx);
 	duk_put_function_list(ctx, -1, methods);
 	duk_push_c_function(ctx, Sound_destructor, 1);

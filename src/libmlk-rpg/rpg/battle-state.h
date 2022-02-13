@@ -50,43 +50,6 @@ battle_state_draw(const struct battle_state *, const struct battle *);
 void
 battle_state_finish(struct battle_state *, struct battle *);
 
-/* States switchers, defined in their own files. */
-void
-battle_state_ai(struct battle *);
-
-void
-battle_state_attacking(struct battle *, struct character *, struct character *);
-
-void
-battle_state_item(struct battle *,
-                  struct character *,
-                  struct character *,
-                  struct inventory_slot *);
-
-void
-battle_state_check(struct battle *);
-
-void
-battle_state_closing(struct battle *);
-
-void
-battle_state_lost(struct battle *);
-
-void
-battle_state_menu(struct battle *);
-
-void
-battle_state_opening(struct battle *);
-
-void
-battle_state_selection(struct battle *, const struct selection *);
-
-void
-battle_state_sub(struct battle *);
-
-void
-battle_state_victory(struct battle *);
-
 CORE_END_DECLS
 
 #endif /* !MLK_RPG_BATTLE_STATE_H */

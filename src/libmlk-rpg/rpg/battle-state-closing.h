@@ -1,5 +1,5 @@
 /*
- * character-john.c -- john character
+ * battle-state-closing.h -- battle state (closing)
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,35 +16,32 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rpg/character.h>
+#ifndef MLK_RPG_BATTLE_STATE_CLOSING_H
+#define MLK_RPG_BATTLE_STATE_CLOSING_H
 
-#include "character-john.h"
-#include "spell-fire.h"
-#include "registry.h"
+#include <core/texture.h>
 
-static void
-adventurer_reset(struct character *ch)
-{
-	/* TODO: this function should compute the attack thanks to the level. */
-	ch->hpmax = 120;
-	ch->mpmax = 50;
-	ch->atk = 50;
-	ch->def = 50;
-	ch->agt = 50;
-	ch->luck = 50;
-}
+struct battle;
 
-const struct character character_john = {
-	.name = "John ",
-	.level = 1,
-	.hp = 120,
-	.mp = 50,
-	.reset = adventurer_reset,
-	.sprites = {
-		[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
-		[CHARACTER_SPRITE_SWORD] = &registry_sprites[REGISTRY_TEXTURE_JOHN_SWORD]
-	},
-	.spells = {
-		&spell_fire
-	}
+struct battle_state_closing {
+	struct texture texture;
+	unsigned int alpha;
+	unsigned int elapsed;
 };
+
+void
+battle_state_closing_init(struct battle_state_closing *);
+
+int
+battle_state_closing_update(struct battle_state_closing *, unsigned int);
+
+void
+battle_state_closing_draw(struct battle_state_closing *);
+
+void
+battle_state_closing_finish(struct battle_state_closing *);
+
+void
+battle_state_closing(struct battle *);
+
+#endif /* !MLK_RPG_BATTLE_STATE_CLOSING_H */

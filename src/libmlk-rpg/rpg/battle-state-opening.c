@@ -25,8 +25,9 @@
 #include <core/window.h>
 
 #include "battle.h"
-#include "battle-state-opening.h"
 #include "battle-state.h"
+#include "battle-state-check.h"
+#include "battle-state-opening.h"
 
 #define DELAY (1000U)
 

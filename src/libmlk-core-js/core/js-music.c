@@ -77,18 +77,9 @@ static duk_ret_t
 Music_play(duk_context *ctx)
 {
 	const int flags = duk_get_int_default(ctx, 0, MUSIC_NONE);
-	const unsigned int fadein = duk_get_uint_default(ctx, 0, 0);
 
-	if (music_play(self(ctx), flags, fadein) < 0)
+	if (music_play(self(ctx), flags) < 0)
 		return duk_error(ctx, DUK_ERR_ERROR, "%s", error());
-
-	return 0;
-}
-
-static duk_ret_t
-Music_playing(duk_context *ctx)
-{
-	duk_push_int(ctx, music_playing());
 
 	return 0;
 }
@@ -96,9 +87,7 @@ Music_playing(duk_context *ctx)
 static duk_ret_t
 Music_pause(duk_context *ctx)
 {
-	(void)ctx;
-
-	music_pause();
+	music_pause(self(ctx));
 
 	return 0;
 }
@@ -106,9 +95,7 @@ Music_pause(duk_context *ctx)
 static duk_ret_t
 Music_resume(duk_context *ctx)
 {
-	(void)ctx;
-
-	music_resume();
+	music_resume(self(ctx));
 
 	return 0;
 }
@@ -116,7 +103,7 @@ Music_resume(duk_context *ctx)
 static duk_ret_t
 Music_stop(duk_context *ctx)
 {
-	music_stop(duk_get_uint_default(ctx, 0, 0));
+	music_stop(self(ctx));
 
 	return 0;
 }
@@ -139,11 +126,6 @@ Music_destructor(duk_context *ctx)
 
 static const duk_function_list_entry methods[] = {
 	{ "play",               Music_play,             DUK_VARARGS     },
-	{ NULL,                 NULL,                   0               }
-};
-
-static const duk_function_list_entry functions[] = {
-	{ "playing",            Music_playing,          0               },
 	{ "pause",              Music_pause,            0               },
 	{ "resume",             Music_resume,           0               },
 	{ "stop",               Music_stop,             DUK_VARARGS     },
@@ -151,9 +133,9 @@ static const duk_function_list_entry functions[] = {
 };
 
 static const duk_number_list_entry flags[] = {
-	{ "NONE",       MUSIC_NONE              },
-	{ "LOOP",       MUSIC_LOOP              },
-	{ NULL,         0                       }
+	{ "NONE",              MUSIC_NONE                               },
+	{ "LOOP",              MUSIC_LOOP                               },
+	{ NULL,                0                                        }
 };
 
 void
@@ -162,12 +144,10 @@ js_music_bind(duk_context *ctx)
 	assert(ctx);
 
 	duk_push_c_function(ctx, Music_new, 1);
-	duk_put_function_list(ctx, -1, functions);
 	duk_push_object(ctx);
 	duk_put_number_list(ctx, -1, flags);
 	duk_put_prop_string(ctx, -2, "Flags");
 	duk_push_object(ctx);
-	duk_put_function_list(ctx, -1, functions);
 	duk_put_function_list(ctx, -1, methods);
 	duk_push_c_function(ctx, Music_destructor, 1);
 	duk_set_finalizer(ctx, -2);

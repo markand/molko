@@ -1,5 +1,5 @@
 /*
- * character-john.c -- john character
+ * battle-state-selection.h -- battle state (selection)
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,35 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rpg/character.h>
+#ifndef MLK_RPG_BATTLE_STATE_SELECTION_H
+#define MLK_RPG_BATTLE_STATE_SELECTION_H
 
-#include "character-john.h"
-#include "spell-fire.h"
-#include "registry.h"
+void
+battle_state_selection(struct battle *, const struct selection *);
 
-static void
-adventurer_reset(struct character *ch)
-{
-	/* TODO: this function should compute the attack thanks to the level. */
-	ch->hpmax = 120;
-	ch->mpmax = 50;
-	ch->atk = 50;
-	ch->def = 50;
-	ch->agt = 50;
-	ch->luck = 50;
-}
-
-const struct character character_john = {
-	.name = "John ",
-	.level = 1,
-	.hp = 120,
-	.mp = 50,
-	.reset = adventurer_reset,
-	.sprites = {
-		[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
-		[CHARACTER_SPRITE_SWORD] = &registry_sprites[REGISTRY_TEXTURE_JOHN_SWORD]
-	},
-	.spells = {
-		&spell_fire
-	}
-};
+#endif /* !MLK_RPG_BATTLE_STATE_SELECTION_H */

@@ -17,7 +17,9 @@
  */
 
 #include <assert.h>
+#include <stdlib.h>
 
+#include <core/alloc.h>
 #include <core/event.h>
 #include <core/sprite.h>
 #include <core/trace.h>
@@ -30,6 +32,9 @@
 #include "battle.h"
 #include "battle-bar.h"
 #include "battle-state.h"
+#include "battle-state-menu.h"
+#include "battle-state-selection.h"
+#include "battle-state-sub.h"
 #include "character.h"
 #include "spell.h"
 
@@ -118,6 +123,31 @@ handle(struct battle_state *st, struct battle *bt, const union event *ev)
 {
 	(void)st;
 
+	battle_state_sub_handle(bt, ev);
+}
+
+static void
+draw(const struct battle_state *st, const struct battle *bt)
+{
+	(void)st;
+
+	battle_state_sub_draw(bt);
+}
+
+static void
+finish(struct battle_state *st, struct battle *bt)
+{
+	(void)bt;
+
+	free(st);
+}
+
+void
+battle_state_sub_handle(struct battle *bt, const union event *ev)
+{
+	assert(bt);
+	assert(ev);
+
 	switch (ev->type) {
 	case EVENT_KEYDOWN:
 		switch (ev->key.key) {
@@ -144,10 +174,10 @@ handle(struct battle_state *st, struct battle *bt, const union event *ev)
 	}
 }
 
-static void
-draw(const struct battle_state *st, const struct battle *bt)
+void
+battle_state_sub_draw(const struct battle *bt)
 {
-	(void)st;
+	assert(bt);
 
 	battle_bar_draw(&bt->bar, bt);
 
@@ -162,10 +192,13 @@ battle_state_sub(struct battle *bt)
 {
 	assert(bt);
 
-	static struct battle_state self = {
-		.handle = handle,
-		.draw = draw
-	};
+	struct battle_state *state;
 
-	battle_switch(bt, &self);
+	state = alloc_new0(sizeof (*state));
+	state->data = bt;
+	state->handle = handle;
+	state->draw = draw;
+	state->finish = finish;
+
+	battle_switch(bt, state);
 }

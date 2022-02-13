@@ -23,7 +23,7 @@ set(
 	example-action
 	example-animation
 	example-audio
-#	example-battle
+	example-battle
 	example-cursor
 	example-debug
 	example-drawable

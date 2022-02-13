@@ -1,5 +1,5 @@
 /*
- * character-john.c -- john character
+ * battle-state-lost.h -- battle state (lost)
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,35 +16,32 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rpg/character.h>
+#ifndef MLK_RPG_BATTLE_STATE_LOST_H
+#define MLK_RPG_BATTLE_STATE_LOST_H
 
-#include "character-john.h"
-#include "spell-fire.h"
-#include "registry.h"
+#include <rpg/message.h>
 
-static void
-adventurer_reset(struct character *ch)
-{
-	/* TODO: this function should compute the attack thanks to the level. */
-	ch->hpmax = 120;
-	ch->mpmax = 50;
-	ch->atk = 50;
-	ch->def = 50;
-	ch->agt = 50;
-	ch->luck = 50;
-}
+union event;
 
-const struct character character_john = {
-	.name = "John ",
-	.level = 1,
-	.hp = 120,
-	.mp = 50,
-	.reset = adventurer_reset,
-	.sprites = {
-		[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
-		[CHARACTER_SPRITE_SWORD] = &registry_sprites[REGISTRY_TEXTURE_JOHN_SWORD]
-	},
-	.spells = {
-		&spell_fire
-	}
+struct battle;
+
+struct battle_state_lost {
+	struct message msg;
 };
+
+void
+battle_state_lost_init(struct battle_state_lost *, struct battle *);
+
+void
+battle_state_lost_handle(struct battle_state_lost *, const union event *);
+
+int
+battle_state_lost_update(struct battle_state_lost *, struct battle *, unsigned int);
+
+void
+battle_state_lost_draw(struct battle_state_lost *);
+
+void
+battle_state_lost(struct battle *);
+
+#endif /* !MLK_RPG_BATTLE_STATE_LOST_H */

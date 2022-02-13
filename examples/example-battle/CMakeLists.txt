@@ -29,11 +29,24 @@ set(
 	${example-battle_SOURCE_DIR}/spell-fire.h
 )
 
+set(
+	ASSETS
+	${example-battle_SOURCE_DIR}/assets/images/battle-background.png
+	${example-battle_SOURCE_DIR}/assets/images/black-cat.png
+	${example-battle_SOURCE_DIR}/assets/images/haunted-wood.png
+	${example-battle_SOURCE_DIR}/assets/sounds/fire.wav
+	${example-battle_SOURCE_DIR}/assets/sprites/explosion.png
+	${example-battle_SOURCE_DIR}/assets/sprites/john-sword.png
+	${example-battle_SOURCE_DIR}/assets/sprites/john-walk.png
+	${example-battle_SOURCE_DIR}/assets/sprites/ui-cursor.png
+)
+
 mlk_executable(
 	NAME example-battle
 	FOLDER examples
 	LIBRARIES libmlk-rpg
-	SOURCES ${SOURCES}
+	SOURCES ${ASSETS} ${SOURCES}
+	ASSETS ${ASSETS}
 )
 
-source_group("" FILES ${SOURCES})
+source_group(TREE ${example-battle_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})

@@ -39,6 +39,11 @@
 #include "battle.h"
 #include "battle-indicator.h"
 #include "battle-state.h"
+#include "battle-state-ai.h"
+#include "battle-state-attacking.h"
+#include "battle-state-check.h"
+#include "battle-state-menu.h"
+#include "battle-state-opening.h"
 #include "character.h"
 #include "inventory.h"
 #include "item.h"
@@ -235,7 +240,7 @@ battle_start(struct battle *bt)
 
 	/* Play music if present. */
 	if (bt->music[0])
-		music_play(bt->music[0], MUSIC_LOOP, 0);
+		music_play(bt->music[0], MUSIC_LOOP);
 }
 
 void
@@ -285,7 +290,7 @@ battle_attack(struct battle *bt,
 			target = random_select(bt->team, BATTLE_TEAM_MAX)->ch;
 	}
 
-	battle_state_attacking(bt, source, target);
+	battle_state_attacking(battle_find(bt, source), battle_find(bt, target), bt);
 }
 
 void
