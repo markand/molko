@@ -416,12 +416,12 @@ handle_keydown_grid(struct battle_bar_default *bar, struct battle *bt, const uni
 		bar->state = BATTLE_BAR_DEFAULT_STATE_MENU;
 		return;
 	}
-		
+
 	gridmenu_handle(&bar->sub_grid, ev);
 
 	if (bar->sub_grid.state == GRIDMENU_STATE_ACTIVATED) {
 		gridmenu_reset(&bar->sub_grid);
-	
+
 		switch (bar->menu) {
 		case BATTLE_BAR_DEFAULT_MENU_MAGIC:
 			switch_selection_spell(bar, bt);
@@ -573,7 +573,7 @@ battle_bar_default_open_magic(struct battle_bar_default *bar, const struct battl
 void
 battle_bar_default_open_item(struct battle_bar_default *bar, const struct battle *bt)
 {
-	asssert(bar);
+	assert(bar);
 	assert(bt);
 
 	init_gridmenu(bar, bt);
