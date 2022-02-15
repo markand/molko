@@ -28,7 +28,6 @@
 #include <ui/frame.h>
 #include <ui/gridmenu.h>
 
-#include "battle-bar.h"
 #include "battle-entity.h"
 #include "battle-state.h"
 #include "selection.h"
@@ -36,6 +35,7 @@
 
 union event;
 
+struct battle_bar;
 struct character;
 struct inventory;
 struct item;
@@ -76,7 +76,7 @@ struct battle {
 	struct drawable_stack effects;
 	struct action_stack actions[2];
 	struct inventory *inventory;
-	struct battle_bar bar;
+	struct battle_bar *bar;
 };
 
 CORE_BEGIN_DECLS

@@ -43,7 +43,7 @@ struct battle_state_attacking {
 void
 battle_state_attacking_init(struct battle_state_attacking *,
                             struct battle_entity *,
-			    struct battle_entity *);
+                            struct battle_entity *);
 
 int
 battle_state_attacking_update(struct battle_state_attacking *, struct battle *);

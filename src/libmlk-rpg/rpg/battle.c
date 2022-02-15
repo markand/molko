@@ -36,14 +36,15 @@
 #include <ui/label.h>
 #include <ui/theme.h>
 
-#include "battle.h"
+#include "battle-bar.h"
 #include "battle-indicator.h"
-#include "battle-state.h"
 #include "battle-state-ai.h"
 #include "battle-state-attacking.h"
 #include "battle-state-check.h"
 #include "battle-state-menu.h"
 #include "battle-state-opening.h"
+#include "battle-state.h"
+#include "battle.h"
 #include "character.h"
 #include "inventory.h"
 #include "item.h"
@@ -190,18 +191,6 @@ positionate_team(struct battle *bt)
 }
 
 static void
-positionate_bar(struct battle *bt)
-{
-	/* Bar is located at bottom. */
-	bt->bar.w = window.w;
-	bt->bar.h = window.h * 0.12;
-	bt->bar.x = 0;
-	bt->bar.y = window.h - bt->bar.h;
-	
-	battle_bar_positionate(&bt->bar, bt);
-}
-
-static void
 draw_entities(const struct battle *bt, struct battle_entity *entities, size_t entitiesz)
 {
 	for (size_t i = 0; i < entitiesz; ++i) {
@@ -232,7 +221,6 @@ battle_start(struct battle *bt)
 			battle_entity_init(et);
 
 	positionate_team(bt);
-	positionate_bar(bt);
 	positionate_names(bt);
 
 	/* Start the state "opening" animation. */
@@ -333,8 +321,6 @@ battle_next(struct battle *bt)
 {
 	assert(bt);
 
-	battle_bar_reset(&bt->bar);
-
 	if (!bt->order_cur) {
 		battle_order(bt);
 		bt->order_cur = bt->order[bt->order_curindex = 0];
@@ -355,7 +341,7 @@ battle_next(struct battle *bt)
 
 	/* Change state depending on the kind of entity. */
 	if (is_team(bt, bt->order_cur->ch)) {
-		battle_bar_open_menu(&bt->bar);
+		battle_bar_start(bt->bar, bt);
 		battle_state_menu(bt);
 	} else
 		battle_state_ai(bt);
@@ -447,7 +433,7 @@ battle_draw(struct battle *bt)
 	draw_entities(bt, bt->team, UTIL_SIZE(bt->team));
 	draw_entities(bt, bt->enemies, UTIL_SIZE(bt->enemies));
 
-	battle_bar_draw(&bt->bar, bt);
+	battle_bar_draw(bt->bar, bt);
 
 	action_stack_draw(&bt->actions[0]);
 	action_stack_draw(&bt->actions[1]);
@@ -469,6 +455,8 @@ battle_finish(struct battle *bt)
 
 	action_stack_finish(&bt->actions[0]);
 	action_stack_finish(&bt->actions[1]);
+
+	battle_bar_finish(bt->bar, bt);
 
 	memset(bt, 0, sizeof (*bt));
 }

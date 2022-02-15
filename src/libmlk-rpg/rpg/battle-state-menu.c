@@ -23,12 +23,10 @@
 
 #include "battle-bar.h"
 #include "battle-state-menu.h"
-#include "battle-state-selection.h"
-#include "battle-state-sub.h"
 #include "battle-state.h"
 #include "battle.h"
-#include "character.h"
-#include "spell.h"
+
+#if 0
 
 static void
 open_spells(struct battle *bt)
@@ -55,6 +53,8 @@ open_items(struct battle *bt)
 	battle_state_sub(bt);
 }
 
+#endif
+
 static void
 handle(struct battle_state *st, struct battle *bt, const union event *ev)
 {
@@ -77,23 +77,7 @@ battle_state_menu_handle(struct battle *bt, const union event *ev)
 	assert(bt);
 	assert(ev);
 
-	if (battle_bar_handle(&bt->bar, bt, ev)) {
-		switch (bt->bar.menu) {
-		case BATTLE_BAR_MENU_ATTACK:
-			open_attack(bt);
-			break;
-		case BATTLE_BAR_MENU_MAGIC:
-			open_spells(bt);
-			break;
-		case BATTLE_BAR_MENU_OBJECTS:
-			open_items(bt);
-			break;
-		case BATTLE_BAR_MENU_SPECIAL:
-			break;
-		default:
-			break;
-		}
-	}
+	battle_bar_handle(bt->bar, bt, ev);
 }
 
 void
@@ -108,6 +92,6 @@ battle_state_menu(struct battle *bt)
 	state->handle = handle;
 	state->finish = finish;
 
-	battle_bar_open_menu(&bt->bar);
+	battle_bar_start(bt->bar, bt);
 	battle_switch(bt, state);
 }

@@ -41,6 +41,7 @@
 #include <ui/ui.h>
 
 #include <rpg/character.h>
+#include <rpg/battle-bar-default.h>
 #include <rpg/battle.h>
 #include <rpg/rpg.h>
 #include <rpg/spell.h>
@@ -179,6 +180,7 @@ prepare_to_fight(void)
 
 	bt->background = &registry_images[REGISTRY_IMAGE_BATTLE_BACKGROUND];
 
+	battle_bar_default(bt);
 	battle_start(bt);
 
 	fight_state.data = bt;

@@ -46,47 +46,6 @@ struct self {
 };
 
 static void
-use(const struct battle_state_selection *slt, struct battle *bt)
-{
-	struct inventory_slot *slot;
-	struct battle_entity *source, *target;
-
-	if (bt->bar.sub_grid.selected >= INVENTORY_ITEM_MAX)
-		return;
-	if (!(slot = &bt->inventory->items[bt->bar.sub_grid.selected]))
-		return;
-
-	source = bt->order_cur;
-	target = slt->select.index_side == 0
-		? &bt->enemies[slt->select.index_character]
-		: &bt->team[slt->select.index_character];
-
-	battle_state_item(bt, source, target, slot);
-}
-
-static void
-attack(struct battle_state_selection *slt, struct battle *bt)
-{
-	struct character *target;
-
-	if (slt->select.index_side == 0)
-		target = bt->enemies[slt->select.index_character].ch;
-	else
-		target = bt->team[slt->select.index_character].ch;
-
-	battle_attack(bt, bt->order_cur->ch, target);
-}
-
-static void
-cast(struct battle_state_selection *slt, struct battle *bt)
-{
-	struct character *source = bt->order_cur->ch;
-	const struct spell *spell = source->spells[bt->bar.sub_grid.selected];
-
-	battle_cast(bt, source, spell, &slt->select);
-}
-
-static void
 select_adj_in(struct battle_state_selection *slt, const struct battle_entity *entities, size_t entitiesz, int step)
 {
 	assert(slt->select.index_character != (unsigned int)-1);
@@ -126,30 +85,10 @@ handle_keydown(struct battle_state_selection *stl, struct battle *bt, const unio
 
 	switch (ev->key.key) {
 	case KEY_ESCAPE:
-		switch (bt->bar.menu) {
-		case BATTLE_BAR_MENU_MAGIC:
-		case BATTLE_BAR_MENU_OBJECTS:
-			battle_state_sub(bt);
-			break;
-		default:
-			battle_state_menu(bt);
-			break;
-		}
+		battle_state_menu(bt);
 		break;
 	case KEY_ENTER:
-		switch (bt->bar.menu) {
-		case BATTLE_BAR_MENU_ATTACK:
-			attack(stl, bt);
-			break;
-		case BATTLE_BAR_MENU_MAGIC:
-			cast(stl, bt);
-			break;
-		case BATTLE_BAR_MENU_OBJECTS:
-			use(stl, bt);
-			break;
-		default:
-			break;
-		}
+		battle_bar_select(bt->bar, bt, &stl->select);
 		break;
 	case KEY_LEFT:
 		if (stl->select.allowed_sides & SELECTION_SIDE_ENEMY)

@@ -30,6 +30,7 @@ enum event_type {
 	EVENT_KEYUP,
 	EVENT_MOUSE,
 	EVENT_QUIT,
+	EVENT_NUM
 };
 
 struct event_key {

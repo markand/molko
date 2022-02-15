@@ -1,5 +1,5 @@
 /*
- * battle-bar.h -- battle status bar and menu
+ * battle-bar.h -- abstract battle bar
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -21,73 +21,40 @@
 
 #include <core/core.h>
 
-#include <ui/frame.h>
-#include <ui/gridmenu.h>
-
 struct battle;
-struct character;
+struct selection;
 
 union event;
 
-enum battle_bar_menu {
-	BATTLE_BAR_MENU_ATTACK  = 0,
-	BATTLE_BAR_MENU_MAGIC   = 1,
-	BATTLE_BAR_MENU_OBJECTS = 2,
-	BATTLE_BAR_MENU_SPECIAL = 3
-};
-
-enum battle_bar_state {
-	BATTLE_BAR_STATE_NONE,
-	BATTLE_BAR_STATE_MENU,
-	BATTLE_BAR_STATE_SUB
-};
-
 struct battle_bar {
-	int x;
-	int y;
-	unsigned int w;
-	unsigned int h;
-	enum battle_bar_state state;
-
-	/* Right status frame. */
-	struct frame status_frame;
-
-	/* Main menu selection. */
-	struct frame menu_frame;
-	enum battle_bar_menu menu;
-
-	/* Sub menu selection (spells/objects). */
-	char sub_items[GRIDMENU_ENTRY_MAX][128];
-	struct gridmenu sub_grid;
+	void *data;
+	void (*start)(struct battle_bar *, struct battle *);
+	void (*select)(struct battle_bar *, struct battle *, const struct selection *);
+	void (*handle)(struct battle_bar *, struct battle *, const union event *);
+	void (*update)(struct battle_bar *, struct battle *, unsigned int);
+	void (*draw)(const struct battle_bar *, const struct battle *);
+	void (*finish)(struct battle_bar *, struct battle *);
 };
 
 CORE_BEGIN_DECLS
 
 void
-battle_bar_positionate(struct battle_bar *bar, const struct battle *bt);
-
-int
-battle_bar_handle(struct battle_bar *bar,
-                  const struct battle *bt,
-                  const union event *ev);
+battle_bar_start(struct battle_bar *, struct battle *);
 
 void
-battle_bar_reset(struct battle_bar *bar);
+battle_bar_select(struct battle_bar *, struct battle *, const struct selection *);
 
 void
-battle_bar_open_menu(struct battle_bar *bar);
+battle_bar_handle(struct battle_bar *, struct battle *, const union event *);
 
 void
-battle_bar_open_spells(struct battle_bar *bar, const struct battle *bt, struct character *ch);
+battle_bar_update(struct battle_bar *, struct battle *, unsigned int);
 
 void
-battle_bar_open_items(struct battle_bar *bar, const struct battle *bt);
+battle_bar_draw(const struct battle_bar *, const struct battle *);
 
 void
-battle_bar_draw(const struct battle_bar *bar, const struct battle *bt);
-
-void
-battle_bar_finish(struct battle_bar *bar);
+battle_bar_finish(struct battle_bar *, struct battle *);
 
 CORE_END_DECLS
 

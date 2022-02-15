@@ -20,6 +20,8 @@ project(libmlk-rpg)
 
 set(
 	SOURCES
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-bar-default.c
+	${libmlk-rpg_SOURCE_DIR}/rpg/battle-bar-default.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-bar.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-bar.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-entity-state-attacking.c
@@ -56,8 +58,6 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-opening.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-selection.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-selection.h
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-sub.c
-	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-sub.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-victory.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state-victory.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/battle-state.c
