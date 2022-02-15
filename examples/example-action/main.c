@@ -52,9 +52,11 @@
 #define MY      (100)
 
 /* This is a stack of "parallel" events. */
+static struct action *events_actions[32];
 static struct action_stack events;
 
 /* This is a stack of modal events. */
+static struct action *modal_actions[32];
 static struct action_stack modal;
 
 /* Maximum number of states. */
@@ -389,6 +391,9 @@ run(void)
 		.draw = draw
 	};
 
+	action_stack_init(&modal, modal_actions, UTIL_SIZE(modal_actions));
+
+	action_stack_init(&events, events_actions, UTIL_SIZE(events_actions));
 	action_stack_add(&events, &chest.event);
 	action_stack_add(&events, &guide.event);
 

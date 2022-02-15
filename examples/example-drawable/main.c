@@ -54,6 +54,7 @@ static struct label help = {
 };
 
 static struct state *states[1];
+static struct drawable *drawables[64];
 static struct drawable_stack stack;
 
 /*
@@ -179,6 +180,8 @@ run(void)
 		.update = update,
 		.draw = draw
 	};
+
+	drawable_stack_init(&stack, drawables, UTIL_SIZE(drawables));
 
 	game_init(states, UTIL_SIZE(states));
 	game_push(&state);

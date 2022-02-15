@@ -23,14 +23,18 @@
 #include "drawable-stack.h"
 
 #define DRAWABLE_FOREACH(st, iter) \
-	for (size_t i = 0; i < DRAWABLE_STACK_MAX && ((iter) = (st)->objects[i], 1); ++i)
+	for (size_t i = 0; i < (st)->objectsz && ((iter) = (st)->objects[i], 1); ++i)
 
 void
-drawable_stack_init(struct drawable_stack *st)
+drawable_stack_init(struct drawable_stack *st, struct drawable **objects, size_t objectsz)
 {
 	assert(st);
 
-	memset(st, 0, sizeof (*st));
+	st->objects = objects;
+	st->objectsz = objectsz;
+
+	for (size_t i = 0; i < st->objectsz; ++i)
+		st->objects[i] = NULL;
 }
 
 int
@@ -39,7 +43,7 @@ drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 	assert(st);
 	assert(dw);
 
-	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
+	for (size_t i = 0; i < st->objectsz; ++i) {
 		if (!st->objects[i]) {
 			st->objects[i] = dw;
 			return 0;
@@ -54,8 +58,10 @@ drawable_stack_update(struct drawable_stack *st, unsigned int ticks)
 {
 	assert(st);
 
-	for (size_t i = 0; i < DRAWABLE_STACK_MAX; ++i) {
-		struct drawable *dw = st->objects[i];
+	struct drawable *dw;
+
+	for (size_t i = 0; i < st->objectsz; ++i) {
+		dw = st->objects[i];
 
 		if (dw && drawable_update(dw, ticks)) {
 			drawable_end(dw);

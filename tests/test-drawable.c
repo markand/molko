@@ -141,13 +141,16 @@ RX_TEST_CASE(basics, finish)
 
 RX_TEST_CASE(stack, add)
 {
+	struct drawable *drawables[10];
 	struct drawable_stack st = {0};
 	struct drawable dw = {0};
+
+	drawable_stack_init(&st, drawables, 10);
 
 	RX_INT_REQUIRE_EQUAL(drawable_stack_add(&st, &dw), 0);
 
 	/* Now fill up. */
-	for (int i = 0; i < DRAWABLE_STACK_MAX - 1; ++i)
+	for (int i = 0; i < 9; ++i)
 		RX_INT_REQUIRE_EQUAL(drawable_stack_add(&st, &dw), 0);
 
 	/* This one should not fit in. */
@@ -169,8 +172,10 @@ RX_TEST_CASE(stack, update)
 		{ .dw = INIT(&table[6], my_update_false)	},
 	};
 
+	struct drawable *drawables[10];
 	struct drawable_stack st = {0};
 
+	drawable_stack_init(&st, drawables, 10);
 	drawable_stack_add(&st, &table[0].dw);
 	drawable_stack_add(&st, &table[1].dw);
 	drawable_stack_add(&st, &table[2].dw);
@@ -251,8 +256,11 @@ RX_TEST_CASE(stack, finish)
 		{ .dw = INIT(&table[0], my_update_true)        },
 		{ .dw = INIT(&table[0], my_update_false)       },
 	};
+
+	struct drawable *drawables[10];
 	struct drawable_stack st = {0};
 
+	drawable_stack_init(&st, drawables, 10);
 	drawable_stack_add(&st, &table[0].dw);
 	drawable_stack_add(&st, &table[1].dw);
 	drawable_stack_finish(&st);
@@ -266,10 +274,6 @@ RX_TEST_CASE(stack, finish)
 	RX_REQUIRE(!table[0].inv.draw);
 	RX_REQUIRE(table[0].inv.end);
 	RX_REQUIRE(table[0].inv.finish);
-
-	/* They should also be NULL'ed. */
-	RX_PTR_REQUIRE_EQUAL(st.objects[0], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.objects[1], NULL);
 }
 
 int

@@ -19,18 +19,19 @@
 #ifndef MLK_CORE_DRAWABLE_STACK_H
 #define MLK_CORE_DRAWABLE_STACK_H
 
+#include <stddef.h>
+
 #include "core.h"
 
-#define DRAWABLE_STACK_MAX (128)
-
 struct drawable_stack {
-	struct drawable *objects[DRAWABLE_STACK_MAX];
+	struct drawable **objects;
+	size_t objectsz;
 };
 
 CORE_BEGIN_DECLS
 
 void
-drawable_stack_init(struct drawable_stack *);
+drawable_stack_init(struct drawable_stack *, struct drawable **, size_t);
 
 int
 drawable_stack_add(struct drawable_stack *, struct drawable *);
