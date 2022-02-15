@@ -23,14 +23,18 @@
 #include "action-stack.h"
 
 #define ACTION_FOREACH(st, iter) \
-	for (size_t i = 0; i < ACTION_STACK_MAX && ((iter) = (st)->actions[i], 1); ++i)
+	for (size_t i = 0; i < (st)->actionsz && ((iter) = (st)->actions[i], 1); ++i)
 
 void
-action_stack_init(struct action_stack *st)
+action_stack_init(struct action_stack *st, struct action **actions, size_t actionsz)
 {
 	assert(st);
 
-	memset(st, 0, sizeof (*st));
+	st->actions = actions;
+	st->actionsz = actionsz;
+
+	for (size_t i = 0; i < st->actionsz; ++i)
+		st->actions[i] = NULL;
 }
 
 int
@@ -39,7 +43,7 @@ action_stack_add(struct action_stack *st, struct action *act)
 	assert(st);
 	assert(act);
 
-	for (size_t i = 0; i < ACTION_STACK_MAX; ++i) {
+	for (size_t i = 0; i < st->actionsz; ++i) {
 		if (!st->actions[i]) {
 			st->actions[i] = act;
 			return 0;
@@ -69,7 +73,7 @@ action_stack_update(struct action_stack *st, unsigned int ticks)
 
 	struct action *act;
 
-	for (size_t i = 0; i < ACTION_STACK_MAX; ++i) {
+	for (size_t i = 0; i < st->actionsz; ++i) {
 		act = st->actions[i];
 
 		if (act && action_update(act, ticks)) {

@@ -172,13 +172,16 @@ RX_TEST_CASE(basics, finish)
 
 RX_TEST_CASE(stack, add)
 {
+	struct action *actions[10];
 	struct action_stack st = {0};
 	struct action act = {0};
+
+	action_stack_init(&st, actions, 10);
 
 	RX_INT_REQUIRE_EQUAL(action_stack_add(&st, &act), 0);
 
 	/* Now fill up. */
-	for (int i = 0; i < ACTION_STACK_MAX - 1; ++i)
+	for (int i = 0; i < 9; ++i)
 		RX_INT_REQUIRE_EQUAL(action_stack_add(&st, &act), 0);
 
 	/* This one should not fit in. */
@@ -196,8 +199,10 @@ RX_TEST_CASE(stack, handle)
 		{ 0, { .data = &table[2].called, .handle = my_handle } },
 	};
 
+	struct action *actions[10];
 	struct action_stack st = {0};
 
+	action_stack_init(&st, actions, 10);
 	action_stack_add(&st, &table[0].act);
 	action_stack_add(&st, &table[1].act);
 	action_stack_add(&st, &table[2].act);
@@ -223,8 +228,10 @@ RX_TEST_CASE(stack, update)
 		{ .act = INIT(&table[6], my_update_false)	},
 	};
 
+	struct action *actions[10];
 	struct action_stack st = {0};
 
+	action_stack_init(&st, actions, 10);
 	action_stack_add(&st, &table[0].act);
 	action_stack_add(&st, &table[1].act);
 	action_stack_add(&st, &table[2].act);
@@ -313,8 +320,11 @@ RX_TEST_CASE(stack, finish)
 		{ .act = INIT(&table[0], my_update_true)        },
 		{ .act = INIT(&table[0], my_update_false)       },
 	};
+
+	struct action *actions[10];
 	struct action_stack st = {0};
 
+	action_stack_init(&st, actions, 10);
 	action_stack_add(&st, &table[0].act);
 	action_stack_add(&st, &table[1].act);
 	action_stack_finish(&st);
@@ -330,10 +340,6 @@ RX_TEST_CASE(stack, finish)
 	RX_REQUIRE(!table[0].inv.draw);
 	RX_REQUIRE(table[0].inv.end);
 	RX_REQUIRE(table[0].inv.finish);
-
-	/* They should also be NULL'ed. */
-	RX_PTR_REQUIRE_EQUAL(st.actions[0], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.actions[1], NULL);
 }
 
 int

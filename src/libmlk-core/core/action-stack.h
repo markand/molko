@@ -19,20 +19,21 @@
 #ifndef MLK_CORE_ACTION_STACK_H
 #define MLK_CORE_ACTION_STACK_H
 
-#include "core.h"
+#include <stddef.h>
 
-#define ACTION_STACK_MAX (128)
+#include "core.h"
 
 union event;
 
 struct action_stack {
-	struct action *actions[ACTION_STACK_MAX];
+	struct action **actions;
+	size_t actionsz;
 };
 
 CORE_BEGIN_DECLS
 
 void
-action_stack_init(struct action_stack *);
+action_stack_init(struct action_stack *, struct action **, size_t);
 
 int
 action_stack_add(struct action_stack *, struct action *);
