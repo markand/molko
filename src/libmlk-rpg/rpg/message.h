@@ -28,9 +28,8 @@ struct theme;
 
 union event;
 
-#define MESSAGE_DELAY_DEFAULT   (150)
-#define MESSAGE_TIMEOUT_DEFAULT (5000)
-#define MESSAGE_LINES_MAX       (3)
+#define MESSAGE_DELAY_DEFAULT           (150)
+#define MESSAGE_TIMEOUT_DEFAULT         (5000)
 
 enum message_flags {
 	MESSAGE_FLAGS_AUTOMATIC         = (1 << 0),
@@ -54,7 +53,8 @@ struct message {
 	unsigned int spacing;
 	unsigned int delay;
 	unsigned int timeout;
-	const char *text[MESSAGE_LINES_MAX];
+	const char * const *lines;
+	size_t linesz;
 	unsigned int index;
 	enum message_flags flags;
 	enum message_state state;

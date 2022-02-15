@@ -121,16 +121,18 @@ my_draw_frame(const struct theme *th, const struct frame *f)
 static void
 basic(void)
 {
+	const char * const text[] = {
+		"This is a basic message.",
+		"Vertical spacing is automatically computed.",
+		"You need to press <Enter> to close it.",
+	};
 	struct message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
 		.spacing = 12,
-		.text = {
-			"This is a basic message.",
-			"Vertical spacing is automatically computed.",
-			"You need to press <Enter> to close it.",
-		},
+		.lines = text,
+		.linesz = 3
 	};
 
 	message_query(&msg, NULL, &msg.h);
@@ -140,16 +142,18 @@ basic(void)
 static void
 automatic(void)
 {
+	const char * const text[] = {
+		"This is a an automatic message.",
+		"It will disappear in a few seconds.",
+		"You can still press <Enter> to close it quicker."
+	};
 	struct message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
 		.timeout = MESSAGE_TIMEOUT_DEFAULT,
-		.text = {
-			"This is a an automatic message.",
-			"It will disappear in a few seconds.",
-			"You can still press <Enter> to close it quicker."
-		},
+		.lines = text,
+		.linesz = 3,
 		.flags = MESSAGE_FLAGS_AUTOMATIC
 	};
 
@@ -160,14 +164,16 @@ automatic(void)
 static void
 fadein(void)
 {
+	const char * const text[] = {
+		"This message will fade in."
+	};
 	struct message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
 		.delay = MESSAGE_DELAY_DEFAULT,
-		.text = {
-			"This message will fade in."
-		},
+		.lines = text,
+		.linesz = 1,
 		.flags = MESSAGE_FLAGS_FADEIN
 	};
 
@@ -178,14 +184,16 @@ fadein(void)
 static void
 fadeout(void)
 {
+	const char * const text[] = {
+		"This message will fade out."
+	};
 	struct message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
 		.delay = MESSAGE_DELAY_DEFAULT,
-		.text = {
-			"This message will fade out."
-		},
+		.lines = text,
+		.linesz = 1,
 		.flags = MESSAGE_FLAGS_FADEOUT
 	};
 
@@ -196,14 +204,16 @@ fadeout(void)
 static void
 fade(void)
 {
+	const char * const text[] = {
+		"This message will fade in and out."
+	};
 	struct message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
 		.delay = MESSAGE_DELAY_DEFAULT,
-		.text = {
-			"This message will fade in and out."
-		},
+		.lines = text,
+		.linesz = 1,
 		.flags = MESSAGE_FLAGS_FADEIN | MESSAGE_FLAGS_FADEOUT
 	};
 
@@ -214,14 +224,16 @@ fade(void)
 static void
 question(void)
 {
+	const char * const text[] = {
+		"Okay, I've understood.",
+		"Nevermind, I'll do it again."
+	};
 	struct message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.text = {
-			"Okay, I've understood.",
-			"Nevermind, I'll do it again."
-		},
+		.lines = text,
+		.linesz = 2,
 		.flags = MESSAGE_FLAGS_QUESTION
 	};
 
@@ -236,6 +248,9 @@ smallbottom(void)
 	const unsigned int h = MH;
 	const int x = (window.w / 2) - (w / 2);
 	const int y = (window.h - h - 10);
+	const char * const text[] = {
+		"This one is small here."
+	};
 
 	struct message msg = {
 		.x = x,
@@ -244,9 +259,8 @@ smallbottom(void)
 		.h = h,
 		.delay = MESSAGE_DELAY_DEFAULT,
 		.flags = MESSAGE_FLAGS_FADEIN | MESSAGE_FLAGS_FADEOUT,
-		.text = {
-			"This one is small here."
-		}
+		.lines = text,
+		.linesz = 1
 	};
 
 	run(&msg);
@@ -255,15 +269,17 @@ smallbottom(void)
 static void
 toosmallh(void)
 {
+	const char * const text[] = {
+		"This one is too small in height and will emit a warning.",
+		"Because this line will be incomplete."
+	};
 	struct message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
 		.h = 40,
-		.text = {
-			"This one is too small in height and will emit a warning.",
-			"Because this line will be incomplete."
-		},
+		.lines = text,
+		.linesz = 2
 	};
 
 	run(&msg);
@@ -272,14 +288,16 @@ toosmallh(void)
 static void
 toosmallw(void)
 {
+	const char * const text[] = {
+		"This one is too small in width."
+	};
 	struct message msg = {
 		.x = MX,
 		.y = MY,
 		.w = 160,
 		.h = MH,
-		.text = {
-			"This one is too small in width."
-		},
+		.lines = text,
+		.linesz = 1
 	};
 
 	run(&msg);
@@ -288,16 +306,18 @@ toosmallw(void)
 static void
 custom(void)
 {
+	const char * const text[] = {
+		"This one will destroy your eyes.",
+		"Because it use a terrible custom theme."
+	};
 	struct theme theme;
 	struct message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
 		.h = MH,
-		.text = {
-			"This one will destroy your eyes.",
-			"Because it use a terrible custom theme."
-		},
+		.lines = text,
+		.linesz = 2,
 		.theme = &theme
 	};
 

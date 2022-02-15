@@ -86,10 +86,10 @@ min_width(const struct message *msg)
 
 	unsigned int maxw = 0, w = 0;
 
-	for (size_t i = 0; i < MESSAGE_LINES_MAX; ++i) {
-		if (!msg->text[i])
+	for (size_t i = 0; i < msg->linesz; ++i) {
+		if (!msg->lines[i])
 			continue;
-		if (font_query(THEME(msg)->fonts[THEME_FONT_INTERFACE], msg->text[i], &w, NULL) < 0)
+		if (font_query(THEME(msg)->fonts[THEME_FONT_INTERFACE], msg->lines[i], &w, NULL) < 0)
 			panic();
 		if (w > maxw)
 			maxw = w;
@@ -106,7 +106,7 @@ min_height(const struct message *msg)
 	const struct theme *th = THEME(msg);
 	const unsigned int lh  = font_height(th->fonts[THEME_FONT_INTERFACE]);
 
-	return (th->padding * 2) + (MESSAGE_LINES_MAX * lh) + ((MESSAGE_LINES_MAX - 1) * msg->spacing);
+	return (th->padding * 2) + (msg->linesz * lh) + ((msg->linesz - 1) * msg->spacing);
 }
 
 static void
@@ -122,16 +122,16 @@ draw_lines(const struct message *msg)
 	 */
 	theme_shallow(&theme, THEME(msg));
 
-	for (int i = 0; i < MESSAGE_LINES_MAX; ++i) {
-		if (!msg->text[i])
+	for (size_t i = 0; i < msg->linesz; ++i) {
+		if (!msg->lines[i])
 			continue;
-		if (font_query(theme.fonts[THEME_FONT_INTERFACE], msg->text[i], &lw, &lh) < 0)
+		if (font_query(theme.fonts[THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh) < 0)
 			panic();
 
 		label.theme = &theme;
 		label.x = theme.padding;
 		label.y = theme.padding + (i * (lh + msg->spacing));
-		label.text = msg->text[i];
+		label.text = msg->lines[i];
 		label.flags = LABEL_FLAGS_SHADOW;
 
 		if (label.x + lw > msg->w)
@@ -202,7 +202,7 @@ message_handle(struct message *msg, const union event *ev)
 			msg->index--;
 		break;
 	case KEY_DOWN:
-		if (msg->index < 5 && msg->text[msg->index + 1])
+		if (msg->index + 1 < msg->linesz && msg->lines[msg->index + 1])
 			msg->index++;
 		break;
 	case KEY_ENTER:

@@ -62,7 +62,10 @@ battle_state_lost_init(struct battle_state_lost *lost, struct battle *bt)
 	assert(lost);
 	assert(bt);
 
-	lost->msg.text[0] = _("You have been defeated...");
+	lost->text = _("You have been defeated...");
+
+	lost->msg.lines = &lost->text;
+	lost->msg.linesz = 1;
 	lost->msg.theme = bt->theme;
 	lost->msg.flags = MESSAGE_FLAGS_AUTOMATIC |
 	                  MESSAGE_FLAGS_FADEIN |

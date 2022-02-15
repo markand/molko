@@ -64,6 +64,7 @@ static struct state *states[1];
  * Event object for the chest to click on.
  */
 static struct {
+	const char *text[2];
 	struct message msg;
 	struct action msg_act;
 	int x;
@@ -73,14 +74,16 @@ static struct {
 	struct sprite sprite;
 	struct action event;
 } chest = {
+	.text = {
+		"100000 pièces.",
+		"Te voilà riche sale file de crevette."
+	},
 	.msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.text = {
-			"100000 pièces.",
-			"Te voilà riche sale file de crevette."
-		}
+		.lines = chest.text,
+		.linesz = 2
 	}
 };
 
@@ -103,6 +106,7 @@ static struct {
  */
 static struct {
 	struct {
+		const char *text[6];
 		struct message msg;
 		struct action act;
 	} msgs[5];
@@ -122,61 +126,71 @@ static struct {
 } guide = {
 	.msgs = {
 		{
+			.text = {
+				"Bienvenue dans ce monde Molko."
+			},
 			.msg = {
 				.x = MX,
 				.y = MY,
 				.w = MW,
 				.delay = MESSAGE_DELAY_DEFAULT,
 				.flags = MESSAGE_FLAGS_FADEIN,
-				.text = {
-					"Bienvenue dans ce monde Molko."
-				}
+				.lines = guide.msgs[0].text,
+				.linesz = 1
 			},
 		},
 		{
+			.text = {
+				"Penses tu vraiment pouvoir me battre ?"
+			},
 			.msg = {
 				.x = MX,
 				.y = MY,
 				.w = MW,
-				.text = {
-					"Penses tu vraiment pouvoir me battre ?"
-				}
+				.lines = guide.msgs[1].text,
+				.linesz = 1
 			}
 		},
 		{
+			.text = {
+				"Non j'ai la trouille.",
+				"Bien sûr, je suis la légende."
+			},
 			.msg = {
 				.x = MX,
 				.y = MY,
 				.w = MW,
 				.flags = MESSAGE_FLAGS_QUESTION,
-				.text = {
-					"Non j'ai la trouille.",
-					"Bien sûr, je suis la légende."
-				}
+				.lines = guide.msgs[2].text,
+				.linesz = 2
 			}
 		},
 
 		/* In case of NO. */
 		{
+			.text = {
+				"Poule mouillée."
+			},
 			.msg = {
 				.x = MX,
 				.y = MY,
 				.w = MW,
-				.text = {
-					"Poule mouillée."
-				}
+				.lines = guide.msgs[3].text,
+				.linesz = 1
 			}
 		},
 
 		/* In case of YES. */
 		{
+			.text = {
+				"Prépare toi à souffrir."
+			},
 			.msg = {
 				.x = MX,
 				.y = MY,
 				.w = MW,
-				.text = {
-					"Prépare toi à souffrir."
-				}
+				.lines = guide.msgs[4].text,
+				.linesz = 1
 			}
 		}
 	}

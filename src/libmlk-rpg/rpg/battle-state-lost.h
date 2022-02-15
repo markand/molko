@@ -26,6 +26,7 @@ union event;
 struct battle;
 
 struct battle_state_lost {
+	const char *text;
 	struct message msg;
 };
 

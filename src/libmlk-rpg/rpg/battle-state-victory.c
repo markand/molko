@@ -63,7 +63,10 @@ battle_state_victory_init(struct battle_state_victory *vic, struct battle *bt)
 {
 	assert(bt);
 
-	vic->msg.text[0] = _("Victory!");
+	vic->text = _("Victory!");
+
+	vic->msg.lines = &vic->text;
+	vic->msg.linesz = 1;
 	vic->msg.theme = bt->theme;
 	vic->msg.flags = MESSAGE_FLAGS_AUTOMATIC |
 	                 MESSAGE_FLAGS_FADEIN |
