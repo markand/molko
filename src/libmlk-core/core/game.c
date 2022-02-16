@@ -17,54 +17,58 @@
  */
 
 #include <assert.h>
-#include <stddef.h>
 #include <string.h>
 
 #include "clock.h"
 #include "event.h"
 #include "game.h"
 #include "state.h"
-#include "painter.h"
 #include "util.h"
 #include "window.h"
 
-struct game game = {
-	.state = &game.states[0],
-};
+struct game game = {0};
 
 void
-game_init(void)
+game_init(struct state **states, size_t statesz)
 {
+	assert(states);
+	assert(statesz);
+
 	memset(&game, 0, sizeof (game));
 
-	game.state = &game.states[0];
+	game.states = states;
+	game.statesz = statesz;
+
+	for (size_t i = 0; i < game.statesz; ++i)
+		game.states[i] = NULL;
 }
 
 void
 game_push(struct state *state)
 {
 	assert(state);
-	assert(game.state != &game.states[GAME_STATE_MAX]);
+	assert(!game.state || game.state != &game.states[game.statesz - 1]);
 
-	if (*game.state) {
+	if (!game.state) {
+		game.state = &game.states[0];
+		state_start(*game.state = state);
+	} else {
 		state_suspend(*game.state);
 		state_start(*(++game.state) = state);
-	} else
-		state_start((*game.state) = state);
+	}
 }
 
 void
 game_pop(void)
 {
-	if (!*game.state)
-		return;
+	assert(game.state);
 
 	state_end(*game.state);
 	state_finish(*game.state);
 
-	*game.state = NULL;
-
-	if (game.state != &game.states[0])
+	if (game.state == game.states)
+		game.state = NULL;
+	else
 		state_resume(*--game.state);
 }
 

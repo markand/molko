@@ -23,6 +23,7 @@
 #include <core/event.h>
 #include <core/game.h>
 #include <core/state.h>
+#include <core/util.h>
 
 struct invokes {
 	unsigned int start;
@@ -35,9 +36,11 @@ struct invokes {
 	unsigned int finish;
 };
 
+static struct state *states[16];
+
 RX_SET_UP(setup)
 {
-	game_init();
+	game_init(states, UTIL_SIZE(states));
 
 	return RX_SUCCESS;
 }

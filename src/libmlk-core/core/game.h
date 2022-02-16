@@ -19,10 +19,10 @@
 #ifndef MLK_CORE_GAME_H
 #define MLK_CORE_GAME_H
 
+#include <stddef.h>
+
 #include "core.h"
 #include "inhibit.h"
-
-#define GAME_STATE_MAX (32)
 
 struct state;
 
@@ -30,7 +30,8 @@ union event;
 
 struct game {
 	enum inhibit inhibit;
-	struct state *states[GAME_STATE_MAX + 1];
+	struct state **states;
+	size_t statesz;
 	struct state **state;
 };
 
@@ -39,7 +40,7 @@ extern struct game game;
 CORE_BEGIN_DECLS
 
 void
-game_init(void);
+game_init(struct state **, size_t);
 
 void
 game_push(struct state *);

@@ -20,6 +20,7 @@
 
 #include <core/game.h>
 #include <core/state.h>
+#include <core/util.h>
 
 #include "js-game.h"
 #include "js-state.h"
@@ -27,13 +28,14 @@
 /*
  * TODO: determine if it's worth it to add handle, update and draw functions.
  */
+static struct state *states[16];
 
 static duk_ret_t
 Game_push(duk_context *ctx)
 {
 	struct js_state *state = js_state_require(ctx, 0);
 
-	if (game.state == &game.states[GAME_STATE_MAX]) {
+	if (game.state == &game.states[game.statesz - 1]) {
 		state_finish(&state->st);
 		return duk_error(ctx, DUK_ERR_RANGE_ERROR, "too many states");
 	}
@@ -99,4 +101,6 @@ js_game_bind(duk_context *ctx)
 	duk_push_object(ctx);
 	duk_put_function_list(ctx, -1, functions);
 	duk_put_global_string(ctx, "Game");
+
+	game_init(states, UTIL_SIZE(states));
 }
