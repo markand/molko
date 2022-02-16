@@ -1,6 +1,9 @@
 # CMake files.
 ^build
 
+# Qt Creator files
+^CMakeLists\.txt\.user$
+
 # vim/emacs specific.
 ^tags$
 ^tags\.lock$
