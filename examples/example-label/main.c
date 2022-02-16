@@ -101,6 +101,8 @@ static struct label mlabel = {
 	.text = "This one follows your mouse and is not aligned."
 };
 
+static struct state *states[1];
+
 static void
 init(void)
 {
@@ -167,6 +169,7 @@ run(void)
 		.draw = draw
 	};
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

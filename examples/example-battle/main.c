@@ -103,6 +103,8 @@ static struct character team[] = {
 	},
 };
 
+static struct state *states[2];
+
 static void
 haunted_wood_strat(struct character *ch, struct battle *bt)
 {
@@ -241,7 +243,7 @@ fight_update(struct state *st, unsigned int ticks)
 	struct battle *bt = st->data;
 
 	if (battle_update(bt, ticks))
-		game_push(&empty_state);
+		game_pop();
 }
 
 static void
@@ -270,6 +272,7 @@ static struct state fight_state = {
 static void
 run(void)
 {
+	game_init(states, UTIL_SIZE(states));
 	game_push(&empty_state);
 	game_loop();
 }

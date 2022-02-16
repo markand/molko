@@ -38,6 +38,7 @@
 #define W       1280
 #define H       720
 
+static struct state *states[1];
 static struct music music;
 static struct sound sound;
 
@@ -134,6 +135,7 @@ run(void)
 		.draw = draw
 	};
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 

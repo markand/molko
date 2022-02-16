@@ -46,6 +46,7 @@ static const unsigned long colors[] = {
 	0xc7cfccff,     /* Christian Grey. */
 };
 
+static struct state *states[1];
 static int ci = 0;
 static enum font_style style = FONT_STYLE_ANTIALIASED;
 
@@ -120,6 +121,7 @@ run(void)
 		.draw = draw
 	};
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

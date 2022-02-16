@@ -35,6 +35,7 @@
 #define W 1280
 #define H 720
 
+static struct state *states[1];
 static char help_text[128];
 static enum window_cursor cursor = WINDOW_CURSOR_ARROW;
 
@@ -122,6 +123,7 @@ run(void)
 
 	change(cursor);
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

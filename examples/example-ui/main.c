@@ -127,6 +127,8 @@ static struct {
 	}
 };
 
+static struct state *states[1];
+
 static void
 init(void)
 {
@@ -299,6 +301,7 @@ run(void)
 	prepare();
 	resize();
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

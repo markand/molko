@@ -47,6 +47,7 @@ static char msg[512];
 static struct texture texture;
 static struct sprite sprite;
 static unsigned int row, column;
+static struct state *states[1];
 
 static struct label help = {
 	.x = 10,
@@ -137,6 +138,7 @@ run(void)
 
 	changed();
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

@@ -45,6 +45,7 @@ static struct label label = {
 	.flags = LABEL_FLAGS_SHADOW
 };
 
+static struct state *states[1];
 static struct texture numbers;
 static struct animation animation;
 static struct sprite sprite;
@@ -121,6 +122,7 @@ run(void)
 	sprite_init(&sprite, &numbers, 48, 48);
 	animation_init(&animation, &sprite, 1000);
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

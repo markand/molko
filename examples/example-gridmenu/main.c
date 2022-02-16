@@ -36,6 +36,8 @@
 #define W       (1280)
 #define H       (720)
 
+static struct state *states[1];
+
 static void
 init(void)
 {
@@ -123,6 +125,7 @@ run(void)
 	/* Need to repaint at least once. */
 	gridmenu_repaint(&menu);
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

@@ -53,6 +53,7 @@ static struct label help = {
 	.flags = LABEL_FLAGS_SHADOW
 };
 
+static struct state *states[1];
 static struct drawable_stack stack;
 
 /*
@@ -179,6 +180,7 @@ run(void)
 		.draw = draw
 	};
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

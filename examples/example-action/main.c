@@ -57,6 +57,9 @@ static struct action_stack events;
 /* This is a stack of modal events. */
 static struct action_stack modal;
 
+/* Maximum number of states. */
+static struct state *states[1];
+
 /*
  * Event object for the chest to click on.
  */
@@ -375,6 +378,7 @@ run(void)
 	action_stack_add(&events, &chest.event);
 	action_stack_add(&events, &guide.event);
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

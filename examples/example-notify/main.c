@@ -26,6 +26,7 @@
 #include <core/panic.h>
 #include <core/state.h>
 #include <core/texture.h>
+#include <core/util.h>
 #include <core/window.h>
 
 #include <ui/notify.h>
@@ -45,6 +46,7 @@ static struct label help = {
 	.flags = LABEL_FLAGS_SHADOW
 };
 static struct texture icon;
+static struct state *states[1];
 
 static void
 init(void)
@@ -104,6 +106,7 @@ run(void)
 		.draw = draw
 	};
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }

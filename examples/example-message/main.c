@@ -43,6 +43,8 @@
 #define MX      ((W / 2) - (MW / 2))
 #define MY      (100)
 
+static struct state *states[1];
+
 static void
 init(void)
 {
@@ -102,6 +104,7 @@ run(struct message *msg)
 
 	message_start(msg);
 
+	game_init(states, UTIL_SIZE(states));
 	game_push(&state);
 	game_loop();
 }
