@@ -23,11 +23,11 @@ set_property(GLOBAL PROPERTY USE_FOLDERS On)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED On)
-set(CMAKE_C_EXTENSIONS Off)
+set(CMAKE_C_EXTENSIONS On)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-	set(CMAKE_C_FLAGS "-Wall -Wextra -Wno-deprecated-declarations -Wno-unknown-pragmas -pedantic -D_POSIX_C_SOURCE=200809L ${CMAKE_C_FLAGS}")
+	set(CMAKE_C_FLAGS "-Wall -Wextra -Wno-deprecated-declarations -Wno-unknown-pragmas -pedantic ${CMAKE_C_FLAGS}")
 
 	if (CMAKE_C_COMPILER_ID MATCHES "GNU")
 		set(CMAKE_C_FLAGS "-Wno-format-truncation ${CMAKE_C_FLAGS}")
@@ -35,10 +35,6 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS "/W3 /wd4090 /wd4244 /wd4267 /wd4996 /wd5105 /wd6031 /wd6001 /wd26451 ${CMAKE_C_FLAGS}")
 	set(CMAKE_C_FLAGS "/D_CRT_SECURE_NO_WARNINGS ${CMAKE_C_FLAGS}")
-endif ()
-
-if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-	set(CMAKE_C_FLAGS "-D_DARWIN_C_SOURCE ${CMAKE_C_FLAGS}")
 endif ()
 
 option(MLK_WITH_EXAMPLES "Enable examples" Off)

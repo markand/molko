@@ -210,6 +210,12 @@ sys_init(const char *organization, const char *name)
 		return errorf("%s", SDL_GetError());
 
 	/* OpenAL. */
+#if defined(_WIN32)
+	SetEnvironmentVariable("ALSOFT_LOGLEVEL", "0");
+#else
+	putenv("ALSOFT_LOGLEVEL=0");
+#endif
+
 	if (!(audio_dev = alcOpenDevice(NULL)))
 		return errorf("unable to create audio device");
 	if (!(audio_ctx = alcCreateContext(audio_dev, NULL)))
