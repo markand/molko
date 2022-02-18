@@ -112,25 +112,19 @@ min_height(const struct message *msg)
 static void
 draw_lines(const struct message *msg)
 {
-	struct theme theme;
+	const struct theme *theme = THEME(msg);
 	struct label label;
 	unsigned int lw, lh;
-
-	/*
-	 * We need a copy of the current theme because we will alter the label
-	 * color depending on the selection.
-	 */
-	theme_shallow(&theme, THEME(msg));
 
 	for (size_t i = 0; i < msg->linesz; ++i) {
 		if (!msg->lines[i])
 			continue;
-		if (font_query(theme.fonts[THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh) < 0)
+		if (font_query(theme->fonts[THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh) < 0)
 			panic();
 
-		label.theme = &theme;
-		label.x = theme.padding;
-		label.y = theme.padding + (i * (lh + msg->spacing));
+		label.theme = theme;
+		label.x = theme->padding;
+		label.y = theme->padding + (i * (lh + msg->spacing));
 		label.text = msg->lines[i];
 		label.flags = LABEL_FLAGS_SHADOW;
 
@@ -145,9 +139,9 @@ draw_lines(const struct message *msg)
 		 * we need to cheat the normal color.
 		 */
 		if (msg->flags & MESSAGE_FLAGS_QUESTION && msg->index == (unsigned int)i)
-			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_SELECTED];
+			label.flags |= LABEL_FLAGS_SELECTED;
 		else
-			theme.colors[THEME_COLOR_NORMAL] = THEME(msg)->colors[THEME_COLOR_NORMAL];
+			label.flags &= ~(LABEL_FLAGS_SELECTED);
 
 		label_draw(&label);
 	}
