@@ -11,17 +11,10 @@ Automatic drawable objects.
 This module allows creating automatic objects that draw theirselves into the
 screen and vanish once complete. They could be considered as lightweight
 alternatives to [actions](action.md), however in contrast to them, drawables do
-have a position.
+have a position and don't handle events.
 
-## Macros
-
-### DRAWABLE\_STACK\_MAX
-
-Maximum number of drawable in a unique [drawable_stack](#drawable_stack).
-
-```c
-#define DRAWABLE_STACK_MAX      128
-```
+Please refer to the [actions](action.md) documentation because most of the API
+is identical verbatim.
 
 ## Structs
 
@@ -93,13 +86,18 @@ specific transition (state, battle, menu, etc).
 
 You can add, clear, update and draw them.
 
-| Field               | Access | Type                                    |
-|---------------------|--------|-----------------------------------------|
-| [objects](#objects) | (+&?)  | `struct drawable *[DRAWABLE_STACK_MAX]` |
+| Field                 | Access | Type                                    |
+|-----------------------|--------|-----------------------------------------|
+| [objects](#objects)   | (+&?)  | `struct drawable **`                    |
+| [objectsz](#objectsz) | (+)    | `size_t`                                |
 
 #### objects
 
 Non-owning array of drawables to manage.
+
+#### objectsz
+
+Maximum capacity in [objects](#objects) field.
 
 ## Functions
 
@@ -142,14 +140,13 @@ drawable_finish(struct drawable *dw)
 
 ### drawable\_stack\_init
 
-Initalize the drawable stack `st`.
+Initialize the stack `st` with the given `drawables` array of capacity
+`drawablesz`. This function is optional when using designated initializers but
+you must make sure to zero-initialize the array of drawables if you do so.
 
-!!! note
-    It is unnecessary if the object was zero'ed.
-
-```
+```c
 void
-drawable_stack_init(struct drawable_stack *st)
+drawable_stack_init(struct drawable_stack *st, struct drawable **drawables, size_t drawablesz)
 ```
 
 ### drawable\_stack\_add

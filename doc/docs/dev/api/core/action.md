@@ -18,15 +18,8 @@ actions. They have the following properties:
 Most more high level objects can handle actions to add flexibility (like in
 battles, maps, etc).
 
-## Macros
-
-### ACTION\_STACK\_MAX
-
-Maximum number of action in a unique [action_stack](#action_stack).
-
-```c
-#define ACTION_STACK_MAX 128
-```
+The `action_stack` structure does not take ownership of actions, they must be
+valid on the user side.
 
 ## Structs
 
@@ -41,7 +34,7 @@ All members can be NULL.
 |-------------------|--------|--------------------------------------------------|
 | [data](#data)     | (+&?)  | `void *`                                         |
 | [handle](#handle) | (+?)   | `void (*)(struct action *, const union event *)` |
-| [update](#update) | (+?)   | `int (*)(struct action *, unsigned int)`        |
+| [update](#update) | (+?)   | `int (*)(struct action *, unsigned int)`         |
 | [draw](#draw)     | (+?)   | `void (*)(struct action *)`                      |
 | [end](#end)       | (+?)   | `void (*)(struct action *)`                      |
 | [finish](#finish) | (+?)   | `void (*)(struct action *)`                      |
@@ -114,13 +107,18 @@ This structure contains pointers to actions that must be kept until the stack is
 destroyed. User is responsible of deallocating them if they were allocated from
 the heap.
 
-| Field               | Type                                |
-|---------------------|-------------------------------------|
-| [actions](#actions) | `struct action *[ACTION_STACK_MAX]` |
+| Field                 | Access | Type                               |
+|-----------------------|--------|------------------------------------|
+| [actions](#actions)   | (+&)   | `struct action **`                 |
+| [actionsz](#actionsz) | (+)    | `size_t`                           |
 
 #### actions
 
 Non-owning array of actions to manage.
+
+#### actionsz
+
+Maximum capacity in [actions](#actions) field.
 
 ## Functions
 
@@ -173,14 +171,13 @@ action_finish(struct action *act)
 
 ### action\_stack\_init
 
-Initalize the action stack `st`.
+Initialize the stack `st` with the given `actions` array of capacity `actionsz`.
+This function is optional when using designated initializers but you must make
+sure to zero-initialize the array of actions if you do so.
 
-!!! note
-    It is unnecessary if the object was zero'ed.
-
-```
+```c
 void
-action_stack_init(struct action_stack *st)
+action_stack_init(struct action_stack *st, struct action **actions, size_t actionsz)
 ```
 
 ### action\_stack\_add
@@ -237,4 +234,20 @@ Terminate all actions and clear the stack `st`.
 ```c
 void
 action_stack_finish(struct action_stack *st)
+```
+
+## Example
+
+Using an `action_stack` with a maximum of ten actions.
+
+```c
+struct action actions[10];
+struct action_stack stack;
+
+action_stack_init(&stack, actions, 10);
+action_stack_add(&stack, my_action());
+
+/*
+ * Call action_stack_update and other functions in your main loop.
+ */
 ```
