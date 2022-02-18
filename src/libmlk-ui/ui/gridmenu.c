@@ -17,6 +17,7 @@
  */
 
 #include <assert.h>
+#include <math.h>
 #include <string.h>
 
 #include <core/event.h>
@@ -49,59 +50,61 @@ get_index(const struct gridmenu *menu)
 }
 
 static void
-positionate(struct gridmenu *menu)
+geometry(struct gridmenu *menu)
 {
 	const struct theme *theme = THEME(menu);
-	struct gridmenu_texture *gtex = &menu->tex;
-	unsigned int vreq, hreq;
+	struct label label = {
+		.theme = theme,
+		.flags = LABEL_FLAGS_SHADOW
+	};
+	unsigned int reqw = 0, reqh = 0, lw, lh;
 
-	/* Compute which item has the bigger width to create a spacing. */
-	for (size_t i = 0; i < GRIDMENU_ENTRY_MAX; ++i) {
-		unsigned int lw, lh;
+	/* Compute which item has the bigger width/height to create a spacing. */
+	menu->eltw = menu->elth = 0;
+	menu->spacew = menu->spaceh = 0;
 
-		gtex->labels[i].theme = theme;
-		gtex->labels[i].flags = LABEL_FLAGS_SHADOW;
-
-		if (!(gtex->labels[i].text = menu->menu[i]))
+	for (size_t i = 0; i < menu->itemsz; ++i) {
+		if (!(label.text = menu->items[i]))
 			continue;
 
-		label_query(&gtex->labels[i], &lw, &lh);
-		gtex->eltw = lw > gtex->eltw ? lw : gtex->eltw;
-		gtex->elth = lh > gtex->elth ? lh : gtex->elth;
+
+		label_query(&label, &lw, &lh);
+
+		menu->eltw = fmax(menu->eltw, lw);
+		menu->elth = fmax(menu->elth, lh);
 	}
 
-	vreq = (theme->padding * 2) + (gtex->elth * menu->nrows);
-	hreq = (theme->padding * 2) + (gtex->eltw * menu->ncols);
+	/* Total texture size required to draw items. */
+	reqw = (theme->padding * 2) + (menu->eltw * menu->ncols);
+	reqh = (theme->padding * 2) + (menu->elth * menu->nrows);
 
-	/* Compute spacing between elements. */
-	if (hreq > menu->w) {
-		tracef(_("gridmenu width is too small: %u < %u"), menu->w, vreq);
-		gtex->spaceh = 1;
-	} else {
-		hreq -= theme->padding * 2;
-		gtex->spaceh = (menu->w - hreq) / menu->ncols;
+	/*
+	 * Compute spacing between elements. We remove the padding because it
+	 * is outside of the elements.
+	 */
+	if (reqw > menu->w) {
+		tracef(_("gridmenu width is too small: %u < %u"), menu->w, reqw);
+		menu->spacew = 1;
+	} else if (menu->ncols > 1) {
+		reqw -= theme->padding * 2;
+		menu->spacew = (menu->w - reqw) / menu->ncols;
 	}
 
-	if (vreq > menu->h) {
-		tracef(_("gridmenu height is too small: %u < %u"), menu->h, vreq);
-		gtex->spacev = 1;
-	} else {
-		vreq -= theme->padding * 2;
-		gtex->spacev = (menu->h - vreq) / menu->nrows;
+	if (reqh > menu->h) {
+		tracef(_("gridmenu height is too small: %u < %u"), menu->h, reqh);
+		menu->spaceh = 1;
+	} else if (menu->nrows > 1) {
+		reqh -= theme->padding * 2;
+		menu->spaceh = (menu->h - reqh) / menu->nrows;
 	}
-
-	/* This is the whole height. */
-	gtex->relh  = theme->padding * 2;
-	gtex->relh += gtex->elth * (GRIDMENU_ENTRY_MAX / menu->ncols);
-	gtex->relh += gtex->spacev * (GRIDMENU_ENTRY_MAX / menu->ncols);
 }
 
 static void
-repaint_frame(struct gridmenu *menu)
+draw_frame(const struct gridmenu *menu)
 {
 	const struct frame f = {
-		.x = 0,
-		.y = menu->tex.rely,
+		.x = menu->x,
+		.y = menu->y,
 		.w = menu->w,
 		.h = menu->h,
 		.theme = menu->theme,
@@ -111,71 +114,55 @@ repaint_frame(struct gridmenu *menu)
 }
 
 static void
-repaint_labels(struct gridmenu *menu)
+draw_labels(const struct gridmenu *menu)
 {
+	size_t pagesz, pagenr, item, c = 0, r = 0;
+	struct label label = {0};
 	struct theme theme;
-	unsigned int r = 0, c = 0;
 
 	/* Copy theme to change color if selected. */
 	theme_shallow(&theme, THEME(menu));
+	label.theme = &theme;
+	label.flags = LABEL_FLAGS_SHADOW;
 
-	for (size_t i = 0; i < GRIDMENU_ENTRY_MAX; ++i) {
-		struct label *l = &menu->tex.labels[i];
+	/*
+	 * Select the first top-left column based on the current selection and
+	 * the number of rows/columns.
+	 */
+	pagesz = menu->nrows * menu->ncols;
+	pagenr = menu->selected / pagesz;
 
-		if (i == menu->selected)
+	for (size_t i = 0; i < pagesz; ++i) {
+		item = i + pagenr * pagesz;
+
+		if (item >= menu->itemsz)
+			continue;
+
+		label.text = menu->items[item];
+		label.x = menu->x + theme.padding + (c * menu->eltw) + (c * menu->spacew);
+		label.y = menu->y + theme.padding + (r * menu->elth) + (r * menu->spaceh);
+
+		if (i == menu->selected % pagesz)
 			theme.colors[THEME_COLOR_NORMAL] = THEME(menu)->colors[THEME_COLOR_SELECTED];
 		else
 			theme.colors[THEME_COLOR_NORMAL] = THEME(menu)->colors[THEME_COLOR_NORMAL];
 
-		l->theme = &theme;
-		l->x = theme.padding + (c * menu->tex.eltw) + (c * menu->tex.spaceh);
-		l->y = theme.padding + (r * menu->tex.elth) + (r * menu->tex.spacev);
+		label_draw(&label);
 
 		if (++c >= menu->ncols) {
 			++r;
 			c = 0;
 		}
-
-		if (l->text)
-			label_draw(l);
 	}
 }
 
-static void
-repaint(struct gridmenu *menu)
-{
-	struct texture *tex = &menu->tex.texture;
-
-	if (!texture_ok(tex) && texture_new(tex, menu->w, menu->tex.relh) < 0)
-		panic();
-
-	PAINTER_BEGIN(tex);
-
-	painter_clear();
-	repaint_frame(menu);
-	repaint_labels(menu);
-
-	PAINTER_END();
-}
-
-static void
-zoom(struct gridmenu *menu)
-{
-	struct gridmenu_texture *tex = &menu->tex;
-	struct label *cur = &tex->labels[menu->selected];
-
-	/* Readjust relative position. */
-	if ((unsigned int)cur->y > tex->rely + menu->h || cur->y < tex->rely)
-		tex->rely = cur->y - THEME(menu)->padding;
-}
-
-static void
+static int
 handle_keydown(struct gridmenu *menu, const struct event_key *key)
 {
 	assert(key->type == EVENT_KEYDOWN);
 
 	const struct index idx = get_index(menu);
-	const unsigned int save = menu->selected;
+	int validate = 0;
 
 	switch (key->key) {
 	case KEY_UP:
@@ -183,80 +170,97 @@ handle_keydown(struct gridmenu *menu, const struct event_key *key)
 			menu->selected -= menu->ncols;
 		break;
 	case KEY_RIGHT:
-		if (idx.col + 1U < menu->ncols)
+		if (menu->selected + 1U < menu->itemsz)
 			menu->selected += 1;
 		break;
 	case KEY_DOWN:
-		if (idx.row + 1U < GRIDMENU_ENTRY_MAX / menu->ncols)
+		if (idx.row + 1U < menu->itemsz / menu->ncols)
 			menu->selected += menu->ncols;
+		else
+			menu->selected = menu->itemsz - 1;
 		break;
 	case KEY_LEFT:
 		if (idx.col > 0)
 			menu->selected -= 1;
 		break;
 	case KEY_ENTER:
-		menu->state = GRIDMENU_STATE_ACTIVATED;
+		validate = 1;
 		break;
 	default:
 		break;
 	}
 
-	if (save != menu->selected)
-		gridmenu_repaint(menu);
+	return validate;
 }
 
-static void
+static int
 handle_clickdown(struct gridmenu *menu, const struct event_click *click)
 {
 	assert(click->type == EVENT_CLICKDOWN);
 
-	const unsigned int save = menu->selected;
+	const struct theme *theme = THEME(menu);
+	size_t pagesz, pagenr, selected, c = 0, r = 0;
+	int x, y;
 
-	for (size_t i = 0; i < GRIDMENU_ENTRY_MAX; ++i) {
-		const struct label *l = &menu->tex.labels[i];
-		const int x = menu->x + l->x;
-		const int y = menu->y + l->y - menu->tex.rely;
-		const unsigned int w = menu->tex.eltw;
-		const unsigned int h = menu->tex.elth;
+	pagesz = menu->nrows * menu->ncols;
+	pagenr = menu->selected / pagesz;
 
-		if (maths_is_boxed(x, y, w, h, click->x, click->y)) {
-			menu->selected = i;
-			break;
+	for (size_t i = 0; i < pagesz; ++i) {
+		x = menu->x + theme->padding + (c * menu->eltw) + (c * menu->spacew);
+		y = menu->y + theme->padding + (r * menu->elth) + (r * menu->spaceh);
+
+		if (maths_is_boxed(x, y, menu->eltw, menu->elth, click->x, click->y)) {
+			selected  = c + r * menu->ncols;
+			selected += pagesz * pagenr;
+
+			if (selected < menu->itemsz) {
+				menu->selected = selected;
+				return 1;
+			}
+		}
+
+		if (++c >= menu->ncols) {
+			++r;
+			c = 0;
 		}
 	}
 
-	/* A click immediately active the widget. */
-	if (save != menu->selected) {
-		gridmenu_repaint(menu);
-		menu->state = GRIDMENU_STATE_ACTIVATED;
-	}
+	return 0;
 }
 
 void
-gridmenu_reset(struct gridmenu *menu)
+gridmenu_init(struct gridmenu *menu,
+              unsigned int nr,
+              unsigned int nc,
+              const char * const *items,
+              size_t itemsz)
+{
+	assert(menu);
+	assert(nr);
+	assert(nc);
+
+	memset(menu, 0, sizeof (*menu));
+
+	menu->nrows = nr;
+	menu->ncols = nc;
+	menu->items = items;
+	menu->itemsz = itemsz;
+}
+
+void
+gridmenu_resize(struct gridmenu *menu, int x, int y, unsigned int w, unsigned int h)
 {
 	assert(menu);
 
-	menu->state = GRIDMENU_STATE_NONE;
+	menu->x = x;
+	menu->y = y;
+	menu->w = w;
+	menu->h = h;
+
+	geometry(menu);
 }
 
-void
-gridmenu_repaint(struct gridmenu *menu)
-{
-	assert(menu);
-	assert(GRIDMENU_ENTRY_MAX % menu->ncols == 0);
-
-	/* Re-compute positions. */
-	positionate(menu);
-
-	/* Zoom to the appropriate y-relative. */
-	zoom(menu);
-
-	/* Redraw. */
-	repaint(menu);
-}
-
-void
+int
 gridmenu_handle(struct gridmenu *menu, const union event *ev)
 {
 	assert(menu);
@@ -264,35 +268,23 @@ gridmenu_handle(struct gridmenu *menu, const union event *ev)
 
 	switch (ev->type) {
 	case EVENT_KEYDOWN:
-		handle_keydown(menu, &ev->key);
+		return handle_keydown(menu, &ev->key);
 		break;
 	case EVENT_CLICKDOWN:
-		handle_clickdown(menu, &ev->click);
+		return handle_clickdown(menu, &ev->click);
 		break;
 	default:
 		break;
 	}
+
+	return 0;
 }
 
 void
 gridmenu_draw(const struct gridmenu *menu)
 {
 	assert(menu);
-	assert(menu->nrows > 0 && menu->ncols > 0);
-	assert(texture_ok(&menu->tex.texture));
 
-	texture_scale(&menu->tex.texture,
-	    0, menu->tex.rely, menu->w, menu->h,
-	    menu->x, menu->y, menu->w, menu->h, 0.0);
-}
-
-void
-gridmenu_finish(struct gridmenu *menu)
-{
-	assert(menu);
-
-	if (texture_ok(&menu->tex.texture))
-		texture_finish(&menu->tex.texture);
-
-	memset(menu, 0, sizeof (*menu));
+	draw_frame(menu);
+	draw_labels(menu);
 }

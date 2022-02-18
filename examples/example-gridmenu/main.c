@@ -58,26 +58,16 @@ quit(void)
 static void
 handle(struct state *st, const union event *ev)
 {
+	struct gridmenu *menu = st->data;
+
 	switch (ev->type) {
 	case EVENT_QUIT:
 		game_quit();
 		break;
 	default:
-		gridmenu_handle(st->data, ev);
+		if (gridmenu_handle(st->data, ev))
+			tracef("selected index: %zu (%s)", menu->selected, menu->items[menu->selected]);
 		break;
-	}
-}
-
-static void
-update(struct state *st, unsigned int ticks)
-{
-	(void)ticks;
-
-	struct gridmenu *menu = st->data;
-
-	if (menu->state == GRIDMENU_STATE_ACTIVATED) {
-		tracef("selected index: %u", (unsigned int)menu->selected);
-		gridmenu_reset(menu);
 	}
 }
 
@@ -93,37 +83,37 @@ draw(struct state *st)
 static void
 run(void)
 {
-	struct gridmenu menu = {
-		.menu = {
-			"Feu mineur",
-			"Feu majeur",
-			"Feu septième",
-			"Glace mineure",
-			"Glace majeure",
-			"Glace septième",
-			"Foudre mineure",
-			"Foudre majeure",
-			"Foudre septième",
-			"Choc mineur",
-			"Choc majeur",
-			"Choc septième",
-		},
-		.w = 300,
-		.h = 100,
-		.nrows = 3,
-		.ncols = 2
+	const char * const items[] = {
+	    "Feu mineur",
+	    "Feu majeur",
+	    "Feu septième",
+	    "Glace mineure",
+	    "Glace majeure",
+	    "Glace septième",
+	    "Foudre mineure",
+	    "Foudre majeure",
+	    "Foudre septième",
+	    "Choc mineur",
+	    "Choc majeur",
+	    "Choc septième",
+	    "Portée",
+	    "Escapade",
+	    "Destruction",
+	    "Résurrection",
+	    "Double tour"
 	};
+
+	struct gridmenu menu = {0};
 	struct state state = {
 		.data = &menu,
 		.handle = handle,
-		.update = update,
 		.draw = draw,
 	};
 
-	align(ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, W, H);
+	gridmenu_init(&menu, 3, 2, items, UTIL_SIZE(items));
+	gridmenu_resize(&menu, 0, 0, 300, 100);
 
-	/* Need to repaint at least once. */
-	gridmenu_repaint(&menu);
+	align(ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, W, H);
 
 	game_init(states, UTIL_SIZE(states));
 	game_push(&state);

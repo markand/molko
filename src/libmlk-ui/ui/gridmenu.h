@@ -22,62 +22,45 @@
 #include <stddef.h>
 
 #include <core/core.h>
-#include <core/texture.h>
 
 #include "label.h"
-
-#define GRIDMENU_ENTRY_MAX (256)
 
 struct theme;
 
 union event;
-
-enum gridmenu_state {
-	GRIDMENU_STATE_NONE,
-	GRIDMENU_STATE_ACTIVATED
-};
-
-struct gridmenu_texture {
-	int rely;
-	unsigned int relh;
-	unsigned int eltw;
-	unsigned int elth;
-	unsigned int spacev;
-	unsigned int spaceh;
-	struct texture texture;
-	struct label labels[GRIDMENU_ENTRY_MAX];
-};
 
 struct gridmenu {
 	int x;
 	int y;
 	unsigned int w;
 	unsigned int h;
-	enum gridmenu_state state;
 	size_t selected;
 	const struct theme *theme;
-	const char *menu[GRIDMENU_ENTRY_MAX];
+	const char * const *items;
+	size_t itemsz;
 	unsigned int nrows;
 	unsigned int ncols;
-	struct gridmenu_texture tex;
+
+	/* Private fields. */
+	unsigned int eltw;      /* maximum entry label width */
+	unsigned int elth;      /* maximum entry label height */
+	unsigned int spacew;    /* space between element horizontally */
+	unsigned int spaceh;    /* and vertically */
 };
 
 CORE_BEGIN_DECLS
 
 void
-gridmenu_reset(struct gridmenu *);
+gridmenu_init(struct gridmenu *, unsigned int, unsigned int, const char * const *, size_t);
 
 void
-gridmenu_repaint(struct gridmenu *);
+gridmenu_resize(struct gridmenu *, int, int, unsigned int, unsigned int);
 
-void
+int
 gridmenu_handle(struct gridmenu *, const union event *);
 
 void
 gridmenu_draw(const struct gridmenu *);
-
-void
-gridmenu_finish(struct gridmenu *);
 
 CORE_END_DECLS
 

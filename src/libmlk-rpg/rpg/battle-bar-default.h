@@ -57,7 +57,7 @@ struct battle_bar_default {
 	enum battle_bar_default_menu menu;
 
 	/* Sub menu selection (spells/objects). */
-	char sub_items[GRIDMENU_ENTRY_MAX][128];
+	char sub_items[16][128];
 	struct gridmenu sub_grid;
 };
 

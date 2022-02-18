@@ -127,9 +127,6 @@ switch_selection_spell(struct battle_bar_default *bar, struct battle *bt)
 	const struct spell *sp = ch->spells[bar->sub_grid.selected];
 	struct selection sel = {0};
 
-	/* Don't forget to reset the gridmenu state. */
-	gridmenu_reset(&bar->sub_grid);
-
 	if (bar->sub_grid.selected > CHARACTER_SPELL_MAX)
 		return;
 	if (!(sp = ch->spells[bar->sub_grid.selected]) || sp->mp > (unsigned int)(ch->mp))
@@ -412,13 +409,14 @@ handle_keydown_grid(struct battle_bar_default *bar, struct battle *bt, const uni
 {
 	/* Go back to main menu if I press escape. */
 	if (ev->key.key == KEY_ESCAPE) {
-		gridmenu_reset(&bar->sub_grid);
+		//gridmenu_reset(&bar->sub_grid);
 		bar->state = BATTLE_BAR_DEFAULT_STATE_MENU;
 		return;
 	}
 
 	gridmenu_handle(&bar->sub_grid, ev);
 
+#if 0
 	if (bar->sub_grid.state == GRIDMENU_STATE_ACTIVATED) {
 		gridmenu_reset(&bar->sub_grid);
 
@@ -433,6 +431,7 @@ handle_keydown_grid(struct battle_bar_default *bar, struct battle *bt, const uni
 			break;
 		}
 	}
+#endif
 }
 
 static void
@@ -488,7 +487,7 @@ init_gridmenu(struct battle_bar_default *bar, const struct battle *bt)
 	bar->sub_grid.nrows = 3;
 	bar->sub_grid.ncols = 4;
 
-	memset(bar->sub_grid.menu, 0, sizeof (bar->sub_grid.menu));
+	//memset(bar->sub_grid.menu, 0, sizeof (bar->sub_grid.menu));
 }
 
 static void
@@ -500,7 +499,7 @@ start(struct battle_bar *bar, struct battle *bt)
 }
 
 static void
-select(struct battle_bar *bar, struct battle *bt, const struct selection *sel)
+self_select(struct battle_bar *bar, struct battle *bt, const struct selection *sel)
 {
 	battle_bar_default_select(bar->data, bt, sel);
 }
@@ -559,6 +558,7 @@ battle_bar_default_open_magic(struct battle_bar_default *bar, const struct battl
 	assert(bt);
 	assert(ch);
 
+#if 0
 	init_gridmenu(bar, bt);
 
 	for (size_t i = 0; i < CHARACTER_SPELL_MAX; ++i)
@@ -568,6 +568,7 @@ battle_bar_default_open_magic(struct battle_bar_default *bar, const struct battl
 	gridmenu_repaint(&bar->sub_grid);
 
 	bar->state = BATTLE_BAR_DEFAULT_STATE_GRID;
+#endif
 }
 
 void
@@ -575,6 +576,8 @@ battle_bar_default_open_item(struct battle_bar_default *bar, const struct battle
 {
 	assert(bar);
 	assert(bt);
+
+#if 0
 
 	init_gridmenu(bar, bt);
 
@@ -589,6 +592,7 @@ battle_bar_default_open_item(struct battle_bar_default *bar, const struct battle
 	gridmenu_repaint(&bar->sub_grid);
 
 	bar->state = BATTLE_BAR_DEFAULT_STATE_GRID;
+#endif
 }
 
 void
@@ -596,7 +600,7 @@ battle_bar_default_start(struct battle_bar_default *bar)
 {
 	assert(bar);
 
-	gridmenu_reset(&bar->sub_grid);
+	//gridmenu_reset(&bar->sub_grid);
 
 	bar->menu = BATTLE_BAR_DEFAULT_MENU_ATTACK;
 	bar->state = BATTLE_BAR_DEFAULT_STATE_MENU;
@@ -672,7 +676,7 @@ battle_bar_default_finish(struct battle_bar_default *bar)
 {
 	assert(bar);
 
-	gridmenu_finish(&bar->sub_grid);
+	//gridmenu_finish(&bar->sub_grid);
 
 	memset(bar, 0, sizeof (*bar));
 }
@@ -687,7 +691,7 @@ battle_bar_default(struct battle *bt)
 	self = alloc_new0(sizeof (*self));
 	self->bar.data = self;
 	self->bar.start = start;
-	self->bar.select = select;
+	self->bar.select = self_select;
 	self->bar.handle = handle;
 	self->bar.draw = draw;
 	self->bar.finish = finish;
