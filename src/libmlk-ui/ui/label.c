@@ -41,10 +41,14 @@ label_draw_default(const struct theme *t, const struct label *label)
 
 	struct font *font;
 	struct texture tex;
+	unsigned long color;
 
 	font = label->flags & LABEL_FLAGS_IMPORTANT
 		? t->fonts[THEME_FONT_IMPORTANT]
 		: t->fonts[THEME_FONT_INTERFACE];
+	color = label->flags & LABEL_FLAGS_SELECTED
+		? t->colors[THEME_COLOR_SELECTED]
+	        : t->colors[THEME_COLOR_NORMAL];
 
 	/* Shadow text, only if enabled. */
 	if (label->flags & LABEL_FLAGS_SHADOW) {
@@ -56,7 +60,7 @@ label_draw_default(const struct theme *t, const struct label *label)
 	}
 
 	/* Normal text. */
-	if (font_render(font, &tex, label->text, t->colors[THEME_COLOR_NORMAL]) < 0)
+	if (font_render(font, &tex, label->text, color) < 0)
 		panic();
 
 	texture_draw(&tex, label->x, label->y);

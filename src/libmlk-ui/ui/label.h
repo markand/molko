@@ -27,7 +27,8 @@ struct theme;
 enum label_flags {
 	LABEL_FLAGS_NONE,
 	LABEL_FLAGS_SHADOW      = (1 << 0),
-	LABEL_FLAGS_IMPORTANT   = (1 << 1)
+	LABEL_FLAGS_IMPORTANT   = (1 << 1),
+	LABEL_FLAGS_SELECTED    = (1 << 2)
 };
 
 struct label {

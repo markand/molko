@@ -118,11 +118,9 @@ draw_labels(const struct gridmenu *menu)
 {
 	size_t pagesz, pagenr, item, c = 0, r = 0;
 	struct label label = {0};
-	struct theme theme;
+	const struct theme *theme = THEME(menu);
 
-	/* Copy theme to change color if selected. */
-	theme_shallow(&theme, THEME(menu));
-	label.theme = &theme;
+	label.theme = theme;
 	label.flags = LABEL_FLAGS_SHADOW;
 
 	/*
@@ -139,13 +137,13 @@ draw_labels(const struct gridmenu *menu)
 			continue;
 
 		label.text = menu->items[item];
-		label.x = menu->x + theme.padding + (c * menu->eltw) + (c * menu->spacew);
-		label.y = menu->y + theme.padding + (r * menu->elth) + (r * menu->spaceh);
+		label.x = menu->x + theme->padding + (c * menu->eltw) + (c * menu->spacew);
+		label.y = menu->y + theme->padding + (r * menu->elth) + (r * menu->spaceh);
 
 		if (i == menu->selected % pagesz)
-			theme.colors[THEME_COLOR_NORMAL] = THEME(menu)->colors[THEME_COLOR_SELECTED];
+			label.flags |= LABEL_FLAGS_SELECTED;
 		else
-			theme.colors[THEME_COLOR_NORMAL] = THEME(menu)->colors[THEME_COLOR_NORMAL];
+			label.flags &= ~(LABEL_FLAGS_SELECTED);
 
 		label_draw(&label);
 
