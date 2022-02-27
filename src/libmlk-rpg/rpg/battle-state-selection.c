@@ -45,7 +45,7 @@ struct self {
 };
 
 static void
-select_adj_in(struct battle_state_selection *slt, const struct battle_entity *entities, size_t entitiesz, int step)
+select_adj_in(struct battle_state_selection *slt, struct battle_entity **entities, size_t entitiesz, int step)
 {
 	assert(slt->select.index_character != (unsigned int)-1);
 
@@ -53,14 +53,14 @@ select_adj_in(struct battle_state_selection *slt, const struct battle_entity *en
 
 	if (step < 0) {
 		while (newselection > 0) {
-			if (character_ok(entities[--newselection].ch)) {
+			if (character_ok(entities[--newselection]->ch)) {
 				slt->select.index_character = newselection;
 				break;
 			}
 		}
 	} else {
 		while (newselection < entitiesz) {
-			if (character_ok(entities[++newselection].ch)) {
+			if (character_ok(entities[++newselection]->ch)) {
 				slt->select.index_character = newselection;
 				break;
 			}
@@ -72,9 +72,9 @@ static void
 select_adj(struct battle_state_selection *slt, const struct battle *bt, int step)
 {
 	if (slt->select.index_side == 0)
-		select_adj_in(slt, bt->enemies, UTIL_SIZE(bt->enemies), step);
+		select_adj_in(slt, bt->enemies, bt->enemiesz, step);
 	else
-		select_adj_in(slt, bt->team, UTIL_SIZE(bt->team), step);
+		select_adj_in(slt, bt->team, bt->teamsz, step);
 }
 
 static void
@@ -133,13 +133,13 @@ draw_cursor(const struct battle *bt, const struct battle_entity *et)
 
 static void
 draw_cursors(const struct battle *bt,
-             const struct battle_entity *entities,
+             struct battle_entity * const *entities,
              size_t entitiesz)
 {
 	for (size_t i = 0; i < entitiesz; ++i) {
-		const struct battle_entity *et = &entities[i];
+		const struct battle_entity *et = entities[i];
 
-		if (character_ok(et->ch))
+		if (et && character_ok(et->ch))
 			draw_cursor(bt, et);
 	}
 }
@@ -195,18 +195,20 @@ battle_state_selection_draw(const struct battle_state_selection *stl, const stru
 	assert(stl);
 	assert(bt);
 
+	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
+
 	if (stl->select.index_character == -1U) {
 		/* All selected. */
 		if (stl->select.index_side == 0)
-			draw_cursors(bt, bt->enemies, UTIL_SIZE(bt->enemies));
+			draw_cursors(bt, bt->enemies, bt->enemiesz);
 		else
-			draw_cursors(bt, bt->team, UTIL_SIZE(bt->team));
+			draw_cursors(bt, bt->team, bt->teamsz);
 	} else {
 		/* Select one. */
 		if (stl->select.index_side == 0)
-			draw_cursor(bt, &bt->enemies[stl->select.index_character]);
+			draw_cursor(bt, bt->enemies[stl->select.index_character]);
 		else
-			draw_cursor(bt, &bt->team[stl->select.index_character]);
+			draw_cursor(bt, bt->team[stl->select.index_character]);
 	}
 }
 

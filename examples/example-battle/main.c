@@ -40,9 +40,10 @@
 #include <ui/theme.h>
 #include <ui/ui.h>
 
-#include <rpg/character.h>
 #include <rpg/battle-bar-default.h>
+#include <rpg/battle-bar.h>
 #include <rpg/battle.h>
+#include <rpg/character.h>
 #include <rpg/rpg.h>
 #include <rpg/spell.h>
 
@@ -64,6 +65,8 @@ adventurer_reset(struct character *ch)
 	ch->luck = 50;
 }
 
+#if 0
+
 static void
 haunted_wood_reset(struct character *ch)
 {
@@ -75,10 +78,12 @@ haunted_wood_reset(struct character *ch)
 	ch->luck = 100;
 }
 
+#endif
+
 static void
 black_cat_reset(struct character *ch)
 {
-	ch->hpmax = ch->hp = 126;
+	ch->hpmax = ch->hp = 120;
 	ch->mpmax = ch->mp = 38;
 	ch->atk = 22;
 	ch->def = 19;
@@ -86,24 +91,7 @@ black_cat_reset(struct character *ch)
 	ch->luck = 14;
 }
 
-static struct character team[] = {
-	{
-		.name = "Molko",
-		.level = 1,
-		.hp = 120,
-		.mp = 50,
-		.reset = adventurer_reset,
-		.sprites = {
-			[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
-			[CHARACTER_SPRITE_SWORD] = &registry_sprites[REGISTRY_TEXTURE_JOHN_SWORD],
-		},
-		.spells = {
-			&spell_fire
-		}
-	},
-};
-
-static struct state *states[2];
+#if 0
 
 static void
 haunted_wood_strat(struct character *ch, struct battle *bt)
@@ -111,8 +99,10 @@ haunted_wood_strat(struct character *ch, struct battle *bt)
 	(void)ch;
 
 	/* TODO: Select randomly. */
-	battle_attack(bt, bt->order_cur->ch, bt->team[0].ch);
+	battle_attack(bt, battle_current(bt)->ch, bt->team[0]->ch);
 }
+
+#endif
 
 static void
 black_cat_strat(struct character *ch, struct battle *bt)
@@ -120,8 +110,10 @@ black_cat_strat(struct character *ch, struct battle *bt)
 	(void)ch;
 
 	/* TODO: Select randomly. */
-	battle_attack(bt, bt->order_cur->ch, bt->team[0].ch);
+	battle_attack(bt, battle_current(bt)->ch, bt->team[0]->ch);
 }
+
+#if 0
 
 static struct character haunted_wood = {
 	.name = "Haunted Wood",
@@ -133,15 +125,7 @@ static struct character haunted_wood = {
 	.exec = haunted_wood_strat
 };
 
-static struct character black_cat = {
-	.name = "Black Cat",
-	.level = 6,
-	.reset = black_cat_reset,
-	.sprites = {
-		[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_BLACK_CAT],
-	},
-	.exec = black_cat_strat
-};
+#endif
 
 static void
 init(void)
@@ -157,38 +141,93 @@ init(void)
 	theme_default()->sprites[THEME_SPRITE_CURSOR] = &registry_sprites[REGISTRY_TEXTURE_CURSOR];
 }
 
+static struct state *states[2];
 static struct state fight_state;
+
+static struct {
+	struct character ch;
+	struct battle_entity entity;
+} entities[] = {
+	/* == Enemies == */
+	{
+		.ch = {
+			.name = "Black Cat",
+			.level = 6,
+			.reset = black_cat_reset,
+			.sprites = {
+				[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_BLACK_CAT],
+			},
+			.exec = black_cat_strat
+		},
+		.entity = {
+			.ch = &entities[0].ch
+		}
+	},
+
+	/* == Team == */
+	{
+		.ch = {
+			.name = "Molko",
+			.level = 1,
+			.hp = 120,
+			.mp = 50,
+			.reset = adventurer_reset,
+			.sprites = {
+				[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
+				[CHARACTER_SPRITE_SWORD] = &registry_sprites[REGISTRY_TEXTURE_JOHN_SWORD],
+			},
+			.spells = {
+				&spell_fire
+			}
+		},
+		.entity = {
+			.ch = &entities[1].ch
+		}
+	},
+};
+
+static struct drawable *drawables[16];
+static struct drawable_stack drawable_stack;
+
+static struct action *actions[16];
+static struct action_stack action_stack;
+
+static struct battle_entity *entities_enemies[1];
+static struct battle_entity *entities_team[1];
+static struct battle bt;
+static struct battle_bar_default default_bar;
+static struct battle_bar bar;
 
 static void
 prepare_to_fight(void)
 {
-	struct battle *bt = alloc_new0(sizeof (*bt));
+	action_stack_init(&action_stack, actions, UTIL_SIZE(actions));
+	drawable_stack_init(&drawable_stack, drawables, UTIL_SIZE(drawables));
 
-//	bt->enemies[0].ch = &haunted_wood;
-	bt->team[0].ch = &team[0];
-	//bt->team[1].ch = &team[1];
+	battle_init(&bt);
+	battle_bar_default_init(&default_bar);
+	battle_bar_default(&default_bar, &bar);
 
-	/* Positionate the single ennemy to the left. */
-	align(ALIGN_LEFT,
-	    &bt->enemies[0].x, &bt->enemies[0].y,
-	    haunted_wood.sprites[CHARACTER_SPRITE_NORMAL]->cellw,
-	    haunted_wood.sprites[CHARACTER_SPRITE_NORMAL]->cellh,
-	    0, 0, window.w, window.h);
+	bt.team = entities_team;
+	bt.teamsz = UTIL_SIZE(entities_team);
+
+	bt.enemies = entities_enemies;
+	bt.enemiesz = UTIL_SIZE(entities_enemies);
 
 	/* Black cat is near the previous monster. */
-	bt->enemies[1].ch = &black_cat;
-	bt->enemies[1].x = 500;
-	bt->enemies[1].y = 100;
+	entities_team[0] = &entities[1].entity;
+	entities_enemies[0] = &entities[0].entity;
+	entities_enemies[0]->x = 500;
+	entities_enemies[0]->y = 100;
 
-	bt->background = &registry_images[REGISTRY_IMAGE_BATTLE_BACKGROUND];
+	bt.background = &registry_images[REGISTRY_IMAGE_BATTLE_BACKGROUND];
+	bt.bar = &bar;
+	bt.actions = &action_stack;
+	bt.effects = &drawable_stack;
 
-	battle_bar_default(bt);
-	battle_start(bt);
-
-	fight_state.data = bt;
+	battle_start(&bt);
 	game_push(&fight_state);
 }
-
 
 static void
 empty_handle(struct state *st, const union event *ev)
@@ -234,32 +273,39 @@ static struct state empty_state = {
 static void
 fight_handle(struct state *st, const union event *ev)
 {
-	battle_handle(st->data, ev);
+	(void)st;
+
+	battle_handle(&bt, ev);
 }
 
 static void
 fight_update(struct state *st, unsigned int ticks)
 {
-	struct battle *bt = st->data;
+	(void)st;
 
-	if (battle_update(bt, ticks))
+	if (battle_update(&bt, ticks))
 		game_pop();
 }
 
 static void
 fight_draw(struct state *st)
 {
+	(void)st;
+
 	painter_set_color(0x000000ff);
 	painter_clear();
-	battle_draw(st->data);
+	battle_draw(&bt);
 	painter_present();
 }
 
 static void
 fight_finish(struct state *st)
 {
-	battle_finish(st->data);
-	free(st->data);
+	(void)st;
+
+	battle_bar_finish(&bar, &bt);
+	battle_bar_default_finish(&default_bar);
+	battle_finish(&bt);
 }
 
 static struct state fight_state = {

@@ -43,10 +43,28 @@
 #include "rpg_p.h"
 #include "spell.h"
 
-struct self {
-	struct battle_bar_default data;
-	struct battle_bar bar;
+#define THEME(bar) ((bar)->theme ? (bar)->theme : theme_default())
+
+struct geo {
+	int x, y;
+	unsigned int w, h;
 };
+
+static inline void
+dimensions(struct geo geo[2], const struct battle_bar_default *bar)
+{
+	/* 0 == main menu */
+	geo[0].w = bar->w * 0.2;
+	geo[0].h = bar->h;
+	geo[0].x = bar->x + (bar->w / 2) - (geo[0].w / 2);
+	geo[0].y = window.h - bar->h;
+
+	/* 1 == status frame */
+	geo[1].x = geo[0].x + geo[0].w;
+	geo[1].y = geo[0].y;
+	geo[1].w = (bar->w - geo[0].w) / 2;
+	geo[1].h = bar->h;
+}
 
 /*
  * The following validate_* functions are called when the user has validated a
@@ -63,18 +81,18 @@ validate_attack(struct battle_bar_default *bar, struct battle *bt, const struct 
 	struct character *target;
 
 	if (sel->index_side == 0)
-		target = bt->enemies[sel->index_character].ch;
+		target = bt->enemies[sel->index_character]->ch;
 	else
-		target = bt->team[sel->index_character].ch;
+		target = bt->team[sel->index_character]->ch;
 
-	battle_attack(bt, bt->order_cur->ch, target);
+	battle_attack(bt, battle_current(bt)->ch, target);
 }
 
 static void
 validate_magic(struct battle_bar_default *bar, struct battle *bt, const struct selection *sel)
 {
-	struct character *source = bt->order_cur->ch;
-	const struct spell *spell = source->spells[bar->sub_grid.selected];
+	struct character *source = battle_current(bt)->ch;
+	const struct spell *spell = source->spells[bar->grid.selected];
 
 	battle_cast(bt, source, spell, sel);
 }
@@ -85,15 +103,15 @@ validate_item(struct battle_bar_default *bar, struct battle *bt, const struct se
 	struct inventory_slot *slot;
 	struct battle_entity *source, *target;
 
-	if (bar->sub_grid.selected >= INVENTORY_ITEM_MAX)
+	if (bar->grid.selected >= INVENTORY_ITEM_MAX)
 		return;
-	if (!(slot = &bt->inventory->items[bar->sub_grid.selected]))
+	if (!(slot = &bt->inventory->items[bar->grid.selected]))
 		return;
 
-	source = bt->order_cur;
+	source = battle_current(bt);
 	target = sel->index_side == 0
-		? &bt->enemies[sel->index_character]
-		: &bt->team[sel->index_character];
+		? bt->enemies[sel->index_character]
+		: bt->team[sel->index_character];
 
 	/* TODO: battle_use? */
 	battle_state_item(bt, source, target, slot);
@@ -106,7 +124,7 @@ validate_item(struct battle_bar_default *bar, struct battle *bt, const struct se
  */
 
 static void
-switch_selection_attack(struct battle *bt)
+switch_selection_attack(struct battle_bar_default *bar, struct battle *bt)
 {
 	struct selection sel = {
 		.allowed_kinds = SELECTION_KIND_ONE,
@@ -114,7 +132,8 @@ switch_selection_attack(struct battle *bt)
 		.index_side = 0
 	};
 
-	/* Just make sure */
+	/* Disable handling anymore. */
+	bar->state = BATTLE_BAR_DEFAULT_STATE_NONE;
 
 	selection_first(&sel, bt);
 	battle_state_selection(bt, &sel);
@@ -123,13 +142,13 @@ switch_selection_attack(struct battle *bt)
 static void
 switch_selection_spell(struct battle_bar_default *bar, struct battle *bt)
 {
-	const struct character *ch = bt->order_cur->ch;
-	const struct spell *sp = ch->spells[bar->sub_grid.selected];
+	const struct character *ch = battle_current(bt)->ch;
+	const struct spell *sp = ch->spells[bar->grid.selected];
 	struct selection sel = {0};
 
-	if (bar->sub_grid.selected > CHARACTER_SPELL_MAX)
+	if (bar->grid.selected > CHARACTER_SPELL_MAX)
 		return;
-	if (!(sp = ch->spells[bar->sub_grid.selected]) || sp->mp > (unsigned int)(ch->mp))
+	if (!(sp = ch->spells[bar->grid.selected]) || sp->mp > (unsigned int)ch->mp)
 		return;
 
 	/* Use the spell selection algorithm to fill default values. */
@@ -148,7 +167,7 @@ switch_selection_item(struct battle *bt)
 		.allowed_kinds = SELECTION_KIND_ONE,
 		.allowed_sides = SELECTION_SIDE_TEAM | SELECTION_SIDE_ENEMY,
 		.index_side = 1,
-		.index_character = bt->order_curindex
+		.index_character = battle_index(bt)
 	};
 
 	battle_state_selection(bt, &slt);
@@ -160,7 +179,7 @@ switch_selection_item(struct battle *bt)
  */
 
 static void
-draw_help(const struct battle_bar_default *bar, const struct battle *bt, const char *what)
+draw_help(const struct battle_bar_default *bar, const char *what)
 {
 	struct label label = {0};
 	unsigned int lw = 0, lh = 0;
@@ -168,23 +187,23 @@ draw_help(const struct battle_bar_default *bar, const struct battle *bt, const c
 	label.flags = LABEL_FLAGS_SHADOW;
 	label.text = what;
 	label_query(&label, &lw, &lh);
-	label.x = bar->sub_grid.x + (bar->sub_grid.w / 2) - (lw / 2);
-	label.y = bar->sub_grid.y - lh - BATTLE_THEME(bt)->padding;
+	label.x = bar->grid.x + (bar->grid.w / 2) - (lw / 2);
+	label.y = bar->grid.y - lh - THEME(bar)->padding;
 	label_draw(&label);
 }
 
 static void
 draw_spell_help(const struct battle_bar_default *bar, const struct battle *bt)
 {
-	const struct character *ch = bt->order_cur->ch;
+	const struct character *ch = battle_current(bt)->ch;
 	const struct spell *sp;
 
-	if (bar->sub_grid.selected >= CHARACTER_SPELL_MAX)
+	if (bar->grid.selected >= CHARACTER_SPELL_MAX)
 		return;
-	if (!(sp = ch->spells[bar->sub_grid.selected]))
+	if (!(sp = ch->spells[bar->grid.selected]))
 		return;
 
-	draw_help(bar, bt, sp->description);
+	draw_help(bar, sp->description);
 }
 
 static void
@@ -192,26 +211,25 @@ draw_item_help(const struct battle_bar_default *bar, const struct battle *bt)
 {
 	const struct inventory_slot *slot;
 
-	if (bar->sub_grid.selected >= INVENTORY_ITEM_MAX)
+	if (bar->grid.selected >= INVENTORY_ITEM_MAX)
 		return;
 
-	slot = &bt->inventory->items[bar->sub_grid.selected];
+	slot = &bt->inventory->items[bar->grid.selected];
 
 	if (!slot->item)
 		return;
 
-	draw_help(bar, bt, slot->item->description);
+	draw_help(bar, slot->item->description);
 }
 
 static void
-draw_status_character_stats(const struct battle *bt,
+draw_status_character_stats(const struct battle_bar_default *bar,
                             const struct character *ch,
                             int x,
                             int y,
-                            unsigned int w,
                             unsigned int h)
 {
-	struct theme *theme = BATTLE_THEME(bt);
+	const struct theme *theme = THEME(bar);
 	struct label label;
 	unsigned int spacing, lw, lh;
 	char line[64];
@@ -225,17 +243,24 @@ draw_status_character_stats(const struct battle *bt,
 	label.text = line;
 	label.flags = LABEL_FLAGS_SHADOW;
 
+	/* Name. */
+	snprintf(line, sizeof (line), "%s", ch->name);
+	label_query(&label, &lw, &lh);
+	label.x = x + theme->padding;
+	label.y = y + spacing;
+	label_draw(&label);
+
 	/* HP. */
 	snprintf(line, sizeof (line), "%d/%u", ch->hp, ch->hpmax);
 	label_query(&label, &lw, &lh);
-	label.x = x + w - lw - theme->padding;
-	label.y = y + spacing;
+	label.x = x + theme->padding;
+	label.y = label.y + lh + spacing;
 	label_draw(&label);
 
 	/* MP. */
 	snprintf(line, sizeof (line), "%d/%u", ch->mp, ch->mpmax);
 	label_query(&label, &lw, &lh);
-	label.x = x + w - lw - theme->padding;
+	label.x = x + theme->padding;
 	label.y = label.y + lh + spacing;
 	label_draw(&label);
 
@@ -247,43 +272,52 @@ static void
 draw_status_character(const struct battle_bar_default *bar,
                       const struct battle *bt,
                       const struct character *ch,
+                      const struct geo *geo,
                       unsigned int index)
 {
 	int x, y;
 	unsigned int w, h;
 
 	/* Compute bounding box for rendering. */
-	w = bar->status_frame.w / BATTLE_TEAM_MAX;
-	h = bar->status_frame.h;
-	x = bar->status_frame.x + (index * w);
-	y = bar->status_frame.y;
+	w = geo->w / bt->teamsz;
+	h = geo->h;
+	x = geo->x + (index * w);
+	y = geo->y;
 
-	draw_status_character_stats(bt, ch, x, y, w, h);
+	draw_status_character_stats(bar, ch, x, y, h);
 }
 
 static void
-draw_status_characters(const struct battle_bar_default *bar, const struct battle *bt)
+draw_status_characters(const struct battle_bar_default *bar,
+                       const struct battle *bt,
+                       const struct geo *geo)
 {
 	const struct battle_entity *et;
 	unsigned int index = 0;
 
 	BATTLE_TEAM_FOREACH(bt, et) {
 		if (character_ok(et->ch))
-			draw_status_character(bar, bt, et->ch, index);
+			draw_status_character(bar, bt, et->ch, geo, index);
 
 		++index;
 	}
 }
 
 static void
-draw_status(const struct battle_bar_default *bar, const struct battle *bt)
+draw_status(const struct battle_bar_default *bar, const struct battle *bt, const struct geo *geo)
 {
-	frame_draw(&bar->status_frame);
-	draw_status_characters(bar, bt);
+	frame_draw(&(const struct frame) {
+		.x = geo->x,
+		.y = geo->y,
+		.w = geo->w,
+		.h = geo->h
+	});
+
+	draw_status_characters(bar, bt, geo);
 }
 
 static void
-draw_menu(const struct battle_bar_default *bar, const struct battle *bt)
+draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 {
 	struct {
 		unsigned int w, h;
@@ -320,32 +354,34 @@ draw_menu(const struct battle_bar_default *bar, const struct battle *bt)
 		}
 	};
 
-	struct theme theme;
+	const struct theme *theme = THEME(bar);
 	int bx, by;
 	unsigned int bw, bh;
 
-	/* Copy theme according to menu selection. */
-	theme_shallow(&theme, bt->theme);
-
 	/* Compute bounding box with margins removed. */
-	bx = bar->menu_frame.x + theme.padding;
-	by = bar->menu_frame.y + theme.padding;
-	bw = bar->menu_frame.w - theme.padding * 2;
-	bh = bar->menu_frame.h - theme.padding * 2;
+	bx = geo->x + theme->padding;
+	by = geo->y + theme->padding;
+	bw = geo->w - theme->padding * 2;
+	bh = geo->h - theme->padding * 2;
 
 	/* Draw menu frame. */
-	frame_draw(&bar->menu_frame);
+	frame_draw(&(const struct frame) {
+		.x = geo->x,
+		.y = geo->y,
+		.w = geo->w,
+		.h = geo->h
+	});
 
 	for (size_t i = 0; i < UTIL_SIZE(buttons); ++i) {
-		buttons[i].label.theme = &theme;
+		buttons[i].label.theme = theme;
 
 		label_query(&buttons[i].label, &buttons[i].w, &buttons[i].h);
 
 		/* Change theme if it's selected. */
-		if ((size_t)bar->menu == i /*&& bar->state != BATTLE_BAR_DEFAULT_STATE_NONE*/)
-			theme.colors[THEME_COLOR_NORMAL] = BATTLE_THEME(bt)->colors[THEME_COLOR_SELECTED];
+		if ((size_t)bar->menu == i)
+			buttons[i].label.flags |=  LABEL_FLAGS_SELECTED;
 		else
-			theme.colors[THEME_COLOR_NORMAL] = BATTLE_THEME(bt)->colors[THEME_COLOR_NORMAL];
+			buttons[i].label.flags &= ~LABEL_FLAGS_SELECTED;
 
 		align(buttons[i].align,
 		    &buttons[i].label.x, &buttons[i].label.y, buttons[i].w, buttons[i].h,
@@ -383,13 +419,13 @@ handle_keydown_menu(struct battle_bar_default *bar, struct battle *bt, const uni
 		 */
 		switch (bar->menu) {
 		case BATTLE_BAR_DEFAULT_MENU_ATTACK:
-			switch_selection_attack(bt);
+			switch_selection_attack(bar, bt);
 			break;
 		case BATTLE_BAR_DEFAULT_MENU_ITEM:
 			battle_bar_default_open_item(bar, bt);
 			break;
 		case BATTLE_BAR_DEFAULT_MENU_MAGIC:
-			battle_bar_default_open_magic(bar, bt, bt->order_cur->ch);
+			battle_bar_default_open_magic(bar, bt, battle_current(bt)->ch);
 			break;
 		default:
 			break;
@@ -408,18 +444,9 @@ static void
 handle_keydown_grid(struct battle_bar_default *bar, struct battle *bt, const union event *ev)
 {
 	/* Go back to main menu if I press escape. */
-	if (ev->key.key == KEY_ESCAPE) {
-		//gridmenu_reset(&bar->sub_grid);
+	if (ev->key.key == KEY_ESCAPE)
 		bar->state = BATTLE_BAR_DEFAULT_STATE_MENU;
-		return;
-	}
-
-	gridmenu_handle(&bar->sub_grid, ev);
-
-#if 0
-	if (bar->sub_grid.state == GRIDMENU_STATE_ACTIVATED) {
-		gridmenu_reset(&bar->sub_grid);
-
+	else if (gridmenu_handle(&bar->grid, ev)) {
 		switch (bar->menu) {
 		case BATTLE_BAR_DEFAULT_MENU_MAGIC:
 			switch_selection_spell(bar, bt);
@@ -431,7 +458,6 @@ handle_keydown_grid(struct battle_bar_default *bar, struct battle *bt, const uni
 			break;
 		}
 	}
-#endif
 }
 
 static void
@@ -444,7 +470,8 @@ handle_keydown(struct battle_bar_default *bar, struct battle *bt, const union ev
 		[BATTLE_BAR_DEFAULT_STATE_GRID] = handle_keydown_grid
 	};
 
-	handlers[bar->state](bar, bt, ev);
+	if (handlers[bar->state])
+		handlers[bar->state](bar, bt, ev);
 }
 
 #if 0
@@ -452,10 +479,10 @@ handle_keydown(struct battle_bar_default *bar, struct battle *bt, const union ev
 static void
 handle_clickdown(struct battle_bar_default *bar, struct battle *bt, const union event *ev)
 {
+	assert(ev->type == EVENT_CLICKDOWN);
+
 	(void)bar;
 	(void)bt;
-	(void)ev;
-	assert(ev->type == EVENT_CLICKDOWN);
 
 	switch (bar->state) {
 	case BATTLE_BAR_DEFAULT_STATE_MENU:
@@ -464,8 +491,6 @@ handle_clickdown(struct battle_bar_default *bar, struct battle *bt, const union 
 		break;
 	case BATTLE_BAR_DEFAULT_STATE_SUB:
 		/* We are in the sub menu (objects/spells). */
-		gridmenu_handle(&bar->sub_grid, ev);
-
 		if (bar->sub_grid.state == GRIDMENU_STATE_ACTIVATED)
 	default:
 		break;
@@ -477,21 +502,7 @@ handle_clickdown(struct battle_bar_default *bar, struct battle *bt, const union 
 #endif
 
 static void
-init_gridmenu(struct battle_bar_default *bar, const struct battle *bt)
-{
-	bar->sub_grid.x = bar->x;
-	bar->sub_grid.y = bar->menu_frame.y;
-	bar->sub_grid.w = bar->status_frame.w;
-	bar->sub_grid.h = bar->h;
-	bar->sub_grid.theme = bt->theme;
-	bar->sub_grid.nrows = 3;
-	bar->sub_grid.ncols = 4;
-
-	//memset(bar->sub_grid.menu, 0, sizeof (bar->sub_grid.menu));
-}
-
-static void
-start(struct battle_bar *bar, struct battle *bt)
+self_start(struct battle_bar *bar, struct battle *bt)
 {
 	(void)bt;
 
@@ -505,50 +516,36 @@ self_select(struct battle_bar *bar, struct battle *bt, const struct selection *s
 }
 
 static void
-handle(struct battle_bar *bar, struct battle *bt, const union event *ev)
+self_handle(struct battle_bar *bar, struct battle *bt, const union event *ev)
 {
 	battle_bar_default_handle(bar->data, bt, ev);
 }
 
 static void
-draw(const struct battle_bar *bar, const struct battle *bt)
+self_draw(const struct battle_bar *bar, const struct battle *bt)
 {
 	battle_bar_default_draw(bar->data, bt);
 }
 
-static void
-finish(struct battle_bar *bar, struct battle *bt)
-{
-	(void)bt;
-
-	battle_bar_default_finish(bar->data);
-	free(bar->data);
-}
-
 void
-battle_bar_default_positionate(struct battle_bar_default *bar, const struct battle *bt)
+battle_bar_default_init(struct battle_bar_default *bar)
 {
 	assert(bar);
-	assert(bt);
+
+	struct geo geo[2];
+
+	memset(bar, 0, sizeof (*bar));
 
 	bar->w = window.w;
 	bar->h = window.h * 0.12;
 	bar->x = 0;
 	bar->y = window.h - bar->h;
 
-	/* Menu in the middle of the bar (take 20%). */
-	bar->menu_frame.w = bar->w * 0.2;
-	bar->menu_frame.h = bar->h;
-	bar->menu_frame.x = bar->x + (bar->w / 2) - (bar->menu_frame.w / 2);
-	bar->menu_frame.y = window.h - bar->h;
-	bar->menu_frame.theme = bt->theme;
+	dimensions(geo, bar);
 
-	/* Status bar on the right. */
-	bar->status_frame.x = bar->menu_frame.x + bar->menu_frame.w;
-	bar->status_frame.y = bar->menu_frame.y;
-	bar->status_frame.w = (bar->w - bar->menu_frame.w) / 2;
-	bar->status_frame.h = bar->h;
-	bar->status_frame.theme = bt->theme;
+	gridmenu_init(&bar->grid, 2, 2, NULL, 0);
+	gridmenu_resize(&bar->grid, bar->x, geo[0].y, geo[1].w, bar->h);
+	bar->grid.theme = bar->theme;
 }
 
 void
@@ -558,17 +555,14 @@ battle_bar_default_open_magic(struct battle_bar_default *bar, const struct battl
 	assert(bt);
 	assert(ch);
 
-#if 0
-	init_gridmenu(bar, bt);
+	bar->items = bar->grid.items = alloc_rearray0(bar->items, bar->itemsz,
+	    CHARACTER_SPELL_MAX, sizeof (*bar->items));
+	bar->itemsz = bar->grid.itemsz = CHARACTER_SPELL_MAX;
+	bar->state = BATTLE_BAR_DEFAULT_STATE_GRID;
 
 	for (size_t i = 0; i < CHARACTER_SPELL_MAX; ++i)
 		if (ch->spells[i])
-			bar->sub_grid.menu[i] = ch->spells[i]->name;
-
-	gridmenu_repaint(&bar->sub_grid);
-
-	bar->state = BATTLE_BAR_DEFAULT_STATE_GRID;
-#endif
+			bar->grid.items[i] = ch->spells[i]->name;
 }
 
 void
@@ -577,10 +571,8 @@ battle_bar_default_open_item(struct battle_bar_default *bar, const struct battle
 	assert(bar);
 	assert(bt);
 
+	/* TODO: not implemented yet. */
 #if 0
-
-	init_gridmenu(bar, bt);
-
 	for (size_t i = 0; i < INVENTORY_ITEM_MAX; ++i) {
 		if (bt->inventory->items[i].item) {
 			snprintf(bar->sub_items[i], sizeof (bar->sub_items[i]), "%-16s %u",
@@ -588,8 +580,6 @@ battle_bar_default_open_item(struct battle_bar_default *bar, const struct battle
 			bar->sub_grid.menu[i] = bar->sub_items[i];
 		}
 	}
-
-	gridmenu_repaint(&bar->sub_grid);
 
 	bar->state = BATTLE_BAR_DEFAULT_STATE_GRID;
 #endif
@@ -599,8 +589,6 @@ void
 battle_bar_default_start(struct battle_bar_default *bar)
 {
 	assert(bar);
-
-	//gridmenu_reset(&bar->sub_grid);
 
 	bar->menu = BATTLE_BAR_DEFAULT_MENU_ATTACK;
 	bar->state = BATTLE_BAR_DEFAULT_STATE_MENU;
@@ -618,10 +606,10 @@ battle_bar_default_select(struct battle_bar_default *bar, struct battle *bt, con
 	assert(sel);
 
 	static void (*validate[])(struct battle_bar_default *, struct battle *, const struct selection *) = {
-		[BATTLE_BAR_DEFAULT_MENU_ATTACK] = validate_attack,
-		[BATTLE_BAR_DEFAULT_MENU_ITEM] = validate_item,
-		[BATTLE_BAR_DEFAULT_MENU_MAGIC] = validate_magic,
-		[BATTLE_BAR_DEFAULT_MENU_SPECIAL] = NULL
+		[BATTLE_BAR_DEFAULT_MENU_ATTACK]        = validate_attack,
+		[BATTLE_BAR_DEFAULT_MENU_ITEM]          = validate_item,
+		[BATTLE_BAR_DEFAULT_MENU_MAGIC]         = validate_magic,
+		[BATTLE_BAR_DEFAULT_MENU_SPECIAL]       = NULL
 	};
 
 	if (validate[bar->menu])
@@ -650,8 +638,11 @@ battle_bar_default_draw(const struct battle_bar_default *bar, const struct battl
 	assert(bar);
 	assert(bt);
 
-	draw_status(bar, bt);
-	draw_menu(bar, bt);
+	struct geo geo[2];
+
+	dimensions(geo, bar);
+	draw_menu(bar, &geo[0]);
+	draw_status(bar, bt, &geo[1]);
 
 	if (bar->state == BATTLE_BAR_DEFAULT_STATE_GRID) {
 		switch (bar->menu) {
@@ -668,7 +659,7 @@ battle_bar_default_draw(const struct battle_bar_default *bar, const struct battl
 
 	/* Sub menu is only shown if state is set to it. */
 	if (bar->state == BATTLE_BAR_DEFAULT_STATE_GRID)
-		gridmenu_draw(&bar->sub_grid);
+		gridmenu_draw(&bar->grid);
 }
 
 void
@@ -676,27 +667,21 @@ battle_bar_default_finish(struct battle_bar_default *bar)
 {
 	assert(bar);
 
-	//gridmenu_finish(&bar->sub_grid);
-
+	free(bar->items);
 	memset(bar, 0, sizeof (*bar));
 }
 
 void
-battle_bar_default(struct battle *bt)
+battle_bar_default(struct battle_bar_default *self, struct battle_bar *bar)
 {
-	assert(bt);
+	assert(self);
+	assert(bar);
 
-	struct self *self;
+	memset(bar, 0, sizeof (*bar));
 
-	self = alloc_new0(sizeof (*self));
-	self->bar.data = self;
-	self->bar.start = start;
-	self->bar.select = self_select;
-	self->bar.handle = handle;
-	self->bar.draw = draw;
-	self->bar.finish = finish;
-
-	battle_bar_default_positionate(&self->data, bt);
-
-	bt->bar = &self->bar;
+	bar->data = self;
+	bar->start = self_start;
+	bar->select = self_select;
+	bar->handle = self_handle;
+	bar->draw = self_draw;
 }

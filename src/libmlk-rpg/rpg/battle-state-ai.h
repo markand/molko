@@ -21,8 +21,11 @@
 
 struct battle;
 
-int
+void
 battle_state_ai_update(struct battle *);
+
+void
+battle_state_ai_draw(const struct battle *);
 
 void
 battle_state_ai(struct battle *);

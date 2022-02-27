@@ -32,14 +32,14 @@
 static void
 draw_name(const struct battle_entity *et, const struct battle *bt)
 {
-	struct theme theme;
 	struct label label = et->name;
 
-	if (et == bt->order_cur) {
-		theme_shallow(&theme, bt->theme);
-		label.theme = &theme;
-		theme.colors[THEME_COLOR_NORMAL] = theme.colors[THEME_COLOR_SELECTED];
-	}
+	label.theme = BATTLE_THEME(bt);
+
+	if (et == battle_current(bt))
+		label.flags |=  LABEL_FLAGS_SELECTED;
+	else
+		label.flags &= ~LABEL_FLAGS_SELECTED;
 
 	label_draw(&label);
 }

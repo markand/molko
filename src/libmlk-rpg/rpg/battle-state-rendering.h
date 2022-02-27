@@ -1,5 +1,5 @@
 /*
- * battle-state-menu.c -- battle state (menu)
+ * battle-state-rendering.h -- battle state (rendering an action)
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,23 +16,29 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_RPG_BATTLE_STATE_MENU_H
-#define MLK_RPG_BATTLE_STATE_MENU_H
+#ifndef MLK_RPG_BATTLE_STATE_RENDERING_H
+#define MLK_RPG_BATTLE_STATE_RENDERING_H
 
 struct battle;
+struct drawable;
 
-union event;
-
-void
-battle_state_menu_handle(struct battle *, const union event *);
-
-void
-battle_state_menu_update(struct battle *, unsigned int);
+struct battle_state_rendering {
+	struct drawable *drawable;
+};
 
 void
-battle_state_menu_draw(const struct battle *);
+battle_state_rendering_init(struct battle_state_rendering *, struct drawable *);
+
+int
+battle_state_rendering_update(struct battle_state_rendering *, struct battle *, unsigned int);
 
 void
-battle_state_menu(struct battle *);
+battle_state_rendering_draw(const struct battle_state_rendering *, const struct battle *);
 
-#endif /* !MLK_RPG_BATTLE_STATE_MENU_H */
+void
+battle_state_rendering_finish(struct battle_state_rendering *);
+
+void
+battle_state_rendering(struct battle *, struct drawable *);
+
+#endif /* !MLK_RPG_BATTLE_STATE_RENDERING_H */

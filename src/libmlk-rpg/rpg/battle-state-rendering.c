@@ -1,5 +1,5 @@
 /*
- * battle-state-opening.c -- battle state (opening)
+ * battle-state-rendering.c -- battle state (rendering an action)
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -20,37 +20,28 @@
 #include <stdlib.h>
 
 #include <core/alloc.h>
-#include <core/painter.h>
-#include <core/panic.h>
-#include <core/window.h>
+#include <core/drawable.h>
 
-#include "battle-state-check.h"
-#include "battle-state-opening.h"
-#include "battle-state.h"
+#include "battle-state-rendering.h"
 #include "battle.h"
 
-#define DELAY (1000U)
-
 struct self {
-	/* Always keep first. */
-	struct battle_state_opening data;
+	struct battle_state_rendering data;
 	struct battle_state state;
 };
 
 static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
-	(void)bt;
+	battle_state_rendering_update(st->data, bt, ticks);
 
-	return battle_state_opening_update(st->data, bt, ticks);
+	return 0;
 }
 
 static void
 draw(const struct battle_state *st, const struct battle *bt)
 {
-	(void)bt;
-
-	battle_state_opening_draw(st->data, bt);
+	battle_state_rendering_draw(st->data, bt);
 }
 
 static void
@@ -58,46 +49,57 @@ finish(struct battle_state *st, struct battle *bt)
 {
 	(void)bt;
 
+	battle_state_rendering_finish(st->data);
 	free(st->data);
 }
 
-int
-battle_state_opening_update(struct battle_state_opening *op, struct battle *bt, unsigned int ticks)
+void
+battle_state_rendering_init(struct battle_state_rendering *rdr, struct drawable *dw)
 {
-	op->elapsed += ticks;
+	assert(rdr);
+	assert(dw);
 
-	/*
-	 * Those function will effectively change state accordingly to the
-	 * order of playing.
-	 */
-	if (op->elapsed >= DELAY)
-		battle_state_check(bt);
+	rdr->drawable = dw;
+}
+
+int
+battle_state_rendering_update(struct battle_state_rendering *rdr, struct battle *bt, unsigned int ticks)
+{
+	assert(rdr);
+	assert(battle_ok(bt));
+
+	battle_update_component(bt, BATTLE_COMPONENT_ALL, ticks);
+
+	if (drawable_update(rdr->drawable, ticks)) {
+		drawable_end(rdr->drawable);
+		return 1;
+	}
 
 	return 0;
 }
 
 void
-battle_state_opening_draw(const struct battle_state_opening *op, const struct battle *bt)
+battle_state_rendering_draw(const struct battle_state_rendering *rdr, const struct battle *bt)
 {
-	assert(op);
-	assert(bt);
+	assert(rdr);
 
-	const unsigned int w = window.w;
-	const unsigned int h = window.h / 2;
-	const unsigned int ch = op->elapsed * h / DELAY;
-
-	battle_draw_component(bt, BATTLE_COMPONENT_BACKGROUND | BATTLE_COMPONENT_ENTITIES);
-
-	/* Draw some bezels opening. */
-	painter_set_color(0x000000ff);
-	painter_draw_rectangle(0, 0, w, h - ch);
-	painter_draw_rectangle(0, h + ch, w, h - ch);
+	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
+	drawable_draw(rdr->drawable);
 }
 
 void
-battle_state_opening(struct battle *bt)
+battle_state_rendering_finish(struct battle_state_rendering *rdr)
+{
+	assert(rdr);
+
+	drawable_finish(rdr->drawable);
+}
+
+void
+battle_state_rendering(struct battle *bt, struct drawable *dw)
 {
 	assert(bt);
+	assert(dw);
 
 	struct self *self;
 
@@ -107,5 +109,6 @@ battle_state_opening(struct battle *bt)
 	self->state.draw = draw;
 	self->state.finish = finish;
 
+	battle_state_rendering_init(&self->data, dw);
 	battle_switch(bt, &self->state);
 }

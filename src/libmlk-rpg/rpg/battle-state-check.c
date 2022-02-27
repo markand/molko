@@ -24,6 +24,7 @@
 #include <core/panic.h>
 #include <core/sprite.h>
 #include <core/texture.h>
+#include <core/trace.h>
 
 #include "battle-state-check.h"
 #include "battle-state-lost.h"
@@ -31,20 +32,21 @@
 #include "battle-state.h"
 #include "battle.h"
 #include "character.h"
+#include "rpg_p.h"
 
 struct fadeout {
 	struct character *ch;
 	int x;
 	int y;
-	struct action action;
+	struct drawable dw;
 	unsigned int alpha;
 	unsigned int elapsed;
 };
 
 static int
-fadeout_update(struct action *act, unsigned int ticks)
+fadeout_update(struct drawable *dw, unsigned int ticks)
 {
-	struct fadeout *fade = act->data;
+	struct fadeout *fade = dw->data;
 
 	fade->elapsed += ticks;
 
@@ -61,9 +63,9 @@ fadeout_update(struct action *act, unsigned int ticks)
 }
 
 static void
-fadeout_draw(struct action *act)
+fadeout_draw(struct drawable *dw)
 {
-	const struct fadeout *fade = act->data;
+	const struct fadeout *fade = dw->data;
 	struct sprite *sprite = fade->ch->sprites[CHARACTER_SPRITE_NORMAL];
 
 	texture_set_alpha_mod(sprite->texture, fade->alpha);
@@ -72,9 +74,9 @@ fadeout_draw(struct action *act)
 }
 
 static void
-fadeout_finish(struct action *act)
+fadeout_finish(struct drawable *dw)
 {
-	free(act->data);
+	free(dw->data);
 }
 
 static void
@@ -82,22 +84,23 @@ fadeout(struct battle *bt, struct battle_entity *et)
 {
 	struct fadeout *fade;
 
-	if (!(fade = alloc_new0(sizeof (*fade))))
-		panic();
+	if (!bt->effects) {
+		tracef(_("can't create a fadeout effect without a drawable_stack"));
+		return;
+	}
 
+	fade = alloc_new0(sizeof (*fade));
 	fade->ch = et->ch;
 	fade->x = et->x;
 	fade->y = et->y;
 	fade->alpha = 250;
-	fade->action.data = fade;
-	fade->action.draw = fadeout_draw;
-	fade->action.update = fadeout_update;
-	fade->action.finish = fadeout_finish;
+	fade->dw.data = fade;
+	fade->dw.draw = fadeout_draw;
+	fade->dw.update = fadeout_update;
+	fade->dw.finish = fadeout_finish;
 
-	if (action_stack_add(&bt->actions[1], &fade->action) < 0)
+	if (drawable_stack_add(bt->effects, &fade->dw) < 0)
 		free(fade);
-
-	memset(et, 0, sizeof (*et));
 }
 
 static int
@@ -130,11 +133,12 @@ is_won(const struct battle *bt)
 static void
 clean(struct battle *bt)
 {
-	struct battle_entity *et;
-
-	BATTLE_ENEMY_FOREACH(bt, et)
-		if (character_ok(et->ch) && et->ch->hp == 0)
-			fadeout(bt, et);
+	for (size_t i = 0; i < bt->enemiesz; ++i) {
+		if (bt->enemies[i] && character_ok(bt->enemies[i]->ch) && bt->enemies[i]->ch->hp == 0) {
+			fadeout(bt, bt->enemies[i]);
+			bt->enemies[i] = NULL;
+		}
+	}
 }
 
 static int
@@ -143,7 +147,17 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	(void)st;
 	(void)ticks;
 
-	return battle_state_check_update(bt);
+	battle_state_check_update(bt);
+
+	return 0;
+}
+
+static void
+draw(const struct battle_state *st, const struct battle *bt)
+{
+	(void)st;
+
+	battle_state_check_draw(bt);
 }
 
 static void
@@ -154,10 +168,10 @@ finish(struct battle_state *st, struct battle *bt)
 	free(st);
 }
 
-int
+void
 battle_state_check_update(struct battle *bt)
 {
-	assert(bt);
+	assert(battle_ok(bt));
 
 	clean(bt);
 
@@ -167,20 +181,27 @@ battle_state_check_update(struct battle *bt)
 		battle_state_victory(bt);
 	else
 		battle_next(bt);
+}
 
-	return 0;
+void
+battle_state_check_draw(const struct battle *bt)
+{
+	assert(battle_ok(bt));
+
+	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
 }
 
 void
 battle_state_check(struct battle *bt)
 {
-	assert(bt);
+	assert(battle_ok(bt));
 
 	struct battle_state *self;
 
 	self = alloc_new0(sizeof (*self));
 	self->data = bt;
 	self->update = update;
+	self->draw = draw;
 	self->finish = finish;
 
 	battle_switch(bt, self);

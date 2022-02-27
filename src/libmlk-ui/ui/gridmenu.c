@@ -133,7 +133,7 @@ draw_labels(const struct gridmenu *menu)
 	for (size_t i = 0; i < pagesz; ++i) {
 		item = i + pagenr * pagesz;
 
-		if (item >= menu->itemsz)
+		if (item >= menu->itemsz || !menu->items[item])
 			continue;
 
 		label.text = menu->items[item];
@@ -230,7 +230,7 @@ void
 gridmenu_init(struct gridmenu *menu,
               unsigned int nr,
               unsigned int nc,
-              const char * const *items,
+              const char **items,
               size_t itemsz)
 {
 	assert(menu);

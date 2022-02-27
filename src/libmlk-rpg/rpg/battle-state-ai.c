@@ -32,7 +32,17 @@ update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 	(void)st;
 	(void)ticks;
 
-	return battle_state_ai_update(bt);
+	battle_state_ai_update(bt);
+
+	return 0;
+}
+
+static void
+draw(const struct battle_state *st, const struct battle *bt)
+{
+	(void)st;
+
+	battle_state_ai_draw(bt);
 }
 
 static void
@@ -43,20 +53,26 @@ finish(struct battle_state *st, struct battle *bt)
 	free(st);
 }
 
-int
+void
 battle_state_ai_update(struct battle *bt)
 {
-	assert(bt);
+	assert(battle_ok(bt));
 
-	struct character *ch = bt->order_cur->ch;
+	struct character *ch = battle_current(bt)->ch;
 
 	/*
 	 * Immediately invoke the enemy exec strategy and put the battle state
 	 * to check.
 	 */
 	character_exec(ch, bt);
+}
 
-	return 0;
+void
+battle_state_ai_draw(const struct battle *bt)
+{
+	assert(battle_ok(bt));
+
+	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
 }
 
 void
@@ -69,6 +85,7 @@ battle_state_ai(struct battle *bt)
 	self = alloc_new0(sizeof (*self));
 	self->data = bt;
 	self->update = update;
+	self->draw = draw;
 	self->finish = finish;
 
 	battle_switch(bt, self);

@@ -53,7 +53,7 @@ draw(const struct battle_state *st, const struct battle *bt)
 {
 	(void)bt;
 
-	battle_state_lost_draw(st->data);
+	battle_state_lost_draw(st->data, bt);
 }
 
 void
@@ -108,10 +108,12 @@ battle_state_lost_update(struct battle_state_lost *lost, struct battle *bt, unsi
 }
 
 void
-battle_state_lost_draw(struct battle_state_lost *lost)
+battle_state_lost_draw(struct battle_state_lost *lost, const struct battle *bt)
 {
 	assert(lost);
+	assert(battle_ok(bt));
 
+	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
 	message_draw(&lost->msg);
 }
 

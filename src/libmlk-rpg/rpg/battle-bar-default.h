@@ -21,12 +21,13 @@
 
 #include <core/core.h>
 
-#include <ui/frame.h>
 #include <ui/gridmenu.h>
 
 struct battle;
+struct battle_bar;
 struct character;
 struct selection;
+struct theme;
 
 union event;
 
@@ -38,6 +39,7 @@ enum battle_bar_default_menu {
 };
 
 enum battle_bar_default_state {
+	BATTLE_BAR_DEFAULT_STATE_NONE,
 	BATTLE_BAR_DEFAULT_STATE_MENU,
 	BATTLE_BAR_DEFAULT_STATE_GRID
 };
@@ -47,24 +49,20 @@ struct battle_bar_default {
 	int y;
 	unsigned int w;
 	unsigned int h;
+	struct theme *theme;
 	enum battle_bar_default_state state;
-
-	/* Right status frame. */
-	struct frame status_frame;
-
-	/* Main menu selection. */
-	struct frame menu_frame;
 	enum battle_bar_default_menu menu;
 
-	/* Sub menu selection (spells/objects). */
-	char sub_items[16][128];
-	struct gridmenu sub_grid;
+	/* Private fields. */
+	const char **items;
+	size_t itemsz;
+	struct gridmenu grid;
 };
 
 CORE_BEGIN_DECLS
 
 void
-battle_bar_default_positionate(struct battle_bar_default *, const struct battle *);
+battle_bar_default_init(struct battle_bar_default *);
 
 void
 battle_bar_default_open_magic(struct battle_bar_default *, const struct battle *, struct character *);
@@ -79,7 +77,7 @@ void
 battle_bar_default_select(struct battle_bar_default *, struct battle *, const struct selection *);
 
 void
-battle_bar_default_handle(struct battle_bar_default *bar, struct battle *bt, const union event *);
+battle_bar_default_handle(struct battle_bar_default *, struct battle *, const union event *);
 
 void
 battle_bar_default_draw(const struct battle_bar_default *, const struct battle *);
@@ -88,7 +86,7 @@ void
 battle_bar_default_finish(struct battle_bar_default *);
 
 void
-battle_bar_default(struct battle *);
+battle_bar_default(struct battle_bar_default *, struct battle_bar *);
 
 CORE_END_DECLS
 

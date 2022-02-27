@@ -26,41 +26,30 @@
 #include "battle-state.h"
 #include "battle.h"
 
-#if 0
-
-static void
-open_spells(struct battle *bt)
-{
-	battle_bar_open_spells(&bt->bar, bt, bt->order_cur->ch);
-	battle_state_sub(bt);
-}
-
-static void
-open_attack(struct battle *bt)
-{
-	struct selection slt = {
-		.allowed_sides = SELECTION_SIDE_ENEMY
-	};
-
-	selection_first(&slt, bt);
-	battle_state_selection(bt, &slt);
-}
-
-static void
-open_items(struct battle *bt)
-{
-	battle_bar_open_items(&bt->bar, bt);
-	battle_state_sub(bt);
-}
-
-#endif
-
 static void
 handle(struct battle_state *st, struct battle *bt, const union event *ev)
 {
 	(void)st;
 
 	battle_state_menu_handle(bt, ev);
+}
+
+static int
+update(struct battle_state *st, struct battle *bt, unsigned int ticks)
+{
+	(void)st;
+
+	battle_state_menu_update(bt, ticks);
+
+	return 0;
+}
+
+static void
+draw(const struct battle_state *st, const struct battle *bt)
+{
+	(void)st;
+
+	battle_state_menu_draw(bt);
 }
 
 static void
@@ -81,6 +70,22 @@ battle_state_menu_handle(struct battle *bt, const union event *ev)
 }
 
 void
+battle_state_menu_update(struct battle *bt, unsigned int ticks)
+{
+	assert(battle_ok(bt));
+
+	battle_update_component(bt, ticks, BATTLE_COMPONENT_ALL);
+}
+
+void
+battle_state_menu_draw(const struct battle *bt)
+{
+	assert(battle_ok(bt));
+
+	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
+}
+
+void
 battle_state_menu(struct battle *bt)
 {
 	assert(bt);
@@ -90,6 +95,8 @@ battle_state_menu(struct battle *bt)
 	state = alloc_new0(sizeof (*state));
 	state->data = bt;
 	state->handle = handle;
+	state->update = update;
+	state->draw = draw;
 	state->finish = finish;
 
 	battle_bar_start(bt->bar, bt);

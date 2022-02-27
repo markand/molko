@@ -56,9 +56,15 @@ damage(const struct battle_entity *source, struct battle_entity *target, struct 
 static int
 update(struct battle_state *st, struct battle *bt, unsigned int ticks)
 {
-	(void)ticks;
+	battle_state_attacking_update(st->data, bt, ticks);
 
-	return battle_state_attacking_update(st->data, bt);
+	return 0;
+}
+
+static void
+draw(const struct battle_state *st, const struct battle *bt)
+{
+	battle_state_attacking_draw(st->data, bt);
 }
 
 static void
@@ -98,14 +104,16 @@ battle_state_attacking_init(struct battle_state_attacking *atk,
 		battle_entity_state_moving(source, x, y);
 }
 
-int
-battle_state_attacking_update(struct battle_state_attacking *atk, struct battle *bt)
+void
+battle_state_attacking_update(struct battle_state_attacking *atk, struct battle *bt, unsigned int ticks)
 {
 	assert(atk);
 	assert(bt);
 
+	battle_update_component(bt, ticks, BATTLE_COMPONENT_ALL);
+
 	if (!battle_entity_update(atk->source, 0))
-		return 0;
+		return;
 
 	switch (atk->status) {
 	case BATTLE_STATE_ATTACKING_ADVANCING:
@@ -135,8 +143,15 @@ battle_state_attacking_update(struct battle_state_attacking *atk, struct battle 
 	default:
 		break;
 	}
+}
 
-	return 0;
+void
+battle_state_attacking_draw(const struct battle_state_attacking *atk, const struct battle *bt)
+{
+	assert(atk);
+	assert(battle_ok(bt));
+
+	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
 }
 
 void
@@ -151,6 +166,7 @@ battle_state_attacking(struct battle_entity *source, struct battle_entity *targe
 	self = alloc_new0(sizeof (*self));
 	self->state.data = self;
 	self->state.update = update;
+	self->state.draw = draw;
 	self->state.finish = finish;
 
 	battle_state_attacking_init(&self->data, source, target);

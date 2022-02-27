@@ -25,9 +25,9 @@
 #include <core/event.h>
 #include <core/font.h>
 #include <core/music.h>
-#include <core/painter.h>
 #include <core/sprite.h>
 #include <core/texture.h>
+#include <core/trace.h>
 #include <core/util.h>
 #include <core/window.h>
 
@@ -48,6 +48,7 @@
 #include "character.h"
 #include "inventory.h"
 #include "item.h"
+#include "rpg_p.h"
 #include "spell.h"
 
 struct indicator {
@@ -96,14 +97,14 @@ find(struct battle *bt, const struct character *ch)
 }
 
 static struct battle_entity *
-random_select(struct battle_entity *group, size_t groupsz)
+random_select(struct battle_entity **group, size_t groupsz)
 {
 	struct battle_entity *ret = NULL, *et = NULL;
 
 	do {
-		et = &group[util_nrand(0, groupsz - 1)];
+		et = group[util_nrand(0, groupsz - 1)];
 
-		if (et->ch)
+		if (et && et->ch)
 			ret = et;
 	} while (!ret);
 
@@ -116,14 +117,14 @@ cmp_order(const void *d1, const void *d2)
 	const struct battle_entity *et1 = *(const struct battle_entity **)d1;
 	const struct battle_entity *et2 = *(const struct battle_entity **)d2;
 
-	return et1->ch->agt < et2->ch->agt;
+	return et2->ch->agt < et1->ch->agt;
 }
 
 static int
 is_team(const struct battle *bt, const struct character *ch)
 {
-	for (size_t i = 0; i < BATTLE_TEAM_MAX; ++i)
-		if (bt->team[i].ch == ch)
+	for (size_t i = 0; i < bt->teamsz; ++i)
+		if (bt->team[i] && bt->team[i]->ch == ch)
 			return 1;
 
 	return 0;
@@ -170,7 +171,7 @@ positionate_team(struct battle *bt)
 		if (et->x != 0 || et->y != 0)
 			return;
 
-		if (battle_entity_ok(&bt->team[i])) {
+		if (battle_entity_ok(bt->team[i])) {
 			nmemb++;
 			requirement += et->ch->sprites[CHARACTER_SPRITE_NORMAL]->cellh;
 		}
@@ -180,7 +181,7 @@ positionate_team(struct battle *bt)
 	spacing = (window.h - requirement) / (nmemb + 1);
 	x = window.w - 200;
 	y = spacing;
-	
+
 	BATTLE_TEAM_FOREACH(bt, et) {
 		if (battle_entity_ok(et)) {
 			et->x = x;
@@ -191,26 +192,42 @@ positionate_team(struct battle *bt)
 }
 
 static void
-draw_entities(const struct battle *bt, struct battle_entity *entities, size_t entitiesz)
+draw_entities(const struct battle *bt, struct battle_entity **entities, size_t entitiesz)
 {
 	for (size_t i = 0; i < entitiesz; ++i) {
-		if (battle_entity_ok(&entities[i]))
-			battle_entity_draw(&entities[i], bt);
+		if (battle_entity_ok(entities[i]))
+			battle_entity_draw(entities[i], bt);
 	}
 }
 
 static void
-update_entities(struct battle_entity *entities, size_t entitiesz, unsigned int ticks)
+update_entities(struct battle_entity **entities, size_t entitiesz, unsigned int ticks)
 {
 	for (size_t i = 0; i < entitiesz; ++i) {
-		if (battle_entity_ok(&entities[i]))
-			battle_entity_update(&entities[i], ticks);
+		if (battle_entity_ok(entities[i]))
+			battle_entity_update(entities[i], ticks);
 	}
+}
+
+void
+battle_init(struct battle *bt)
+{
+	assert(bt);
+
+	memset(bt, 0, sizeof (*bt));
+}
+
+int
+battle_ok(const struct battle *bt)
+{
+	return bt && bt->state && bt->bar && bt->enemiesz && bt->team;
 }
 
 void
 battle_start(struct battle *bt)
 {
+	assert(bt);
+
 	struct battle_entity *et;
 
 	BATTLE_TEAM_FOREACH(bt, et)
@@ -229,6 +246,8 @@ battle_start(struct battle *bt)
 	/* Play music if present. */
 	if (bt->music[0])
 		music_play(bt->music[0], MUSIC_LOOP);
+
+	battle_order(bt);
 }
 
 void
@@ -246,20 +265,39 @@ battle_switch(struct battle *bt, struct battle_state *st)
 void
 battle_order(struct battle *bt)
 {
-	struct battle_entity *et, **porder;
+	struct battle_entity **porder;
 
-	/* First, put a pointer for every enemy/team member. */
-	porder = &bt->order[0];
+	/* Create a pointer list to every entity. */
+	bt->order = alloc_rearray0(bt->order, bt->ordersz,
+	    bt->teamsz + bt->enemiesz, sizeof (*bt->order));
+	bt->ordersz = bt->teamsz + bt->enemiesz;
+	bt->ordercur = porder = bt->order;
 
-	BATTLE_TEAM_FOREACH(bt, et)
-		if (character_ok(et->ch))
-			*porder++ = et;
-	BATTLE_ENEMY_FOREACH(bt, et)
-		if (character_ok(et->ch))
-			*porder++ = et;
+	for (size_t i = 0; i < bt->teamsz; ++i)
+		if (bt->team[i] && character_ok(bt->team[i]->ch))
+			*porder++ = bt->team[i];
+	for (size_t i = 0; i < bt->enemiesz; ++i)
+		if (bt->enemies[i] && character_ok(bt->enemies[i]->ch))
+			*porder++ = bt->enemies[i];
 
 	/* Now sort. */
-	qsort(bt->order, porder - bt->order, sizeof (*porder), cmp_order);
+	qsort(bt->order, bt->ordersz, sizeof (*bt->order), cmp_order);
+}
+
+struct battle_entity *
+battle_current(const struct battle *bt)
+{
+	assert(bt);
+
+	return *bt->ordercur;
+}
+
+size_t
+battle_index(const struct battle *bt)
+{
+	assert(bt);
+
+	return bt->ordercur - bt->order;
 }
 
 void
@@ -273,9 +311,9 @@ battle_attack(struct battle *bt,
 	/* Target is empty? select randomly. */
 	if (!target) {
 		if (is_team(bt, source))
-			target = random_select(bt->enemies, BATTLE_ENEMY_MAX)->ch;
+			target = random_select(bt->enemies, bt->enemiesz)->ch;
 		else
-			target = random_select(bt->team, BATTLE_TEAM_MAX)->ch;
+			target = random_select(bt->team, bt->teamsz)->ch;
 	}
 
 	battle_state_attacking(battle_find(bt, source), battle_find(bt, target), bt);
@@ -295,7 +333,6 @@ battle_cast(struct battle *bt,
 	/* TODO: animate. */
 	source->mp -= spell->mp;
 	spell_action(spell, bt, source, selection);
-	battle_state_check(bt);
 }
 
 void
@@ -321,26 +358,16 @@ battle_next(struct battle *bt)
 {
 	assert(bt);
 
-	if (!bt->order_cur) {
+	if (!bt->ordercur)
 		battle_order(bt);
-		bt->order_cur = bt->order[bt->order_curindex = 0];
-	} else {
-		for (++bt->order_curindex; bt->order_curindex < BATTLE_ENTITY_MAX; ++bt->order_curindex) {
-			if (battle_entity_ok(bt->order[bt->order_curindex])) {
-				bt->order_cur = bt->order[bt->order_curindex];
-				break;
-			}
-		}
-
-		/* End of "turn". */
-		if (bt->order_curindex >= BATTLE_ENTITY_MAX) {
+	else {
+		if (bt->ordercur - bt->order + (size_t)1U >= bt->ordersz)
 			battle_order(bt);
-			bt->order_cur = bt->order[bt->order_curindex = 0];
-		}
+		else
+			bt->ordercur++;
 	}
 
-	/* Change state depending on the kind of entity. */
-	if (is_team(bt, bt->order_cur->ch)) {
+	if (is_team(bt, battle_current(bt)->ch)) {
 		battle_bar_start(bt->bar, bt);
 		battle_state_menu(bt);
 	} else
@@ -362,8 +389,14 @@ battle_indicator_hp(struct battle *bt, const struct character *target, long amou
 	assert(target);
 
 	const struct battle_entity *et = find(bt, target);
-	struct indicator *id = alloc_new0(sizeof (*id));
+	struct indicator *id;
 
+	if (!(bt->effects)) {
+		tracef(_("unable to add id without a drawable_stack"));
+		return;
+	}
+
+	id = alloc_new0(sizeof (*id));
 	id->bti.color = BATTLE_INDICATOR_HP_COLOR;
 	id->bti.amount = labs(amount);
 
@@ -377,23 +410,46 @@ battle_indicator_hp(struct battle *bt, const struct character *target, long amou
 
 	battle_indicator_start(&id->bti);
 
-	if (drawable_stack_add(&bt->effects, &id->dw) < 0)
+	if (drawable_stack_add(bt->effects, &id->dw) < 0)
 		drawable_finish(&id->dw);
+}
+
+void
+battle_handle_component(struct battle *bt, const union event *ev, enum battle_component comp)
+{
+	assert(bt);
+	assert(ev);
+
+	if (comp & BATTLE_COMPONENT_BAR)
+		battle_bar_handle(bt->bar, bt, ev);
+	if ((comp & BATTLE_COMPONENT_ACTIONS) && bt->actions)
+		action_stack_handle(bt->actions, ev);
 }
 
 void
 battle_handle(struct battle *bt, const union event *ev)
 {
-	assert(bt && bt->state);
+	assert(bt);
 	assert(ev);
 
-	/* Handle actions. */
-	action_stack_handle(&bt->actions[0], ev);
-	action_stack_handle(&bt->actions[1], ev);
+	battle_state_handle(bt->state, bt, ev);
+}
 
-	/* Handling of action is disallowed if there are pending actions. */
-	if (action_stack_completed(&bt->actions[0]))
-		battle_state_handle(bt->state, bt, ev);
+void
+battle_update_component(struct battle *bt, unsigned int ticks, enum battle_component comp)
+{
+	assert(bt);
+
+	if (comp & BATTLE_COMPONENT_ENTITIES) {
+		update_entities(bt->team, bt->teamsz, ticks);
+		update_entities(bt->enemies, bt->enemiesz, ticks);
+	}
+	if (comp & BATTLE_COMPONENT_BAR)
+		battle_bar_update(bt->bar, bt, ticks);
+	if ((comp & BATTLE_COMPONENT_ACTIONS) && bt->actions)
+		action_stack_update(bt->actions, ticks);
+	if ((comp & BATTLE_COMPONENT_DRAWABLES) && bt->effects)
+		drawable_stack_update(bt->effects, ticks);
 }
 
 int
@@ -401,44 +457,35 @@ battle_update(struct battle *bt, unsigned int ticks)
 {
 	assert(bt && bt->state);
 
-	action_stack_update(&bt->actions[0], ticks);
-	action_stack_update(&bt->actions[1], ticks);
-	drawable_stack_update(&bt->effects, ticks);
-
-	update_entities(bt->team, UTIL_SIZE(bt->team), ticks);
-	update_entities(bt->enemies, UTIL_SIZE(bt->enemies), ticks);
-
-	/* Game cannot update if the actions[0] stack isn't completed. */
-	if (!action_stack_completed(&bt->actions[0]))
-		return 0;
-
 	return battle_state_update(bt->state, bt, ticks);
 }
 
 void
-battle_draw(struct battle *bt)
+battle_draw_component(const struct battle *bt, enum battle_component comp)
 {
-	assert(bt && bt->state);
+	assert(bt);
 
-	painter_set_color(0xffffffff);
-	painter_clear();
-
-	if (bt->background && texture_ok(bt->background))
+	if ((comp & BATTLE_COMPONENT_BACKGROUND) && texture_ok(bt->background))
 		texture_scale(bt->background,
 		    0, 0, bt->background->w, bt->background->h,
 		    0, 0, window.w, window.h,
 		    0.f);
+	if (comp & BATTLE_COMPONENT_ENTITIES) {
+		draw_entities(bt, bt->team, bt->teamsz);
+		draw_entities(bt, bt->enemies, bt->enemiesz);
+	}
+	if (comp & BATTLE_COMPONENT_BAR)
+		battle_bar_draw(bt->bar, bt);
+	if ((comp & BATTLE_COMPONENT_ACTIONS) && bt->actions)
+		action_stack_draw(bt->actions);
+	if ((comp & BATTLE_COMPONENT_DRAWABLES) && bt->effects)
+		drawable_stack_draw(bt->effects);
+}
 
-	/* Draw entities. */
-	draw_entities(bt, bt->team, UTIL_SIZE(bt->team));
-	draw_entities(bt, bt->enemies, UTIL_SIZE(bt->enemies));
-
-	battle_bar_draw(bt->bar, bt);
-
-	action_stack_draw(&bt->actions[0]);
-	action_stack_draw(&bt->actions[1]);
-
-	drawable_stack_draw(&bt->effects);
+void
+battle_draw(const struct battle *bt)
+{
+	assert(battle_ok(bt));
 
 	battle_state_draw(bt->state, bt);
 }
@@ -451,12 +498,6 @@ battle_finish(struct battle *bt)
 	if (bt->state)
 		battle_state_finish(bt->state, bt);
 
-	drawable_stack_finish(&bt->effects);
-
-	action_stack_finish(&bt->actions[0]);
-	action_stack_finish(&bt->actions[1]);
-
-	battle_bar_finish(bt->bar, bt);
-
+	free(bt->order);
 	memset(bt, 0, sizeof (*bt));
 }

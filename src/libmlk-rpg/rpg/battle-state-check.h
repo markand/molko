@@ -21,8 +21,11 @@
 
 struct battle;
 
-int
+void
 battle_state_check_update(struct battle *);
+
+void
+battle_state_check_draw(const struct battle *);
 
 void
 battle_state_check(struct battle *);

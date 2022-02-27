@@ -44,14 +44,10 @@ struct selection;
 struct spell;
 struct theme;
 
-#define BATTLE_TEAM_MAX         (4)
-#define BATTLE_ENEMY_MAX        (8)
-#define BATTLE_ENTITY_MAX       (BATTLE_TEAM_MAX + BATTLE_ENEMY_MAX)
-
 #define BATTLE_TEAM_FOREACH(bt, iter) \
-	for (size_t i = 0; i < BATTLE_TEAM_MAX && ((iter) = &(bt)->team[i]); ++i)
+	for (size_t i = 0; i < (bt)->teamsz && ((iter) = (bt)->team[i]); ++i)
 #define BATTLE_ENEMY_FOREACH(bt, iter) \
-	for (size_t i = 0; i < BATTLE_ENEMY_MAX && ((iter) = &(bt)->enemies[i]); ++i)
+	for (size_t i = 0; i < (bt)->enemiesz && ((iter) = (bt)->enemies[i]); ++i)
 
 #define BATTLE_THEME(bt) ((bt)->theme ? (bt)->theme : theme_default())
 
@@ -62,24 +58,41 @@ enum battle_status {
 	BATTLE_STATUS_LOST,
 };
 
+enum battle_component {
+	BATTLE_COMPONENT_BACKGROUND     = (1 << 0),
+	BATTLE_COMPONENT_ENTITIES       = (1 << 1),
+	BATTLE_COMPONENT_BAR            = (1 << 2),
+	BATTLE_COMPONENT_ACTIONS        = (1 << 3),
+	BATTLE_COMPONENT_DRAWABLES      = (1 << 4),
+	BATTLE_COMPONENT_ALL            = 0xff
+};
+
 struct battle {
 	struct battle_state *state;
 	enum battle_status status;
-	struct battle_entity team[BATTLE_TEAM_MAX];
-	struct battle_entity enemies[BATTLE_ENEMY_MAX];
-	struct battle_entity *order[BATTLE_ENTITY_MAX];
-	struct battle_entity *order_cur;
-	size_t order_curindex;
+	struct battle_entity **team;
+	size_t teamsz;
+	struct battle_entity **enemies;
+	size_t enemiesz;
+	struct battle_entity **order;
+	struct battle_entity **ordercur;
+	size_t ordersz;
 	struct texture *background;
 	struct music *music[3];
 	struct theme *theme;
-	struct drawable_stack effects;
-	struct action_stack actions[2];
+	struct drawable_stack *effects;
+	struct action_stack *actions;
 	struct inventory *inventory;
 	struct battle_bar *bar;
 };
 
 CORE_BEGIN_DECLS
+
+void
+battle_init(struct battle *);
+
+int
+battle_ok(const struct battle *);
 
 void
 battle_start(struct battle *);
@@ -96,6 +109,12 @@ battle_switch(struct battle *, struct battle_state *);
 void
 battle_order(struct battle *);
 
+struct battle_entity *
+battle_current(const struct battle *);
+
+size_t
+battle_index(const struct battle *);
+
 void
 battle_attack(struct battle *, struct character *, struct character *);
 
@@ -109,13 +128,22 @@ void
 battle_indicator_hp(struct battle *, const struct character *, long);
 
 void
+battle_handle_component(struct battle *, const union event *, enum battle_component);
+
+void
 battle_handle(struct battle *, const union event *);
+
+void
+battle_update_component(struct battle *, unsigned int, enum battle_component);
 
 int
 battle_update(struct battle *, unsigned int);
 
 void
-battle_draw(struct battle *);
+battle_draw_component(const struct battle *, enum battle_component);
+
+void
+battle_draw(const struct battle *);
 
 void
 battle_finish(struct battle *);

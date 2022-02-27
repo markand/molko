@@ -48,7 +48,7 @@ draw(const struct battle_state *st, const struct battle *bt)
 {
 	(void)bt;
 
-	battle_state_closing_draw(st->data);
+	battle_state_closing_draw(st->data, bt);
 }
 
 static void
@@ -105,10 +105,11 @@ battle_state_closing_update(struct battle_state_closing *cls, unsigned int ticks
 }
 
 void
-battle_state_closing_draw(const struct battle_state_closing *cls)
+battle_state_closing_draw(const struct battle_state_closing *cls, const struct battle *bt)
 {
 	assert(cls);
 
+	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
 	texture_draw(&cls->texture, 0, 0);
 }
 

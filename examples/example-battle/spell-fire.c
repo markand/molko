@@ -20,10 +20,13 @@
 
 #include <core/action.h>
 #include <core/animation.h>
+#include <core/drawable.h>
 #include <core/alloc.h>
 
 #include <ui/align.h>
 
+#include <rpg/battle-state-check.h>
+#include <rpg/battle-state-rendering.h>
 #include <rpg/battle.h>
 #include <rpg/character.h>
 #include <rpg/spell.h>
@@ -31,42 +34,42 @@
 #include "registry.h"
 #include "spell-fire.h"
 
-struct data {
+struct self {
 	struct battle *battle;
 	struct character *target;
 	struct animation animation;
-	struct action action;
+	struct drawable drawable;
 	unsigned int selection;
 };
 
 static int
-update(struct action *act, unsigned int ticks)
+update(struct drawable *dw, unsigned int ticks)
 {
-	struct data *data = act->data;
+	struct self *self = dw->data;
 
-	return animation_update(&data->animation, ticks);
+	return animation_update(&self->animation, ticks);
 }
 
 static void
-draw(struct action *act)
+draw(struct drawable *dw)
 {
-	const struct data *data = act->data;
-	const struct battle_entity *et = &data->battle->enemies[data->selection];
+	const struct self *self = dw->data;
+	const struct battle_entity *et = self->battle->enemies[self->selection];
 	const struct sprite *sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
 	int x, y;
 
 	align(ALIGN_CENTER,
-	    &x, &y, data->animation.sprite->cellw, data->animation.sprite->cellh,
+	    &x, &y, self->animation.sprite->cellw, self->animation.sprite->cellh,
 	    et->x, et->y, sprite->cellw, sprite->cellh);
 
-	animation_draw(&data->animation, x, y);
+	animation_draw(&self->animation, x, y);
 }
 
 static void
-end(struct action *act)
+end(struct drawable *dw)
 {
-	struct data *data = act->data;
-	struct character *ch = data->battle->enemies[data->selection].ch;
+	struct self *self = dw->data;
+	struct character *ch = self->battle->enemies[self->selection]->ch;
 
 	/* TODO: compute damage. */
 	const unsigned int damage = 100;
@@ -76,13 +79,14 @@ end(struct action *act)
 	else
 		ch->hp -= damage;
 
-	battle_indicator_hp(data->battle, data->battle->enemies[data->selection].ch, 100);
+	battle_indicator_hp(self->battle, self->battle->enemies[self->selection]->ch, 100);
+	battle_state_check(self->battle);
 }
 
 static void
-finish(struct action *act)
+finish(struct drawable *dw)
 {
-	free(act->data);
+	free(dw->data);
 }
 
 static void
@@ -96,25 +100,24 @@ fire_select(const struct battle *bt, struct selection *slt)
 static void
 fire_action(struct battle *bt, struct character *owner, const struct selection *slt)
 {
-	struct data *data;
+	struct self *self;
 
 	(void)owner;
 
-	data = alloc_new0(sizeof (*data));
-	data->selection = slt->index_character;
-	data->battle = bt;
-	data->action.data = data;
-	data->action.update = update;
-	data->action.draw = draw;
-	data->action.finish = finish;
-	data->action.end = end;
+	self = alloc_new0(sizeof (*self));
+	self->selection = slt->index_character;
+	self->battle = bt;
+	self->drawable.data = self;
+	self->drawable.update = update;
+	self->drawable.draw = draw;
+	self->drawable.finish = finish;
+	self->drawable.end = end;
 
-	animation_init(&data->animation, &registry_sprites[REGISTRY_TEXTURE_EXPLOSION], 12);
-	animation_start(&data->animation);
+	animation_init(&self->animation, &registry_sprites[REGISTRY_TEXTURE_EXPLOSION], 12);
+	animation_start(&self->animation);
 
 	sound_play(&registry_sounds[REGISTRY_SOUND_FIRE]);
-
-	action_stack_add(&bt->actions[0], &data->action);
+	battle_state_rendering(bt, &self->drawable);
 }
 
 const struct spell spell_fire = {

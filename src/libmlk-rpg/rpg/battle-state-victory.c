@@ -55,7 +55,7 @@ draw(const struct battle_state *st, const struct battle *bt)
 {
 	(void)bt;
 
-	battle_state_victory_draw(st->data);
+	battle_state_victory_draw(st->data, bt);
 }
 
 void
@@ -101,6 +101,8 @@ battle_state_victory_update(struct battle_state_victory *vic, struct battle *bt,
 	assert(vic);
 	assert(bt);
 
+	battle_update_component(bt, BATTLE_COMPONENT_ALL, ticks);
+
 	if (message_update(&vic->msg, ticks))
 		battle_state_closing(bt);
 
@@ -108,10 +110,11 @@ battle_state_victory_update(struct battle_state_victory *vic, struct battle *bt,
 }
 
 void
-battle_state_victory_draw(const struct battle_state_victory *vic)
+battle_state_victory_draw(const struct battle_state_victory *vic, const struct battle *bt)
 {
 	assert(vic);
 
+	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
 	message_draw(&vic->msg);
 }
 

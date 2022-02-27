@@ -25,38 +25,18 @@
 #include "selection.h"
 
 static void
-random(struct selection *slt, const struct battle *bt, const struct battle_entity *entities, size_t entitiesz)
+random(struct selection *slt, struct battle_entity **entities, size_t entitiesz)
 {
-	(void)bt;
-
-	struct {
-		const struct battle_entity *entity;
-		size_t position;
-	} table[BATTLE_ENTITY_MAX] = {0};
-
-	size_t tablesz = 0;
-
-	/*
-	 * Merge the list of valid entities into the table to select a random
-	 * one.
-	 */
-	for (size_t i = 0; i < entitiesz; ++i) {
-		if (battle_entity_ok(&entities[i])) {
-			table[tablesz].entity = &entities[i];
-			table[tablesz++].position = i;
-		}
-	}
-
-	slt->index_character = table[util_nrand(0, tablesz)].position;
+	do {
+		slt->index_character = util_nrand(0, entitiesz);
+	} while (!battle_entity_ok(entities[slt->index_character]));
 }
 
 static void
-first(struct selection *slt, const struct battle *bt, const struct battle_entity *entities, size_t entitiesz)
+first(struct selection *slt, struct battle_entity **entities, size_t entitiesz)
 {
-	(void)bt;
-
 	for (size_t i = 0; i < entitiesz; ++i) {
-		if (battle_entity_ok(&entities[i])) {
+		if (battle_entity_ok(entities[i])) {
 			slt->index_character = i;
 			break;
 		}
@@ -70,9 +50,9 @@ selection_first(struct selection *slt, const struct battle *bt)
 	assert(bt);
 
 	if (slt->index_side == 0)
-		first(slt, bt, bt->enemies, BATTLE_ENEMY_MAX);
+		first(slt, bt->enemies, bt->enemiesz);
 	else
-		first(slt, bt, bt->team, BATTLE_TEAM_MAX);
+		first(slt, bt->team, bt->teamsz);
 }
 
 void
@@ -82,7 +62,7 @@ selection_random(struct selection *slt, const struct battle *bt)
 	assert(bt);
 
 	if (slt->index_side == 0)
-		random(slt, bt, bt->enemies, BATTLE_ENEMY_MAX);
+		random(slt, bt->enemies, bt->enemiesz);
 	else
-		random(slt, bt, bt->team, BATTLE_TEAM_MAX);
+		random(slt, bt->team, bt->teamsz);
 }
