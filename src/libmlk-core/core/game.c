@@ -131,7 +131,7 @@ game_loop(void)
 void
 game_quit(void)
 {
-	for (size_t i = 0; i < UTIL_SIZE(game.states); ++i) {
+	for (size_t i = 0; i < game.statesz; ++i) {
 		if (game.states[i])
 			state_finish(game.states[i]);
 
