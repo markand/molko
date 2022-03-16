@@ -555,14 +555,17 @@ battle_bar_default_open_magic(struct battle_bar_default *bar, const struct battl
 	assert(bt);
 	assert(ch);
 
-	bar->items = bar->grid.items = alloc_rearray0(bar->items, bar->itemsz,
+	bar->items = alloc_rearray0(bar->items, bar->itemsz,
 	    CHARACTER_SPELL_MAX, sizeof (*bar->items));
-	bar->itemsz = bar->grid.itemsz = CHARACTER_SPELL_MAX;
+	bar->itemsz = CHARACTER_SPELL_MAX;
 	bar->state = BATTLE_BAR_DEFAULT_STATE_GRID;
 
 	for (size_t i = 0; i < CHARACTER_SPELL_MAX; ++i)
 		if (ch->spells[i])
-			bar->grid.items[i] = ch->spells[i]->name;
+			bar->items[i] = ch->spells[i]->name;
+
+	bar->grid.items = bar->items;
+	bar->grid.itemsz = bar->itemsz;
 }
 
 void

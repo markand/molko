@@ -230,7 +230,7 @@ void
 gridmenu_init(struct gridmenu *menu,
               unsigned int nr,
               unsigned int nc,
-              const char **items,
+              const char * const *items,
               size_t itemsz)
 {
 	assert(menu);

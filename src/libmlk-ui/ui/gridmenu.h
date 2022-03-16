@@ -36,7 +36,7 @@ struct gridmenu {
 	unsigned int h;
 	size_t selected;
 	const struct theme *theme;
-	const char **items;
+	const char * const *items;
 	size_t itemsz;
 	unsigned int nrows;
 	unsigned int ncols;
@@ -51,7 +51,7 @@ struct gridmenu {
 CORE_BEGIN_DECLS
 
 void
-gridmenu_init(struct gridmenu *, unsigned int, unsigned int, const char **, size_t);
+gridmenu_init(struct gridmenu *, unsigned int, unsigned int, const char * const *, size_t);
 
 void
 gridmenu_resize(struct gridmenu *, int, int, unsigned int, unsigned int);
