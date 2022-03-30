@@ -24,6 +24,7 @@
 #include <SDL.h>
 
 #include "alloc.h"
+#include "buf.h"
 #include "error.h"
 #include "panic.h"
 
@@ -181,6 +182,30 @@ alloc_sdup(const char *src)
 
 	if ((ret = funcs->alloc(length)))
 		memcpy(ret, src, length + 1);
+
+	return ret;
+}
+
+char *
+alloc_sdupf(const char *fmt, ...)
+{
+	struct buf buf = {0};
+	char *ret;
+	va_list ap;
+
+	va_start(ap, fmt);
+	buf_vprintf(&buf, fmt, ap);
+	va_end(ap);
+
+	if (!buf.data)
+		panicf("%s", strerror(ENOMEM));
+
+	/*
+	 * We need to reallocate a copy because the API expects to use
+	 * alloc_free.
+	 */
+	ret = alloc_dup(buf.data, buf.length + 1);
+	buf_finish(&buf);
 
 	return ret;
 }

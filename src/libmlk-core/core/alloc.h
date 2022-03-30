@@ -76,6 +76,9 @@ alloc_dup(const void *, size_t);
 char *
 alloc_sdup(const char *);
 
+char *
+alloc_sdupf(const char *, ...);
+
 /* alloc_pool functions. */
 int
 alloc_pool_init(struct alloc_pool *, size_t , void (*)(void *));

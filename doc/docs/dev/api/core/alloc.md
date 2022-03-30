@@ -254,6 +254,15 @@ char *
 alloc_sdup(const char *src)
 ```
 
+### alloc\_sdupf
+
+Create a dynamically allocated string using printf(3) format like.
+
+```c
+char *
+alloc_sdupf(const char *fmt, ...);
+```
+
 ### alloc\_pool\_init
 
 Initialize the `pool` as an array where elements have `elemsize` size. Optional

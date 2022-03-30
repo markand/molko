@@ -93,6 +93,14 @@ RX_TEST_CASE(test, pool_simple)
 	RX_UINT_REQUIRE_EQUAL(pool.capacity, 0U);
 }
 
+RX_TEST_CASE(test, sdupf)
+{
+	char *str = alloc_sdupf("Hello %s", "David");
+
+	RX_STR_REQUIRE_EQUAL(str, "Hello David");
+	free(str);
+}
+
 int
 main(int argc, char **argv)
 {
