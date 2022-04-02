@@ -37,6 +37,7 @@ elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS "/D_CRT_SECURE_NO_WARNINGS ${CMAKE_C_FLAGS}")
 endif ()
 
+option(MLK_WITH_DOC "Enable mkdocs documentation" On)
 option(MLK_WITH_EXAMPLES "Enable examples" Off)
 option(MLK_WITH_JS "Enable Javascript bindings" On)
 option(MLK_WITH_NLS "Enable NLS support" On)
@@ -91,6 +92,10 @@ endif ()
 
 add_subdirectory(extern/libsqlite)
 add_subdirectory(extern/librexo)
+
+if (MLK_WITH_DOC)
+	add_subdirectory(doc)
+endif ()
 
 add_subdirectory(src/tools/bcc)
 add_subdirectory(src/tools/tileset)
