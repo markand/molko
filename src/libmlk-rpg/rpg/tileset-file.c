@@ -154,13 +154,10 @@ parse_tiledefs(struct context *ctx, const char *line)
 	unsigned short id, w, h;
 	struct tileset_tiledef *td;
 
-	if (alloc_pool_init(&ctx->tf->tiledefs, sizeof (*td), NULL) < 0)
-		return -1;
+	alloc_pool_init(&ctx->tf->tiledefs, sizeof (*td), NULL);
 
 	while (fscanf(ctx->fp, "%hu|%hd|%hd|%hu|%hu\n", &id, &x, &y, &w, &h) == 5) {
-		if (!(td = alloc_pool_new(&ctx->tf->tiledefs)))
-			return -1;
-
+		td = alloc_pool_new(&ctx->tf->tiledefs);
 		td->id = id;
 		td->x = x;
 		td->y = y;
@@ -184,20 +181,18 @@ parse_animations(struct context *ctx, const char *line)
 	unsigned short id;
 	unsigned int delay;
 	char filename[FILENAME_MAX + 1];
+	struct tileset_animation_block *anim;
 
-	if (alloc_pool_init(&ctx->tf->anims[0], sizeof (struct tileset_animation_block), tileset_animation_block_finish) < 0 ||
-	    alloc_pool_init(&ctx->tf->anims[1], sizeof (struct tileset_animation), NULL) < 0)
-		return -1;
+	alloc_pool_init(&ctx->tf->anims[0], sizeof (struct tileset_animation_block), tileset_animation_block_finish);
+	alloc_pool_init(&ctx->tf->anims[1], sizeof (struct tileset_animation), NULL);
 
 	/*
 	 * 1. Create the first array of animation, sprite and texture that are
 	 *    owned by the tileset_file structure.
 	 */
 	while (fscanf(ctx->fp, "%hu|" MAX_F(FILENAME_MAX) "|%u", &id, filename, &delay) == 3) {
-		struct tileset_animation_block *anim;
+		anim = alloc_pool_new(&ctx->tf->anims[0]);
 
-		if (!(anim = alloc_pool_new(&ctx->tf->anims[0])))
-			return -1;
 		if (image_open(&anim->texture, util_pathf("%s/%s", ctx->basedir, filename)) < 0)
 			return -1;
 

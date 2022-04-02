@@ -85,12 +85,7 @@ alloc_new0(size_t size)
 {
 	assert(size != 0);
 
-	void *ptr;
-
-	if ((ptr = funcs->alloc(size)))
-		memset(ptr, 0, size);
-
-	return ptr;
+	return memset(funcs->alloc(size), 0, size);
 }
 
 void *
@@ -99,12 +94,7 @@ alloc_array(size_t len, size_t elemsize)
 	assert(len != 0);
 	assert(elemsize != 0);
 
-	size_t size = len * elemsize;
-
-	if (size / len != elemsize)
-		return errorf("%s", strerror(ENOMEM)), NULL;
-
-	return funcs->alloc(size);
+	return funcs->alloc(len * elemsize);
 }
 
 void *
@@ -113,16 +103,7 @@ alloc_array0(size_t len, size_t elemsize)
 	assert(len != 0);
 	assert(elemsize != 0);
 
-	void *mem;
-	size_t size = len * elemsize;
-
-	if (size / len != elemsize)
-		return errorf("%s", strerror(ENOMEM)), NULL;
-
-	if ((mem = funcs->alloc(size)))
-		memset(mem, 0, size);
-
-	return mem;
+	return alloc_new0(len * elemsize);
 }
 
 void *
@@ -134,23 +115,15 @@ alloc_renew(void *ptr, size_t size)
 void *
 alloc_rearray(void *ptr, size_t len, size_t elemsize)
 {
-	size_t size = len * elemsize;
+	assert(elemsize != 0);
 
-	if (size / len != elemsize)
-		return errorf("%s", strerror(ENOMEM)), NULL;
-
-	return funcs->realloc(ptr, size);
+	return funcs->realloc(ptr, len * elemsize);
 }
 
 void *
 alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize)
 {
-	size_t size = newlen * elemsize;
-
-	if (size / newlen != elemsize)
-		return errorf("%s", strerror(ENOMEM)), NULL;
-	if (!(ptr = funcs->realloc(ptr, size)))
-		return NULL;
+	ptr = funcs->realloc(ptr, newlen * elemsize);
 
 	if (newlen > oldlen)
 		memset((unsigned char *)ptr + (oldlen * elemsize), 0, (newlen - oldlen) * elemsize);
@@ -164,12 +137,7 @@ alloc_dup(const void *ptr, size_t size)
 	assert(ptr);
 	assert(size != 0);
 
-	void *mem;
-
-	if ((mem = funcs->alloc(size)))
-		memcpy(mem, ptr, size);
-
-	return mem;
+	return memcpy(funcs->alloc(size), ptr, size);
 }
 
 char *
@@ -177,54 +145,41 @@ alloc_sdup(const char *src)
 {
 	assert(src);
 
-	char *ret;
-	size_t length = strlen(src) + 1;
+	size_t len = strlen(src) + 1;
 
-	if ((ret = funcs->alloc(length)))
-		memcpy(ret, src, length + 1);
-
-	return ret;
+	return memcpy(funcs->alloc(len), src, len);
 }
 
 char *
 alloc_sdupf(const char *fmt, ...)
 {
 	struct buf buf = {0};
-	char *ret;
 	va_list ap;
 
 	va_start(ap, fmt);
 	buf_vprintf(&buf, fmt, ap);
 	va_end(ap);
 
-	if (!buf.data)
-		panicf("%s", strerror(ENOMEM));
-
-	/*
-	 * We need to reallocate a copy because the API expects to use
-	 * alloc_free.
-	 */
-	ret = alloc_dup(buf.data, buf.length + 1);
-	buf_finish(&buf);
-
-	return ret;
+	return buf.data;
 }
 
-int
+void
+alloc_free(void *ptr)
+{
+	funcs->free(ptr);
+}
+
+void
 alloc_pool_init(struct alloc_pool *pool, size_t elemsize, void (*finalizer)(void *))
 {
 	assert(pool);
 	assert(elemsize != 0);
 
-	if (!(pool->data = alloc_array(ALLOC_POOL_INIT_DEFAULT, elemsize)))
-		return -1;
-
+	pool->data = alloc_array(ALLOC_POOL_INIT_DEFAULT, elemsize);
 	pool->elemsize = elemsize;
 	pool->size = 0;
 	pool->capacity = ALLOC_POOL_INIT_DEFAULT;
 	pool->finalizer = finalizer;
-
-	return 0;
 }
 
 void *
@@ -233,13 +188,8 @@ alloc_pool_new(struct alloc_pool *pool)
 	assert(pool);
 
 	if (pool->size >= pool->capacity) {
-		void *newptr = alloc_rearray(pool->data, pool->capacity * 2, pool->elemsize);
-
-		if (!newptr)
-			return NULL;
-
-		pool->data = newptr;
 		pool->capacity *= 2;
+		pool->data = alloc_rearray(pool->data, pool->capacity, pool->elemsize);
 	}
 
 	return ((unsigned char *)pool->data) + pool->size++ * pool->elemsize;
@@ -254,11 +204,29 @@ alloc_pool_get(const struct alloc_pool *pool, size_t index)
 	return ((unsigned char *)pool->data) + index * pool->elemsize;
 }
 
+void *
+alloc_pool_shrink(struct alloc_pool *pool)
+{
+	assert(pool);
+
+	void *ptr;
+
+	ptr = alloc_rearray(pool->data, pool->size, pool->elemsize);
+	memset(pool, 0, sizeof (*pool));
+
+	return ptr;
+}
+
 void
 alloc_pool_finish(struct alloc_pool *pool)
 {
+	unsigned char *tab;
+
+	if (!pool)
+		return;
+
 	if (pool->finalizer) {
-		unsigned char *tab = pool->data;
+		tab = pool->data;
 
 		for (size_t i = 0; i < pool->size; ++i)
 			pool->finalizer(tab + i * pool->elemsize);

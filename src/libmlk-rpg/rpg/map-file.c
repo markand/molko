@@ -278,8 +278,8 @@ map_file_open(struct map_file *file, struct map *map, const char *path)
 
 	memset(map, 0, sizeof (*map));
 
-	if (alloc_pool_init(&file->blocks, sizeof (*map->blocks), NULL) < 0)
-		goto fail;
+	alloc_pool_init(&file->blocks, sizeof (*map->blocks), NULL);
+
 	if (zfile_open(&zf, path) < 0)
 		goto fail;
 

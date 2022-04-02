@@ -79,8 +79,11 @@ alloc_sdup(const char *);
 char *
 alloc_sdupf(const char *, ...);
 
+void
+alloc_free(void *);
+
 /* alloc_pool functions. */
-int
+void
 alloc_pool_init(struct alloc_pool *, size_t , void (*)(void *));
 
 void *
@@ -88,6 +91,9 @@ alloc_pool_new(struct alloc_pool *);
 
 void *
 alloc_pool_get(const struct alloc_pool *, size_t);
+
+void *
+alloc_pool_shrink(struct alloc_pool *);
 
 void
 alloc_pool_finish(struct alloc_pool *);

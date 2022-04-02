@@ -22,16 +22,18 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#include "alloc.h"
+
 #if !defined(BUF_MALLOC)
-#	define BUF_MALLOC malloc
+#	define BUF_MALLOC alloc_new
 #endif
 
 #if !defined(BUF_REALLOC)
-#	define BUF_REALLOC realloc
+#	define BUF_REALLOC alloc_renew
 #endif
 
 #if !defined(BUF_FREE)
-#	define BUF_FREE free
+#	define BUF_FREE alloc_free
 #endif
 
 #if defined(__cplusplus)
