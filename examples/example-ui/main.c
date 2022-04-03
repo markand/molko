@@ -63,6 +63,7 @@
  * +---------------------------------------------+
  */
 static struct {
+	struct action *actions[16];
 	struct action_stack st;
 
 	struct {
@@ -136,6 +137,8 @@ init(void)
 		panic();
 	if (window_open("Example - UI", W, H) < 0)
 		panic();
+
+	action_stack_init(&ui.st, ui.actions, UTIL_SIZE(ui.actions));
 }
 
 static void
