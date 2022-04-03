@@ -40,7 +40,7 @@ CORE_BEGIN_DECLS
 void
 checkbox_draw_default(const struct theme *, const struct checkbox *);
 
-void
+int
 checkbox_handle(struct checkbox *, const union event *);
 
 void

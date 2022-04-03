@@ -67,7 +67,7 @@ checkbox_draw_default(const struct theme *t, const struct checkbox *cb)
 	}
 }
 
-void
+int
 checkbox_handle(struct checkbox *cb, const union event *ev)
 {
 	assert(cb);
@@ -76,11 +76,13 @@ checkbox_handle(struct checkbox *cb, const union event *ev)
 	switch (ev->type) {
 	case EVENT_CLICKDOWN:
 		if (is_boxed(cb, &ev->click))
-			cb->checked = !cb->checked;
+			return cb->checked = !cb->checked;
 		break;
 	default:
 		break;
 	}
+
+	return 0;
 }
 
 void
