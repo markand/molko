@@ -16,11 +16,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rexo.h>
-
 #include <core/action.h>
 #include <core/event.h>
 #include <core/script.h>
+
+#include "test.h"
 
 struct invokes {
 	int handle;
@@ -85,7 +85,7 @@ my_finish(struct action *act)
 	((struct invokes *)act->data)->finish++;
 }
 
-RX_TEST_CASE(basics, init)
+TEST_DECL(basics_init)
 {
 	struct script sc;
 
@@ -95,7 +95,7 @@ RX_TEST_CASE(basics, init)
 	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
 }
 
-RX_TEST_CASE(basics, append)
+TEST_DECL(basics_append)
 {
 	struct action act[3] = {0};
 	struct script sc = {0};
@@ -121,7 +121,7 @@ RX_TEST_CASE(basics, append)
 	script_finish(&sc);
 }
 
-RX_TEST_CASE(basics, handle)
+TEST_DECL(basics_handle)
 {
 	struct {
 		struct invokes inv;
@@ -131,7 +131,7 @@ RX_TEST_CASE(basics, handle)
 		{ .act = INIT(&table[1].inv, my_update_true)    },
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
-	
+
 	struct script sc = {0};
 
 	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
@@ -197,7 +197,7 @@ RX_TEST_CASE(basics, handle)
 	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 }
 
-RX_TEST_CASE(basics, update)
+TEST_DECL(basics_update)
 {
 	struct {
 		struct invokes inv;
@@ -207,7 +207,7 @@ RX_TEST_CASE(basics, update)
 		{ .act = INIT(&table[1].inv, my_update_true)    },
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
-	
+
 	struct script sc = {0};
 
 	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
@@ -290,7 +290,7 @@ RX_TEST_CASE(basics, update)
 	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 }
 
-RX_TEST_CASE(basics, draw)
+TEST_DECL(basics_draw)
 {
 	struct {
 		struct invokes inv;
@@ -300,7 +300,7 @@ RX_TEST_CASE(basics, draw)
 		{ .act = INIT(&table[1].inv, my_update_true)    },
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
-	
+
 	struct script sc = {0};
 
 	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
@@ -366,7 +366,7 @@ RX_TEST_CASE(basics, draw)
 	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 }
 
-RX_TEST_CASE(basics, finish)
+TEST_DECL(basics_finish)
 {
 	struct {
 		struct invokes inv;
@@ -376,7 +376,7 @@ RX_TEST_CASE(basics, finish)
 		{ .act = INIT(&table[1].inv, my_update_true)    },
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
-	
+
 	struct script sc = {0};
 
 	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
@@ -405,7 +405,7 @@ RX_TEST_CASE(basics, finish)
 	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 1);
 }
 
-RX_TEST_CASE(action, simple)
+TEST_DECL(action_simple)
 {
 	struct {
 		struct invokes inv;
@@ -415,7 +415,7 @@ RX_TEST_CASE(action, simple)
 		{ .act = INIT(&table[1].inv, my_update_true)    },
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
-	
+
 	struct script sc = {0};
 	struct action act;
 
@@ -529,8 +529,18 @@ RX_TEST_CASE(action, simple)
 	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 1);
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF("basics", "init", basics_init),
+	TEST_DEF("basics", "append", basics_append),
+	TEST_DEF("basics", "handle", basics_handle),
+	TEST_DEF("basics", "update", basics_update),
+	TEST_DEF("basics", "draw", basics_draw),
+	TEST_DEF("basics", "finish", basics_finish),
+	TEST_DEF("action", "simple", action_simple)
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

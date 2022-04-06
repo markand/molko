@@ -18,20 +18,18 @@
 
 #include <stdio.h>
 
-#include <rexo.h>
-
 #include <rpg/property.h>
 #include <rpg/save.h>
 
-RX_TEAR_DOWN(teardown)
+#include "test.h"
+
+RX_TEAR_DOWN(basics_teardown)
 {
 	remove("1.db");
 	remove("2.db");
 }
 
-RX_FIXTURE(basics_fixture, void *, .tear_down = teardown);
-
-RX_TEST_CASE(open, read, .fixture = basics_fixture)
+TEST_DECL(basics_read)
 {
 	struct save db;
 
@@ -40,7 +38,7 @@ RX_TEST_CASE(open, read, .fixture = basics_fixture)
 	save_finish(&db);
 }
 
-RX_TEST_CASE(open, write, .fixture = basics_fixture)
+TEST_DECL(basics_write)
 {
 	struct save db[2] = {0};
 
@@ -132,8 +130,13 @@ properties_remove(void)
 
 #endif
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF_FIX("basics", "read", basics_read, void *, NULL, basics_teardown),
+	TEST_DEF_FIX("basics", "write", basics_write, void *, NULL, basics_teardown)
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv)
 }

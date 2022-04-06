@@ -19,26 +19,24 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <rexo.h>
-
 #include <rpg/character.h>
 #include <rpg/save.h>
 
-RX_SET_UP(setup)
+#include "test.h"
+
+RX_SET_UP(basics_setup)
 {
 	remove("test.db");
 
 	return RX_SUCCESS;
 }
 
-RX_TEAR_DOWN(teardown)
+RX_TEAR_DOWN(basics_teardown)
 {
 	remove("test.db");
 }
 
-RX_FIXTURE(basics_fixture, void *, .set_up = setup, .tear_down = teardown);
-
-RX_TEST_CASE(test, save_simple, .fixture = basics_fixture)
+TEST_DECL(basics_load)
 {
 	struct save db;
 	struct character ch = {
@@ -75,8 +73,12 @@ RX_TEST_CASE(test, save_simple, .fixture = basics_fixture)
 	RX_INT_REQUIRE_EQUAL(ch.luckbonus, 1004);
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF_FIX("basics", "load", basics_load, void *, basics_setup, basics_teardown)
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

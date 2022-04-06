@@ -19,6 +19,8 @@
 #ifndef MLK_CORE_VFS_H
 #define MLK_CORE_VFS_H
 
+#include <stddef.h>
+
 #include "core.h"
 
 struct vfs_file;

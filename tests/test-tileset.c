@@ -16,15 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rexo.h>
-
 #include <core/core.h>
 #include <core/window.h>
 
 #include <rpg/tileset-file.h>
 #include <rpg/tileset.h>
 
-RX_TEST_CASE(test, basics_sample)
+#include "test.h"
+
+TEST_DECL(basics_sample)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset;
@@ -62,7 +62,7 @@ RX_TEST_CASE(test, basics_sample)
 	tileset_file_finish(&loader);
 }
 
-RX_TEST_CASE(test, error_tilewidth)
+TEST_DECL(error_tilewidth)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
@@ -70,7 +70,7 @@ RX_TEST_CASE(test, error_tilewidth)
 	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tilewidth.tileset"), -1);
 }
 
-RX_TEST_CASE(test, error_tileheight)
+TEST_DECL(error_tileheight)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
@@ -78,7 +78,7 @@ RX_TEST_CASE(test, error_tileheight)
 	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tileheight.tileset"), -1);
 }
 
-RX_TEST_CASE(test, error_image)
+TEST_DECL(error_image)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
@@ -86,11 +86,18 @@ RX_TEST_CASE(test, error_image)
 	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-image.tileset"), -1);
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF("basics", "sample", basics_sample),
+	TEST_DEF("error", "tilewidth", error_tilewidth),
+	TEST_DEF("error", "tileheight", error_tileheight),
+	TEST_DEF("error", "image", error_image),
+};
+
 int
 main(int argc, char **argv)
 {
 	if (core_init("fr.malikania", "test") < 0 || window_open("test-tileset", 100, 100) < 0)
 		return 1;
 
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

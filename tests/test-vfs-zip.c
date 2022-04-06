@@ -16,10 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rexo.h>
-
 #include <core/vfs-zip.h>
 #include <core/vfs.h>
+
+#include "test.h"
 
 RX_SET_UP(setup)
 {
@@ -34,9 +34,7 @@ RX_TEAR_DOWN(teardown)
 	vfs_finish(RX_DATA);
 }
 
-RX_FIXTURE(basics_fixture, struct vfs, .set_up = setup, .tear_down = teardown);
-
-RX_TEST_CASE(basics, read, .fixture = basics_fixture)
+TEST_DECL(basics_read)
 {
 	struct vfs_file file;
 	char data[256] = {0};
@@ -46,15 +44,20 @@ RX_TEST_CASE(basics, read, .fixture = basics_fixture)
 	RX_STR_REQUIRE_EQUAL(data, "Hello from zip file!\n");
 }
 
-RX_TEST_CASE(basics, notfound, .fixture = basics_fixture)
+TEST_DECL(error_notfound)
 {
 	struct vfs_file file;
 
 	RX_INT_REQUIRE_EQUAL(vfs_open(RX_DATA, &file, "notfound.txt", "r"), -1);
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF_FIX("basics", "read", basics_read, struct vfs, setup, teardown),
+	TEST_DEF_FIX("error", "notfound", error_notfound, struct vfs, setup, teardown),
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

@@ -16,8 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rexo.h>
-
 #include <core/core.h>
 #include <core/error.h>
 #include <core/panic.h>
@@ -27,7 +25,9 @@
 #include <rpg/map-file.h>
 #include <rpg/map.h>
 
-RX_TEST_CASE(test, basics_sample)
+#include "test.h"
+
+TEST_DECL(basics_sample)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
@@ -88,7 +88,7 @@ RX_TEST_CASE(test, basics_sample)
 	map_file_finish(&loader);
 }
 
-RX_TEST_CASE(test, error_title)
+TEST_DECL(error_title)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
@@ -99,7 +99,7 @@ RX_TEST_CASE(test, error_title)
 	map_file_finish(&loader);
 }
 
-RX_TEST_CASE(test, error_columns)
+TEST_DECL(error_columns)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
@@ -110,7 +110,7 @@ RX_TEST_CASE(test, error_columns)
 	map_file_finish(&loader);
 }
 
-RX_TEST_CASE(test, error_rows)
+TEST_DECL(error_rows)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
@@ -120,6 +120,13 @@ RX_TEST_CASE(test, error_rows)
 	map_finish(&map);
 	map_file_finish(&loader);
 }
+
+static const struct rx_test_case tests[] = {
+	TEST_DEF("basics", "sample", basics_sample),
+	TEST_DEF("error", "title", error_title),
+	TEST_DEF("error", "columns", error_columns),
+	TEST_DEF("error", "rows", error_rows)
+};
 
 int
 main(int argc, char **argv)
@@ -133,5 +140,5 @@ main(int argc, char **argv)
 	if (core_init("fr.malikania", "test") < 0 || window_open("test-map", 100, 100) < 0)
 		return 1;
 
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

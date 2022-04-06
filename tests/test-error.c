@@ -16,18 +16,22 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rexo.h>
-
 #include <core/error.h>
 
-RX_TEST_CASE(basics, simple)
+#include "test.h"
+
+TEST_DECL(basics_simple)
 {
 	errorf("Failed: %d", 123);
 	RX_STR_REQUIRE_EQUAL("Failed: 123", error());
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF("basics", "simple", basics_simple)
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

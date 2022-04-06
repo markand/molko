@@ -16,11 +16,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rexo.h>
-
 #include <core/action.h>
 #include <core/action-stack.h>
 #include <core/event.h>
+
+#include "test.h"
 
 struct invokes {
 	int handle;
@@ -87,7 +87,7 @@ my_finish(struct action *act)
 	((struct invokes *)act->data)->finish = 1;
 }
 
-RX_TEST_CASE(basics, handle)
+TEST_DECL(basics_handle)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
@@ -101,7 +101,7 @@ RX_TEST_CASE(basics, handle)
 	RX_REQUIRE(!inv.finish);
 }
 
-RX_TEST_CASE(basics, update)
+TEST_DECL(basics_update)
 {
 	struct {
 		struct invokes inv;
@@ -128,7 +128,7 @@ RX_TEST_CASE(basics, update)
 	RX_REQUIRE(!table[1].inv.finish);
 }
 
-RX_TEST_CASE(basics, draw)
+TEST_DECL(basics_draw)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
@@ -142,7 +142,7 @@ RX_TEST_CASE(basics, draw)
 	RX_REQUIRE(!inv.finish);
 }
 
-RX_TEST_CASE(basics, end)
+TEST_DECL(basics_end)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
@@ -156,7 +156,7 @@ RX_TEST_CASE(basics, end)
 	RX_REQUIRE(!inv.finish);
 }
 
-RX_TEST_CASE(basics, finish)
+TEST_DECL(basics_finish)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
@@ -170,7 +170,7 @@ RX_TEST_CASE(basics, finish)
 	RX_REQUIRE(inv.finish);
 }
 
-RX_TEST_CASE(stack, add)
+TEST_DECL(stack_add)
 {
 	struct action *actions[10];
 	struct action_stack st = {0};
@@ -188,7 +188,7 @@ RX_TEST_CASE(stack, add)
 	RX_INT_REQUIRE_EQUAL(action_stack_add(&st, &act), -1);
 }
 
-RX_TEST_CASE(stack, handle)
+TEST_DECL(stack_handle)
 {
 	struct {
 		int called;
@@ -213,7 +213,7 @@ RX_TEST_CASE(stack, handle)
 	RX_REQUIRE(table[2].called);
 }
 
-RX_TEST_CASE(stack, update)
+TEST_DECL(stack_update)
 {
 	struct {
 		struct invokes inv;
@@ -292,7 +292,7 @@ RX_TEST_CASE(stack, update)
 	RX_PTR_REQUIRE_EQUAL(st.actions[1], NULL);
 	RX_PTR_REQUIRE_EQUAL(st.actions[4], NULL);
 	RX_PTR_REQUIRE_EQUAL(st.actions[5], NULL);
-	
+
 	/*
 	 * Now make all actions to return 1 and check if it cleans the stack.
 	 */
@@ -311,7 +311,76 @@ RX_TEST_CASE(stack, update)
 	RX_PTR_REQUIRE_EQUAL(st.actions[6], NULL);
 }
 
-RX_TEST_CASE(stack, finish)
+TEST_DECL(stack_draw)
+{
+	struct {
+		struct invokes inv;
+		struct action act;
+	} table[] = {
+		{ .act = INIT(&table[0], my_update_false)       },
+		{ .act = INIT(&table[1], my_update_true)        },
+		{ .act = INIT(&table[2], my_update_false)       },
+		{ .act = INIT(&table[3], my_update_false)       },
+		{ .act = INIT(&table[4], my_update_true)        },
+		{ .act = INIT(&table[5], my_update_true)        },
+		{ .act = INIT(&table[6], my_update_false)	},
+	};
+
+	struct action *actions[10];
+	struct action_stack st = {0};
+
+	action_stack_init(&st, actions, 10);
+	action_stack_add(&st, &table[0].act);
+	action_stack_add(&st, &table[1].act);
+	action_stack_add(&st, &table[2].act);
+	action_stack_add(&st, &table[3].act);
+	action_stack_add(&st, &table[4].act);
+	action_stack_add(&st, &table[5].act);
+	action_stack_add(&st, &table[6].act);
+	action_stack_draw(&st);
+
+	RX_REQUIRE(!table[0].inv.handle);
+	RX_REQUIRE(!table[1].inv.handle);
+	RX_REQUIRE(!table[2].inv.handle);
+	RX_REQUIRE(!table[3].inv.handle);
+	RX_REQUIRE(!table[4].inv.handle);
+	RX_REQUIRE(!table[5].inv.handle);
+	RX_REQUIRE(!table[6].inv.handle);
+
+	RX_REQUIRE(!table[0].inv.update);
+	RX_REQUIRE(!table[1].inv.update);
+	RX_REQUIRE(!table[2].inv.update);
+	RX_REQUIRE(!table[3].inv.update);
+	RX_REQUIRE(!table[4].inv.update);
+	RX_REQUIRE(!table[5].inv.update);
+	RX_REQUIRE(!table[6].inv.update);
+
+	RX_REQUIRE(table[0].inv.draw);
+	RX_REQUIRE(table[1].inv.draw);
+	RX_REQUIRE(table[2].inv.draw);
+	RX_REQUIRE(table[3].inv.draw);
+	RX_REQUIRE(table[4].inv.draw);
+	RX_REQUIRE(table[5].inv.draw);
+	RX_REQUIRE(table[6].inv.draw);
+
+	RX_REQUIRE(!table[0].inv.end);
+	RX_REQUIRE(!table[1].inv.end);
+	RX_REQUIRE(!table[2].inv.end);
+	RX_REQUIRE(!table[3].inv.end);
+	RX_REQUIRE(!table[4].inv.end);
+	RX_REQUIRE(!table[5].inv.end);
+	RX_REQUIRE(!table[6].inv.end);
+
+	RX_REQUIRE(!table[0].inv.finish);
+	RX_REQUIRE(!table[1].inv.finish);
+	RX_REQUIRE(!table[2].inv.finish);
+	RX_REQUIRE(!table[3].inv.finish);
+	RX_REQUIRE(!table[4].inv.finish);
+	RX_REQUIRE(!table[5].inv.finish);
+	RX_REQUIRE(!table[6].inv.finish);
+}
+
+TEST_DECL(stack_finish)
 {
 	struct {
 		struct invokes inv;
@@ -342,8 +411,21 @@ RX_TEST_CASE(stack, finish)
 	RX_REQUIRE(table[0].inv.finish);
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF("basics", "handle", basics_handle),
+	TEST_DEF("basics", "update", basics_update),
+	TEST_DEF("basics", "draw", basics_draw),
+	TEST_DEF("basics", "end", basics_end),
+	TEST_DEF("basics", "finish", basics_finish),
+	TEST_DEF("stack", "add", stack_add),
+	TEST_DEF("stack", "handle", stack_handle),
+	TEST_DEF("stack", "update", stack_update),
+	TEST_DEF("stack", "draw", stack_draw),
+	TEST_DEF("stack", "finish", stack_finish)
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

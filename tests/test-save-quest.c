@@ -18,14 +18,12 @@
 
 #include <stdio.h>
 
-#include <rexo.h>
-
-#include <core/util.h>
-
 #include <rpg/quest.h>
 #include <rpg/save.h>
 
-RX_SET_UP(setup)
+#include "test.h"
+
+RX_SET_UP(basics_setup)
 {
 	if (save_open_path(RX_DATA, "quest.db", SAVE_MODE_WRITE) < 0)
 		return RX_ERROR;
@@ -33,15 +31,13 @@ RX_SET_UP(setup)
 	return RX_SUCCESS;
 }
 
-RX_TEAR_DOWN(teardown)
+RX_TEAR_DOWN(basics_teardown)
 {
 	save_finish(RX_DATA);
 	remove("quest.db");
 }
 
-RX_FIXTURE(basics_fixture, struct save, .set_up = setup, .tear_down = teardown);
-
-RX_TEST_CASE(basics, load, .fixture = basics_fixture)
+TEST_DECL(basics_load)
 {
 	struct quest_step steps[] = {
 		{
@@ -72,8 +68,12 @@ RX_TEST_CASE(basics, load, .fixture = basics_fixture)
 	RX_INT_REQUIRE_EQUAL(steps[1].percent, 50);
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF_FIX("basics", "load", basics_load, struct save, basics_setup, basics_teardown)
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

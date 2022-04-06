@@ -16,37 +16,45 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rexo.h>
-
 #include <core/color.h>
 
-RX_TEST_CASE(basics, red)
+#include "test.h"
+
+TEST_DECL(basics_red)
 {
 	RX_INT_REQUIRE_EQUAL(COLOR_R(0xa3000000), 163);
 }
 
-RX_TEST_CASE(basics, green)
+TEST_DECL(basics_green)
 {
 	RX_INT_REQUIRE_EQUAL(COLOR_G(0x00130000), 19);
 }
 
-RX_TEST_CASE(basics, blue)
+TEST_DECL(basics_blue)
 {
 	RX_INT_REQUIRE_EQUAL(COLOR_B(0x0000ee00), 238);
 }
 
-RX_TEST_CASE(basics, alpha)
+TEST_DECL(basics_alpha)
 {
 	RX_INT_REQUIRE_EQUAL(COLOR_A(0x000000ff), 255);
 }
 
-RX_TEST_CASE(basics, simple)
+TEST_DECL(basics_simple)
 {
 	RX_UINT_REQUIRE_EQUAL(COLOR_HEX(170, 187, 204, 238), 0xaabbccee);
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF("basics", "red", basics_red),
+	TEST_DEF("basics", "green", basics_green),
+	TEST_DEF("basics", "blue", basics_blue),
+	TEST_DEF("basics", "alpha", basics_alpha),
+	TEST_DEF("basics", "simple", basics_simple)
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

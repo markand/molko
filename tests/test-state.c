@@ -18,12 +18,12 @@
 
 #include <string.h>
 
-#include <rexo.h>
-
 #include <core/event.h>
 #include <core/game.h>
 #include <core/state.h>
 #include <core/util.h>
+
+#include "test.h"
 
 struct invokes {
 	unsigned int start;
@@ -38,14 +38,14 @@ struct invokes {
 
 static struct state *states[16];
 
-RX_SET_UP(setup)
+RX_SET_UP(basics_setup)
 {
 	game_init(states, UTIL_SIZE(states));
 
 	return RX_SUCCESS;
 }
 
-RX_TEAR_DOWN(teardown)
+RX_TEAR_DOWN(basics_teardown)
 {
 	game_quit();
 }
@@ -114,9 +114,7 @@ my_finish(struct state *state)
 	.finish = my_finish \
 }
 
-RX_FIXTURE(basics_fixture, void *, .set_up = setup, .tear_down = teardown);
-
-RX_TEST_CASE(basics, start)
+TEST_DECL(basics_start)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -130,7 +128,7 @@ RX_TEST_CASE(basics, start)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, handle)
+TEST_DECL(basics_handle)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -144,7 +142,7 @@ RX_TEST_CASE(basics, handle)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, update)
+TEST_DECL(basics_update)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -158,7 +156,7 @@ RX_TEST_CASE(basics, update)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, draw)
+TEST_DECL(basics_draw)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -172,7 +170,7 @@ RX_TEST_CASE(basics, draw)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, end)
+TEST_DECL(basics_end)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -186,7 +184,7 @@ RX_TEST_CASE(basics, end)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, finish)
+TEST_DECL(basics_finish)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -200,7 +198,7 @@ RX_TEST_CASE(basics, finish)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 1U);
 }
 
-RX_TEST_CASE(game, game_push, .fixture = basics_fixture)
+TEST_DECL(basics_game)
 {
 	static struct {
 		struct invokes inv;
@@ -323,8 +321,18 @@ RX_TEST_CASE(game, game_push, .fixture = basics_fixture)
 	RX_UINT_REQUIRE_EQUAL(states[1].inv.finish, 1U);
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_DEF("basics", "start", basics_start),
+	TEST_DEF("basics", "handle", basics_handle),
+	TEST_DEF("basics", "update", basics_update),
+	TEST_DEF("basics", "draw", basics_draw),
+	TEST_DEF("basics", "end", basics_end),
+	TEST_DEF("basics", "finish", basics_finish),
+	TEST_DEF_FIX("basics", "game", basics_game, void *, basics_setup, basics_teardown)
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN(tests, argc, argv);
 }

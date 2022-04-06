@@ -44,4 +44,8 @@ foreach (t ${TESTS})
 	target_compile_definitions(test-${t} PRIVATE DIRECTORY="${tests_SOURCE_DIR}/assets")
 	set_target_properties(test-${t} PROPERTIES FOLDER tests)
 	source_group("" FILES test-${t}.c)
+
+	if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+		target_compile_options(test-${t} PRIVATE -Wno-unused-parameter)
+	endif ()
 endforeach ()
