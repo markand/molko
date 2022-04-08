@@ -87,7 +87,7 @@ my_finish(struct action *act)
 	((struct invokes *)act->data)->finish = 1;
 }
 
-TEST_DECL(basics_handle)
+RX_TEST_CASE(basics, handle)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
@@ -101,7 +101,7 @@ TEST_DECL(basics_handle)
 	RX_REQUIRE(!inv.finish);
 }
 
-TEST_DECL(basics_update)
+RX_TEST_CASE(basics, update)
 {
 	struct {
 		struct invokes inv;
@@ -128,7 +128,7 @@ TEST_DECL(basics_update)
 	RX_REQUIRE(!table[1].inv.finish);
 }
 
-TEST_DECL(basics_draw)
+RX_TEST_CASE(basics, draw)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
@@ -142,7 +142,7 @@ TEST_DECL(basics_draw)
 	RX_REQUIRE(!inv.finish);
 }
 
-TEST_DECL(basics_end)
+RX_TEST_CASE(basics, end)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
@@ -156,7 +156,7 @@ TEST_DECL(basics_end)
 	RX_REQUIRE(!inv.finish);
 }
 
-TEST_DECL(basics_finish)
+RX_TEST_CASE(basics, finish)
 {
 	struct invokes inv = {0};
 	struct action act = INIT(&inv, my_update_true);
@@ -170,7 +170,7 @@ TEST_DECL(basics_finish)
 	RX_REQUIRE(inv.finish);
 }
 
-TEST_DECL(stack_add)
+RX_TEST_CASE(stack, add)
 {
 	struct action *actions[10];
 	struct action_stack st = {0};
@@ -188,7 +188,7 @@ TEST_DECL(stack_add)
 	RX_INT_REQUIRE_EQUAL(action_stack_add(&st, &act), -1);
 }
 
-TEST_DECL(stack_handle)
+RX_TEST_CASE(stack, handle)
 {
 	struct {
 		int called;
@@ -213,7 +213,7 @@ TEST_DECL(stack_handle)
 	RX_REQUIRE(table[2].called);
 }
 
-TEST_DECL(stack_update)
+RX_TEST_CASE(stack, update)
 {
 	struct {
 		struct invokes inv;
@@ -311,7 +311,7 @@ TEST_DECL(stack_update)
 	RX_PTR_REQUIRE_EQUAL(st.actions[6], NULL);
 }
 
-TEST_DECL(stack_draw)
+RX_TEST_CASE(stack, draw)
 {
 	struct {
 		struct invokes inv;
@@ -380,7 +380,7 @@ TEST_DECL(stack_draw)
 	RX_REQUIRE(!table[6].inv.finish);
 }
 
-TEST_DECL(stack_finish)
+RX_TEST_CASE(stack, finish)
 {
 	struct {
 		struct invokes inv;
@@ -412,20 +412,20 @@ TEST_DECL(stack_finish)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF("basics", "handle", basics_handle),
-	TEST_DEF("basics", "update", basics_update),
-	TEST_DEF("basics", "draw", basics_draw),
-	TEST_DEF("basics", "end", basics_end),
-	TEST_DEF("basics", "finish", basics_finish),
-	TEST_DEF("stack", "add", stack_add),
-	TEST_DEF("stack", "handle", stack_handle),
-	TEST_DEF("stack", "update", stack_update),
-	TEST_DEF("stack", "draw", stack_draw),
-	TEST_DEF("stack", "finish", stack_finish)
+	TEST(basics, handle),
+	TEST(basics, update),
+	TEST(basics, draw),
+	TEST(basics, end),
+	TEST(basics, finish),
+	TEST(stack, add),
+	TEST(stack, handle),
+	TEST(stack, update),
+	TEST(stack, draw),
+	TEST(stack, finish)
 };
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

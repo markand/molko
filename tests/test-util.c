@@ -20,7 +20,7 @@
 
 #include "test.h"
 
-TEST_DECL(test_nrand)
+RX_TEST_CASE(basics, nrand)
 {
 	int found[10] = {0};
 
@@ -40,11 +40,11 @@ TEST_DECL(test_nrand)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF("basics", "nrand", test_nrand)
+	TEST(basics, nrand)
 };
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

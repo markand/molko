@@ -23,13 +23,18 @@
 
 #include "test.h"
 
-RX_TEAR_DOWN(basics_teardown)
+RX_SET_UP(basics_set_up)
+{
+	return RX_SUCCESS;
+}
+
+RX_TEAR_DOWN(basics_tear_down)
 {
 	remove("1.db");
 	remove("2.db");
 }
 
-TEST_DECL(basics_read)
+RX_TEST_CASE(basics, read)
 {
 	struct save db;
 
@@ -38,7 +43,7 @@ TEST_DECL(basics_read)
 	save_finish(&db);
 }
 
-TEST_DECL(basics_write)
+RX_TEST_CASE(basics, write)
 {
 	struct save db[2] = {0};
 
@@ -131,12 +136,12 @@ properties_remove(void)
 #endif
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF_FIX("basics", "read", basics_read, void *, NULL, basics_teardown),
-	TEST_DEF_FIX("basics", "write", basics_write, void *, NULL, basics_teardown)
+	TEST_FIXTURE(basics, read, void *),
+	TEST_FIXTURE(basics, write, void *)
 };
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN(tests, argc, argv)
+	return TEST_RUN_ALL(tests, argc, argv)
 }

@@ -23,7 +23,7 @@
 
 #include "test.h"
 
-RX_SET_UP(basics_setup)
+RX_SET_UP(basics_set_up)
 {
 	if (save_open_path(RX_DATA, "quest.db", SAVE_MODE_WRITE) < 0)
 		return RX_ERROR;
@@ -31,13 +31,13 @@ RX_SET_UP(basics_setup)
 	return RX_SUCCESS;
 }
 
-RX_TEAR_DOWN(basics_teardown)
+RX_TEAR_DOWN(basics_tear_down)
 {
 	save_finish(RX_DATA);
 	remove("quest.db");
 }
 
-TEST_DECL(basics_load)
+RX_TEST_CASE(basics, load)
 {
 	struct quest_step steps[] = {
 		{
@@ -69,11 +69,11 @@ TEST_DECL(basics_load)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF_FIX("basics", "load", basics_load, struct save, basics_setup, basics_teardown)
+	TEST_FIXTURE(basics, load, struct save)
 };
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

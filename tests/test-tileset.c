@@ -24,7 +24,7 @@
 
 #include "test.h"
 
-TEST_DECL(basics_sample)
+RX_TEST_CASE(basics, sample)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset;
@@ -62,7 +62,7 @@ TEST_DECL(basics_sample)
 	tileset_file_finish(&loader);
 }
 
-TEST_DECL(error_tilewidth)
+RX_TEST_CASE(error, tilewidth)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
@@ -70,7 +70,7 @@ TEST_DECL(error_tilewidth)
 	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tilewidth.tileset"), -1);
 }
 
-TEST_DECL(error_tileheight)
+RX_TEST_CASE(error, tileheight)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
@@ -78,7 +78,7 @@ TEST_DECL(error_tileheight)
 	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tileheight.tileset"), -1);
 }
 
-TEST_DECL(error_image)
+RX_TEST_CASE(error, image)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
@@ -87,10 +87,10 @@ TEST_DECL(error_image)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF("basics", "sample", basics_sample),
-	TEST_DEF("error", "tilewidth", error_tilewidth),
-	TEST_DEF("error", "tileheight", error_tileheight),
-	TEST_DEF("error", "image", error_image),
+	TEST(basics, sample),
+	TEST(error, tilewidth),
+	TEST(error, tileheight),
+	TEST(error, image)
 };
 
 int
@@ -99,5 +99,5 @@ main(int argc, char **argv)
 	if (core_init("fr.malikania", "test") < 0 || window_open("test-tileset", 100, 100) < 0)
 		return 1;
 
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

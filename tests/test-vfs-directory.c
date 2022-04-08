@@ -21,19 +21,22 @@
 
 #include "test.h"
 
-RX_SET_UP(setup)
+RX_SET_UP(basics_set_up)
 {
 	vfs_directory(RX_DATA, DIRECTORY "/vfs/directory");
 
 	return RX_SUCCESS;
 }
 
-RX_TEAR_DOWN(teardown)
+RX_TEAR_DOWN(basics_tear_down)
 {
 	vfs_finish(RX_DATA);
 }
 
-TEST_DECL(basics_read)
+#define error_set_up basics_set_up
+#define error_tear_down basics_tear_down
+
+RX_TEST_CASE(basics, read)
 {
 	struct vfs_file file;
 	char data[256] = {0};
@@ -43,7 +46,7 @@ TEST_DECL(basics_read)
 	RX_STR_REQUIRE_EQUAL(data, "Hello World!\n");
 }
 
-TEST_DECL(error_notfound)
+RX_TEST_CASE(error, notfound)
 {
 	struct vfs_file file;
 
@@ -51,12 +54,12 @@ TEST_DECL(error_notfound)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF_FIX("basics", "read", basics_read, struct vfs, setup, teardown),
-	TEST_DEF_FIX("error", "notfound", error_notfound, struct vfs, setup, teardown)
+	TEST_FIXTURE(basics, read, struct vfs),
+	TEST_FIXTURE(error, notfound, struct vfs)
 };
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

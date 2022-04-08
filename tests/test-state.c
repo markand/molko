@@ -38,14 +38,14 @@ struct invokes {
 
 static struct state *states[16];
 
-RX_SET_UP(basics_setup)
+RX_SET_UP(basics_set_up)
 {
 	game_init(states, UTIL_SIZE(states));
 
 	return RX_SUCCESS;
 }
 
-RX_TEAR_DOWN(basics_teardown)
+RX_TEAR_DOWN(basics_tear_down)
 {
 	game_quit();
 }
@@ -114,7 +114,7 @@ my_finish(struct state *state)
 	.finish = my_finish \
 }
 
-TEST_DECL(basics_start)
+RX_TEST_CASE(basics, start)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -128,7 +128,7 @@ TEST_DECL(basics_start)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-TEST_DECL(basics_handle)
+RX_TEST_CASE(basics, handle)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -142,7 +142,7 @@ TEST_DECL(basics_handle)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-TEST_DECL(basics_update)
+RX_TEST_CASE(basics, update)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -156,7 +156,7 @@ TEST_DECL(basics_update)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-TEST_DECL(basics_draw)
+RX_TEST_CASE(basics, draw)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -170,7 +170,7 @@ TEST_DECL(basics_draw)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-TEST_DECL(basics_end)
+RX_TEST_CASE(basics, end)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -184,7 +184,7 @@ TEST_DECL(basics_end)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
 }
 
-TEST_DECL(basics_finish)
+RX_TEST_CASE(basics, finish)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
@@ -198,7 +198,7 @@ TEST_DECL(basics_finish)
 	RX_UINT_REQUIRE_EQUAL(inv.finish, 1U);
 }
 
-TEST_DECL(basics_game)
+RX_TEST_CASE(basics, game)
 {
 	static struct {
 		struct invokes inv;
@@ -322,17 +322,17 @@ TEST_DECL(basics_game)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF("basics", "start", basics_start),
-	TEST_DEF("basics", "handle", basics_handle),
-	TEST_DEF("basics", "update", basics_update),
-	TEST_DEF("basics", "draw", basics_draw),
-	TEST_DEF("basics", "end", basics_end),
-	TEST_DEF("basics", "finish", basics_finish),
-	TEST_DEF_FIX("basics", "game", basics_game, void *, basics_setup, basics_teardown)
+	TEST(basics, start),
+	TEST(basics, handle),
+	TEST(basics, update),
+	TEST(basics, draw),
+	TEST(basics, end),
+	TEST(basics, finish),
+	TEST_FIXTURE(basics, game, void *)
 };
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

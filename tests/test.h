@@ -16,34 +16,31 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define RX_DISABLE_TEST_DISCOVERY
 #include <rexo.h>
 
 #include <core/util.h>
 
-#define TEST_DECL(name)                                                 \
-static void                                                             \
-name(struct rx_context *RX_PARAM_CONTEXT, void *RX_PARAM_DATA)
-
-#define TEST_DEF(s, n, f)                                               \
+#define TEST(s, n)                                                      \
 {                                                                       \
-        .suite_name = s,                                                \
-        .name = n,                                                      \
-        .run = f                                                        \
+        .suite_name = #s,                                               \
+        .name = #n,                                                     \
+        .run = s##_##n                                                  \
 }
 
-#define TEST_DEF_FIX(s, n, f, type, up, down)                           \
+#define TEST_FIXTURE(s, n, t)                                           \
 {                                                                       \
-        .suite_name = s,                                                \
-        .name = n,                                                      \
-        .run = f,                                                       \
+        .suite_name = #s,                                               \
+        .name = #n,                                                     \
+        .run = s##_##n,                                                 \
         .config.fixture = {                                             \
-                .size = sizeof (type),                                  \
+                .size = sizeof (t),                                     \
                 .config = {                                             \
-                        .set_up = up,                                   \
-                        .tear_down = down                               \
+                        .set_up = s##_set_up,                           \
+                        .tear_down = s##_tear_down                      \
                 }                                                       \
         }                                                               \
 }
 
-#define TEST_RUN(tests, argc, argv)                                     \
+#define TEST_RUN_ALL(tests, argc, argv)                                 \
         rx_main(UTIL_SIZE(tests), tests, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;

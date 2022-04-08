@@ -16,9 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rexo.h>
-
 #include <core/alloc.h>
+
+#include "test.h"
 
 struct point {
 	int x;
@@ -68,23 +68,29 @@ static const struct alloc_funcs my_funcs = {
 	.free = my_free
 };
 
-RX_SET_UP(standard_setup)
+RX_SET_UP(basics_set_up)
 {
 	alloc_set(&standard_funcs);
 
 	return RX_SUCCESS;
 }
 
-RX_SET_UP(my_setup)
+RX_TEAR_DOWN(basics_tear_down)
+{
+}
+
+RX_SET_UP(custom_set_up)
 {
 	alloc_set(&my_funcs);
 
 	return RX_SUCCESS;
 }
 
-RX_FIXTURE(standard_fixture, void *, .set_up = standard_setup);
+RX_TEAR_DOWN(custom_tear_down)
+{
+}
 
-RX_TEST_CASE(test, array_simple, .fixture = standard_fixture)
+RX_TEST_CASE(basics, array_simple)
 {
 	struct point *points;
 
@@ -110,7 +116,7 @@ RX_TEST_CASE(test, array_simple, .fixture = standard_fixture)
 	RX_INT_REQUIRE_EQUAL(points[3].y, 0);
 }
 
-RX_TEST_CASE(test, pool_simple, .fixture = standard_fixture)
+RX_TEST_CASE(basics, pool_simple)
 {
 	struct alloc_pool pool;
 	struct point *p, *data;
@@ -162,7 +168,7 @@ RX_TEST_CASE(test, pool_simple, .fixture = standard_fixture)
 	RX_UINT_REQUIRE_EQUAL(pool.elemsize, 0);
 }
 
-RX_TEST_CASE(test, sdupf, .fixture = standard_fixture)
+RX_TEST_CASE(basics, sdupf)
 {
 	char *str = alloc_sdupf("Hello %s", "David");
 
@@ -170,9 +176,7 @@ RX_TEST_CASE(test, sdupf, .fixture = standard_fixture)
 	free(str);
 }
 
-RX_FIXTURE(my_fixture, void *, .set_up = my_setup);
-
-RX_TEST_CASE(test, custom, .fixture = my_fixture)
+RX_TEST_CASE(custom, count)
 {
 	alloc_free(alloc_new(10));
 	alloc_free(alloc_new0(20));
@@ -183,8 +187,15 @@ RX_TEST_CASE(test, custom, .fixture = my_fixture)
 	RX_INT_REQUIRE_EQUAL(my_stats.free_count, 3U);
 }
 
+static const struct rx_test_case tests[] = {
+	TEST_FIXTURE(basics, array_simple, void *),
+	TEST_FIXTURE(basics, pool_simple, void *),
+	TEST_FIXTURE(basics, sdupf, void *),
+	TEST_FIXTURE(custom, count, void *)
+};
+
 int
 main(int argc, char **argv)
 {
-	return rx_main(0, NULL, argc, (const char **)argv) == RX_SUCCESS ? 0 : 1;
+	return TEST_RUN_ALL(tests, argc, argv);
 }

@@ -75,7 +75,7 @@ my_finish(struct drawable *dw)
 	((struct invokes *)dw->data)->finish = 1;
 }
 
-TEST_DECL(basics_update)
+RX_TEST_CASE(basics, update)
 {
 	struct {
 		struct invokes inv;
@@ -100,7 +100,7 @@ TEST_DECL(basics_update)
 	RX_REQUIRE(!table[1].inv.finish);
 }
 
-TEST_DECL(basics_draw)
+RX_TEST_CASE(basics, draw)
 {
 	struct invokes inv = {0};
 	struct drawable dw = INIT(&inv, my_update_true);
@@ -113,7 +113,7 @@ TEST_DECL(basics_draw)
 	RX_REQUIRE(!inv.finish);
 }
 
-TEST_DECL(basics_end)
+RX_TEST_CASE(basics, end)
 {
 	struct invokes inv = {0};
 	struct drawable dw = INIT(&inv, my_update_true);
@@ -126,7 +126,7 @@ TEST_DECL(basics_end)
 	RX_REQUIRE(!inv.finish);
 }
 
-TEST_DECL(basics_finish)
+RX_TEST_CASE(basics, finish)
 {
 	struct invokes inv = {0};
 	struct drawable dw = INIT(&inv, my_update_true);
@@ -139,7 +139,7 @@ TEST_DECL(basics_finish)
 	RX_REQUIRE(inv.finish);
 }
 
-TEST_DECL(stack_add)
+RX_TEST_CASE(stack, add)
 {
 	struct drawable *drawables[10];
 	struct drawable_stack st = {0};
@@ -157,7 +157,7 @@ TEST_DECL(stack_add)
 	RX_INT_REQUIRE_EQUAL(drawable_stack_add(&st, &dw), -1);
 }
 
-TEST_DECL(stack_update)
+RX_TEST_CASE(stack, update)
 {
 	struct {
 		struct invokes inv;
@@ -247,7 +247,7 @@ TEST_DECL(stack_update)
 	RX_PTR_REQUIRE_EQUAL(st.objects[6], NULL);
 }
 
-TEST_DECL(stack_draw)
+RX_TEST_CASE(stack, draw)
 {
 	struct {
 		struct invokes inv;
@@ -308,7 +308,7 @@ TEST_DECL(stack_draw)
 	RX_REQUIRE(!table[6].inv.finish);
 }
 
-TEST_DECL(stack_finish)
+RX_TEST_CASE(stack, finish)
 {
 	struct {
 		struct invokes inv;
@@ -338,18 +338,18 @@ TEST_DECL(stack_finish)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF("basics", "update", basics_update),
-	TEST_DEF("basics", "draw", basics_draw),
-	TEST_DEF("basics", "end", basics_end),
-	TEST_DEF("basics", "finish", basics_finish),
-	TEST_DEF("stack", "add", stack_add),
-	TEST_DEF("stack", "update", stack_update),
-	TEST_DEF("stack", "draw", stack_draw),
-	TEST_DEF("stack", "finish", stack_finish)
+	TEST(basics, update),
+	TEST(basics, draw),
+	TEST(basics, end),
+	TEST(basics, finish),
+	TEST(stack, add),
+	TEST(stack, update),
+	TEST(stack, draw),
+	TEST(stack, finish),
 };
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

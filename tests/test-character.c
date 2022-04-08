@@ -24,19 +24,19 @@
 
 #include "test.h"
 
-RX_SET_UP(basics_setup)
+RX_SET_UP(basics_set_up)
 {
 	remove("test.db");
 
 	return RX_SUCCESS;
 }
 
-RX_TEAR_DOWN(basics_teardown)
+RX_TEAR_DOWN(basics_tear_down)
 {
 	remove("test.db");
 }
 
-TEST_DECL(basics_load)
+RX_TEST_CASE(basics, load)
 {
 	struct save db;
 	struct character ch = {
@@ -74,11 +74,11 @@ TEST_DECL(basics_load)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF_FIX("basics", "load", basics_load, void *, basics_setup, basics_teardown)
+	TEST_FIXTURE(basics, load, void *)
 };
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

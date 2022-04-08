@@ -27,7 +27,7 @@
 
 #include "test.h"
 
-TEST_DECL(basics_sample)
+RX_TEST_CASE(basics, sample)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
@@ -88,7 +88,7 @@ TEST_DECL(basics_sample)
 	map_file_finish(&loader);
 }
 
-TEST_DECL(error_title)
+RX_TEST_CASE(error, title)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
@@ -99,7 +99,7 @@ TEST_DECL(error_title)
 	map_file_finish(&loader);
 }
 
-TEST_DECL(error_columns)
+RX_TEST_CASE(error, columns)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
@@ -110,7 +110,7 @@ TEST_DECL(error_columns)
 	map_file_finish(&loader);
 }
 
-TEST_DECL(error_rows)
+RX_TEST_CASE(error, rows)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
@@ -122,10 +122,10 @@ TEST_DECL(error_rows)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF("basics", "sample", basics_sample),
-	TEST_DEF("error", "title", error_title),
-	TEST_DEF("error", "columns", error_columns),
-	TEST_DEF("error", "rows", error_rows)
+	TEST(basics, sample),
+	TEST(error, title),
+	TEST(error, columns),
+	TEST(error, rows)
 };
 
 int
@@ -140,5 +140,5 @@ main(int argc, char **argv)
 	if (core_init("fr.malikania", "test") < 0 || window_open("test-map", 100, 100) < 0)
 		return 1;
 
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

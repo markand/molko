@@ -85,7 +85,7 @@ my_finish(struct action *act)
 	((struct invokes *)act->data)->finish++;
 }
 
-TEST_DECL(basics_init)
+RX_TEST_CASE(basics, init)
 {
 	struct script sc;
 
@@ -95,7 +95,7 @@ TEST_DECL(basics_init)
 	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
 }
 
-TEST_DECL(basics_append)
+RX_TEST_CASE(basics, append)
 {
 	struct action act[3] = {0};
 	struct script sc = {0};
@@ -121,7 +121,7 @@ TEST_DECL(basics_append)
 	script_finish(&sc);
 }
 
-TEST_DECL(basics_handle)
+RX_TEST_CASE(basics, handle)
 {
 	struct {
 		struct invokes inv;
@@ -197,7 +197,7 @@ TEST_DECL(basics_handle)
 	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 }
 
-TEST_DECL(basics_update)
+RX_TEST_CASE(basics, update)
 {
 	struct {
 		struct invokes inv;
@@ -290,7 +290,7 @@ TEST_DECL(basics_update)
 	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 }
 
-TEST_DECL(basics_draw)
+RX_TEST_CASE(basics, draw)
 {
 	struct {
 		struct invokes inv;
@@ -366,7 +366,7 @@ TEST_DECL(basics_draw)
 	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
 }
 
-TEST_DECL(basics_finish)
+RX_TEST_CASE(basics, finish)
 {
 	struct {
 		struct invokes inv;
@@ -405,7 +405,7 @@ TEST_DECL(basics_finish)
 	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 1);
 }
 
-TEST_DECL(action_simple)
+RX_TEST_CASE(action, simple)
 {
 	struct {
 		struct invokes inv;
@@ -530,17 +530,17 @@ TEST_DECL(action_simple)
 }
 
 static const struct rx_test_case tests[] = {
-	TEST_DEF("basics", "init", basics_init),
-	TEST_DEF("basics", "append", basics_append),
-	TEST_DEF("basics", "handle", basics_handle),
-	TEST_DEF("basics", "update", basics_update),
-	TEST_DEF("basics", "draw", basics_draw),
-	TEST_DEF("basics", "finish", basics_finish),
-	TEST_DEF("action", "simple", action_simple)
+	TEST(basics, init),
+	TEST(basics, append),
+	TEST(basics, handle),
+	TEST(basics, update),
+	TEST(basics, draw),
+	TEST(basics, finish),
+	TEST(action, simple)
 };
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN(tests, argc, argv);
+	return TEST_RUN_ALL(tests, argc, argv);
 }

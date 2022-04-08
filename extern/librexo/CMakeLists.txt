@@ -26,4 +26,8 @@ target_include_directories(
 )
 set_target_properties(libmlk-rexo PROPERTIES FOLDER extern)
 
+if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+	target_compile_options(libmlk-rexo INTERFACE -Wno-format)
+endif ()
+
 source_group("" FILES ${libmlk-rexo_SOURCE_DIR}/rexo.h)
