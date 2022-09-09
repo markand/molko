@@ -18,26 +18,15 @@
 
 #include <stdio.h>
 
+#include <core/util.h>
+
 #include <rpg/quest.h>
 #include <rpg/save.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_SET_UP(basics_set_up)
-{
-	if (save_open_path(RX_DATA, "quest.db", SAVE_MODE_WRITE) < 0)
-		return RX_ERROR;
-
-	return RX_SUCCESS;
-}
-
-RX_TEAR_DOWN(basics_tear_down)
-{
-	save_finish(RX_DATA);
-	remove("quest.db");
-}
-
-RX_TEST_CASE(basics, load)
+static void
+test_basics_load(struct save *save)
 {
 	struct quest_step steps[] = {
 		{
@@ -57,23 +46,27 @@ RX_TEST_CASE(basics, load)
 		.steps = steps,
 		.stepsz = UTIL_SIZE(steps)
 	};
-	struct save *save = RX_DATA;
 
-	RX_INT_REQUIRE_EQUAL(quest_save(&quest, save), 0);
+	DT_EQ_INT(quest_save(&quest, save), 0);
 
 	/* Reset to inspect. */
 	steps[0].percent = steps[1].percent = 0;
-	RX_INT_REQUIRE_EQUAL(quest_load(&quest, save), 0);
-	RX_INT_REQUIRE_EQUAL(steps[0].percent, 100);
-	RX_INT_REQUIRE_EQUAL(steps[1].percent, 50);
+	DT_EQ_INT(quest_load(&quest, save), 0);
+	DT_EQ_INT(steps[0].percent, 100);
+	DT_EQ_INT(steps[1].percent, 50);
 }
 
-static const struct rx_test_case tests[] = {
-	TEST_FIXTURE(basics, load, struct save)
-};
-
 int
-main(int argc, char **argv)
+main(void)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	struct save save;
+
+	if (save_open_path(&save, "quest.db", SAVE_MODE_WRITE) < 0)
+		return 1;
+
+	DT_RUN(test_basics_load, &save);
+	DT_SUMMARY();
+
+	save_finish(&save);
+	remove("quest.db");
 }

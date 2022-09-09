@@ -22,21 +22,10 @@
 #include <rpg/character.h>
 #include <rpg/save.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_SET_UP(basics_set_up)
-{
-	remove("test.db");
-
-	return RX_SUCCESS;
-}
-
-RX_TEAR_DOWN(basics_tear_down)
-{
-	remove("test.db");
-}
-
-RX_TEST_CASE(basics, load)
+static void
+test_basics_load(void)
 {
 	struct save db;
 	struct character ch = {
@@ -53,32 +42,33 @@ RX_TEST_CASE(basics, load)
 		.luckbonus = 1004
 	};
 
-	RX_INT_REQUIRE_EQUAL(save_open_path(&db, "test.db", SAVE_MODE_WRITE), 0);
-	RX_INT_REQUIRE_EQUAL(character_save(&ch, &db), 0);
+	DT_EQ_INT(save_open_path(&db, "test.db", SAVE_MODE_WRITE), 0);
+	DT_EQ_INT(character_save(&ch, &db), 0);
 
 	/* Restore. */
 	memset(&ch, 0, sizeof (ch));
 	ch.name = "david";
 
-	RX_REQUIRE(character_load(&ch, &db) == 0);
-	RX_INT_REQUIRE_EQUAL(ch.hp, 1989);
-	RX_INT_REQUIRE_EQUAL(ch.mp, 1);
-	RX_INT_REQUIRE_EQUAL(ch.level, 18);
-	RX_INT_REQUIRE_EQUAL(ch.team_order, 1);
-	RX_INT_REQUIRE_EQUAL(ch.hpbonus, 500);
-	RX_INT_REQUIRE_EQUAL(ch.mpbonus, 50);
-	RX_INT_REQUIRE_EQUAL(ch.atkbonus, 1001);
-	RX_INT_REQUIRE_EQUAL(ch.defbonus, 1002);
-	RX_INT_REQUIRE_EQUAL(ch.agtbonus, 1003);
-	RX_INT_REQUIRE_EQUAL(ch.luckbonus, 1004);
+	DT_ASSERT(character_load(&ch, &db) == 0);
+	DT_EQ_INT(ch.hp, 1989);
+	DT_EQ_INT(ch.mp, 1);
+	DT_EQ_INT(ch.level, 18);
+	DT_EQ_INT(ch.team_order, 1);
+	DT_EQ_INT(ch.hpbonus, 500);
+	DT_EQ_INT(ch.mpbonus, 50);
+	DT_EQ_INT(ch.atkbonus, 1001);
+	DT_EQ_INT(ch.defbonus, 1002);
+	DT_EQ_INT(ch.agtbonus, 1003);
+	DT_EQ_INT(ch.luckbonus, 1004);
 }
-
-static const struct rx_test_case tests[] = {
-	TEST_FIXTURE(basics, load, void *)
-};
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	remove("test.db");
+
+	DT_RUN(test_basics_load);
+	DT_SUMMARY();
+
+	remove("test.db");
 }

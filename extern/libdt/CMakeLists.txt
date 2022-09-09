@@ -16,18 +16,14 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(libmlk-rexo)
+project(libmlk-dt)
 
-add_library(libmlk-rexo INTERFACE ${libmlk-rexo_SOURCE_DIR}/rexo.h)
+add_library(libmlk-dt INTERFACE ${libmlk-dt_SOURCE_DIR}/dt.h)
 target_include_directories(
-	libmlk-rexo
+	libmlk-dt
 	INTERFACE
-		$<BUILD_INTERFACE:${libmlk-rexo_SOURCE_DIR}>
+		 $<BUILD_INTERFACE:${libmlk-dt_SOURCE_DIR}>
 )
-set_target_properties(libmlk-rexo PROPERTIES FOLDER extern)
+set_target_properties(libmlk-dt PROPERTIES FOLDER extern)
 
-if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-	target_compile_options(libmlk-rexo INTERFACE -Wno-format)
-endif ()
-
-source_group("" FILES ${libmlk-rexo_SOURCE_DIR}/rexo.h)
+source_group("" FILES ${libmlk-dt_SOURCE_DIR}/dt.h)

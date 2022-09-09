@@ -23,7 +23,7 @@
 #include <core/state.h>
 #include <core/util.h>
 
-#include "test.h"
+#include <dt.h>
 
 struct invokes {
 	unsigned int start;
@@ -36,19 +36,7 @@ struct invokes {
 	unsigned int finish;
 };
 
-static struct state *states[16];
-
-RX_SET_UP(basics_set_up)
-{
-	game_init(states, UTIL_SIZE(states));
-
-	return RX_SUCCESS;
-}
-
-RX_TEAR_DOWN(basics_tear_down)
-{
-	game_quit();
-}
+static struct state *mainstates[16];
 
 static void
 my_start(struct state *state)
@@ -114,91 +102,98 @@ my_finish(struct state *state)
 	.finish = my_finish \
 }
 
-RX_TEST_CASE(basics, start)
+static void
+test_basics_start(void)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_start(&state);
-	RX_UINT_REQUIRE_EQUAL(inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
+	DT_EQ_UINT(inv.start, 1U);
+	DT_EQ_UINT(inv.handle, 0U);
+	DT_EQ_UINT(inv.update, 0U);
+	DT_EQ_UINT(inv.draw, 0U);
+	DT_EQ_UINT(inv.end, 0U);
+	DT_EQ_UINT(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, handle)
+static void
+test_basics_handle(void)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_handle(&state, &(const union event){0});
-	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.handle, 1U);
-	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
+	DT_EQ_UINT(inv.start, 0U);
+	DT_EQ_UINT(inv.handle, 1U);
+	DT_EQ_UINT(inv.update, 0U);
+	DT_EQ_UINT(inv.draw, 0U);
+	DT_EQ_UINT(inv.end, 0U);
+	DT_EQ_UINT(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, update)
+static void
+test_basics_update(void)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_update(&state, 0);
-	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.update, 1U);
-	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
+	DT_EQ_UINT(inv.start, 0U);
+	DT_EQ_UINT(inv.handle, 0U);
+	DT_EQ_UINT(inv.update, 1U);
+	DT_EQ_UINT(inv.draw, 0U);
+	DT_EQ_UINT(inv.end, 0U);
+	DT_EQ_UINT(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, draw)
+static void
+test_basics_draw(void)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_draw(&state);
-	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.draw, 1U);
-	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
+	DT_EQ_UINT(inv.start, 0U);
+	DT_EQ_UINT(inv.handle, 0U);
+	DT_EQ_UINT(inv.update, 0U);
+	DT_EQ_UINT(inv.draw, 1U);
+	DT_EQ_UINT(inv.end, 0U);
+	DT_EQ_UINT(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, end)
+static void
+test_basics_end(void)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_end(&state);
-	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.end, 1U);
-	RX_UINT_REQUIRE_EQUAL(inv.finish, 0U);
+	DT_EQ_UINT(inv.start, 0U);
+	DT_EQ_UINT(inv.handle, 0U);
+	DT_EQ_UINT(inv.update, 0U);
+	DT_EQ_UINT(inv.draw, 0U);
+	DT_EQ_UINT(inv.end, 1U);
+	DT_EQ_UINT(inv.finish, 0U);
 }
 
-RX_TEST_CASE(basics, finish)
+static void
+test_basics_finish(void)
 {
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
 	state_finish(&state);
-	RX_UINT_REQUIRE_EQUAL(inv.start, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.update, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(inv.finish, 1U);
+	DT_EQ_UINT(inv.start, 0U);
+	DT_EQ_UINT(inv.handle, 0U);
+	DT_EQ_UINT(inv.update, 0U);
+	DT_EQ_UINT(inv.draw, 0U);
+	DT_EQ_UINT(inv.end, 0U);
+	DT_EQ_UINT(inv.finish, 1U);
 }
 
-RX_TEST_CASE(basics, game)
+static void
+test_basics_game(void)
 {
 	static struct {
 		struct invokes inv;
@@ -209,15 +204,17 @@ RX_TEST_CASE(basics, game)
 	};
 
 	/* 0 becomes active and should start. */
+	game_init(mainstates, UTIL_SIZE(mainstates));
 	game_push(&states[0].state);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
+
+	DT_EQ_UINT(states[0].inv.start, 1U);
+	DT_EQ_UINT(states[0].inv.handle, 0U);
+	DT_EQ_UINT(states[0].inv.update, 0U);
+	DT_EQ_UINT(states[0].inv.draw, 0U);
+	DT_EQ_UINT(states[0].inv.suspend, 0U);
+	DT_EQ_UINT(states[0].inv.resume, 0U);
+	DT_EQ_UINT(states[0].inv.end, 0U);
+	DT_EQ_UINT(states[0].inv.finish, 0U);
 
 	/* Put some event, update and drawing. */
 	game_handle(&(union event) { .type = EVENT_QUIT });
@@ -226,113 +223,112 @@ RX_TEST_CASE(basics, game)
 	game_draw();
 	game_draw();
 	game_draw();
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
+	DT_EQ_UINT(states[0].inv.start, 1U);
+	DT_EQ_UINT(states[0].inv.handle, 1U);
+	DT_EQ_UINT(states[0].inv.update, 2U);
+	DT_EQ_UINT(states[0].inv.draw, 3U);
+	DT_EQ_UINT(states[0].inv.suspend, 0U);
+	DT_EQ_UINT(states[0].inv.resume, 0U);
+	DT_EQ_UINT(states[0].inv.end, 0U);
+	DT_EQ_UINT(states[0].inv.finish, 0U);
 
 	/* Switch to state 1, 0 must be suspended. */
 	game_push(&states[1].state);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
+	DT_EQ_UINT(states[0].inv.start, 1U);
+	DT_EQ_UINT(states[0].inv.handle, 1U);
+	DT_EQ_UINT(states[0].inv.update, 2U);
+	DT_EQ_UINT(states[0].inv.draw, 3U);
+	DT_EQ_UINT(states[0].inv.suspend, 1U);
+	DT_EQ_UINT(states[0].inv.resume, 0U);
+	DT_EQ_UINT(states[0].inv.end, 0U);
+	DT_EQ_UINT(states[0].inv.finish, 0U);
 
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.update, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.suspend, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.resume, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.finish, 0U);
+	DT_EQ_UINT(states[1].inv.start, 1U);
+	DT_EQ_UINT(states[1].inv.handle, 0U);
+	DT_EQ_UINT(states[1].inv.update, 0U);
+	DT_EQ_UINT(states[1].inv.draw, 0U);
+	DT_EQ_UINT(states[1].inv.suspend, 0U);
+	DT_EQ_UINT(states[1].inv.resume, 0U);
+	DT_EQ_UINT(states[1].inv.end, 0U);
+	DT_EQ_UINT(states[1].inv.finish, 0U);
 
 	/* Update a little this state. */
 	game_update(10);
 	game_update(10);
 	game_update(10);
 	game_update(10);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
+	DT_EQ_UINT(states[0].inv.start, 1U);
+	DT_EQ_UINT(states[0].inv.handle, 1U);
+	DT_EQ_UINT(states[0].inv.update, 2U);
+	DT_EQ_UINT(states[0].inv.draw, 3U);
+	DT_EQ_UINT(states[0].inv.suspend, 1U);
+	DT_EQ_UINT(states[0].inv.resume, 0U);
+	DT_EQ_UINT(states[0].inv.end, 0U);
+	DT_EQ_UINT(states[0].inv.finish, 0U);
 
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.update, 4U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.suspend, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.resume, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.finish, 0U);
+	DT_EQ_UINT(states[1].inv.start, 1U);
+	DT_EQ_UINT(states[1].inv.handle, 0U);
+	DT_EQ_UINT(states[1].inv.update, 4U);
+	DT_EQ_UINT(states[1].inv.draw, 0U);
+	DT_EQ_UINT(states[1].inv.suspend, 0U);
+	DT_EQ_UINT(states[1].inv.resume, 0U);
+	DT_EQ_UINT(states[1].inv.end, 0U);
+	DT_EQ_UINT(states[1].inv.finish, 0U);
 
 	/* Pop it, it should be finalized through end and finish. */
 	game_pop();
 
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 0U);
+	DT_EQ_UINT(states[0].inv.start, 1U);
+	DT_EQ_UINT(states[0].inv.handle, 1U);
+	DT_EQ_UINT(states[0].inv.update, 2U);
+	DT_EQ_UINT(states[0].inv.draw, 3U);
+	DT_EQ_UINT(states[0].inv.suspend, 1U);
+	DT_EQ_UINT(states[0].inv.resume, 1U);
+	DT_EQ_UINT(states[0].inv.end, 0U);
+	DT_EQ_UINT(states[0].inv.finish, 0U);
 
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.update, 4U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.suspend, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.resume, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.end, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.finish, 1U);
+	DT_EQ_UINT(states[1].inv.start, 1U);
+	DT_EQ_UINT(states[1].inv.handle, 0U);
+	DT_EQ_UINT(states[1].inv.update, 4U);
+	DT_EQ_UINT(states[1].inv.draw, 0U);
+	DT_EQ_UINT(states[1].inv.suspend, 0U);
+	DT_EQ_UINT(states[1].inv.resume, 0U);
+	DT_EQ_UINT(states[1].inv.end, 1U);
+	DT_EQ_UINT(states[1].inv.finish, 1U);
 
 	/* Pop this state as well. */
 	game_pop();
 
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.handle, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.update, 2U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.draw, 3U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.suspend, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.resume, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.end, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[0].inv.finish, 1U);
+	DT_EQ_UINT(states[0].inv.start, 1U);
+	DT_EQ_UINT(states[0].inv.handle, 1U);
+	DT_EQ_UINT(states[0].inv.update, 2U);
+	DT_EQ_UINT(states[0].inv.draw, 3U);
+	DT_EQ_UINT(states[0].inv.suspend, 1U);
+	DT_EQ_UINT(states[0].inv.resume, 1U);
+	DT_EQ_UINT(states[0].inv.end, 1U);
+	DT_EQ_UINT(states[0].inv.finish, 1U);
 
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.start, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.handle, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.update, 4U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.draw, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.suspend, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.resume, 0U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.end, 1U);
-	RX_UINT_REQUIRE_EQUAL(states[1].inv.finish, 1U);
+	DT_EQ_UINT(states[1].inv.start, 1U);
+	DT_EQ_UINT(states[1].inv.handle, 0U);
+	DT_EQ_UINT(states[1].inv.update, 4U);
+	DT_EQ_UINT(states[1].inv.draw, 0U);
+	DT_EQ_UINT(states[1].inv.suspend, 0U);
+	DT_EQ_UINT(states[1].inv.resume, 0U);
+	DT_EQ_UINT(states[1].inv.end, 1U);
+	DT_EQ_UINT(states[1].inv.finish, 1U);
+
+	game_quit();
 }
-
-static const struct rx_test_case tests[] = {
-	TEST(basics, start),
-	TEST(basics, handle),
-	TEST(basics, update),
-	TEST(basics, draw),
-	TEST(basics, end),
-	TEST(basics, finish),
-	TEST_FIXTURE(basics, game, void *)
-};
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_start);
+	DT_RUN(test_basics_handle);
+	DT_RUN(test_basics_update);
+	DT_RUN(test_basics_draw);
+	DT_RUN(test_basics_end);
+	DT_RUN(test_basics_finish);
+	DT_RUN(test_basics_game);
+	DT_SUMMARY();
 }

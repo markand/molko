@@ -25,108 +25,105 @@
 #include <rpg/map-file.h>
 #include <rpg/map.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_TEST_CASE(basics, sample)
+static void
+test_basics_sample(void)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
 
-	RX_INT_REQUIRE_EQUAL(map_file_open(&loader, &map, DIRECTORY "/maps/sample-map.map"), 0);
-	RX_STR_REQUIRE_EQUAL(map.title, "This is a test map");
-	RX_UINT_REQUIRE_EQUAL(map.columns, 4U);
-	RX_UINT_REQUIRE_EQUAL(map.rows, 2U);
+	DT_EQ_INT(map_file_open(&loader, &map, DIRECTORY "/maps/sample-map.map"), 0);
+	DT_EQ_STR(map.title, "This is a test map");
+	DT_EQ_UINT(map.columns, 4U);
+	DT_EQ_UINT(map.rows, 2U);
 
-	RX_UINT_REQUIRE_EQUAL(map.layers[0].tiles[0], 0U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[0].tiles[1], 1U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[0].tiles[2], 2U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[0].tiles[3], 3U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[0].tiles[4], 4U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[0].tiles[5], 5U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[0].tiles[6], 6U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[0].tiles[7], 7U);
+	DT_EQ_UINT(map.layers[0].tiles[0], 0U);
+	DT_EQ_UINT(map.layers[0].tiles[1], 1U);
+	DT_EQ_UINT(map.layers[0].tiles[2], 2U);
+	DT_EQ_UINT(map.layers[0].tiles[3], 3U);
+	DT_EQ_UINT(map.layers[0].tiles[4], 4U);
+	DT_EQ_UINT(map.layers[0].tiles[5], 5U);
+	DT_EQ_UINT(map.layers[0].tiles[6], 6U);
+	DT_EQ_UINT(map.layers[0].tiles[7], 7U);
 
-	RX_UINT_REQUIRE_EQUAL(map.layers[1].tiles[0], 8U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[1].tiles[1], 9U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[1].tiles[2], 10U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[1].tiles[3], 11U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[1].tiles[4], 12U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[1].tiles[5], 13U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[1].tiles[6], 14U);
-	RX_UINT_REQUIRE_EQUAL(map.layers[1].tiles[7], 15U);
+	DT_EQ_UINT(map.layers[1].tiles[0], 8U);
+	DT_EQ_UINT(map.layers[1].tiles[1], 9U);
+	DT_EQ_UINT(map.layers[1].tiles[2], 10U);
+	DT_EQ_UINT(map.layers[1].tiles[3], 11U);
+	DT_EQ_UINT(map.layers[1].tiles[4], 12U);
+	DT_EQ_UINT(map.layers[1].tiles[5], 13U);
+	DT_EQ_UINT(map.layers[1].tiles[6], 14U);
+	DT_EQ_UINT(map.layers[1].tiles[7], 15U);
 
-	RX_UINT_REQUIRE_EQUAL(map.tileset->sprite->cellw, 64U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->sprite->cellh, 32U);
+	DT_EQ_UINT(map.tileset->sprite->cellw, 64U);
+	DT_EQ_UINT(map.tileset->sprite->cellh, 32U);
 
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefsz, 4);
+	DT_EQ_UINT(map.tileset->tiledefsz, 4);
 
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[0].id, 129U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[0].x, 8U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[0].y, 0U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[0].w, 56U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[0].h, 40U);
+	DT_EQ_UINT(map.tileset->tiledefs[0].id, 129U);
+	DT_EQ_UINT(map.tileset->tiledefs[0].x, 8U);
+	DT_EQ_UINT(map.tileset->tiledefs[0].y, 0U);
+	DT_EQ_UINT(map.tileset->tiledefs[0].w, 56U);
+	DT_EQ_UINT(map.tileset->tiledefs[0].h, 40U);
 
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[1].id, 130);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[1].x, 0);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[1].y, 0);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[1].w, 62);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[1].h, 40);
+	DT_EQ_UINT(map.tileset->tiledefs[1].id, 130);
+	DT_EQ_UINT(map.tileset->tiledefs[1].x, 0);
+	DT_EQ_UINT(map.tileset->tiledefs[1].y, 0);
+	DT_EQ_UINT(map.tileset->tiledefs[1].w, 62);
+	DT_EQ_UINT(map.tileset->tiledefs[1].h, 40);
 
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[2].id, 132U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[2].x, 0U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[2].y, 0U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[2].w, 64U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[2].h, 40U);
+	DT_EQ_UINT(map.tileset->tiledefs[2].id, 132U);
+	DT_EQ_UINT(map.tileset->tiledefs[2].x, 0U);
+	DT_EQ_UINT(map.tileset->tiledefs[2].y, 0U);
+	DT_EQ_UINT(map.tileset->tiledefs[2].w, 64U);
+	DT_EQ_UINT(map.tileset->tiledefs[2].h, 40U);
 
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[3].id, 133U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[3].x, 0U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[3].y, 0U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[3].w, 58U);
-	RX_UINT_REQUIRE_EQUAL(map.tileset->tiledefs[3].h, 40U);
+	DT_EQ_UINT(map.tileset->tiledefs[3].id, 133U);
+	DT_EQ_UINT(map.tileset->tiledefs[3].x, 0U);
+	DT_EQ_UINT(map.tileset->tiledefs[3].y, 0U);
+	DT_EQ_UINT(map.tileset->tiledefs[3].w, 58U);
+	DT_EQ_UINT(map.tileset->tiledefs[3].h, 40U);
 
 	map_finish(&map);
 	map_file_finish(&loader);
 }
 
-RX_TEST_CASE(error, title)
+static void
+test_error_title(void)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
 
-	RX_INT_REQUIRE_EQUAL(map_file_open(&loader, &map, DIRECTORY "error-title.map"), -1);
+	DT_EQ_INT(map_file_open(&loader, &map, DIRECTORY "error-title.map"), -1);
 
 	map_finish(&map);
 	map_file_finish(&loader);
 }
 
-RX_TEST_CASE(error, columns)
+static void
+test_error_columns(void)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
 
-	RX_INT_REQUIRE_EQUAL(map_file_open(&loader, &map, DIRECTORY "error-columns.map"), -1);
+	DT_EQ_INT(map_file_open(&loader, &map, DIRECTORY "error-columns.map"), -1);
 
 	map_finish(&map);
 	map_file_finish(&loader);
 }
 
-RX_TEST_CASE(error, rows)
+static void
+test_error_rows(void)
 {
 	struct map_file loader = {0};
 	struct map map = {0};
 
-	RX_INT_REQUIRE_EQUAL(map_file_open(&loader, &map, DIRECTORY "error-rows.map"), -1);
+	DT_EQ_INT(map_file_open(&loader, &map, DIRECTORY "error-rows.map"), -1);
 
 	map_finish(&map);
 	map_file_finish(&loader);
 }
-
-static const struct rx_test_case tests[] = {
-	TEST(basics, sample),
-	TEST(error, title),
-	TEST(error, columns),
-	TEST(error, rows)
-};
 
 int
 main(int argc, char **argv)
@@ -140,5 +137,11 @@ main(int argc, char **argv)
 	if (core_init("fr.malikania", "test") < 0 || window_open("test-map", 100, 100) < 0)
 		return 1;
 
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_sample);
+	DT_RUN(test_error_title);
+	DT_RUN(test_error_columns);
+	DT_RUN(test_error_rows);
+	DT_SUMMARY();
+
+	return 0;
 }

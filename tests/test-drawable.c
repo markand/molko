@@ -20,7 +20,7 @@
 #include <core/drawable-stack.h>
 #include <core/event.h>
 
-#include "test.h"
+#include <dt.h>
 
 struct invokes {
 	int update;
@@ -75,7 +75,8 @@ my_finish(struct drawable *dw)
 	((struct invokes *)dw->data)->finish = 1;
 }
 
-RX_TEST_CASE(basics, update)
+static void
+test_basics_update(void)
 {
 	struct {
 		struct invokes inv;
@@ -86,60 +87,64 @@ RX_TEST_CASE(basics, update)
 	};
 
 	/* True version. */
-	RX_REQUIRE(drawable_update(&table[0].dw, 0));
-	RX_REQUIRE(table[0].inv.update);
-	RX_REQUIRE(!table[0].inv.draw);
-	RX_REQUIRE(!table[0].inv.end);
-	RX_REQUIRE(!table[0].inv.finish);
+	DT_ASSERT(drawable_update(&table[0].dw, 0));
+	DT_ASSERT(table[0].inv.update);
+	DT_ASSERT(!table[0].inv.draw);
+	DT_ASSERT(!table[0].inv.end);
+	DT_ASSERT(!table[0].inv.finish);
 
 	/* False version. */
-	RX_REQUIRE(!drawable_update(&table[1].dw, 0));
-	RX_REQUIRE(table[1].inv.update);
-	RX_REQUIRE(!table[1].inv.draw);
-	RX_REQUIRE(!table[1].inv.end);
-	RX_REQUIRE(!table[1].inv.finish);
+	DT_ASSERT(!drawable_update(&table[1].dw, 0));
+	DT_ASSERT(table[1].inv.update);
+	DT_ASSERT(!table[1].inv.draw);
+	DT_ASSERT(!table[1].inv.end);
+	DT_ASSERT(!table[1].inv.finish);
 }
 
-RX_TEST_CASE(basics, draw)
+static void
+test_basics_draw(void)
 {
 	struct invokes inv = {0};
 	struct drawable dw = INIT(&inv, my_update_true);
 
 	drawable_draw(&dw);
 
-	RX_REQUIRE(!inv.update);
-	RX_REQUIRE(inv.draw);
-	RX_REQUIRE(!inv.end);
-	RX_REQUIRE(!inv.finish);
+	DT_ASSERT(!inv.update);
+	DT_ASSERT(inv.draw);
+	DT_ASSERT(!inv.end);
+	DT_ASSERT(!inv.finish);
 }
 
-RX_TEST_CASE(basics, end)
+static void
+test_basics_end(void)
 {
 	struct invokes inv = {0};
 	struct drawable dw = INIT(&inv, my_update_true);
 
 	drawable_end(&dw);
 
-	RX_REQUIRE(!inv.update);
-	RX_REQUIRE(!inv.draw);
-	RX_REQUIRE(inv.end);
-	RX_REQUIRE(!inv.finish);
+	DT_ASSERT(!inv.update);
+	DT_ASSERT(!inv.draw);
+	DT_ASSERT(inv.end);
+	DT_ASSERT(!inv.finish);
 }
 
-RX_TEST_CASE(basics, finish)
+static void
+test_basics_finish(void)
 {
 	struct invokes inv = {0};
 	struct drawable dw = INIT(&inv, my_update_true);
 
 	drawable_finish(&dw);
 
-	RX_REQUIRE(!inv.update);
-	RX_REQUIRE(!inv.draw);
-	RX_REQUIRE(!inv.end);
-	RX_REQUIRE(inv.finish);
+	DT_ASSERT(!inv.update);
+	DT_ASSERT(!inv.draw);
+	DT_ASSERT(!inv.end);
+	DT_ASSERT(inv.finish);
 }
 
-RX_TEST_CASE(stack, add)
+static void
+test_stack_add(void)
 {
 	struct drawable *drawables[10];
 	struct drawable_stack st = {0};
@@ -147,17 +152,18 @@ RX_TEST_CASE(stack, add)
 
 	drawable_stack_init(&st, drawables, 10);
 
-	RX_INT_REQUIRE_EQUAL(drawable_stack_add(&st, &dw), 0);
+	DT_EQ_INT(drawable_stack_add(&st, &dw), 0);
 
 	/* Now fill up. */
 	for (int i = 0; i < 9; ++i)
-		RX_INT_REQUIRE_EQUAL(drawable_stack_add(&st, &dw), 0);
+		DT_EQ_INT(drawable_stack_add(&st, &dw), 0);
 
 	/* This one should not fit in. */
-	RX_INT_REQUIRE_EQUAL(drawable_stack_add(&st, &dw), -1);
+	DT_EQ_INT(drawable_stack_add(&st, &dw), -1);
 }
 
-RX_TEST_CASE(stack, update)
+static void
+test_stack_update(void)
 {
 	struct {
 		struct invokes inv;
@@ -184,50 +190,50 @@ RX_TEST_CASE(stack, update)
 	drawable_stack_add(&st, &table[5].dw);
 	drawable_stack_add(&st, &table[6].dw);
 
-	RX_REQUIRE(!drawable_stack_update(&st, 0));
+	DT_ASSERT(!drawable_stack_update(&st, 0));
 
-	RX_REQUIRE(table[0].inv.update);
-	RX_REQUIRE(table[1].inv.update);
-	RX_REQUIRE(table[2].inv.update);
-	RX_REQUIRE(table[3].inv.update);
-	RX_REQUIRE(table[4].inv.update);
-	RX_REQUIRE(table[5].inv.update);
-	RX_REQUIRE(table[6].inv.update);
+	DT_ASSERT(table[0].inv.update);
+	DT_ASSERT(table[1].inv.update);
+	DT_ASSERT(table[2].inv.update);
+	DT_ASSERT(table[3].inv.update);
+	DT_ASSERT(table[4].inv.update);
+	DT_ASSERT(table[5].inv.update);
+	DT_ASSERT(table[6].inv.update);
 
-	RX_REQUIRE(!table[0].inv.draw);
-	RX_REQUIRE(!table[1].inv.draw);
-	RX_REQUIRE(!table[2].inv.draw);
-	RX_REQUIRE(!table[3].inv.draw);
-	RX_REQUIRE(!table[4].inv.draw);
-	RX_REQUIRE(!table[5].inv.draw);
-	RX_REQUIRE(!table[6].inv.draw);
+	DT_ASSERT(!table[0].inv.draw);
+	DT_ASSERT(!table[1].inv.draw);
+	DT_ASSERT(!table[2].inv.draw);
+	DT_ASSERT(!table[3].inv.draw);
+	DT_ASSERT(!table[4].inv.draw);
+	DT_ASSERT(!table[5].inv.draw);
+	DT_ASSERT(!table[6].inv.draw);
 
-	RX_REQUIRE(!table[0].inv.end);
-	RX_REQUIRE(table[1].inv.end);
-	RX_REQUIRE(!table[2].inv.end);
-	RX_REQUIRE(!table[3].inv.end);
-	RX_REQUIRE(table[4].inv.end);
-	RX_REQUIRE(table[5].inv.end);
-	RX_REQUIRE(!table[6].inv.end);
+	DT_ASSERT(!table[0].inv.end);
+	DT_ASSERT(table[1].inv.end);
+	DT_ASSERT(!table[2].inv.end);
+	DT_ASSERT(!table[3].inv.end);
+	DT_ASSERT(table[4].inv.end);
+	DT_ASSERT(table[5].inv.end);
+	DT_ASSERT(!table[6].inv.end);
 
-	RX_REQUIRE(!table[0].inv.finish);
-	RX_REQUIRE(table[1].inv.finish);
-	RX_REQUIRE(!table[2].inv.finish);
-	RX_REQUIRE(!table[3].inv.finish);
-	RX_REQUIRE(table[4].inv.finish);
-	RX_REQUIRE(table[5].inv.finish);
-	RX_REQUIRE(!table[6].inv.finish);
+	DT_ASSERT(!table[0].inv.finish);
+	DT_ASSERT(table[1].inv.finish);
+	DT_ASSERT(!table[2].inv.finish);
+	DT_ASSERT(!table[3].inv.finish);
+	DT_ASSERT(table[4].inv.finish);
+	DT_ASSERT(table[5].inv.finish);
+	DT_ASSERT(!table[6].inv.finish);
 
 	/* The following must still be there. */
-	RX_PTR_REQUIRE_EQUAL(st.objects[0], &table[0].dw);
-	RX_PTR_REQUIRE_EQUAL(st.objects[2], &table[2].dw);
-	RX_PTR_REQUIRE_EQUAL(st.objects[3], &table[3].dw);
-	RX_PTR_REQUIRE_EQUAL(st.objects[6], &table[6].dw);
+	DT_EQ_PTR(st.objects[0], &table[0].dw);
+	DT_EQ_PTR(st.objects[2], &table[2].dw);
+	DT_EQ_PTR(st.objects[3], &table[3].dw);
+	DT_EQ_PTR(st.objects[6], &table[6].dw);
 
 	/* The following must have been NULL-ed. */
-	RX_PTR_REQUIRE_EQUAL(st.objects[1], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.objects[4], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.objects[5], NULL);
+	DT_EQ_PTR(st.objects[1], NULL);
+	DT_EQ_PTR(st.objects[4], NULL);
+	DT_EQ_PTR(st.objects[5], NULL);
 
 	/*
 	 * Now make all actions to return 1 and check if it cleans the stack.
@@ -237,17 +243,18 @@ RX_TEST_CASE(stack, update)
 	    table[3].dw.update =
 	    table[6].dw.update = my_update_true;
 
-	RX_REQUIRE(drawable_stack_update(&st, 0));
-	RX_PTR_REQUIRE_EQUAL(st.objects[0], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.objects[1], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.objects[2], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.objects[3], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.objects[4], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.objects[5], NULL);
-	RX_PTR_REQUIRE_EQUAL(st.objects[6], NULL);
+	DT_ASSERT(drawable_stack_update(&st, 0));
+	DT_EQ_PTR(st.objects[0], NULL);
+	DT_EQ_PTR(st.objects[1], NULL);
+	DT_EQ_PTR(st.objects[2], NULL);
+	DT_EQ_PTR(st.objects[3], NULL);
+	DT_EQ_PTR(st.objects[4], NULL);
+	DT_EQ_PTR(st.objects[5], NULL);
+	DT_EQ_PTR(st.objects[6], NULL);
 }
 
-RX_TEST_CASE(stack, draw)
+static void
+test_stack_draw(void)
 {
 	struct {
 		struct invokes inv;
@@ -275,40 +282,41 @@ RX_TEST_CASE(stack, draw)
 	drawable_stack_add(&st, &table[6].dw);
 	drawable_stack_draw(&st);
 
-	RX_REQUIRE(!table[0].inv.update);
-	RX_REQUIRE(!table[1].inv.update);
-	RX_REQUIRE(!table[2].inv.update);
-	RX_REQUIRE(!table[3].inv.update);
-	RX_REQUIRE(!table[4].inv.update);
-	RX_REQUIRE(!table[5].inv.update);
-	RX_REQUIRE(!table[6].inv.update);
+	DT_ASSERT(!table[0].inv.update);
+	DT_ASSERT(!table[1].inv.update);
+	DT_ASSERT(!table[2].inv.update);
+	DT_ASSERT(!table[3].inv.update);
+	DT_ASSERT(!table[4].inv.update);
+	DT_ASSERT(!table[5].inv.update);
+	DT_ASSERT(!table[6].inv.update);
 
-	RX_REQUIRE(table[0].inv.draw);
-	RX_REQUIRE(table[1].inv.draw);
-	RX_REQUIRE(table[2].inv.draw);
-	RX_REQUIRE(table[3].inv.draw);
-	RX_REQUIRE(table[4].inv.draw);
-	RX_REQUIRE(table[5].inv.draw);
-	RX_REQUIRE(table[6].inv.draw);
+	DT_ASSERT(table[0].inv.draw);
+	DT_ASSERT(table[1].inv.draw);
+	DT_ASSERT(table[2].inv.draw);
+	DT_ASSERT(table[3].inv.draw);
+	DT_ASSERT(table[4].inv.draw);
+	DT_ASSERT(table[5].inv.draw);
+	DT_ASSERT(table[6].inv.draw);
 
-	RX_REQUIRE(!table[0].inv.end);
-	RX_REQUIRE(!table[1].inv.end);
-	RX_REQUIRE(!table[2].inv.end);
-	RX_REQUIRE(!table[3].inv.end);
-	RX_REQUIRE(!table[4].inv.end);
-	RX_REQUIRE(!table[5].inv.end);
-	RX_REQUIRE(!table[6].inv.end);
+	DT_ASSERT(!table[0].inv.end);
+	DT_ASSERT(!table[1].inv.end);
+	DT_ASSERT(!table[2].inv.end);
+	DT_ASSERT(!table[3].inv.end);
+	DT_ASSERT(!table[4].inv.end);
+	DT_ASSERT(!table[5].inv.end);
+	DT_ASSERT(!table[6].inv.end);
 
-	RX_REQUIRE(!table[0].inv.finish);
-	RX_REQUIRE(!table[1].inv.finish);
-	RX_REQUIRE(!table[2].inv.finish);
-	RX_REQUIRE(!table[3].inv.finish);
-	RX_REQUIRE(!table[4].inv.finish);
-	RX_REQUIRE(!table[5].inv.finish);
-	RX_REQUIRE(!table[6].inv.finish);
+	DT_ASSERT(!table[0].inv.finish);
+	DT_ASSERT(!table[1].inv.finish);
+	DT_ASSERT(!table[2].inv.finish);
+	DT_ASSERT(!table[3].inv.finish);
+	DT_ASSERT(!table[4].inv.finish);
+	DT_ASSERT(!table[5].inv.finish);
+	DT_ASSERT(!table[6].inv.finish);
 }
 
-RX_TEST_CASE(stack, finish)
+static void
+test_stack_finish(void)
 {
 	struct {
 		struct invokes inv;
@@ -326,30 +334,27 @@ RX_TEST_CASE(stack, finish)
 	drawable_stack_add(&st, &table[1].dw);
 	drawable_stack_finish(&st);
 
-	RX_REQUIRE(!table[0].inv.update);
-	RX_REQUIRE(!table[0].inv.draw);
-	RX_REQUIRE(table[0].inv.end);
-	RX_REQUIRE(table[0].inv.finish);
+	DT_ASSERT(!table[0].inv.update);
+	DT_ASSERT(!table[0].inv.draw);
+	DT_ASSERT(table[0].inv.end);
+	DT_ASSERT(table[0].inv.finish);
 
-	RX_REQUIRE(!table[0].inv.update);
-	RX_REQUIRE(!table[0].inv.draw);
-	RX_REQUIRE(table[0].inv.end);
-	RX_REQUIRE(table[0].inv.finish);
+	DT_ASSERT(!table[0].inv.update);
+	DT_ASSERT(!table[0].inv.draw);
+	DT_ASSERT(table[0].inv.end);
+	DT_ASSERT(table[0].inv.finish);
 }
 
-static const struct rx_test_case tests[] = {
-	TEST(basics, update),
-	TEST(basics, draw),
-	TEST(basics, end),
-	TEST(basics, finish),
-	TEST(stack, add),
-	TEST(stack, update),
-	TEST(stack, draw),
-	TEST(stack, finish),
-};
-
 int
-main(int argc, char **argv)
+main(void)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_update);
+	DT_RUN(test_basics_draw);
+	DT_RUN(test_basics_end);
+	DT_RUN(test_basics_finish);
+	DT_RUN(test_stack_add);
+	DT_RUN(test_stack_update);
+	DT_RUN(test_stack_draw);
+	DT_RUN(test_stack_finish);
+	DT_SUMMARY();
 }

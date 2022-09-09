@@ -18,9 +18,10 @@
 
 #include <core/util.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_TEST_CASE(basics, nrand)
+static void
+test_basics_nrand(void)
 {
 	int found[10] = {0};
 
@@ -28,23 +29,19 @@ RX_TEST_CASE(basics, nrand)
 	for (int i = 0; i < 100000; ++i)
 		found[util_nrand(2, 6)] = 1;
 
-	RX_REQUIRE(!found[0]);
-	RX_REQUIRE(!found[1]);
-	RX_REQUIRE(found[2]);
-	RX_REQUIRE(found[3]);
-	RX_REQUIRE(found[4]);
-	RX_REQUIRE(found[5]);
-	RX_REQUIRE(!found[7]);
-	RX_REQUIRE(!found[8]);
-	RX_REQUIRE(!found[9]);
+	DT_ASSERT(!found[0]);
+	DT_ASSERT(!found[1]);
+	DT_ASSERT(found[2]);
+	DT_ASSERT(found[3]);
+	DT_ASSERT(found[4]);
+	DT_ASSERT(found[5]);
+	DT_ASSERT(!found[7]);
+	DT_ASSERT(!found[8]);
+	DT_ASSERT(!found[9]);
 }
 
-static const struct rx_test_case tests[] = {
-	TEST(basics, nrand)
-};
-
 int
-main(int argc, char **argv)
+main(void)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_nrand);
 }

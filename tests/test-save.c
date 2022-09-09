@@ -21,52 +21,51 @@
 #include <rpg/property.h>
 #include <rpg/save.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_SET_UP(basics_set_up)
-{
-	return RX_SUCCESS;
-}
-
-RX_TEAR_DOWN(basics_tear_down)
+static void
+cleanup(void)
 {
 	remove("1.db");
 	remove("2.db");
 }
 
-RX_TEST_CASE(basics, read)
+static void
+test_basics_read(void)
 {
 	struct save db;
 
 	/* Non-existent should return error. */
-	RX_INT_REQUIRE_EQUAL(save_open_path(&db, "1.db", SAVE_MODE_READ), -1);
+	DT_EQ_INT(save_open_path(&db, "1.db", SAVE_MODE_READ), -1);
 	save_finish(&db);
+	cleanup();
 }
 
-RX_TEST_CASE(basics, write)
+static void
+test_basics_write(void)
 {
 	struct save db[2] = {0};
 
 	/* Write should work on both non-existent and existent database. */
-	RX_INT_REQUIRE_EQUAL(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE), 0);
-	RX_INT_REQUIRE_EQUAL(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE), 0);
+	DT_EQ_INT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE), 0);
+	DT_EQ_INT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE), 0);
 
 	/* Update and create date must not be 0. */
-	RX_REQUIRE(db[0].created > 0);
-	RX_REQUIRE(db[0].updated > 0);
-	RX_REQUIRE(db[1].created > 0);
-	RX_REQUIRE(db[1].updated > 0);
+	DT_ASSERT(db[0].created > 0);
+	DT_ASSERT(db[0].updated > 0);
+	DT_ASSERT(db[1].created > 0);
+	DT_ASSERT(db[1].updated > 0);
 
 	save_finish(&db[0]);
 	save_finish(&db[1]);
 
 	/* Should work again. */
-	RX_REQUIRE(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE) == 0);
-	RX_REQUIRE(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE) == 0);
-	RX_REQUIRE(db[0].created > 0);
-	RX_REQUIRE(db[0].updated > 0);
-	RX_REQUIRE(db[1].created > 0);
-	RX_REQUIRE(db[1].updated > 0);
+	DT_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE) == 0);
+	DT_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE) == 0);
+	DT_ASSERT(db[0].created > 0);
+	DT_ASSERT(db[0].updated > 0);
+	DT_ASSERT(db[1].created > 0);
+	DT_ASSERT(db[1].updated > 0);
 
 	save_finish(&db[0]);
 	save_finish(&db[1]);
@@ -79,20 +78,20 @@ RX_TEST_CASE(properties, set)
 	struct save db;
 	struct property prop;
 
-	RX_REQUIRE(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
+	DT_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
 
 	/* Insert a new property 'state'. */
 	prop = (struct property){.key = "state", .value = "intro"};
-	RX_REQUIRE(property_save(&prop, &db) == 0);
+	DT_ASSERT(property_save(&prop, &db) == 0);
 	prop = (struct property){.key = "state"};
-	RX_REQUIRE(property_load(&prop, &db) == 0);
+	DT_ASSERT(property_load(&prop, &db) == 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "intro");
 
 	/* Now we replace the value. */
 	prop = (struct property){.key = "state", .value = "map"};
-	RX_REQUIRE(property_save(&prop, &db) == 0);
+	DT_ASSERT(property_save(&prop, &db) == 0);
 	prop = (struct property){.key = "state"};
-	RX_REQUIRE(property_load(&prop, &db) == 0);
+	DT_ASSERT(property_load(&prop, &db) == 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "map");
 
 	save_finish(&db);
@@ -106,8 +105,8 @@ properties_notfound(void)
 	struct save db;
 	struct property prop = {.key = "state"};
 
-	RX_REQUIRE(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
-	RX_REQUIRE(property_load(&prop, &db) < 0);
+	DT_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
+	DT_ASSERT(property_load(&prop, &db) < 0);
 	GREATEST_ASSERT_STR_EQ(prop.value, "");
 
 	GREATEST_PASS();
@@ -119,29 +118,26 @@ properties_remove(void)
 	struct save db;
 	struct property prop;
 
-	RX_REQUIRE(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
+	DT_ASSERT(save_open_path(&db, "1.db", SAVE_MODE_WRITE) == 0);
 
 	/* Insert a new property 'initialized'. */
 	prop = (struct property){.key = "state", .value = "intro"};
-	RX_REQUIRE(property_save(&prop, &db) == 0);
+	DT_ASSERT(property_save(&prop, &db) == 0);
 	prop = (struct property){.key = "state"};
-	RX_REQUIRE(property_remove(&prop, &db) == 0);
+	DT_ASSERT(property_remove(&prop, &db) == 0);
 	prop = (struct property){.key = "state"};
-	RX_REQUIRE(property_load(&prop, &db) < 0);
-	RX_STR_REQUIRE_EQUAL(prop.value, "");
+	DT_ASSERT(property_load(&prop, &db) < 0);
+	DT_EQ_STR(prop.value, "");
 
 	GREATEST_PASS();
 }
 
 #endif
 
-static const struct rx_test_case tests[] = {
-	TEST_FIXTURE(basics, read, void *),
-	TEST_FIXTURE(basics, write, void *)
-};
-
 int
-main(int argc, char **argv)
+main(void)
 {
-	return TEST_RUN_ALL(tests, argc, argv)
+	DT_RUN(test_basics_read);
+	DT_RUN(test_basics_write);
+	DT_SUMMARY();
 }

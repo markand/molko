@@ -19,47 +19,41 @@
 #include <core/vfs-directory.h>
 #include <core/vfs.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_SET_UP(basics_set_up)
+static void
+test_basics_read(void)
 {
-	vfs_directory(RX_DATA, DIRECTORY "/vfs/directory");
-
-	return RX_SUCCESS;
-}
-
-RX_TEAR_DOWN(basics_tear_down)
-{
-	vfs_finish(RX_DATA);
-}
-
-#define error_set_up basics_set_up
-#define error_tear_down basics_tear_down
-
-RX_TEST_CASE(basics, read)
-{
+	struct vfs vfs;
 	struct vfs_file file;
 	char data[256] = {0};
 
-	RX_INT_REQUIRE_EQUAL(vfs_open(RX_DATA, &file, "hello.txt", "r"), 0);
-	RX_UINT_REQUIRE_EQUAL(vfs_file_read(&file, data, sizeof (data)), 13U);
-	RX_STR_REQUIRE_EQUAL(data, "Hello World!\n");
+	vfs_directory(&vfs, DIRECTORY "/vfs/directory");
+
+	DT_EQ_INT(vfs_open(&vfs, &file, "hello.txt", "r"), 0);
+	DT_EQ_UINT(vfs_file_read(&file, data, sizeof (data)), 13U);
+	DT_EQ_STR(data, "Hello World!\n");
+
+	vfs_finish(&vfs);
 }
 
-RX_TEST_CASE(error, notfound)
+static void
+test_error_notfound(void)
 {
+	struct vfs vfs;
 	struct vfs_file file;
 
-	RX_INT_REQUIRE_EQUAL(vfs_open(RX_DATA, &file, "notfound.txt", "r"), -1);
+	vfs_directory(&vfs, DIRECTORY "/vfs/directory");
+
+	DT_EQ_INT(vfs_open(&vfs, &file, "notfound.txt", "r"), -1);
+
+	vfs_finish(&vfs);
 }
 
-static const struct rx_test_case tests[] = {
-	TEST_FIXTURE(basics, read, struct vfs),
-	TEST_FIXTURE(error, notfound, struct vfs)
-};
-
 int
-main(int argc, char **argv)
+main(void)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_read);
+	DT_RUN(test_error_notfound);
+	DT_SUMMARY();
 }

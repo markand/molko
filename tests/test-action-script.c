@@ -20,7 +20,7 @@
 #include <core/event.h>
 #include <core/script.h>
 
-#include "test.h"
+#include <dt.h>
 
 struct invokes {
 	int handle;
@@ -85,43 +85,46 @@ my_finish(struct action *act)
 	((struct invokes *)act->data)->finish++;
 }
 
-RX_TEST_CASE(basics, init)
+static void
+test_basics_init(void)
 {
 	struct script sc;
 
 	script_init(&sc);
 
-	RX_UINT_REQUIRE_EQUAL(sc.actionsz, 0U);
-	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
+	DT_EQ_UINT(sc.actionsz, 0U);
+	DT_EQ_UINT(sc.cur, 0U);
 }
 
-RX_TEST_CASE(basics, append)
+static void
+test_basics_append(void)
 {
 	struct action act[3] = {0};
 	struct script sc = {0};
 
-	RX_REQUIRE(script_append(&sc, &act[0]) == 0);
-	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
-	RX_UINT_REQUIRE_EQUAL(sc.actionsz, 1U);
-	RX_PTR_REQUIRE_EQUAL(sc.actions[0], &act[0]);
+	DT_ASSERT(script_append(&sc, &act[0]) == 0);
+	DT_EQ_UINT(sc.cur, 0U);
+	DT_EQ_UINT(sc.actionsz, 1U);
+	DT_EQ_PTR(sc.actions[0], &act[0]);
 
-	RX_REQUIRE(script_append(&sc, &act[1]) == 0);
-	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
-	RX_UINT_REQUIRE_EQUAL(sc.actionsz, 2U);
-	RX_PTR_REQUIRE_EQUAL(sc.actions[0], &act[0]);
-	RX_PTR_REQUIRE_EQUAL(sc.actions[1], &act[1]);
+	DT_ASSERT(script_append(&sc, &act[1]) == 0);
+	DT_EQ_UINT(sc.cur, 0U);
+	DT_EQ_UINT(sc.actionsz, 2U);
+	DT_EQ_PTR(sc.actions[0], &act[0]);
+	DT_EQ_PTR(sc.actions[1], &act[1]);
 
-	RX_REQUIRE(script_append(&sc, &act[2]) == 0);
-	RX_UINT_REQUIRE_EQUAL(sc.cur, 0U);
-	RX_UINT_REQUIRE_EQUAL(sc.actionsz, 3U);
-	RX_PTR_REQUIRE_EQUAL(sc.actions[0], &act[0]);
-	RX_PTR_REQUIRE_EQUAL(sc.actions[1], &act[1]);
-	RX_PTR_REQUIRE_EQUAL(sc.actions[2], &act[2]);
+	DT_ASSERT(script_append(&sc, &act[2]) == 0);
+	DT_EQ_UINT(sc.cur, 0U);
+	DT_EQ_UINT(sc.actionsz, 3U);
+	DT_EQ_PTR(sc.actions[0], &act[0]);
+	DT_EQ_PTR(sc.actions[1], &act[1]);
+	DT_EQ_PTR(sc.actions[2], &act[2]);
 
 	script_finish(&sc);
 }
 
-RX_TEST_CASE(basics, handle)
+static void
+test_basics_handle(void)
 {
 	struct {
 		struct invokes inv;
@@ -134,70 +137,71 @@ RX_TEST_CASE(basics, handle)
 
 	struct script sc = {0};
 
-	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
 	script_handle(&sc, &(union event){0});
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_EQ_INT(table[0].inv.handle, 1);
+	DT_EQ_INT(table[0].inv.update, 0);
+	DT_EQ_INT(table[0].inv.draw, 0);
+	DT_EQ_INT(table[0].inv.end, 0);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 0);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 0);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* [0] -> [1] */
-	RX_REQUIRE(!script_update(&sc, 0));
+	DT_ASSERT(!script_update(&sc, 0));
 	script_handle(&sc, &(union event){0});
 
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_EQ_INT(table[0].inv.handle, 1);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 0);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 1);
+	DT_EQ_INT(table[1].inv.update, 0);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 0);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* [2] */
-	RX_REQUIRE(!script_update(&sc, 0));
+	DT_ASSERT(!script_update(&sc, 0));
 	script_handle(&sc, &(union event){0});
 
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_EQ_INT(table[0].inv.handle, 1);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 0);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 1);
+	DT_EQ_INT(table[1].inv.update, 1);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 1);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 1);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 }
 
-RX_TEST_CASE(basics, update)
+static void
+test_basics_update(void)
 {
 	struct {
 		struct invokes inv;
@@ -210,87 +214,88 @@ RX_TEST_CASE(basics, update)
 
 	struct script sc = {0};
 
-	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* 0 -> 1 */
-	RX_REQUIRE(!script_update(&sc, 0));
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_ASSERT(!script_update(&sc, 0));
+	DT_EQ_INT(table[0].inv.handle, 0);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 0);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 0);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 0);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* 1 -> 2 */
-	RX_REQUIRE(!script_update(&sc, 0));
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_ASSERT(!script_update(&sc, 0));
+	DT_EQ_INT(table[0].inv.handle, 0);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 0);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 1);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 1);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* 2 stays, it never ends. */
-	RX_REQUIRE(!script_update(&sc, 0));
-	RX_REQUIRE(!script_update(&sc, 0));
-	RX_REQUIRE(!script_update(&sc, 0));
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 3);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_ASSERT(!script_update(&sc, 0));
+	DT_ASSERT(!script_update(&sc, 0));
+	DT_ASSERT(!script_update(&sc, 0));
+	DT_EQ_INT(table[0].inv.handle, 0);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 0);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 1);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 1);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 3);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* Now, change its update function to complete the script. */
 	table[2].act.update = my_update_true;
-	RX_REQUIRE(script_update(&sc, 0));
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 4);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_ASSERT(script_update(&sc, 0));
+	DT_EQ_INT(table[0].inv.handle, 0);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 0);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 1);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 1);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 4);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 1);
+	DT_EQ_INT(table[2].inv.finish, 0);
 }
 
-RX_TEST_CASE(basics, draw)
+static void
+test_basics_draw(void)
 {
 	struct {
 		struct invokes inv;
@@ -303,70 +308,71 @@ RX_TEST_CASE(basics, draw)
 
 	struct script sc = {0};
 
-	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
 	script_draw(&sc);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_EQ_INT(table[0].inv.handle, 0);
+	DT_EQ_INT(table[0].inv.update, 0);
+	DT_EQ_INT(table[0].inv.draw, 1);
+	DT_EQ_INT(table[0].inv.end, 0);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 0);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 0);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* [0] -> [1] */
-	RX_REQUIRE(!script_update(&sc, 0));
+	DT_ASSERT(!script_update(&sc, 0));
 	script_draw(&sc);
 
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_EQ_INT(table[0].inv.handle, 0);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 1);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 0);
+	DT_EQ_INT(table[1].inv.draw, 1);
+	DT_EQ_INT(table[1].inv.end, 0);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* [2] */
-	RX_REQUIRE(!script_update(&sc, 0));
+	DT_ASSERT(!script_update(&sc, 0));
 	script_draw(&sc);
 
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_EQ_INT(table[0].inv.handle, 0);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 1);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 1);
+	DT_EQ_INT(table[1].inv.draw, 1);
+	DT_EQ_INT(table[1].inv.end, 1);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 1);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 }
 
-RX_TEST_CASE(basics, finish)
+static void
+test_basics_finish(void)
 {
 	struct {
 		struct invokes inv;
@@ -379,33 +385,34 @@ RX_TEST_CASE(basics, finish)
 
 	struct script sc = {0};
 
-	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* Update once so that the current action goes to 1. */
-	RX_REQUIRE(!script_update(&sc, 0));
+	DT_ASSERT(!script_update(&sc, 0));
 
 	script_finish(&sc);
 
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 1);
+	DT_EQ_INT(table[0].inv.handle, 0);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 0);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 1);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 0);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 0);
+	DT_EQ_INT(table[1].inv.finish, 1);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 1);
 }
 
-RX_TEST_CASE(action, simple)
+static void
+test_action_simple(void)
 {
 	struct {
 		struct invokes inv;
@@ -419,9 +426,9 @@ RX_TEST_CASE(action, simple)
 	struct script sc = {0};
 	struct action act;
 
-	RX_REQUIRE(script_append(&sc, &table[0].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[1].act) == 0);
-	RX_REQUIRE(script_append(&sc, &table[2].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
+	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* Now convert this script into an action itself. */
 	script_action(&sc, &act);
@@ -431,116 +438,113 @@ RX_TEST_CASE(action, simple)
 	action_draw(&act);
 
 	/* [0] -> [1] */
-	RX_REQUIRE(!action_update(&act, 0));
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_ASSERT(!action_update(&act, 0));
+	DT_EQ_INT(table[0].inv.handle, 1);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 1);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 0);
+	DT_EQ_INT(table[1].inv.update, 0);
+	DT_EQ_INT(table[1].inv.draw, 0);
+	DT_EQ_INT(table[1].inv.end, 0);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	action_handle(&act, &(union event){0});
 	action_draw(&act);
 
 	/* [1] -> [2] */
-	RX_REQUIRE(!action_update(&act, 0));
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_ASSERT(!action_update(&act, 0));
+	DT_EQ_INT(table[0].inv.handle, 1);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 1);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 1);
+	DT_EQ_INT(table[1].inv.update, 1);
+	DT_EQ_INT(table[1].inv.draw, 1);
+	DT_EQ_INT(table[1].inv.end, 1);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 0);
+	DT_EQ_INT(table[2].inv.update, 0);
+	DT_EQ_INT(table[2].inv.draw, 0);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	action_handle(&act, &(union event){0});
 	action_draw(&act);
 
 	/* 2 stays, it never ends. */
-	RX_REQUIRE(!action_update(&act, 0));
-	RX_REQUIRE(!action_update(&act, 0));
-	RX_REQUIRE(!action_update(&act, 0));
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 3);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_ASSERT(!action_update(&act, 0));
+	DT_ASSERT(!action_update(&act, 0));
+	DT_ASSERT(!action_update(&act, 0));
+	DT_EQ_INT(table[0].inv.handle, 1);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 1);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 1);
+	DT_EQ_INT(table[1].inv.update, 1);
+	DT_EQ_INT(table[1].inv.draw, 1);
+	DT_EQ_INT(table[1].inv.end, 1);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 1);
+	DT_EQ_INT(table[2].inv.update, 3);
+	DT_EQ_INT(table[2].inv.draw, 1);
+	DT_EQ_INT(table[2].inv.end, 0);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	table[2].act.update = my_update_true;
-	RX_REQUIRE(action_update(&act, 0));
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 0);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 4);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 0);
+	DT_ASSERT(action_update(&act, 0));
+	DT_EQ_INT(table[0].inv.handle, 1);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 1);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.handle, 1);
+	DT_EQ_INT(table[1].inv.update, 1);
+	DT_EQ_INT(table[1].inv.draw, 1);
+	DT_EQ_INT(table[1].inv.end, 1);
+	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.handle, 1);
+	DT_EQ_INT(table[2].inv.update, 4);
+	DT_EQ_INT(table[2].inv.draw, 1);
+	DT_EQ_INT(table[2].inv.end, 1);
+	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* Also dispose resources. */
 	action_finish(&act);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[0].inv.finish, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.update, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[1].inv.finish, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.handle, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.update, 4);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.draw, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.end, 1);
-	RX_INT_REQUIRE_EQUAL(table[2].inv.finish, 1);
+	DT_EQ_INT(table[0].inv.handle, 1);
+	DT_EQ_INT(table[0].inv.update, 1);
+	DT_EQ_INT(table[0].inv.draw, 1);
+	DT_EQ_INT(table[0].inv.end, 1);
+	DT_EQ_INT(table[0].inv.finish, 1);
+	DT_EQ_INT(table[1].inv.handle, 1);
+	DT_EQ_INT(table[1].inv.update, 1);
+	DT_EQ_INT(table[1].inv.draw, 1);
+	DT_EQ_INT(table[1].inv.end, 1);
+	DT_EQ_INT(table[1].inv.finish, 1);
+	DT_EQ_INT(table[2].inv.handle, 1);
+	DT_EQ_INT(table[2].inv.update, 4);
+	DT_EQ_INT(table[2].inv.draw, 1);
+	DT_EQ_INT(table[2].inv.end, 1);
+	DT_EQ_INT(table[2].inv.finish, 1);
 }
 
-static const struct rx_test_case tests[] = {
-	TEST(basics, init),
-	TEST(basics, append),
-	TEST(basics, handle),
-	TEST(basics, update),
-	TEST(basics, draw),
-	TEST(basics, finish),
-	TEST(action, simple)
-};
-
 int
-main(int argc, char **argv)
+main(void)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_init);
+	DT_RUN(test_basics_append);
+	DT_RUN(test_basics_handle);
+	DT_RUN(test_basics_update);
+	DT_RUN(test_basics_draw);
+	DT_RUN(test_basics_finish);
+	DT_RUN(test_action_simple);
+	DT_SUMMARY();
 }

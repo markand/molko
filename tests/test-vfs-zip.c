@@ -19,48 +19,41 @@
 #include <core/vfs-zip.h>
 #include <core/vfs.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_SET_UP(basics_set_up)
+static void
+test_basics_read(void)
 {
-	if (vfs_zip(RX_DATA, DIRECTORY "/vfs/data.zip", "r") < 0)
-		return RX_ERROR;
-
-	return RX_SUCCESS;
-}
-
-RX_TEAR_DOWN(basics_tear_down)
-{
-	vfs_finish(RX_DATA);
-}
-
-#define error_set_up basics_set_up
-#define error_tear_down basics_tear_down
-
-RX_TEST_CASE(basics, read)
-{
+	struct vfs vfs;
 	struct vfs_file file;
 	char data[256] = {0};
 
-	RX_INT_REQUIRE_EQUAL(vfs_open(RX_DATA, &file, "texts/hello.txt", "r"), 0);
-	RX_UINT_REQUIRE_EQUAL(vfs_file_read(&file, data, sizeof (data)), 21U);
-	RX_STR_REQUIRE_EQUAL(data, "Hello from zip file!\n");
+	vfs_zip(&vfs, DIRECTORY "/vfs/data.zip", "r");
+
+	DT_EQ_INT(vfs_open(&vfs, &file, "texts/hello.txt", "r"), 0);
+	DT_EQ_UINT(vfs_file_read(&file, data, sizeof (data)), 21U);
+	DT_EQ_STR(data, "Hello from zip file!\n");
+
+	vfs_finish(&vfs);
 }
 
-RX_TEST_CASE(error, notfound)
+static void
+test_error_notfound(void)
 {
+	struct vfs vfs;
 	struct vfs_file file;
 
-	RX_INT_REQUIRE_EQUAL(vfs_open(RX_DATA, &file, "notfound.txt", "r"), -1);
-}
+	vfs_zip(&vfs, DIRECTORY "/vfs/data.zip", "r");
 
-static const struct rx_test_case tests[] = {
-	TEST_FIXTURE(basics, read, struct vfs),
-	TEST_FIXTURE(error, notfound, struct vfs)
-};
+	DT_EQ_INT(vfs_open(&vfs, &file, "notfound.txt", "r"), -1);
+
+	vfs_finish(&vfs);
+}
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_read);
+	DT_RUN(test_error_notfound);
+	DT_SUMMARY();
 }

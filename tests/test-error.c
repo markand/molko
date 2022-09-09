@@ -18,20 +18,18 @@
 
 #include <core/error.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_TEST_CASE(basics, simple)
+static void
+test_basics_simple(void)
 {
 	errorf("Failed: %d", 123);
-	RX_STR_REQUIRE_EQUAL("Failed: 123", error());
+	DT_EQ_STR("Failed: 123", error());
 }
 
-static const struct rx_test_case tests[] = {
-	TEST(basics, simple)
-};
-
 int
-main(int argc, char **argv)
+main(void)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_simple);
+	DT_SUMMARY();
 }

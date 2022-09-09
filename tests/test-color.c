@@ -18,43 +18,45 @@
 
 #include <core/color.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_TEST_CASE(basics, red)
+static void
+test_basics_red(void)
 {
-	RX_INT_REQUIRE_EQUAL(COLOR_R(0xa3000000), 163);
+	DT_EQ_INT(COLOR_R(0xa3000000), 163);
 }
 
-RX_TEST_CASE(basics, green)
+static void
+test_basics_green(void)
 {
-	RX_INT_REQUIRE_EQUAL(COLOR_G(0x00130000), 19);
+	DT_EQ_INT(COLOR_G(0x00130000), 19);
 }
 
-RX_TEST_CASE(basics, blue)
+static void
+test_basics_blue(void)
 {
-	RX_INT_REQUIRE_EQUAL(COLOR_B(0x0000ee00), 238);
+	DT_EQ_INT(COLOR_B(0x0000ee00), 238);
 }
 
-RX_TEST_CASE(basics, alpha)
+static void
+test_basics_alpha(void)
 {
-	RX_INT_REQUIRE_EQUAL(COLOR_A(0x000000ff), 255);
+	DT_EQ_INT(COLOR_A(0x000000ff), 255);
 }
 
-RX_TEST_CASE(basics, simple)
+static void
+test_basics_simple(void)
 {
-	RX_UINT_REQUIRE_EQUAL(COLOR_HEX(170, 187, 204, 238), 0xaabbccee);
+	DT_EQ_UINT(COLOR_HEX(170, 187, 204, 238), 0xaabbccee);
 }
-
-static const struct rx_test_case tests[] = {
-	TEST(basics, red),
-	TEST(basics, green),
-	TEST(basics, blue),
-	TEST(basics, alpha),
-	TEST(basics, simple),
-};
 
 int
-main(int argc, char **argv)
+main(void)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_red);
+	DT_RUN(test_basics_green);
+	DT_RUN(test_basics_blue);
+	DT_RUN(test_basics_alpha);
+	DT_RUN(test_basics_simple);
+	DT_SUMMARY();
 }

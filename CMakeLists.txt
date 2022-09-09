@@ -91,7 +91,7 @@ if (MLK_WITH_ZIP)
 endif ()
 
 add_subdirectory(extern/libsqlite)
-add_subdirectory(extern/librexo)
+add_subdirectory(extern/libdt)
 
 if (MLK_WITH_DOC)
 	add_subdirectory(doc)

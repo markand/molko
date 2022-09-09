@@ -16,19 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stdlib.h>
+
 #include <core/alloc.h>
 
-#include "test.h"
+#include <dt.h>
 
 struct point {
 	int x;
 	int y;
-};
-
-static const struct alloc_funcs standard_funcs = {
-	.alloc = malloc,
-	.realloc = realloc,
-	.free = free
 };
 
 static struct {
@@ -68,55 +64,35 @@ static const struct alloc_funcs my_funcs = {
 	.free = my_free
 };
 
-RX_SET_UP(basics_set_up)
-{
-	alloc_set(&standard_funcs);
-
-	return RX_SUCCESS;
-}
-
-RX_TEAR_DOWN(basics_tear_down)
-{
-}
-
-RX_SET_UP(custom_set_up)
-{
-	alloc_set(&my_funcs);
-
-	return RX_SUCCESS;
-}
-
-RX_TEAR_DOWN(custom_tear_down)
-{
-}
-
-RX_TEST_CASE(basics, array_simple)
+static void
+test_basics_array_simple(void)
 {
 	struct point *points;
 
-	RX_REQUIRE((points = alloc_array0(2, sizeof (*points))));
-	RX_INT_REQUIRE_EQUAL(points[0].x, 0);
-	RX_INT_REQUIRE_EQUAL(points[0].y, 0);
-	RX_INT_REQUIRE_EQUAL(points[1].x, 0);
-	RX_INT_REQUIRE_EQUAL(points[1].y, 0);
+	DT_ASSERT((points = alloc_array0(2, sizeof (*points))));
+	DT_EQ_INT(points[0].x, 0);
+	DT_EQ_INT(points[0].y, 0);
+	DT_EQ_INT(points[1].x, 0);
+	DT_EQ_INT(points[1].y, 0);
 
 	points[0].x = 10;
 	points[0].y = 20;
 	points[1].x = 30;
 	points[1].y = 40;
 
-	RX_REQUIRE((points = alloc_rearray0(points, 2, 4, sizeof (*points))));
-	RX_INT_REQUIRE_EQUAL(points[0].x, 10);
-	RX_INT_REQUIRE_EQUAL(points[0].y, 20);
-	RX_INT_REQUIRE_EQUAL(points[1].x, 30);
-	RX_INT_REQUIRE_EQUAL(points[1].y, 40);
-	RX_INT_REQUIRE_EQUAL(points[2].x, 0);
-	RX_INT_REQUIRE_EQUAL(points[2].y, 0);
-	RX_INT_REQUIRE_EQUAL(points[3].x, 0);
-	RX_INT_REQUIRE_EQUAL(points[3].y, 0);
+	DT_ASSERT((points = alloc_rearray0(points, 2, 4, sizeof (*points))));
+	DT_EQ_INT(points[0].x, 10);
+	DT_EQ_INT(points[0].y, 20);
+	DT_EQ_INT(points[1].x, 30);
+	DT_EQ_INT(points[1].y, 40);
+	DT_EQ_INT(points[2].x, 0);
+	DT_EQ_INT(points[2].y, 0);
+	DT_EQ_INT(points[3].x, 0);
+	DT_EQ_INT(points[3].y, 0);
 }
 
-RX_TEST_CASE(basics, pool_simple)
+static void
+test_basics_pool_simple(void)
 {
 	struct alloc_pool pool;
 	struct point *p, *data;
@@ -124,9 +100,9 @@ RX_TEST_CASE(basics, pool_simple)
 
 	alloc_pool_init(&pool, sizeof (*p), NULL);
 
-	RX_UINT_REQUIRE_EQUAL(pool.elemsize, sizeof (*p));
-	RX_UINT_REQUIRE_EQUAL(pool.size, 0);
-	RX_UINT_REQUIRE_EQUAL(pool.capacity, ALLOC_POOL_INIT_DEFAULT);
+	DT_EQ_UINT(pool.elemsize, sizeof (*p));
+	DT_EQ_UINT(pool.size, 0);
+	DT_EQ_UINT(pool.capacity, ALLOC_POOL_INIT_DEFAULT);
 
 	/* Create until we reach the capacity. */
 	for (size_t i = 0; i < pool.capacity; ++i) {
@@ -136,14 +112,14 @@ RX_TEST_CASE(basics, pool_simple)
 		total++;
 	}
 
-	RX_UINT_REQUIRE_EQUAL(pool.size, pool.capacity);
+	DT_EQ_UINT(pool.size, pool.capacity);
 
 	/* Verify values are correct. */
 	for (size_t i = 0; i < pool.size; ++i) {
 		p = ((struct point *)pool.data) + i;
 
-		RX_INT_REQUIRE_EQUAL(p->x, (int)i + 1);
-		RX_INT_REQUIRE_EQUAL(p->y, (int)i + 1);
+		DT_EQ_INT(p->x, (int)i + 1);
+		DT_EQ_INT(p->y, (int)i + 1);
 	}
 
 	/* Now it should reallocate. */
@@ -151,51 +127,51 @@ RX_TEST_CASE(basics, pool_simple)
 	p->x = 9999;
 	p->y = 9999;
 
-	RX_REQUIRE(pool.capacity > pool.size);
+	DT_ASSERT(pool.capacity > pool.size);
 
 	/* Shrink it! */
 	data = alloc_pool_shrink(&pool);
 
 	/* Verify values are correct again. */
 	for (size_t i = 0; i < total; ++i) {
-		RX_INT_REQUIRE_EQUAL(data[i].x, (int)i + 1);
-		RX_INT_REQUIRE_EQUAL(data[i].y, (int)i + 1);
+		DT_EQ_INT(data[i].x, (int)i + 1);
+		DT_EQ_INT(data[i].y, (int)i + 1);
 	}
 
-	RX_PTR_REQUIRE_EQUAL(pool.data, NULL);
-	RX_UINT_REQUIRE_EQUAL(pool.size, 0);
-	RX_UINT_REQUIRE_EQUAL(pool.capacity, 0);
-	RX_UINT_REQUIRE_EQUAL(pool.elemsize, 0);
+	DT_EQ_PTR(pool.data, NULL);
+	DT_EQ_UINT(pool.size, 0U);
+	DT_EQ_UINT(pool.capacity, 0U);
+	DT_EQ_UINT(pool.elemsize, 0U);
 }
 
-RX_TEST_CASE(basics, sdupf)
+static void
+test_basics_sdupf(void)
 {
 	char *str = alloc_sdupf("Hello %s", "David");
 
-	RX_STR_REQUIRE_EQUAL(str, "Hello David");
+	DT_EQ_STR(str, "Hello David");
 	free(str);
 }
 
-RX_TEST_CASE(custom, count)
+static void
+test_custom_count(void)
 {
+	alloc_set(&my_funcs);
 	alloc_free(alloc_new(10));
 	alloc_free(alloc_new0(20));
 	alloc_free(alloc_sdup("malikania"));
 
-	RX_INT_REQUIRE_EQUAL(my_stats.total, 40U);
-	RX_INT_REQUIRE_EQUAL(my_stats.alloc_count, 3U);
-	RX_INT_REQUIRE_EQUAL(my_stats.free_count, 3U);
+	DT_EQ_UINT(my_stats.total, 40U);
+	DT_EQ_UINT(my_stats.alloc_count, 3U);
+	DT_EQ_UINT(my_stats.free_count, 3U);
 }
-
-static const struct rx_test_case tests[] = {
-	TEST_FIXTURE(basics, array_simple, void *),
-	TEST_FIXTURE(basics, pool_simple, void *),
-	TEST_FIXTURE(basics, sdupf, void *),
-	TEST_FIXTURE(custom, count, void *)
-};
 
 int
 main(int argc, char **argv)
 {
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_array_simple);
+	DT_RUN(test_basics_pool_simple);
+	DT_RUN(test_basics_sdupf);
+	DT_RUN(test_custom_count);
+	DT_SUMMARY();
 }

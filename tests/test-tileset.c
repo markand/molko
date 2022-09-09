@@ -22,76 +22,73 @@
 #include <rpg/tileset-file.h>
 #include <rpg/tileset.h>
 
-#include "test.h"
+#include <dt.h>
 
-RX_TEST_CASE(basics, sample)
+static void
+test_basics_sample(void)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset;
 
-	RX_REQUIRE(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/sample-tileset.tileset") == 0);
-	RX_UINT_REQUIRE_EQUAL(tileset.sprite->cellw, 64U);
-	RX_UINT_REQUIRE_EQUAL(tileset.sprite->cellh, 32U);
+	DT_EQ_INT(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/sample-tileset.tileset"), 0);
+	DT_EQ_UINT(tileset.sprite->cellw, 64U);
+	DT_EQ_UINT(tileset.sprite->cellh, 32U);
 
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefsz, 4U);
+	DT_EQ_UINT(tileset.tiledefsz, 4U);
 
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[0].id, 129);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[0].x, 8);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[0].y, 0);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[0].w, 56);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[0].h, 40);
+	DT_EQ_UINT(tileset.tiledefs[0].id, 129);
+	DT_EQ_UINT(tileset.tiledefs[0].x, 8);
+	DT_EQ_UINT(tileset.tiledefs[0].y, 0);
+	DT_EQ_UINT(tileset.tiledefs[0].w, 56);
+	DT_EQ_UINT(tileset.tiledefs[0].h, 40);
 
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[1].id, 130);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[1].x, 0);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[1].y, 0);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[1].w, 62);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[1].h, 40);
+	DT_EQ_UINT(tileset.tiledefs[1].id, 130);
+	DT_EQ_UINT(tileset.tiledefs[1].x, 0);
+	DT_EQ_UINT(tileset.tiledefs[1].y, 0);
+	DT_EQ_UINT(tileset.tiledefs[1].w, 62);
+	DT_EQ_UINT(tileset.tiledefs[1].h, 40);
 
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[2].id, 132);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[2].x, 0);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[2].y, 0);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[2].w, 64);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[2].h, 40);
+	DT_EQ_UINT(tileset.tiledefs[2].id, 132);
+	DT_EQ_UINT(tileset.tiledefs[2].x, 0);
+	DT_EQ_UINT(tileset.tiledefs[2].y, 0);
+	DT_EQ_UINT(tileset.tiledefs[2].w, 64);
+	DT_EQ_UINT(tileset.tiledefs[2].h, 40);
 
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[3].id, 133);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[3].x, 0);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[3].y, 0);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[3].w, 58);
-	RX_UINT_REQUIRE_EQUAL(tileset.tiledefs[3].h, 40);
+	DT_EQ_UINT(tileset.tiledefs[3].id, 133);
+	DT_EQ_UINT(tileset.tiledefs[3].x, 0);
+	DT_EQ_UINT(tileset.tiledefs[3].y, 0);
+	DT_EQ_UINT(tileset.tiledefs[3].w, 58);
+	DT_EQ_UINT(tileset.tiledefs[3].h, 40);
 
 	tileset_file_finish(&loader);
 }
 
-RX_TEST_CASE(error, tilewidth)
+static void
+test_error_tilewidth(void)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
 
-	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tilewidth.tileset"), -1);
+	DT_EQ_INT(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tilewidth.tileset"), -1);
 }
 
-RX_TEST_CASE(error, tileheight)
+static void
+test_error_tileheight(void)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
 
-	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tileheight.tileset"), -1);
+	DT_EQ_INT(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tileheight.tileset"), -1);
 }
 
-RX_TEST_CASE(error, image)
+static void
+test_error_image(void)
 {
 	struct tileset_file loader = {0};
 	struct tileset tileset = {0};
 
-	RX_INT_REQUIRE_EQUAL(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-image.tileset"), -1);
+	DT_EQ_INT(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-image.tileset"), -1);
 }
-
-static const struct rx_test_case tests[] = {
-	TEST(basics, sample),
-	TEST(error, tilewidth),
-	TEST(error, tileheight),
-	TEST(error, image)
-};
 
 int
 main(int argc, char **argv)
@@ -99,5 +96,9 @@ main(int argc, char **argv)
 	if (core_init("fr.malikania", "test") < 0 || window_open("test-tileset", 100, 100) < 0)
 		return 1;
 
-	return TEST_RUN_ALL(tests, argc, argv);
+	DT_RUN(test_basics_sample);
+	DT_RUN(test_error_tilewidth);
+	DT_RUN(test_error_tileheight);
+	DT_RUN(test_error_image);
+	DT_SUMMARY();
 }
