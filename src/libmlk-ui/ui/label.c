@@ -19,19 +19,12 @@
 #include <assert.h>
 #include <string.h>
 
-#include <core/action.h>
 #include <core/font.h>
 #include <core/panic.h>
 #include <core/texture.h>
 
 #include "label.h"
 #include "theme.h"
-
-static void
-draw(struct action *act)
-{
-	label_draw(act->data);
-}
 
 void
 label_draw_default(const struct theme *t, const struct label *label)
@@ -95,15 +88,4 @@ label_draw(const struct label *label)
 	assert(label->text);
 
 	theme_draw_label(label->theme, label);
-}
-
-void
-label_action(struct label *label, struct action *act)
-{
-	assert(label);
-	assert(act);
-
-	memset(act, 0, sizeof (*act));
-	act->data = label;
-	act->draw = draw;
 }

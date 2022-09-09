@@ -19,17 +19,10 @@
 #include <assert.h>
 #include <string.h>
 
-#include <core/action.h>
 #include <core/painter.h>
 
 #include "frame.h"
 #include "theme.h"
-
-static void
-draw(struct action *act)
-{
-	frame_draw(act->data);
-}
 
 void
 frame_draw_default(const struct theme *t, const struct frame *frame)
@@ -53,15 +46,4 @@ frame_draw(const struct frame *frame)
 	assert(frame);
 
 	theme_draw_frame(frame->theme, frame);
-}
-
-void
-frame_action(struct frame *frame, struct action *act)
-{
-	assert(frame);
-	assert(act);
-
-	memset(act, 0, sizeof (*act));
-	act->data = frame;
-	act->draw = draw;
 }

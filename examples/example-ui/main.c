@@ -16,8 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/action.h>
-#include <core/action-stack.h>
 #include <core/core.h>
 #include <core/event.h>
 #include <core/game.h>
@@ -63,9 +61,6 @@
  * +---------------------------------------------+
  */
 static struct {
-	struct action *actions[16];
-	struct action_stack st;
-
 	struct {
 		int active;
 		int x;
@@ -74,24 +69,19 @@ static struct {
 
 	struct {
 		struct frame frame;
-		struct action act;
 	} panel;
 
 	struct {
 		struct label label;
-		struct action act;
 	} header;
 
 	struct {
 		struct checkbox cb;
-		struct action cb_act;
 		struct label label;
-		struct action label_act;
 	} autosave;
 
 	struct {
 		struct button button;
-		struct action act;
 	} quit;
 } ui = {
 	.panel = {
@@ -137,8 +127,6 @@ init(void)
 		panic();
 	if (window_open("Example - UI", W, H) < 0)
 		panic();
-
-	action_stack_init(&ui.st, ui.actions, UTIL_SIZE(ui.actions));
 }
 
 static void
@@ -195,30 +183,6 @@ resize(void)
 	resize_button();
 }
 
-static void
-prepare(void)
-{
-	/* Frame. */
-	frame_action(&ui.panel.frame, &ui.panel.act);
-
-	/* Header title. */
-	label_action(&ui.header.label, &ui.header.act);
-
-	/* Button quit. */
-	button_action(&ui.quit.button, &ui.quit.act);
-
-	/* Autosave. */
-	checkbox_action(&ui.autosave.cb, &ui.autosave.cb_act);
-	label_action(&ui.autosave.label, &ui.autosave.label_act);
-
-	/* Add all UI elements. */
-	action_stack_add(&ui.st, &ui.panel.act);
-	action_stack_add(&ui.st, &ui.header.act);
-	action_stack_add(&ui.st, &ui.autosave.cb_act);
-	action_stack_add(&ui.st, &ui.autosave.label_act);
-	action_stack_add(&ui.st, &ui.quit.act);
-}
-
 static int
 headerclick(int x, int y)
 {
@@ -257,28 +221,19 @@ handle(struct state *st, const union event *ev)
 			ui.motion.y = ev->click.y;
 			window_set_cursor(WINDOW_CURSOR_SIZE);
 		}
-		else
-			action_stack_handle(&ui.st, ev);
 		break;
 	case EVENT_CLICKUP:
 		ui.motion.active = 0;
 		window_set_cursor(WINDOW_CURSOR_ARROW);
-		/* Fallthrough. */
+		break;
 	default:
-		action_stack_handle(&ui.st, ev);
 		break;
 	}
-}
 
-static void
-update(struct state *st, unsigned int ticks)
-{
-	(void)st;
+	checkbox_handle(&ui.autosave.cb, ev);
 
-	if (ui.quit.button.state == BUTTON_STATE_ACTIVATED)
+	if (button_handle(&ui.quit.button, ev))
 		game_quit();
-	else
-		action_stack_update(&ui.st, ticks);
 }
 
 static void
@@ -288,7 +243,11 @@ draw(struct state *st)
 
 	painter_set_color(0xffffffff);
 	painter_clear();
-	action_stack_draw(&ui.st);
+	frame_draw(&ui.panel.frame);
+	label_draw(&ui.header.label);
+	checkbox_draw(&ui.autosave.cb);
+	label_draw(&ui.autosave.label);
+	button_draw(&ui.quit.button);
 	painter_present();
 }
 
@@ -297,11 +256,9 @@ run(void)
 {
 	struct state state = {
 		.handle = handle,
-		.update = update,
 		.draw = draw
 	};
 
-	prepare();
 	resize();
 
 	game_init(states, UTIL_SIZE(states));

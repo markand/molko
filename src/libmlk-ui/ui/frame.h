@@ -21,7 +21,6 @@
 
 #include <core/core.h>
 
-struct action;
 struct theme;
 
 enum frame_style {
@@ -45,9 +44,6 @@ frame_draw_default(const struct theme *, const struct frame *);
 
 void
 frame_draw(const struct frame *);
-
-void
-frame_action(struct frame *, struct action *);
 
 CORE_END_DECLS
 

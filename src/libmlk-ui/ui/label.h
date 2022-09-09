@@ -21,7 +21,6 @@
 
 #include <core/core.h>
 
-struct action;
 struct theme;
 
 enum label_flags {
@@ -52,9 +51,6 @@ label_query(const struct label *, unsigned int *, unsigned int *);
 
 void
 label_draw(const struct label *);
-
-void
-label_action(struct label *, struct action *);
 
 CORE_END_DECLS
 

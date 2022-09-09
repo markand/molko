@@ -23,7 +23,6 @@
 
 union event;
 
-struct action;
 struct theme;
 
 enum button_state {
@@ -44,7 +43,7 @@ struct button {
 
 CORE_BEGIN_DECLS
 
-void
+int
 button_handle(struct button *, const union event *);
 
 void
@@ -55,9 +54,6 @@ button_draw_default(const struct theme *, const struct button *);
 
 void
 button_draw(const struct button *);
-
-void
-button_action(struct button *, struct action *);
 
 CORE_END_DECLS
 

@@ -23,7 +23,6 @@
 
 union event;
 
-struct action;
 struct theme;
 
 struct checkbox {
@@ -45,9 +44,6 @@ checkbox_handle(struct checkbox *, const union event *);
 
 void
 checkbox_draw(const struct checkbox *);
-
-void
-checkbox_action(struct checkbox *, struct action *);
 
 CORE_END_DECLS
 
