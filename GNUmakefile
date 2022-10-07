@@ -43,6 +43,8 @@ OPENAL_INCS ?=          $(shell pkg-config --cflags openal)
 OPENAL_LIBS ?=          $(shell pkg-config --libs openal)
 endif
 
+MATH_LIBS ?=            -lm
+
 # Global INCS, OPTS and DEFS for every targets.
 INCS :=                 -Iextern/libdt \
                         -Iextern/libsqlite \
@@ -54,6 +56,7 @@ INCS :=                 -Iextern/libdt \
                         $(SDL2_INCS) \
                         $(SDL2_IMAGE_INCS) \
                         $(SDL2_TTF_INCS) \
+                        $(OPENAL_INCS) \
                         $(SNDFILE_INCS)
 
 ifeq ($(WITH_ZSTD),yes)
@@ -295,6 +298,7 @@ LIBMLK :=       $(LIBMLK_RPG) \
                 $(LIBMLK_CORE) \
                 $(LIBMLK_PORT) \
                 $(LIBMLK_SQLITE) \
+                $(MATH_LIBS) \
                 $(SDL2_LIBS) \
                 $(SDL2_IMAGE_LIBS) \
                 $(SDL2_TTF_LIBS) \
