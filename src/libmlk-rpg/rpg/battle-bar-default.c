@@ -40,7 +40,6 @@
 #include "character.h"
 #include "inventory.h"
 #include "item.h"
-#include "rpg_p.h"
 #include "spell.h"
 
 #define THEME(bar) ((bar)->theme ? (bar)->theme : theme_default())
@@ -327,28 +326,28 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 		{
 			.align = ALIGN_TOP,
 			.label = {
-				.text = _("Attack"),
+				.text = "Attack",
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = ALIGN_RIGHT,
 			.label = {
-				.text = _("Magic"),
+				.text = "Magic",
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = ALIGN_BOTTOM,
 			.label = {
-				.text = _("Objects"),
+				.text = "Objects",
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = ALIGN_LEFT,
 			.label = {
-				.text = _("Special"),
+				.text = "Special",
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		}

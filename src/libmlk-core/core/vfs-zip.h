@@ -19,6 +19,10 @@
 #ifndef MLK_CORE_VFS_ZIP_H
 #define MLK_CORE_VFS_ZIP_H
 
+#include "config.h"
+
+#if defined(MLK_WITH_ZIP)
+
 #include "core.h"
 
 struct vfs;
@@ -29,5 +33,7 @@ int
 vfs_zip(struct vfs *, const char *, const char *);
 
 CORE_END_DECLS
+
+#endif /* !MLK_WITH_ZIP */
 
 #endif /* !MLK_CORE_VFS_ZIP_H */

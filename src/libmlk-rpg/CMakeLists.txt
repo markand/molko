@@ -86,7 +86,6 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/rpg/quest.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/rpg.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/rpg.h
-	${libmlk-rpg_SOURCE_DIR}/rpg/rpg_p.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/save.c
 	${libmlk-rpg_SOURCE_DIR}/rpg/save.h
 	${libmlk-rpg_SOURCE_DIR}/rpg/selection.c

@@ -33,7 +33,6 @@
 #include <core/util.h>
 #include <core/zfile.h>
 
-#include "rpg_p.h"
 #include "tileset-file.h"
 #include "tileset.h"
 
@@ -131,7 +130,7 @@ static int
 parse_tilewidth(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "tilewidth|%u", &ctx->tilewidth) != 1 || ctx->tilewidth == 0)
-		return errorf(_("tilewidth is null"));
+		return errorf("tilewidth is null");
 
 	return 0;
 }
@@ -140,7 +139,7 @@ static int
 parse_tileheight(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "tileheight|%u", &ctx->tileheight) != 1 || ctx->tileheight == 0)
-		return errorf(_("tileheight is null"));
+		return errorf("tileheight is null");
 
 	return 0;
 }
@@ -232,9 +231,9 @@ parse_image(struct context *ctx, const char *line)
 	char *p;
 
 	if (ctx->tilewidth == 0 || ctx->tileheight == 0)
-		return errorf(_("missing tile dimensions before image"));
+		return errorf("missing tile dimensions before image");
 	if (!(p = strchr(line, '|')))
-		return errorf(_("could not parse image"));
+		return errorf("could not parse image");
 
 	if (image_open(&ctx->tf->image, util_pathf("%s/%s", ctx->basedir, p + 1)) < 0)
 		return -1;
@@ -263,7 +262,7 @@ parse_line(struct context *ctx, const char *line)
 		if (strncmp(line, props[i].property, strlen(props[i].property)) == 0)
 			return props[i].read(ctx, line);
 	}
-	
+
 	return 0;
 }
 
@@ -291,7 +290,7 @@ static int
 check(const struct tileset *tileset)
 {
 	if (!tileset->sprite)
-		return errorf(_("missing tileset image"));
+		return errorf("missing tileset image");
 
 	return 0;
 }

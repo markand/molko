@@ -27,7 +27,6 @@
 #include <core/texture.h>
 #include <core/trace.h>
 
-#include "ui_p.h"
 #include "frame.h"
 #include "label.h"
 #include "gridmenu.h"
@@ -83,7 +82,7 @@ geometry(struct gridmenu *menu)
 	 * is outside of the elements.
 	 */
 	if (reqw > menu->w) {
-		tracef(_("gridmenu width is too small: %u < %u"), menu->w, reqw);
+		tracef("gridmenu width is too small: %u < %u", menu->w, reqw);
 		menu->spacew = 1;
 	} else if (menu->ncols > 1) {
 		reqw -= theme->padding * 2;
@@ -91,7 +90,7 @@ geometry(struct gridmenu *menu)
 	}
 
 	if (reqh > menu->h) {
-		tracef(_("gridmenu height is too small: %u < %u"), menu->h, reqh);
+		tracef("gridmenu height is too small: %u < %u", menu->h, reqh);
 		menu->spaceh = 1;
 	} else if (menu->nrows > 1) {
 		reqh -= theme->padding * 2;

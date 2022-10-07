@@ -23,7 +23,6 @@
 
 #include "core.h"
 #include "sys.h"
-#include "translate.h"
 
 int
 core_init(const char *organization, const char *name)
@@ -35,8 +34,6 @@ core_init(const char *organization, const char *name)
 
 	if (sys_init(organization, name) < 0)
 		return -1;
-
-	translate_init("libmlk-core");
 
 	return 0;
 }

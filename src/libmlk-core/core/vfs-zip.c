@@ -16,6 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "config.h"
+
+#if defined(MLK_WITH_ZIP)
+
 #include <assert.h>
 #include <string.h>
 
@@ -121,3 +125,5 @@ vfs_zip(struct vfs *vfs, const char *file, const char *mode)
 
 	return 0;
 }
+
+#endif /* !MLK_WITH_ZIP */

@@ -35,7 +35,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/core/color.h
 	${libmlk-core_SOURCE_DIR}/core/core.c
 	${libmlk-core_SOURCE_DIR}/core/core.h
-	${libmlk-core_SOURCE_DIR}/core/core_p.h
 	${libmlk-core_SOURCE_DIR}/core/drawable.c
 	${libmlk-core_SOURCE_DIR}/core/drawable.h
 	${libmlk-core_SOURCE_DIR}/core/drawable-stack.c
@@ -77,8 +76,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/core/texture_p.h
 	${libmlk-core_SOURCE_DIR}/core/trace.c
 	${libmlk-core_SOURCE_DIR}/core/trace.h
-	${libmlk-core_SOURCE_DIR}/core/translate.c
-	${libmlk-core_SOURCE_DIR}/core/translate.h
 	${libmlk-core_SOURCE_DIR}/core/util.c
 	${libmlk-core_SOURCE_DIR}/core/util.h
 	${libmlk-core_SOURCE_DIR}/core/vfs-directory.c

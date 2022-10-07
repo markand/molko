@@ -16,7 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#if defined(_WIN32)
+#include "port.h"
+
+#if !defined(MLK_HAS_FMEMOPEN)
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -60,7 +62,7 @@ port_fmemopen(void *buf, size_t size, const char *mode)
 	return fp;
 }
 
-#else /* !_WIN32 */
+#else /* !MLK_HAS_FMEMOPEN */
 
 #include <stdio.h>
 

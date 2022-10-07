@@ -76,7 +76,7 @@ character_save(const struct character *ch, struct save *s)
 	assert(ch);
 	assert(save_ok(s));
 
-	return save_exec(s, (const char *)assets_sql_character_save, "s iii i iiiiii",
+	return save_exec(s, (const char *)assets_character_save, "s iii i iiiiii",
 	    ch->name,
 	    ch->hp,
 	    ch->mp,
@@ -100,7 +100,7 @@ character_load(struct character *ch, struct save *s)
 	struct save_stmt stmt;
 	enum save_stmt_errno ret;
 
-	if (save_stmt_init(&stmt, s, (const char *)assets_sql_character_load, "s", ch->name) < 0)
+	if (save_stmt_init(&stmt, s, (const char *)assets_character_load, "s", ch->name) < 0)
 		return -1;
 
 	ret = save_stmt_next(&stmt, "iii i iiiiii",

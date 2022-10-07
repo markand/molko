@@ -27,7 +27,6 @@
 #include "battle-state-victory.h"
 #include "battle-state.h"
 #include "battle.h"
-#include "rpg_p.h"
 
 struct self {
 	struct battle_state_victory data;
@@ -63,7 +62,7 @@ battle_state_victory_init(struct battle_state_victory *vic, struct battle *bt)
 {
 	assert(bt);
 
-	vic->text = _("Victory!");
+	vic->text = "Victory!";
 
 	vic->msg.lines = &vic->text;
 	vic->msg.linesz = 1;

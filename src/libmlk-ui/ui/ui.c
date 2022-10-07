@@ -16,20 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/translate.h>
-
-#include "ui_p.h"
-#include "ui.h"
 #include "theme.h"
+#include "ui.h"
 
 int
 ui_init(void)
 {
-#if defined(MOLKO_WITH_NLS)
-	if (translate_init("libmlk-ui") < 0)
-		return -1;
-#endif
-
 	return theme_init();
 }
 

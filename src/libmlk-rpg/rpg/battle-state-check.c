@@ -32,7 +32,6 @@
 #include "battle-state.h"
 #include "battle.h"
 #include "character.h"
-#include "rpg_p.h"
 
 struct fadeout {
 	struct character *ch;
@@ -85,7 +84,7 @@ fadeout(struct battle *bt, struct battle_entity *et)
 	struct fadeout *fade;
 
 	if (!bt->effects) {
-		tracef(_("can't create a fadeout effect without a drawable_stack"));
+		tracef("can't create a fadeout effect without a drawable_stack");
 		return;
 	}
 

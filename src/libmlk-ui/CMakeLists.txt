@@ -40,7 +40,6 @@ set(
 	${libmlk-ui_SOURCE_DIR}/ui/theme.h
 	${libmlk-ui_SOURCE_DIR}/ui/ui.c
 	${libmlk-ui_SOURCE_DIR}/ui/ui.h
-	${libmlk-ui_SOURCE_DIR}/ui/ui_p.h
 )
 
 set(

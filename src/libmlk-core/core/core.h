@@ -21,7 +21,7 @@
 
 #if defined(__cplusplus)
 #       define CORE_BEGIN_DECLS extern "C" {
-#       define CORE_END_DECLS   }
+#       define CORE_END_DECLS }
 #else
 #       define CORE_BEGIN_DECLS
 #       define CORE_END_DECLS

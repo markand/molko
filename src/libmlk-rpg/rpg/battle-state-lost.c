@@ -27,7 +27,6 @@
 #include "battle-state-lost.h"
 #include "battle-state.h"
 #include "battle.h"
-#include "rpg_p.h"
 
 struct self {
 	struct battle_state_lost data;
@@ -62,7 +61,7 @@ battle_state_lost_init(struct battle_state_lost *lost, struct battle *bt)
 	assert(lost);
 	assert(bt);
 
-	lost->text = _("You have been defeated...");
+	lost->text = "You have been defeated...";
 
 	lost->msg.lines = &lost->text;
 	lost->msg.linesz = 1;

@@ -31,7 +31,6 @@
 
 #include <assets/sql/init.h>
 
-#include "rpg_p.h"
 #include "property.h"
 #include "save.h"
 
@@ -75,7 +74,7 @@ verify(struct save *db)
 	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
 		if (property_load(&table[i].prop, db) < 0) {
 			sqlite3_close(db->handle);
-			return errorf(_("database not initialized correctly"));
+			return errorf("database not initialized correctly");
 		}
 
 		*table[i].date = strtoull(table[i].prop.value, NULL, 10);
@@ -184,7 +183,7 @@ save_open_path(struct save *db, const char *path, enum save_mode mode)
 	if (sqlite3_open_v2(path, (sqlite3**)&db->handle, flags, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 
-	if (mode == SAVE_MODE_WRITE && execu(db, assets_sql_init) < 0)
+	if (mode == SAVE_MODE_WRITE && execu(db, assets_init) < 0)
 		goto sqlite3_err;
 
 	return verify(db);
@@ -268,10 +267,10 @@ save_stmt_next(struct save_stmt *stmt, const char *args, ...)
 	switch (sqlite3_step(stmt->handle)) {
 	case SQLITE_ROW:
 		va_start(ap, args);
-		
+
 		if (extract(stmt, args, ap) == 0)
 			ret = SAVE_STMT_ROW;
-		
+
 		va_end(ap);
 		break;
 	case SQLITE_DONE:

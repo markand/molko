@@ -22,33 +22,66 @@
 #include <limits.h>
 #include <stdio.h>
 
-/* PATH_MAX (defined in limits.h) (POSIX) */
+/*
+ * This file helps finding what are the available features accross the various
+ * operating system in the landscape.
+ *
+ * The following macros are automatically set depending on the operating
+ * system:
+ *
+ * - MLK_OS_WINDOWS: running on any Windows machine
+ * - MLK_OS_POSIX: every mostly POSIX systems
+ *
+ * The following macro will be automatically defined unless the user override
+ * them:
+ *
+ * - MLK_HAS_FMEMOPEN: defined if fmemopen function is available.
+ * - MLK_HAS_SSIZE_T: defined if ssize_t typedef is available.
+ */
+
+#if defined(_WIN32)
+#       define MLK_OS_WINDOWS
+#elif defined(__FreeBSD__)
+#       define MLK_OS_POSIX
+#elif defined(__OpenBSD__)
+#       define MLK_OS_POSIX
+#elif defined(__NetBSD__)
+#       define MLK_OS_POSIX
+#elif defined(__linux__)
+#       define MLK_OS_POSIX
+#elif defined(__APPLE__)
+#       define MLK_OS_POSIX
+#       define MLK_OS_APPLE
+#endif
+
 #if !defined(PATH_MAX)
 #       define PATH_MAX 2048
 #endif
 
-/* (POSIX) */
-#if defined(_WIN32)
+#if defined(MLK_OS_POSIX) && !defined(MLK_HAS_SSIZE_T)
+#       define MLK_HAS_SSIZE_T
+#endif
+
+#if !defined(MLK_HAS_SSIZE_T)
 typedef long long int ssize_t;
 #endif
 
-/* OpenBSD extension (in next POSIX version). */
+#if defined(MLK_OS_POSIX) && !defined(MLK_HAS_FMEMOPEN)
+#       define MLK_HAS_FMEMOPEN
+#endif
+
 size_t
 port_strlcpy(char *, const char *, size_t);
 
-/* Same as strlcpy. */
 size_t
 port_strlcat(char *, const char *, size_t);
 
-/* POSIX. */
 FILE *
 port_fmemopen(void *, size_t, const char *);
 
-/* POSIX. */
 char *
 port_basename(char *);
 
-/* POSIX. */
 char *
 port_dirname(char *);
 

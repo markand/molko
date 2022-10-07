@@ -24,10 +24,7 @@
 #include "core.h"
 
 enum sys_dir {
-	SYS_DIR_BIN,
-	SYS_DIR_DATA,
-	SYS_DIR_LOCALE,
-	SYS_DIR_SAVE,
+	SYS_DIR_SAVE
 };
 
 CORE_BEGIN_DECLS

@@ -48,7 +48,6 @@
 #include "character.h"
 #include "inventory.h"
 #include "item.h"
-#include "rpg_p.h"
 #include "spell.h"
 
 struct indicator {
@@ -392,7 +391,7 @@ battle_indicator_hp(struct battle *bt, const struct character *target, long amou
 	struct indicator *id;
 
 	if (!(bt->effects)) {
-		tracef(_("unable to add id without a drawable_stack"));
+		tracef("unable to add id without a drawable_stack");
 		return;
 	}
 

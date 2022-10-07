@@ -19,10 +19,17 @@
 #ifndef MLK_CORE_SYS_P_H
 #define MLK_CORE_SYS_P_H
 
+#include <port/port.h>
+
 #include <stddef.h>
 
-#include <al.h>
-#include <alc.h>
+#if defined(MLK_OS_APPLE)
+#       include <OpenAL/al.h>
+#       include <OpenAL/alc.h>
+#else
+#       include <al.h>
+#       include <alc.h>
+#endif
 
 extern ALCdevice *audio_dev;
 extern ALCcontext *audio_ctx;

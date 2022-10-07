@@ -31,7 +31,7 @@ property_save(const struct property *p, struct save *s)
 	assert(p);
 	assert(save_ok(s));
 
-	return save_exec(s, (const char *)assets_sql_property_save, "ss", p->key, p->value);
+	return save_exec(s, (const char *)assets_property_save, "ss", p->key, p->value);
 }
 
 int
@@ -43,7 +43,7 @@ property_load(struct property *p, struct save *s)
 	struct save_stmt stmt;
 	enum save_stmt_errno ret;
 
-	if (save_stmt_init(&stmt, s, (const char *)assets_sql_property_load, "s", p->key) < 0)
+	if (save_stmt_init(&stmt, s, (const char *)assets_property_load, "s", p->key) < 0)
 		return -1;
 
 	ret = save_stmt_next(&stmt, "s", p->value, sizeof (p->value)) == SAVE_STMT_ROW;
@@ -58,6 +58,6 @@ property_remove(struct property *p, struct save *s)
 	assert(p);
 	assert(save_ok(s));
 
-	return save_exec(s, (const char *)assets_sql_property_remove, "s", p->key);
+	return save_exec(s, (const char *)assets_property_remove, "s", p->key);
 }
 
