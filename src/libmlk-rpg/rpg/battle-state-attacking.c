@@ -151,6 +151,8 @@ battle_state_attacking_draw(const struct battle_state_attacking *atk, const stru
 	assert(atk);
 	assert(battle_ok(bt));
 
+	(void)atk;
+
 	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
 }
 

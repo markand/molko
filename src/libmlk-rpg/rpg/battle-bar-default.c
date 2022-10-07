@@ -554,6 +554,8 @@ battle_bar_default_open_magic(struct battle_bar_default *bar, const struct battl
 	assert(bt);
 	assert(ch);
 
+	(void)bt;
+
 	bar->items = alloc_rearray0(bar->items, bar->itemsz,
 	    CHARACTER_SPELL_MAX, sizeof (*bar->items));
 	bar->itemsz = CHARACTER_SPELL_MAX;
@@ -574,6 +576,8 @@ battle_bar_default_open_item(struct battle_bar_default *bar, const struct battle
 	assert(bt);
 
 	/* TODO: not implemented yet. */
+	(void)bar;
+	(void)bt;
 #if 0
 	for (size_t i = 0; i < INVENTORY_ITEM_MAX; ++i) {
 		if (bt->inventory->items[i].item) {

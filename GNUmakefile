@@ -67,7 +67,7 @@ ifeq ($(WITH_ZIP),yes)
 INCS +=                 $(ZIP_INCS)
 endif
 
-OPTS :=                 -Wall -Wextra -pipe
+OPTS :=                 -Wall -Wextra -Wno-format-truncation -pipe
 
 ifeq ($(OS),Darwin)
 OPTS +=                 -Wno-deprecated-declarations

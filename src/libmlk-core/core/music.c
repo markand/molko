@@ -57,6 +57,10 @@ music_openvfs(struct music *mus, struct vfs_file *file)
 	assert(mus);
 	assert(vfs_file_ok(file));
 
+	// TODO: implement this.
+	(void)mus;
+	(void)file;
+
 	return 0;
 }
 
