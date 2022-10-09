@@ -451,6 +451,12 @@ tests: $(TESTS_EXE)
 
 # }}}
 
+doc:
+	cd doc && mkdocs build
+
+doc-serve:
+	cd doc && mkdocs serve
+
 clean:
 	rm -f config.h
 	rm -f $(MLK_BCC) $(MLK_MAP) $(MLK_TILESET)
@@ -462,4 +468,4 @@ clean:
 	rm -f $(LIBMLK_EXAMPLE) $(LIBMLK_EXAMPLE_DEPS) $(LIBMLK_EXAMPLE_OBJS) $(LIBMLK_EXAMPLE_DATA_OBJS)
 	rm -f $(TESTS_EXE) $(EXAMPLES_EXE)
 
-.PHONY: all clean examples tests
+.PHONY: all clean doc dov-serve examples tests
