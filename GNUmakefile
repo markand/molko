@@ -3,14 +3,16 @@
 # Toolchain options.
 CC ?=                   clang
 CFLAGS ?=               -g -O0
-BCC ?=                  src/tools/bcc/mlk-bcc
-BCC_OPTS ?=             -cs
-MD ?=                   -MD
+
+# Installation directory.
+PREFIX ?=               /usr/local
+LIBDIR ?=               $(PREFIX)/lib
+INCDIR ?=               $(PREFIX)/include
 
 # User options.
-WITH_ZIP :=             yes
-WITH_ZSTD :=            yes
-WITH_DEBUG :=           no
+WITH_ZIP ?=             yes
+WITH_ZSTD ?=            yes
+WITH_DEBUG ?=           no
 
 OS :=                   $(shell uname -s)
 
@@ -82,6 +84,9 @@ else
 OPTS +=                 -DNDEBUG -O3
 endif
 
+BCC_OPTS :=             -cs
+MD ?=                   -MD
+
 # Meta variable that contains all libraries, used for executables and tests.
 LIBMLK =                $(LIBMLK_RPG) \
                         $(LIBMLK_UI) \
@@ -115,7 +120,7 @@ endif
 	$(CC) $(OPTS) $(INCS) $(DEFS) $(CFLAGS) $< -o $@ $(OBJS) $(LIBS) $(LDFLAGS)
 
 .ogg.h .png.h .ttf.h .sql.h .wav.h:
-	$(BCC) $(BCC_OPTS) $< assets_$(basename $(<F)) > $@
+	$(MLK_BCC) $(BCC_OPTS) $< assets_$(basename $(<F)) > $@
 
 %.a:
 	$(AR) -rc $@ $(OBJS)
@@ -457,6 +462,16 @@ doc:
 doc-serve:
 	cd doc && mkdocs serve
 
+install:
+	mkdir -p $(DESTDIR)$(LIBDIR)
+	mkdir -p $(DESTDIR)$(INCDIR)/mlk/core
+	mkdir -p $(DESTDIR)$(INCDIR)/mlk/ui
+	mkdir -p $(DESTDIR)$(INCDIR)/mlk/rpg
+	cp $(LIBMLK_SQLITE) $(LIBMLK_CORE) $(LIBMLK_UI) $(LIBMLK_RPG) $(DESTDIR)$(LIBDIR)
+	cp -R src/libmlk-core/core/*.h $(DESTDIR)$(INCDIR)/mlk/core
+	cp -R src/libmlk-ui/ui/*.h $(DESTDIR)$(INCDIR)/mlk/ui
+	cp -R src/libmlk-rpg/rpg/*.h $(DESTDIR)$(INCDIR)/mlk/rpg
+
 clean:
 	rm -f config.h
 	rm -f $(MLK_BCC) $(MLK_MAP) $(MLK_TILESET)
@@ -468,4 +483,4 @@ clean:
 	rm -f $(LIBMLK_EXAMPLE) $(LIBMLK_EXAMPLE_DEPS) $(LIBMLK_EXAMPLE_OBJS) $(LIBMLK_EXAMPLE_DATA_OBJS)
 	rm -f $(TESTS_EXE) $(EXAMPLES_EXE)
 
-.PHONY: all clean doc dov-serve examples tests
+.PHONY: all clean doc doc-serve examples install tests

@@ -68,8 +68,8 @@ assets/.*\.h$
 
 # Tools.
 ^src/tools/bcc/mlk-bcc$
-^src/tools/bcc/mlk-map$
-^src/tools/bcc/mlk-tileset$
+^src/tools/map/mlk-map$
+^src/tools/tileset/mlk-tileset$
 
 # Documentation.
 ^doc/site

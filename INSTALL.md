@@ -4,24 +4,24 @@ Molko's Engine INSTALL
 Installation instructions.
 
 Requirements
-------------
+============
 
-- C99 compliant compiler.
-- [CMake][], CMake build system.
+- C11 compliant compiler.
+- [GNU Make][], Make build system.
 - [Jansson][], JSON parsing library.
 - [SDL2][], Multimedia library.
 - [SDL2_image][], Image loading addon for SDL2.
 - [SDL2_mixer][], Audio addon for SDL2.
-- [SDL2_ttf][], Fonts addon for SDL2,
-- [gettext][], For translations (optional).
+- [SDL2_ttf][], Fonts addon for SDL2.
 - [zstd][], For compression (optional).
+- [libzip][], For ZIP vfs support (optional).
 
 Molko's Engine is mostly written in pure C99 with a very limited POSIX
 extensions (including `stat`, `strlcpy`, `fmemopen`) but where support is
 missing fallback implementations are provided.
 
 Supported platforms
--------------------
+===================
 
 The project was successfully tested on the following platforms and their
 architectures.
@@ -29,35 +29,36 @@ architectures.
 - Windows (MinGW-w64, VS2019).
 - Linux (musl/amd64, musl/aarch64, glibc/amd64).
 - FreeBSD (amd64).
-- macOS Big Sur.
+- OpenBSD (amd64).
+- macOS
 
 Basic installation
-------------------
+==================
 
 Quick install.
 
-	$ tar xvzf molko-x.y.z-tar.xz
+	$ bsdtar -xvf molko-x.y.z-tar.xz
 	$ cd molko-x.y.z
-	$ cmake -S. -Bbuild
-	$ cmake --build build --target all
-	# cmake --build build --target install
+	$ make
+	# sudo make install
 
 Available options
------------------
+=================
 
-The following options are available:
+The following make variables as available:
 
-- `MLK_WITH_NLS`: Enable Native Language Support
-- `MLK_WITH_ZSTD`: Enable map and tileset compression through [zstd][] (default:
-  on).
-- `MLK_WITH_TESTS`: Enable unit tests (default: off).
-- `MLK_WITH_EXAMPLES`: Enable sample programs.
+- `WITH_ZSTD`: Enable map and tileset compression through [zstd][] (default:
+  yes).
+- `WITH_ZIP`: Enable ZIP file support through VFS API (default: yes).
+- `WITH_DEBUG`: Disable optimizations and turn on debug symbols (default: no).
 
-Platform: Linux and BSD
------------------------
+The following make variables changes installation directories:
 
-Install dependencies using the package manager provided and use CMake to
-generate Makefiles.
+- `PREFIX`: Root install path (default: /usr/local).
+- `LIBDIR`: Libraries directory (default: $PREFIX/lib).
+- `INCDIR`: C header directory (default: $PREFIX/include).
+
+Booleans options can be set to `yes` or `no` (case sensitive).
 
 Platform: macOS
 ---------------
@@ -67,13 +68,13 @@ The recommended way to build under macOS is to install dependencies through
 
 You will need the following packages:
 
-- gettext (only if `MLK_WITH_NLS` is set)
-- jansson (only for mlk-map/mlk-tileset tools)
+- jansson
 - sdl2
 - sdl2_image
 - sdl2_mixer
 - sdl2_ttf
-- zstd (only if `MLK_WITH_ZSTD` is set)
+- zstd (only if `WITH_ZSTD` is enabled)
+- libzip (only if `WITH_ZIP` is enabled)
 
 Platform: Windows
 -----------------
@@ -86,17 +87,20 @@ Once you have MSYS2 installed, simply install the following packages from the
 appropriate MinGW shell prior to the chapter above.
 
 - *make*
-- *mingw-w64-x86_64-gcc*
-- *mingw-w64-x86_64-SDL2*
-- *mingw-w64-x86_64-SDL2_image*
-- *mingw-w64-x86_64-SDL2_mixer*
-- *mingw-w64-x86_64-SDL2_ttf*
-- *mingw-w64-x86_64-jansson* (only for mlk-map/mlk-tileset tools)
-- *mingw-w64-x86_64-zstd* (only if `MLK_WITH_ZSTD` is set)
+- *mingw-w64-clang-x86_64-gcc*
+- *mingw-w64-clang-x86_64-SDL2*
+- *mingw-w64-clang-x86_64-SDL2_image*
+- *mingw-w64-clang-x86_64-SDL2_mixer*
+- *mingw-w64-clang-x86_64-SDL2_ttf*
+- *mingw-w64-clang-x86_64-jansson*
+- *mingw-w64-clang-x86_64-zstd* (only if `WITH_ZSTD` is enabled)
+- *mingw-w64-clang-x86_64-zip* (only if `WITH_ZSTD` is enabled)
 
 Note: replace `x86_64` with `i686` if you have a deprecated system or if you
       have issues while debugging (MinGW-w64 and/or gdb have known issues in
       this area).
+
+Remove `clang-` prefix if you need to use gcc for some reasons.
 
 ### Visual Studio
 
@@ -108,8 +112,9 @@ following:
 - <dir>/lib
 - <dir>/include
 
-Then adding `<dir>/bin` to *PATH* and `<dir>` to *CMAKE_PREFIX_PATH* will allow
-CMake to find libraries.
+Building with Visual Studio is only supported through `clang-cl` which should be
+installed as individual component from the Visual Studio installer. You also
+need a POSIX compliant toolset such as [MSYS2][] and add it to your path.
 
 [brew][]: http://brew.sh
 [CMake][]: http://cmake.org
