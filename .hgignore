@@ -25,7 +25,48 @@ assets/.*\.h$
 # Generated files.
 \.exe$
 ^config\.h$
-^mlk-
-^example-
 ^src/libmlk-data/maps/.*\.map$
 ^src/libmlk-data/maps/.*\.tileset$
+
+# Examples.
+examples/example-action/example-action
+examples/example-animation/example-animation
+examples/example-audio/example-audio
+examples/example-battle/main
+examples/example-cursor/example-cursor
+examples/example-debug/example-debug
+examples/example-drawable/example-drawable
+examples/example-font/example-font
+examples/example-gridmenu/example-gridmenu
+examples/example-label/example-label
+examples/example-message/example-message
+examples/example-notify/example-notify
+examples/example-sprite/example-sprite
+examples/example-trace/example-trace
+examples/example-ui/example-ui
+examples/example/character-john
+examples/example/registry
+examples/example/spell-fire
+examples/example/trace_hud
+
+# Tests.
+tests/test-action-script
+tests/test-action
+tests/test-alloc
+tests/test-character
+tests/test-color
+tests/test-drawable
+tests/test-error
+tests/test-map
+tests/test-save-quest
+tests/test-save
+tests/test-state
+tests/test-tileset
+tests/test-util
+tests/test-vfs-directory
+tests/test-vfs-zip
+
+# Tools.
+src/tools/bcc/mlk-bcc
+src/tools/bcc/mlk-map
+src/tools/bcc/mlk-tileset

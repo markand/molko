@@ -1,9 +1,8 @@
 Molko's Engine
 ==============
 
-The Molko's Engine is a C and Javascript framework to write 2D RPG games in a
-portable manner. It is designed in mind to be flexible, simple and convenient to
-use.
+The Molko's Engine is a C and framework to write 2D RPG games in a portable
+manner. It is designed in mind to be flexible, simple and convenient to use.
 
 It has the following features:
 

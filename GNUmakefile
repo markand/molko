@@ -3,7 +3,7 @@
 # Toolchain options.
 CC ?=                   clang
 CFLAGS ?=               -g -O0
-BCC ?=                  bcc
+BCC ?=                  src/tools/bcc/mlk-bcc
 BCC_OPTS ?=             -cs
 MD ?=                   -MD
 
@@ -25,6 +25,9 @@ SDL2_TTF_LIBS ?=        $(shell pkg-config --libs SDL2_ttf)
 
 SNDFILE_INCS ?=         $(shell pkg-config --cflags sndfile)
 SNDFILE_LIBS ?=         $(shell pkg-config --libs sndfile)
+
+JANSSON_INCS ?=         $(shell pkg-config --cflags jansson)
+JANSSON_LIBS ?=         $(shell pkg-config --libs jansson)
 
 ifeq ($(WITH_ZSTD),yes)
 ZSTD_INCS ?=            $(shell pkg-config --cflags libzstd)
@@ -67,7 +70,7 @@ ifeq ($(WITH_ZIP),yes)
 INCS +=                 $(ZIP_INCS)
 endif
 
-OPTS :=                 -Wall -Wextra -Wno-format-truncation -pipe
+OPTS :=                 -Wall -Wextra -pipe
 
 ifeq ($(OS),Darwin)
 OPTS +=                 -Wno-deprecated-declarations
@@ -79,18 +82,39 @@ else
 OPTS +=                 -DNDEBUG -O3
 endif
 
+# Meta variable that contains all libraries, used for executables and tests.
+LIBMLK =                $(LIBMLK_RPG) \
+                        $(LIBMLK_UI) \
+                        $(LIBMLK_CORE) \
+                        $(LIBMLK_PORT) \
+                        $(LIBMLK_SQLITE) \
+                        $(MATH_LIBS) \
+                        $(SDL2_LIBS) \
+                        $(SDL2_IMAGE_LIBS) \
+                        $(SDL2_TTF_LIBS) \
+                        $(OPENAL_LIBS) \
+                        $(SNDFILE_LIBS)
+
+ifeq ($(WITH_ZSTD),yes)
+LIBMLK +=               $(ZSTD_LIBS)
+endif
+
+ifeq ($(WITH_ZIP),yes)
+LIBMLK +=               $(LIBZIP_LIBS)
+endif
+
 .DEFAULT_GOAL :=        all
 
 .SUFFIXES:
-.SUFFIXES: .c .h .o .sql .ttf
+.SUFFIXES: .c .h .o .ogg .png .sql .ttf .wav
 
 .c.o:
 	$(CC) $(OPTS) $(INCS) $(DEFS) $(CFLAGS) $(MD) -c $< -o $@
 
 .c:
-	$(CC) $(OPTS) $(INCS) $(DEFS) $(CFLAGS) $< -o $@ $(LIBS) $(LDFLAGS)
+	$(CC) $(OPTS) $(INCS) $(DEFS) $(CFLAGS) $< -o $@ $(OBJS) $(LIBS) $(LDFLAGS)
 
-.ttf.h .sql.h:
+.ogg.h .png.h .ttf.h .sql.h .wav.h:
 	$(BCC) $(BCC_OPTS) $< assets_$(basename $(<F)) > $@
 
 %.a:
@@ -132,6 +156,39 @@ all: $(LIBMLK_PORT)
 
 # }}}
 
+# {{{ mlk-bcc
+
+MLK_BCC :=              src/tools/bcc/mlk-bcc
+
+$(MLK_BCC): INCS :=
+
+all: $(MLK_BCC)
+
+# }}}
+
+# {{{ mlk-tileset
+
+MLK_TILESET :=          src/tools/tileset/mlk-tileset
+
+$(MLK_TILESET): INCS := $(JANSSON_INCS)
+$(MLK_TILESET): LIBS := $(JANSSON_LIBS)
+
+all: $(MLK_TILESET)
+
+# }}}
+
+# {{{ mlk-map
+
+MLK_MAP :=              src/tools/map/mlk-map
+
+$(MLK_MAP): INCS := -Isrc/libmlk-port $(JANSSON_INCS)
+$(MLK_MAP): LIBS := $(LIBMLK_PORT) $(JANSSON_LIBS)
+$(MLK_MAP): $(LIBMLK_PORT)
+
+all: $(MLK_MAP)
+
+# }}}
+
 # {{{ libmlk-sqlite
 
 LIBMLK_SQLITE :=          libmlk-sqlite.a
@@ -141,8 +198,8 @@ LIBMLK_SQLITE_DEPS :=     $(LIBMLK_SQLITE_SRCS:.c=.d)
 
 -include $(LIBMLK_SQLITE_DEPS)
 
-$(LIBMLK_SQLITE): INCS :=
-$(LIBMLK_SQLITE): OBJS := $(LIBMLK_SQLITE_OBJS)
+$(LIBMLK_SQLITE): private INCS :=
+$(LIBMLK_SQLITE): private OBJS := $(LIBMLK_SQLITE_OBJS)
 $(LIBMLK_SQLITE): $(LIBMLK_SQLITE_OBJS)
 
 all: $(LIBMLK_SQLITE)
@@ -189,7 +246,7 @@ LIBMLK_CORE_DEPS :=     $(LIBMLK_CORE_SRCS:.c=.d)
 -include $(LIBMLK_CORE_DEPS)
 
 $(LIBMLK_CORE_OBJS): config.h
-$(LIBMLK_CORE): OBJS := $(LIBMLK_CORE_OBJS)
+$(LIBMLK_CORE): private OBJS := $(LIBMLK_CORE_OBJS)
 $(LIBMLK_CORE): $(LIBMLK_CORE_OBJS)
 
 all: $(LIBMLK_CORE)
@@ -217,9 +274,12 @@ LIBMLK_UI_DATA_SRCS :=  src/libmlk-ui/assets/fonts/opensans-light.ttf \
                         src/libmlk-ui/assets/fonts/opensans-regular.ttf
 LIBMLK_UI_DATA_OBJS :=  $(addsuffix .h,$(basename $(LIBMLK_UI_DATA_SRCS)))
 
+$(LIBMLK_UI_DATA_OBJS): $(MLK_BCC)
+
 $(LIBMLK_UI_OBJS): $(LIBMLK_UI_DATA_OBJS)
+
 $(LIBMLK_UI): $(LIBMLK_UI_OBJS)
-$(LIBMLK_UI): OBJS := $(LIBMLK_UI_OBJS)
+$(LIBMLK_UI): private OBJS := $(LIBMLK_UI_OBJS)
 
 all: $(LIBMLK_UI)
 
@@ -268,9 +328,9 @@ LIBMLK_RPG_SRCS :=      src/libmlk-rpg/rpg/battle-bar-default.c \
                         src/libmlk-rpg/rpg/tileset-file.c \
                         src/libmlk-rpg/rpg/tileset.c \
                         src/libmlk-rpg/rpg/walksprite.c
-
 LIBMLK_RPG_OBJS :=      $(LIBMLK_RPG_SRCS:.c=.o)
 LIBMLK_RPG_DEPS :=      $(LIBMLK_RPG_SRCS:.c=.d)
+
 LIBMLK_RPG_DATA_SRCS := src/libmlk-rpg/assets/sql/character-load.sql \
                         src/libmlk-rpg/assets/sql/character-save.sql \
                         src/libmlk-rpg/assets/sql/init.sql \
@@ -284,34 +344,82 @@ LIBMLK_RPG_DATA_SRCS := src/libmlk-rpg/assets/sql/character-load.sql \
 LIBMLK_RPG_DATA_OBJS := $(addsuffix .h,$(basename $(LIBMLK_RPG_DATA_SRCS)))
 
 $(LIBMLK_RPG_DATA_OBJS): BCC_OPTS := -cs0
+$(LIBMLK_RPG_DATA_OBJS): $(MLK_BCC)
+
 $(LIBMLK_RPG_OBJS): $(LIBMLK_RPG_DATA_OBJS)
+
 $(LIBMLK_RPG): $(LIBMLK_RPG_OBJS)
-$(LIBMLK_RPG): OBJS := $(LIBMLK_RPG_OBJS)
+$(LIBMLK_RPG): private OBJS := $(LIBMLK_RPG_OBJS)
 
 all: $(LIBMLK_RPG)
 
 # }}}
 
-# Meta variable that contains all libraries, used for executables and tests.
-LIBMLK :=       $(LIBMLK_RPG) \
-                $(LIBMLK_UI) \
-                $(LIBMLK_CORE) \
-                $(LIBMLK_PORT) \
-                $(LIBMLK_SQLITE) \
-                $(MATH_LIBS) \
-                $(SDL2_LIBS) \
-                $(SDL2_IMAGE_LIBS) \
-                $(SDL2_TTF_LIBS) \
-                $(OPENAL_LIBS) \
-                $(SNDFILE_LIBS)
+# {{{ libmlk-example
 
-ifeq ($(WITH_ZSTD),yes)
-LIBMLK +=       $(ZSTD_LIBS)
-endif
+LIBMLK_EXAMPLE :=               libmlk-example.a
+LIBMLK_EXAMPLE_SRCS :=          examples/example/character-john.c \
+                                examples/example/registry.c \
+                                examples/example/spell-fire.c \
+                                examples/example/trace_hud.c
 
-ifeq ($(WITH_ZIP),yes)
-LIBMLK +=       $(LIBZIP_LIBS)
-endif
+LIBMLK_EXAMPLE_DATA_SRCS :=     examples/assets/images/battle-background.png \
+                                examples/assets/images/black-cat.png \
+                                examples/assets/images/haunted-wood.png \
+                                examples/assets/images/sword.png \
+                                examples/assets/music/vabsounds-romance.ogg \
+                                examples/assets/sounds/fire.wav \
+                                examples/assets/sprites/chest.png \
+                                examples/assets/sprites/explosion.png \
+                                examples/assets/sprites/john-sword.png \
+                                examples/assets/sprites/john-walk.png \
+                                examples/assets/sprites/numbers.png \
+                                examples/assets/sprites/people.png \
+                                examples/assets/sprites/ui-cursor.png
+LIBMLK_EXAMPLE_DATA_OBJS :=     $(addsuffix .h,$(basename $(LIBMLK_EXAMPLE_DATA_SRCS)))
+
+LIBMLK_EXAMPLE_OBJS :=          $(LIBMLK_EXAMPLE_SRCS:.c=.o)
+LIBMLK_EXAMPLE_DEPS :=          $(LIBMLK_EXAMPLE_SRCS:.c=.d)
+
+-include $(LIBMLK_EXAMPLE_DEPS)
+
+$(LIBMLK_EXAMPLE_DATA_OBJS): $(MLK_BCC)
+
+$(LIBMLK_EXAMPLE_OBJS): private INCS += -Iexamples
+$(LIBMLK_EXAMPLE_OBJS): $(LIBMLK_EXAMPLE_DATA_OBJS)
+
+$(LIBMLK_EXAMPLE): private OBJS := $(LIBMLK_EXAMPLE_OBJS)
+$(LIBMLK_EXAMPLE): $(LIBMLK_EXAMPLE_OBJS)
+
+# }}}
+
+# {{{ examples
+
+EXAMPLES :=             examples/example-action/example-action.c \
+                        examples/example-animation/example-animation.c \
+                        examples/example-audio/example-audio.c \
+                        examples/example-cursor/example-cursor.c \
+                        examples/example-debug/example-debug.c \
+                        examples/example-drawable/example-drawable.c \
+                        examples/example-font/example-font.c \
+                        examples/example-gridmenu/example-gridmenu.c \
+                        examples/example-label/example-label.c \
+                        examples/example-message/example-message.c \
+                        examples/example-notify/example-notify.c \
+                        examples/example-sprite/example-sprite.c \
+                        examples/example-ui/example-ui.c
+EXAMPLES_EXE :=         $(EXAMPLES:.c=)
+EXAMPLES_OBJS :=        $(EXAMPLES_EXE)
+
+$(EXAMPLES_EXE): private LIBS += $(LIBMLK) $(LIBMLK_EXAMPLE)
+$(EXAMPLES_EXE): private INCS += -Iexamples
+$(EXAMPLES_EXE): $(LIBMLK_RPG) $(LIBMLK_UI) $(LIBMLK_CORE) $(LIBMLK_PORT) $(LIBMLK_SQLITE) $(LIBMLK_EXAMPLE)
+
+examples: $(EXAMPLES_EXE)
+
+# }}}
+
+# {{{ tests
 
 TESTS :=        tests/test-action-script.c \
                 tests/test-action.c \
@@ -341,13 +449,17 @@ $(TESTS_EXE): $(LIBMLK_RPG) $(LIBMLK_UI) $(LIBMLK_CORE) $(LIBMLK_PORT) $(LIBMLK_
 tests: $(TESTS_EXE)
 	for t in $(TESTS_EXE); do ./$$t; done
 
+# }}}
+
 clean:
 	rm -f config.h
+	rm -f $(MLK_BCC) $(MLK_MAP) $(MLK_TILESET)
 	rm -f $(LIBMLK_SQLITE) $(LIBMLK_SQLITE_DEPS) $(LIBMLK_SQLITE_OBJS)
 	rm -f $(LIBMLK_PORT) $(LIBMLK_PORT_DEPS) $(LIBMLK_PORT_OBJS)
 	rm -f $(LIBMLK_CORE) $(LIBMLK_CORE_DEPS) $(LIBMLK_CORE_OBJS)
 	rm -f $(LIBMLK_UI) $(LIBMLK_UI_DEPS) $(LIBMLK_UI_OBJS) $(LIBMLK_UI_DATA_OBJS)
 	rm -f $(LIBMLK_RPG) $(LIBMLK_RPG_DEPS) $(LIBMLK_RPG_OBJS) $(LIBMLK_RPG_DATA_OBJS)
-	rm -f $(TESTS_EXE)
+	rm -f $(LIBMLK_EXAMPLE) $(LIBMLK_EXAMPLE_DEPS) $(LIBMLK_EXAMPLE_OBJS) $(LIBMLK_EXAMPLE_DATA_OBJS)
+	rm -f $(TESTS_EXE) $(EXAMPLES_EXE)
 
-.PHONY: all clean tests
+.PHONY: all clean examples tests

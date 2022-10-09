@@ -49,7 +49,7 @@ static const struct {
 	const unsigned char *data;
 	size_t datasz;
 } images[] = {
-	REGISTRY_IMAGE(REGISTRY_IMAGE_BATTLE_BACKGROUND, assets_images_battle_background)
+	REGISTRY_IMAGE(REGISTRY_IMAGE_BATTLE_BACKGROUND, assets_battle_background)
 };
 
 #define REGISTRY_TEXTURE(s, data, cw, ch) \
@@ -62,12 +62,12 @@ static const struct {
 	unsigned int cellw;
 	unsigned int cellh;
 } textures[] = {
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CURSOR, assets_sprites_ui_cursor, 24, 24),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_EXPLOSION, assets_sprites_explosion, 256, 256),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_SWORD, assets_sprites_john_sword, 256, 256),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_WALK, assets_sprites_john_walk, 256, 256),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_HAUNTED_WOOD, assets_images_haunted_wood, 0, 0),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_BLACK_CAT, assets_images_black_cat, 0, 0)
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CURSOR, assets_ui_cursor, 24, 24),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_EXPLOSION, assets_explosion, 256, 256),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_SWORD, assets_john_sword, 256, 256),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_WALK, assets_john_walk, 256, 256),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_HAUNTED_WOOD, assets_haunted_wood, 0, 0),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_BLACK_CAT, assets_black_cat, 0, 0)
 };
 
 #define REGISTRY_SOUND(s, data) \
@@ -78,7 +78,7 @@ static const struct {
 	const unsigned char *data;
 	size_t datasz;
 } sounds[] = {
-	REGISTRY_SOUND(REGISTRY_SOUND_FIRE, assets_sounds_fire)
+	REGISTRY_SOUND(REGISTRY_SOUND_FIRE, assets_fire)
 };
 
 static void
