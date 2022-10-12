@@ -23,7 +23,7 @@
 
 #include <sqlite3.h>
 
-#include <port/port.h>
+#include <util/util.h>
 
 #include <core/error.h>
 #include <core/sys.h>
@@ -139,7 +139,7 @@ extract(struct save_stmt *stmt, const char *args, va_list ap)
 			char *str = va_arg(ap, char *);
 			size_t max = va_arg(ap, size_t);
 
-			port_strlcpy(str, (const char *)sqlite3_column_text(stmt->handle, c++), max);
+			util_strlcpy(str, (const char *)sqlite3_column_text(stmt->handle, c++), max);
 			break;
 		}
 		case 't':

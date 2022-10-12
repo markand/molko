@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <port/port.h>
+#include <util/util.h>
 
 #include <core/alloc.h>
 #include <core/error.h>
@@ -224,8 +224,8 @@ parse(struct context *ctx, const char *path)
 	char line[1024];
 	char basedir[PATH_MAX];
 
-	port_strlcpy(basedir, path, sizeof (basedir));
-	port_strlcpy(ctx->basedir, port_dirname(basedir), sizeof (ctx->basedir));
+	util_strlcpy(basedir, path, sizeof (basedir));
+	util_strlcpy(ctx->basedir, util_dirname(basedir), sizeof (ctx->basedir));
 
 	while (fgets(line, sizeof (line), ctx->fp)) {
 		/* Remove \n if any */

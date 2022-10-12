@@ -22,7 +22,7 @@
 
 #include <SDL.h>
 
-#include <port/port.h>
+#include <util/util.h>
 
 #include "util.h"
 

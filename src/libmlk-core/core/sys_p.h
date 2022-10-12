@@ -19,7 +19,7 @@
 #ifndef MLK_CORE_SYS_P_H
 #define MLK_CORE_SYS_P_H
 
-#include <port/port.h>
+#include <util/util.h>
 
 #include <stddef.h>
 

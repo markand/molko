@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <port/port.h>
+#include <util/util.h>
 
 #include "alloc.h"
 #include "error.h"
@@ -104,7 +104,7 @@ vfs_directory(struct vfs *vfs, const char *path)
 	struct self *self;
 
 	self = alloc_new(sizeof (*self));
-	port_strlcpy(self->base, path, sizeof (self->base));
+	util_strlcpy(self->base, path, sizeof (self->base));
 
 	/* Remove terminator and switch to UNIX paths. */
 	normalize(self->base);

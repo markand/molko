@@ -47,7 +47,7 @@
 #       define O_BINARY 0
 #endif
 
-#include <port/port.h>
+#include <util/util.h>
 
 #include "zfile.h"
 
@@ -99,7 +99,7 @@ decompress(int fd, struct zfile *zf)
 		errno = EINVAL;
 		goto fail;
 	}
-	if (!(zf->fp = port_fmemopen(zf->data, datasz, "r")))
+	if (!(zf->fp = util_fmemopen(zf->data, datasz, "r")))
 		goto fail;
 
 	close(fd);

@@ -53,7 +53,7 @@ MATH_LIBS ?=            -lm
 # Global INCS, OPTS and DEFS for every targets.
 INCS :=                 -Iextern/libdt \
                         -Iextern/libsqlite \
-                        -Isrc/libmlk-port \
+                        -Isrc/libmlk-util \
                         -Isrc/libmlk-core \
                         -Isrc/libmlk-ui \
                         -Isrc/libmlk-rpg \
@@ -91,7 +91,7 @@ MD ?=                   -MD
 LIBMLK =                $(LIBMLK_RPG) \
                         $(LIBMLK_UI) \
                         $(LIBMLK_CORE) \
-                        $(LIBMLK_PORT) \
+                        $(LIBMLK_UTIL) \
                         $(LIBMLK_SQLITE) \
                         $(MATH_LIBS) \
                         $(SDL2_LIBS) \
@@ -139,25 +139,25 @@ endif
 
 # }}}
 
-# {{{ libmlk-port
+# {{{ libmlk-util
 
-LIBMLK_PORT :=          libmlk-port.a
-LIBMLK_PORT_SRCS :=     src/libmlk-port/port/basename.c \
-                        src/libmlk-port/port/dirname.c \
-                        src/libmlk-port/port/fmemopen.c \
-                        src/libmlk-port/port/getopt.c \
-                        src/libmlk-port/port/strlcat.c \
-                        src/libmlk-port/port/strlcpy.c
-LIBMLK_PORT_OBJS :=     $(LIBMLK_PORT_SRCS:.c=.o)
-LIBMLK_PORT_DEPS :=     $(LIBMLK_PORT_SRCS:.c=.d)
+LIBMLK_UTIL :=          libmlk-util.a
+LIBMLK_UTIL_SRCS :=     src/libmlk-util/util/fmemopen.c \
+                        src/libmlk-util/util/openbsd/basename.c \
+                        src/libmlk-util/util/openbsd/dirname.c \
+                        src/libmlk-util/util/openbsd/getopt.c \
+                        src/libmlk-util/util/openbsd/strlcat.c \
+                        src/libmlk-util/util/openbsd/strlcpy.c
+LIBMLK_UTIL_OBJS :=     $(LIBMLK_UTIL_SRCS:.c=.o)
+LIBMLK_UTIL_DEPS :=     $(LIBMLK_UTIL_SRCS:.c=.d)
 
--include $(LIBMLK_PORT_DEPS)
+-include $(LIBMLK_UTIL_DEPS)
 
-$(LIBMLK_PORT): INCS :=
-$(LIBMLK_PORT): OBJS := $(LIBMLK_PORT_OBJS)
-$(LIBMLK_PORT): $(LIBMLK_PORT_OBJS)
+$(LIBMLK_UTIL): INCS :=
+$(LIBMLK_UTIL): OBJS := $(LIBMLK_UTIL_OBJS)
+$(LIBMLK_UTIL): $(LIBMLK_UTIL_OBJS)
 
-all: $(LIBMLK_PORT)
+all: $(LIBMLK_UTIL)
 
 # }}}
 
@@ -186,9 +186,9 @@ all: $(MLK_TILESET)
 
 MLK_MAP :=              src/tools/map/mlk-map
 
-$(MLK_MAP): INCS := -Isrc/libmlk-port $(JANSSON_INCS)
-$(MLK_MAP): LIBS := $(LIBMLK_PORT) $(JANSSON_LIBS)
-$(MLK_MAP): $(LIBMLK_PORT)
+$(MLK_MAP): INCS := -Isrc/libmlk-util $(JANSSON_INCS)
+$(MLK_MAP): LIBS := $(LIBMLK_UTIL) $(JANSSON_LIBS)
+$(MLK_MAP): $(LIBMLK_UTIL)
 
 all: $(MLK_MAP)
 
@@ -419,7 +419,7 @@ EXAMPLES_OBJS :=        $(EXAMPLES_EXE)
 
 $(EXAMPLES_EXE): private LIBS += $(LIBMLK) $(LIBMLK_EXAMPLE)
 $(EXAMPLES_EXE): private INCS += -Iexamples
-$(EXAMPLES_EXE): $(LIBMLK_RPG) $(LIBMLK_UI) $(LIBMLK_CORE) $(LIBMLK_PORT) $(LIBMLK_SQLITE) $(LIBMLK_EXAMPLE)
+$(EXAMPLES_EXE): $(LIBMLK_RPG) $(LIBMLK_UI) $(LIBMLK_CORE) $(LIBMLK_UTIL) $(LIBMLK_SQLITE) $(LIBMLK_EXAMPLE)
 
 examples: $(EXAMPLES_EXE)
 
@@ -450,7 +450,7 @@ TESTS_EXE :=    $(TESTS:.c=)
 
 $(TESTS_EXE): private LIBS += $(LIBMLK)
 $(TESTS_EXE): private DEFS += -DDIRECTORY=\"$(CURDIR)/tests/assets\"
-$(TESTS_EXE): $(LIBMLK_RPG) $(LIBMLK_UI) $(LIBMLK_CORE) $(LIBMLK_PORT) $(LIBMLK_SQLITE)
+$(TESTS_EXE): $(LIBMLK_RPG) $(LIBMLK_UI) $(LIBMLK_CORE) $(LIBMLK_UTIL) $(LIBMLK_SQLITE)
 
 tests: $(TESTS_EXE)
 	for t in $(TESTS_EXE); do ./$$t; done
@@ -477,7 +477,7 @@ clean:
 	rm -f config.h
 	rm -f $(MLK_BCC) $(MLK_MAP) $(MLK_TILESET)
 	rm -f $(LIBMLK_SQLITE) $(LIBMLK_SQLITE_DEPS) $(LIBMLK_SQLITE_OBJS)
-	rm -f $(LIBMLK_PORT) $(LIBMLK_PORT_DEPS) $(LIBMLK_PORT_OBJS)
+	rm -f $(LIBMLK_UTIL) $(LIBMLK_UTIL_DEPS) $(LIBMLK_UTIL_OBJS)
 	rm -f $(LIBMLK_CORE) $(LIBMLK_CORE_DEPS) $(LIBMLK_CORE_OBJS)
 	rm -f $(LIBMLK_UI) $(LIBMLK_UI_DEPS) $(LIBMLK_UI_OBJS) $(LIBMLK_UI_DATA_OBJS)
 	rm -f $(LIBMLK_RPG) $(LIBMLK_RPG_DEPS) $(LIBMLK_RPG_OBJS) $(LIBMLK_RPG_DATA_OBJS)

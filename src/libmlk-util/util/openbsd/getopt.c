@@ -31,11 +31,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-int	port_opterr = 1,		/* if error message should be printed */
-	port_optind = 1,		/* index into parent argv vector */
-	port_optopt,			/* character checked for validity */
-	port_optreset;		/* reset getopt */
-char	*port_optarg;		/* argument associated with option */
+int	util_opterr = 1,		/* if error message should be printed */
+	util_optind = 1,		/* index into parent argv vector */
+	util_optopt,			/* character checked for validity */
+	util_optreset;		/* reset getopt */
+char	*util_optarg;		/* argument associated with option */
 
 #define	BADCH	(int)'?'
 #define	BADARG	(int)':'
@@ -46,7 +46,7 @@ char	*port_optarg;		/* argument associated with option */
  *	Parse argc/argv argument vector.
  */
 int
-port_getopt(int nargc, char * const *nargv, const char *ostr)
+util_getopt(int nargc, char * const *nargv, const char *ostr)
 {
 	static char *place = EMSG;		/* option letter processing */
 	char *oli;				/* option letter list index */
@@ -54,55 +54,55 @@ port_getopt(int nargc, char * const *nargv, const char *ostr)
 	if (ostr == NULL)
 		return (-1);
 
-	if (port_optreset || !*place) {		/* update scanning pointer */
-		port_optreset = 0;
-		if (port_optind >= nargc || *(place = nargv[port_optind]) != '-') {
+	if (util_optreset || !*place) {		/* update scanning pointer */
+		util_optreset = 0;
+		if (util_optind >= nargc || *(place = nargv[util_optind]) != '-') {
 			place = EMSG;
 			return (-1);
 		}
 		if (place[1] && *++place == '-') {	/* found "--" */
-			++port_optind;
+			++util_optind;
 			place = EMSG;
 			return (-1);
 		}
 	}					/* option letter okay? */
-	if ((port_optopt = (int)*place++) == (int)':' ||
-	    !(oli = strchr(ostr, port_optopt))) {
+	if ((util_optopt = (int)*place++) == (int)':' ||
+	    !(oli = strchr(ostr, util_optopt))) {
 		/*
 		 * if the user didn't specify '-' as an option,
 		 * assume it means -1.
 		 */
-		if (port_optopt == (int)'-')
+		if (util_optopt == (int)'-')
 			return (-1);
 		if (!*place)
-			++port_optind;
-		if (port_opterr && *ostr != ':')
+			++util_optind;
+		if (util_opterr && *ostr != ':')
 			(void)fprintf(stderr,
-			    "illegal option -- %c\n", port_optopt);
+			    "illegal option -- %c\n", util_optopt);
 		return (BADCH);
 	}
 	if (*++oli != ':') {			/* don't need argument */
-		port_optarg = NULL;
+		util_optarg = NULL;
 		if (!*place)
-			++port_optind;
+			++util_optind;
 	}
 	else {					/* need an argument */
 		if (*place)			/* no white space */
-			port_optarg = place;
-		else if (nargc <= ++port_optind) {	/* no arg */
+			util_optarg = place;
+		else if (nargc <= ++util_optind) {	/* no arg */
 			place = EMSG;
 			if (*ostr == ':')
 				return (BADARG);
-			if (port_opterr)
+			if (util_opterr)
 				(void)fprintf(stderr,
 				    "option requires an argument -- %c\n",
-				    port_optopt);
+				    util_optopt);
 			return (BADCH);
 		}
 		else				/* white space */
-			port_optarg = nargv[port_optind];
+			util_optarg = nargv[util_optind];
 		place = EMSG;
-		++port_optind;
+		++util_optind;
 	}
-	return (port_optopt);			/* dump back option letter */
+	return (util_optopt);			/* dump back option letter */
 }

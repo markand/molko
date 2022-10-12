@@ -40,7 +40,7 @@
 
 #include <sndfile.h>
 
-#include <port/port.h>
+#include <util/util.h>
 
 #include "alloc.h"
 #include "error.h"
@@ -80,10 +80,10 @@ user_directory(enum sys_dir kind)
 	char *pref;
 
 	if ((pref = SDL_GetPrefPath(info.organization, info.name))) {
-		port_strlcpy(path, pref, sizeof (path));
+		util_strlcpy(path, pref, sizeof (path));
 		SDL_free(pref);
 	} else
-		port_strlcpy(path, "./", sizeof (path));
+		util_strlcpy(path, "./", sizeof (path));
 
 	return path;
 }
@@ -153,7 +153,7 @@ sys_mkdir(const char *directory)
 	char path[PATH_MAX], *p;
 
 	/* Copy the directory to normalize and iterate over '/'. */
-	port_strlcpy(path, directory, sizeof (path));
+	util_strlcpy(path, directory, sizeof (path));
 	normalize(path);
 
 #if defined(_WIN32)

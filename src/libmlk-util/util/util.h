@@ -1,5 +1,5 @@
 /*
- * port.h -- portability bits
+ * util.h -- miscellaneous utilities
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -71,26 +71,26 @@ typedef long long int ssize_t;
 #endif
 
 size_t
-port_strlcpy(char *, const char *, size_t);
+util_strlcpy(char *, const char *, size_t);
 
 size_t
-port_strlcat(char *, const char *, size_t);
+util_strlcat(char *, const char *, size_t);
 
 FILE *
-port_fmemopen(void *, size_t, const char *);
+util_fmemopen(void *, size_t, const char *);
 
 char *
-port_basename(char *);
+util_basename(char *);
 
 char *
-port_dirname(char *);
+util_dirname(char *);
 
-extern int port_opterr;
-extern int port_optind;
-extern int port_optopt;
-extern char *port_optarg;
+extern int util_opterr;
+extern int util_optind;
+extern int util_optopt;
+extern char *util_optarg;
 
 int
-port_getopt(int, char **, const char *);
+util_getopt(int, char **, const char *);
 
 #endif /* !MLK_PORT_H */

@@ -16,7 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "port.h"
+#include "util.h"
 
 #if !defined(MLK_HAS_FMEMOPEN)
 
@@ -30,7 +30,7 @@
 #include <windows.h>
 
 FILE *
-port_fmemopen(void *buf, size_t size, const char *mode)
+util_fmemopen(void *buf, size_t size, const char *mode)
 {
 	char temppath[MAX_PATH + 1], filename[MAX_PATH + 1];
 	FILE *fp;
@@ -67,7 +67,7 @@ port_fmemopen(void *buf, size_t size, const char *mode)
 #include <stdio.h>
 
 FILE *
-port_fmemopen(void *buf, size_t len, const char *type)
+util_fmemopen(void *buf, size_t len, const char *type)
 {
 	return fmemopen(buf, len, type);
 }

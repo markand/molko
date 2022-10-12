@@ -25,7 +25,7 @@
 #endif
 
 char *
-port_basename(char *path)
+util_basename(char *path)
 {
 	static char bname[PATH_MAX];
 	size_t len;
