@@ -27,17 +27,19 @@
 #include "window.h"
 #include "window_p.h"
 
-int
+enum mlk_err
 texture_new(struct texture *tex, unsigned int w, unsigned int h)
 {
 	assert(tex);
+	assert(w);
+	assert(h);
 
 	tex->handle = SDL_CreateTexture(RENDERER(),
 	    SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
 
 	if (!tex->handle) {
 		tex->w = tex->h = 0;
-		return errorf("%s", SDL_GetError());
+		return MLK_ERR_INTERNAL;
 	}
 
 	tex->w = w;

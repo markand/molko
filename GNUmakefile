@@ -223,6 +223,7 @@ LIBMLK_CORE_SRCS :=     src/libmlk-core/core/action-stack.c \
                         src/libmlk-core/core/core.c \
                         src/libmlk-core/core/drawable-stack.c \
                         src/libmlk-core/core/drawable.c \
+                        src/libmlk-core/core/err.c \
                         src/libmlk-core/core/error.c \
                         src/libmlk-core/core/event.c \
                         src/libmlk-core/core/font.c \

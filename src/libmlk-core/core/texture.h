@@ -20,6 +20,7 @@
 #define MLK_CORE_TEXTURE_H
 
 #include "core.h"
+#include "err.h"
 
 struct texture {
 	unsigned int w;
@@ -37,7 +38,7 @@ enum texture_blend {
 
 CORE_BEGIN_DECLS
 
-int
+enum mlk_err
 texture_new(struct texture *, unsigned int, unsigned int);
 
 int
