@@ -98,7 +98,7 @@ game_draw(void)
 void
 game_loop(void)
 {
-	struct clock clock = {0};
+	struct mlk_clock clock = {0};
 	unsigned int elapsed = 0;
 	unsigned int frametime;
 
@@ -109,7 +109,7 @@ game_loop(void)
 		frametime = 1000.0 / 50.0;
 
 	while (*game.state) {
-		clock_start(&clock);
+		mlk_clock_start(&clock);
 
 		for (union event ev; event_poll(&ev); )
 			game_handle(&ev);
@@ -121,10 +121,10 @@ game_loop(void)
 		 * If vsync is enabled, it should have wait, otherwise sleep
 		 * a little to save CPU cycles.
 		 */
-		if ((elapsed = clock_elapsed(&clock)) < frametime)
+		if ((elapsed = mlk_clock_elapsed(&clock)) < frametime)
 			util_delay(frametime - elapsed);
 
-		elapsed = clock_elapsed(&clock);
+		elapsed = mlk_clock_elapsed(&clock);
 	}
 }
 

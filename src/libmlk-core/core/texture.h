@@ -38,7 +38,7 @@ enum texture_blend {
 
 CORE_BEGIN_DECLS
 
-enum mlk_err
+int
 texture_new(struct texture *, unsigned int, unsigned int);
 
 int

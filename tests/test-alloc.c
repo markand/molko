@@ -167,7 +167,7 @@ test_custom_count(void)
 }
 
 int
-main(int argc, char **argv)
+main(void)
 {
 	DT_RUN(test_basics_array_simple);
 	DT_RUN(test_basics_pool_simple);

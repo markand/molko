@@ -21,17 +21,17 @@
 
 #include "core.h"
 
-struct clock {
+struct mlk_clock {
 	unsigned int ticks;
 };
 
 CORE_BEGIN_DECLS
 
 void
-clock_start(struct clock *);
+mlk_clock_start(struct mlk_clock *);
 
 unsigned int
-clock_elapsed(const struct clock *);
+mlk_clock_elapsed(const struct mlk_clock *);
 
 CORE_END_DECLS
 

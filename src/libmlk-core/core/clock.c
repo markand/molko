@@ -21,13 +21,13 @@
 #include "clock.h"
 
 void
-clock_start(struct clock *clock)
+mlk_clock_start(struct mlk_clock *clock)
 {
 	clock->ticks = SDL_GetTicks();
 }
 
 unsigned int
-clock_elapsed(const struct clock *clock)
+mlk_clock_elapsed(const struct mlk_clock *clock)
 {
 	return SDL_GetTicks() - clock->ticks;
 }

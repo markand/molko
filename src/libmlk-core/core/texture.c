@@ -27,7 +27,7 @@
 #include "window.h"
 #include "window_p.h"
 
-enum mlk_err
+int
 texture_new(struct texture *tex, unsigned int w, unsigned int h)
 {
 	assert(tex);
@@ -39,7 +39,7 @@ texture_new(struct texture *tex, unsigned int w, unsigned int h)
 
 	if (!tex->handle) {
 		tex->w = tex->h = 0;
-		return MLK_ERR_INTERNAL;
+		return ERR_INTERNAL;
 	}
 
 	tex->w = w;

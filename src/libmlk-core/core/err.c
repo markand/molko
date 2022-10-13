@@ -21,14 +21,14 @@
 #include "err.h"
 
 const char *
-mlk_err_string(enum mlk_err e)
+err_string(int e)
 {
 	switch (e) {
-	case MLK_ERR_INTERNAL:
+	case ERR_INTERNAL:
 		return SDL_GetError();
-	case MLK_ERR_NO_MEM:
+	case ERR_NO_MEM:
 		return "out of memory";
-	case MLK_ERR_NO_SUPPORT:
+	case ERR_NO_SUPPORT:
 		return "operation not supported";
 	default:
 		return "no error";

@@ -321,7 +321,7 @@ test_basics_game(void)
 }
 
 int
-main(int argc, char **argv)
+main(void)
 {
 	DT_RUN(test_basics_start);
 	DT_RUN(test_basics_handle);

@@ -19,14 +19,12 @@
 #ifndef MLK_ERR_H
 #define MLK_ERR_H
 
-enum mlk_err {
-	MLK_ERR_NONE,
-	MLK_ERR_INTERNAL        = -1,
-	MLK_ERR_NO_MEM          = -2,
-	MLK_ERR_NO_SUPPORT      = -3
-};
+#define ERR_NONE         0
+#define ERR_INTERNAL    -1
+#define ERR_NO_MEM      -2
+#define ERR_NO_SUPPORT  -3
 
 const char *
-mlk_err_string(enum mlk_err);
+err_string(int e);
 
 #endif /* !MLK_ERROR_H */
