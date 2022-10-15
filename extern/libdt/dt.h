@@ -21,6 +21,7 @@
 
 #include <inttypes.h>
 #include <math.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -115,11 +116,29 @@ do {                                                                            
             dt_nchecks - nchecks, dt_nfailures - nfailures);                            \
 } while (0)
 
+#define DT_RUN_EX(f, init, fini, ...)                                                   \
+do {                                                                                    \
+        const size_t nchecks = dt_nchecks;                                              \
+        const size_t nfailures = dt_nfailures;                                          \
+                                                                                        \
+        ++ dt_ntests;                                                                   \
+                                                                                        \
+        printf("== test " #f " ==\n");                                                  \
+        init(__VA_ARGS__);                                                              \
+        f(__VA_ARGS__);                                                                 \
+        fini(__VA_ARGS__);                                                              \
+                                                                                        \
+        printf("\n%zu checks, %zu failures\n\n",                                        \
+            dt_nchecks - nchecks, dt_nfailures - nfailures);                            \
+} while (0)
+
 #define DT_SUMMARY()                                                                    \
 do {                                                                                    \
         printf("summary: %zu tests, %zu checks, %zu failures\n",                        \
             dt_ntests, dt_nchecks, dt_nfailures);                                       \
 } while (0)
+
+#define DT_EXIT()               (dt_nfailures != 0)
 
 /* Aliases for basic types. */
 #define DT_EQ_CHAR(x, y)        DT_EQ(x, y, char, "%c")
@@ -133,6 +152,8 @@ do {                                                                            
 #define DT_EQ_ULLONG(x, y)      DT_EQ(x, y, unsigned long long, "%llu")
 #define DT_EQ_INTMAX(x, y)      DT_EQ(x, y, intmax_t, "%jd")
 #define DT_EQ_UINTMAX(x, y)     DT_EQ(x, y, uintmax_t, "%ju")
+#define DT_EQ_SIZE(x, y)        DT_EQ(x, y, size_t, "%zu")
+#define DT_EQ_PTRDIFF(x, y)     DT_EQ(x, y, ptrdiff_t, "%td")
 
 /* Aliases for fixed size integers. */
 #define DT_EQ_INT8(x, y)        DT_EQ(x, y, int8_t, PRId8)

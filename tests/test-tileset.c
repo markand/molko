@@ -91,7 +91,7 @@ test_error_image(void)
 }
 
 int
-main(int argc, char **argv)
+main(void)
 {
 	if (core_init("fr.malikania", "test") < 0 || window_open("test-tileset", 100, 100) < 0)
 		return 1;

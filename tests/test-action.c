@@ -16,8 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/action.h>
 #include <core/action-stack.h>
+#include <core/action.h>
+#include <core/err.h>
 #include <core/event.h>
 
 #include <dt.h>
@@ -191,7 +192,7 @@ test_stack_add(void)
 		DT_EQ_INT(action_stack_add(&st, &act), 0);
 
 	/* This one should not fit in. */
-	DT_EQ_INT(action_stack_add(&st, &act), -1);
+	DT_EQ_INT(action_stack_add(&st, &act), ERR_NO_MEM);
 }
 
 static void

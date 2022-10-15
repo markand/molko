@@ -21,6 +21,7 @@
 
 #include "drawable.h"
 #include "drawable-stack.h"
+#include "err.h"
 
 #define DRAWABLE_FOREACH(st, iter) \
 	for (size_t i = 0; i < (st)->objectsz && ((iter) = (st)->objects[i], 1); ++i)
@@ -50,7 +51,7 @@ drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 		}
 	}
 
-	return -1;
+	return ERR_NO_MEM;
 }
 
 int

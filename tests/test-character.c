@@ -63,7 +63,7 @@ test_basics_load(void)
 }
 
 int
-main(int argc, char **argv)
+main(void)
 {
 	remove("test.db");
 

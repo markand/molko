@@ -126,7 +126,7 @@ test_error_rows(void)
 }
 
 int
-main(int argc, char **argv)
+main(void)
 {
 	/*
 	 * This test opens graphical images and therefore need to initialize a

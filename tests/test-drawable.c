@@ -16,8 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/drawable.h>
 #include <core/drawable-stack.h>
+#include <core/drawable.h>
+#include <core/err.h>
 #include <core/event.h>
 
 #include <dt.h>
@@ -159,7 +160,7 @@ test_stack_add(void)
 		DT_EQ_INT(drawable_stack_add(&st, &dw), 0);
 
 	/* This one should not fit in. */
-	DT_EQ_INT(drawable_stack_add(&st, &dw), -1);
+	DT_EQ_INT(drawable_stack_add(&st, &dw), ERR_NO_MEM);
 }
 
 static void

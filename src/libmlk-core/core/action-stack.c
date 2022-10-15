@@ -19,8 +19,9 @@
 #include <assert.h>
 #include <string.h>
 
-#include "action.h"
 #include "action-stack.h"
+#include "action.h"
+#include "err.h"
 
 #define ACTION_FOREACH(st, iter) \
 	for (size_t i = 0; i < (st)->actionsz && ((iter) = (st)->actions[i], 1); ++i)
@@ -50,7 +51,7 @@ action_stack_add(struct action_stack *st, struct action *act)
 		}
 	}
 
-	return -1;
+	return ERR_NO_MEM;
 }
 
 void
@@ -120,7 +121,7 @@ void
 action_stack_finish(struct action_stack *st)
 {
 	assert(st);
-	
+
 	struct action *act;
 
 	ACTION_FOREACH(st, act) {

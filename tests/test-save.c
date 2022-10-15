@@ -137,7 +137,7 @@ properties_remove(void)
 int
 main(void)
 {
-	DT_RUN(test_basics_read);
-	DT_RUN(test_basics_write);
+	DT_RUN_EX(test_basics_read, cleanup, cleanup);
+	DT_RUN_EX(test_basics_write, cleanup, cleanup);
 	DT_SUMMARY();
 }

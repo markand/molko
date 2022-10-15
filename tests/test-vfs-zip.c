@@ -51,7 +51,7 @@ test_error_notfound(void)
 }
 
 int
-main(int argc, char **argv)
+main(void)
 {
 	DT_RUN(test_basics_read);
 	DT_RUN(test_error_notfound);
