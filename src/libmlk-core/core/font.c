@@ -22,12 +22,11 @@
 #include <SDL_ttf.h>
 
 #include "color.h"
+#include "err.h"
 #include "error.h"
 #include "font.h"
 #include "texture_p.h"
 #include "util.h"
-#include "vfs.h"
-#include "vfs_p.h"
 
 int
 font_open(struct font *font, const char *path, unsigned int size)
@@ -36,7 +35,7 @@ font_open(struct font *font, const char *path, unsigned int size)
 	assert(path);
 
 	if (!(font->handle = TTF_OpenFont(path, size)))
-		return errorf("%s", SDL_GetError());
+		return ERR_INTERNAL;
 
 	return 0;
 }
@@ -51,23 +50,7 @@ font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int 
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buflen)) ||
 	   (!(font->handle = TTF_OpenFontRW(ops, 1, size))))
-		return errorf("%s", SDL_GetError());
-
-	return 0;
-}
-
-int
-font_openvfs(struct font *font, struct vfs_file *file, unsigned int size)
-{
-	assert(font);
-	assert(vfs_file_ok(file));
-
-	SDL_RWops *ops;
-
-	if (!(ops = vfs_to_rw(file)))
-		return -1;
-	if (!(font->handle = TTF_OpenFontRW(ops, 1, size)))
-		return errorf("%s", SDL_GetError());
+		return ERR_INTERNAL;
 
 	return 0;
 }
@@ -103,7 +86,7 @@ font_render(struct font *font, struct texture *tex, const char *text, unsigned l
 	}
 
 	if (!(surface = func(font->handle, text, fg)))
-		return errorf("%s", SDL_GetError());
+		return ERR_INTERNAL;
 
 	return texture_from_surface(tex, surface);
 }
@@ -128,7 +111,7 @@ font_query(const struct font *font, const char *text, unsigned int *w, unsigned 
 		*h = 0;
 
 	if (TTF_SizeUTF8(font->handle, text, (int *)w, (int *)h) != 0)
-		return errorf("%s", SDL_GetError());
+		return ERR_INTERNAL;
 
 	return 0;
 }

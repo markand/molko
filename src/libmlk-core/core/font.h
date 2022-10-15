@@ -24,7 +24,6 @@
 #include "core.h"
 
 struct texture;
-struct vfs_file;
 
 enum font_style {
 	FONT_STYLE_ANTIALIASED,
@@ -44,9 +43,6 @@ font_open(struct font *, const char *, unsigned int);
 
 int
 font_openmem(struct font *, const void *, size_t, unsigned int);
-
-int
-font_openvfs(struct font *, struct vfs_file *, unsigned int);
 
 int
 font_ok(const struct font *);

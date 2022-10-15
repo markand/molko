@@ -166,7 +166,7 @@ texture_from_surface(struct texture *tex, SDL_Surface *surface)
 
 	if (!(tex->handle = SDL_CreateTextureFromSurface(RENDERER(), surface))) {
 		tex->w = tex->h = 0;
-		return errorf("%s", SDL_GetError());
+		return ERR_INTERNAL;
 	}
 
 	tex->w = surface->w;
