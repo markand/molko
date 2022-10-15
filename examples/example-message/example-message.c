@@ -28,9 +28,9 @@
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
 
-#include <ui/frame.h>
-#include <ui/theme.h>
-#include <ui/ui.h>
+#include <mlk/ui/frame.h>
+#include <mlk/ui/theme.h>
+#include <mlk/ui/ui.h>
 
 #include <rpg/message.h>
 #include <rpg/rpg.h>

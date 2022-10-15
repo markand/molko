@@ -28,9 +28,9 @@
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
 
-#include <ui/label.h>
-#include <ui/theme.h>
-#include <ui/ui.h>
+#include <mlk/ui/label.h>
+#include <mlk/ui/theme.h>
+#include <mlk/ui/ui.h>
 
 #include <assets/music/vabsounds-romance.h>
 #include <assets/sounds/fire.h>

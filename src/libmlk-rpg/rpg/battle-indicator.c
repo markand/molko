@@ -25,7 +25,7 @@
 #include <mlk/core/font.h>
 #include <mlk/core/panic.h>
 
-#include <ui/theme.h>
+#include <mlk/ui/theme.h>
 
 #include "battle-indicator.h"
 

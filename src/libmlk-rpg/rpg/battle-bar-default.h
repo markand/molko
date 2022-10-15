@@ -21,7 +21,7 @@
 
 #include <mlk/core/core.h>
 
-#include <ui/gridmenu.h>
+#include <mlk/ui/gridmenu.h>
 
 struct battle;
 struct battle_bar;

@@ -43,7 +43,7 @@ INCS :=                 -Iextern/libdt \
                         -Iextern/libsqlite \
                         -Ilibmlk-util \
                         -Ilibmlk-core \
-                        -Isrc/libmlk-ui \
+                        -Ilibmlk-ui \
                         -Isrc/libmlk-rpg \
                         -I. \
                         $(SDL2_INCS) \
@@ -161,6 +161,13 @@ LIBMLK_SQLITE_DEPS :=     $(LIBMLK_SQLITE_SRCS:.c=.d)
 
 -include $(LIBMLK_SQLITE_DEPS)
 
+$(LIBMLK_SQLITE_OBJS): private DEFS += -DSQLITE_THREADSAFE=0 \
+                                       -DSQLITE_DEFAULT_MEMSTATUS=0 \
+                                       -DSQLITE_OMIT_DECLTYPE \
+                                       -DSQLITE_OMIT_DEPRECATED \
+                                       -DSQLITE_OMIT_LOAD_EXTENSION \
+                                       -DSQLITE_DEFAULT_FOREIGN_KEY=0
+
 $(LIBMLK_SQLITE): private INCS :=
 $(LIBMLK_SQLITE): private OBJS := $(LIBMLK_SQLITE_OBJS)
 $(LIBMLK_SQLITE): $(LIBMLK_SQLITE_OBJS)
@@ -215,22 +222,22 @@ all: $(LIBMLK_CORE)
 # {{{ libmlk-ui
 
 LIBMLK_UI :=            libmlk-ui.a
-LIBMLK_UI_SRCS :=       src/libmlk-ui/ui/align.c \
-                        src/libmlk-ui/ui/button.c \
-                        src/libmlk-ui/ui/checkbox.c \
-                        src/libmlk-ui/ui/debug.c \
-                        src/libmlk-ui/ui/frame.c \
-                        src/libmlk-ui/ui/gridmenu.c \
-                        src/libmlk-ui/ui/label.c \
-                        src/libmlk-ui/ui/notify.c \
-                        src/libmlk-ui/ui/theme.c \
-                        src/libmlk-ui/ui/ui.c
+LIBMLK_UI_SRCS :=       libmlk-ui/mlk/ui/align.c \
+                        libmlk-ui/mlk/ui/button.c \
+                        libmlk-ui/mlk/ui/checkbox.c \
+                        libmlk-ui/mlk/ui/debug.c \
+                        libmlk-ui/mlk/ui/frame.c \
+                        libmlk-ui/mlk/ui/gridmenu.c \
+                        libmlk-ui/mlk/ui/label.c \
+                        libmlk-ui/mlk/ui/notify.c \
+                        libmlk-ui/mlk/ui/theme.c \
+                        libmlk-ui/mlk/ui/ui.c
 
 LIBMLK_UI_OBJS :=       $(LIBMLK_UI_SRCS:.c=.o)
 LIBMLK_UI_DEPS :=       $(LIBMLK_UI_SRCS:.c=.d)
-LIBMLK_UI_DATA_SRCS :=  src/libmlk-ui/assets/fonts/opensans-light.ttf \
-                        src/libmlk-ui/assets/fonts/opensans-medium.ttf \
-                        src/libmlk-ui/assets/fonts/opensans-regular.ttf
+LIBMLK_UI_DATA_SRCS :=  libmlk-ui/assets/fonts/opensans-light.ttf \
+                        libmlk-ui/assets/fonts/opensans-medium.ttf \
+                        libmlk-ui/assets/fonts/opensans-regular.ttf
 LIBMLK_UI_DATA_OBJS :=  $(addsuffix .h,$(basename $(LIBMLK_UI_DATA_SRCS)))
 
 $(LIBMLK_UI_DATA_OBJS): $(MLK_BCC)

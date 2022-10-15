@@ -29,8 +29,8 @@
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
 
-#include <ui/label.h>
-#include <ui/ui.h>
+#include <mlk/ui/label.h>
+#include <mlk/ui/ui.h>
 
 #define W 1280
 #define H 720

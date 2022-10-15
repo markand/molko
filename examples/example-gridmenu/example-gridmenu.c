@@ -27,11 +27,11 @@
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
 
-#include <ui/align.h>
-#include <ui/gridmenu.h>
-#include <ui/label.h>
-#include <ui/theme.h>
-#include <ui/ui.h>
+#include <mlk/ui/align.h>
+#include <mlk/ui/gridmenu.h>
+#include <mlk/ui/label.h>
+#include <mlk/ui/theme.h>
+#include <mlk/ui/ui.h>
 
 #define W       (1280)
 #define H       (720)

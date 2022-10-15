@@ -29,8 +29,8 @@
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
 
-#include <ui/align.h>
-#include <ui/theme.h>
+#include <mlk/ui/align.h>
+#include <mlk/ui/theme.h>
 
 #include "battle-bar-default.h"
 #include "battle-bar.h"

@@ -26,7 +26,7 @@
 #include <mlk/core/sprite.h>
 #include <mlk/core/util.h>
 
-#include <ui/theme.h>
+#include <mlk/ui/theme.h>
 
 #include "battle-bar.h"
 #include "battle-state-item.h"

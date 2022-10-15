@@ -31,7 +31,7 @@
 #include <mlk/core/texture.h>
 #include <mlk/core/window.h>
 
-#include <ui/debug.h>
+#include <mlk/ui/debug.h>
 
 #include "map.h"
 #include "tileset.h"

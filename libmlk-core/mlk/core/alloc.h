@@ -22,7 +22,6 @@
 #include <stddef.h>
 
 #include "core.h"
-#include "util.h"
 
 /* Must be power of 2. */
 #define ALLOC_POOL_INIT_DEFAULT (32)

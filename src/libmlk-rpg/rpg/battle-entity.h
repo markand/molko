@@ -21,7 +21,7 @@
 
 #include <mlk/core/core.h>
 
-#include <ui/label.h>
+#include <mlk/ui/label.h>
 
 struct battle;
 struct battle_entity_state;

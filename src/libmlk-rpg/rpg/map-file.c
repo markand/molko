@@ -30,6 +30,7 @@
 #include <mlk/core/error.h>
 #include <mlk/core/image.h>
 #include <mlk/core/trace.h>
+#include <mlk/core/util.h>
 
 #include "map-file.h"
 

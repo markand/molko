@@ -25,9 +25,9 @@
 #include <mlk/core/state.h>
 #include <mlk/core/util.h>
 
-#include <ui/debug.h>
-#include <ui/theme.h>
-#include <ui/ui.h>
+#include <mlk/ui/debug.h>
+#include <mlk/ui/theme.h>
+#include <mlk/ui/ui.h>
 
 #define W 1280
 #define H 720

@@ -30,10 +30,10 @@
 #include <mlk/core/trace.h>
 #include <mlk/core/util.h>
 
-#include <ui/align.h>
-#include <ui/frame.h>
-#include <ui/label.h>
-#include <ui/theme.h>
+#include <mlk/ui/align.h>
+#include <mlk/ui/frame.h>
+#include <mlk/ui/label.h>
+#include <mlk/ui/theme.h>
 
 #include "message.h"
 

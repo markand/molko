@@ -30,8 +30,8 @@
 #include <mlk/core/texture.h>
 #include <mlk/core/util.h>
 
-#include <ui/label.h>
-#include <ui/ui.h>
+#include <mlk/ui/label.h>
+#include <mlk/ui/ui.h>
 
 #include <assets/sprites/numbers.h>
 

@@ -29,9 +29,9 @@
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
 
-#include <ui/notify.h>
-#include <ui/label.h>
-#include <ui/ui.h>
+#include <mlk/ui/notify.h>
+#include <mlk/ui/label.h>
+#include <mlk/ui/ui.h>
 
 /* Sword by Icongeek26 (https://www.flaticon.com). */
 #include <assets/images/sword.h>

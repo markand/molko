@@ -25,8 +25,8 @@
 #include <mlk/core/drawable.h>
 #include <mlk/core/drawable-stack.h>
 
-#include <ui/frame.h>
-#include <ui/gridmenu.h>
+#include <mlk/ui/frame.h>
+#include <mlk/ui/gridmenu.h>
 
 #include "battle-entity.h"
 #include "battle-state.h"

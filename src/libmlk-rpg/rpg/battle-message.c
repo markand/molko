@@ -20,9 +20,9 @@
 
 #include <mlk/core/window.h>
 
-#include <ui/align.h>
-#include <ui/frame.h>
-#include <ui/label.h>
+#include <mlk/ui/align.h>
+#include <mlk/ui/frame.h>
+#include <mlk/ui/label.h>
 
 #include "battle-message.h"
 

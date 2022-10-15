@@ -23,7 +23,7 @@
 #include <mlk/core/drawable.h>
 #include <mlk/core/alloc.h>
 
-#include <ui/align.h>
+#include <mlk/ui/align.h>
 
 #include <rpg/battle-state-check.h>
 #include <rpg/battle-state-rendering.h>
