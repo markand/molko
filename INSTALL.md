@@ -13,8 +13,6 @@ Requirements
 - [SDL2_image][], Image loading addon for SDL2.
 - [SDL2_mixer][], Audio addon for SDL2.
 - [SDL2_ttf][], Fonts addon for SDL2.
-- [zstd][], For compression (optional).
-- [libzip][], For ZIP vfs support (optional).
 
 Molko's Engine is mostly written in pure C99 with a very limited POSIX
 extensions (including `stat`, `strlcpy`, `fmemopen`) but where support is
@@ -47,9 +45,6 @@ Available options
 
 The following make variables as available:
 
-- `WITH_ZSTD`: Enable map and tileset compression through [zstd][] (default:
-  yes).
-- `WITH_ZIP`: Enable ZIP file support through VFS API (default: yes).
 - `WITH_DEBUG`: Disable optimizations and turn on debug symbols (default: no).
 
 The following make variables changes installation directories:
@@ -73,8 +68,6 @@ You will need the following packages:
 - sdl2_image
 - sdl2_mixer
 - sdl2_ttf
-- zstd (only if `WITH_ZSTD` is enabled)
-- libzip (only if `WITH_ZIP` is enabled)
 
 Platform: Windows
 -----------------
@@ -93,8 +86,6 @@ appropriate MinGW shell prior to the chapter above.
 - *mingw-w64-clang-x86_64-SDL2_mixer*
 - *mingw-w64-clang-x86_64-SDL2_ttf*
 - *mingw-w64-clang-x86_64-jansson*
-- *mingw-w64-clang-x86_64-zstd* (only if `WITH_ZSTD` is enabled)
-- *mingw-w64-clang-x86_64-zip* (only if `WITH_ZSTD` is enabled)
 
 Note: replace `x86_64` with `i686` if you have a deprecated system or if you
       have issues while debugging (MinGW-w64 and/or gdb have known issues in
@@ -125,4 +116,3 @@ need a POSIX compliant toolset such as [MSYS2][] and add it to your path.
 [SDL2_mixer]: https://www.libsdl.org/projects/SDL_mixer
 [SDL2_ttf]: https://www.libsdl.org/projects/SDL_ttf
 [gettext]: https://www.gnu.org/software/gettext
-[zstd]: http://facebook.github.io/zstd
