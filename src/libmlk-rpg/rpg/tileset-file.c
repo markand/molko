@@ -31,7 +31,6 @@
 #include <core/error.h>
 #include <core/image.h>
 #include <core/util.h>
-#include <core/zfile.h>
 
 #include "tileset-file.h"
 #include "tileset.h"
@@ -306,20 +305,16 @@ tileset_file_open(struct tileset_file *tf, struct tileset *tileset, const char *
 		.tf = tf,
 		.tileset = tileset
 	};
-	struct zfile zf;
 	int ret = 0;
 
 	memset(tileset, 0, sizeof (*tileset));
 
-	if (zfile_open(&zf, path) < 0)
-		return errorf("%s: %s", path, strerror(errno));
-
-	ctx.fp = zf.fp;
-
+	if (!(ctx.fp = fopen(path, "r")))
+		return -1;
 	if ((ret = parse(&ctx, path)) < 0 || (ret = check(tileset)) < 0)
 		tileset_file_finish(tf);
 
-	zfile_close(&zf);
+	fclose(ctx.fp);
 
 	return ret;
 }

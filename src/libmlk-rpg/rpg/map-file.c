@@ -30,7 +30,6 @@
 #include <core/error.h>
 #include <core/image.h>
 #include <core/trace.h>
-#include <core/zfile.h>
 
 #include "map-file.h"
 
@@ -272,30 +271,26 @@ map_file_open(struct map_file *file, struct map *map, const char *path)
 		.mf = file,
 		.map = map,
 	};
-	struct zfile zf;
 	int ret = 0;
 
 	memset(map, 0, sizeof (*map));
-
 	alloc_pool_init(&file->blocks, sizeof (*map->blocks), NULL);
 
-	if (zfile_open(&zf, path) < 0)
+	if (!(ctx.fp = fopen(path, "r")))
 		goto fail;
-
-	ctx.fp = zf.fp;
-
 	if ((ret = parse(&ctx, path)) < 0 || (ret = check(map)) < 0)
 		goto fail;
 
-	zfile_close(&zf);
+	fclose(ctx.fp);
 
 	return 0;
 
 fail:
-	errorf("%s: %s", path, strerror(errno));
 	map_finish(map);
 	map_file_finish(file);
-	zfile_close(&zf);
+
+	if (ctx.fp)
+		fclose(ctx.fp);
 
 	return -1;
 }

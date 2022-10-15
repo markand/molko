@@ -10,7 +10,6 @@ LIBDIR ?=               $(PREFIX)/lib
 INCDIR ?=               $(PREFIX)/include
 
 # User options.
-WITH_ZSTD ?=            yes
 WITH_DEBUG ?=           no
 
 OS :=                   $(shell uname -s)
@@ -29,11 +28,6 @@ SNDFILE_LIBS ?=         $(shell pkg-config --libs sndfile)
 
 JANSSON_INCS ?=         $(shell pkg-config --cflags jansson)
 JANSSON_LIBS ?=         $(shell pkg-config --libs jansson)
-
-ifeq ($(WITH_ZSTD),yes)
-ZSTD_INCS ?=            $(shell pkg-config --cflags libzstd)
-ZSTD_LIBS ?=            $(shell pkg-config --libs libzstd)
-endif
 
 ifeq ($(OS),Darwin)
 OPENAL_LIBS ?=          -framework OpenAL
@@ -57,10 +51,6 @@ INCS :=                 -Iextern/libdt \
                         $(SDL2_TTF_INCS) \
                         $(OPENAL_INCS) \
                         $(SNDFILE_INCS)
-
-ifeq ($(WITH_ZSTD),yes)
-INCS +=                 $(ZSTD_INCS)
-endif
 
 OPTS :=                 -Wall -Wextra -pipe
 
@@ -90,10 +80,6 @@ LIBMLK =                $(LIBMLK_RPG) \
                         $(OPENAL_LIBS) \
                         $(SNDFILE_LIBS)
 
-ifeq ($(WITH_ZSTD),yes)
-LIBMLK +=               $(ZSTD_LIBS)
-endif
-
 .DEFAULT_GOAL :=        all
 
 .SUFFIXES:
@@ -110,17 +96,6 @@ endif
 
 %.a:
 	$(AR) -rc $@ $(OBJS)
-
-# {{{ config.h
-
-config.h:
-	rm -f config.h
-	touch config.h
-ifeq ($(WITH_ZSTD),yes)
-	echo "#define MLK_WITH_ZSTD" >> config.h
-endif
-
-# }}}
 
 # {{{ libmlk-util
 
@@ -224,14 +199,12 @@ LIBMLK_CORE_SRCS :=     src/libmlk-core/core/action-stack.c \
                         src/libmlk-core/core/texture.c \
                         src/libmlk-core/core/trace.c \
                         src/libmlk-core/core/util.c \
-                        src/libmlk-core/core/window.c \
-                        src/libmlk-core/core/zfile.c
+                        src/libmlk-core/core/window.c
 LIBMLK_CORE_OBJS :=     $(LIBMLK_CORE_SRCS:.c=.o)
 LIBMLK_CORE_DEPS :=     $(LIBMLK_CORE_SRCS:.c=.d)
 
 -include $(LIBMLK_CORE_DEPS)
 
-$(LIBMLK_CORE_OBJS): config.h
 $(LIBMLK_CORE): private OBJS := $(LIBMLK_CORE_OBJS)
 $(LIBMLK_CORE): $(LIBMLK_CORE_OBJS)
 
@@ -449,7 +422,6 @@ install:
 	cp -R src/libmlk-rpg/rpg/*.h $(DESTDIR)$(INCDIR)/mlk/rpg
 
 clean:
-	rm -f config.h
 	rm -f $(MLK_BCC) $(MLK_MAP) $(MLK_TILESET)
 	rm -f $(LIBMLK_SQLITE) $(LIBMLK_SQLITE_DEPS) $(LIBMLK_SQLITE_OBJS)
 	rm -f $(LIBMLK_UTIL) $(LIBMLK_UTIL_DEPS) $(LIBMLK_UTIL_OBJS)
