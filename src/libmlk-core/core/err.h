@@ -20,7 +20,7 @@
 #define MLK_ERR_H
 
 #define ERR_NONE         0
-#define ERR_INTERNAL    -1
+#define ERR_SDL         -1
 #define ERR_NO_MEM      -2
 #define ERR_NO_SUPPORT  -3
 

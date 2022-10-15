@@ -24,7 +24,7 @@ const char *
 err_string(int e)
 {
 	switch (e) {
-	case ERR_INTERNAL:
+	case ERR_SDL:
 		return SDL_GetError();
 	case ERR_NO_MEM:
 		return "out of memory";

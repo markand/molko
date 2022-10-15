@@ -21,7 +21,7 @@
 
 #include <SDL.h>
 
-#include "error.h"
+#include "err.h"
 #include "util.h"
 #include "window.h"
 #include "window_p.h"
@@ -84,7 +84,7 @@ window_open(const char *title, unsigned int w, unsigned int h)
 	assert(title);
 
 	if (!load_window(title, w, h) || !load_renderer())
-		return errorf("%s", SDL_GetError());
+		return ERR_SDL;
 
 	window.w = w;
 	window.h = h;
