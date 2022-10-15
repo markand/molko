@@ -10,7 +10,6 @@ LIBDIR ?=               $(PREFIX)/lib
 INCDIR ?=               $(PREFIX)/include
 
 # User options.
-WITH_ZIP ?=             yes
 WITH_ZSTD ?=            yes
 WITH_DEBUG ?=           no
 
@@ -34,11 +33,6 @@ JANSSON_LIBS ?=         $(shell pkg-config --libs jansson)
 ifeq ($(WITH_ZSTD),yes)
 ZSTD_INCS ?=            $(shell pkg-config --cflags libzstd)
 ZSTD_LIBS ?=            $(shell pkg-config --libs libzstd)
-endif
-
-ifeq ($(WITH_ZIP),yes)
-LIBZIP_INCS ?=          $(shell pkg-config --cflags libzip)
-LIBZIP_LIBS ?=          $(shell pkg-config --libs libzip)
 endif
 
 ifeq ($(OS),Darwin)
@@ -66,10 +60,6 @@ INCS :=                 -Iextern/libdt \
 
 ifeq ($(WITH_ZSTD),yes)
 INCS +=                 $(ZSTD_INCS)
-endif
-
-ifeq ($(WITH_ZIP),yes)
-INCS +=                 $(ZIP_INCS)
 endif
 
 OPTS :=                 -Wall -Wextra -pipe
@@ -104,10 +94,6 @@ ifeq ($(WITH_ZSTD),yes)
 LIBMLK +=               $(ZSTD_LIBS)
 endif
 
-ifeq ($(WITH_ZIP),yes)
-LIBMLK +=               $(LIBZIP_LIBS)
-endif
-
 .DEFAULT_GOAL :=        all
 
 .SUFFIXES:
@@ -132,9 +118,6 @@ config.h:
 	touch config.h
 ifeq ($(WITH_ZSTD),yes)
 	echo "#define MLK_WITH_ZSTD" >> config.h
-endif
-ifeq ($(WITH_ZIP),yes)
-	echo "#define MLK_WITH_ZIP" >> config.h
 endif
 
 # }}}
@@ -241,9 +224,6 @@ LIBMLK_CORE_SRCS :=     src/libmlk-core/core/action-stack.c \
                         src/libmlk-core/core/texture.c \
                         src/libmlk-core/core/trace.c \
                         src/libmlk-core/core/util.c \
-                        src/libmlk-core/core/vfs-directory.c \
-                        src/libmlk-core/core/vfs-zip.c \
-                        src/libmlk-core/core/vfs.c \
                         src/libmlk-core/core/window.c \
                         src/libmlk-core/core/zfile.c
 LIBMLK_CORE_OBJS :=     $(LIBMLK_CORE_SRCS:.c=.o)
@@ -439,12 +419,7 @@ TESTS :=        tests/test-action-script.c \
                 tests/test-save.c \
                 tests/test-state.c \
                 tests/test-tileset.c \
-                tests/test-util.c \
-                tests/test-vfs-directory.c \
-
-ifeq ($(WITH_ZIP),yes)
-TESTS +=        tests/test-vfs-zip.c
-endif
+                tests/test-util.c
 
 TESTS_EXE :=    $(TESTS:.c=)
 
