@@ -22,8 +22,6 @@
 
 #include "error.h"
 #include "sound.h"
-#include "vfs.h"
-#include "vfs_p.h"
 #include "sys_p.h"
 
 #define SOURCE(snd) ((const struct audiostream *)snd->handle)->source
@@ -50,26 +48,6 @@ sound_openmem(struct sound *snd, const void *buffer, size_t buffersz)
 		return -1;
 
 	return 0;
-}
-
-int
-sound_openvfs(struct sound *snd, struct vfs_file *file)
-{
-	assert(snd);
-	assert(vfs_file_ok(file));
-
-	char *data;
-	size_t datasz;
-	int ret = 0;
-
-	if (!(data = vfs_file_aread(file, &datasz)))
-		return -1;
-	if (!(snd->handle = audiostream_openmem(data, datasz)))
-		ret = -1;
-
-	free(data);
-
-	return ret;
 }
 
 int
