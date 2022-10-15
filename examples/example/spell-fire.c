@@ -25,11 +25,11 @@
 
 #include <mlk/ui/align.h>
 
-#include <rpg/battle-state-check.h>
-#include <rpg/battle-state-rendering.h>
-#include <rpg/battle.h>
-#include <rpg/character.h>
-#include <rpg/spell.h>
+#include <mlk/rpg/battle-state-check.h>
+#include <mlk/rpg/battle-state-rendering.h>
+#include <mlk/rpg/battle.h>
+#include <mlk/rpg/character.h>
+#include <mlk/rpg/spell.h>
 
 #include "registry.h"
 #include "spell-fire.h"

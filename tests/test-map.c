@@ -22,8 +22,8 @@
 #include <mlk/core/sys.h>
 #include <mlk/core/window.h>
 
-#include <rpg/map-file.h>
-#include <rpg/map.h>
+#include <mlk/rpg/map-file.h>
+#include <mlk/rpg/map.h>
 
 #include <dt.h>
 

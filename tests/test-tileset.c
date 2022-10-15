@@ -19,8 +19,8 @@
 #include <mlk/core/core.h>
 #include <mlk/core/window.h>
 
-#include <rpg/tileset-file.h>
-#include <rpg/tileset.h>
+#include <mlk/rpg/tileset-file.h>
+#include <mlk/rpg/tileset.h>
 
 #include <dt.h>
 

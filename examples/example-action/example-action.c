@@ -38,8 +38,8 @@
 #include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
-#include <rpg/message.h>
-#include <rpg/rpg.h>
+#include <mlk/rpg/message.h>
+#include <mlk/rpg/rpg.h>
 
 #include <assets/sprites/chest.h>
 #include <assets/sprites/people.h>

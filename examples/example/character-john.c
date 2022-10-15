@@ -16,7 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <rpg/character.h>
+#include <mlk/rpg/character.h>
 
 #include "character-john.h"
 #include "spell-fire.h"

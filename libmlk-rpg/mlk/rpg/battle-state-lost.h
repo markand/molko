@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_BATTLE_STATE_LOST_H
 #define MLK_RPG_BATTLE_STATE_LOST_H
 
-#include <rpg/message.h>
+#include <mlk/rpg/message.h>
 
 union event;
 

@@ -1,5 +1,5 @@
 /*
- * battle-entity-state-moving.h -- the entity is moving
+ * battle-state-victory.h -- battle state (victory)
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,29 +16,33 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_RPG_BATTLE_ENTITY_STATE_MOVING_H
-#define MLK_RPG_BATTLE_ENTITY_STATE_MOVING_H
+#ifndef MLK_RPG_BATTLE_STATE_VICTORY_H
+#define MLK_RPG_BATTLE_STATE_VICTORY_H
 
-#include <rpg/walksprite.h>
+#include <mlk/rpg/message.h>
 
-struct battle_entity;
+struct battle;
 
-struct battle_entity_state_moving {
-	struct walksprite ws;
-	int x;
-	int y;
+union event;
+
+struct battle_state_victory {
+	const char *text;
+	struct message msg;
 };
 
 void
-battle_entity_state_moving_init(struct battle_entity_state_moving *, struct battle_entity *, int, int);
+battle_state_victory_init(struct battle_state_victory *, struct battle *);
+
+void
+battle_state_victory_handle(struct battle_state_victory *, const union event *);
 
 int
-battle_entity_state_moving_update(struct battle_entity_state_moving *, struct battle_entity *, unsigned int);
+battle_state_victory_update(struct battle_state_victory *, struct battle *, unsigned int);
 
 void
-battle_entity_state_moving_draw(const struct battle_entity_state_moving *, const struct battle_entity *);
+battle_state_victory_draw(const struct battle_state_victory *, const struct battle *);
 
 void
-battle_entity_state_moving(struct battle_entity *, int, int);
+battle_state_victory(struct battle *);
 
-#endif /* !MLK_RPG_BATTLE_ENTITY_STATE_MOVING_H */
+#endif /* !MLK_RPG_BATTLE_STATE_VICTORY_H */

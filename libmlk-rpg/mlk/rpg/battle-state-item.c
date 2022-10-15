@@ -22,9 +22,6 @@
 #include <mlk/core/alloc.h>
 #include <mlk/core/panic.h>
 
-#include <rpg/inventory.h>
-#include <rpg/item.h>
-
 #include "battle-entity-state-moving.h"
 #include "battle-entity-state-normal.h"
 #include "battle-entity-state.h"
@@ -32,6 +29,8 @@
 #include "battle-state-item.h"
 #include "battle-state.h"
 #include "battle.h"
+#include "inventory.h"
+#include "item.h"
 
 struct self {
 	struct battle_state_item data;

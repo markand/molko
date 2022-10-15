@@ -20,8 +20,8 @@
 
 #include <mlk/core/util.h>
 
-#include <rpg/quest.h>
-#include <rpg/save.h>
+#include <mlk/rpg/quest.h>
+#include <mlk/rpg/save.h>
 
 #include <dt.h>
 

@@ -44,7 +44,7 @@ INCS :=                 -Iextern/libdt \
                         -Ilibmlk-util \
                         -Ilibmlk-core \
                         -Ilibmlk-ui \
-                        -Isrc/libmlk-rpg \
+                        -Ilibmlk-rpg \
                         -I. \
                         $(SDL2_INCS) \
                         $(SDL2_IMAGE_INCS) \
@@ -254,59 +254,59 @@ all: $(LIBMLK_UI)
 # {{{ libmlk-rpg
 
 LIBMLK_RPG :=           libmlk-rpg.a
-LIBMLK_RPG_SRCS :=      src/libmlk-rpg/rpg/battle-bar-default.c \
-                        src/libmlk-rpg/rpg/battle-bar.c \
-                        src/libmlk-rpg/rpg/battle-entity-state-attacking.c \
-                        src/libmlk-rpg/rpg/battle-entity-state-blinking.c \
-                        src/libmlk-rpg/rpg/battle-entity-state-moving.c \
-                        src/libmlk-rpg/rpg/battle-entity-state-normal.c \
-                        src/libmlk-rpg/rpg/battle-entity-state.c \
-                        src/libmlk-rpg/rpg/battle-entity.c \
-                        src/libmlk-rpg/rpg/battle-indicator.c \
-                        src/libmlk-rpg/rpg/battle-message.c \
-                        src/libmlk-rpg/rpg/battle-state-ai.c \
-                        src/libmlk-rpg/rpg/battle-state-attacking.c \
-                        src/libmlk-rpg/rpg/battle-state-check.c \
-                        src/libmlk-rpg/rpg/battle-state-closing.c \
-                        src/libmlk-rpg/rpg/battle-state-item.c \
-                        src/libmlk-rpg/rpg/battle-state-lost.c \
-                        src/libmlk-rpg/rpg/battle-state-menu.c \
-                        src/libmlk-rpg/rpg/battle-state-opening.c \
-                        src/libmlk-rpg/rpg/battle-state-rendering.c \
-                        src/libmlk-rpg/rpg/battle-state-selection.c \
-                        src/libmlk-rpg/rpg/battle-state-victory.c \
-                        src/libmlk-rpg/rpg/battle-state.c \
-                        src/libmlk-rpg/rpg/battle.c \
-                        src/libmlk-rpg/rpg/character.c \
-                        src/libmlk-rpg/rpg/equipment.c \
-                        src/libmlk-rpg/rpg/inventory.c \
-                        src/libmlk-rpg/rpg/item.c \
-                        src/libmlk-rpg/rpg/map-file.c \
-                        src/libmlk-rpg/rpg/map.c \
-                        src/libmlk-rpg/rpg/message.c \
-                        src/libmlk-rpg/rpg/property.c \
-                        src/libmlk-rpg/rpg/quest.c \
-                        src/libmlk-rpg/rpg/rpg.c \
-                        src/libmlk-rpg/rpg/save.c \
-                        src/libmlk-rpg/rpg/selection.c \
-                        src/libmlk-rpg/rpg/spell.c \
-                        src/libmlk-rpg/rpg/team.c \
-                        src/libmlk-rpg/rpg/tileset-file.c \
-                        src/libmlk-rpg/rpg/tileset.c \
-                        src/libmlk-rpg/rpg/walksprite.c
+LIBMLK_RPG_SRCS :=      libmlk-rpg/mlk/rpg/battle-bar-default.c \
+                        libmlk-rpg/mlk/rpg/battle-bar.c \
+                        libmlk-rpg/mlk/rpg/battle-entity-state-attacking.c \
+                        libmlk-rpg/mlk/rpg/battle-entity-state-blinking.c \
+                        libmlk-rpg/mlk/rpg/battle-entity-state-moving.c \
+                        libmlk-rpg/mlk/rpg/battle-entity-state-normal.c \
+                        libmlk-rpg/mlk/rpg/battle-entity-state.c \
+                        libmlk-rpg/mlk/rpg/battle-entity.c \
+                        libmlk-rpg/mlk/rpg/battle-indicator.c \
+                        libmlk-rpg/mlk/rpg/battle-message.c \
+                        libmlk-rpg/mlk/rpg/battle-state-ai.c \
+                        libmlk-rpg/mlk/rpg/battle-state-attacking.c \
+                        libmlk-rpg/mlk/rpg/battle-state-check.c \
+                        libmlk-rpg/mlk/rpg/battle-state-closing.c \
+                        libmlk-rpg/mlk/rpg/battle-state-item.c \
+                        libmlk-rpg/mlk/rpg/battle-state-lost.c \
+                        libmlk-rpg/mlk/rpg/battle-state-menu.c \
+                        libmlk-rpg/mlk/rpg/battle-state-opening.c \
+                        libmlk-rpg/mlk/rpg/battle-state-rendering.c \
+                        libmlk-rpg/mlk/rpg/battle-state-selection.c \
+                        libmlk-rpg/mlk/rpg/battle-state-victory.c \
+                        libmlk-rpg/mlk/rpg/battle-state.c \
+                        libmlk-rpg/mlk/rpg/battle.c \
+                        libmlk-rpg/mlk/rpg/character.c \
+                        libmlk-rpg/mlk/rpg/equipment.c \
+                        libmlk-rpg/mlk/rpg/inventory.c \
+                        libmlk-rpg/mlk/rpg/item.c \
+                        libmlk-rpg/mlk/rpg/map-file.c \
+                        libmlk-rpg/mlk/rpg/map.c \
+                        libmlk-rpg/mlk/rpg/message.c \
+                        libmlk-rpg/mlk/rpg/property.c \
+                        libmlk-rpg/mlk/rpg/quest.c \
+                        libmlk-rpg/mlk/rpg/rpg.c \
+                        libmlk-rpg/mlk/rpg/save.c \
+                        libmlk-rpg/mlk/rpg/selection.c \
+                        libmlk-rpg/mlk/rpg/spell.c \
+                        libmlk-rpg/mlk/rpg/team.c \
+                        libmlk-rpg/mlk/rpg/tileset-file.c \
+                        libmlk-rpg/mlk/rpg/tileset.c \
+                        libmlk-rpg/mlk/rpg/walksprite.c
 LIBMLK_RPG_OBJS :=      $(LIBMLK_RPG_SRCS:.c=.o)
 LIBMLK_RPG_DEPS :=      $(LIBMLK_RPG_SRCS:.c=.d)
 
-LIBMLK_RPG_DATA_SRCS := src/libmlk-rpg/assets/sql/character-load.sql \
-                        src/libmlk-rpg/assets/sql/character-save.sql \
-                        src/libmlk-rpg/assets/sql/init.sql \
-                        src/libmlk-rpg/assets/sql/property-load.sql \
-                        src/libmlk-rpg/assets/sql/property-remove.sql \
-                        src/libmlk-rpg/assets/sql/property-save.sql \
-                        src/libmlk-rpg/assets/sql/quest-remove.sql \
-                        src/libmlk-rpg/assets/sql/quest-save.sql \
-                        src/libmlk-rpg/assets/sql/quest-step-load.sql \
-                        src/libmlk-rpg/assets/sql/quest-step-save.sql
+LIBMLK_RPG_DATA_SRCS := libmlk-rpg/assets/sql/character-load.sql \
+                        libmlk-rpg/assets/sql/character-save.sql \
+                        libmlk-rpg/assets/sql/init.sql \
+                        libmlk-rpg/assets/sql/property-load.sql \
+                        libmlk-rpg/assets/sql/property-remove.sql \
+                        libmlk-rpg/assets/sql/property-save.sql \
+                        libmlk-rpg/assets/sql/quest-remove.sql \
+                        libmlk-rpg/assets/sql/quest-save.sql \
+                        libmlk-rpg/assets/sql/quest-step-load.sql \
+                        libmlk-rpg/assets/sql/quest-step-save.sql
 LIBMLK_RPG_DATA_OBJS := $(addsuffix .h,$(basename $(LIBMLK_RPG_DATA_SRCS)))
 
 $(LIBMLK_RPG_DATA_OBJS): BCC_OPTS := -cs0

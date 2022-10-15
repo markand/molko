@@ -19,8 +19,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <rpg/character.h>
-#include <rpg/save.h>
+#include <mlk/rpg/character.h>
+#include <mlk/rpg/save.h>
 
 #include <dt.h>
 

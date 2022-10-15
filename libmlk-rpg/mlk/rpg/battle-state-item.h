@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_BATTLE_STATE_ITEM_H
 #define MLK_RPG_BATTLE_STATE_ITEM_H
 
-#include <rpg/battle-message.h>
+#include <mlk/rpg/battle-message.h>
 
 struct battle;
 struct battle_entity;

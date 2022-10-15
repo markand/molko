@@ -1,5 +1,5 @@
 /*
- * battle-state-selection.h -- battle state (selection)
+ * battle-entity-state-moving.h -- the entity is moving
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,29 +16,29 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_RPG_BATTLE_STATE_SELECTION_H
-#define MLK_RPG_BATTLE_STATE_SELECTION_H
+#ifndef MLK_RPG_BATTLE_ENTITY_STATE_MOVING_H
+#define MLK_RPG_BATTLE_ENTITY_STATE_MOVING_H
 
-#include <rpg/selection.h>
+#include <mlk/rpg/walksprite.h>
 
-struct battle;
+struct battle_entity;
 
-union event;
-
-struct battle_state_selection {
-	struct selection select;
+struct battle_entity_state_moving {
+	struct walksprite ws;
+	int x;
+	int y;
 };
 
 void
-battle_state_selection_init(struct battle_state_selection *, const struct selection *);
+battle_entity_state_moving_init(struct battle_entity_state_moving *, struct battle_entity *, int, int);
+
+int
+battle_entity_state_moving_update(struct battle_entity_state_moving *, struct battle_entity *, unsigned int);
 
 void
-battle_state_selection_handle(struct battle_state_selection *, struct battle *, const union event *);
+battle_entity_state_moving_draw(const struct battle_entity_state_moving *, const struct battle_entity *);
 
 void
-battle_state_selection_draw(const struct battle_state_selection *, const struct battle *);
+battle_entity_state_moving(struct battle_entity *, int, int);
 
-void
-battle_state_selection(struct battle *, const struct selection *);
-
-#endif /* !MLK_RPG_BATTLE_STATE_SELECTION_H */
+#endif /* !MLK_RPG_BATTLE_ENTITY_STATE_MOVING_H */

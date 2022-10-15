@@ -1,5 +1,5 @@
 /*
- * battle-state-victory.h -- battle state (victory)
+ * battle-state-selection.h -- battle state (selection)
  *
  * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
@@ -16,33 +16,29 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_RPG_BATTLE_STATE_VICTORY_H
-#define MLK_RPG_BATTLE_STATE_VICTORY_H
+#ifndef MLK_RPG_BATTLE_STATE_SELECTION_H
+#define MLK_RPG_BATTLE_STATE_SELECTION_H
 
-#include <rpg/message.h>
+#include <mlk/rpg/selection.h>
 
 struct battle;
 
 union event;
 
-struct battle_state_victory {
-	const char *text;
-	struct message msg;
+struct battle_state_selection {
+	struct selection select;
 };
 
 void
-battle_state_victory_init(struct battle_state_victory *, struct battle *);
+battle_state_selection_init(struct battle_state_selection *, const struct selection *);
 
 void
-battle_state_victory_handle(struct battle_state_victory *, const union event *);
-
-int
-battle_state_victory_update(struct battle_state_victory *, struct battle *, unsigned int);
+battle_state_selection_handle(struct battle_state_selection *, struct battle *, const union event *);
 
 void
-battle_state_victory_draw(const struct battle_state_victory *, const struct battle *);
+battle_state_selection_draw(const struct battle_state_selection *, const struct battle *);
 
 void
-battle_state_victory(struct battle *);
+battle_state_selection(struct battle *, const struct selection *);
 
-#endif /* !MLK_RPG_BATTLE_STATE_VICTORY_H */
+#endif /* !MLK_RPG_BATTLE_STATE_SELECTION_H */

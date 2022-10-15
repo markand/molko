@@ -32,8 +32,8 @@
 #include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
-#include <rpg/message.h>
-#include <rpg/rpg.h>
+#include <mlk/rpg/message.h>
+#include <mlk/rpg/rpg.h>
 
 #define W       (1280)
 #define H       (720)
