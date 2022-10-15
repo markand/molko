@@ -23,8 +23,6 @@
 
 #include "core.h"
 
-struct vfs_file;
-
 enum music_flags {
 	MUSIC_NONE      = 0,
 	MUSIC_LOOP      = (1 << 0)
@@ -41,9 +39,6 @@ music_open(struct music *, const char *);
 
 int
 music_openmem(struct music *, const void *, size_t);
-
-int
-music_openvfs(struct music *, struct vfs_file *);
 
 int
 music_ok(const struct music *);

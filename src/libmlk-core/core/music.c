@@ -19,10 +19,8 @@
 #include <assert.h>
 #include <string.h>
 
-#include "error.h"
+#include "err.h"
 #include "music.h"
-#include "vfs.h"
-#include "vfs_p.h"
 #include "sys_p.h"
 
 #define SOURCE(mus) ((const struct audiostream *)mus->handle)->source
@@ -47,19 +45,6 @@ music_openmem(struct music *mus, const void *buffer, size_t buffersz)
 
 	if (!(mus->handle = audiostream_openmem(buffer, buffersz)))
 		return -1;
-
-	return 0;
-}
-
-int
-music_openvfs(struct music *mus, struct vfs_file *file)
-{
-	assert(mus);
-	assert(vfs_file_ok(file));
-
-	// TODO: implement this.
-	(void)mus;
-	(void)file;
 
 	return 0;
 }

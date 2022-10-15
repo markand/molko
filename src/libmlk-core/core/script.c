@@ -21,7 +21,7 @@
 #include <string.h>
 
 #include "action.h"
-#include "error.h"
+#include "err.h"
 #include "script.h"
 
 static struct action *
@@ -72,7 +72,7 @@ script_append(struct script *s, struct action *a)
 	assert(a);
 
 	if (s->actionsz >= SCRIPT_ACTION_MAX)
-		return errorf("script is full");
+		return ERR_NO_MEM;
 
 	s->actions[s->actionsz++] = a;
 
@@ -86,7 +86,7 @@ script_handle(struct script *s, const union event *ev)
 	assert(ev);
 
 	struct action *a = current(s);
-	
+
 	if (a)
 		action_handle(a, ev);
 }
