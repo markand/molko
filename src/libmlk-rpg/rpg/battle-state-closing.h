@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_BATTLE_STATE_CLOSING_H
 #define MLK_RPG_BATTLE_STATE_CLOSING_H
 
-#include <core/texture.h>
+#include <mlk/core/texture.h>
 
 struct battle;
 

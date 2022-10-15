@@ -42,7 +42,7 @@ MATH_LIBS ?=            -lm
 INCS :=                 -Iextern/libdt \
                         -Iextern/libsqlite \
                         -Isrc/libmlk-util \
-                        -Isrc/libmlk-core \
+                        -Ilibmlk-core \
                         -Isrc/libmlk-ui \
                         -Isrc/libmlk-rpg \
                         -I. \
@@ -172,34 +172,34 @@ all: $(LIBMLK_SQLITE)
 # {{{ libmlk-core
 
 LIBMLK_CORE :=          libmlk-core.a
-LIBMLK_CORE_SRCS :=     src/libmlk-core/core/action-stack.c \
-                        src/libmlk-core/core/action.c \
-                        src/libmlk-core/core/alloc.c \
-                        src/libmlk-core/core/animation.c \
-                        src/libmlk-core/core/buf.c \
-                        src/libmlk-core/core/clock.c \
-                        src/libmlk-core/core/core.c \
-                        src/libmlk-core/core/drawable-stack.c \
-                        src/libmlk-core/core/drawable.c \
-                        src/libmlk-core/core/err.c \
-                        src/libmlk-core/core/error.c \
-                        src/libmlk-core/core/event.c \
-                        src/libmlk-core/core/font.c \
-                        src/libmlk-core/core/game.c \
-                        src/libmlk-core/core/image.c \
-                        src/libmlk-core/core/maths.c \
-                        src/libmlk-core/core/music.c \
-                        src/libmlk-core/core/painter.c \
-                        src/libmlk-core/core/panic.c \
-                        src/libmlk-core/core/script.c \
-                        src/libmlk-core/core/sound.c \
-                        src/libmlk-core/core/sprite.c \
-                        src/libmlk-core/core/state.c \
-                        src/libmlk-core/core/sys.c \
-                        src/libmlk-core/core/texture.c \
-                        src/libmlk-core/core/trace.c \
-                        src/libmlk-core/core/util.c \
-                        src/libmlk-core/core/window.c
+LIBMLK_CORE_SRCS :=     libmlk-core/mlk/core/action-stack.c \
+                        libmlk-core/mlk/core/action.c \
+                        libmlk-core/mlk/core/alloc.c \
+                        libmlk-core/mlk/core/animation.c \
+                        libmlk-core/mlk/core/buf.c \
+                        libmlk-core/mlk/core/clock.c \
+                        libmlk-core/mlk/core/core.c \
+                        libmlk-core/mlk/core/drawable-stack.c \
+                        libmlk-core/mlk/core/drawable.c \
+                        libmlk-core/mlk/core/err.c \
+                        libmlk-core/mlk/core/error.c \
+                        libmlk-core/mlk/core/event.c \
+                        libmlk-core/mlk/core/font.c \
+                        libmlk-core/mlk/core/game.c \
+                        libmlk-core/mlk/core/image.c \
+                        libmlk-core/mlk/core/maths.c \
+                        libmlk-core/mlk/core/music.c \
+                        libmlk-core/mlk/core/painter.c \
+                        libmlk-core/mlk/core/panic.c \
+                        libmlk-core/mlk/core/script.c \
+                        libmlk-core/mlk/core/sound.c \
+                        libmlk-core/mlk/core/sprite.c \
+                        libmlk-core/mlk/core/state.c \
+                        libmlk-core/mlk/core/sys.c \
+                        libmlk-core/mlk/core/texture.c \
+                        libmlk-core/mlk/core/trace.c \
+                        libmlk-core/mlk/core/util.c \
+                        libmlk-core/mlk/core/window.c
 LIBMLK_CORE_OBJS :=     $(LIBMLK_CORE_SRCS:.c=.o)
 LIBMLK_CORE_DEPS :=     $(LIBMLK_CORE_SRCS:.c=.d)
 

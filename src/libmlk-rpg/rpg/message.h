@@ -19,8 +19,8 @@
 #ifndef MLK_RPG_MESSAGE_H
 #define MLK_RPG_MESSAGE_H
 
-#include <core/core.h>
-#include <core/texture.h>
+#include <mlk/core/core.h>
+#include <mlk/core/texture.h>
 
 struct action;
 struct font;

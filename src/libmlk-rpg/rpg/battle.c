@@ -21,15 +21,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <core/alloc.h>
-#include <core/event.h>
-#include <core/font.h>
-#include <core/music.h>
-#include <core/sprite.h>
-#include <core/texture.h>
-#include <core/trace.h>
-#include <core/util.h>
-#include <core/window.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/event.h>
+#include <mlk/core/font.h>
+#include <mlk/core/music.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/texture.h>
+#include <mlk/core/trace.h>
+#include <mlk/core/util.h>
+#include <mlk/core/window.h>
 
 #include <ui/align.h>
 #include <ui/frame.h>

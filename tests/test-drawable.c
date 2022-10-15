@@ -16,10 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/drawable-stack.h>
-#include <core/drawable.h>
-#include <core/err.h>
-#include <core/event.h>
+#include <mlk/core/drawable-stack.h>
+#include <mlk/core/drawable.h>
+#include <mlk/core/err.h>
+#include <mlk/core/event.h>
 
 #include <dt.h>
 

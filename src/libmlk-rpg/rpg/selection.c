@@ -18,7 +18,7 @@
 
 #include <assert.h>
 
-#include <core/util.h>
+#include <mlk/core/util.h>
 
 #include "battle.h"
 #include "character.h"

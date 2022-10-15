@@ -19,10 +19,10 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <core/alloc.h>
-#include <core/panic.h>
-#include <core/sprite.h>
-#include <core/texture.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/texture.h>
 
 #include "battle-entity-state-blinking.h"
 #include "battle-entity-state.h"

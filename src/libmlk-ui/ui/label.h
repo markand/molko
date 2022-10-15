@@ -19,7 +19,7 @@
 #ifndef MLK_UI_LABEL_H
 #define MLK_UI_LABEL_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 struct theme;
 

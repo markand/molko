@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include <core/painter.h>
+#include <mlk/core/painter.h>
 
 #include "frame.h"
 #include "theme.h"

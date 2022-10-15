@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_SELECTION_H
 #define MLK_RPG_SELECTION_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 struct battle;
 
@@ -39,7 +39,7 @@ enum selection_side {
 struct selection {
 	enum selection_kind allowed_kinds;
 	enum selection_side allowed_sides;
-	
+
 	/* Character index in battle entity array. */
 	unsigned int index_character;
 

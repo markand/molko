@@ -19,10 +19,10 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <core/alloc.h>
-#include <core/painter.h>
-#include <core/panic.h>
-#include <core/window.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/painter.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/window.h>
 
 #include "battle-state-check.h"
 #include "battle-state-opening.h"

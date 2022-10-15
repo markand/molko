@@ -20,12 +20,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <core/alloc.h>
-#include <core/music.h>
-#include <core/painter.h>
-#include <core/panic.h>
-#include <core/texture.h>
-#include <core/window.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/music.h>
+#include <mlk/core/painter.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/texture.h>
+#include <mlk/core/window.h>
 
 #include "battle-state-closing.h"
 #include "battle.h"
@@ -74,7 +74,7 @@ battle_state_closing_init(struct battle_state_closing *cls)
 	painter_clear();
 	painter_draw_rectangle(0, 0, window.w, window.h);
 	PAINTER_END();
-	
+
 	texture_set_alpha_mod(&cls->texture, 0);
 }
 

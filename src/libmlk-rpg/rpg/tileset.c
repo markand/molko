@@ -19,8 +19,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <core/animation.h>
-#include <core/sprite.h>
+#include <mlk/core/animation.h>
+#include <mlk/core/sprite.h>
 
 #include "tileset.h"
 

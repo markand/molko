@@ -16,7 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/color.h>
+#include <mlk/core/color.h>
 
 #include <dt.h>
 

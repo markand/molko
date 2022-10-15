@@ -18,10 +18,10 @@
 
 #include <assert.h>
 
-#include <core/alloc.h>
-#include <core/music.h>
-#include <core/panic.h>
-#include <core/window.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/music.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/window.h>
 
 #include "battle-state-closing.h"
 #include "battle-state-victory.h"

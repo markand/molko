@@ -16,11 +16,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/core.h>
-#include <core/error.h>
-#include <core/panic.h>
-#include <core/sys.h>
-#include <core/window.h>
+#include <mlk/core/core.h>
+#include <mlk/core/error.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/sys.h>
+#include <mlk/core/window.h>
 
 #include <rpg/map-file.h>
 #include <rpg/map.h>

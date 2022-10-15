@@ -20,12 +20,12 @@
 #include <math.h>
 #include <string.h>
 
-#include <core/event.h>
-#include <core/maths.h>
-#include <core/painter.h>
-#include <core/panic.h>
-#include <core/texture.h>
-#include <core/trace.h>
+#include <mlk/core/event.h>
+#include <mlk/core/maths.h>
+#include <mlk/core/painter.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/texture.h>
+#include <mlk/core/trace.h>
 
 #include "frame.h"
 #include "label.h"

@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_RPG_H
 #define MLK_RPG_RPG_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 CORE_BEGIN_DECLS
 

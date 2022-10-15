@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_BATTLE_ENTITY_STATE_H
 #define MLK_RPG_BATTLE_ENTITY_STATE_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 struct battle_entity;
 struct sprite;

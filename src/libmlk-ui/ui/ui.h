@@ -19,7 +19,7 @@
 #ifndef MLK_UI_UI_H
 #define MLK_UI_UI_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 CORE_BEGIN_DECLS
 

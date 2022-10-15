@@ -18,10 +18,10 @@
 
 #include <string.h>
 
-#include <core/event.h>
-#include <core/game.h>
-#include <core/state.h>
-#include <core/util.h>
+#include <mlk/core/event.h>
+#include <mlk/core/game.h>
+#include <mlk/core/state.h>
+#include <mlk/core/util.h>
 
 #include <dt.h>
 

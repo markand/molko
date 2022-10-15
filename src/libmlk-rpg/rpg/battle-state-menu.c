@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <core/alloc.h>
+#include <mlk/core/alloc.h>
 
 #include "battle-bar.h"
 #include "battle-state-menu.h"

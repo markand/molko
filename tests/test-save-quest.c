@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 
-#include <core/util.h>
+#include <mlk/core/util.h>
 
 #include <rpg/quest.h>
 #include <rpg/save.h>

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/core.h>
-#include <core/window.h>
+#include <mlk/core/core.h>
+#include <mlk/core/window.h>
 
 #include <rpg/tileset-file.h>
 #include <rpg/tileset.h>

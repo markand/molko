@@ -19,8 +19,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <core/alloc.h>
-#include <core/panic.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/panic.h>
 
 #include <rpg/inventory.h>
 #include <rpg/item.h>

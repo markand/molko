@@ -20,12 +20,12 @@
 #include <stddef.h>
 #include <string.h>
 
-#include <core/font.h>
-#include <core/maths.h>
-#include <core/painter.h>
-#include <core/panic.h>
-#include <core/texture.h>
-#include <core/util.h>
+#include <mlk/core/font.h>
+#include <mlk/core/maths.h>
+#include <mlk/core/painter.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/texture.h>
+#include <mlk/core/util.h>
 
 #include <assets/fonts/opensans-light.h>
 #include <assets/fonts/opensans-medium.h>

@@ -19,9 +19,9 @@
 #ifndef EXAMPLES_BATTLE_REGISTRY_H
 #define EXAMPLES_BATTLE_REGISTRY_H
 
-#include <core/sound.h>
-#include <core/sprite.h>
-#include <core/texture.h>
+#include <mlk/core/sound.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/texture.h>
 
 enum registry_texture {
 	/* UI. */

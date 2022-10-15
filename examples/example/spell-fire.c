@@ -18,10 +18,10 @@
 
 #include <stdlib.h>
 
-#include <core/action.h>
-#include <core/animation.h>
-#include <core/drawable.h>
-#include <core/alloc.h>
+#include <mlk/core/action.h>
+#include <mlk/core/animation.h>
+#include <mlk/core/drawable.h>
+#include <mlk/core/alloc.h>
 
 #include <ui/align.h>
 

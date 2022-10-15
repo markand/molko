@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_BATTLE_BAR_DEFAULT_H
 #define MLK_RPG_BATTLE_BAR_DEFAULT_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 #include <ui/gridmenu.h>
 

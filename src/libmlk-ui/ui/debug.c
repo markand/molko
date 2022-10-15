@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include <core/texture.h>
+#include <mlk/core/texture.h>
 
 #include "debug.h"
 #include "theme.h"

@@ -20,11 +20,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <core/alloc.h>
-#include <core/panic.h>
-#include <core/sprite.h>
-#include <core/texture.h>
-#include <core/trace.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/texture.h>
+#include <mlk/core/trace.h>
 
 #include "battle-state-check.h"
 #include "battle-state-lost.h"

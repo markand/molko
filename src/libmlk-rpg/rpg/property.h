@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_PROPERTY_H
 #define MLK_RPG_PROPERTY_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 #define PROPERTY_KEY_MAX        (64)
 #define PROPERTY_VALUE_MAX      (1024)

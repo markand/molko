@@ -19,8 +19,8 @@
 #ifndef MLK_RPG_BATTLE_INDICATOR_H
 #define MLK_RPG_BATTLE_INDICATOR_H
 
-#include <core/core.h>
-#include <core/texture.h>
+#include <mlk/core/core.h>
+#include <mlk/core/texture.h>
 
 #define BATTLE_INDICATOR_HP_COLOR (0xa5303000)
 #define BATTLE_INDICATOR_MP_COLOR (0xa23e8c00)

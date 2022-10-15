@@ -16,7 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/util.h>
+#include <mlk/core/util.h>
 
 #include <dt.h>
 

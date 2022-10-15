@@ -20,8 +20,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <core/alloc.h>
-#include <core/panic.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/panic.h>
 
 #include "battle-entity-state-moving.h"
 #include "battle-entity-state.h"

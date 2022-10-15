@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_BATTLE_ENTITY_H
 #define MLK_RPG_BATTLE_ENTITY_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 #include <ui/label.h>
 

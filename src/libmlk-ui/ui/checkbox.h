@@ -19,7 +19,7 @@
 #ifndef MLK_UI_CHECKBOX_H
 #define MLK_UI_CHECKBOX_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 union event;
 

@@ -26,11 +26,11 @@
 
 #include <util/util.h>
 
-#include <core/alloc.h>
-#include <core/animation.h>
-#include <core/error.h>
-#include <core/image.h>
-#include <core/util.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/animation.h>
+#include <mlk/core/error.h>
+#include <mlk/core/image.h>
+#include <mlk/core/util.h>
 
 #include "tileset-file.h"
 #include "tileset.h"

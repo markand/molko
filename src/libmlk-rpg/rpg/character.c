@@ -18,7 +18,7 @@
 
 #include <assert.h>
 
-#include <core/sprite.h>
+#include <mlk/core/sprite.h>
 
 #include <assets/sql/character-save.h>
 #include <assets/sql/character-load.h>

@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_EQUIPMENT_H
 #define MLK_RPG_EQUIPMENT_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 struct character;
 struct texture;

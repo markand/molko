@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include <core/sprite.h>
+#include <mlk/core/sprite.h>
 
 #include "walksprite.h"
 

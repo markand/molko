@@ -18,7 +18,7 @@
 
 #include <assert.h>
 
-#include <core/window.h>
+#include <mlk/core/window.h>
 
 #include <ui/align.h>
 #include <ui/frame.h>

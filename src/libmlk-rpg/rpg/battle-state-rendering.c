@@ -19,8 +19,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <core/alloc.h>
-#include <core/drawable.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/drawable.h>
 
 #include "battle-state-rendering.h"
 #include "battle.h"

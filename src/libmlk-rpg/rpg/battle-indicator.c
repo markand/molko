@@ -21,9 +21,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <core/color.h>
-#include <core/font.h>
-#include <core/panic.h>
+#include <mlk/core/color.h>
+#include <mlk/core/font.h>
+#include <mlk/core/panic.h>
 
 #include <ui/theme.h>
 
@@ -61,7 +61,7 @@ battle_indicator_start(struct battle_indicator *bti)
 	bti->cur = 0xffffffff;
 	bti->elapsed = 0;
 	bti->alpha = 250;
-	
+
 	if (font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[0], buf, bti->cur) < 0||
 	    font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[1], buf, 0x000000ff) < 0)
 		panic();

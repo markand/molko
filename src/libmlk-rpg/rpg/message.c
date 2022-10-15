@@ -20,15 +20,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <core/action.h>
-#include <core/event.h>
-#include <core/font.h>
-#include <core/maths.h>
-#include <core/painter.h>
-#include <core/panic.h>
-#include <core/sprite.h>
-#include <core/trace.h>
-#include <core/util.h>
+#include <mlk/core/action.h>
+#include <mlk/core/event.h>
+#include <mlk/core/font.h>
+#include <mlk/core/maths.h>
+#include <mlk/core/painter.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/trace.h>
+#include <mlk/core/util.h>
 
 #include <ui/align.h>
 #include <ui/frame.h>

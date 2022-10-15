@@ -19,7 +19,7 @@
 #ifndef MLK_UI_FRAME_H
 #define MLK_UI_FRAME_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 struct theme;
 

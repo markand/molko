@@ -21,8 +21,8 @@
 
 #include <stdarg.h>
 
-#include <core/core.h>
-#include <core/font.h>
+#include <mlk/core/core.h>
+#include <mlk/core/font.h>
 
 #define DEBUG_LINE_MAX 1024
 

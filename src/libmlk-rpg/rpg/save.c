@@ -25,9 +25,9 @@
 
 #include <util/util.h>
 
-#include <core/error.h>
-#include <core/sys.h>
-#include <core/util.h>
+#include <mlk/core/error.h>
+#include <mlk/core/sys.h>
+#include <mlk/core/util.h>
 
 #include <assets/sql/init.h>
 

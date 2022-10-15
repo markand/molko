@@ -20,10 +20,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <core/action.h>
-#include <core/font.h>
-#include <core/trace.h>
-#include <core/window.h>
+#include <mlk/core/action.h>
+#include <mlk/core/font.h>
+#include <mlk/core/trace.h>
+#include <mlk/core/window.h>
 
 #include <ui/label.h>
 #include <ui/theme.h>

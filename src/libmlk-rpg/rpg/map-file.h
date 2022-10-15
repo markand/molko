@@ -19,10 +19,10 @@
 #ifndef MLK_RPG_MAP_FILE_H
 #define MLK_RPG_MAP_FILE_H
 
-#include <core/alloc.h>
-#include <core/core.h>
-#include <core/sprite.h>
-#include <core/texture.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/core.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/texture.h>
 
 #include "map.h"
 #include "tileset.h"

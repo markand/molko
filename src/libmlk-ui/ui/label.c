@@ -19,9 +19,9 @@
 #include <assert.h>
 #include <string.h>
 
-#include <core/font.h>
-#include <core/panic.h>
-#include <core/texture.h>
+#include <mlk/core/font.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/texture.h>
 
 #include "label.h"
 #include "theme.h"

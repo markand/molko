@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_CHARACTER_H
 #define MLK_RPG_CHARACTER_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 #define CHARACTER_SPELL_MAX (64)
 

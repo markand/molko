@@ -19,11 +19,11 @@
 #ifndef MLK_RPG_BATTLE_H
 #define MLK_RPG_BATTLE_H
 
-#include <core/action.h>
-#include <core/action-stack.h>
-#include <core/core.h>
-#include <core/drawable.h>
-#include <core/drawable-stack.h>
+#include <mlk/core/action.h>
+#include <mlk/core/action-stack.h>
+#include <mlk/core/core.h>
+#include <mlk/core/drawable.h>
+#include <mlk/core/drawable-stack.h>
 
 #include <ui/frame.h>
 #include <ui/gridmenu.h>

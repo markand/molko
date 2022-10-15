@@ -18,8 +18,8 @@
 
 #include <assert.h>
 
-#include <core/sprite.h>
-#include <core/texture.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/texture.h>
 
 #include <ui/theme.h>
 

@@ -18,10 +18,10 @@
 
 #include <stddef.h>
 
-#include <core/image.h>
-#include <core/panic.h>
-#include <core/util.h>
-#include <core/sys.h>
+#include <mlk/core/image.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/util.h>
+#include <mlk/core/sys.h>
 
 #include <assets/images/battle-background.h>
 #include <assets/images/black-cat.h>

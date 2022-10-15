@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_INVENTORY_H
 #define MLK_RPG_INVENTORY_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 #define INVENTORY_ITEM_MAX (512)
 

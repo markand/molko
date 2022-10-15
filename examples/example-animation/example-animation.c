@@ -16,19 +16,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/animation.h>
-#include <core/core.h>
-#include <core/event.h>
-#include <core/game.h>
-#include <core/image.h>
-#include <core/sys.h>
-#include <core/window.h>
-#include <core/painter.h>
-#include <core/panic.h>
-#include <core/sprite.h>
-#include <core/state.h>
-#include <core/texture.h>
-#include <core/util.h>
+#include <mlk/core/animation.h>
+#include <mlk/core/core.h>
+#include <mlk/core/event.h>
+#include <mlk/core/game.h>
+#include <mlk/core/image.h>
+#include <mlk/core/sys.h>
+#include <mlk/core/window.h>
+#include <mlk/core/painter.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/state.h>
+#include <mlk/core/texture.h>
+#include <mlk/core/util.h>
 
 #include <ui/label.h>
 #include <ui/ui.h>

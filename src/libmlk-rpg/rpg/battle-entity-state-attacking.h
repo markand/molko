@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_BATTLE_ENTITY_STATE_ATTACKING_H
 #define MLK_RPG_BATTLE_ENTITY_STATE_ATTACKING_H
 
-#include <core/animation.h>
+#include <mlk/core/animation.h>
 
 struct battle_entity;
 struct sprite;

@@ -21,7 +21,7 @@
 
 #include <stddef.h>
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 #define NOTIFY_MAX              (4)
 #define NOTIFY_TIMEOUT_DEFAULT  (5000)

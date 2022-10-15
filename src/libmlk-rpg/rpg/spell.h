@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_SPELL_H
 #define MLK_RPG_SPELL_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 #include "selection.h"
 

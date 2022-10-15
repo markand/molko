@@ -19,7 +19,7 @@
 #ifndef MLK_RPG_ITEM_H
 #define MLK_RPG_ITEM_H
 
-#include <core/core.h>
+#include <mlk/core/core.h>
 
 struct battle;
 struct character;

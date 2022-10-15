@@ -18,7 +18,7 @@
 
 #include <stdlib.h>
 
-#include <core/alloc.h>
+#include <mlk/core/alloc.h>
 
 #include <dt.h>
 

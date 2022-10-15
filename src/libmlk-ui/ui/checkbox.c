@@ -19,9 +19,9 @@
 #include <assert.h>
 #include <string.h>
 
-#include <core/event.h>
-#include <core/maths.h>
-#include <core/painter.h>
+#include <mlk/core/event.h>
+#include <mlk/core/maths.h>
+#include <mlk/core/painter.h>
 
 #include "label.h"
 #include "checkbox.h"

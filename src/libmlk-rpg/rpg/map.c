@@ -21,15 +21,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <core/error.h>
-#include <core/event.h>
-#include <core/image.h>
-#include <core/maths.h>
-#include <core/painter.h>
-#include <core/sprite.h>
-#include <core/sys.h>
-#include <core/texture.h>
-#include <core/window.h>
+#include <mlk/core/error.h>
+#include <mlk/core/event.h>
+#include <mlk/core/image.h>
+#include <mlk/core/maths.h>
+#include <mlk/core/painter.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/sys.h>
+#include <mlk/core/texture.h>
+#include <mlk/core/window.h>
 
 #include <ui/debug.h>
 
@@ -140,7 +140,7 @@ is_block_better(const struct map_block *now,
 	        (drow > 0 && new->y < now->y) ||
 	        (dcol < 0 && new->x + new->w > now->x + now->w) ||
 		(dcol > 0 && new->x < now->x));
-		
+
 }
 
 static void

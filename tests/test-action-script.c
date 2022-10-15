@@ -16,9 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/action.h>
-#include <core/event.h>
-#include <core/script.h>
+#include <mlk/core/action.h>
+#include <mlk/core/event.h>
+#include <mlk/core/script.h>
 
 #include <dt.h>
 
