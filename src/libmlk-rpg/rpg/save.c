@@ -23,7 +23,7 @@
 
 #include <sqlite3.h>
 
-#include <util/util.h>
+#include <mlk/util/util.h>
 
 #include <mlk/core/error.h>
 #include <mlk/core/sys.h>

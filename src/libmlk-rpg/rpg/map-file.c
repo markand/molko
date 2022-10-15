@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <util/util.h>
+#include <mlk/util/util.h>
 
 #include <mlk/core/alloc.h>
 #include <mlk/core/error.h>

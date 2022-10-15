@@ -26,7 +26,7 @@
 
 #include <jansson.h>
 
-#include <util/util.h>
+#include <mlk/util/util.h>
 
 static void
 die(const char *fmt, ...)

@@ -38,7 +38,7 @@
 
 #include <sndfile.h>
 
-#include <util/util.h>
+#include <mlk/util/util.h>
 
 #include "alloc.h"
 #include "error.h"

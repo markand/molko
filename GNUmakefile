@@ -41,7 +41,7 @@ MATH_LIBS ?=            -lm
 # Global INCS, OPTS and DEFS for every targets.
 INCS :=                 -Iextern/libdt \
                         -Iextern/libsqlite \
-                        -Isrc/libmlk-util \
+                        -Ilibmlk-util \
                         -Ilibmlk-core \
                         -Isrc/libmlk-ui \
                         -Isrc/libmlk-rpg \
@@ -100,12 +100,12 @@ LIBMLK =                $(LIBMLK_RPG) \
 # {{{ libmlk-util
 
 LIBMLK_UTIL :=          libmlk-util.a
-LIBMLK_UTIL_SRCS :=     src/libmlk-util/util/fmemopen.c \
-                        src/libmlk-util/util/openbsd/basename.c \
-                        src/libmlk-util/util/openbsd/dirname.c \
-                        src/libmlk-util/util/openbsd/getopt.c \
-                        src/libmlk-util/util/openbsd/strlcat.c \
-                        src/libmlk-util/util/openbsd/strlcpy.c
+LIBMLK_UTIL_SRCS :=     libmlk-util/mlk/util/fmemopen.c \
+                        libmlk-util/mlk/util/openbsd/basename.c \
+                        libmlk-util/mlk/util/openbsd/dirname.c \
+                        libmlk-util/mlk/util/openbsd/getopt.c \
+                        libmlk-util/mlk/util/openbsd/strlcat.c \
+                        libmlk-util/mlk/util/openbsd/strlcpy.c
 LIBMLK_UTIL_OBJS :=     $(LIBMLK_UTIL_SRCS:.c=.o)
 LIBMLK_UTIL_DEPS :=     $(LIBMLK_UTIL_SRCS:.c=.d)
 
@@ -144,7 +144,7 @@ all: $(MLK_TILESET)
 
 MLK_MAP :=              src/tools/map/mlk-map
 
-$(MLK_MAP): INCS := -Isrc/libmlk-util $(JANSSON_INCS)
+$(MLK_MAP): INCS := -Ilibmlk-util $(JANSSON_INCS)
 $(MLK_MAP): LIBS := $(LIBMLK_UTIL) $(JANSSON_LIBS)
 $(MLK_MAP): $(LIBMLK_UTIL)
 
