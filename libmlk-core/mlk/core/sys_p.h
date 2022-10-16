@@ -43,11 +43,11 @@ struct audiostream {
 	ALenum format;
 };
 
-struct audiostream *
-audiostream_open(const char *);
+int
+audiostream_open(struct audiostream **, const char *);
 
-struct audiostream *
-audiostream_openmem(const void *, size_t);
+int
+audiostream_openmem(struct audiostream **, const void *, size_t);
 
 void
 audiostream_finish(struct audiostream *);

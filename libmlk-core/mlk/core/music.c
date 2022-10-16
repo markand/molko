@@ -31,10 +31,7 @@ music_open(struct music *mus, const char *path)
 	assert(mus);
 	assert(path);
 
-	if (!(mus->handle = audiostream_open(path)))
-		return -1;
-
-	return 0;
+	return audiostream_open((struct audiostream **)&mus->handle, path);
 }
 
 int
@@ -43,10 +40,7 @@ music_openmem(struct music *mus, const void *buffer, size_t buffersz)
 	assert(mus);
 	assert(buffer);
 
-	if (!(mus->handle = audiostream_openmem(buffer, buffersz)))
-		return -1;
-
-	return 0;
+	return audiostream_openmem((struct audiostream **)&mus->handle, buffer, buffersz);
 }
 
 int

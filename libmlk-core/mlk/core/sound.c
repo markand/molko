@@ -32,10 +32,7 @@ sound_open(struct sound *snd, const char *path)
 	assert(snd);
 	assert(path);
 
-	if (!(snd->handle = audiostream_open(path)))
-		return -1;
-
-	return 0;
+	return audiostream_open((struct audiostream **)&snd->handle, path);
 }
 
 int
@@ -44,10 +41,7 @@ sound_openmem(struct sound *snd, const void *buffer, size_t buffersz)
 	assert(snd);
 	assert(buffer);
 
-	if (!(snd->handle = audiostream_openmem(buffer, buffersz)))
-		return -1;
-
-	return 0;
+	return audiostream_openmem((struct audiostream **)&snd->handle, buffer, buffersz);
 }
 
 int

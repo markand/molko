@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <mlk/util/util.h>
+
 #include <sys/stat.h>
 #include <assert.h>
 #include <errno.h>
@@ -24,7 +26,7 @@
 #include <string.h>
 #include <limits.h>
 
-#if defined(_WIN32)
+#if defined(MLK_OS_WINDOWS)
 #       include <shlwapi.h>
 #       include <windows.h>
 #else
@@ -38,9 +40,8 @@
 
 #include <sndfile.h>
 
-#include <mlk/util/util.h>
-
 #include "alloc.h"
+#include "err.h"
 #include "error.h"
 #include "panic.h"
 #include "sound.h"
@@ -56,6 +57,12 @@ static struct {
 } info = {
 	.organization = "fr.malikania",
 	.name = "molko"
+};
+
+struct viodata {
+	const unsigned char *data;
+	const size_t datasz;
+	sf_count_t offset;
 };
 
 static inline char *
@@ -101,6 +108,68 @@ mkpath(const char *path)
 	return 0;
 }
 
+static sf_count_t
+vio_get_filelen(void *data)
+{
+	const struct viodata *vio = data;
+
+	return (sf_count_t)vio->datasz;
+}
+
+static sf_count_t
+vio_seek(sf_count_t offset, int whence, void *data)
+{
+	struct viodata *vio = data;
+
+	switch (whence) {
+	case SEEK_SET:
+		vio->offset = offset;
+		break;
+	case SEEK_CUR:
+		vio->offset += offset;
+		break;
+	case SEEK_END:
+		vio->offset = vio->datasz - offset;
+		break;
+	default:
+		break;
+	}
+
+	return vio->offset;
+}
+
+static sf_count_t
+vio_read(void *ptr, sf_count_t count, void *data)
+{
+	struct viodata *vio = data;
+
+	memcpy(ptr, vio->data + vio->offset, count);
+	vio->offset += count;
+
+	return count;
+}
+
+static sf_count_t
+vio_tell(void *data)
+{
+	const struct viodata *vio = data;
+
+	return vio->offset;
+}
+
+static inline int
+sndfile_to_err(int e)
+{
+	switch (e) {
+	case SF_ERR_UNRECOGNISED_FORMAT:
+	case SF_ERR_MALFORMED_FILE:
+	case SF_ERR_UNSUPPORTED_ENCODING:
+		return ERR_FORMAT;
+	default:
+		return ERR_NO_MEM;
+	}
+}
+
 int
 sys_init(const char *organization, const char *name)
 {
@@ -123,7 +192,7 @@ sys_init(const char *organization, const char *name)
 		return errorf("%s", SDL_GetError());
 
 	/* OpenAL. */
-#if defined(_WIN32)
+#if defined(MLK_OS_WINDOW)
 	SetEnvironmentVariable("ALSOFT_LOGLEVEL", "0");
 #else
 	putenv("ALSOFT_LOGLEVEL=0");
@@ -197,10 +266,11 @@ sys_finish(void)
 	}
 }
 
-struct audiostream *
-audiostream_create(SNDFILE *file, const SF_INFO *info)
+static int
+create_audiostream(struct audiostream **ptr, SNDFILE *file, const SF_INFO *info)
 {
 	struct audiostream *stream;
+	int ret = 0;
 
 	stream = alloc_new(sizeof (*stream));
 	stream->samplerate = info->samplerate;
@@ -214,6 +284,7 @@ audiostream_create(SNDFILE *file, const SF_INFO *info)
 		free(stream->samples);
 		free(stream);
 		stream = NULL;
+		ret = sndfile_to_err(sf_error(file));
 	}
 
 	alGenBuffers(1, &stream->buffer);
@@ -224,11 +295,13 @@ audiostream_create(SNDFILE *file, const SF_INFO *info)
 
 	sf_close(file);
 
-	return stream;
+	*ptr = stream;
+
+	return ret;
 }
 
-struct audiostream *
-audiostream_open(const char *path)
+int
+audiostream_open(struct audiostream **stream, const char *path)
 {
 	assert(path);
 
@@ -236,68 +309,13 @@ audiostream_open(const char *path)
 	SNDFILE *file;
 
 	if (!(file = sf_open(path, SFM_READ, &info)))
-		return NULL;
+		return sf_error(NULL);
 
-	return audiostream_create(file, &info);
+	return create_audiostream(stream, file, &info);
 }
 
-struct viodata {
-	const unsigned char *data;
-	const size_t datasz;
-	sf_count_t offset;
-};
-
-static sf_count_t
-vio_get_filelen(void *data)
-{
-	const struct viodata *vio = data;
-
-	return (sf_count_t)vio->datasz;
-}
-
-static sf_count_t
-vio_seek(sf_count_t offset, int whence, void *data)
-{
-	struct viodata *vio = data;
-
-	switch (whence) {
-	case SEEK_SET:
-		vio->offset = offset;
-		break;
-	case SEEK_CUR:
-		vio->offset += offset;
-		break;
-	case SEEK_END:
-		vio->offset = vio->datasz - offset;
-		break;
-	default:
-		break;
-	}
-
-	return vio->offset;
-}
-
-static sf_count_t
-vio_read(void *ptr, sf_count_t count, void *data)
-{
-	struct viodata *vio = data;
-
-	memcpy(ptr, vio->data + vio->offset, count);
-	vio->offset += count;
-
-	return count;
-}
-
-static sf_count_t
-vio_tell(void *data)
-{
-	const struct viodata *vio = data;
-
-	return vio->offset;
-}
-
-struct audiostream *
-audiostream_openmem(const void *data, size_t datasz)
+int
+audiostream_openmem(struct audiostream **stream, const void *data, size_t datasz)
 {
 	assert(data);
 
@@ -315,9 +333,9 @@ audiostream_openmem(const void *data, size_t datasz)
 	};
 
 	if (!(file = sf_open_virtual(&io, SFM_READ, &info, &viodata)))
-		return NULL;
+		return sndfile_to_err(sf_error(NULL));;
 
-	return audiostream_create(file, &info);
+	return create_audiostream(stream, file, &info);
 }
 
 void
