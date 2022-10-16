@@ -67,9 +67,9 @@ assets/.*\.h$
 ^tests/test-vfs-zip$
 
 # Tools.
-^src/tools/bcc/mlk-bcc$
-^src/tools/map/mlk-map$
-^src/tools/tileset/mlk-tileset$
+^mlk-bcc/mlk-bcc$
+^mlk-map/mlk-map$
+^mlk-tileset/mlk-tileset$
 
 # Documentation.
 ^doc/site

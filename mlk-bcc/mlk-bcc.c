@@ -22,6 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(__OpenBSD__)
+#       include <unistd.h>
+#endif
+
 #include "arg.h"
 
 char *argv0;

@@ -23,6 +23,7 @@
 #define ERR_SDL         -1
 #define ERR_NO_MEM      -2
 #define ERR_NO_SUPPORT  -3
+#define ERR_FORMAT      -4
 
 const char *
 err_string(int e);

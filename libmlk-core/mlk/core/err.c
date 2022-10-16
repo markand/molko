@@ -30,6 +30,8 @@ err_string(int e)
 		return "out of memory";
 	case ERR_NO_SUPPORT:
 		return "operation not supported";
+	case ERR_FORMAT:
+		return "invalid format or corrupt file";
 	default:
 		return "no error";
 	}

@@ -121,7 +121,7 @@ all: $(LIBMLK_UTIL)
 
 # {{{ mlk-bcc
 
-MLK_BCC :=              src/tools/bcc/mlk-bcc
+MLK_BCC :=              mlk-bcc/mlk-bcc
 
 $(MLK_BCC): INCS :=
 
@@ -131,7 +131,7 @@ all: $(MLK_BCC)
 
 # {{{ mlk-tileset
 
-MLK_TILESET :=          src/tools/tileset/mlk-tileset
+MLK_TILESET :=          mlk-tileset/mlk-tileset
 
 $(MLK_TILESET): INCS := $(JANSSON_INCS)
 $(MLK_TILESET): LIBS := $(JANSSON_LIBS)
@@ -142,7 +142,7 @@ all: $(MLK_TILESET)
 
 # {{{ mlk-map
 
-MLK_MAP :=              src/tools/map/mlk-map
+MLK_MAP :=              mlk-map/mlk-map
 
 $(MLK_MAP): INCS := -Ilibmlk-util $(JANSSON_INCS)
 $(MLK_MAP): LIBS := $(LIBMLK_UTIL) $(JANSSON_LIBS)
