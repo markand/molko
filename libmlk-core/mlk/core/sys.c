@@ -164,9 +164,9 @@ sndfile_to_err(int e)
 	case SF_ERR_UNRECOGNISED_FORMAT:
 	case SF_ERR_MALFORMED_FILE:
 	case SF_ERR_UNSUPPORTED_ENCODING:
-		return ERR_FORMAT;
+		return MLK_ERR_FORMAT;
 	default:
-		return ERR_NO_MEM;
+		return MLK_ERR_NO_MEM;
 	}
 }
 

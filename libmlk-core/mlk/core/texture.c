@@ -39,7 +39,7 @@ texture_new(struct texture *tex, unsigned int w, unsigned int h)
 
 	if (!tex->handle) {
 		tex->w = tex->h = 0;
-		return ERR_SDL;
+		return MLK_ERR_SDL;
 	}
 
 	tex->w = w;
@@ -166,7 +166,7 @@ texture_from_surface(struct texture *tex, SDL_Surface *surface)
 
 	if (!(tex->handle = SDL_CreateTextureFromSurface(RENDERER(), surface))) {
 		tex->w = tex->h = 0;
-		return ERR_SDL;
+		return MLK_ERR_SDL;
 	}
 
 	tex->w = surface->w;

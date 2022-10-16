@@ -21,16 +21,16 @@
 #include "err.h"
 
 const char *
-err_string(int e)
+mlk_err_string(int e)
 {
 	switch (e) {
-	case ERR_SDL:
+	case MLK_ERR_SDL:
 		return SDL_GetError();
-	case ERR_NO_MEM:
+	case MLK_ERR_NO_MEM:
 		return "out of memory";
-	case ERR_NO_SUPPORT:
+	case MLK_ERR_NO_SUPPORT:
 		return "operation not supported";
-	case ERR_FORMAT:
+	case MLK_ERR_FORMAT:
 		return "invalid format or corrupt file";
 	default:
 		return "no error";

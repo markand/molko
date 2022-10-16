@@ -19,13 +19,13 @@
 #ifndef MLK_ERR_H
 #define MLK_ERR_H
 
-#define ERR_NONE         0
-#define ERR_SDL         -1
-#define ERR_NO_MEM      -2
-#define ERR_NO_SUPPORT  -3
-#define ERR_FORMAT      -4
+#define MLK_ERR_NONE            0
+#define MLK_ERR_NO_MEM         -1
+#define MLK_ERR_NO_SUPPORT     -2
+#define MLK_ERR_FORMAT         -3
+#define MLK_ERR_SDL            -4
 
 const char *
-err_string(int e);
+mlk_err_string(int e);
 
 #endif /* !MLK_ERROR_H */

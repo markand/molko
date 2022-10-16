@@ -51,7 +51,7 @@ drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 		}
 	}
 
-	return ERR_NO_MEM;
+	return MLK_ERR_NO_MEM;
 }
 
 int

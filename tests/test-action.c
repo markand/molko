@@ -192,7 +192,7 @@ test_stack_add(void)
 		DT_EQ_INT(action_stack_add(&st, &act), 0);
 
 	/* This one should not fit in. */
-	DT_EQ_INT(action_stack_add(&st, &act), ERR_NO_MEM);
+	DT_EQ_INT(action_stack_add(&st, &act), MLK_ERR_NO_MEM);
 }
 
 static void

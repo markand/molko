@@ -1,0 +1,48 @@
+.Dd $Mdocdate$
+.Dt MLK-ERR 3
+.Os
+.Sh NAME
+.Nm mlk-err
+.Nd error management in mlk library
+.Sh LIBRARY
+.Lb libmlk-core
+.Sh SYNOPSIS
+.In mlk/core/err.h
+.Ft "const char *"
+.Fn mlk_err_string "int e"
+.Sh DESCRIPTION
+This manual page describes error codes that may occur within the molko
+framework. All errors are defined with negative numbers the only exception
+being
+.Er MLK_ERR_NONE
+which is equal to 0.
+.Pp
+The following macro constants are defined:
+.Bl -tag -width Ds
+.It Er MLK_ERR_NONE
+Equal to 0, no error.
+.It Er MLK_ERR_NO_MEM
+No more memory available.
+.It Er MLK_ERR_NO_SUPPORT
+The file format or function is not supported.
+.It Er MLK_ERR_FORMAT
+The file is corrupt or invalid.
+.El
+.Pp
+There are other private error codes that are internal to the framework and not
+listed as they may change over time, if the caller inspects individual error
+codes it should also be took in account which in this case the function
+.Fn mlk_err_string
+may comes handy.
+.Pp
+The function
+.Fn mlk_err_string
+returns a constant string description of the error
+.Ar e .
+.Sh SEE ALSO
+.Xr mlk-panic 3
+.Sh AUTHORS
+The
+.Nm
+library was written by
+.An David Demelier Aq Mt markand@malikania.fr .

@@ -72,7 +72,7 @@ script_append(struct script *s, struct action *a)
 	assert(a);
 
 	if (s->actionsz >= SCRIPT_ACTION_MAX)
-		return ERR_NO_MEM;
+		return MLK_ERR_NO_MEM;
 
 	s->actions[s->actionsz++] = a;
 

@@ -8,6 +8,7 @@ CFLAGS ?=               -g -O0
 PREFIX ?=               /usr/local
 LIBDIR ?=               $(PREFIX)/lib
 INCDIR ?=               $(PREFIX)/include
+MANDIR ?=               $(PREFIX)/share/man
 
 # User options.
 WITH_DEBUG ?=           no
@@ -412,6 +413,12 @@ tests: $(TESTS_EXE)
 
 # }}}
 
+# {{{ manual pages
+
+MAN3 :=         man/mlk-err.3
+
+# }}}
+
 doc:
 	cd doc && mkdocs build
 
@@ -424,9 +431,11 @@ install:
 	mkdir -p $(DESTDIR)$(INCDIR)/mlk/ui
 	mkdir -p $(DESTDIR)$(INCDIR)/mlk/rpg
 	cp $(LIBMLK_SQLITE) $(LIBMLK_CORE) $(LIBMLK_UI) $(LIBMLK_RPG) $(DESTDIR)$(LIBDIR)
-	cp -R src/libmlk-core/core/*.h $(DESTDIR)$(INCDIR)/mlk/core
-	cp -R src/libmlk-ui/ui/*.h $(DESTDIR)$(INCDIR)/mlk/ui
-	cp -R src/libmlk-rpg/rpg/*.h $(DESTDIR)$(INCDIR)/mlk/rpg
+	cp -R libmlk-core/mlk/core/*.h $(DESTDIR)$(INCDIR)/mlk/core
+	cp -R libmlk-ui/mlk/ui/*.h $(DESTDIR)$(INCDIR)/mlk/ui
+	cp -R libmlk-rpg/mlk/rpg/*.h $(DESTDIR)$(INCDIR)/mlk/rpg
+	mkdir -p $(DESTDIR)$(MANDIR)/man3
+	cp $(MAN3) $(DESTDIR)$(MANDIR)/man3
 
 clean:
 	rm -f $(MLK_BCC) $(MLK_MAP) $(MLK_TILESET)

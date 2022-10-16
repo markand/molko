@@ -51,7 +51,7 @@ action_stack_add(struct action_stack *st, struct action *act)
 		}
 	}
 
-	return ERR_NO_MEM;
+	return MLK_ERR_NO_MEM;
 }
 
 void

@@ -84,7 +84,7 @@ window_open(const char *title, unsigned int w, unsigned int h)
 	assert(title);
 
 	if (!load_window(title, w, h) || !load_renderer())
-		return ERR_SDL;
+		return MLK_ERR_SDL;
 
 	window.w = w;
 	window.h = h;

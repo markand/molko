@@ -35,7 +35,7 @@ font_open(struct font *font, const char *path, unsigned int size)
 	assert(path);
 
 	if (!(font->handle = TTF_OpenFont(path, size)))
-		return ERR_SDL;
+		return MLK_ERR_SDL;
 
 	return 0;
 }
@@ -50,7 +50,7 @@ font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int 
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buflen)) ||
 	   (!(font->handle = TTF_OpenFontRW(ops, 1, size))))
-		return ERR_SDL;
+		return MLK_ERR_SDL;
 
 	return 0;
 }
@@ -86,7 +86,7 @@ font_render(struct font *font, struct texture *tex, const char *text, unsigned l
 	}
 
 	if (!(surface = func(font->handle, text, fg)))
-		return ERR_SDL;
+		return MLK_ERR_SDL;
 
 	return texture_from_surface(tex, surface);
 }
@@ -111,7 +111,7 @@ font_query(const struct font *font, const char *text, unsigned int *w, unsigned 
 		*h = 0;
 
 	if (TTF_SizeUTF8(font->handle, text, (int *)w, (int *)h) != 0)
-		return ERR_SDL;
+		return MLK_ERR_SDL;
 
 	return 0;
 }
