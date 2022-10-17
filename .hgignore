@@ -24,9 +24,7 @@ assets/.*\.h$
 
 # Generated files.
 \.exe$
-^config\.h$
-^src/libmlk-data/maps/.*\.map$
-^src/libmlk-data/maps/.*\.tileset$
+^config\.mk$
 
 # Examples.
 ^examples/example-action/example-action$
