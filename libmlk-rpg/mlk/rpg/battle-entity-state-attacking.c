@@ -90,7 +90,7 @@ battle_entity_state_attacking(struct battle_entity *et, const struct sprite *whi
 
 	struct self *self;
 
-	self = alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(sizeof (*self));
 	self->state.data = self;
 	self->state.update = update;
 	self->state.draw = draw;

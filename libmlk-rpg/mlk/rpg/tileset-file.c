@@ -152,10 +152,10 @@ parse_tiledefs(struct context *ctx, const char *line)
 	unsigned short id, w, h;
 	struct tileset_tiledef *td;
 
-	alloc_pool_init(&ctx->tf->tiledefs, sizeof (*td), NULL);
+	mlk_alloc_pool_init(&ctx->tf->tiledefs, sizeof (*td), NULL);
 
 	while (fscanf(ctx->fp, "%hu|%hd|%hd|%hu|%hu\n", &id, &x, &y, &w, &h) == 5) {
-		td = alloc_pool_new(&ctx->tf->tiledefs);
+		td = mlk_alloc_pool_new(&ctx->tf->tiledefs);
 		td->id = id;
 		td->x = x;
 		td->y = y;
@@ -181,15 +181,15 @@ parse_animations(struct context *ctx, const char *line)
 	char filename[FILENAME_MAX + 1];
 	struct tileset_animation_block *anim;
 
-	alloc_pool_init(&ctx->tf->anims[0], sizeof (struct tileset_animation_block), tileset_animation_block_finish);
-	alloc_pool_init(&ctx->tf->anims[1], sizeof (struct tileset_animation), NULL);
+	mlk_alloc_pool_init(&ctx->tf->anims[0], sizeof (struct tileset_animation_block), tileset_animation_block_finish);
+	mlk_alloc_pool_init(&ctx->tf->anims[1], sizeof (struct tileset_animation), NULL);
 
 	/*
 	 * 1. Create the first array of animation, sprite and texture that are
 	 *    owned by the tileset_file structure.
 	 */
 	while (fscanf(ctx->fp, "%hu|" MAX_F(FILENAME_MAX) "|%u", &id, filename, &delay) == 3) {
-		anim = alloc_pool_new(&ctx->tf->anims[0]);
+		anim = mlk_alloc_pool_new(&ctx->tf->anims[0]);
 
 		if (image_open(&anim->texture, util_pathf("%s/%s", ctx->basedir, filename)) < 0)
 			return -1;
@@ -203,10 +203,10 @@ parse_animations(struct context *ctx, const char *line)
 	 *    animations referencing the first array.
 	 */
 	for (size_t i = 0; i < ctx->tf->anims[0].size; ++i) {
-		struct tileset_animation_block *anim = alloc_pool_get(&ctx->tf->anims[0], i);
+		struct tileset_animation_block *anim = mlk_alloc_pool_get(&ctx->tf->anims[0], i);
 		struct tileset_animation *ta;
 
-		if (!(ta = alloc_pool_new(&ctx->tf->anims[1])))
+		if (!(ta = mlk_alloc_pool_new(&ctx->tf->anims[1])))
 			return -1;
 
 		ta->id = id;
@@ -324,9 +324,9 @@ tileset_file_finish(struct tileset_file *tf)
 {
 	assert(tf);
 
-	alloc_pool_finish(&tf->tiledefs);
-	alloc_pool_finish(&tf->anims[0]);
-	alloc_pool_finish(&tf->anims[1]);
+	mlk_alloc_pool_finish(&tf->tiledefs);
+	mlk_alloc_pool_finish(&tf->anims[0]);
+	mlk_alloc_pool_finish(&tf->anims[1]);
 
 	texture_finish(&tf->image);
 

@@ -87,7 +87,7 @@ battle_entity_state_blinking(struct battle_entity *et)
 
 	struct self *self;
 
-	self = alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(sizeof (*self));
 	self->state.data = self;
 	self->state.update = update;
 	self->state.finish = finish;

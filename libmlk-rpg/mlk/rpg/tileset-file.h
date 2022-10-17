@@ -30,8 +30,8 @@ struct tileset;
 struct tileset_tiledef;
 
 struct tileset_file {
-	struct alloc_pool tiledefs;
-	struct alloc_pool anims[2];
+	struct mlk_alloc_pool tiledefs;
+	struct mlk_alloc_pool anims[2];
 	struct texture image;
 	struct sprite sprite;
 };

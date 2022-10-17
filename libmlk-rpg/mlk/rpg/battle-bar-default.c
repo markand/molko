@@ -556,7 +556,7 @@ battle_bar_default_open_magic(struct battle_bar_default *bar, const struct battl
 
 	(void)bt;
 
-	bar->items = alloc_rearray0(bar->items, bar->itemsz,
+	bar->items = mlk_alloc_rearray0(bar->items, bar->itemsz,
 	    CHARACTER_SPELL_MAX, sizeof (*bar->items));
 	bar->itemsz = CHARACTER_SPELL_MAX;
 	bar->state = BATTLE_BAR_DEFAULT_STATE_GRID;

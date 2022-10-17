@@ -37,7 +37,7 @@ struct map_file {
 	struct map_layer layers[MAP_LAYER_TYPE_NUM];
 	struct tileset_file tileset_file;
 	struct tileset tileset;
-	struct alloc_pool blocks;
+	struct mlk_alloc_pool blocks;
 };
 
 CORE_BEGIN_DECLS

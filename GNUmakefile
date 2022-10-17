@@ -53,7 +53,7 @@ INCS :=                 -Iextern/libdt \
                         $(OPENAL_INCS) \
                         $(SNDFILE_INCS)
 
-OPTS :=                 -Wall -Wextra -pipe
+OPTS +=                 -Wall -Wextra -pipe
 
 ifeq ($(OS),Darwin)
 OPTS +=                 -Wno-deprecated-declarations
@@ -415,7 +415,8 @@ tests: $(TESTS_EXE)
 
 # {{{ manual pages
 
-MAN3 :=         man/mlk-err.3
+MAN3 :=         man/mlk-alloc.3 \
+                man/mlk-err.3
 
 # }}}
 

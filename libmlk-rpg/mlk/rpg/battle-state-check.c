@@ -88,7 +88,7 @@ fadeout(struct battle *bt, struct battle_entity *et)
 		return;
 	}
 
-	fade = alloc_new0(sizeof (*fade));
+	fade = mlk_alloc_new0(sizeof (*fade));
 	fade->ch = et->ch;
 	fade->x = et->x;
 	fade->y = et->y;
@@ -99,7 +99,7 @@ fadeout(struct battle *bt, struct battle_entity *et)
 	fade->dw.finish = fadeout_finish;
 
 	if (drawable_stack_add(bt->effects, &fade->dw) < 0)
-		free(fade);
+		mlk_alloc_free(fade);
 }
 
 static int
@@ -197,7 +197,7 @@ battle_state_check(struct battle *bt)
 
 	struct battle_state *self;
 
-	self = alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(sizeof (*self));
 	self->data = bt;
 	self->update = update;
 	self->draw = draw;

@@ -66,7 +66,7 @@ parse_layer_tiles(struct context *ctx, const char *layer_name)
 	 * The next line after a layer declaration is a list of plain integer
 	 * that fill the layer tiles.
 	 */
-	if (!(ctx->mf->layers[layer_type].tiles = alloc_array0(amount, sizeof (unsigned short))))
+	if (!(ctx->mf->layers[layer_type].tiles = mlk_alloc_array0(amount, sizeof (unsigned short))))
 		return -1;
 
 	for (int tile; fscanf(ctx->fp, "%d\n", &tile) && current < amount; ++current)
@@ -102,7 +102,7 @@ parse_actions(struct context *ctx)
 		 * directive has one.
 		 */
 		if (block) {
-			if (!(reg = alloc_pool_new(&ctx->mf->blocks)))
+			if (!(reg = mlk_alloc_pool_new(&ctx->mf->blocks)))
 				return -1;
 
 			reg->x = x;
@@ -275,7 +275,7 @@ map_file_open(struct map_file *file, struct map *map, const char *path)
 	int ret = 0;
 
 	memset(map, 0, sizeof (*map));
-	alloc_pool_init(&file->blocks, sizeof (*map->blocks), NULL);
+	mlk_alloc_pool_init(&file->blocks, sizeof (*map->blocks), NULL);
 
 	if (!(ctx.fp = fopen(path, "r")))
 		goto fail;
@@ -306,7 +306,7 @@ map_file_finish(struct map_file *file)
 	free(file->layers[2].tiles);
 
 	tileset_file_finish(&file->tileset_file);
-	alloc_pool_finish(&file->blocks);
+	mlk_alloc_pool_finish(&file->blocks);
 
 	memset(file, 0, sizeof (*file));
 }

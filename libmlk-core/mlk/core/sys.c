@@ -272,10 +272,10 @@ create_audiostream(struct audiostream **ptr, SNDFILE *file, const SF_INFO *info)
 	struct audiostream *stream;
 	int ret = 0;
 
-	stream = alloc_new(sizeof (*stream));
+	stream = mlk_alloc_new(sizeof (*stream));
 	stream->samplerate = info->samplerate;
 	stream->samplesz = info->frames * info->channels;
-	stream->samples = alloc_array(stream->samplesz, sizeof (*stream->samples));
+	stream->samples = mlk_alloc_array(stream->samplesz, sizeof (*stream->samples));
 	stream->format = info->channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
 
 	sf_command(file, SFC_SET_SCALE_FLOAT_INT_READ, NULL, SF_TRUE);

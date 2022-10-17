@@ -25,15 +25,15 @@
 #include "alloc.h"
 
 #if !defined(BUF_MALLOC)
-#	define BUF_MALLOC alloc_new
+#	define BUF_MALLOC mlk_alloc_new
 #endif
 
 #if !defined(BUF_REALLOC)
-#	define BUF_REALLOC alloc_renew
+#	define BUF_REALLOC mlk_alloc_renew
 #endif
 
 #if !defined(BUF_FREE)
-#	define BUF_FREE alloc_free
+#	define BUF_FREE mlk_alloc_free
 #endif
 
 #if defined(__cplusplus)

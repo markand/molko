@@ -28,13 +28,15 @@
 #include "error.h"
 #include "panic.h"
 
+#define OOM_MSG "out of memory"
+
 static void *
 panic_alloc(size_t size)
 {
 	void *mem;
 
 	if (!(mem = malloc(size)))
-		panicf("%s", strerror(errno));
+		panicf(OOM_MSG);
 
 	return mem;
 }
@@ -45,21 +47,19 @@ panic_realloc(void *ptr, size_t size)
 	void *mem;
 
 	if (!(mem = realloc(ptr, size)) && size != 0)
-		panicf("%s", strerror(errno));
+		panicf(OOM_MSG);
 
 	return mem;
 }
 
-static const struct alloc_funcs default_alloc_funcs = {
+static const struct mlk_alloc_funcs *funcs = &(const struct mlk_alloc_funcs) {
 	.alloc = panic_alloc,
 	.realloc = panic_realloc,
 	.free = free
 };
 
-static const struct alloc_funcs *funcs = &default_alloc_funcs;
-
 void
-alloc_set(const struct alloc_funcs *newfuncs)
+mlk_alloc_set(const struct mlk_alloc_funcs *newfuncs)
 {
 	assert(funcs);
 	assert(funcs->alloc);
@@ -69,11 +69,11 @@ alloc_set(const struct alloc_funcs *newfuncs)
 	funcs = newfuncs;
 
 	/* Change SDL allocators as well. */
-	SDL_SetMemoryFunctions(alloc_new, alloc_array0, alloc_renew, free);
+	SDL_SetMemoryFunctions(mlk_alloc_new, mlk_alloc_array0, mlk_alloc_renew, free);
 }
 
 void *
-alloc_new(size_t size)
+mlk_alloc_new(size_t size)
 {
 	assert(size != 0);
 
@@ -81,7 +81,7 @@ alloc_new(size_t size)
 }
 
 void *
-alloc_new0(size_t size)
+mlk_alloc_new0(size_t size)
 {
 	assert(size != 0);
 
@@ -89,7 +89,7 @@ alloc_new0(size_t size)
 }
 
 void *
-alloc_array(size_t len, size_t elemsize)
+mlk_alloc_array(size_t len, size_t elemsize)
 {
 	assert(len != 0);
 	assert(elemsize != 0);
@@ -98,22 +98,22 @@ alloc_array(size_t len, size_t elemsize)
 }
 
 void *
-alloc_array0(size_t len, size_t elemsize)
+mlk_alloc_array0(size_t len, size_t elemsize)
 {
 	assert(len != 0);
 	assert(elemsize != 0);
 
-	return alloc_new0(len * elemsize);
+	return mlk_alloc_new0(len * elemsize);
 }
 
 void *
-alloc_renew(void *ptr, size_t size)
+mlk_alloc_renew(void *ptr, size_t size)
 {
 	return funcs->realloc(ptr, size);
 }
 
 void *
-alloc_rearray(void *ptr, size_t len, size_t elemsize)
+mlk_alloc_rearray(void *ptr, size_t len, size_t elemsize)
 {
 	assert(elemsize != 0);
 
@@ -121,7 +121,7 @@ alloc_rearray(void *ptr, size_t len, size_t elemsize)
 }
 
 void *
-alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize)
+mlk_alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize)
 {
 	ptr = funcs->realloc(ptr, newlen * elemsize);
 
@@ -132,7 +132,7 @@ alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize)
 }
 
 void *
-alloc_dup(const void *ptr, size_t size)
+mlk_alloc_dup(const void *ptr, size_t size)
 {
 	assert(ptr);
 	assert(size != 0);
@@ -141,7 +141,7 @@ alloc_dup(const void *ptr, size_t size)
 }
 
 char *
-alloc_sdup(const char *src)
+mlk_alloc_sdup(const char *src)
 {
 	assert(src);
 
@@ -151,7 +151,7 @@ alloc_sdup(const char *src)
 }
 
 char *
-alloc_sdupf(const char *fmt, ...)
+mlk_alloc_sdupf(const char *fmt, ...)
 {
 	struct buf buf = {0};
 	va_list ap;
@@ -164,39 +164,39 @@ alloc_sdupf(const char *fmt, ...)
 }
 
 void
-alloc_free(void *ptr)
+mlk_alloc_free(void *ptr)
 {
 	funcs->free(ptr);
 }
 
 void
-alloc_pool_init(struct alloc_pool *pool, size_t elemsize, void (*finalizer)(void *))
+mlk_alloc_pool_init(struct mlk_alloc_pool *pool, size_t elemsize, void (*finalizer)(void *))
 {
 	assert(pool);
 	assert(elemsize != 0);
 
-	pool->data = alloc_array(ALLOC_POOL_INIT_DEFAULT, elemsize);
+	pool->data = mlk_alloc_array(MLK_ALLOC_POOL_INIT_DEFAULT, elemsize);
 	pool->elemsize = elemsize;
 	pool->size = 0;
-	pool->capacity = ALLOC_POOL_INIT_DEFAULT;
+	pool->capacity = MLK_ALLOC_POOL_INIT_DEFAULT;
 	pool->finalizer = finalizer;
 }
 
 void *
-alloc_pool_new(struct alloc_pool *pool)
+mlk_alloc_pool_new(struct mlk_alloc_pool *pool)
 {
 	assert(pool);
 
 	if (pool->size >= pool->capacity) {
 		pool->capacity *= 2;
-		pool->data = alloc_rearray(pool->data, pool->capacity, pool->elemsize);
+		pool->data = mlk_alloc_rearray(pool->data, pool->capacity, pool->elemsize);
 	}
 
 	return ((unsigned char *)pool->data) + pool->size++ * pool->elemsize;
 }
 
 void *
-alloc_pool_get(const struct alloc_pool *pool, size_t index)
+mlk_alloc_pool_get(const struct mlk_alloc_pool *pool, size_t index)
 {
 	assert(pool);
 	assert(index < pool->size);
@@ -205,20 +205,20 @@ alloc_pool_get(const struct alloc_pool *pool, size_t index)
 }
 
 void *
-alloc_pool_shrink(struct alloc_pool *pool)
+mlk_alloc_pool_shrink(struct mlk_alloc_pool *pool)
 {
 	assert(pool);
 
 	void *ptr;
 
-	ptr = alloc_rearray(pool->data, pool->size, pool->elemsize);
+	ptr = mlk_alloc_rearray(pool->data, pool->size, pool->elemsize);
 	memset(pool, 0, sizeof (*pool));
 
 	return ptr;
 }
 
 void
-alloc_pool_finish(struct alloc_pool *pool)
+mlk_alloc_pool_finish(struct mlk_alloc_pool *pool)
 {
 	unsigned char *tab;
 

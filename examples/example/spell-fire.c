@@ -104,7 +104,7 @@ fire_action(struct battle *bt, struct character *owner, const struct selection *
 
 	(void)owner;
 
-	self = alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(sizeof (*self));
 	self->selection = slt->index_character;
 	self->battle = bt;
 	self->drawable.data = self;

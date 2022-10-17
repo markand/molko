@@ -24,17 +24,17 @@
 #include "core.h"
 
 /* Must be power of 2. */
-#define ALLOC_POOL_INIT_DEFAULT (32)
+#define MLK_ALLOC_POOL_INIT_DEFAULT (32)
 
 /* Custom allocator. */
-struct alloc_funcs {
+struct mlk_alloc_funcs {
 	void *(*alloc)(size_t);
 	void *(*realloc)(void *, size_t);
 	void (*free)(void *);
 };
 
 /* Minimalist growable array for loading data. */
-struct alloc_pool {
+struct mlk_alloc_pool {
 	void *data;
 	size_t elemsize;
 	size_t size;
@@ -46,56 +46,56 @@ CORE_BEGIN_DECLS
 
 /* allocator functions. */
 void
-alloc_set(const struct alloc_funcs *);
+mlk_alloc_set(const struct mlk_alloc_funcs *);
 
 void *
-alloc_new(size_t);
+mlk_alloc_new(size_t);
 
 void *
-alloc_new0(size_t);
+mlk_alloc_new0(size_t);
 
 void *
-alloc_array(size_t, size_t);
+mlk_alloc_array(size_t, size_t);
 
 void *
-alloc_array0(size_t, size_t);
+mlk_alloc_array0(size_t, size_t);
 
 void *
-alloc_renew(void *, size_t);
+mlk_alloc_renew(void *, size_t);
 
 void *
-alloc_rearray(void *, size_t, size_t);
+mlk_alloc_rearray(void *, size_t, size_t);
 
 void *
-alloc_rearray0(void *, size_t, size_t, size_t);
+mlk_alloc_rearray0(void *, size_t, size_t, size_t);
 
 void *
-alloc_dup(const void *, size_t);
+mlk_alloc_dup(const void *, size_t);
 
 char *
-alloc_sdup(const char *);
+mlk_alloc_sdup(const char *);
 
 char *
-alloc_sdupf(const char *, ...);
+mlk_alloc_sdupf(const char *, ...);
 
 void
-alloc_free(void *);
+mlk_alloc_free(void *);
 
 /* alloc_pool functions. */
 void
-alloc_pool_init(struct alloc_pool *, size_t , void (*)(void *));
+mlk_alloc_pool_init(struct mlk_alloc_pool *, size_t , void (*)(void *));
 
 void *
-alloc_pool_new(struct alloc_pool *);
+mlk_alloc_pool_new(struct mlk_alloc_pool *);
 
 void *
-alloc_pool_get(const struct alloc_pool *, size_t);
+mlk_alloc_pool_get(const struct mlk_alloc_pool *, size_t);
 
 void *
-alloc_pool_shrink(struct alloc_pool *);
+mlk_alloc_pool_shrink(struct mlk_alloc_pool *);
 
 void
-alloc_pool_finish(struct alloc_pool *);
+mlk_alloc_pool_finish(struct mlk_alloc_pool *);
 
 CORE_END_DECLS
 

@@ -58,7 +58,7 @@ my_free(void *ptr)
 	my_stats.free_count += 1;
 }
 
-static const struct alloc_funcs my_funcs = {
+static const struct mlk_alloc_funcs my_funcs = {
 	.alloc = my_alloc,
 	.realloc = my_realloc,
 	.free = my_free
@@ -69,7 +69,7 @@ test_basics_array_simple(void)
 {
 	struct point *points;
 
-	DT_ASSERT((points = alloc_array0(2, sizeof (*points))));
+	DT_ASSERT((points = mlk_alloc_array0(2, sizeof (*points))));
 	DT_EQ_INT(points[0].x, 0);
 	DT_EQ_INT(points[0].y, 0);
 	DT_EQ_INT(points[1].x, 0);
@@ -80,7 +80,7 @@ test_basics_array_simple(void)
 	points[1].x = 30;
 	points[1].y = 40;
 
-	DT_ASSERT((points = alloc_rearray0(points, 2, 4, sizeof (*points))));
+	DT_ASSERT((points = mlk_alloc_rearray0(points, 2, 4, sizeof (*points))));
 	DT_EQ_INT(points[0].x, 10);
 	DT_EQ_INT(points[0].y, 20);
 	DT_EQ_INT(points[1].x, 30);
@@ -94,19 +94,19 @@ test_basics_array_simple(void)
 static void
 test_basics_pool_simple(void)
 {
-	struct alloc_pool pool;
+	struct mlk_alloc_pool pool;
 	struct point *p, *data;
 	size_t total = 0;
 
-	alloc_pool_init(&pool, sizeof (*p), NULL);
+	mlk_alloc_pool_init(&pool, sizeof (*p), NULL);
 
 	DT_EQ_UINT(pool.elemsize, sizeof (*p));
 	DT_EQ_UINT(pool.size, 0);
-	DT_EQ_UINT(pool.capacity, ALLOC_POOL_INIT_DEFAULT);
+	DT_EQ_UINT(pool.capacity, MLK_ALLOC_POOL_INIT_DEFAULT);
 
 	/* Create until we reach the capacity. */
 	for (size_t i = 0; i < pool.capacity; ++i) {
-		p = alloc_pool_new(&pool);
+		p = mlk_alloc_pool_new(&pool);
 		p->x = (int)i + 1;
 		p->y = (int)i + 1;
 		total++;
@@ -123,14 +123,14 @@ test_basics_pool_simple(void)
 	}
 
 	/* Now it should reallocate. */
-	p = alloc_pool_new(&pool);
+	p = mlk_alloc_pool_new(&pool);
 	p->x = 9999;
 	p->y = 9999;
 
 	DT_ASSERT(pool.capacity > pool.size);
 
 	/* Shrink it! */
-	data = alloc_pool_shrink(&pool);
+	data = mlk_alloc_pool_shrink(&pool);
 
 	/* Verify values are correct again. */
 	for (size_t i = 0; i < total; ++i) {
@@ -147,7 +147,7 @@ test_basics_pool_simple(void)
 static void
 test_basics_sdupf(void)
 {
-	char *str = alloc_sdupf("Hello %s", "David");
+	char *str = mlk_alloc_sdupf("Hello %s", "David");
 
 	DT_EQ_STR(str, "Hello David");
 	free(str);
@@ -156,10 +156,10 @@ test_basics_sdupf(void)
 static void
 test_custom_count(void)
 {
-	alloc_set(&my_funcs);
-	alloc_free(alloc_new(10));
-	alloc_free(alloc_new0(20));
-	alloc_free(alloc_sdup("malikania"));
+	mlk_alloc_set(&my_funcs);
+	mlk_alloc_free(mlk_alloc_new(10));
+	mlk_alloc_free(mlk_alloc_new0(20));
+	mlk_alloc_free(mlk_alloc_sdup("malikania"));
 
 	DT_EQ_UINT(my_stats.total, 40U);
 	DT_EQ_UINT(my_stats.alloc_count, 3U);

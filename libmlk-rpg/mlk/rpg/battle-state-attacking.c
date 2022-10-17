@@ -165,7 +165,7 @@ battle_state_attacking(struct battle_entity *source, struct battle_entity *targe
 
 	struct self *self;
 
-	self = alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(sizeof (*self));
 	self->state.data = self;
 	self->state.update = update;
 	self->state.draw = draw;
