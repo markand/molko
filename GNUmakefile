@@ -416,7 +416,8 @@ tests: $(TESTS_EXE)
 # {{{ manual pages
 
 MAN3 :=         man/mlk-alloc.3 \
-                man/mlk-err.3
+                man/mlk-err.3 \
+                man/mlk_err_string.3
 
 # }}}
 

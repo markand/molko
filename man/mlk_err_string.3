@@ -1,0 +1,25 @@
+.Dd $Mdocdate$
+.Dt MLK_ERR_STRING 3
+.Os
+.Sh NAME
+.Nm mlk_err_string
+.Nd return human readable error string
+.Sh LIBRARY
+libmlk-core (-lmlk-core)
+.Sh SYNOPSIS
+.In mlk/core/err.h
+.Ft "const char *"
+.Fn mlk_err_string "int e"
+.Sh DESCRIPTION
+The function
+.Fn mlk_err_string
+returns a constant string description of the error code
+.Fa e .
+.Pp
+See the
+.Xr mlk-err 3
+manual page for a list of error codes.
+.Sh SEE ALSO
+.Xr mlk-err 3
+.Sh AUTHORS
+.An David Demelier Aq Mt markand@malikania.fr .

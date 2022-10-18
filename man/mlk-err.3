@@ -5,14 +5,12 @@
 .Nm mlk-err
 .Nd error management in mlk library
 .Sh LIBRARY
-.Lb libmlk-core
+libmlk-core (-lmlk-core)
 .Sh SYNOPSIS
 .In mlk/core/err.h
-.Ft "const char *"
-.Fn mlk_err_string "int e"
 .Sh DESCRIPTION
 This manual page describes error codes that may occur within the molko
-framework. All errors are defined with negative numbers the only exception
+framework. All errors are defined with negative numbers, the only exception
 being
 .Er MLK_ERR_NONE
 which is equal to 0.
@@ -34,15 +32,7 @@ listed as they may change over time, if the caller inspects individual error
 codes it should also be took in account which in this case the function
 .Fn mlk_err_string
 may comes handy.
-.Pp
-The function
-.Fn mlk_err_string
-returns a constant string description of the error
-.Ar e .
 .Sh SEE ALSO
-.Xr mlk-panic 3
+.Xr mlk_err_string 3
 .Sh AUTHORS
-The
-.Nm
-library was written by
 .An David Demelier Aq Mt markand@malikania.fr .
