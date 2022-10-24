@@ -52,11 +52,11 @@
 #define MY      (100)
 
 /* This is a stack of "parallel" events. */
-static struct action *events_actions[32];
+static struct mlk_action *events_actions[32];
 static struct action_stack events;
 
 /* This is a stack of modal events. */
-static struct action *modal_actions[32];
+static struct mlk_action *modal_actions[32];
 static struct action_stack modal;
 
 /* Maximum number of states. */
@@ -68,13 +68,13 @@ static struct state *states[1];
 static struct {
 	const char *text[2];
 	struct message msg;
-	struct action msg_act;
+	struct mlk_action msg_act;
 	int x;
 	int y;
 	int opened;
 	struct texture image;
 	struct sprite sprite;
-	struct action event;
+	struct mlk_action event;
 } chest = {
 	.text = {
 		"100000 pièces.",
@@ -110,7 +110,7 @@ static struct {
 	struct {
 		const char *text[6];
 		struct message msg;
-		struct action act;
+		struct mlk_action act;
 	} msgs[5];
 
 	/* This is the sprite and action to click on. */
@@ -118,13 +118,13 @@ static struct {
 	int y;
 	struct texture image;
 	struct sprite sprite;
-	struct action event;
+	struct mlk_action event;
 
 	/* This is the event for the response. */
-	struct action response;
+	struct mlk_action response;
 
 	struct script script;
-	struct action script_act;
+	struct mlk_action script_act;
 } guide = {
 	.msgs = {
 		{
@@ -199,7 +199,7 @@ static struct {
 };
 
 static int
-guide_response_update(struct action *act, unsigned int ticks)
+guide_response_update(struct mlk_action *act, unsigned int ticks)
 {
 	/* Immediately return to get access to end. */
 	(void)act;
@@ -209,7 +209,7 @@ guide_response_update(struct action *act, unsigned int ticks)
 }
 
 static void
-guide_response_end(struct action *act)
+guide_response_end(struct mlk_action *act)
 {
 	(void)act;
 
@@ -244,7 +244,7 @@ guide_popup(void)
 }
 
 static void
-guide_handle(struct action *act, const union event *ev)
+guide_handle(struct mlk_action *act, const union event *ev)
 {
 	(void)act;
 
@@ -264,7 +264,7 @@ guide_handle(struct action *act, const union event *ev)
 }
 
 static void
-guide_draw(struct action *act)
+guide_draw(struct mlk_action *act)
 {
 	(void)act;
 
@@ -287,7 +287,7 @@ guide_init(void)
 }
 
 static void
-chest_handle(struct action *act, const union event *ev)
+chest_handle(struct mlk_action *act, const union event *ev)
 {
 	(void)act;
 
@@ -309,7 +309,7 @@ chest_handle(struct action *act, const union event *ev)
 }
 
 static void
-chest_draw(struct action *act)
+chest_draw(struct mlk_action *act)
 {
 	(void)act;
 

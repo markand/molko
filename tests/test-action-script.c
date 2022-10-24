@@ -40,7 +40,7 @@ struct invokes {
 }
 
 static void
-my_handle(struct action *act, const union event *ev)
+my_handle(struct mlk_action *act, const union event *ev)
 {
 	(void)ev;
 
@@ -48,7 +48,7 @@ my_handle(struct action *act, const union event *ev)
 }
 
 static int
-my_update_false(struct action *act, unsigned int ticks)
+my_update_false(struct mlk_action *act, unsigned int ticks)
 {
 	(void)ticks;
 
@@ -58,7 +58,7 @@ my_update_false(struct action *act, unsigned int ticks)
 }
 
 static int
-my_update_true(struct action *act, unsigned int ticks)
+my_update_true(struct mlk_action *act, unsigned int ticks)
 {
 	(void)ticks;
 
@@ -68,19 +68,19 @@ my_update_true(struct action *act, unsigned int ticks)
 }
 
 static void
-my_draw(struct action *act)
+my_draw(struct mlk_action *act)
 {
 	((struct invokes *)act->data)->draw++;
 }
 
 static void
-my_end(struct action *act)
+my_end(struct mlk_action *act)
 {
 	((struct invokes *)act->data)->end++;
 }
 
 static void
-my_finish(struct action *act)
+my_finish(struct mlk_action *act)
 {
 	((struct invokes *)act->data)->finish++;
 }
@@ -99,7 +99,7 @@ test_basics_init(void)
 static void
 test_basics_append(void)
 {
-	struct action act[3] = {0};
+	struct mlk_action act[3] = {0};
 	struct script sc = {0};
 
 	DT_ASSERT(script_append(&sc, &act[0]) == 0);
@@ -128,7 +128,7 @@ test_basics_handle(void)
 {
 	struct {
 		struct invokes inv;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0].inv, my_update_true)    },
 		{ .act = INIT(&table[1].inv, my_update_true)    },
@@ -205,7 +205,7 @@ test_basics_update(void)
 {
 	struct {
 		struct invokes inv;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0].inv, my_update_true)    },
 		{ .act = INIT(&table[1].inv, my_update_true)    },
@@ -299,7 +299,7 @@ test_basics_draw(void)
 {
 	struct {
 		struct invokes inv;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0].inv, my_update_true)    },
 		{ .act = INIT(&table[1].inv, my_update_true)    },
@@ -376,7 +376,7 @@ test_basics_finish(void)
 {
 	struct {
 		struct invokes inv;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0].inv, my_update_true)    },
 		{ .act = INIT(&table[1].inv, my_update_true)    },
@@ -416,7 +416,7 @@ test_action_simple(void)
 {
 	struct {
 		struct invokes inv;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0].inv, my_update_true)    },
 		{ .act = INIT(&table[1].inv, my_update_true)    },
@@ -424,7 +424,7 @@ test_action_simple(void)
 	};
 
 	struct script sc = {0};
-	struct action act;
+	struct mlk_action act;
 
 	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
 	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
@@ -434,11 +434,11 @@ test_action_simple(void)
 	script_action(&sc, &act);
 
 	/* Draw and input before updating. */
-	action_handle(&act, &(union event){0});
-	action_draw(&act);
+	mlk_action_handle(&act, &(union event){0});
+	mlk_action_draw(&act);
 
 	/* [0] -> [1] */
-	DT_ASSERT(!action_update(&act, 0));
+	DT_ASSERT(!mlk_action_update(&act, 0));
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 1);
@@ -455,11 +455,11 @@ test_action_simple(void)
 	DT_EQ_INT(table[2].inv.end, 0);
 	DT_EQ_INT(table[2].inv.finish, 0);
 
-	action_handle(&act, &(union event){0});
-	action_draw(&act);
+	mlk_action_handle(&act, &(union event){0});
+	mlk_action_draw(&act);
 
 	/* [1] -> [2] */
-	DT_ASSERT(!action_update(&act, 0));
+	DT_ASSERT(!mlk_action_update(&act, 0));
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 1);
@@ -476,13 +476,13 @@ test_action_simple(void)
 	DT_EQ_INT(table[2].inv.end, 0);
 	DT_EQ_INT(table[2].inv.finish, 0);
 
-	action_handle(&act, &(union event){0});
-	action_draw(&act);
+	mlk_action_handle(&act, &(union event){0});
+	mlk_action_draw(&act);
 
 	/* 2 stays, it never ends. */
-	DT_ASSERT(!action_update(&act, 0));
-	DT_ASSERT(!action_update(&act, 0));
-	DT_ASSERT(!action_update(&act, 0));
+	DT_ASSERT(!mlk_action_update(&act, 0));
+	DT_ASSERT(!mlk_action_update(&act, 0));
+	DT_ASSERT(!mlk_action_update(&act, 0));
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 1);
@@ -500,7 +500,7 @@ test_action_simple(void)
 	DT_EQ_INT(table[2].inv.finish, 0);
 
 	table[2].act.update = my_update_true;
-	DT_ASSERT(action_update(&act, 0));
+	DT_ASSERT(mlk_action_update(&act, 0));
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 1);
@@ -518,7 +518,7 @@ test_action_simple(void)
 	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* Also dispose resources. */
-	action_finish(&act);
+	mlk_action_finish(&act);
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 1);

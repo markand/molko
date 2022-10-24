@@ -22,7 +22,7 @@
 #include <mlk/core/core.h>
 #include <mlk/core/texture.h>
 
-struct action;
+struct mlk_action;
 struct font;
 struct theme;
 
@@ -84,7 +84,7 @@ void
 message_hide(struct message *msg);
 
 void
-message_action(struct message *msg, struct action *act);
+message_action(struct message *msg, struct mlk_action *act);
 
 CORE_END_DECLS
 

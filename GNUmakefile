@@ -415,9 +415,15 @@ tests: $(TESTS_EXE)
 
 # {{{ manual pages
 
-MAN3 :=         man/mlk-alloc.3 \
+MAN3 :=         man/mlk-action.3 \
+                man/mlk-alloc.3 \
                 man/mlk-err.3 \
                 man/mlk_err_string.3
+                man/mlk_action_draw.3 \
+                man/mlk_action_end.3 \
+                man/mlk_action_finish.3 \
+                man/mlk_action_handle.3 \
+                man/mlk_action_update.3
 
 # }}}
 

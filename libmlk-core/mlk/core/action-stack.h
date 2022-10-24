@@ -23,20 +23,22 @@
 
 #include "core.h"
 
+struct mlk_action;
+
 union event;
 
 struct action_stack {
-	struct action **actions;
+	struct mlk_action **actions;
 	size_t actionsz;
 };
 
 CORE_BEGIN_DECLS
 
 void
-action_stack_init(struct action_stack *, struct action **, size_t);
+action_stack_init(struct action_stack *, struct mlk_action **, size_t);
 
 int
-action_stack_add(struct action_stack *, struct action *);
+action_stack_add(struct action_stack *, struct mlk_action *);
 
 void
 action_stack_handle(struct action_stack *, const union event *);

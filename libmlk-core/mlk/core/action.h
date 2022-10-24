@@ -23,31 +23,31 @@
 
 union event;
 
-struct action {
+struct mlk_action {
 	void *data;
-	void (*handle)(struct action *, const union event *);
-	int (*update)(struct action *, unsigned int);
-	void (*draw)(struct action *);
-	void (*end)(struct action *);
-	void (*finish)(struct action *);
+	void (*handle)(struct mlk_action *, const union event *);
+	int (*update)(struct mlk_action *, unsigned int);
+	void (*draw)(struct mlk_action *);
+	void (*end)(struct mlk_action *);
+	void (*finish)(struct mlk_action *);
 };
 
 CORE_BEGIN_DECLS
 
 void
-action_handle(struct action *, const union event *);
+mlk_action_handle(struct mlk_action *, const union event *);
 
 int
-action_update(struct action *, unsigned int);
+mlk_action_update(struct mlk_action *, unsigned int);
 
 void
-action_draw(struct action *);
+mlk_action_draw(struct mlk_action *);
 
 void
-action_end(struct action *);
+mlk_action_end(struct mlk_action *);
 
 void
-action_finish(struct action *);
+mlk_action_finish(struct mlk_action *);
 
 CORE_END_DECLS
 

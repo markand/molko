@@ -25,12 +25,12 @@
 
 #define SCRIPT_ACTION_MAX (128)
 
-struct action;
+struct mlk_action;
 
 union event;
 
 struct script {
-	struct action *actions[SCRIPT_ACTION_MAX];
+	struct mlk_action *actions[SCRIPT_ACTION_MAX];
 	size_t actionsz;
 	size_t cur;
 };
@@ -41,7 +41,7 @@ void
 script_init(struct script *);
 
 int
-script_append(struct script *, struct action *);
+script_append(struct script *, struct mlk_action *);
 
 void
 script_handle(struct script *, const union event *);
@@ -59,7 +59,7 @@ void
 script_finish(struct script *);
 
 void
-script_action(struct script*s, struct action *);
+script_action(struct script *s, struct mlk_action *);
 
 CORE_END_DECLS
 

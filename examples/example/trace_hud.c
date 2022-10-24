@@ -116,7 +116,7 @@ trace_hud_clear(void)
 }
 
 static int
-update(struct action *a, unsigned int ticks)
+update(struct mlk_action *a, unsigned int ticks)
 {
 	(void)a;
 
@@ -126,17 +126,17 @@ update(struct action *a, unsigned int ticks)
 }
 
 static void
-draw(struct action *a)
+draw(struct mlk_action *a)
 {
 	(void)a;
 
 	trace_hud_draw();
 }
 
-struct action *
+struct mlk_action *
 trace_hud_action(void)
 {
-	static struct action a = {
+	static struct mlk_action a = {
 		.update = update,
 		.draw = draw
 	};

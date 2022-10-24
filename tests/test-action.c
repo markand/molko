@@ -43,7 +43,7 @@ static union event dummy;
 }
 
 static void
-my_handle(struct action *act, const union event *ev)
+my_handle(struct mlk_action *act, const union event *ev)
 {
 	(void)ev;
 
@@ -51,7 +51,7 @@ my_handle(struct action *act, const union event *ev)
 }
 
 static int
-my_update_false(struct action *act, unsigned int ticks)
+my_update_false(struct mlk_action *act, unsigned int ticks)
 {
 	(void)ticks;
 
@@ -61,7 +61,7 @@ my_update_false(struct action *act, unsigned int ticks)
 }
 
 static int
-my_update_true(struct action *act, unsigned int ticks)
+my_update_true(struct mlk_action *act, unsigned int ticks)
 {
 	(void)ticks;
 
@@ -71,19 +71,19 @@ my_update_true(struct action *act, unsigned int ticks)
 }
 
 static void
-my_draw(struct action *act)
+my_draw(struct mlk_action *act)
 {
 	((struct invokes *)act->data)->draw = 1;
 }
 
 static void
-my_end(struct action *act)
+my_end(struct mlk_action *act)
 {
 	((struct invokes *)act->data)->end = 1;
 }
 
 static void
-my_finish(struct action *act)
+my_finish(struct mlk_action *act)
 {
 	((struct invokes *)act->data)->finish = 1;
 }
@@ -92,9 +92,9 @@ static void
 test_basics_handle(void)
 {
 	struct invokes inv = {0};
-	struct action act = INIT(&inv, my_update_true);
+	struct mlk_action act = INIT(&inv, my_update_true);
 
-	action_handle(&act, &dummy);
+	mlk_action_handle(&act, &dummy);
 
 	DT_ASSERT(inv.handle);
 	DT_ASSERT(!inv.update);
@@ -108,14 +108,14 @@ test_basics_update(void)
 {
 	struct {
 		struct invokes inv;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0], my_update_true)        },
 		{ .act = INIT(&table[1], my_update_false)       }
 	};
 
 	/* True version. */
-	DT_ASSERT(action_update(&table[0].act, 0));
+	DT_ASSERT(mlk_action_update(&table[0].act, 0));
 	DT_ASSERT(!table[0].inv.handle);
 	DT_ASSERT(table[0].inv.update);
 	DT_ASSERT(!table[0].inv.draw);
@@ -123,7 +123,7 @@ test_basics_update(void)
 	DT_ASSERT(!table[0].inv.finish);
 
 	/* False version. */
-	DT_ASSERT(!action_update(&table[1].act, 0));
+	DT_ASSERT(!mlk_action_update(&table[1].act, 0));
 	DT_ASSERT(!table[1].inv.handle);
 	DT_ASSERT(table[1].inv.update);
 	DT_ASSERT(!table[1].inv.draw);
@@ -135,9 +135,9 @@ static void
 test_basics_draw(void)
 {
 	struct invokes inv = {0};
-	struct action act = INIT(&inv, my_update_true);
+	struct mlk_action act = INIT(&inv, my_update_true);
 
-	action_draw(&act);
+	mlk_action_draw(&act);
 
 	DT_ASSERT(!inv.handle);
 	DT_ASSERT(!inv.update);
@@ -150,9 +150,9 @@ static void
 test_basics_end(void)
 {
 	struct invokes inv = {0};
-	struct action act = INIT(&inv, my_update_true);
+	struct mlk_action act = INIT(&inv, my_update_true);
 
-	action_end(&act);
+	mlk_action_end(&act);
 
 	DT_ASSERT(!inv.handle);
 	DT_ASSERT(!inv.update);
@@ -165,9 +165,9 @@ static void
 test_basics_finish(void)
 {
 	struct invokes inv = {0};
-	struct action act = INIT(&inv, my_update_true);
+	struct mlk_action act = INIT(&inv, my_update_true);
 
-	action_finish(&act);
+	mlk_action_finish(&act);
 
 	DT_ASSERT(!inv.handle);
 	DT_ASSERT(!inv.update);
@@ -179,9 +179,9 @@ test_basics_finish(void)
 static void
 test_stack_add(void)
 {
-	struct action *actions[10];
+	struct mlk_action *actions[10];
 	struct action_stack st = {0};
-	struct action act = {0};
+	struct mlk_action act = {0};
 
 	action_stack_init(&st, actions, 10);
 
@@ -200,14 +200,14 @@ test_stack_handle(void)
 {
 	struct {
 		int called;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ 0, { .data = &table[0].called, .handle = my_handle } },
 		{ 0, { .data = &table[1].called, .handle = my_handle } },
 		{ 0, { .data = &table[2].called, .handle = my_handle } },
 	};
 
-	struct action *actions[10];
+	struct mlk_action *actions[10];
 	struct action_stack st = {0};
 
 	action_stack_init(&st, actions, 10);
@@ -226,7 +226,7 @@ test_stack_update(void)
 {
 	struct {
 		struct invokes inv;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0], my_update_false)       },
 		{ .act = INIT(&table[1], my_update_true)        },
@@ -237,7 +237,7 @@ test_stack_update(void)
 		{ .act = INIT(&table[6], my_update_false)	},
 	};
 
-	struct action *actions[10];
+	struct mlk_action *actions[10];
 	struct action_stack st = {0};
 
 	action_stack_init(&st, actions, 10);
@@ -325,7 +325,7 @@ test_stack_draw(void)
 {
 	struct {
 		struct invokes inv;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0], my_update_false)       },
 		{ .act = INIT(&table[1], my_update_true)        },
@@ -336,7 +336,7 @@ test_stack_draw(void)
 		{ .act = INIT(&table[6], my_update_false)	},
 	};
 
-	struct action *actions[10];
+	struct mlk_action *actions[10];
 	struct action_stack st = {0};
 
 	action_stack_init(&st, actions, 10);
@@ -395,13 +395,13 @@ test_stack_finish(void)
 {
 	struct {
 		struct invokes inv;
-		struct action act;
+		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0], my_update_true)        },
 		{ .act = INIT(&table[0], my_update_false)       },
 	};
 
-	struct action *actions[10];
+	struct mlk_action *actions[10];
 	struct action_stack st = {0};
 
 	action_stack_init(&st, actions, 10);

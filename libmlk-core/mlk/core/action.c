@@ -21,7 +21,7 @@
 #include "action.h"
 
 void
-action_handle(struct action *act, const union event *ev)
+mlk_action_handle(struct mlk_action *act, const union event *ev)
 {
 	assert(act);
 	assert(ev);
@@ -31,7 +31,7 @@ action_handle(struct action *act, const union event *ev)
 }
 
 int
-action_update(struct action *act, unsigned int ticks)
+mlk_action_update(struct mlk_action *act, unsigned int ticks)
 {
 	assert(act);
 
@@ -43,7 +43,7 @@ action_update(struct action *act, unsigned int ticks)
 }
 
 void
-action_draw(struct action *act)
+mlk_action_draw(struct mlk_action *act)
 {
 	assert(act);
 
@@ -52,7 +52,7 @@ action_draw(struct action *act)
 }
 
 void
-action_end(struct action *act)
+mlk_action_end(struct mlk_action *act)
 {
 	assert(act);
 
@@ -61,7 +61,7 @@ action_end(struct action *act)
 }
 
 void
-action_finish(struct action *act)
+mlk_action_finish(struct mlk_action *act)
 {
 	assert(act);
 

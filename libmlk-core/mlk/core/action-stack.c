@@ -27,7 +27,7 @@
 	for (size_t i = 0; i < (st)->actionsz && ((iter) = (st)->actions[i], 1); ++i)
 
 void
-action_stack_init(struct action_stack *st, struct action **actions, size_t actionsz)
+action_stack_init(struct action_stack *st, struct mlk_action **actions, size_t actionsz)
 {
 	assert(st);
 
@@ -39,7 +39,7 @@ action_stack_init(struct action_stack *st, struct action **actions, size_t actio
 }
 
 int
-action_stack_add(struct action_stack *st, struct action *act)
+action_stack_add(struct action_stack *st, struct mlk_action *act)
 {
 	assert(st);
 	assert(act);
@@ -60,11 +60,11 @@ action_stack_handle(struct action_stack *st, const union event *ev)
 	assert(st);
 	assert(ev);
 
-	struct action *act;
+	struct mlk_action *act;
 
 	ACTION_FOREACH(st, act)
 		if (act)
-			action_handle(act, ev);
+			mlk_action_handle(act, ev);
 }
 
 int
@@ -72,14 +72,14 @@ action_stack_update(struct action_stack *st, unsigned int ticks)
 {
 	assert(st);
 
-	struct action *act;
+	struct mlk_action *act;
 
 	for (size_t i = 0; i < st->actionsz; ++i) {
 		act = st->actions[i];
 
-		if (act && action_update(act, ticks)) {
-			action_end(act);
-			action_finish(act);
+		if (act && mlk_action_update(act, ticks)) {
+			mlk_action_end(act);
+			mlk_action_finish(act);
 			st->actions[i] = NULL;
 		}
 	}
@@ -96,11 +96,11 @@ action_stack_draw(const struct action_stack *st)
 {
 	assert(st);
 
-	struct action *act;
+	struct mlk_action *act;
 
 	ACTION_FOREACH(st, act)
 		if (act)
-			action_draw(act);
+			mlk_action_draw(act);
 }
 
 int
@@ -108,7 +108,7 @@ action_stack_completed(const struct action_stack *st)
 {
 	assert(st);
 
-	struct action *act;
+	struct mlk_action *act;
 
 	ACTION_FOREACH(st, act)
 		if (act)
@@ -122,12 +122,12 @@ action_stack_finish(struct action_stack *st)
 {
 	assert(st);
 
-	struct action *act;
+	struct mlk_action *act;
 
 	ACTION_FOREACH(st, act) {
 		if (act) {
-			action_end(act);
-			action_finish(act);
+			mlk_action_end(act);
+			mlk_action_finish(act);
 		}
 	}
 

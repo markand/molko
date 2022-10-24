@@ -43,7 +43,7 @@ trace_hud_draw(void);
 void
 trace_hud_clear(void);
 
-struct action *
+struct mlk_action *
 trace_hud_action(void);
 
 #endif /* !EXAMPLES_TRACE_TRACE_HUD_H */

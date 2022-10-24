@@ -40,7 +40,7 @@
 #define THEME(msg)      (msg->theme ? msg->theme : theme_default())
 
 static void
-handle(struct action *action, const union event *ev)
+handle(struct mlk_action *action, const union event *ev)
 {
 	assert(action);
 	assert(ev);
@@ -49,7 +49,7 @@ handle(struct action *action, const union event *ev)
 }
 
 static int
-update(struct action *action, unsigned int ticks)
+update(struct mlk_action *action, unsigned int ticks)
 {
 	assert(action);
 
@@ -57,7 +57,7 @@ update(struct action *action, unsigned int ticks)
 }
 
 static void
-draw(struct action *action)
+draw(struct mlk_action *action)
 {
 	assert(action);
 
@@ -301,12 +301,12 @@ message_hide(struct message *msg)
 }
 
 void
-message_action(struct message *msg, struct action *action)
+message_action(struct message *msg, struct mlk_action *action)
 {
 	assert(msg);
 	assert(action);
 
-	memset(action, 0, sizeof (struct action));
+	memset(action, 0, sizeof (struct mlk_action));
 	action->data = msg;
 	action->handle = handle;
 	action->update = update;
