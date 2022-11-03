@@ -118,7 +118,7 @@ battle_entity_state_moving(struct battle_entity *et, int dstx, int dsty)
 
 	struct self *self;
 
-	self = mlk_alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(1, sizeof (*self));
 	self->state.data = self;
 	self->state.update = update;
 	self->state.draw = draw;

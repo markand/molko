@@ -92,7 +92,7 @@ battle_state_menu(struct battle *bt)
 
 	struct battle_state *state;
 
-	state = alloc_new0(sizeof (*state));
+	state = mlk_alloc_new0(1, sizeof (*state));
 	state->data = bt;
 	state->handle = handle;
 	state->update = update;

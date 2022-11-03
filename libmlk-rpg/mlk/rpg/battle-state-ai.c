@@ -82,7 +82,7 @@ battle_state_ai(struct battle *bt)
 
 	struct battle_state *self;
 
-	self = mlk_alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(1, sizeof (*self));
 	self->data = bt;
 	self->update = update;
 	self->draw = draw;

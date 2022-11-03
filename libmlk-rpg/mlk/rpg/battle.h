@@ -81,7 +81,7 @@ struct battle {
 	struct music *music[3];
 	struct theme *theme;
 	struct drawable_stack *effects;
-	struct action_stack *actions;
+	struct mlk_action_stack *actions;
 	struct inventory *inventory;
 	struct battle_bar *bar;
 };

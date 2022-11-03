@@ -125,7 +125,7 @@ battle_state_victory(struct battle *bt)
 	struct self *self;
 
 	/* TODO: compute money, xp and drop. */
-	self = alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(1, sizeof (*self));
 	self->state.data = self;
 	self->state.handle = handle;
 	self->state.update = update;

@@ -88,7 +88,7 @@ fadeout(struct battle *bt, struct battle_entity *et)
 		return;
 	}
 
-	fade = mlk_alloc_new0(sizeof (*fade));
+	fade = mlk_alloc_new0(1, sizeof (*fade));
 	fade->ch = et->ch;
 	fade->x = et->x;
 	fade->y = et->y;
@@ -197,7 +197,7 @@ battle_state_check(struct battle *bt)
 
 	struct battle_state *self;
 
-	self = mlk_alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(1, sizeof (*self));
 	self->data = bt;
 	self->update = update;
 	self->draw = draw;

@@ -152,7 +152,7 @@ parse_tiledefs(struct context *ctx, const char *line)
 	unsigned short id, w, h;
 	struct tileset_tiledef *td;
 
-	mlk_alloc_pool_init(&ctx->tf->tiledefs, sizeof (*td), NULL);
+	mlk_alloc_pool_init(&ctx->tf->tiledefs, 16, sizeof (*td), NULL);
 
 	while (fscanf(ctx->fp, "%hu|%hd|%hd|%hu|%hu\n", &id, &x, &y, &w, &h) == 5) {
 		td = mlk_alloc_pool_new(&ctx->tf->tiledefs);
@@ -181,8 +181,10 @@ parse_animations(struct context *ctx, const char *line)
 	char filename[FILENAME_MAX + 1];
 	struct tileset_animation_block *anim;
 
-	mlk_alloc_pool_init(&ctx->tf->anims[0], sizeof (struct tileset_animation_block), tileset_animation_block_finish);
-	mlk_alloc_pool_init(&ctx->tf->anims[1], sizeof (struct tileset_animation), NULL);
+	mlk_alloc_pool_init(&ctx->tf->anims[0], 16,
+	    sizeof (struct tileset_animation_block), tileset_animation_block_finish);
+	mlk_alloc_pool_init(&ctx->tf->anims[1], 16,
+	    sizeof (struct tileset_animation), NULL);
 
 	/*
 	 * 1. Create the first array of animation, sprite and texture that are

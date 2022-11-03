@@ -24,11 +24,17 @@
 #include <SDL.h>
 
 #include "alloc.h"
-#include "buf.h"
 #include "error.h"
 #include "panic.h"
 
 #define OOM_MSG "out of memory"
+#define BLKSIZE (offsetof (struct block, data))
+
+struct block {
+	size_t n;
+	size_t w;
+	unsigned char data[];
+};
 
 static void *
 panic_alloc(size_t size)
@@ -58,6 +64,32 @@ static const struct mlk_alloc_funcs *funcs = &(const struct mlk_alloc_funcs) {
 	.free = free
 };
 
+static void *
+wrap_sdl_malloc(size_t s)
+{
+	return funcs->alloc(s);
+}
+
+static void *
+wrap_sdl_calloc(size_t n, size_t w)
+{
+	const size_t s = n * w;
+
+	return memset(funcs->alloc(s), 0, s);
+}
+
+static void *
+wrap_sdl_realloc(void *mem, size_t s)
+{
+	return funcs->realloc(mem, s);
+}
+
+static void
+wrap_sdl_free(void *mem)
+{
+	funcs->free(mem);
+}
+
 void
 mlk_alloc_set(const struct mlk_alloc_funcs *newfuncs)
 {
@@ -69,75 +101,93 @@ mlk_alloc_set(const struct mlk_alloc_funcs *newfuncs)
 	funcs = newfuncs;
 
 	/* Change SDL allocators as well. */
-	SDL_SetMemoryFunctions(mlk_alloc_new, mlk_alloc_array0, mlk_alloc_renew, free);
+	SDL_SetMemoryFunctions(wrap_sdl_malloc, wrap_sdl_calloc,
+	    wrap_sdl_realloc, wrap_sdl_free);
 }
 
-void *
-mlk_alloc_new(size_t size)
+static inline struct block *
+blockat(void *ptr)
 {
-	assert(size != 0);
-
-	return funcs->alloc(size);
+	return ptr - BLKSIZE;
 }
 
-void *
-mlk_alloc_new0(size_t size)
+static inline void *
+allocate(size_t n, size_t w, int zero)
 {
-	assert(size != 0);
+	struct block *b;
+	size_t s = n * w;
 
-	return memset(funcs->alloc(size), 0, size);
+	// TODO: overflow check.
+
+	b = funcs->alloc(BLKSIZE + s);
+	b->n = n;
+	b->w = w;
+
+	if (zero)
+		memset(b->data, 0, s);
+
+	return b->data;
 }
 
-void *
-mlk_alloc_array(size_t len, size_t elemsize)
-{
-	assert(len != 0);
-	assert(elemsize != 0);
-
-	return funcs->alloc(len * elemsize);
-}
-
-void *
-mlk_alloc_array0(size_t len, size_t elemsize)
-{
-	assert(len != 0);
-	assert(elemsize != 0);
-
-	return mlk_alloc_new0(len * elemsize);
-}
-
-void *
-mlk_alloc_renew(void *ptr, size_t size)
-{
-	return funcs->realloc(ptr, size);
-}
-
-void *
-mlk_alloc_rearray(void *ptr, size_t len, size_t elemsize)
-{
-	assert(elemsize != 0);
-
-	return funcs->realloc(ptr, len * elemsize);
-}
-
-void *
-mlk_alloc_rearray0(void *ptr, size_t oldlen, size_t newlen, size_t elemsize)
-{
-	ptr = funcs->realloc(ptr, newlen * elemsize);
-
-	if (newlen > oldlen)
-		memset((unsigned char *)ptr + (oldlen * elemsize), 0, (newlen - oldlen) * elemsize);
-
-	return ptr;
-}
-
-void *
-mlk_alloc_dup(const void *ptr, size_t size)
+static inline void *
+reallocate(void *ptr, size_t n, int zero)
 {
 	assert(ptr);
-	assert(size != 0);
 
-	return memcpy(funcs->alloc(size), ptr, size);
+	struct block *b = blockat(ptr);
+	size_t osize = b->n * b->w;
+	size_t nsize = (b->n + n) * b->w;
+
+#if !defined(NDEBUG)
+	assert(SIZE_MAX - osize >= nsize);
+#endif
+
+	b = funcs->realloc(b, BLKSIZE + nsize);
+
+	if (zero && nsize > osize)
+		memset(b->data + osize, 0, nsize - osize);
+
+	return b->data;
+}
+
+void *
+mlk_alloc_new(size_t n, size_t w)
+{
+	assert(n);
+	assert(w);
+
+	return allocate(n, w, 0);
+}
+
+void *
+mlk_alloc_new0(size_t n, size_t w)
+{
+	assert(n);
+	assert(w);
+
+	return allocate(n, w, 1);
+}
+
+void *
+mlk_alloc_renew(void *ptr, size_t n)
+{
+	return reallocate(ptr, n, 0);
+}
+
+void *
+mlk_alloc_renew0(void *ptr, size_t n)
+{
+	return reallocate(ptr, n, 1);
+}
+
+void *
+mlk_alloc_dup(const void *ptr, size_t n, size_t w)
+{
+	assert(ptr);
+	assert(n);
+	assert(w);
+
+	return memcpy(mlk_alloc_new(n, w), ptr, n * w);
 }
 
 char *
@@ -147,38 +197,52 @@ mlk_alloc_sdup(const char *src)
 
 	size_t len = strlen(src) + 1;
 
-	return memcpy(funcs->alloc(len), src, len);
+	return memcpy(mlk_alloc_new(len, 1), src, len);
 }
 
 char *
 mlk_alloc_sdupf(const char *fmt, ...)
 {
-	struct buf buf = {0};
 	va_list ap;
+	char *str;
+	int size;
 
 	va_start(ap, fmt);
-	buf_vprintf(&buf, fmt, ap);
+	size = vsnprintf(NULL, 0, fmt, ap);
 	va_end(ap);
 
-	return buf.data;
+	if (size <= 0)
+		return NULL;
+
+	str = mlk_alloc_new(size + 1, 1);
+	va_start(ap, fmt);
+	vsnprintf(str, size + 1, fmt, ap);
+	va_end(ap);
+
+	return str;
 }
 
 void
 mlk_alloc_free(void *ptr)
 {
-	funcs->free(ptr);
+	if (ptr)
+		funcs->free(blockat(ptr));
 }
 
 void
-mlk_alloc_pool_init(struct mlk_alloc_pool *pool, size_t elemsize, void (*finalizer)(void *))
+mlk_alloc_pool_init(struct mlk_alloc_pool *pool,
+                    size_t poolsize,
+                    size_t elemsize,
+                    void (*finalizer)(void *))
 {
 	assert(pool);
+	assert(poolsize > 0 && (poolsize & (poolsize - 1)) == 0);
 	assert(elemsize != 0);
 
-	pool->data = mlk_alloc_array(MLK_ALLOC_POOL_INIT_DEFAULT, elemsize);
+	pool->data = mlk_alloc_new(poolsize, elemsize);
 	pool->elemsize = elemsize;
 	pool->size = 0;
-	pool->capacity = MLK_ALLOC_POOL_INIT_DEFAULT;
+	pool->capacity = poolsize;
 	pool->finalizer = finalizer;
 }
 
@@ -189,7 +253,7 @@ mlk_alloc_pool_new(struct mlk_alloc_pool *pool)
 
 	if (pool->size >= pool->capacity) {
 		pool->capacity *= 2;
-		pool->data = mlk_alloc_rearray(pool->data, pool->capacity, pool->elemsize);
+		pool->data = mlk_alloc_renew(pool->data, pool->capacity);
 	}
 
 	return ((unsigned char *)pool->data) + pool->size++ * pool->elemsize;
@@ -211,7 +275,7 @@ mlk_alloc_pool_shrink(struct mlk_alloc_pool *pool)
 
 	void *ptr;
 
-	ptr = mlk_alloc_rearray(pool->data, pool->size, pool->elemsize);
+	ptr = mlk_alloc_renew(pool->data, pool->size);
 	memset(pool, 0, sizeof (*pool));
 
 	return ptr;
@@ -232,6 +296,6 @@ mlk_alloc_pool_finish(struct mlk_alloc_pool *pool)
 			pool->finalizer(tab + i * pool->elemsize);
 	}
 
-	free(pool->data);
+	mlk_alloc_free(pool->data);
 	memset(pool, 0, sizeof (*pool));
 }

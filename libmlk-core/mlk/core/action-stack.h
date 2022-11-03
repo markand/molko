@@ -27,7 +27,7 @@ struct mlk_action;
 
 union event;
 
-struct action_stack {
+struct mlk_action_stack {
 	struct mlk_action **actions;
 	size_t actionsz;
 };
@@ -35,25 +35,25 @@ struct action_stack {
 CORE_BEGIN_DECLS
 
 void
-action_stack_init(struct action_stack *, struct mlk_action **, size_t);
+mlk_action_stack_init(struct mlk_action_stack *, struct mlk_action **, size_t);
 
 int
-action_stack_add(struct action_stack *, struct mlk_action *);
+mlk_action_stack_add(struct mlk_action_stack *, struct mlk_action *);
 
 void
-action_stack_handle(struct action_stack *, const union event *);
+mlk_action_stack_handle(struct mlk_action_stack *, const union event *);
 
 int
-action_stack_update(struct action_stack *, unsigned int);
+mlk_action_stack_update(struct mlk_action_stack *, unsigned int);
 
 void
-action_stack_draw(const struct action_stack *);
+mlk_action_stack_draw(const struct mlk_action_stack *);
 
 int
-action_stack_completed(const struct action_stack *);
+mlk_action_stack_completed(const struct mlk_action_stack *);
 
 void
-action_stack_finish(struct action_stack *);
+mlk_action_stack_finish(struct mlk_action_stack *);
 
 CORE_END_DECLS
 

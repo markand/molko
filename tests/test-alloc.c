@@ -28,7 +28,6 @@ struct point {
 };
 
 static struct {
-	size_t total;
 	size_t alloc_count;
 	size_t free_count;
 } my_stats;
@@ -37,7 +36,6 @@ static void *
 my_alloc(size_t n)
 {
 	my_stats.alloc_count += 1;
-	my_stats.total += n;
 
 	return malloc(n);
 }
@@ -65,11 +63,11 @@ static const struct mlk_alloc_funcs my_funcs = {
 };
 
 static void
-test_basics_array_simple(void)
+test_basics_array0(void)
 {
 	struct point *points;
 
-	DT_ASSERT((points = mlk_alloc_array0(2, sizeof (*points))));
+	points = mlk_alloc_new0(2, sizeof (*points));
 	DT_EQ_INT(points[0].x, 0);
 	DT_EQ_INT(points[0].y, 0);
 	DT_EQ_INT(points[1].x, 0);
@@ -80,11 +78,15 @@ test_basics_array_simple(void)
 	points[1].x = 30;
 	points[1].y = 40;
 
-	DT_ASSERT((points = mlk_alloc_rearray0(points, 2, 4, sizeof (*points))));
+	points = mlk_alloc_renew0(points, 4);
+
+	/* Make sure previous are still correct. */
 	DT_EQ_INT(points[0].x, 10);
 	DT_EQ_INT(points[0].y, 20);
 	DT_EQ_INT(points[1].x, 30);
 	DT_EQ_INT(points[1].y, 40);
+
+	/* Now the new items must be zero'ed. */
 	DT_EQ_INT(points[2].x, 0);
 	DT_EQ_INT(points[2].y, 0);
 	DT_EQ_INT(points[3].x, 0);
@@ -98,11 +100,11 @@ test_basics_pool_simple(void)
 	struct point *p, *data;
 	size_t total = 0;
 
-	mlk_alloc_pool_init(&pool, sizeof (*p), NULL);
+	mlk_alloc_pool_init(&pool, 16, sizeof (*p), NULL);
 
 	DT_EQ_UINT(pool.elemsize, sizeof (*p));
 	DT_EQ_UINT(pool.size, 0);
-	DT_EQ_UINT(pool.capacity, MLK_ALLOC_POOL_INIT_DEFAULT);
+	DT_EQ_UINT(pool.capacity, 16);
 
 	/* Create until we reach the capacity. */
 	for (size_t i = 0; i < pool.capacity; ++i) {
@@ -150,18 +152,17 @@ test_basics_sdupf(void)
 	char *str = mlk_alloc_sdupf("Hello %s", "David");
 
 	DT_EQ_STR(str, "Hello David");
-	free(str);
+	mlk_alloc_free(str);
 }
 
 static void
 test_custom_count(void)
 {
 	mlk_alloc_set(&my_funcs);
-	mlk_alloc_free(mlk_alloc_new(10));
-	mlk_alloc_free(mlk_alloc_new0(20));
+	mlk_alloc_free(mlk_alloc_new(10, 1));
+	mlk_alloc_free(mlk_alloc_new0(20, 1));
 	mlk_alloc_free(mlk_alloc_sdup("malikania"));
 
-	DT_EQ_UINT(my_stats.total, 40U);
 	DT_EQ_UINT(my_stats.alloc_count, 3U);
 	DT_EQ_UINT(my_stats.free_count, 3U);
 }
@@ -169,7 +170,7 @@ test_custom_count(void)
 int
 main(void)
 {
-	DT_RUN(test_basics_array_simple);
+	DT_RUN(test_basics_array0);
 	DT_RUN(test_basics_pool_simple);
 	DT_RUN(test_basics_sdupf);
 	DT_RUN(test_custom_count);

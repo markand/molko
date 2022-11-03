@@ -619,8 +619,8 @@ map_handle(struct map *map, const union event *ev)
 		break;
 	}
 
-	action_stack_handle(&map->astack_par, ev);
-	action_stack_handle(&map->astack_seq, ev);
+	mlk_action_stack_handle(&map->astack_par, ev);
+	mlk_action_stack_handle(&map->astack_seq, ev);
 }
 
 void
@@ -628,13 +628,13 @@ map_update(struct map *map, unsigned int ticks)
 {
 	assert(map);
 
-	action_stack_update(&map->astack_par, ticks);
-	action_stack_update(&map->astack_seq, ticks);
+	mlk_action_stack_update(&map->astack_par, ticks);
+	mlk_action_stack_update(&map->astack_seq, ticks);
 
 	tileset_update(map->tileset, ticks);
 
 	/* No movements if the sequential actions are running. */
-	if (action_stack_completed(&map->astack_seq))
+	if (mlk_action_stack_completed(&map->astack_seq))
 		move(map, ticks);
 }
 
@@ -656,8 +656,8 @@ map_draw(const struct map *map)
 	draw_layer(map, &map->layers[MAP_LAYER_TYPE_ABOVE]);
 	draw_collide(map);
 
-	action_stack_draw(&map->astack_par);
-	action_stack_draw(&map->astack_seq);
+	mlk_action_stack_draw(&map->astack_par);
+	mlk_action_stack_draw(&map->astack_seq);
 }
 
 void
@@ -665,8 +665,8 @@ map_finish(struct map *map)
 {
 	assert(map);
 
-	action_stack_finish(&map->astack_par);
-	action_stack_finish(&map->astack_seq);
+	mlk_action_stack_finish(&map->astack_par);
+	mlk_action_stack_finish(&map->astack_seq);
 
 	memset(map, 0, sizeof (*map));
 }

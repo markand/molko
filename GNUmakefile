@@ -184,7 +184,6 @@ LIBMLK_CORE_SRCS :=     libmlk-core/mlk/core/action-stack.c \
                         libmlk-core/mlk/core/action.c \
                         libmlk-core/mlk/core/alloc.c \
                         libmlk-core/mlk/core/animation.c \
-                        libmlk-core/mlk/core/buf.c \
                         libmlk-core/mlk/core/clock.c \
                         libmlk-core/mlk/core/core.c \
                         libmlk-core/mlk/core/drawable-stack.c \
@@ -413,20 +412,6 @@ tests: $(TESTS_EXE)
 
 # }}}
 
-# {{{ manual pages
-
-MAN3 :=         man/mlk-action.3 \
-                man/mlk-alloc.3 \
-                man/mlk-err.3 \
-                man/mlk_err_string.3
-                man/mlk_action_draw.3 \
-                man/mlk_action_end.3 \
-                man/mlk_action_finish.3 \
-                man/mlk_action_handle.3 \
-                man/mlk_action_update.3
-
-# }}}
-
 doc:
 	cd doc && mkdocs build
 
@@ -443,7 +428,7 @@ install:
 	cp -R libmlk-ui/mlk/ui/*.h $(DESTDIR)$(INCDIR)/mlk/ui
 	cp -R libmlk-rpg/mlk/rpg/*.h $(DESTDIR)$(INCDIR)/mlk/rpg
 	mkdir -p $(DESTDIR)$(MANDIR)/man3
-	cp $(MAN3) $(DESTDIR)$(MANDIR)/man3
+	cp man/*.3 $(DESTDIR)$(MANDIR)/man3
 
 clean:
 	rm -f $(MLK_BCC) $(MLK_MAP) $(MLK_TILESET)

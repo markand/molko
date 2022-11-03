@@ -5,25 +5,9 @@
 .Nm mlk-alloc
 .Nd allocation routines
 .Sh LIBRARY
-.Lb libmlk-core
+libmlk-core (-lmlk-core)
 .Sh SYNOPSIS
 .In mlk/core/alloc.h
-.Ft void
-.Fn mlk_alloc_set "const struct mlk_alloc_funcs *funcs"
-.Ft void *
-.Fn mlk_alloc_new "size_t size"
-.Ft void *
-.Fn mlk_alloc_new0 "size_t size"
-.Ft void *
-.Fn mlk_alloc_array "size_t len" "size_t elemsize"
-.Ft void *
-.Fn mlk_alloc_array0 "size_t len" "size_t elemsize"
-.Ft void *
-.Fn mlk_alloc_renew "void *ptr" "size_t size"
-.Ft void *
-.Fn mlk_alloc_rearray "void *ptr" "size_t newlen" "size_t elemsize"
-.Ft void *
-.Fn mlk_alloc_rearray0 "void *ptr" "size_t oldlen" "size_t newlen" "size_t elemsize"
 .Ft void *
 .Fn mlk_alloc_dup "const void *ptr" "size_t size"
 .Ft char *
@@ -114,62 +98,6 @@ for every element. This function is only called when the
 .Fn mlk_alloc_pool_finish
 function is used.
 .El
-.Pp
-The
-.Fn mlk_alloc_set
-function changes allocator functions to
-.Fa funcs
-allocator routines. It must be kept valid until the program is no longer used.
-.Pp
-The
-.Fn mlk_alloc_new
-and
-.Fn mlk_alloc_new0
-function allocates memory data of the given
-.Fa size .
-The
-.Fn mlk_alloc_new0
-variant ensure the data is being zero-initialized.
-.Pp
-The
-.Fn mlk_alloc_array
-and
-.Fn mlk_alloc_array0
-functions allocate an array of
-.Fa len
-elements of
-.Fa elemsize
-individually.
-The
-.Fn mlk_alloc_array0
-variant ensure the data is being zero-initialized.
-.Pp
-The
-.Fn mlk_alloc_renew
-function reallocates the pointer
-.Fa ptr
-(which may be NULL) to the new
-.Fa size
-which can be 0.
-.Pp
-The
-.Fn mlk_alloc_rearray
-function reallocates the pointer
-.Fa ptr
-(which may be NULL) as an array of
-.Fa newlen
-elements of
-.Fa elemsize
-individually.
-.Pp
-The
-.Fn mlk_alloc_rearray0
-function is similar to
-.Fn mlk_alloc_rearray
-but zero-initialize the memory. It needs the previous length given in
-.Fa oldlen
-argument because the function would not know which memory region to zero
-initialize when increasing the memory.
 .Pp
 The
 .Fn mlk_alloc_dup
@@ -309,7 +237,10 @@ for (size_t i = 0; i < pointsz; ++i)
 	point_draw(&points[i]);
 .Ed
 .Sh SEE ALSO
-.Xr mlk-panic 3
+.Xr mlk-panic 3 ,
+.Xr mlk_alloc_array.3 ,
+.Xr mlk_alloc_new.3 ,
+.Xr mlk_alloc_set.3
 .Sh AUTHORS
 The
 .Nm

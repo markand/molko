@@ -23,9 +23,6 @@
 
 #include "core.h"
 
-/* Must be power of 2. */
-#define MLK_ALLOC_POOL_INIT_DEFAULT (32)
-
 /* Custom allocator. */
 struct mlk_alloc_funcs {
 	void *(*alloc)(size_t);
@@ -49,28 +46,19 @@ void
 mlk_alloc_set(const struct mlk_alloc_funcs *);
 
 void *
-mlk_alloc_new(size_t);
+mlk_alloc_new(size_t, size_t);
 
 void *
-mlk_alloc_new0(size_t);
-
-void *
-mlk_alloc_array(size_t, size_t);
-
-void *
-mlk_alloc_array0(size_t, size_t);
+mlk_alloc_new0(size_t, size_t);
 
 void *
 mlk_alloc_renew(void *, size_t);
 
 void *
-mlk_alloc_rearray(void *, size_t, size_t);
+mlk_alloc_renew0(void *, size_t);
 
 void *
-mlk_alloc_rearray0(void *, size_t, size_t, size_t);
-
-void *
-mlk_alloc_dup(const void *, size_t);
+mlk_alloc_dup(const void *, size_t, size_t);
 
 char *
 mlk_alloc_sdup(const char *);
@@ -83,7 +71,7 @@ mlk_alloc_free(void *);
 
 /* alloc_pool functions. */
 void
-mlk_alloc_pool_init(struct mlk_alloc_pool *, size_t , void (*)(void *));
+mlk_alloc_pool_init(struct mlk_alloc_pool *, size_t, size_t , void (*)(void *));
 
 void *
 mlk_alloc_pool_new(struct mlk_alloc_pool *);

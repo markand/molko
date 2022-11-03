@@ -220,7 +220,7 @@ battle_state_selection(struct battle *bt, const struct selection *select)
 
 	struct self *self;
 
-	self = alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(1, sizeof (*self));
 	self->state.data = self;
 	self->state.handle = handle;
 	self->state.draw = draw;

@@ -103,7 +103,7 @@ battle_state_rendering(struct battle *bt, struct drawable *dw)
 
 	struct self *self;
 
-	self = alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(1, sizeof (*self));
 	self->state.data = self;
 	self->state.update = update;
 	self->state.draw = draw;

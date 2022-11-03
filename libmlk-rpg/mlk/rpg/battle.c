@@ -267,8 +267,7 @@ battle_order(struct battle *bt)
 	struct battle_entity **porder;
 
 	/* Create a pointer list to every entity. */
-	bt->order = alloc_rearray0(bt->order, bt->ordersz,
-	    bt->teamsz + bt->enemiesz, sizeof (*bt->order));
+	bt->order = mlk_alloc_renew0(bt->order, bt->teamsz + bt->enemiesz);
 	bt->ordersz = bt->teamsz + bt->enemiesz;
 	bt->ordercur = porder = bt->order;
 
@@ -395,7 +394,7 @@ battle_indicator_hp(struct battle *bt, const struct character *target, long amou
 		return;
 	}
 
-	id = alloc_new0(sizeof (*id));
+	id = mlk_alloc_new0(1, sizeof (*id));
 	id->bti.color = BATTLE_INDICATOR_HP_COLOR;
 	id->bti.amount = labs(amount);
 
@@ -422,7 +421,7 @@ battle_handle_component(struct battle *bt, const union event *ev, enum battle_co
 	if (comp & BATTLE_COMPONENT_BAR)
 		battle_bar_handle(bt->bar, bt, ev);
 	if ((comp & BATTLE_COMPONENT_ACTIONS) && bt->actions)
-		action_stack_handle(bt->actions, ev);
+		mlk_action_stack_handle(bt->actions, ev);
 }
 
 void
@@ -446,7 +445,7 @@ battle_update_component(struct battle *bt, unsigned int ticks, enum battle_compo
 	if (comp & BATTLE_COMPONENT_BAR)
 		battle_bar_update(bt->bar, bt, ticks);
 	if ((comp & BATTLE_COMPONENT_ACTIONS) && bt->actions)
-		action_stack_update(bt->actions, ticks);
+		mlk_action_stack_update(bt->actions, ticks);
 	if ((comp & BATTLE_COMPONENT_DRAWABLES) && bt->effects)
 		drawable_stack_update(bt->effects, ticks);
 }
@@ -476,7 +475,7 @@ battle_draw_component(const struct battle *bt, enum battle_component comp)
 	if (comp & BATTLE_COMPONENT_BAR)
 		battle_bar_draw(bt->bar, bt);
 	if ((comp & BATTLE_COMPONENT_ACTIONS) && bt->actions)
-		action_stack_draw(bt->actions);
+		mlk_action_stack_draw(bt->actions);
 	if ((comp & BATTLE_COMPONENT_DRAWABLES) && bt->effects)
 		drawable_stack_draw(bt->effects);
 }

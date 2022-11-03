@@ -23,11 +23,11 @@
 #include "action.h"
 #include "err.h"
 
-#define ACTION_FOREACH(st, iter) \
+#define FOREACH(st, iter) \
 	for (size_t i = 0; i < (st)->actionsz && ((iter) = (st)->actions[i], 1); ++i)
 
 void
-action_stack_init(struct action_stack *st, struct mlk_action **actions, size_t actionsz)
+mlk_action_stack_init(struct mlk_action_stack *st, struct mlk_action **actions, size_t actionsz)
 {
 	assert(st);
 
@@ -39,7 +39,7 @@ action_stack_init(struct action_stack *st, struct mlk_action **actions, size_t a
 }
 
 int
-action_stack_add(struct action_stack *st, struct mlk_action *act)
+mlk_action_stack_add(struct mlk_action_stack *st, struct mlk_action *act)
 {
 	assert(st);
 	assert(act);
@@ -55,20 +55,20 @@ action_stack_add(struct action_stack *st, struct mlk_action *act)
 }
 
 void
-action_stack_handle(struct action_stack *st, const union event *ev)
+mlk_action_stack_handle(struct mlk_action_stack *st, const union event *ev)
 {
 	assert(st);
 	assert(ev);
 
 	struct mlk_action *act;
 
-	ACTION_FOREACH(st, act)
+	FOREACH(st, act)
 		if (act)
 			mlk_action_handle(act, ev);
 }
 
 int
-action_stack_update(struct action_stack *st, unsigned int ticks)
+mlk_action_stack_update(struct mlk_action_stack *st, unsigned int ticks)
 {
 	assert(st);
 
@@ -88,29 +88,29 @@ action_stack_update(struct action_stack *st, unsigned int ticks)
 	 * We process all actions again in case the user modified the stack
 	 * within their update function.
 	 */
-	return action_stack_completed(st);
+	return mlk_action_stack_completed(st);
 }
 
 void
-action_stack_draw(const struct action_stack *st)
+mlk_action_stack_draw(const struct mlk_action_stack *st)
 {
 	assert(st);
 
 	struct mlk_action *act;
 
-	ACTION_FOREACH(st, act)
+	FOREACH(st, act)
 		if (act)
 			mlk_action_draw(act);
 }
 
 int
-action_stack_completed(const struct action_stack *st)
+mlk_action_stack_completed(const struct mlk_action_stack *st)
 {
 	assert(st);
 
 	struct mlk_action *act;
 
-	ACTION_FOREACH(st, act)
+	FOREACH(st, act)
 		if (act)
 			return 0;
 
@@ -118,13 +118,13 @@ action_stack_completed(const struct action_stack *st)
 }
 
 void
-action_stack_finish(struct action_stack *st)
+mlk_action_stack_finish(struct mlk_action_stack *st)
 {
 	assert(st);
 
 	struct mlk_action *act;
 
-	ACTION_FOREACH(st, act) {
+	FOREACH(st, act) {
 		if (act) {
 			mlk_action_end(act);
 			mlk_action_finish(act);

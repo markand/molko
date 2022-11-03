@@ -71,8 +71,8 @@ struct map {
 	size_t blocksz;                 /*!< (+) Number of collisions. */
 
 	/* List of actions. */
-	struct action_stack astack_par; /*!< (+) Parallel actions. */
-	struct action_stack astack_seq; /*!< (+) Blocking actions. */
+	struct mlk_action_stack astack_par; /*!< (+) Parallel actions. */
+	struct mlk_action_stack astack_seq; /*!< (+) Blocking actions. */
 
 	/* Player. */
 	struct sprite *player_sprite;   /*!< (+) The sprite to use */

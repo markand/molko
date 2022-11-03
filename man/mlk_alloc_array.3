@@ -1,0 +1,65 @@
+.Dd $Mdocdate$
+.Dt MLK_ALLOC_ARRAY 3
+.Os
+.Sh NAME
+.Nm mlk_alloc_array ,
+.Nm mlk_alloc_array0 ,
+.Nm mlk_alloc_rearray ,
+.Nm mlk_alloc_rearray0
+.Nd safe array allocation
+.Sh LIBRARY
+libmlk-core (-lmlk-core)
+.Sh SYNOPSIS
+.In mlk/core/alloc.h
+.Ft void *
+.Fn mlk_alloc_array "size_t len, size_t elemsize"
+.Ft void *
+.Fn mlk_alloc_array0 "size_t len, size_t elemsize"
+.Ft void *
+.Fn mlk_alloc_rearray "void *ptr, size_t newlen, size_t elemsize"
+.Ft void *
+.Fn mlk_alloc_rearray0 "void *ptr, size_t oldlen, size_t newlen, size_t elemsize"
+.Sh DESCRIPTION
+These functions are designed to safely allocate arrays. They take an amount of
+objects to allocate and their individual sizes, the function ensuress that the
+multiplication does not overflow.
+.Pp
+The
+.Fn mlk_alloc_array
+and
+.Fn mlk_alloc_array0
+functions allocate an array of
+.Fa len
+elements of
+.Fa elemsize
+individually.
+The
+.Fn mlk_alloc_array0
+variant ensure the data is being zero-initialized.
+.Pp
+The
+.Fn mlk_alloc_rearray
+function reallocates the pointer
+.Fa ptr
+(which may be NULL) as an array of
+.Fa newlen
+elements of
+.Fa elemsize
+individually.
+.Pp
+The
+.Fn mlk_alloc_rearray0
+function is similar to
+.Fn mlk_alloc_rearray
+but zero-initialize the memory. It needs the previous length given in
+.Fa oldlen
+argument because the function would not know which memory region to zero
+initialize when increasing the memory.
+.Sh RETURN VALUES
+All functions return a pointer to the memory according to the current
+allocation strategy.
+.Sh SEE ALSO
+.Xr mlk-alloc 3 ,
+.Xr mlk_alloc_set 3
+.Sh AUTHORS
+.An David Demelier Aq Mt markand@malikania.fr .

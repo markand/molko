@@ -180,19 +180,19 @@ static void
 test_stack_add(void)
 {
 	struct mlk_action *actions[10];
-	struct action_stack st = {0};
+	struct mlk_action_stack st = {0};
 	struct mlk_action act = {0};
 
-	action_stack_init(&st, actions, 10);
+	mlk_action_stack_init(&st, actions, 10);
 
-	DT_EQ_INT(action_stack_add(&st, &act), 0);
+	DT_EQ_INT(mlk_action_stack_add(&st, &act), 0);
 
 	/* Now fill up. */
 	for (int i = 0; i < 9; ++i)
-		DT_EQ_INT(action_stack_add(&st, &act), 0);
+		DT_EQ_INT(mlk_action_stack_add(&st, &act), 0);
 
 	/* This one should not fit in. */
-	DT_EQ_INT(action_stack_add(&st, &act), MLK_ERR_NO_MEM);
+	DT_EQ_INT(mlk_action_stack_add(&st, &act), MLK_ERR_NO_MEM);
 }
 
 static void
@@ -208,13 +208,13 @@ test_stack_handle(void)
 	};
 
 	struct mlk_action *actions[10];
-	struct action_stack st = {0};
+	struct mlk_action_stack st = {0};
 
-	action_stack_init(&st, actions, 10);
-	action_stack_add(&st, &table[0].act);
-	action_stack_add(&st, &table[1].act);
-	action_stack_add(&st, &table[2].act);
-	action_stack_handle(&st, &dummy);
+	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_add(&st, &table[0].act);
+	mlk_action_stack_add(&st, &table[1].act);
+	mlk_action_stack_add(&st, &table[2].act);
+	mlk_action_stack_handle(&st, &dummy);
 
 	DT_ASSERT(table[0].called);
 	DT_ASSERT(table[1].called);
@@ -238,18 +238,18 @@ test_stack_update(void)
 	};
 
 	struct mlk_action *actions[10];
-	struct action_stack st = {0};
+	struct mlk_action_stack st = {0};
 
-	action_stack_init(&st, actions, 10);
-	action_stack_add(&st, &table[0].act);
-	action_stack_add(&st, &table[1].act);
-	action_stack_add(&st, &table[2].act);
-	action_stack_add(&st, &table[3].act);
-	action_stack_add(&st, &table[4].act);
-	action_stack_add(&st, &table[5].act);
-	action_stack_add(&st, &table[6].act);
+	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_add(&st, &table[0].act);
+	mlk_action_stack_add(&st, &table[1].act);
+	mlk_action_stack_add(&st, &table[2].act);
+	mlk_action_stack_add(&st, &table[3].act);
+	mlk_action_stack_add(&st, &table[4].act);
+	mlk_action_stack_add(&st, &table[5].act);
+	mlk_action_stack_add(&st, &table[6].act);
 
-	DT_ASSERT(!action_stack_update(&st, 0));
+	DT_ASSERT(!mlk_action_stack_update(&st, 0));
 
 	DT_ASSERT(!table[0].inv.handle);
 	DT_ASSERT(!table[1].inv.handle);
@@ -310,7 +310,7 @@ test_stack_update(void)
 	    table[3].act.update =
 	    table[6].act.update = my_update_true;
 
-	DT_ASSERT(action_stack_update(&st, 0));
+	DT_ASSERT(mlk_action_stack_update(&st, 0));
 	DT_EQ_PTR(st.actions[0], NULL);
 	DT_EQ_PTR(st.actions[1], NULL);
 	DT_EQ_PTR(st.actions[2], NULL);
@@ -337,17 +337,17 @@ test_stack_draw(void)
 	};
 
 	struct mlk_action *actions[10];
-	struct action_stack st = {0};
+	struct mlk_action_stack st = {0};
 
-	action_stack_init(&st, actions, 10);
-	action_stack_add(&st, &table[0].act);
-	action_stack_add(&st, &table[1].act);
-	action_stack_add(&st, &table[2].act);
-	action_stack_add(&st, &table[3].act);
-	action_stack_add(&st, &table[4].act);
-	action_stack_add(&st, &table[5].act);
-	action_stack_add(&st, &table[6].act);
-	action_stack_draw(&st);
+	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_add(&st, &table[0].act);
+	mlk_action_stack_add(&st, &table[1].act);
+	mlk_action_stack_add(&st, &table[2].act);
+	mlk_action_stack_add(&st, &table[3].act);
+	mlk_action_stack_add(&st, &table[4].act);
+	mlk_action_stack_add(&st, &table[5].act);
+	mlk_action_stack_add(&st, &table[6].act);
+	mlk_action_stack_draw(&st);
 
 	DT_ASSERT(!table[0].inv.handle);
 	DT_ASSERT(!table[1].inv.handle);
@@ -402,12 +402,12 @@ test_stack_finish(void)
 	};
 
 	struct mlk_action *actions[10];
-	struct action_stack st = {0};
+	struct mlk_action_stack st = {0};
 
-	action_stack_init(&st, actions, 10);
-	action_stack_add(&st, &table[0].act);
-	action_stack_add(&st, &table[1].act);
-	action_stack_finish(&st);
+	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_add(&st, &table[0].act);
+	mlk_action_stack_add(&st, &table[1].act);
+	mlk_action_stack_finish(&st);
 
 	DT_ASSERT(!table[0].inv.handle);
 	DT_ASSERT(!table[0].inv.update);
