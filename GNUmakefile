@@ -193,6 +193,7 @@ LIBMLK_CORE_SRCS :=     libmlk-core/mlk/core/action-stack.c \
                         libmlk-core/mlk/core/event.c \
                         libmlk-core/mlk/core/font.c \
                         libmlk-core/mlk/core/game.c \
+                        libmlk-core/mlk/core/gamepad.c \
                         libmlk-core/mlk/core/image.c \
                         libmlk-core/mlk/core/maths.c \
                         libmlk-core/mlk/core/music.c \

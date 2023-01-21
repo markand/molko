@@ -22,6 +22,7 @@
 #include "core.h"
 #include "key.h"
 #include "mouse.h"
+#include "gamepad.h"
 
 enum event_type {
 	EVENT_CLICKDOWN,
@@ -29,6 +30,9 @@ enum event_type {
 	EVENT_KEYDOWN,
 	EVENT_KEYUP,
 	EVENT_MOUSE,
+	EVENT_PADUP,
+	EVENT_PADDOWN,
+	EVENT_AXIS,
 	EVENT_QUIT,
 	EVENT_NUM
 };
@@ -53,11 +57,24 @@ struct event_click {
 	unsigned int clicks;
 };
 
+struct mlk_event_pad {
+	enum event_type type;
+	enum mlk_gamepad_button button;
+};
+
+struct mlk_event_axis {
+	enum event_type type;
+	enum mlk_gamepad_axis axis;
+	int value;
+};
+
 union event {
 	enum event_type type;
 	struct event_key key;
 	struct event_mouse mouse;
 	struct event_click click;
+	struct mlk_event_pad pad;
+	struct mlk_event_axis axis;
 };
 
 CORE_BEGIN_DECLS

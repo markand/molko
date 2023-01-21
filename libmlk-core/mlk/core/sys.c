@@ -184,7 +184,7 @@ sys_init(const char *organization, const char *name)
 	(void)name;
 
 	/* SDL2. */
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
 		return errorf("%s", SDL_GetError());
 	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
 		return errorf("%s", SDL_GetError());
