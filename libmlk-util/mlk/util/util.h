@@ -43,6 +43,8 @@
 #       define MLK_OS_WINDOWS
 #elif defined(__FreeBSD__)
 #       define MLK_OS_POSIX
+#elif defined(__DragonFly__)
+#       define MLK_OS_POSIX
 #elif defined(__OpenBSD__)
 #       define MLK_OS_POSIX
 #elif defined(__NetBSD__)
