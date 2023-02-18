@@ -24,7 +24,7 @@
 struct drawable;
 struct sprite;
 
-struct animation {
+struct mlk_animation {
 	const struct sprite *sprite;
 	unsigned int row;
 	unsigned int column;
@@ -35,22 +35,22 @@ struct animation {
 CORE_BEGIN_DECLS
 
 void
-animation_init(struct animation *, const struct sprite *, unsigned int);
+mlk_animation_init(struct mlk_animation *, const struct sprite *, unsigned int);
 
 void
-animation_start(struct animation *);
+mlk_animation_start(struct mlk_animation *);
 
 int
-animation_completed(const struct animation *);
+mlk_animation_completed(const struct mlk_animation *);
 
 int
-animation_update(struct animation *, unsigned int);
+mlk_animation_update(struct mlk_animation *, unsigned int);
 
 int
-animation_draw(const struct animation *, int, int);
+mlk_animation_draw(const struct mlk_animation *, int, int);
 
 void
-animation_drawable(struct animation *, struct drawable *, int, int);
+mlk_animation_drawable(struct mlk_animation *, struct drawable *, int, int);
 
 CORE_END_DECLS
 

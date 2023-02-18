@@ -26,17 +26,17 @@
 static int
 update(struct drawable *dw, unsigned int ticks)
 {
-	return animation_update(dw->data, ticks);
+	return mlk_animation_update(dw->data, ticks);
 }
 
 static void
 draw(struct drawable *dw)
 {
-	animation_draw(dw->data, dw->x, dw->y);
+	mlk_animation_draw(dw->data, dw->x, dw->y);
 }
 
 void
-animation_init(struct animation *an, const struct sprite *sprite, unsigned int delay)
+mlk_animation_init(struct mlk_animation *an, const struct sprite *sprite, unsigned int delay)
 {
 	assert(an);
 	assert(sprite);
@@ -49,7 +49,7 @@ animation_init(struct animation *an, const struct sprite *sprite, unsigned int d
 }
 
 void
-animation_start(struct animation *an)
+mlk_animation_start(struct mlk_animation *an)
 {
 	assert(an);
 
@@ -59,7 +59,7 @@ animation_start(struct animation *an)
 }
 
 int
-animation_completed(const struct animation *an)
+mlk_animation_completed(const struct mlk_animation *an)
 {
 	assert(an);
 
@@ -69,7 +69,7 @@ animation_completed(const struct animation *an)
 }
 
 int
-animation_update(struct animation *an, unsigned int ticks)
+mlk_animation_update(struct mlk_animation *an, unsigned int ticks)
 {
 	assert(an);
 
@@ -91,11 +91,11 @@ animation_update(struct animation *an, unsigned int ticks)
 	} else
 		an->elapsed = 0;
 
-	return animation_completed(an);
+	return mlk_animation_completed(an);
 }
 
 int
-animation_draw(const struct animation *an, int x, int y)
+mlk_animation_draw(const struct mlk_animation *an, int x, int y)
 {
 	assert(an);
 
@@ -103,7 +103,7 @@ animation_draw(const struct animation *an, int x, int y)
 }
 
 void
-animation_drawable(struct animation *an, struct drawable *dw, int x, int y)
+mlk_animation_drawable(struct mlk_animation *an, struct drawable *dw, int x, int y)
 {
 	assert(an);
 	assert(dw);
@@ -116,5 +116,5 @@ animation_drawable(struct animation *an, struct drawable *dw, int x, int y)
 	dw->update = update;
 	dw->draw = draw;
 
-	animation_start(an);
+	mlk_animation_start(an);
 }

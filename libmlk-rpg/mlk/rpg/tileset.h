@@ -35,7 +35,7 @@ struct tileset_tiledef {
 
 struct tileset_animation {
 	unsigned short id;
-	struct animation *animation;
+	struct mlk_animation *animation;
 };
 
 struct tileset {

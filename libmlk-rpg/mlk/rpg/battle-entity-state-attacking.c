@@ -61,8 +61,8 @@ battle_entity_state_attacking_init(struct battle_entity_state_attacking *atk, co
 	assert(atk);
 	assert(sprite_ok(which));
 
-	animation_init(&atk->anim, which, 100);
-	animation_start(&atk->anim);
+	mlk_animation_init(&atk->anim, which, 100);
+	mlk_animation_start(&atk->anim);
 }
 
 int
@@ -70,7 +70,7 @@ battle_entity_state_attacking_update(struct battle_entity_state_attacking *atk, 
 {
 	assert(atk);
 
-	return animation_update(&atk->anim, ticks);
+	return mlk_animation_update(&atk->anim, ticks);
 }
 
 void
@@ -79,7 +79,7 @@ battle_entity_state_attacking_draw(const struct battle_entity_state_attacking *a
 	assert(atk);
 	assert(battle_entity_ok(et));
 
-	animation_draw(&atk->anim, et->x, et->y);
+	mlk_animation_draw(&atk->anim, et->x, et->y);
 }
 
 void

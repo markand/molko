@@ -25,7 +25,7 @@ struct battle_entity;
 struct sprite;
 
 struct battle_entity_state_attacking {
-	struct animation anim;
+	struct mlk_animation anim;
 };
 
 void

@@ -67,7 +67,7 @@
 struct tileset_animation_block {
 	struct texture texture;
 	struct sprite sprite;
-	struct animation animation;
+	struct mlk_animation animation;
 };
 
 struct context {
@@ -197,7 +197,7 @@ parse_animations(struct context *ctx, const char *line)
 			return -1;
 
 		sprite_init(&anim->sprite, &anim->texture, ctx->tilewidth, ctx->tileheight);
-		animation_init(&anim->animation, &anim->sprite, delay);
+		mlk_animation_init(&anim->animation, &anim->sprite, delay);
 	}
 
 	/*

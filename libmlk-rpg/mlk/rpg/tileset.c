@@ -61,7 +61,7 @@ tileset_start(struct tileset *ts)
 		struct tileset_animation *ta = &ts->anims[i];
 
 		if (ta->animation)
-			animation_start(ta->animation);
+			mlk_animation_start(ta->animation);
 	}
 }
 
@@ -74,8 +74,8 @@ tileset_update(struct tileset *ts, unsigned int ticks)
 		if (!ta->animation)
 			continue;
 
-		if (animation_update(ta->animation, ticks))
-			animation_start(ta->animation);
+		if (mlk_animation_update(ta->animation, ticks))
+			mlk_animation_start(ta->animation);
 	}
 }
 
@@ -87,7 +87,7 @@ tileset_draw(const struct tileset *ts, unsigned int r, unsigned int c, int x, in
 	const struct tileset_animation *ta;
 
 	if ((ta = find(ts, r, c)))
-		animation_draw(ta->animation, x, y);
+		mlk_animation_draw(ta->animation, x, y);
 	else
 		sprite_draw(ts->sprite, r, c, x, y);
 }
