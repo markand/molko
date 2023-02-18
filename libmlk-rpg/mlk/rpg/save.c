@@ -183,7 +183,7 @@ save_open_path(struct save *db, const char *path, enum save_mode mode)
 	if (sqlite3_open_v2(path, (sqlite3**)&db->handle, flags, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 
-	if (mode == SAVE_MODE_WRITE && execu(db, assets_init) < 0)
+	if (mode == SAVE_MODE_WRITE && execu(db, assets_sql_init) < 0)
 		goto sqlite3_err;
 
 	return verify(db);

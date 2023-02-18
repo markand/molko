@@ -24,7 +24,6 @@ assets/.*\.h$
 
 # Generated files.
 \.exe$
-^config\.mk$
 
 # Examples.
 ^examples/example-action/example-action$
