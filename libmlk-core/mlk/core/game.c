@@ -26,10 +26,10 @@
 #include "util.h"
 #include "window.h"
 
-struct game game = {0};
+struct mlk_game game = {0};
 
 void
-game_init(struct state **states, size_t statesz)
+mlk_game_init(struct state **states, size_t statesz)
 {
 	assert(states);
 	assert(statesz);
@@ -44,7 +44,7 @@ game_init(struct state **states, size_t statesz)
 }
 
 void
-game_push(struct state *state)
+mlk_game_push(struct state *state)
 {
 	assert(state);
 	assert(!game.state || game.state != &game.states[game.statesz - 1]);
@@ -59,7 +59,7 @@ game_push(struct state *state)
 }
 
 void
-game_pop(void)
+mlk_game_pop(void)
 {
 	assert(game.state);
 
@@ -73,7 +73,7 @@ game_pop(void)
 }
 
 void
-game_handle(const union mlk_event *ev)
+mlk_game_handle(const union mlk_event *ev)
 {
 	assert(ev);
 
@@ -82,21 +82,21 @@ game_handle(const union mlk_event *ev)
 }
 
 void
-game_update(unsigned int ticks)
+mlk_game_update(unsigned int ticks)
 {
 	if (*game.state && !(game.inhibit & INHIBIT_STATE_UPDATE))
 		state_update(*game.state, ticks);
 }
 
 void
-game_draw(void)
+mlk_game_draw(void)
 {
 	if (*game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
 		state_draw(*game.state);
 }
 
 void
-game_loop(void)
+mlk_game_loop(void)
 {
 	struct mlk_clock clock = {0};
 	unsigned int elapsed = 0;
@@ -112,10 +112,10 @@ game_loop(void)
 		mlk_clock_start(&clock);
 
 		for (union mlk_event ev; mlk_event_poll(&ev); )
-			game_handle(&ev);
+			mlk_game_handle(&ev);
 
-		game_update(elapsed);
-		game_draw();
+		mlk_game_update(elapsed);
+		mlk_game_draw();
 
 		/*
 		 * If vsync is enabled, it should have wait, otherwise sleep
@@ -129,7 +129,7 @@ game_loop(void)
 }
 
 void
-game_quit(void)
+mlk_game_quit(void)
 {
 	for (size_t i = 0; i < game.statesz; ++i) {
 		if (game.states[i])

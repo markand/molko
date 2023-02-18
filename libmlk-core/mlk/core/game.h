@@ -28,40 +28,40 @@ struct state;
 
 union mlk_event;
 
-struct game {
+struct mlk_game {
 	enum inhibit inhibit;
 	struct state **states;
 	size_t statesz;
 	struct state **state;
 };
 
-extern struct game game;
+extern struct mlk_game game;
 
 CORE_BEGIN_DECLS
 
 void
-game_init(struct state **, size_t);
+mlk_game_init(struct state **, size_t);
 
 void
-game_push(struct state *);
+mlk_game_push(struct state *);
 
 void
-game_pop(void);
+mlk_game_pop(void);
 
 void
-game_handle(const union mlk_event *);
+mlk_game_handle(const union mlk_event *);
 
 void
-game_update(unsigned int);
+mlk_game_update(unsigned int);
 
 void
-game_draw(void);
+mlk_game_draw(void);
 
 void
-game_loop(void);
+mlk_game_loop(void);
 
 void
-game_quit(void);
+mlk_game_quit(void);
 
 CORE_END_DECLS
 
