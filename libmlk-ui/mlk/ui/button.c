@@ -36,7 +36,7 @@ is_boxed(const struct button *button, const struct mlk_event_click *click)
 	assert(click);
 	assert(click->type == MLK_EVENT_CLICKDOWN || click->type == MLK_EVENT_CLICKUP);
 
-	return maths_is_boxed(button->x, button->y, button->w, button->h,
+	return mlk_maths_is_boxed(button->x, button->y, button->w, button->h,
 	    click->x, click->y);
 }
 

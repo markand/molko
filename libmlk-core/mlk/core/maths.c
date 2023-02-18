@@ -19,7 +19,7 @@
 #include "maths.h"
 
 int
-maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
+mlk_maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
 {
 	return px > x &&
 	       py > y &&
@@ -28,7 +28,7 @@ maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
 }
 
 float
-maths_scale(float in, float old_min, float old_max, float new_min, float new_max)
+mlk_maths_scale(float in, float old_min, float old_max, float new_min, float new_max)
 {
 	return (in / ((old_max - old_min) / (new_max - new_min))) + new_min;
 }

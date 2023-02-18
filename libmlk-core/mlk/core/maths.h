@@ -24,10 +24,10 @@
 CORE_BEGIN_DECLS
 
 int
-maths_is_boxed(int, int, unsigned int, unsigned int, int, int);
+mlk_maths_is_boxed(int, int, unsigned int, unsigned int, int, int);
 
 float
-maths_scale(float, float, float, float, float);
+mlk_maths_scale(float, float, float, float, float);
 
 CORE_END_DECLS
 

@@ -206,7 +206,7 @@ handle_clickdown(struct gridmenu *menu, const struct mlk_event_click *click)
 		x = menu->x + theme->padding + (c * menu->eltw) + (c * menu->spacew);
 		y = menu->y + theme->padding + (r * menu->elth) + (r * menu->spaceh);
 
-		if (maths_is_boxed(x, y, menu->eltw, menu->elth, click->x, click->y)) {
+		if (mlk_maths_is_boxed(x, y, menu->eltw, menu->elth, click->x, click->y)) {
 			selected  = c + r * menu->ncols;
 			selected += pagesz * pagenr;
 
