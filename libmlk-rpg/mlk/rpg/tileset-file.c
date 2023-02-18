@@ -193,7 +193,7 @@ parse_animations(struct context *ctx, const char *line)
 	while (fscanf(ctx->fp, "%hu|" MAX_F(FILENAME_MAX) "|%u", &id, filename, &delay) == 3) {
 		anim = mlk_alloc_pool_new(&ctx->tf->anims[0]);
 
-		if (image_open(&anim->texture, util_pathf("%s/%s", ctx->basedir, filename)) < 0)
+		if (mlk_image_open(&anim->texture, util_pathf("%s/%s", ctx->basedir, filename)) < 0)
 			return -1;
 
 		sprite_init(&anim->sprite, &anim->texture, ctx->tilewidth, ctx->tileheight);
@@ -236,7 +236,7 @@ parse_image(struct context *ctx, const char *line)
 	if (!(p = strchr(line, '|')))
 		return errorf("could not parse image");
 
-	if (image_open(&ctx->tf->image, util_pathf("%s/%s", ctx->basedir, p + 1)) < 0)
+	if (mlk_image_open(&ctx->tf->image, util_pathf("%s/%s", ctx->basedir, p + 1)) < 0)
 		return -1;
 
 	sprite_init(&ctx->tf->sprite, &ctx->tf->image, ctx->tilewidth, ctx->tileheight);

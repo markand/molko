@@ -39,7 +39,7 @@ dimensions(struct texture *tex)
 }
 
 int
-image_open(struct texture *tex, const char *path)
+mlk_image_open(struct texture *tex, const char *path)
 {
 	assert(tex);
 	assert(path);
@@ -53,7 +53,7 @@ image_open(struct texture *tex, const char *path)
 }
 
 int
-image_openmem(struct texture *tex, const void *buffer, size_t size)
+mlk_image_openmem(struct texture *tex, const void *buffer, size_t size)
 {
 	assert(buffer);
 

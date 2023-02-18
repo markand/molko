@@ -28,10 +28,10 @@ struct texture;
 CORE_BEGIN_DECLS
 
 int
-image_open(struct texture *, const char *);
+mlk_image_open(struct texture *, const char *);
 
 int
-image_openmem(struct texture *, const void *, size_t);
+mlk_image_openmem(struct texture *, const void *, size_t);
 
 CORE_END_DECLS
 
