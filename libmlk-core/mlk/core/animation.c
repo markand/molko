@@ -24,13 +24,13 @@
 #include "sprite.h"
 
 static int
-update(struct drawable *dw, unsigned int ticks)
+update(struct mlk_drawable *dw, unsigned int ticks)
 {
 	return mlk_animation_update(dw->data, ticks);
 }
 
 static void
-draw(struct drawable *dw)
+draw(struct mlk_drawable *dw)
 {
 	mlk_animation_draw(dw->data, dw->x, dw->y);
 }
@@ -103,7 +103,7 @@ mlk_animation_draw(const struct mlk_animation *an, int x, int y)
 }
 
 void
-mlk_animation_drawable(struct mlk_animation *an, struct drawable *dw, int x, int y)
+mlk_animation_drawable(struct mlk_animation *an, struct mlk_drawable *dw, int x, int y)
 {
 	assert(an);
 	assert(dw);

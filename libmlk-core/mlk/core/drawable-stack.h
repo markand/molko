@@ -23,30 +23,30 @@
 
 #include "core.h"
 
-struct drawable_stack {
-	struct drawable **objects;
+struct mlk_drawable_stack {
+	struct mlk_drawable **objects;
 	size_t objectsz;
 };
 
 CORE_BEGIN_DECLS
 
 void
-drawable_stack_init(struct drawable_stack *, struct drawable **, size_t);
+mlk_drawable_stack_init(struct mlk_drawable_stack *, struct mlk_drawable **, size_t);
 
 int
-drawable_stack_add(struct drawable_stack *, struct drawable *);
+mlk_drawable_stack_add(struct mlk_drawable_stack *, struct mlk_drawable *);
 
 int
-drawable_stack_update(struct drawable_stack *, unsigned int);
+mlk_drawable_stack_update(struct mlk_drawable_stack *, unsigned int);
 
 void
-drawable_stack_draw(struct drawable_stack *);
+mlk_drawable_stack_draw(struct mlk_drawable_stack *);
 
 int
-drawable_stack_completed(const struct drawable_stack *);
+mlk_drawable_stack_completed(const struct mlk_drawable_stack *);
 
 void
-drawable_stack_finish(struct drawable_stack *);
+mlk_drawable_stack_finish(struct mlk_drawable_stack *);
 
 CORE_END_DECLS
 

@@ -21,29 +21,29 @@
 
 #include "core.h"
 
-struct drawable {
+struct mlk_drawable {
 	void *data;
 	int x;
 	int y;
-	int (*update)(struct drawable *, unsigned int);
-	void (*draw)(struct drawable *);
-	void (*end)(struct drawable *);
-	void (*finish)(struct drawable *);
+	int (*update)(struct mlk_drawable *, unsigned int);
+	void (*draw)(struct mlk_drawable *);
+	void (*end)(struct mlk_drawable *);
+	void (*finish)(struct mlk_drawable *);
 };
 
 CORE_BEGIN_DECLS
 
 int
-drawable_update(struct drawable *, unsigned int);
+mlk_drawable_update(struct mlk_drawable *, unsigned int);
 
 void
-drawable_draw(struct drawable *);
+mlk_drawable_draw(struct mlk_drawable *);
 
 void
-drawable_end(struct drawable *);
+mlk_drawable_end(struct mlk_drawable *);
 
 void
-drawable_finish(struct drawable *);
+mlk_drawable_finish(struct mlk_drawable *);
 
 CORE_END_DECLS
 

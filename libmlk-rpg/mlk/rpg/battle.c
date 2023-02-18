@@ -51,12 +51,12 @@
 #include "spell.h"
 
 struct indicator {
-	struct drawable dw;
+	struct mlk_drawable dw;
 	struct battle_indicator bti;
 };
 
 static int
-indicator_update(struct drawable *dw, unsigned int ticks)
+indicator_update(struct mlk_drawable *dw, unsigned int ticks)
 {
 	struct indicator *id = dw->data;
 
@@ -64,7 +64,7 @@ indicator_update(struct drawable *dw, unsigned int ticks)
 }
 
 static void
-indicator_draw(struct drawable *dw)
+indicator_draw(struct mlk_drawable *dw)
 {
 	const struct indicator *id = dw->data;
 
@@ -72,7 +72,7 @@ indicator_draw(struct drawable *dw)
 }
 
 static void
-indicator_free(struct drawable *dw)
+indicator_free(struct mlk_drawable *dw)
 {
 	struct indicator *id = dw->data;
 
@@ -408,8 +408,8 @@ battle_indicator_hp(struct battle *bt, const struct character *target, long amou
 
 	battle_indicator_start(&id->bti);
 
-	if (drawable_stack_add(bt->effects, &id->dw) < 0)
-		drawable_finish(&id->dw);
+	if (mlk_drawable_stack_add(bt->effects, &id->dw) < 0)
+		mlk_drawable_finish(&id->dw);
 }
 
 void
@@ -447,7 +447,7 @@ battle_update_component(struct battle *bt, unsigned int ticks, enum battle_compo
 	if ((comp & BATTLE_COMPONENT_ACTIONS) && bt->actions)
 		mlk_action_stack_update(bt->actions, ticks);
 	if ((comp & BATTLE_COMPONENT_DRAWABLES) && bt->effects)
-		drawable_stack_update(bt->effects, ticks);
+		mlk_drawable_stack_update(bt->effects, ticks);
 }
 
 int
@@ -477,7 +477,7 @@ battle_draw_component(const struct battle *bt, enum battle_component comp)
 	if ((comp & BATTLE_COMPONENT_ACTIONS) && bt->actions)
 		mlk_action_stack_draw(bt->actions);
 	if ((comp & BATTLE_COMPONENT_DRAWABLES) && bt->effects)
-		drawable_stack_draw(bt->effects);
+		mlk_drawable_stack_draw(bt->effects);
 }
 
 void

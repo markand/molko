@@ -27,7 +27,7 @@
 	for (size_t i = 0; i < (st)->objectsz && ((iter) = (st)->objects[i], 1); ++i)
 
 void
-drawable_stack_init(struct drawable_stack *st, struct drawable **objects, size_t objectsz)
+mlk_drawable_stack_init(struct mlk_drawable_stack *st, struct mlk_drawable **objects, size_t objectsz)
 {
 	assert(st);
 
@@ -39,7 +39,7 @@ drawable_stack_init(struct drawable_stack *st, struct drawable **objects, size_t
 }
 
 int
-drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
+mlk_drawable_stack_add(struct mlk_drawable_stack *st, struct mlk_drawable *dw)
 {
 	assert(st);
 	assert(dw);
@@ -55,18 +55,18 @@ drawable_stack_add(struct drawable_stack *st, struct drawable *dw)
 }
 
 int
-drawable_stack_update(struct drawable_stack *st, unsigned int ticks)
+mlk_drawable_stack_update(struct mlk_drawable_stack *st, unsigned int ticks)
 {
 	assert(st);
 
-	struct drawable *dw;
+	struct mlk_drawable *dw;
 
 	for (size_t i = 0; i < st->objectsz; ++i) {
 		dw = st->objects[i];
 
-		if (dw && drawable_update(dw, ticks)) {
-			drawable_end(dw);
-			drawable_finish(dw);
+		if (dw && mlk_drawable_update(dw, ticks)) {
+			mlk_drawable_end(dw);
+			mlk_drawable_finish(dw);
 			st->objects[i] = NULL;
 		}
 	}
@@ -75,27 +75,27 @@ drawable_stack_update(struct drawable_stack *st, unsigned int ticks)
 	 * We process the array again in case a drawable added a new drawable
 	 * within the update function.
 	 */
-	return drawable_stack_completed(st);
+	return mlk_drawable_stack_completed(st);
 }
 
 void
-drawable_stack_draw(struct drawable_stack *st)
+mlk_drawable_stack_draw(struct mlk_drawable_stack *st)
 {
 	assert(st);
 
-	struct drawable *dw;
+	struct mlk_drawable *dw;
 
 	DRAWABLE_FOREACH(st, dw)
 		if (dw)
-			drawable_draw(dw);
+			mlk_drawable_draw(dw);
 }
 
 int
-drawable_stack_completed(const struct drawable_stack *st)
+mlk_drawable_stack_completed(const struct mlk_drawable_stack *st)
 {
 	assert(st);
 
-	struct drawable *dw;
+	struct mlk_drawable *dw;
 
 	DRAWABLE_FOREACH(st, dw)
 		if (dw)
@@ -105,16 +105,16 @@ drawable_stack_completed(const struct drawable_stack *st)
 }
 
 void
-drawable_stack_finish(struct drawable_stack *st)
+mlk_drawable_stack_finish(struct mlk_drawable_stack *st)
 {
 	assert(st);
 
-	struct drawable *dw;
+	struct mlk_drawable *dw;
 
 	DRAWABLE_FOREACH(st, dw) {
 		if (dw) {
-			drawable_end(dw);
-			drawable_finish(dw);
+			mlk_drawable_end(dw);
+			mlk_drawable_finish(dw);
 		}
 	}
 

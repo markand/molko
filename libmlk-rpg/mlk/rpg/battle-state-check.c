@@ -37,13 +37,13 @@ struct fadeout {
 	struct character *ch;
 	int x;
 	int y;
-	struct drawable dw;
+	struct mlk_drawable dw;
 	unsigned int alpha;
 	unsigned int elapsed;
 };
 
 static int
-fadeout_update(struct drawable *dw, unsigned int ticks)
+fadeout_update(struct mlk_drawable *dw, unsigned int ticks)
 {
 	struct fadeout *fade = dw->data;
 
@@ -62,7 +62,7 @@ fadeout_update(struct drawable *dw, unsigned int ticks)
 }
 
 static void
-fadeout_draw(struct drawable *dw)
+fadeout_draw(struct mlk_drawable *dw)
 {
 	const struct fadeout *fade = dw->data;
 	struct sprite *sprite = fade->ch->sprites[CHARACTER_SPRITE_NORMAL];
@@ -73,7 +73,7 @@ fadeout_draw(struct drawable *dw)
 }
 
 static void
-fadeout_finish(struct drawable *dw)
+fadeout_finish(struct mlk_drawable *dw)
 {
 	free(dw->data);
 }
@@ -98,7 +98,7 @@ fadeout(struct battle *bt, struct battle_entity *et)
 	fade->dw.update = fadeout_update;
 	fade->dw.finish = fadeout_finish;
 
-	if (drawable_stack_add(bt->effects, &fade->dw) < 0)
+	if (mlk_drawable_stack_add(bt->effects, &fade->dw) < 0)
 		mlk_alloc_free(fade);
 }
 

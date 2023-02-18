@@ -54,7 +54,7 @@ finish(struct battle_state *st, struct battle *bt)
 }
 
 void
-battle_state_rendering_init(struct battle_state_rendering *rdr, struct drawable *dw)
+battle_state_rendering_init(struct battle_state_rendering *rdr, struct mlk_drawable *dw)
 {
 	assert(rdr);
 	assert(dw);
@@ -70,8 +70,8 @@ battle_state_rendering_update(struct battle_state_rendering *rdr, struct battle 
 
 	battle_update_component(bt, BATTLE_COMPONENT_ALL, ticks);
 
-	if (drawable_update(rdr->drawable, ticks)) {
-		drawable_end(rdr->drawable);
+	if (mlk_drawable_update(rdr->drawable, ticks)) {
+		mlk_drawable_end(rdr->drawable);
 		return 1;
 	}
 
@@ -84,7 +84,7 @@ battle_state_rendering_draw(const struct battle_state_rendering *rdr, const stru
 	assert(rdr);
 
 	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
-	drawable_draw(rdr->drawable);
+	mlk_drawable_draw(rdr->drawable);
 }
 
 void
@@ -92,11 +92,11 @@ battle_state_rendering_finish(struct battle_state_rendering *rdr)
 {
 	assert(rdr);
 
-	drawable_finish(rdr->drawable);
+	mlk_drawable_finish(rdr->drawable);
 }
 
 void
-battle_state_rendering(struct battle *bt, struct drawable *dw)
+battle_state_rendering(struct battle *bt, struct mlk_drawable *dw)
 {
 	assert(bt);
 	assert(dw);

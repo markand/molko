@@ -20,14 +20,14 @@
 #define MLK_RPG_BATTLE_STATE_RENDERING_H
 
 struct battle;
-struct drawable;
+struct mlk_drawable;
 
 struct battle_state_rendering {
-	struct drawable *drawable;
+	struct mlk_drawable *drawable;
 };
 
 void
-battle_state_rendering_init(struct battle_state_rendering *, struct drawable *);
+battle_state_rendering_init(struct battle_state_rendering *, struct mlk_drawable *);
 
 int
 battle_state_rendering_update(struct battle_state_rendering *, struct battle *, unsigned int);
@@ -39,6 +39,6 @@ void
 battle_state_rendering_finish(struct battle_state_rendering *);
 
 void
-battle_state_rendering(struct battle *, struct drawable *);
+battle_state_rendering(struct battle *, struct mlk_drawable *);
 
 #endif /* !MLK_RPG_BATTLE_STATE_RENDERING_H */

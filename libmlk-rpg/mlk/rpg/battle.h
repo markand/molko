@@ -80,7 +80,7 @@ struct battle {
 	struct texture *background;
 	struct music *music[3];
 	struct theme *theme;
-	struct drawable_stack *effects;
+	struct mlk_drawable_stack *effects;
 	struct mlk_action_stack *actions;
 	struct inventory *inventory;
 	struct battle_bar *bar;

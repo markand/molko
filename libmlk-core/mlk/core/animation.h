@@ -21,7 +21,7 @@
 
 #include "core.h"
 
-struct drawable;
+struct mlk_drawable;
 struct sprite;
 
 struct mlk_animation {
@@ -50,7 +50,7 @@ int
 mlk_animation_draw(const struct mlk_animation *, int, int);
 
 void
-mlk_animation_drawable(struct mlk_animation *, struct drawable *, int, int);
+mlk_animation_drawable(struct mlk_animation *, struct mlk_drawable *, int, int);
 
 CORE_END_DECLS
 

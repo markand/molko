@@ -21,7 +21,7 @@
 #include "drawable.h"
 
 int
-drawable_update(struct drawable *dw, unsigned int ticks)
+mlk_drawable_update(struct mlk_drawable *dw, unsigned int ticks)
 {
 	assert(dw);
 
@@ -29,7 +29,7 @@ drawable_update(struct drawable *dw, unsigned int ticks)
 }
 
 void
-drawable_draw(struct drawable *dw)
+mlk_drawable_draw(struct mlk_drawable *dw)
 {
 	assert(dw);
 
@@ -37,7 +37,7 @@ drawable_draw(struct drawable *dw)
 }
 
 void
-drawable_end(struct drawable *dw)
+mlk_drawable_end(struct mlk_drawable *dw)
 {
 	assert(dw);
 
@@ -46,7 +46,7 @@ drawable_end(struct drawable *dw)
 }
 
 void
-drawable_finish(struct drawable *dw)
+mlk_drawable_finish(struct mlk_drawable *dw)
 {
 	assert(dw);
 
