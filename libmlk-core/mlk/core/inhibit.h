@@ -19,11 +19,11 @@
 #ifndef MLK_CORE_INHIBIT_H
 #define MLK_CORE_INHIBIT_H
 
-enum inhibit {
-	INHIBIT_NONE,
-	INHIBIT_STATE_INPUT        = (1 << 0),
-	INHIBIT_STATE_UPDATE       = (1 << 1),
-	INHIBIT_STATE_DRAW         = (1 << 2)
+enum mlk_inhibit {
+	MLK_INHIBIT_NONE,
+	MLK_INHIBIT_STATE_INPUT         = (1 << 0),
+	MLK_INHIBIT_STATE_UPDATE        = (1 << 1),
+	MLK_INHIBIT_STATE_DRAW          = (1 << 2)
 };
 
 #endif /* !MLK_CORE_INHIBIT_H */

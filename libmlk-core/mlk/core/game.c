@@ -77,21 +77,21 @@ mlk_game_handle(const union mlk_event *ev)
 {
 	assert(ev);
 
-	if (*game.state && !(game.inhibit & INHIBIT_STATE_INPUT))
+	if (*game.state && !(game.inhibit & MLK_INHIBIT_STATE_INPUT))
 		state_handle(*game.state, ev);
 }
 
 void
 mlk_game_update(unsigned int ticks)
 {
-	if (*game.state && !(game.inhibit & INHIBIT_STATE_UPDATE))
+	if (*game.state && !(game.inhibit & MLK_INHIBIT_STATE_UPDATE))
 		state_update(*game.state, ticks);
 }
 
 void
 mlk_game_draw(void)
 {
-	if (*game.state && !(game.inhibit & INHIBIT_STATE_DRAW))
+	if (*game.state && !(game.inhibit & MLK_INHIBIT_STATE_DRAW))
 		state_draw(*game.state);
 }
 

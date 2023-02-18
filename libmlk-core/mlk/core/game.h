@@ -29,7 +29,7 @@ struct state;
 union mlk_event;
 
 struct mlk_game {
-	enum inhibit inhibit;
+	enum mlk_inhibit inhibit;
 	struct state **states;
 	size_t statesz;
 	struct state **state;
