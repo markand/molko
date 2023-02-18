@@ -28,20 +28,20 @@
 static struct texture *renderer;
 
 struct texture *
-painter_get_target(void)
+mlk_painter_get_target(void)
 {
 	return renderer;
 }
 
 void
-painter_set_target(struct texture *tex)
+mlk_painter_set_target(struct texture *tex)
 {
 	renderer = tex;
 	SDL_SetRenderTarget(RENDERER(), tex ? tex->handle : NULL);
 }
 
 unsigned long
-painter_get_color(void)
+mlk_painter_get_color(void)
 {
 	Uint8 r = 0, g = 0, b = 0, a = 0;
 
@@ -51,7 +51,7 @@ painter_get_color(void)
 }
 
 void
-painter_set_color(unsigned long color)
+mlk_painter_set_color(unsigned long color)
 {
 	SDL_SetRenderDrawColor(
 		RENDERER(),
@@ -63,19 +63,19 @@ painter_set_color(unsigned long color)
 }
 
 void
-painter_draw_line(int x1, int y1, int x2, int y2)
+mlk_painter_draw_line(int x1, int y1, int x2, int y2)
 {
 	SDL_RenderDrawLine(RENDERER(), x1, y1, x2, y2);
 }
 
 void
-painter_draw_point(int x1, int y1)
+mlk_painter_draw_point(int x1, int y1)
 {
 	SDL_RenderDrawPoint(RENDERER(), x1, y1);
 }
 
 void
-painter_draw_rectangle(int x, int y, unsigned int width, unsigned int height)
+mlk_painter_draw_rectangle(int x, int y, unsigned int width, unsigned int height)
 {
 	const SDL_Rect rect = {
 		.w = width,
@@ -88,7 +88,7 @@ painter_draw_rectangle(int x, int y, unsigned int width, unsigned int height)
 }
 
 void
-painter_draw_circle(int x, int y, int radius)
+mlk_painter_draw_circle(int x, int y, int radius)
 {
 	// Note that there is more to altering the bitrate of this 
 	// method than just changing this value.  See how pixels are
@@ -103,13 +103,13 @@ painter_draw_circle(int x, int y, int radius)
 }
 
 void
-painter_clear(void)
+mlk_painter_clear(void)
 {
 	SDL_RenderClear(RENDERER());
 }
 
 void
-painter_present(void)
+mlk_painter_present(void)
 {
 	SDL_RenderPresent(RENDERER());
 }

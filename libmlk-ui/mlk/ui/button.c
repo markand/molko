@@ -63,8 +63,8 @@ button_draw_default(const struct theme *t, const struct button *button)
 	align(ALIGN_CENTER, &label.x, &label.y, lw, lh,
 	    button->x, button->y, button->w, button->h);
 
-	painter_set_color(0x577277ff);
-	painter_draw_rectangle(button->x, button->y, button->w, button->h);
+	mlk_painter_set_color(0x577277ff);
+	mlk_painter_draw_rectangle(button->x, button->y, button->w, button->h);
 
 	label_draw(&label);
 }

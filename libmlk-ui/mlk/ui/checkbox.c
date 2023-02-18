@@ -43,14 +43,14 @@ checkbox_draw_default(const struct theme *t, const struct checkbox *cb)
 
 	assert(cb);
 
-	painter_set_color(0x151d28ff);
-	painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
-	painter_set_color(0xd7b594ff);
-	painter_draw_rectangle(cb->x + 1, cb->y + 1, cb->w - 2, cb->h - 2);
+	mlk_painter_set_color(0x151d28ff);
+	mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
+	mlk_painter_set_color(0xd7b594ff);
+	mlk_painter_draw_rectangle(cb->x + 1, cb->y + 1, cb->w - 2, cb->h - 2);
 
 	if (cb->checked) {
-		painter_set_color(0x341c27ff);
-		painter_draw_rectangle(cb->x + 5, cb->y + 5, cb->w - 10, cb->h - 10);
+		mlk_painter_set_color(0x341c27ff);
+		mlk_painter_draw_rectangle(cb->x + 5, cb->y + 5, cb->w - 10, cb->h - 10);
 	}
 }
 

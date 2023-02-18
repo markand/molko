@@ -274,10 +274,10 @@ message_draw(const struct message *msg)
 	if (texture_new(&tex, msg->w, msg->h) < 0)
 		panic();
 
-	PAINTER_BEGIN(&tex);
+	MLK_PAINTER_BEGIN(&tex);
 	draw_frame(msg);
 	draw_lines(msg);
-	PAINTER_END();
+	MLK_PAINTER_END();
 
 	/* Compute scaling. */
 	w = msg->w * msg->scale;

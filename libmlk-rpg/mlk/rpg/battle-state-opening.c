@@ -89,9 +89,9 @@ battle_state_opening_draw(const struct battle_state_opening *op, const struct ba
 	battle_draw_component(bt, BATTLE_COMPONENT_BACKGROUND | BATTLE_COMPONENT_ENTITIES);
 
 	/* Draw some bezels opening. */
-	painter_set_color(0x000000ff);
-	painter_draw_rectangle(0, 0, w, h - ch);
-	painter_draw_rectangle(0, h + ch, w, h - ch);
+	mlk_painter_set_color(0x000000ff);
+	mlk_painter_draw_rectangle(0, 0, w, h - ch);
+	mlk_painter_draw_rectangle(0, h + ch, w, h - ch);
 }
 
 void

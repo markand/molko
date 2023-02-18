@@ -68,12 +68,12 @@ battle_state_closing_init(struct battle_state_closing *cls)
 	if (texture_new(&cls->texture, window.w, window.h) < 0)
 		panic();
 
-	PAINTER_BEGIN(&cls->texture);
+	MLK_PAINTER_BEGIN(&cls->texture);
 	texture_set_blend_mode(&cls->texture, TEXTURE_BLEND_BLEND);
-	painter_set_color(0x000000ff);
-	painter_clear();
-	painter_draw_rectangle(0, 0, window.w, window.h);
-	PAINTER_END();
+	mlk_painter_set_color(0x000000ff);
+	mlk_painter_clear();
+	mlk_painter_draw_rectangle(0, 0, window.w, window.h);
+	MLK_PAINTER_END();
 
 	texture_set_alpha_mod(&cls->texture, 0);
 }

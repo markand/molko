@@ -503,9 +503,9 @@ draw_layer_tile(const struct map *map,
 		texture_scale(colbox, 0, 0, 5, 5, mx + td->x, my + td->y, td->w, td->h, 0);
 
 	if (map->flags & MAP_FLAGS_SHOW_GRID) {
-		painter_set_color(0x202e37ff);
-		painter_draw_line(mx, my, mx + (int)map->tileset->sprite->cellw, my);
-		painter_draw_line(
+		mlk_painter_set_color(0x202e37ff);
+		mlk_painter_draw_line(mx, my, mx + (int)map->tileset->sprite->cellw, my);
+		mlk_painter_draw_line(
 		    mx + (int)map->tileset->sprite->cellw - 1, my,
 		    mx + (int)map->tileset->sprite->cellw - 1, my + (int)map->tileset->sprite->cellh);
 	}
@@ -538,10 +538,10 @@ draw_layer(const struct map *map, const struct map_layer *layer)
 	if (map->flags & MAP_FLAGS_SHOW_COLLIDE && texture_new(&colbox, 16, 16) == 0) {
 		texture_set_blend_mode(&colbox, TEXTURE_BLEND_BLEND);
 		texture_set_alpha_mod(&colbox, 100);
-		PAINTER_BEGIN(&colbox);
-		painter_set_color(0xa53030ff);
-		painter_clear();
-		PAINTER_END();
+		MLK_PAINTER_BEGIN(&colbox);
+		mlk_painter_set_color(0xa53030ff);
+		mlk_painter_clear();
+		MLK_PAINTER_END();
 	}
 
 	for (unsigned int r = 0; r < nrows; ++r) {
@@ -566,19 +566,19 @@ draw_collide(const struct map *map)
 		/* Draw collide box around player if requested. */
 		texture_set_alpha_mod(&box, 100);
 		texture_set_blend_mode(&box, TEXTURE_BLEND_BLEND);
-		PAINTER_BEGIN(&box);
-		painter_set_color(0x4f8fbaff);
-		painter_clear();
-		PAINTER_END();
+		MLK_PAINTER_BEGIN(&box);
+		mlk_painter_set_color(0x4f8fbaff);
+		mlk_painter_clear();
+		MLK_PAINTER_END();
 		texture_scale(&box, 0, 0, 64, 64,
 		    map->player_x - map->view_x, map->player_y - map->view_y,
 			      map->player_sprite->cellw, map->player_sprite->cellh, 0.f);
 
 		/* Do the same for every objects. */
-		PAINTER_BEGIN(&box);
-		painter_set_color(0xa8ca58ff);
-		painter_clear();
-		PAINTER_END();
+		MLK_PAINTER_BEGIN(&box);
+		mlk_painter_set_color(0xa8ca58ff);
+		mlk_painter_clear();
+		MLK_PAINTER_END();
 
 		for (size_t i = 0; i < map->blocksz; ++i) {
 			texture_scale(&box, 0, 0, 64, 64,

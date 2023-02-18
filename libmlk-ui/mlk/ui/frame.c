@@ -33,11 +33,11 @@ frame_draw_default(const struct theme *t, const struct frame *frame)
 	(void)t;
 
 	if (frame->style == FRAME_STYLE_BOX)
-		painter_set_color(0x7a4841ff);
+		mlk_painter_set_color(0x7a4841ff);
 	else
-		painter_set_color(0xad7757ff);
+		mlk_painter_set_color(0xad7757ff);
 
-	painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
+	mlk_painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
 }
 
 void
