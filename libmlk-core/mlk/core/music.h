@@ -23,40 +23,40 @@
 
 #include "core.h"
 
-enum music_flags {
+enum mlk_music_flags {
 	MUSIC_NONE      = 0,
 	MUSIC_LOOP      = (1 << 0)
 };
 
-struct music {
+struct mlk_music {
 	void *handle;
 };
 
 CORE_BEGIN_DECLS
 
 int
-music_open(struct music *, const char *);
+mlk_music_open(struct mlk_music *, const char *);
 
 int
-music_openmem(struct music *, const void *, size_t);
+mlk_music_openmem(struct mlk_music *, const void *, size_t);
 
 int
-music_ok(const struct music *);
+mlk_music_ok(const struct mlk_music *);
 
 int
-music_play(struct music *, enum music_flags);
+mlk_music_play(struct mlk_music *, enum mlk_music_flags);
 
 void
-music_pause(struct music *);
+mlk_music_pause(struct mlk_music *);
 
 void
-music_resume(struct music *);
+mlk_music_resume(struct mlk_music *);
 
 void
-music_stop(struct music *);
+mlk_music_stop(struct mlk_music *);
 
 void
-music_finish(struct music *);
+mlk_music_finish(struct mlk_music *);
 
 CORE_END_DECLS
 

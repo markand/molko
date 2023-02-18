@@ -26,7 +26,7 @@
 #define SOURCE(mus) ((const struct audiostream *)mus->handle)->source
 
 int
-music_open(struct music *mus, const char *path)
+mlk_music_open(struct mlk_music *mus, const char *path)
 {
 	assert(mus);
 	assert(path);
@@ -35,7 +35,7 @@ music_open(struct music *mus, const char *path)
 }
 
 int
-music_openmem(struct music *mus, const void *buffer, size_t buffersz)
+mlk_music_openmem(struct mlk_music *mus, const void *buffer, size_t buffersz)
 {
 	assert(mus);
 	assert(buffer);
@@ -44,13 +44,13 @@ music_openmem(struct music *mus, const void *buffer, size_t buffersz)
 }
 
 int
-music_ok(const struct music *mus)
+mlk_music_ok(const struct mlk_music *mus)
 {
 	return mus && mus->handle;
 }
 
 int
-music_play(struct music *mus, enum music_flags flags)
+mlk_music_play(struct mlk_music *mus, enum mlk_music_flags flags)
 {
 	assert(mus);
 
@@ -66,36 +66,36 @@ music_play(struct music *mus, enum music_flags flags)
 }
 
 void
-music_pause(struct music *mus)
+mlk_music_pause(struct mlk_music *mus)
 {
-	assert(music_ok(mus));
+	assert(mlk_music_ok(mus));
 
 	alSourcePause(SOURCE(mus));
 }
 
 void
-music_resume(struct music *mus)
+mlk_music_resume(struct mlk_music *mus)
 {
-	assert(music_ok(mus));
+	assert(mlk_music_ok(mus));
 
 	alSourcePlay(SOURCE(mus));
 }
 
 void
-music_stop(struct music *mus)
+mlk_music_stop(struct mlk_music *mus)
 {
-	assert(music_ok(mus));
+	assert(mlk_music_ok(mus));
 
 	alSourceStop(SOURCE(mus));
 }
 
 void
-music_finish(struct music *mus)
+mlk_music_finish(struct mlk_music *mus)
 {
 	assert(mus);
 
 	if (mus->handle) {
-		music_stop(mus);
+		mlk_music_stop(mus);
 		audiostream_finish(mus->handle);
 	}
 

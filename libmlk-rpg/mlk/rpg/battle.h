@@ -39,7 +39,7 @@ struct battle_bar;
 struct character;
 struct inventory;
 struct item;
-struct music;
+struct mlk_music;
 struct selection;
 struct spell;
 struct theme;
@@ -78,7 +78,7 @@ struct battle {
 	struct battle_entity **ordercur;
 	size_t ordersz;
 	struct texture *background;
-	struct music *music[3];
+	struct mlk_music *music[3];
 	struct theme *theme;
 	struct mlk_drawable_stack *effects;
 	struct mlk_action_stack *actions;

@@ -244,7 +244,7 @@ battle_start(struct battle *bt)
 
 	/* Play music if present. */
 	if (bt->music[0])
-		music_play(bt->music[0], MUSIC_LOOP);
+		mlk_music_play(bt->music[0], MUSIC_LOOP);
 
 	battle_order(bt);
 }

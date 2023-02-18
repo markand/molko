@@ -82,7 +82,7 @@ battle_state_lost_init(struct battle_state_lost *lost, struct battle *bt)
 	bt->status = BATTLE_STATUS_LOST;
 
 	if (bt->music[2])
-		music_play(bt->music[2], MUSIC_NONE);
+		mlk_music_play(bt->music[2], MUSIC_NONE);
 }
 
 void
