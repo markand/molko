@@ -78,32 +78,32 @@ select_adj(struct battle_state_selection *slt, const struct battle *bt, int step
 }
 
 static void
-handle_keydown(struct battle_state_selection *stl, struct battle *bt, const union event *ev)
+handle_keydown(struct battle_state_selection *stl, struct battle *bt, const union mlk_event *ev)
 {
-	assert(ev->type == EVENT_KEYDOWN);
+	assert(ev->type == MLK_EVENT_KEYDOWN);
 
 	switch (ev->key.key) {
-	case KEY_ESCAPE:
+	case MLK_KEY_ESCAPE:
 		battle_state_menu(bt);
 		break;
-	case KEY_ENTER:
+	case MLK_KEY_ENTER:
 		battle_bar_select(bt->bar, bt, &stl->select);
 		break;
-	case KEY_LEFT:
+	case MLK_KEY_LEFT:
 		if (stl->select.allowed_sides & SELECTION_SIDE_ENEMY)
 			stl->select.index_side = 0;
 		break;
-	case KEY_RIGHT:
+	case MLK_KEY_RIGHT:
 		if (stl->select.allowed_sides & SELECTION_SIDE_TEAM)
 			stl->select.index_side = 1;
 		break;
-	case KEY_UP:
+	case MLK_KEY_UP:
 		select_adj(stl, bt, -1);
 		break;
-	case KEY_DOWN:
+	case MLK_KEY_DOWN:
 		select_adj(stl, bt, +1);
 		break;
-	case KEY_TAB:
+	case MLK_KEY_TAB:
 		if (stl->select.allowed_kinds == SELECTION_KIND_BOTH)
 			stl->select.index_character = -1;
 		break;
@@ -145,7 +145,7 @@ draw_cursors(const struct battle *bt,
 }
 
 static void
-handle(struct battle_state *st, struct battle *bt, const union event *ev)
+handle(struct battle_state *st, struct battle *bt, const union mlk_event *ev)
 {
 	battle_state_selection_handle(st->data, bt, ev);
 }
@@ -174,14 +174,14 @@ battle_state_selection_init(struct battle_state_selection *stl, const struct sel
 }
 
 void
-battle_state_selection_handle(struct battle_state_selection *stl, struct battle *bt, const union event *ev)
+battle_state_selection_handle(struct battle_state_selection *stl, struct battle *bt, const union mlk_event *ev)
 {
 	assert(stl);
 	assert(bt);
 	assert(ev);
 
 	switch (ev->type) {
-	case EVENT_KEYDOWN:
+	case MLK_EVENT_KEYDOWN:
 		handle_keydown(stl, bt, ev);
 		break;
 	default:

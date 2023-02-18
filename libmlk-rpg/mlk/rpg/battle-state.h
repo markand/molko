@@ -26,11 +26,11 @@ struct character;
 struct inventory_slot;
 struct selection;
 
-union event;
+union mlk_event;
 
 struct battle_state {
 	void *data;
-	void (*handle)(struct battle_state *, struct battle *, const union event *);
+	void (*handle)(struct battle_state *, struct battle *, const union mlk_event *);
 	int (*update)(struct battle_state *, struct battle *, unsigned int);
 	void (*draw)(const struct battle_state *, const struct battle *);
 	void (*finish)(struct battle_state *, struct battle *);
@@ -39,7 +39,7 @@ struct battle_state {
 CORE_BEGIN_DECLS
 
 void
-battle_state_handle(struct battle_state *, struct battle *, const union event *);
+battle_state_handle(struct battle_state *, struct battle *, const union mlk_event *);
 
 int
 battle_state_update(struct battle_state *, struct battle *, unsigned int);

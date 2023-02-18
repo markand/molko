@@ -27,7 +27,7 @@
 #include "battle.h"
 
 static void
-handle(struct battle_state *st, struct battle *bt, const union event *ev)
+handle(struct battle_state *st, struct battle *bt, const union mlk_event *ev)
 {
 	(void)st;
 
@@ -61,7 +61,7 @@ finish(struct battle_state *st, struct battle *bt)
 }
 
 void
-battle_state_menu_handle(struct battle *bt, const union event *ev)
+battle_state_menu_handle(struct battle *bt, const union mlk_event *ev)
 {
 	assert(bt);
 	assert(ev);

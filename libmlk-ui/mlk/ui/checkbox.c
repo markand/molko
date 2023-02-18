@@ -28,10 +28,10 @@
 #include "theme.h"
 
 static int
-is_boxed(const struct checkbox *cb, const struct event_click *click)
+is_boxed(const struct checkbox *cb, const struct mlk_event_click *click)
 {
 	assert(cb);
-	assert(click && click->type == EVENT_CLICKDOWN);
+	assert(click && click->type == MLK_EVENT_CLICKDOWN);
 
 	return maths_is_boxed(cb->x, cb->y, cb->w, cb->h, click->x, click->y);
 }
@@ -55,13 +55,13 @@ checkbox_draw_default(const struct theme *t, const struct checkbox *cb)
 }
 
 int
-checkbox_handle(struct checkbox *cb, const union event *ev)
+checkbox_handle(struct checkbox *cb, const union mlk_event *ev)
 {
 	assert(cb);
 	assert(ev);
 
 	switch (ev->type) {
-	case EVENT_CLICKDOWN:
+	case MLK_EVENT_CLICKDOWN:
 		if (is_boxed(cb, &ev->click))
 			return cb->checked = !cb->checked;
 		break;

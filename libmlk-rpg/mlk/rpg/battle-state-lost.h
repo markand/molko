@@ -21,7 +21,7 @@
 
 #include <mlk/rpg/message.h>
 
-union event;
+union mlk_event;
 
 struct battle;
 
@@ -34,7 +34,7 @@ void
 battle_state_lost_init(struct battle_state_lost *, struct battle *);
 
 void
-battle_state_lost_handle(struct battle_state_lost *, const union event *);
+battle_state_lost_handle(struct battle_state_lost *, const union mlk_event *);
 
 int
 battle_state_lost_update(struct battle_state_lost *, struct battle *, unsigned int);

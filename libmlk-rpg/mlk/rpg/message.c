@@ -40,7 +40,7 @@
 #define THEME(msg)      (msg->theme ? msg->theme : theme_default())
 
 static void
-handle(struct mlk_action *action, const union event *ev)
+handle(struct mlk_action *action, const union mlk_event *ev)
 {
 	assert(action);
 	assert(ev);
@@ -176,7 +176,7 @@ message_query(const struct message *msg, unsigned int *w, unsigned int *h)
 }
 
 void
-message_handle(struct message *msg, const union event *ev)
+message_handle(struct message *msg, const union mlk_event *ev)
 {
 	assert(msg);
 	assert(ev);
@@ -186,19 +186,19 @@ message_handle(struct message *msg, const union event *ev)
 		return;
 
 	/* Only keyboard event are valid. */
-	if (ev->type != EVENT_KEYDOWN || msg->state == MESSAGE_STATE_NONE)
+	if (ev->type != MLK_EVENT_KEYDOWN || msg->state == MESSAGE_STATE_NONE)
 		return;
 
 	switch (ev->key.key) {
-	case KEY_UP:
+	case MLK_KEY_UP:
 		if (msg->index > 0)
 			msg->index--;
 		break;
-	case KEY_DOWN:
+	case MLK_KEY_DOWN:
 		if (msg->index + 1 < msg->linesz && msg->lines[msg->index + 1])
 			msg->index++;
 		break;
-	case KEY_ENTER:
+	case MLK_KEY_ENTER:
 		msg->state = msg->flags & MESSAGE_FLAGS_FADEOUT
 		    ? MESSAGE_STATE_HIDING
 		    : MESSAGE_STATE_NONE;

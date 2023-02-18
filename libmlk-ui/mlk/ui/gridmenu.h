@@ -27,7 +27,7 @@
 
 struct theme;
 
-union event;
+union mlk_event;
 
 struct gridmenu {
 	int x;
@@ -57,7 +57,7 @@ void
 gridmenu_resize(struct gridmenu *, int, int, unsigned int, unsigned int);
 
 int
-gridmenu_handle(struct gridmenu *, const union event *);
+gridmenu_handle(struct gridmenu *, const union mlk_event *);
 
 void
 gridmenu_draw(const struct gridmenu *);

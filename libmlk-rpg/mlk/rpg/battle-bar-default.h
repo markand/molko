@@ -29,7 +29,7 @@ struct character;
 struct selection;
 struct theme;
 
-union event;
+union mlk_event;
 
 enum battle_bar_default_menu {
 	BATTLE_BAR_DEFAULT_MENU_ATTACK,
@@ -77,7 +77,7 @@ void
 battle_bar_default_select(struct battle_bar_default *, struct battle *, const struct selection *);
 
 void
-battle_bar_default_handle(struct battle_bar_default *, struct battle *, const union event *);
+battle_bar_default_handle(struct battle_bar_default *, struct battle *, const union mlk_event *);
 
 void
 battle_bar_default_draw(const struct battle_bar_default *, const struct battle *);

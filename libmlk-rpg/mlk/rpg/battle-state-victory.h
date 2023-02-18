@@ -23,7 +23,7 @@
 
 struct battle;
 
-union event;
+union mlk_event;
 
 struct battle_state_victory {
 	const char *text;
@@ -34,7 +34,7 @@ void
 battle_state_victory_init(struct battle_state_victory *, struct battle *);
 
 void
-battle_state_victory_handle(struct battle_state_victory *, const union event *);
+battle_state_victory_handle(struct battle_state_victory *, const union mlk_event *);
 
 int
 battle_state_victory_update(struct battle_state_victory *, struct battle *, unsigned int);

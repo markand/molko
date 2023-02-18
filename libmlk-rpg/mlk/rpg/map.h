@@ -29,7 +29,7 @@
 
 struct tileset;
 
-union event;
+union mlk_event;
 
 enum map_layer_type {
 	MAP_LAYER_TYPE_BACKGROUND,
@@ -104,7 +104,7 @@ int
 map_init(struct map *map);
 
 void
-map_handle(struct map *map, const union event *ev);
+map_handle(struct map *map, const union mlk_event *ev);
 
 void
 map_update(struct map *map, unsigned int ticks);

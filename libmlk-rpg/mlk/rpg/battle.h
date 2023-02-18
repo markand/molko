@@ -33,7 +33,7 @@
 #include "selection.h"
 #include "spell.h"
 
-union event;
+union mlk_event;
 
 struct battle_bar;
 struct character;
@@ -128,10 +128,10 @@ void
 battle_indicator_hp(struct battle *, const struct character *, long);
 
 void
-battle_handle_component(struct battle *, const union event *, enum battle_component);
+battle_handle_component(struct battle *, const union mlk_event *, enum battle_component);
 
 void
-battle_handle(struct battle *, const union event *);
+battle_handle(struct battle *, const union mlk_event *);
 
 void
 battle_update_component(struct battle *, unsigned int, enum battle_component);

@@ -20,10 +20,10 @@ project(libmlk-core)
 
 set(
 	SOURCES
-	${libmlk-core_SOURCE_DIR}/mlk/core/action.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/action.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/action-stack.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/action-stack.h
+	${libmlk-core_SOURCE_DIR}/mlk/core/action.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/action.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/alloc.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/alloc.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/animation.c
@@ -33,10 +33,12 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/color.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/core.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/core.h
-	${libmlk-core_SOURCE_DIR}/mlk/core/drawable.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/drawable.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/drawable-stack.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/drawable-stack.h
+	${libmlk-core_SOURCE_DIR}/mlk/core/drawable.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/drawable.h
+	${libmlk-core_SOURCE_DIR}/mlk/core/err.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/err.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/error.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/error.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/event.c

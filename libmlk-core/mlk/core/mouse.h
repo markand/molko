@@ -19,11 +19,11 @@
 #ifndef MLK_CORE_MOUSE_H
 #define MLK_CORE_MOUSE_H
 
-enum mouse_button {
-	MOUSE_BUTTON_NONE       = 0,
-	MOUSE_BUTTON_LEFT       = (1 << 0),
-	MOUSE_BUTTON_MIDDLE     = (1 << 1),
-	MOUSE_BUTTON_RIGHT      = (1 << 2)
+enum mlk_mouse_button {
+	MLK_MOUSE_BUTTON_NONE   = 0,
+	MLK_MOUSE_BUTTON_LEFT   = (1 << 0),
+	MLK_MOUSE_BUTTON_MIDDLE = (1 << 1),
+	MLK_MOUSE_BUTTON_RIGHT  = (1 << 2)
 };
 
 #endif /* !MLK_CORE_MOUSE_H */

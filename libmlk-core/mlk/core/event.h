@@ -24,55 +24,55 @@
 #include "mouse.h"
 #include "gamepad.h"
 
-enum event_type {
-	EVENT_CLICKDOWN,
-	EVENT_CLICKUP,
-	EVENT_KEYDOWN,
-	EVENT_KEYUP,
-	EVENT_MOUSE,
-	EVENT_PADUP,
-	EVENT_PADDOWN,
-	EVENT_AXIS,
-	EVENT_QUIT,
-	EVENT_NUM
+enum mlk_event_type {
+	MLK_EVENT_CLICKDOWN,
+	MLK_EVENT_CLICKUP,
+	MLK_EVENT_KEYDOWN,
+	MLK_EVENT_KEYUP,
+	MLK_EVENT_MOUSE,
+	MLK_EVENT_PADUP,
+	MLK_EVENT_PADDOWN,
+	MLK_EVENT_AXIS,
+	MLK_EVENT_QUIT,
+	MLK_EVENT_NUM
 };
 
-struct event_key {
-	enum event_type type;
-	enum key key;
+struct mlk_event_key {
+	enum mlk_event_type type;
+	enum mlk_key key;
 };
 
-struct event_mouse {
-	enum event_type type;
-	enum mouse_button buttons;
+struct mlk_event_mouse {
+	enum mlk_event_type type;
+	enum mlk_mouse_button buttons;
 	int x;
 	int y;
 };
 
-struct event_click {
-	enum event_type type;
-	enum mouse_button button;
+struct mlk_event_click {
+	enum mlk_event_type type;
+	enum mlk_mouse_button button;
 	int x;
 	int y;
 	unsigned int clicks;
 };
 
 struct mlk_event_pad {
-	enum event_type type;
+	enum mlk_event_type type;
 	enum mlk_gamepad_button button;
 };
 
 struct mlk_event_axis {
-	enum event_type type;
+	enum mlk_event_type type;
 	enum mlk_gamepad_axis axis;
 	int value;
 };
 
-union event {
-	enum event_type type;
-	struct event_key key;
-	struct event_mouse mouse;
-	struct event_click click;
+union mlk_event {
+	enum mlk_event_type type;
+	struct mlk_event_key key;
+	struct mlk_event_mouse mouse;
+	struct mlk_event_click click;
 	struct mlk_event_pad pad;
 	struct mlk_event_axis axis;
 };
@@ -80,7 +80,7 @@ union event {
 CORE_BEGIN_DECLS
 
 int
-event_poll(union event *);
+mlk_event_poll(union mlk_event *);
 
 CORE_END_DECLS
 

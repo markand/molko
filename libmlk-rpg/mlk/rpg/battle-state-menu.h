@@ -21,10 +21,10 @@
 
 struct battle;
 
-union event;
+union mlk_event;
 
 void
-battle_state_menu_handle(struct battle *, const union event *);
+battle_state_menu_handle(struct battle *, const union mlk_event *);
 
 void
 battle_state_menu_update(struct battle *, unsigned int);

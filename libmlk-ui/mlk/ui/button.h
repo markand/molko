@@ -21,7 +21,7 @@
 
 #include <mlk/core/core.h>
 
-union event;
+union mlk_event;
 
 struct theme;
 
@@ -44,7 +44,7 @@ struct button {
 CORE_BEGIN_DECLS
 
 int
-button_handle(struct button *, const union event *);
+button_handle(struct button *, const union mlk_event *);
 
 void
 button_reset(struct button *);

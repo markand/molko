@@ -21,12 +21,12 @@
 
 #include "core.h"
 
-union event;
+union mlk_event;
 
 struct state {
 	void *data;
 	void (*start)(struct state *);
-	void (*handle)(struct state *, const union event *);
+	void (*handle)(struct state *, const union mlk_event *);
 	void (*update)(struct state *, unsigned int);
 	void (*draw)(struct state *);
 	void (*suspend)(struct state *);
@@ -41,7 +41,7 @@ void
 state_start(struct state *);
 
 void
-state_handle(struct state *, const union event *);
+state_handle(struct state *, const union mlk_event *);
 
 void
 state_update(struct state *, unsigned int);

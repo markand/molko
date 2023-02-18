@@ -21,7 +21,7 @@
 
 #include <mlk/core/core.h>
 
-union event;
+union mlk_event;
 
 struct theme;
 
@@ -40,7 +40,7 @@ void
 checkbox_draw_default(const struct theme *, const struct checkbox *);
 
 int
-checkbox_handle(struct checkbox *, const union event *);
+checkbox_handle(struct checkbox *, const union mlk_event *);
 
 void
 checkbox_draw(const struct checkbox *);

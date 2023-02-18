@@ -73,7 +73,7 @@ game_pop(void)
 }
 
 void
-game_handle(const union event *ev)
+game_handle(const union mlk_event *ev)
 {
 	assert(ev);
 
@@ -111,7 +111,7 @@ game_loop(void)
 	while (*game.state) {
 		mlk_clock_start(&clock);
 
-		for (union event ev; event_poll(&ev); )
+		for (union mlk_event ev; mlk_event_poll(&ev); )
 			game_handle(&ev);
 
 		game_update(elapsed);

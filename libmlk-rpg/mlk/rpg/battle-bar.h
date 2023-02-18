@@ -24,13 +24,13 @@
 struct battle;
 struct selection;
 
-union event;
+union mlk_event;
 
 struct battle_bar {
 	void *data;
 	void (*start)(struct battle_bar *, struct battle *);
 	void (*select)(struct battle_bar *, struct battle *, const struct selection *);
-	void (*handle)(struct battle_bar *, struct battle *, const union event *);
+	void (*handle)(struct battle_bar *, struct battle *, const union mlk_event *);
 	void (*update)(struct battle_bar *, struct battle *, unsigned int);
 	void (*draw)(const struct battle_bar *, const struct battle *);
 	void (*finish)(struct battle_bar *, struct battle *);
@@ -45,7 +45,7 @@ void
 battle_bar_select(struct battle_bar *, struct battle *, const struct selection *);
 
 void
-battle_bar_handle(struct battle_bar *, struct battle *, const union event *);
+battle_bar_handle(struct battle_bar *, struct battle *, const union mlk_event *);
 
 void
 battle_bar_update(struct battle_bar *, struct battle *, unsigned int);

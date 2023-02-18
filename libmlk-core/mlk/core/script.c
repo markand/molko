@@ -34,7 +34,7 @@ current(struct script *s)
 }
 
 static void
-handle(struct mlk_action *a, const union event *ev)
+handle(struct mlk_action *a, const union mlk_event *ev)
 {
 	script_handle(a->data, ev);
 }
@@ -80,7 +80,7 @@ script_append(struct script *s, struct mlk_action *a)
 }
 
 void
-script_handle(struct script *s, const union event *ev)
+script_handle(struct script *s, const union mlk_event *ev)
 {
 	assert(s);
 	assert(ev);

@@ -30,11 +30,11 @@
 #include "theme.h"
 
 static int
-is_boxed(const struct button *button, const struct event_click *click)
+is_boxed(const struct button *button, const struct mlk_event_click *click)
 {
 	assert(button);
 	assert(click);
-	assert(click->type == EVENT_CLICKDOWN || click->type == EVENT_CLICKUP);
+	assert(click->type == MLK_EVENT_CLICKDOWN || click->type == MLK_EVENT_CLICKUP);
 
 	return maths_is_boxed(button->x, button->y, button->w, button->h,
 	    click->x, click->y);
@@ -70,17 +70,17 @@ button_draw_default(const struct theme *t, const struct button *button)
 }
 
 int
-button_handle(struct button *button, const union event *ev)
+button_handle(struct button *button, const union mlk_event *ev)
 {
 	assert(button);
 	assert(ev);
 
 	switch (ev->type) {
-	case EVENT_CLICKDOWN:
+	case MLK_EVENT_CLICKDOWN:
 		if (is_boxed(button, &ev->click))
 			button->state = BUTTON_STATE_PRESSED;
 		break;
-	case EVENT_CLICKUP:
+	case MLK_EVENT_CLICKUP:
 		/*
 		 * If the button was pressed, indicate that the button is
 		 * finally activated. This let the user to move the cursor

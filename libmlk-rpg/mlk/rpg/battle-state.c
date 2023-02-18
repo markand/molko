@@ -21,7 +21,7 @@
 #include "battle-state.h"
 
 void
-battle_state_handle(struct battle_state *st, struct battle *bt, const union event *ev)
+battle_state_handle(struct battle_state *st, struct battle *bt, const union mlk_event *ev)
 {
 	assert(st);
 	assert(bt);

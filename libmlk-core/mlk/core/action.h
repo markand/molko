@@ -21,11 +21,11 @@
 
 #include "core.h"
 
-union event;
+union mlk_event;
 
 struct mlk_action {
 	void *data;
-	void (*handle)(struct mlk_action *, const union event *);
+	void (*handle)(struct mlk_action *, const union mlk_event *);
 	int (*update)(struct mlk_action *, unsigned int);
 	void (*draw)(struct mlk_action *);
 	void (*end)(struct mlk_action *);
@@ -35,7 +35,7 @@ struct mlk_action {
 CORE_BEGIN_DECLS
 
 void
-mlk_action_handle(struct mlk_action *, const union event *);
+mlk_action_handle(struct mlk_action *, const union mlk_event *);
 
 int
 mlk_action_update(struct mlk_action *, unsigned int);

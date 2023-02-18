@@ -27,7 +27,7 @@
 
 struct mlk_action;
 
-union event;
+union mlk_event;
 
 struct script {
 	struct mlk_action *actions[SCRIPT_ACTION_MAX];
@@ -44,7 +44,7 @@ int
 script_append(struct script *, struct mlk_action *);
 
 void
-script_handle(struct script *, const union event *);
+script_handle(struct script *, const union mlk_event *);
 
 int
 script_update(struct script *, unsigned int);

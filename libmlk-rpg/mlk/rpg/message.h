@@ -26,7 +26,7 @@ struct mlk_action;
 struct font;
 struct theme;
 
-union event;
+union mlk_event;
 
 #define MESSAGE_DELAY_DEFAULT           (150)
 #define MESSAGE_TIMEOUT_DEFAULT         (5000)
@@ -72,7 +72,7 @@ void
 message_query(const struct message *msg, unsigned int *w, unsigned int *h);
 
 void
-message_handle(struct message *msg, const union event *ev);
+message_handle(struct message *msg, const union mlk_event *ev);
 
 int
 message_update(struct message *msg, unsigned int ticks);

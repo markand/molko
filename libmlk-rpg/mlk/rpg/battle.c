@@ -413,7 +413,7 @@ battle_indicator_hp(struct battle *bt, const struct character *target, long amou
 }
 
 void
-battle_handle_component(struct battle *bt, const union event *ev, enum battle_component comp)
+battle_handle_component(struct battle *bt, const union mlk_event *ev, enum battle_component comp)
 {
 	assert(bt);
 	assert(ev);
@@ -425,7 +425,7 @@ battle_handle_component(struct battle *bt, const union event *ev, enum battle_co
 }
 
 void
-battle_handle(struct battle *bt, const union event *ev)
+battle_handle(struct battle *bt, const union mlk_event *ev)
 {
 	assert(bt);
 	assert(ev);

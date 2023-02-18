@@ -23,7 +23,7 @@
 
 struct battle;
 
-union event;
+union mlk_event;
 
 struct battle_state_selection {
 	struct selection select;
@@ -33,7 +33,7 @@ void
 battle_state_selection_init(struct battle_state_selection *, const struct selection *);
 
 void
-battle_state_selection_handle(struct battle_state_selection *, struct battle *, const union event *);
+battle_state_selection_handle(struct battle_state_selection *, struct battle *, const union mlk_event *);
 
 void
 battle_state_selection_draw(const struct battle_state_selection *, const struct battle *);

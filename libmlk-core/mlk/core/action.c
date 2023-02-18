@@ -21,7 +21,7 @@
 #include "action.h"
 
 void
-mlk_action_handle(struct mlk_action *act, const union event *ev)
+mlk_action_handle(struct mlk_action *act, const union mlk_event *ev)
 {
 	assert(act);
 	assert(ev);

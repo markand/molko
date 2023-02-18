@@ -43,7 +43,7 @@ battle_bar_select(struct battle_bar *bar, struct battle *bt, const struct select
 }
 
 void
-battle_bar_handle(struct battle_bar *bar, struct battle *bt, const union event *ev)
+battle_bar_handle(struct battle_bar *bar, struct battle *bt, const union mlk_event *ev)
 {
 	assert(bar);
 	assert(bt);

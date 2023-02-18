@@ -179,19 +179,19 @@ init(struct map *map)
 }
 
 static void
-handle_keydown(struct map *map, const union event *event)
+handle_keydown(struct map *map, const union mlk_event *event)
 {
 	switch (event->key.key) {
-	case KEY_UP:
+	case MLK_KEY_UP:
 		map->player_movement |= MOVING_UP;
 		break;
-	case KEY_RIGHT:
+	case MLK_KEY_RIGHT:
 		map->player_movement |= MOVING_RIGHT;
 		break;
-	case KEY_DOWN:
+	case MLK_KEY_DOWN:
 		map->player_movement |= MOVING_DOWN;
 		break;
-	case KEY_LEFT:
+	case MLK_KEY_LEFT:
 		map->player_movement |= MOVING_LEFT;
 		break;
 	default:
@@ -202,22 +202,22 @@ handle_keydown(struct map *map, const union event *event)
 }
 
 static void
-handle_keyup(struct map *map, const union event *event)
+handle_keyup(struct map *map, const union mlk_event *event)
 {
 	switch (event->key.key) {
-	case KEY_TAB:
+	case MLK_KEY_TAB:
 		map->flags ^= MAP_FLAGS_SHOW_GRID | MAP_FLAGS_SHOW_COLLIDE;
 		break;
-	case KEY_UP:
+	case MLK_KEY_UP:
 		map->player_movement &= ~(MOVING_UP);
 		break;
-	case KEY_RIGHT:
+	case MLK_KEY_RIGHT:
 		map->player_movement &= ~(MOVING_RIGHT);
 		break;
-	case KEY_DOWN:
+	case MLK_KEY_DOWN:
 		map->player_movement &= ~(MOVING_DOWN);
 		break;
-	case KEY_LEFT:
+	case MLK_KEY_LEFT:
 		map->player_movement &= ~(MOVING_LEFT);
 		break;
 	default:
@@ -603,16 +603,16 @@ map_init(struct map *map)
 }
 
 void
-map_handle(struct map *map, const union event *ev)
+map_handle(struct map *map, const union mlk_event *ev)
 {
 	assert(map);
 	assert(ev);
 
 	switch (ev->type) {
-	case EVENT_KEYDOWN:
+	case MLK_EVENT_KEYDOWN:
 		handle_keydown(map, ev);
 		break;
-	case EVENT_KEYUP:
+	case MLK_EVENT_KEYUP:
 		handle_keyup(map, ev);
 		break;
 	default:

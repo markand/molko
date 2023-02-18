@@ -25,7 +25,7 @@
 
 struct mlk_action;
 
-union event;
+union mlk_event;
 
 struct mlk_action_stack {
 	struct mlk_action **actions;
@@ -41,7 +41,7 @@ int
 mlk_action_stack_add(struct mlk_action_stack *, struct mlk_action *);
 
 void
-mlk_action_stack_handle(struct mlk_action_stack *, const union event *);
+mlk_action_stack_handle(struct mlk_action_stack *, const union mlk_event *);
 
 int
 mlk_action_stack_update(struct mlk_action_stack *, unsigned int);

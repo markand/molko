@@ -34,7 +34,7 @@ struct self {
 };
 
 static void
-handle(struct battle_state *st, struct battle *bt, const union event *ev)
+handle(struct battle_state *st, struct battle *bt, const union mlk_event *ev)
 {
 	(void)bt;
 
@@ -87,7 +87,7 @@ battle_state_victory_init(struct battle_state_victory *vic, struct battle *bt)
 }
 
 void
-battle_state_victory_handle(struct battle_state_victory *vic, const union event *ev)
+battle_state_victory_handle(struct battle_state_victory *vic, const union mlk_event *ev)
 {
 	assert(vic);
 

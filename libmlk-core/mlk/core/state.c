@@ -30,7 +30,7 @@ state_start(struct state *state)
 }
 
 void
-state_handle(struct state *state, const union event *ev)
+state_handle(struct state *state, const union mlk_event *ev)
 {
 	assert(state);
 	assert(ev);

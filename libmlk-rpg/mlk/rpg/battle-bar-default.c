@@ -394,24 +394,24 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
  * one of the Attack, Magic, Item and Special items.
  */
 static void
-handle_keydown_menu(struct battle_bar_default *bar, struct battle *bt, const union event *ev)
+handle_keydown_menu(struct battle_bar_default *bar, struct battle *bt, const union mlk_event *ev)
 {
 	(void)bt;
 
 	switch (ev->key.key) {
-	case KEY_UP:
+	case MLK_KEY_UP:
 		bar->menu = BATTLE_BAR_DEFAULT_MENU_ATTACK;
 		break;
-	case KEY_RIGHT:
+	case MLK_KEY_RIGHT:
 		bar->menu = BATTLE_BAR_DEFAULT_MENU_MAGIC;
 		break;
-	case KEY_DOWN:
+	case MLK_KEY_DOWN:
 		bar->menu = BATTLE_BAR_DEFAULT_MENU_ITEM;
 		break;
-	case KEY_LEFT:
+	case MLK_KEY_LEFT:
 		bar->menu = BATTLE_BAR_DEFAULT_MENU_SPECIAL;
 		break;
-	case KEY_ENTER:
+	case MLK_KEY_ENTER:
 		/*
 		 * At this step, attack does not require opening the sub menu so
 		 * we change selection state immediately if needed.
@@ -440,10 +440,10 @@ handle_keydown_menu(struct battle_bar_default *bar, struct battle *bt, const uni
  * and Magic.
  */
 static void
-handle_keydown_grid(struct battle_bar_default *bar, struct battle *bt, const union event *ev)
+handle_keydown_grid(struct battle_bar_default *bar, struct battle *bt, const union mlk_event *ev)
 {
 	/* Go back to main menu if I press escape. */
-	if (ev->key.key == KEY_ESCAPE)
+	if (ev->key.key == MLK_KEY_ESCAPE)
 		bar->state = BATTLE_BAR_DEFAULT_STATE_MENU;
 	else if (gridmenu_handle(&bar->grid, ev)) {
 		switch (bar->menu) {
@@ -460,11 +460,11 @@ handle_keydown_grid(struct battle_bar_default *bar, struct battle *bt, const uni
 }
 
 static void
-handle_keydown(struct battle_bar_default *bar, struct battle *bt, const union event *ev)
+handle_keydown(struct battle_bar_default *bar, struct battle *bt, const union mlk_event *ev)
 {
-	assert(ev->type == EVENT_KEYDOWN);
+	assert(ev->type == MLK_EVENT_KEYDOWN);
 
-	static void (*handlers[])(struct battle_bar_default *, struct battle *, const union event *) = {
+	static void (*handlers[])(struct battle_bar_default *, struct battle *, const union mlk_event *) = {
 		[BATTLE_BAR_DEFAULT_STATE_MENU] = handle_keydown_menu,
 		[BATTLE_BAR_DEFAULT_STATE_GRID] = handle_keydown_grid
 	};
@@ -515,7 +515,7 @@ self_select(struct battle_bar *bar, struct battle *bt, const struct selection *s
 }
 
 static void
-self_handle(struct battle_bar *bar, struct battle *bt, const union event *ev)
+self_handle(struct battle_bar *bar, struct battle *bt, const union mlk_event *ev)
 {
 	battle_bar_default_handle(bar->data, bt, ev);
 }
@@ -622,15 +622,15 @@ battle_bar_default_select(struct battle_bar_default *bar, struct battle *bt, con
 }
 
 void
-battle_bar_default_handle(struct battle_bar_default *bar, struct battle *bt, const union event *ev)
+battle_bar_default_handle(struct battle_bar_default *bar, struct battle *bt, const union mlk_event *ev)
 {
 	assert(bar);
 	assert(bt);
 	assert(ev);
 
-	static void (*handlers[])(struct battle_bar_default *, struct battle *, const union event *) = {
-		[EVENT_KEYDOWN] = handle_keydown,
-		[EVENT_NUM] = NULL
+	static void (*handlers[])(struct battle_bar_default *, struct battle *, const union mlk_event *) = {
+		[MLK_EVENT_KEYDOWN] = handle_keydown,
+		[MLK_EVENT_NUM] = NULL
 	};
 
 	if (handlers[ev->type])

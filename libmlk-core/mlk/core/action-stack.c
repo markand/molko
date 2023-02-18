@@ -55,7 +55,7 @@ mlk_action_stack_add(struct mlk_action_stack *st, struct mlk_action *act)
 }
 
 void
-mlk_action_stack_handle(struct mlk_action_stack *st, const union event *ev)
+mlk_action_stack_handle(struct mlk_action_stack *st, const union mlk_event *ev)
 {
 	assert(st);
 	assert(ev);

@@ -26,7 +26,7 @@
 
 struct state;
 
-union event;
+union mlk_event;
 
 struct game {
 	enum inhibit inhibit;
@@ -49,7 +49,7 @@ void
 game_pop(void);
 
 void
-game_handle(const union event *);
+game_handle(const union mlk_event *);
 
 void
 game_update(unsigned int);
