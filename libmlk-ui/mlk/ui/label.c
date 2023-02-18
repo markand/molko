@@ -32,7 +32,7 @@ label_draw_default(const struct theme *t, const struct label *label)
 	assert(t);
 	assert(label);
 
-	struct font *font;
+	struct mlk_font *font;
 	struct texture tex;
 	unsigned long color;
 
@@ -45,7 +45,7 @@ label_draw_default(const struct theme *t, const struct label *label)
 
 	/* Shadow text, only if enabled. */
 	if (label->flags & LABEL_FLAGS_SHADOW) {
-		if (font_render(font, &tex, label->text, t->colors[THEME_COLOR_SHADOW]) < 0)
+		if (mlk_font_render(font, &tex, label->text, t->colors[THEME_COLOR_SHADOW]) < 0)
 			panic();
 
 		texture_draw(&tex, label->x + 1, label->y + 1);
@@ -53,7 +53,7 @@ label_draw_default(const struct theme *t, const struct label *label)
 	}
 
 	/* Normal text. */
-	if (font_render(font, &tex, label->text, color) < 0)
+	if (mlk_font_render(font, &tex, label->text, color) < 0)
 		panic();
 
 	texture_draw(&tex, label->x, label->y);
@@ -73,11 +73,11 @@ label_query(const struct label *label, unsigned int *w, unsigned int *h)
 	assert(label->text);
 
 	const struct theme *t = label->theme ? label->theme : theme_default();
-	const struct font *f = label->flags & LABEL_FLAGS_IMPORTANT
+	const struct mlk_font *f = label->flags & LABEL_FLAGS_IMPORTANT
 		? t->fonts[THEME_FONT_IMPORTANT]
 		: t->fonts[THEME_FONT_INTERFACE];
 
-	if (font_query(f, label->text, w, h) < 0)
+	if (mlk_font_query(f, label->text, w, h) < 0)
 		panic();
 }
 

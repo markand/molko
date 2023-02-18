@@ -234,7 +234,7 @@ draw_status_character_stats(const struct battle_bar_default *bar,
 	char line[64];
 
 	/* Compute spacing between elements. */
-	spacing = h - (font_height(theme->fonts[THEME_FONT_INTERFACE]) * 3);
+	spacing = h - (mlk_font_height(theme->fonts[THEME_FONT_INTERFACE]) * 3);
 	spacing /= 4;
 
 	/* Reuse the same label. */

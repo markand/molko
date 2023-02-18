@@ -29,7 +29,7 @@
 #include "util.h"
 
 int
-font_open(struct font *font, const char *path, unsigned int size)
+mlk_font_open(struct mlk_font *font, const char *path, unsigned int size)
 {
 	assert(font);
 	assert(path);
@@ -41,7 +41,7 @@ font_open(struct font *font, const char *path, unsigned int size)
 }
 
 int
-font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int size)
+mlk_font_openmem(struct mlk_font *font, const void *buffer, size_t buflen, unsigned int size)
 {
 	assert(font);
 	assert(buffer);
@@ -56,15 +56,15 @@ font_openmem(struct font *font, const void *buffer, size_t buflen, unsigned int 
 }
 
 int
-font_ok(const struct font *font)
+mlk_font_ok(const struct mlk_font *font)
 {
 	return font && font->handle;
 }
 
 int
-font_render(struct font *font, struct texture *tex, const char *text, unsigned long color)
+mlk_font_render(struct mlk_font *font, struct texture *tex, const char *text, unsigned long color)
 {
-	assert(font_ok(font));
+	assert(mlk_font_ok(font));
 	assert(text);
 
 	SDL_Color fg = {
@@ -77,7 +77,7 @@ font_render(struct font *font, struct texture *tex, const char *text, unsigned l
 	SDL_Surface *(*func)(TTF_Font *, const char *, SDL_Color);
 
 	switch (font->style) {
-	case FONT_STYLE_ANTIALIASED:
+	case MLK_FONT_STYLE_ANTIALIASED:
 		func = TTF_RenderUTF8_Blended;
 		break;
 	default:
@@ -92,17 +92,17 @@ font_render(struct font *font, struct texture *tex, const char *text, unsigned l
 }
 
 unsigned int
-font_height(const struct font *font)
+mlk_font_height(const struct mlk_font *font)
 {
-	assert(font_ok(font));
+	assert(mlk_font_ok(font));
 
 	return TTF_FontHeight(font->handle);
 }
 
 int
-font_query(const struct font *font, const char *text, unsigned int *w, unsigned int *h)
+mlk_font_query(const struct mlk_font *font, const char *text, unsigned int *w, unsigned int *h)
 {
-	assert(font_ok(font));
+	assert(mlk_font_ok(font));
 	assert(text);
 
 	if (w)
@@ -117,7 +117,7 @@ font_query(const struct font *font, const char *text, unsigned int *w, unsigned 
 }
 
 void
-font_finish(struct font *font)
+mlk_font_finish(struct mlk_font *font)
 {
 	assert(font);
 

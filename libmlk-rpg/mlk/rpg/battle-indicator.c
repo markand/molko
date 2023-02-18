@@ -62,8 +62,8 @@ battle_indicator_start(struct battle_indicator *bti)
 	bti->elapsed = 0;
 	bti->alpha = 250;
 
-	if (font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[0], buf, bti->cur) < 0||
-	    font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[1], buf, 0x000000ff) < 0)
+	if (mlk_font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[0], buf, bti->cur) < 0||
+	    mlk_font_render(theme->fonts[THEME_FONT_INTERFACE], &bti->tex[1], buf, 0x000000ff) < 0)
 		panic();
 }
 

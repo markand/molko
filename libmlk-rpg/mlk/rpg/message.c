@@ -88,7 +88,7 @@ min_width(const struct message *msg)
 	for (size_t i = 0; i < msg->linesz; ++i) {
 		if (!msg->lines[i])
 			continue;
-		if (font_query(THEME(msg)->fonts[THEME_FONT_INTERFACE], msg->lines[i], &w, NULL) < 0)
+		if (mlk_font_query(THEME(msg)->fonts[THEME_FONT_INTERFACE], msg->lines[i], &w, NULL) < 0)
 			panic();
 		if (w > maxw)
 			maxw = w;
@@ -103,7 +103,7 @@ min_height(const struct message *msg)
 	assert(msg);
 
 	const struct theme *th = THEME(msg);
-	const unsigned int lh  = font_height(th->fonts[THEME_FONT_INTERFACE]);
+	const unsigned int lh  = mlk_font_height(th->fonts[THEME_FONT_INTERFACE]);
 
 	return (th->padding * 2) + (msg->linesz * lh) + ((msg->linesz - 1) * msg->spacing);
 }
@@ -118,7 +118,7 @@ draw_lines(const struct message *msg)
 	for (size_t i = 0; i < msg->linesz; ++i) {
 		if (!msg->lines[i])
 			continue;
-		if (font_query(theme->fonts[THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh) < 0)
+		if (mlk_font_query(theme->fonts[THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh) < 0)
 			panic();
 
 		label.theme = theme;

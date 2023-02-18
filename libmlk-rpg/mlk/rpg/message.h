@@ -23,7 +23,7 @@
 #include <mlk/core/texture.h>
 
 struct mlk_action;
-struct font;
+struct mlk_font;
 struct theme;
 
 union mlk_event;

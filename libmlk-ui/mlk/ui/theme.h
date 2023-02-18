@@ -23,7 +23,7 @@
 
 struct button;
 struct checkbox;
-struct font;
+struct mlk_font;
 struct frame;
 struct label;
 struct sprite;
@@ -49,7 +49,7 @@ enum theme_sprite {
 };
 
 struct theme {
-	struct font *fonts[THEME_FONT_NUM];
+	struct mlk_font *fonts[THEME_FONT_NUM];
 	const struct sprite *sprites[THEME_SPRITE_NUM];
 	unsigned long colors[THEME_COLOR_NUM];
 	unsigned int padding;

@@ -63,8 +63,8 @@ static struct font_catalog {
 	const unsigned char *data;
 	const size_t datasz;
 	unsigned int size;
-	struct font **dest;
-	struct font font;
+	struct mlk_font **dest;
+	struct mlk_font font;
 } default_fonts[] = {
 	FONT(assets_fonts_opensans_light, 12, THEME_FONT_DEBUG),
 	FONT(assets_fonts_opensans_regular, 14, THEME_FONT_INTERFACE),
@@ -78,7 +78,7 @@ theme_init(void)
 	for (size_t i = 0; i < UTIL_SIZE(default_fonts); ++i) {
 		struct font_catalog *fc = &default_fonts[i];
 
-		if (font_openmem(&fc->font, fc->data, fc->datasz, fc->size) < 0)
+		if (mlk_font_openmem(&fc->font, fc->data, fc->datasz, fc->size) < 0)
 			goto failed;
 
 		/* Reference this font into the catalog. */
@@ -149,7 +149,7 @@ void
 theme_finish(void)
 {
 	for (size_t i = 0; i < UTIL_SIZE(default_fonts); ++i) {
-		font_finish(&default_fonts[i].font);
+		mlk_font_finish(&default_fonts[i].font);
 		*default_fonts[i].dest = NULL;
 	}
 }

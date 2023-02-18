@@ -91,12 +91,12 @@ geometry(struct geo *geo, const struct notify *n, size_t index)
 	/* Align title to the right of the icon at the same y coordinate. */
 	geo->title_x  = geo->icon_x + n->icon->w + geo->theme->padding;
 	geo->title_y  = geo->icon_y;
-	geo->title_y -= font_height(geo->theme->fonts[THEME_FONT_IMPORTANT]) / 2;
+	geo->title_y -= mlk_font_height(geo->theme->fonts[THEME_FONT_IMPORTANT]) / 2;
 
 	/* Align body so it ends at the end of the icon. */
 	geo->body_x  = geo->title_x;
 	geo->body_y  = geo->icon_y + n->icon->h;
-	geo->body_y -= font_height(geo->theme->fonts[THEME_FONT_INTERFACE]) / 2;
+	geo->body_y -= mlk_font_height(geo->theme->fonts[THEME_FONT_INTERFACE]) / 2;
 }
 
 static void

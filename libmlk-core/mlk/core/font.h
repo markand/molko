@@ -25,39 +25,39 @@
 
 struct texture;
 
-enum font_style {
-	FONT_STYLE_ANTIALIASED,
-	FONT_STYLE_NONE,
-	FONT_STYLE_LAST
+enum mlk_font_style {
+	MLK_FONT_STYLE_ANTIALIASED,
+	MLK_FONT_STYLE_NONE,
+	MLK_FONT_STYLE_LAST
 };
 
-struct font {
-	enum font_style style;
+struct mlk_font {
+	enum mlk_font_style style;
 	void *handle;
 };
 
 CORE_BEGIN_DECLS
 
 int
-font_open(struct font *, const char *, unsigned int);
+mlk_font_open(struct mlk_font *, const char *, unsigned int);
 
 int
-font_openmem(struct font *, const void *, size_t, unsigned int);
+mlk_font_openmem(struct mlk_font *, const void *, size_t, unsigned int);
 
 int
-font_ok(const struct font *);
+mlk_font_ok(const struct mlk_font *);
 
 int
-font_render(struct font *, struct texture *, const char *, unsigned long);
+mlk_font_render(struct mlk_font *, struct texture *, const char *, unsigned long);
 
 unsigned int
-font_height(const struct font *);
+mlk_font_height(const struct mlk_font *);
 
 int
-font_query(const struct font *, const char *, unsigned int *, unsigned int *);
+mlk_font_query(const struct mlk_font *, const char *, unsigned int *, unsigned int *);
 
 void
-font_finish(struct font *);
+mlk_font_finish(struct mlk_font *);
 
 CORE_END_DECLS
 

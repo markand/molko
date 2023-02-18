@@ -57,7 +57,7 @@ debugva(struct debug_report *report, const char *fmt, va_list ap)
 
 	char line[DEBUG_LINE_MAX];
 	const struct theme *theme;
-	struct font *font;
+	struct mlk_font *font;
 	struct texture tex;
 	int x, y;
 
@@ -66,7 +66,7 @@ debugva(struct debug_report *report, const char *fmt, va_list ap)
 	theme = report->theme ? report->theme : theme_default();
 	font = theme->fonts[THEME_FONT_DEBUG];
 
-	if (font_render(font, &tex, line, theme->colors[THEME_COLOR_DEBUG]) < 0)
+	if (mlk_font_render(font, &tex, line, theme->colors[THEME_COLOR_DEBUG]) < 0)
 		return;
 
 	x = theme->padding;
