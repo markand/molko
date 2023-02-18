@@ -25,7 +25,7 @@
 #endif
 
 char *
-util_basename(char *path)
+mlk_util_basename(char *path)
 {
 	static char bname[PATH_MAX];
 	size_t len;

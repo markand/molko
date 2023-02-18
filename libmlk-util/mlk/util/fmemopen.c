@@ -30,7 +30,7 @@
 #include <windows.h>
 
 FILE *
-util_fmemopen(void *buf, size_t size, const char *mode)
+mlk_util_fmemopen(void *buf, size_t size, const char *mode)
 {
 	char temppath[MAX_PATH + 1], filename[MAX_PATH + 1];
 	FILE *fp;
@@ -67,7 +67,7 @@ util_fmemopen(void *buf, size_t size, const char *mode)
 #include <stdio.h>
 
 FILE *
-util_fmemopen(void *buf, size_t len, const char *type)
+mlk_util_fmemopen(void *buf, size_t len, const char *type)
 {
 	return fmemopen(buf, len, type);
 }

@@ -25,7 +25,7 @@
 #endif
 
 char *
-util_dirname(char *path)
+mlk_util_dirname(char *path)
 {
 	static char dname[PATH_MAX];
 	size_t len;

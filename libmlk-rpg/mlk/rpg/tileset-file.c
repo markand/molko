@@ -273,8 +273,8 @@ parse(struct context *ctx, const char *path)
 	char line[1024];
 	char basedir[PATH_MAX];
 
-	util_strlcpy(basedir, path, sizeof (basedir));
-	util_strlcpy(ctx->basedir, util_dirname(basedir), sizeof (ctx->basedir));
+	mlk_util_strlcpy(basedir, path, sizeof (basedir));
+	mlk_util_strlcpy(ctx->basedir, mlk_util_dirname(basedir), sizeof (ctx->basedir));
 
 	while (fgets(line, sizeof (line), ctx->fp)) {
 		/* Remove \n if any */

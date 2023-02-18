@@ -73,26 +73,26 @@ typedef long long int ssize_t;
 #endif
 
 size_t
-util_strlcpy(char *, const char *, size_t);
+mlk_util_strlcpy(char *, const char *, size_t);
 
 size_t
-util_strlcat(char *, const char *, size_t);
+mlk_util_strlcat(char *, const char *, size_t);
 
 FILE *
-util_fmemopen(void *, size_t, const char *);
+mlk_util_fmemopen(void *, size_t, const char *);
 
 char *
-util_basename(char *);
+mlk_util_basename(char *);
 
 char *
-util_dirname(char *);
+mlk_util_dirname(char *);
 
-extern int util_opterr;
-extern int util_optind;
-extern int util_optopt;
-extern char *util_optarg;
+extern int mlk_util_opterr;
+extern int mlk_util_optind;
+extern int mlk_util_optopt;
+extern char *mlk_util_optarg;
 
 int
-util_getopt(int, char **, const char *);
+mlk_util_getopt(int, char **, const char *);
 
 #endif /* !MLK_PORT_H */

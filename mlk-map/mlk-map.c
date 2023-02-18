@@ -227,7 +227,7 @@ write_tileset(const json_t *tilesets)
 
 	/* We need to replace the .json extension to .tileset. */
 	snprintf(path, sizeof (path), "%s", json_string_value(source));
-	snprintf(filename, sizeof (filename), "%s", util_basename(path));
+	snprintf(filename, sizeof (filename), "%s", mlk_util_basename(path));
 
 	if (!(ext = strstr(filename, ".json")))
 		die("could not determine tileset extension");
