@@ -45,7 +45,7 @@ my_start(struct state *state)
 }
 
 static void
-my_handle(struct state *state, const union event *ev)
+my_handle(struct state *state, const union mlk_event *ev)
 {
 	(void)ev;
 
@@ -123,7 +123,7 @@ test_basics_handle(void)
 	struct invokes inv = {0};
 	struct state state = INIT(&inv);
 
-	state_handle(&state, &(const union event){0});
+	state_handle(&state, &(const union mlk_event){0});
 	DT_EQ_UINT(inv.start, 0U);
 	DT_EQ_UINT(inv.handle, 1U);
 	DT_EQ_UINT(inv.update, 0U);
@@ -204,8 +204,8 @@ test_basics_game(void)
 	};
 
 	/* 0 becomes active and should start. */
-	game_init(mainstates, UTIL_SIZE(mainstates));
-	game_push(&states[0].state);
+	mlk_game_init(mainstates, UTIL_SIZE(mainstates));
+	mlk_game_push(&states[0].state);
 
 	DT_EQ_UINT(states[0].inv.start, 1U);
 	DT_EQ_UINT(states[0].inv.handle, 0U);
@@ -217,12 +217,12 @@ test_basics_game(void)
 	DT_EQ_UINT(states[0].inv.finish, 0U);
 
 	/* Put some event, update and drawing. */
-	game_handle(&(union event) { .type = EVENT_QUIT });
-	game_update(100);
-	game_update(100);
-	game_draw();
-	game_draw();
-	game_draw();
+	mlk_game_handle(&(union mlk_event) { .type = MLK_EVENT_QUIT });
+	mlk_game_update(100);
+	mlk_game_update(100);
+	mlk_game_draw();
+	mlk_game_draw();
+	mlk_game_draw();
 	DT_EQ_UINT(states[0].inv.start, 1U);
 	DT_EQ_UINT(states[0].inv.handle, 1U);
 	DT_EQ_UINT(states[0].inv.update, 2U);
@@ -233,7 +233,7 @@ test_basics_game(void)
 	DT_EQ_UINT(states[0].inv.finish, 0U);
 
 	/* Switch to state 1, 0 must be suspended. */
-	game_push(&states[1].state);
+	mlk_game_push(&states[1].state);
 	DT_EQ_UINT(states[0].inv.start, 1U);
 	DT_EQ_UINT(states[0].inv.handle, 1U);
 	DT_EQ_UINT(states[0].inv.update, 2U);
@@ -253,10 +253,10 @@ test_basics_game(void)
 	DT_EQ_UINT(states[1].inv.finish, 0U);
 
 	/* Update a little this state. */
-	game_update(10);
-	game_update(10);
-	game_update(10);
-	game_update(10);
+	mlk_game_update(10);
+	mlk_game_update(10);
+	mlk_game_update(10);
+	mlk_game_update(10);
 	DT_EQ_UINT(states[0].inv.start, 1U);
 	DT_EQ_UINT(states[0].inv.handle, 1U);
 	DT_EQ_UINT(states[0].inv.update, 2U);
@@ -276,7 +276,7 @@ test_basics_game(void)
 	DT_EQ_UINT(states[1].inv.finish, 0U);
 
 	/* Pop it, it should be finalized through end and finish. */
-	game_pop();
+	mlk_game_pop();
 
 	DT_EQ_UINT(states[0].inv.start, 1U);
 	DT_EQ_UINT(states[0].inv.handle, 1U);
@@ -297,7 +297,7 @@ test_basics_game(void)
 	DT_EQ_UINT(states[1].inv.finish, 1U);
 
 	/* Pop this state as well. */
-	game_pop();
+	mlk_game_pop();
 
 	DT_EQ_UINT(states[0].inv.start, 1U);
 	DT_EQ_UINT(states[0].inv.handle, 1U);
@@ -317,7 +317,7 @@ test_basics_game(void)
 	DT_EQ_UINT(states[1].inv.end, 1U);
 	DT_EQ_UINT(states[1].inv.finish, 1U);
 
-	game_quit();
+	mlk_game_quit();
 }
 
 int

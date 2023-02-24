@@ -40,7 +40,7 @@ struct invokes {
 }
 
 static void
-my_handle(struct mlk_action *act, const union event *ev)
+my_handle(struct mlk_action *act, const union mlk_event *ev)
 {
 	(void)ev;
 
@@ -142,7 +142,7 @@ test_basics_handle(void)
 	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
-	script_handle(&sc, &(union event){0});
+	script_handle(&sc, &(union mlk_event){0});
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 0);
 	DT_EQ_INT(table[0].inv.draw, 0);
@@ -161,7 +161,7 @@ test_basics_handle(void)
 
 	/* [0] -> [1] */
 	DT_ASSERT(!script_update(&sc, 0));
-	script_handle(&sc, &(union event){0});
+	script_handle(&sc, &(union mlk_event){0});
 
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 1);
@@ -181,7 +181,7 @@ test_basics_handle(void)
 
 	/* [2] */
 	DT_ASSERT(!script_update(&sc, 0));
-	script_handle(&sc, &(union event){0});
+	script_handle(&sc, &(union mlk_event){0});
 
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 1);
@@ -434,7 +434,7 @@ test_action_simple(void)
 	script_action(&sc, &act);
 
 	/* Draw and input before updating. */
-	mlk_action_handle(&act, &(union event){0});
+	mlk_action_handle(&act, &(union mlk_event){0});
 	mlk_action_draw(&act);
 
 	/* [0] -> [1] */
@@ -455,7 +455,7 @@ test_action_simple(void)
 	DT_EQ_INT(table[2].inv.end, 0);
 	DT_EQ_INT(table[2].inv.finish, 0);
 
-	mlk_action_handle(&act, &(union event){0});
+	mlk_action_handle(&act, &(union mlk_event){0});
 	mlk_action_draw(&act);
 
 	/* [1] -> [2] */
@@ -476,7 +476,7 @@ test_action_simple(void)
 	DT_EQ_INT(table[2].inv.end, 0);
 	DT_EQ_INT(table[2].inv.finish, 0);
 
-	mlk_action_handle(&act, &(union event){0});
+	mlk_action_handle(&act, &(union mlk_event){0});
 	mlk_action_draw(&act);
 
 	/* 2 stays, it never ends. */

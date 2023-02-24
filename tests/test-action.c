@@ -31,7 +31,7 @@ struct invokes {
 	int finish;
 };
 
-static union event dummy;
+static union mlk_event dummy;
 
 #define INIT(dat, up) {         \
         .data = (dat),          \
@@ -43,7 +43,7 @@ static union event dummy;
 }
 
 static void
-my_handle(struct mlk_action *act, const union event *ev)
+my_handle(struct mlk_action *act, const union mlk_event *ev)
 {
 	(void)ev;
 

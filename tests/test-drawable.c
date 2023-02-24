@@ -39,7 +39,7 @@ struct invokes {
 }
 
 static int
-my_update_false(struct drawable *dw, unsigned int ticks)
+my_update_false(struct mlk_drawable *dw, unsigned int ticks)
 {
 	(void)ticks;
 
@@ -49,7 +49,7 @@ my_update_false(struct drawable *dw, unsigned int ticks)
 }
 
 static int
-my_update_true(struct drawable *dw, unsigned int ticks)
+my_update_true(struct mlk_drawable *dw, unsigned int ticks)
 {
 	(void)ticks;
 
@@ -59,19 +59,19 @@ my_update_true(struct drawable *dw, unsigned int ticks)
 }
 
 static void
-my_draw(struct drawable *dw)
+my_draw(struct mlk_drawable *dw)
 {
 	((struct invokes *)dw->data)->draw = 1;
 }
 
 static void
-my_end(struct drawable *dw)
+my_end(struct mlk_drawable *dw)
 {
 	((struct invokes *)dw->data)->end = 1;
 }
 
 static void
-my_finish(struct drawable *dw)
+my_finish(struct mlk_drawable *dw)
 {
 	((struct invokes *)dw->data)->finish = 1;
 }
@@ -81,21 +81,21 @@ test_basics_update(void)
 {
 	struct {
 		struct invokes inv;
-		struct drawable dw;
+		struct mlk_drawable dw;
 	} table[] = {
 		{ .dw = INIT(&table[0], my_update_true)        },
 		{ .dw = INIT(&table[1], my_update_false)       }
 	};
 
 	/* True version. */
-	DT_ASSERT(drawable_update(&table[0].dw, 0));
+	DT_ASSERT(mlk_drawable_update(&table[0].dw, 0));
 	DT_ASSERT(table[0].inv.update);
 	DT_ASSERT(!table[0].inv.draw);
 	DT_ASSERT(!table[0].inv.end);
 	DT_ASSERT(!table[0].inv.finish);
 
 	/* False version. */
-	DT_ASSERT(!drawable_update(&table[1].dw, 0));
+	DT_ASSERT(!mlk_drawable_update(&table[1].dw, 0));
 	DT_ASSERT(table[1].inv.update);
 	DT_ASSERT(!table[1].inv.draw);
 	DT_ASSERT(!table[1].inv.end);
@@ -106,9 +106,9 @@ static void
 test_basics_draw(void)
 {
 	struct invokes inv = {0};
-	struct drawable dw = INIT(&inv, my_update_true);
+	struct mlk_drawable dw = INIT(&inv, my_update_true);
 
-	drawable_draw(&dw);
+	mlk_drawable_draw(&dw);
 
 	DT_ASSERT(!inv.update);
 	DT_ASSERT(inv.draw);
@@ -120,9 +120,9 @@ static void
 test_basics_end(void)
 {
 	struct invokes inv = {0};
-	struct drawable dw = INIT(&inv, my_update_true);
+	struct mlk_drawable dw = INIT(&inv, my_update_true);
 
-	drawable_end(&dw);
+	mlk_drawable_end(&dw);
 
 	DT_ASSERT(!inv.update);
 	DT_ASSERT(!inv.draw);
@@ -134,9 +134,9 @@ static void
 test_basics_finish(void)
 {
 	struct invokes inv = {0};
-	struct drawable dw = INIT(&inv, my_update_true);
+	struct mlk_drawable dw = INIT(&inv, my_update_true);
 
-	drawable_finish(&dw);
+	mlk_drawable_finish(&dw);
 
 	DT_ASSERT(!inv.update);
 	DT_ASSERT(!inv.draw);
@@ -147,20 +147,20 @@ test_basics_finish(void)
 static void
 test_stack_add(void)
 {
-	struct drawable *drawables[10];
-	struct drawable_stack st = {0};
-	struct drawable dw = {0};
+	struct mlk_drawable *drawables[10];
+	struct mlk_drawable_stack st = {0};
+	struct mlk_drawable dw = {0};
 
-	drawable_stack_init(&st, drawables, 10);
+	mlk_drawable_stack_init(&st, drawables, 10);
 
-	DT_EQ_INT(drawable_stack_add(&st, &dw), 0);
+	DT_EQ_INT(mlk_drawable_stack_add(&st, &dw), 0);
 
 	/* Now fill up. */
 	for (int i = 0; i < 9; ++i)
-		DT_EQ_INT(drawable_stack_add(&st, &dw), 0);
+		DT_EQ_INT(mlk_drawable_stack_add(&st, &dw), 0);
 
 	/* This one should not fit in. */
-	DT_EQ_INT(drawable_stack_add(&st, &dw), MLK_ERR_NO_MEM);
+	DT_EQ_INT(mlk_drawable_stack_add(&st, &dw), MLK_ERR_NO_MEM);
 }
 
 static void
@@ -168,7 +168,7 @@ test_stack_update(void)
 {
 	struct {
 		struct invokes inv;
-		struct drawable dw;
+		struct mlk_drawable dw;
 	} table[] = {
 		{ .dw = INIT(&table[0], my_update_false)       },
 		{ .dw = INIT(&table[1], my_update_true)        },
@@ -179,19 +179,19 @@ test_stack_update(void)
 		{ .dw = INIT(&table[6], my_update_false)	},
 	};
 
-	struct drawable *drawables[10];
-	struct drawable_stack st = {0};
+	struct mlk_drawable *drawables[10];
+	struct mlk_drawable_stack st = {0};
 
-	drawable_stack_init(&st, drawables, 10);
-	drawable_stack_add(&st, &table[0].dw);
-	drawable_stack_add(&st, &table[1].dw);
-	drawable_stack_add(&st, &table[2].dw);
-	drawable_stack_add(&st, &table[3].dw);
-	drawable_stack_add(&st, &table[4].dw);
-	drawable_stack_add(&st, &table[5].dw);
-	drawable_stack_add(&st, &table[6].dw);
+	mlk_drawable_stack_init(&st, drawables, 10);
+	mlk_drawable_stack_add(&st, &table[0].dw);
+	mlk_drawable_stack_add(&st, &table[1].dw);
+	mlk_drawable_stack_add(&st, &table[2].dw);
+	mlk_drawable_stack_add(&st, &table[3].dw);
+	mlk_drawable_stack_add(&st, &table[4].dw);
+	mlk_drawable_stack_add(&st, &table[5].dw);
+	mlk_drawable_stack_add(&st, &table[6].dw);
 
-	DT_ASSERT(!drawable_stack_update(&st, 0));
+	DT_ASSERT(!mlk_drawable_stack_update(&st, 0));
 
 	DT_ASSERT(table[0].inv.update);
 	DT_ASSERT(table[1].inv.update);
@@ -244,7 +244,7 @@ test_stack_update(void)
 	    table[3].dw.update =
 	    table[6].dw.update = my_update_true;
 
-	DT_ASSERT(drawable_stack_update(&st, 0));
+	DT_ASSERT(mlk_drawable_stack_update(&st, 0));
 	DT_EQ_PTR(st.objects[0], NULL);
 	DT_EQ_PTR(st.objects[1], NULL);
 	DT_EQ_PTR(st.objects[2], NULL);
@@ -259,7 +259,7 @@ test_stack_draw(void)
 {
 	struct {
 		struct invokes inv;
-		struct drawable dw;
+		struct mlk_drawable dw;
 	} table[] = {
 		{ .dw = INIT(&table[0], my_update_false)       },
 		{ .dw = INIT(&table[1], my_update_true)        },
@@ -270,18 +270,18 @@ test_stack_draw(void)
 		{ .dw = INIT(&table[6], my_update_false)	},
 	};
 
-	struct drawable *drawables[10];
-	struct drawable_stack st = {0};
+	struct mlk_drawable *drawables[10];
+	struct mlk_drawable_stack st = {0};
 
-	drawable_stack_init(&st, drawables, 10);
-	drawable_stack_add(&st, &table[0].dw);
-	drawable_stack_add(&st, &table[1].dw);
-	drawable_stack_add(&st, &table[2].dw);
-	drawable_stack_add(&st, &table[3].dw);
-	drawable_stack_add(&st, &table[4].dw);
-	drawable_stack_add(&st, &table[5].dw);
-	drawable_stack_add(&st, &table[6].dw);
-	drawable_stack_draw(&st);
+	mlk_drawable_stack_init(&st, drawables, 10);
+	mlk_drawable_stack_add(&st, &table[0].dw);
+	mlk_drawable_stack_add(&st, &table[1].dw);
+	mlk_drawable_stack_add(&st, &table[2].dw);
+	mlk_drawable_stack_add(&st, &table[3].dw);
+	mlk_drawable_stack_add(&st, &table[4].dw);
+	mlk_drawable_stack_add(&st, &table[5].dw);
+	mlk_drawable_stack_add(&st, &table[6].dw);
+	mlk_drawable_stack_draw(&st);
 
 	DT_ASSERT(!table[0].inv.update);
 	DT_ASSERT(!table[1].inv.update);
@@ -321,19 +321,19 @@ test_stack_finish(void)
 {
 	struct {
 		struct invokes inv;
-		struct drawable dw;
+		struct mlk_drawable dw;
 	} table[] = {
 		{ .dw = INIT(&table[0], my_update_true)        },
 		{ .dw = INIT(&table[0], my_update_false)       },
 	};
 
-	struct drawable *drawables[10];
-	struct drawable_stack st = {0};
+	struct mlk_drawable *drawables[10];
+	struct mlk_drawable_stack st = {0};
 
-	drawable_stack_init(&st, drawables, 10);
-	drawable_stack_add(&st, &table[0].dw);
-	drawable_stack_add(&st, &table[1].dw);
-	drawable_stack_finish(&st);
+	mlk_drawable_stack_init(&st, drawables, 10);
+	mlk_drawable_stack_add(&st, &table[0].dw);
+	mlk_drawable_stack_add(&st, &table[1].dw);
+	mlk_drawable_stack_finish(&st);
 
 	DT_ASSERT(!table[0].inv.update);
 	DT_ASSERT(!table[0].inv.draw);
