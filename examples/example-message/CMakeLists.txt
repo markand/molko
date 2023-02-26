@@ -20,13 +20,13 @@ project(example-message)
 
 set(
 	SOURCES
-	${example-message_SOURCE_DIR}/main.c
+	${example-message_SOURCE_DIR}/example-message.c
 )
 
 mlk_executable(
 	NAME example-message
 	FOLDER examples
-	LIBRARIES libmlk-rpg
+	LIBRARIES libmlk-example
 	SOURCES ${SOURCES}
 )
 

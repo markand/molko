@@ -20,20 +20,14 @@ project(example-notify)
 
 set(
 	SOURCES
-	${example-notify_SOURCE_DIR}/main.c
-)
-
-set(
-	ASSETS
-	${example-notify_SOURCE_DIR}/assets/images/sword.png
+	${example-notify_SOURCE_DIR}/example-notify.c
 )
 
 mlk_executable(
 	NAME example-notify
 	FOLDER examples
-	LIBRARIES libmlk-rpg
-	ASSETS ${ASSETS}
-	SOURCES ${ASSETS} ${SOURCES}
+	LIBRARIES libmlk-example
+	SOURCES ${SOURCES}
 )
 
-source_group(TREE ${example-notify_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})
+source_group(TREE ${example-notify_SOURCE_DIR} FILES ${SOURCES})

@@ -20,14 +20,13 @@ project(example-trace)
 
 set(
 	SOURCES
-	${example-trace_SOURCE_DIR}/main.c
-	${example-trace_SOURCE_DIR}/trace_hud.c
+	${example-trace_SOURCE_DIR}/example-trace.c
 )
 
 mlk_executable(
 	NAME example-trace
 	FOLDER examples
-	LIBRARIES libmlk-rpg
+	LIBRARIES libmlk-example
 	SOURCES ${SOURCES}
 )
 

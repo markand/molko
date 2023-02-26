@@ -47,7 +47,7 @@ static struct label label = {
 
 static struct state *states[1];
 static struct texture numbers;
-static struct animation animation;
+static struct mlk_animation animation;
 static struct sprite sprite;
 static int completed = 1;
 
@@ -58,28 +58,28 @@ init(void)
 		panic();
 	if (window_open("Example - Animation", W, H) < 0)
 		panic();
-	if (image_openmem(&numbers, assets_numbers, sizeof (assets_numbers)) < 0)
+	if (mlk_image_openmem(&numbers, assets_sprites_numbers, sizeof (assets_sprites_numbers)) < 0)
 		panic();
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_KEYDOWN:
+	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
-		case KEY_SPACE:
-			animation_start(&animation);
-			completed = animation_completed(&animation);
+		case MLK_KEY_SPACE:
+			mlk_animation_start(&animation);
+			completed = mlk_animation_completed(&animation);
 			break;
 		default:
 			break;
 		}
 		break;
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		break;
@@ -92,7 +92,7 @@ update(struct state *st, unsigned int ticks)
 	(void)st;
 
 	if (!completed)
-		completed = animation_update(&animation, ticks);
+		completed = mlk_animation_update(&animation, ticks);
 }
 
 static void
@@ -100,14 +100,14 @@ draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0x4f8fbaff);
-	painter_clear();
+	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_clear();
 	label_draw(&label);
 
 	if (!completed)
-		animation_draw(&animation, (window.w - sprite.cellw) / 2, (window.h - sprite.cellh) / 2);
+		mlk_animation_draw(&animation, (window.w - sprite.cellw) / 2, (window.h - sprite.cellh) / 2);
 
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -120,11 +120,11 @@ run(void)
 	};
 
 	sprite_init(&sprite, &numbers, 48, 48);
-	animation_init(&animation, &sprite, 1000);
+	mlk_animation_init(&animation, &sprite, 1000);
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

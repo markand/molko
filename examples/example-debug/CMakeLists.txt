@@ -20,13 +20,13 @@ project(example-debug)
 
 set(
 	SOURCES
-	${example-debug_SOURCE_DIR}/main.c
+	${example-debug_SOURCE_DIR}/example-debug.c
 )
 
 mlk_executable(
 	NAME example-debug
 	FOLDER examples
-	LIBRARIES libmlk-ui
+	LIBRARIES libmlk-example
 	SOURCES ${SOURCES}
 )
 

@@ -20,20 +20,14 @@ project(example-animation)
 
 set(
 	SOURCES
-	${example-animation_SOURCE_DIR}/main.c
-)
-
-set(
-	ASSETS
-	${example-animation_SOURCE_DIR}/assets/sprites/numbers.png
+	${example-animation_SOURCE_DIR}/example-animation.c
 )
 
 mlk_executable(
 	NAME example-animation
 	FOLDER examples
-	LIBRARIES libmlk-ui
-	SOURCES ${ASSETS} ${SOURCES}
-	ASSETS ${ASSETS}
+	LIBRARIES libmlk-example
+	SOURCES ${SOURCES}
 )
 
-source_group(TREE ${example-animation_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})
+source_group(TREE ${example-animation_SOURCE_DIR} FILES ${SOURCES})

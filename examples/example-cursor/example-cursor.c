@@ -73,18 +73,18 @@ change(enum window_cursor cursor)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_KEYDOWN:
+	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
-		case KEY_LEFT:
+		case MLK_KEY_LEFT:
 			if (cursor > 0)
 				change(--cursor);
 			break;
-		case KEY_RIGHT:
+		case MLK_KEY_RIGHT:
 			if (cursor + 1 < WINDOW_CURSOR_LAST)
 				change(++cursor);
 			break;
@@ -94,8 +94,8 @@ handle(struct state *st, const union event *ev)
 
 
 		break;
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		break;
@@ -107,10 +107,10 @@ draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0xebede9ff);
-	painter_clear();
+	mlk_painter_set_color(0xebede9ff);
+	mlk_painter_clear();
 	label_draw(&help);
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -123,9 +123,9 @@ run(void)
 
 	change(cursor);
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

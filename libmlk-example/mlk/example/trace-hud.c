@@ -28,7 +28,7 @@
 #include <mlk/ui/label.h>
 #include <mlk/ui/theme.h>
 
-#include "trace_hud.h"
+#include "trace-hud.h"
 
 #define LINES_MAX       (4)
 #define THEME(t)        ((t) ? (t) : theme_default())
@@ -104,7 +104,7 @@ trace_hud_draw(void)
 			.flags = LABEL_FLAGS_SHADOW
 		});
 
-		y += font_height(th->fonts[THEME_FONT_INTERFACE]);
+		y += mlk_font_height(th->fonts[THEME_FONT_INTERFACE]);
 		y += th->padding;
 	}
 }

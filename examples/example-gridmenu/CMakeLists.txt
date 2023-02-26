@@ -20,13 +20,13 @@ project(example-gridmenu)
 
 set(
 	SOURCES
-	${example-gridmenu_SOURCE_DIR}/main.c
+	${example-gridmenu_SOURCE_DIR}/example-gridmenu.c
 )
 
 mlk_executable(
 	NAME example-gridmenu
 	FOLDER examples
-	LIBRARIES libmlk-ui
+	LIBRARIES libmlk-example
 	SOURCES ${SOURCES}
 )
 

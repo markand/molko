@@ -20,13 +20,13 @@ project(example-font)
 
 set(
 	SOURCES
-	${example-font_SOURCE_DIR}/main.c
+	${example-font_SOURCE_DIR}/example-font.c
 )
 
 mlk_executable(
 	NAME example-font
 	FOLDER examples
-	LIBRARIES libmlk-ui
+	LIBRARIES libmlk-example
 	SOURCES ${SOURCES}
 )
 

@@ -64,11 +64,11 @@ quit(void)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	switch (ev->type) {
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		message_handle(st->data, ev);
@@ -80,16 +80,16 @@ static void
 update(struct state *st, unsigned int ticks)
 {
 	if (message_update(st->data, ticks))
-		game_quit();
+		mlk_game_quit();
 }
 
 static void
 draw(struct state *st)
 {
-	painter_set_color(0xffffffff);
-	painter_clear();
+	mlk_painter_set_color(0xffffffff);
+	mlk_painter_clear();
 	message_draw(st->data);
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -104,9 +104,9 @@ run(struct message *msg)
 
 	message_start(msg);
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void
@@ -114,8 +114,8 @@ my_draw_frame(const struct theme *th, const struct frame *f)
 {
 	(void)th;
 
-	painter_set_color(0xff0000ff);
-	painter_draw_rectangle(f->x, f->y, f->w, f->h);
+	mlk_painter_set_color(0xff0000ff);
+	mlk_painter_draw_rectangle(f->x, f->y, f->w, f->h);
 }
 
 static void

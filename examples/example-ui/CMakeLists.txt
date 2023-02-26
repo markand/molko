@@ -20,13 +20,13 @@ project(example-ui)
 
 set(
 	SOURCES
-	${example-ui_SOURCE_DIR}/main.c
+	${example-ui_SOURCE_DIR}/example-ui.c
 )
 
 mlk_executable(
 	NAME example-ui
 	FOLDER examples
-	LIBRARIES libmlk-ui
+	LIBRARIES libmlk-example
 	SOURCES ${SOURCES}
 )
 

@@ -186,7 +186,7 @@ resize(void)
 static int
 headerclick(int x, int y)
 {
-	return maths_is_boxed(
+	return mlk_maths_is_boxed(
 	    ui.panel.frame.x,
 	    ui.panel.frame.y,
 	    ui.panel.frame.w,
@@ -197,15 +197,15 @@ headerclick(int x, int y)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
-	case EVENT_MOUSE:
+	case MLK_EVENT_MOUSE:
 		if (ui.motion.active) {
 			ui.panel.frame.x += ev->mouse.x - ui.motion.x;
 			ui.panel.frame.y += ev->mouse.y - ui.motion.y;
@@ -214,7 +214,7 @@ handle(struct state *st, const union event *ev)
 			resize();
 		}
 		break;
-	case EVENT_CLICKDOWN:
+	case MLK_EVENT_CLICKDOWN:
 		if (headerclick(ev->click.x, ev->click.y)) {
 			ui.motion.active = 1;
 			ui.motion.x = ev->click.x;
@@ -222,7 +222,7 @@ handle(struct state *st, const union event *ev)
 			window_set_cursor(WINDOW_CURSOR_SIZE);
 		}
 		break;
-	case EVENT_CLICKUP:
+	case MLK_EVENT_CLICKUP:
 		ui.motion.active = 0;
 		window_set_cursor(WINDOW_CURSOR_ARROW);
 		break;
@@ -233,7 +233,7 @@ handle(struct state *st, const union event *ev)
 	checkbox_handle(&ui.autosave.cb, ev);
 
 	if (button_handle(&ui.quit.button, ev))
-		game_quit();
+		mlk_game_quit();
 }
 
 static void
@@ -241,14 +241,14 @@ draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0xffffffff);
-	painter_clear();
+	mlk_painter_set_color(0xffffffff);
+	mlk_painter_clear();
 	frame_draw(&ui.panel.frame);
 	label_draw(&ui.header.label);
 	checkbox_draw(&ui.autosave.cb);
 	label_draw(&ui.autosave.label);
 	button_draw(&ui.quit.button);
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -261,9 +261,9 @@ run(void)
 
 	resize();
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

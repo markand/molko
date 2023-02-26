@@ -129,17 +129,17 @@ quit(void)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_MOUSE:
+	case MLK_EVENT_MOUSE:
 		mlabel.x = ev->mouse.x;
 		mlabel.y = ev->mouse.y;
 		break;
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		break;
@@ -151,14 +151,14 @@ draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0x4f8fbaff);
-	painter_clear();
+	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_clear();
 
 	for (size_t i = 0; i < UTIL_SIZE(table); ++i)
 		label_draw(&table[i].label);
 
 	label_draw(&mlabel);
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -169,9 +169,9 @@ run(void)
 		.draw = draw
 	};
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 int

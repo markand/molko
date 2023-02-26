@@ -20,20 +20,14 @@ project(example-sprite)
 
 set(
 	SOURCES
-	${example-sprite_SOURCE_DIR}/main.c
-)
-
-set(
-	ASSETS
-	${example-sprite_SOURCE_DIR}/assets/sprites/people.png
+	${example-sprite_SOURCE_DIR}/example-sprite.c
 )
 
 mlk_executable(
 	NAME example-sprite
 	FOLDER examples
-	LIBRARIES libmlk-ui
-	SOURCES ${ASSETS} ${SOURCES}
-	ASSETS ${ASSETS}
+	LIBRARIES libmlk-example
+	SOURCES ${SOURCES}
 )
 
-source_group(TREE ${example-sprite_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})
+source_group(TREE ${example-sprite_SOURCE_DIR} FILES ${SOURCES})

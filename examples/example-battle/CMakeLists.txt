@@ -20,33 +20,14 @@ project(example-battle)
 
 set(
 	SOURCES
-	${example-battle_SOURCE_DIR}/character-john.c
-	${example-battle_SOURCE_DIR}/character-john.h
-	${example-battle_SOURCE_DIR}/main.c
-	${example-battle_SOURCE_DIR}/registry.c
-	${example-battle_SOURCE_DIR}/registry.h
-	${example-battle_SOURCE_DIR}/spell-fire.c
-	${example-battle_SOURCE_DIR}/spell-fire.h
-)
-
-set(
-	ASSETS
-	${example-battle_SOURCE_DIR}/assets/images/battle-background.png
-	${example-battle_SOURCE_DIR}/assets/images/black-cat.png
-	${example-battle_SOURCE_DIR}/assets/images/haunted-wood.png
-	${example-battle_SOURCE_DIR}/assets/sounds/fire.wav
-	${example-battle_SOURCE_DIR}/assets/sprites/explosion.png
-	${example-battle_SOURCE_DIR}/assets/sprites/john-sword.png
-	${example-battle_SOURCE_DIR}/assets/sprites/john-walk.png
-	${example-battle_SOURCE_DIR}/assets/sprites/ui-cursor.png
+	${example-battle_SOURCE_DIR}/example-battle.c
 )
 
 mlk_executable(
 	NAME example-battle
 	FOLDER examples
-	LIBRARIES libmlk-rpg
-	SOURCES ${ASSETS} ${SOURCES}
-	ASSETS ${ASSETS}
+	LIBRARIES libmlk-example
+	SOURCES ${SOURCES}
 )
 
-source_group(TREE ${example-battle_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})
+source_group(TREE ${example-battle_SOURCE_DIR} FILES ${SOURCES})

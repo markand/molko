@@ -20,21 +20,14 @@ project(example-action)
 
 set(
 	SOURCES
-	${example-action_SOURCE_DIR}/main.c
-)
-
-set(
-	ASSETS
-	${example-action_SOURCE_DIR}/assets/sprites/chest.png
-	${example-action_SOURCE_DIR}/assets/sprites/people.png
+	${example-action_SOURCE_DIR}/example-action.c
 )
 
 mlk_executable(
 	NAME example-action
 	FOLDER examples
-	LIBRARIES libmlk-rpg
-	SOURCES ${ASSETS} ${SOURCES}
-	ASSETS ${ASSETS}
+	LIBRARIES libmlk-example
+	SOURCES ${SOURCES}
 )
 
-source_group(TREE ${example-action_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})
+source_group(TREE ${example-action_SOURCE_DIR} FILES ${SOURCES})

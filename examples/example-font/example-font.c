@@ -48,7 +48,7 @@ static const unsigned long colors[] = {
 
 static struct state *states[1];
 static int ci = 0;
-static enum font_style style = FONT_STYLE_ANTIALIASED;
+static enum mlk_font_style style = MLK_FONT_STYLE_ANTIALIASED;
 
 static void
 init(void)
@@ -60,34 +60,34 @@ init(void)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_KEYDOWN:
+	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
-		case KEY_LEFT:
+		case MLK_KEY_LEFT:
 			if (ci > 0)
 				ci--;
 			break;
-		case KEY_RIGHT:
+		case MLK_KEY_RIGHT:
 			if ((size_t)ci < UTIL_SIZE(colors))
 				ci++;
 			break;
-		case KEY_SPACE:
-			if (style == FONT_STYLE_ANTIALIASED)
-				style = FONT_STYLE_NONE;
+		case MLK_KEY_SPACE:
+			if (style == MLK_FONT_STYLE_ANTIALIASED)
+				style = MLK_FONT_STYLE_NONE;
 			else
-				style = FONT_STYLE_ANTIALIASED;
+				style = MLK_FONT_STYLE_ANTIALIASED;
 
 			theme_default()->fonts[THEME_FONT_INTERFACE]->style = style;
 		default:
 			break;
 		}
 		break;
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		break;
@@ -99,17 +99,17 @@ draw(struct state *st)
 {
 	(void)st;
 
-	struct font *font = theme_default()->fonts[THEME_FONT_INTERFACE];
+	struct mlk_font *font = theme_default()->fonts[THEME_FONT_INTERFACE];
 	struct texture tex;
 
-	painter_set_color(0xffffffff);
-	painter_clear();
+	mlk_painter_set_color(0xffffffff);
+	mlk_painter_clear();
 
-	if (font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]) < 0)
+	if (mlk_font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]) < 0)
 		panic();
 
 	texture_draw(&tex, 10, 10);
-	painter_present();
+	mlk_painter_present();
 	texture_finish(&tex);
 }
 
@@ -121,9 +121,9 @@ run(void)
 		.draw = draw
 	};
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

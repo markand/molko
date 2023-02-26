@@ -48,17 +48,17 @@ init(void)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_MOUSE:
+	case MLK_EVENT_MOUSE:
 		mouse_x = ev->mouse.x;
 		mouse_y = ev->mouse.y;
 		break;
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		break;
@@ -72,11 +72,11 @@ draw(struct state *st)
 
 	struct debug_report report = {0};
 
-	painter_set_color(0x4f8fbaff);
-	painter_clear();
+	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_clear();
 	debugf(&report, "Game running.");
 	debugf(&report, "mouse: %d, %d", mouse_x, mouse_y);
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -87,9 +87,9 @@ run(void)
 		.draw = draw
 	};
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

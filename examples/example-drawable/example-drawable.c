@@ -54,8 +54,8 @@ static struct label help = {
 };
 
 static struct state *states[1];
-static struct drawable *drawables[64];
-static struct drawable_stack stack;
+static struct mlk_drawable *drawables[64];
+static struct mlk_drawable_stack stack;
 
 /*
  * List of drawables for this example.
@@ -67,8 +67,8 @@ static struct texture explosion_tex;
 static struct sprite explosion_sprite;
 
 struct explosion {
-	struct animation anim;
-	struct drawable dw;
+	struct mlk_animation anim;
+	struct mlk_drawable dw;
 };
 
 static void
@@ -80,40 +80,40 @@ init(void)
 		panic();
 
 	/* 0: Explosion animation. */
-	if (image_openmem(&explosion_tex, assets_explosion, sizeof (assets_explosion)) < 0)
+	if (mlk_image_openmem(&explosion_tex, assets_sprites_explosion, sizeof (assets_sprites_explosion)) < 0)
 		panic();
 
 	sprite_init(&explosion_sprite, &explosion_tex, 256, 256);
 }
 
 static int
-explosion_update(struct drawable *dw, unsigned int ticks)
+explosion_update(struct mlk_drawable *dw, unsigned int ticks)
 {
 	struct explosion *ex = dw->data;
 
-	return animation_update(&ex->anim, ticks);
+	return mlk_animation_update(&ex->anim, ticks);
 }
 
 static void
-explosion_draw(struct drawable *dw)
+explosion_draw(struct mlk_drawable *dw)
 {
 	struct explosion *ex = dw->data;
 
-	animation_draw(&ex->anim, ex->dw.x, ex->dw.y);
+	mlk_animation_draw(&ex->anim, ex->dw.x, ex->dw.y);
 }
 
 static void
-explosion_finish(struct drawable *dw)
+explosion_finish(struct mlk_drawable *dw)
 {
-	free(dw->data);
+	mlk_alloc_free(dw->data);
 }
 
 static void
 spawn(int x, int y)
 {
-	struct explosion *ex = mlk_alloc_new0(sizeof (*ex));
+	struct explosion *ex = mlk_alloc_new0(1, sizeof (*ex));
 
-	animation_init(&ex->anim, &explosion_sprite, 15);
+	mlk_animation_init(&ex->anim, &explosion_sprite, 15);
 
 	ex->dw.data = ex;
 	ex->dw.x = x - (int)(explosion_sprite.cellw / 2);
@@ -122,29 +122,29 @@ spawn(int x, int y)
 	ex->dw.draw = explosion_draw;
 	ex->dw.finish = explosion_finish;
 
-	drawable_stack_add(&stack, &ex->dw);
+	mlk_drawable_stack_add(&stack, &ex->dw);
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_KEYDOWN:
+	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
-		case KEY_ESCAPE:
-			drawable_stack_finish(&stack);
+		case MLK_KEY_ESCAPE:
+			mlk_drawable_stack_finish(&stack);
 			break;
 		default:
 			break;
 		}
 		break;
-	case EVENT_CLICKDOWN:
+	case MLK_EVENT_CLICKDOWN:
 		spawn(ev->click.x, ev->click.y);
 		break;
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		break;
@@ -156,7 +156,7 @@ update(struct state *st, unsigned int ticks)
 {
 	(void)st;
 
-	drawable_stack_update(&stack, ticks);
+	mlk_drawable_stack_update(&stack, ticks);
 
 }
 
@@ -165,11 +165,11 @@ draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0xebede9ff);
-	painter_clear();
+	mlk_painter_set_color(0xebede9ff);
+	mlk_painter_clear();
 	label_draw(&help);
-	drawable_stack_draw(&stack);
-	painter_present();
+	mlk_drawable_stack_draw(&stack);
+	mlk_painter_present();
 }
 
 static void
@@ -181,11 +181,11 @@ run(void)
 		.draw = draw
 	};
 
-	drawable_stack_init(&stack, drawables, UTIL_SIZE(drawables));
+	mlk_drawable_stack_init(&stack, drawables, UTIL_SIZE(drawables));
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

@@ -55,21 +55,21 @@ init(void)
 		panic();
 	if (window_open("Example - Notify", W, H) < 0)
 		panic();
-	if (image_openmem(&icon, assets_sword, sizeof (assets_sword)) < 0)
+	if (mlk_image_openmem(&icon, assets_images_sword, sizeof (assets_images_sword)) < 0)
 		panic();
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
-	case EVENT_KEYDOWN:
-		if (ev->key.key == KEY_SPACE)
+	case MLK_EVENT_KEYDOWN:
+		if (ev->key.key == MLK_KEY_SPACE)
 			notify(&icon, "Quest", "Quest finished.");
 		break;
 	default:
@@ -90,11 +90,11 @@ draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0xffffffff);
-	painter_clear();
+	mlk_painter_set_color(0xffffffff);
+	mlk_painter_clear();
 	label_draw(&help);
 	notify_draw();
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -106,9 +106,9 @@ run(void)
 		.draw = draw
 	};
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

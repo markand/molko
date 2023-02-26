@@ -56,13 +56,13 @@ quit(void)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	struct gridmenu *menu = st->data;
 
 	switch (ev->type) {
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		if (gridmenu_handle(st->data, ev))
@@ -74,10 +74,10 @@ handle(struct state *st, const union event *ev)
 static void
 draw(struct state *st)
 {
-	painter_set_color(0x4f8fbaff);
-	painter_clear();
+	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_clear();
 	gridmenu_draw(st->data);
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -115,9 +115,9 @@ run(void)
 
 	align(ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, W, H);
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 int

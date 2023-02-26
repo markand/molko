@@ -37,21 +37,21 @@
 struct self {
 	struct battle *battle;
 	struct character *target;
-	struct animation animation;
-	struct drawable drawable;
+	struct mlk_animation animation;
+	struct mlk_drawable drawable;
 	unsigned int selection;
 };
 
 static int
-update(struct drawable *dw, unsigned int ticks)
+update(struct mlk_drawable *dw, unsigned int ticks)
 {
 	struct self *self = dw->data;
 
-	return animation_update(&self->animation, ticks);
+	return mlk_animation_update(&self->animation, ticks);
 }
 
 static void
-draw(struct drawable *dw)
+draw(struct mlk_drawable *dw)
 {
 	const struct self *self = dw->data;
 	const struct battle_entity *et = self->battle->enemies[self->selection];
@@ -62,11 +62,11 @@ draw(struct drawable *dw)
 	    &x, &y, self->animation.sprite->cellw, self->animation.sprite->cellh,
 	    et->x, et->y, sprite->cellw, sprite->cellh);
 
-	animation_draw(&self->animation, x, y);
+	mlk_animation_draw(&self->animation, x, y);
 }
 
 static void
-end(struct drawable *dw)
+end(struct mlk_drawable *dw)
 {
 	struct self *self = dw->data;
 	struct character *ch = self->battle->enemies[self->selection]->ch;
@@ -84,7 +84,7 @@ end(struct drawable *dw)
 }
 
 static void
-finish(struct drawable *dw)
+finish(struct mlk_drawable *dw)
 {
 	free(dw->data);
 }
@@ -104,7 +104,7 @@ fire_action(struct battle *bt, struct character *owner, const struct selection *
 
 	(void)owner;
 
-	self = mlk_alloc_new0(sizeof (*self));
+	self = mlk_alloc_new0(1, sizeof (*self));
 	self->selection = slt->index_character;
 	self->battle = bt;
 	self->drawable.data = self;
@@ -113,8 +113,8 @@ fire_action(struct battle *bt, struct character *owner, const struct selection *
 	self->drawable.finish = finish;
 	self->drawable.end = end;
 
-	animation_init(&self->animation, &registry_sprites[REGISTRY_TEXTURE_EXPLOSION], 12);
-	animation_start(&self->animation);
+	mlk_animation_init(&self->animation, &registry_sprites[REGISTRY_TEXTURE_EXPLOSION], 12);
+	mlk_animation_start(&self->animation);
 
 	sound_play(&registry_sounds[REGISTRY_SOUND_FIRE]);
 	battle_state_rendering(bt, &self->drawable);

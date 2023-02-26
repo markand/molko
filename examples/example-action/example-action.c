@@ -53,11 +53,11 @@
 
 /* This is a stack of "parallel" events. */
 static struct mlk_action *events_actions[32];
-static struct action_stack events;
+static struct mlk_action_stack events;
 
 /* This is a stack of modal events. */
 static struct mlk_action *modal_actions[32];
-static struct action_stack modal;
+static struct mlk_action_stack modal;
 
 /* Maximum number of states. */
 static struct state *states[1];
@@ -218,7 +218,7 @@ guide_response_end(struct mlk_action *act)
 
 	message_action(&guide.msgs[index].msg, &guide.msgs[index].act);
 	message_query(&guide.msgs[index].msg, NULL, &guide.msgs[index].msg.h);
-	action_stack_add(&modal, &guide.msgs[index].act);
+	mlk_action_stack_add(&modal, &guide.msgs[index].act);
 }
 
 static void
@@ -240,20 +240,20 @@ guide_popup(void)
 	script_append(&guide.script, &guide.response);
 
 	script_action(&guide.script, &guide.script_act);
-	action_stack_add(&modal, &guide.script_act);
+	mlk_action_stack_add(&modal, &guide.script_act);
 }
 
 static void
-guide_handle(struct mlk_action *act, const union event *ev)
+guide_handle(struct mlk_action *act, const union mlk_event *ev)
 {
 	(void)act;
 
-	if (!action_stack_completed(&modal))
+	if (!mlk_action_stack_completed(&modal))
 		return;
 
 	switch (ev->type) {
-	case EVENT_CLICKDOWN:
-		if (maths_is_boxed(guide.x, guide.y,
+	case MLK_EVENT_CLICKDOWN:
+		if (mlk_maths_is_boxed(guide.x, guide.y,
 		    guide.sprite.cellw, guide.sprite.cellh,
 		    ev->click.x, ev->click.y))
 			guide_popup();
@@ -274,7 +274,7 @@ guide_draw(struct mlk_action *act)
 static void
 guide_init(void)
 {
-	if (image_openmem(&guide.image, assets_people, sizeof (assets_people)) < 0)
+	if (mlk_image_openmem(&guide.image, assets_sprites_people, sizeof (assets_sprites_people)) < 0)
 		panic();
 
 	sprite_init(&guide.sprite, &guide.image, 48, 48);
@@ -287,21 +287,21 @@ guide_init(void)
 }
 
 static void
-chest_handle(struct mlk_action *act, const union event *ev)
+chest_handle(struct mlk_action *act, const union mlk_event *ev)
 {
 	(void)act;
 
-	if (chest.opened || !action_stack_completed(&modal))
+	if (chest.opened || !mlk_action_stack_completed(&modal))
 		return;
 
 	switch (ev->type) {
-	case EVENT_CLICKDOWN:
-		if (maths_is_boxed(chest.x, chest.y, chest.sprite.cellw, chest.sprite.cellh,
+	case MLK_EVENT_CLICKDOWN:
+		if (mlk_maths_is_boxed(chest.x, chest.y, chest.sprite.cellw, chest.sprite.cellh,
 		    ev->click.x, ev->click.y)) {
 			chest.opened = 1;
 			message_action(&chest.msg, &chest.msg_act);
 			message_query(&chest.msg, NULL, &chest.msg.h);
-			action_stack_add(&modal, &chest.msg_act);
+			mlk_action_stack_add(&modal, &chest.msg_act);
 		}
 	default:
 		break;
@@ -322,7 +322,7 @@ chest_draw(struct mlk_action *act)
 static void
 chest_init(void)
 {
-	if (image_openmem(&chest.image, assets_chest, sizeof (assets_chest)) < 0)
+	if (mlk_image_openmem(&chest.image, assets_sprites_chest, sizeof (assets_sprites_chest)) < 0)
 		panic();
 
 	sprite_init(&chest.sprite, &chest.image, 32, 32);
@@ -346,17 +346,17 @@ init(void)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
-		action_stack_handle(&events, ev);
-		action_stack_handle(&modal, ev);
+		mlk_action_stack_handle(&events, ev);
+		mlk_action_stack_handle(&modal, ev);
 		break;
 	}
 }
@@ -366,8 +366,8 @@ update(struct state *st, unsigned int ticks)
 {
 	(void)st;
 
-	action_stack_update(&events, ticks);
-	action_stack_update(&modal, ticks);
+	mlk_action_stack_update(&events, ticks);
+	mlk_action_stack_update(&modal, ticks);
 }
 
 static void
@@ -375,11 +375,11 @@ draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0xffffffff);
-	painter_clear();
-	action_stack_draw(&events);
-	action_stack_draw(&modal);
-	painter_present();
+	mlk_painter_set_color(0xffffffff);
+	mlk_painter_clear();
+	mlk_action_stack_draw(&events);
+	mlk_action_stack_draw(&modal);
+	mlk_painter_present();
 }
 
 static void
@@ -391,15 +391,14 @@ run(void)
 		.draw = draw
 	};
 
-	action_stack_init(&modal, modal_actions, UTIL_SIZE(modal_actions));
+	mlk_action_stack_init(&modal, modal_actions, UTIL_SIZE(modal_actions));
+	mlk_action_stack_init(&events, events_actions, UTIL_SIZE(events_actions));
+	mlk_action_stack_add(&events, &chest.event);
+	mlk_action_stack_add(&events, &guide.event);
 
-	action_stack_init(&events, events_actions, UTIL_SIZE(events_actions));
-	action_stack_add(&events, &chest.event);
-	action_stack_add(&events, &guide.event);
-
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

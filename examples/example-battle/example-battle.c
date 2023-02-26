@@ -21,34 +21,34 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <core/alloc.h>
-#include <core/core.h>
-#include <core/event.h>
-#include <core/game.h>
-#include <core/image.h>
-#include <core/painter.h>
-#include <core/panic.h>
-#include <core/sprite.h>
-#include <core/state.h>
-#include <core/sys.h>
-#include <core/texture.h>
-#include <core/util.h>
-#include <core/window.h>
+#include <mlk/core/alloc.h>
+#include <mlk/core/core.h>
+#include <mlk/core/event.h>
+#include <mlk/core/game.h>
+#include <mlk/core/image.h>
+#include <mlk/core/painter.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/sprite.h>
+#include <mlk/core/state.h>
+#include <mlk/core/sys.h>
+#include <mlk/core/texture.h>
+#include <mlk/core/util.h>
+#include <mlk/core/window.h>
 
-#include <ui/align.h>
-#include <ui/label.h>
-#include <ui/theme.h>
-#include <ui/ui.h>
+#include <mlk/ui/align.h>
+#include <mlk/ui/label.h>
+#include <mlk/ui/theme.h>
+#include <mlk/ui/ui.h>
 
-#include <rpg/battle-bar-default.h>
-#include <rpg/battle-bar.h>
-#include <rpg/battle.h>
-#include <rpg/character.h>
-#include <rpg/rpg.h>
-#include <rpg/spell.h>
+#include <mlk/rpg/battle-bar-default.h>
+#include <mlk/rpg/battle-bar.h>
+#include <mlk/rpg/battle.h>
+#include <mlk/rpg/character.h>
+#include <mlk/rpg/rpg.h>
+#include <mlk/rpg/spell.h>
 
-#include "registry.h"
-#include "spell-fire.h"
+#include <mlk/example/registry.h>
+#include <mlk/example/spell-fire.h>
 
 #define W 1280
 #define H 720
@@ -186,11 +186,11 @@ static struct {
 	},
 };
 
-static struct drawable *drawables[16];
-static struct drawable_stack drawable_stack;
+static struct mlk_drawable *drawables[16];
+static struct mlk_drawable_stack drawable_stack;
 
-static struct action *actions[16];
-static struct action_stack action_stack;
+static struct mlk_action *actions[16];
+static struct mlk_action_stack action_stack;
 
 static struct battle_entity *entities_enemies[1];
 static struct battle_entity *entities_team[1];
@@ -201,8 +201,8 @@ static struct battle_bar bar;
 static void
 prepare_to_fight(void)
 {
-	action_stack_init(&action_stack, actions, UTIL_SIZE(actions));
-	drawable_stack_init(&drawable_stack, drawables, UTIL_SIZE(drawables));
+	mlk_action_stack_init(&action_stack, actions, UTIL_SIZE(actions));
+	mlk_drawable_stack_init(&drawable_stack, drawables, UTIL_SIZE(drawables));
 
 	battle_init(&bt);
 	battle_bar_default_init(&default_bar);
@@ -226,20 +226,20 @@ prepare_to_fight(void)
 	bt.effects = &drawable_stack;
 
 	battle_start(&bt);
-	game_push(&fight_state);
+	mlk_game_push(&fight_state);
 }
 
 static void
-empty_handle(struct state *st, const union event *ev)
+empty_handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
-	case EVENT_KEYDOWN:
-		if (ev->key.key == KEY_SPACE)
+	case MLK_EVENT_KEYDOWN:
+		if (ev->key.key == MLK_KEY_SPACE)
 			prepare_to_fight();
 		break;
 	default:
@@ -259,10 +259,10 @@ empty_draw(struct state *st)
 		.flags = LABEL_FLAGS_SHADOW
 	};
 
-	painter_set_color(0x4f8fbaff);
-	painter_clear();
+	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_clear();
 	label_draw(&info);
-	painter_present();
+	mlk_painter_present();
 }
 
 static struct state empty_state = {
@@ -271,7 +271,7 @@ static struct state empty_state = {
 };
 
 static void
-fight_handle(struct state *st, const union event *ev)
+fight_handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
@@ -284,7 +284,7 @@ fight_update(struct state *st, unsigned int ticks)
 	(void)st;
 
 	if (battle_update(&bt, ticks))
-		game_pop();
+		mlk_game_pop();
 }
 
 static void
@@ -292,10 +292,10 @@ fight_draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0x000000ff);
-	painter_clear();
+	mlk_painter_set_color(0x000000ff);
+	mlk_painter_clear();
 	battle_draw(&bt);
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -318,9 +318,9 @@ static struct state fight_state = {
 static void
 run(void)
 {
-	game_init(states, UTIL_SIZE(states));
-	game_push(&empty_state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&empty_state);
+	mlk_game_loop();
 }
 
 static void

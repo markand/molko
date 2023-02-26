@@ -69,33 +69,33 @@ init(void)
 		panic();
 	if (window_open("Example - Sprite", W, H) < 0)
 		panic();
-	if (image_openmem(&texture, assets_people, sizeof (assets_people)) < 0)
+	if (mlk_image_openmem(&texture, assets_sprites_people, sizeof (assets_sprites_people)) < 0)
 		panic();
 
 	sprite_init(&sprite, &texture, 48, 48);
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_KEYDOWN:
+	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
-		case KEY_LEFT:
+		case MLK_KEY_LEFT:
 			if (column > 0)
 				column--;
 			break;
-		case KEY_RIGHT:
+		case MLK_KEY_RIGHT:
 			if (column + 1 < sprite.ncols)
 				column++;
 			break;
-		case KEY_UP:
+		case MLK_KEY_UP:
 			if (row > 0)
 				row--;
 			break;
-		case KEY_DOWN:
+		case MLK_KEY_DOWN:
 			if (row + 1 < sprite.nrows)
 				row++;
 			break;
@@ -105,8 +105,8 @@ handle(struct state *st, const union event *ev)
 
 		changed();
 		break;
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		break;
@@ -120,12 +120,12 @@ draw(struct state *st)
 
 	int x, y;
 
-	painter_set_color(0xebede9ff);
-	painter_clear();
+	mlk_painter_set_color(0xebede9ff);
+	mlk_painter_clear();
 	align(ALIGN_CENTER, &x, &y, sprite.cellw, sprite.cellh, 0, 0, W, H);
 	sprite_draw(&sprite, row, column, x, y);
 	label_draw(&help);
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -138,9 +138,9 @@ run(void)
 
 	changed();
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

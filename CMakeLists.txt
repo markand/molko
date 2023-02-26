@@ -86,5 +86,6 @@ if (MLK_WITH_TESTS)
 endif ()
 
 if (MLK_WITH_EXAMPLES)
+	add_subdirectory(libmlk-example)
 	add_subdirectory(examples)
 endif ()

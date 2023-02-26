@@ -16,21 +16,21 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <core/core.h>
-#include <core/event.h>
-#include <core/game.h>
-#include <core/sys.h>
-#include <core/window.h>
-#include <core/painter.h>
-#include <core/panic.h>
-#include <core/state.h>
-#include <core/trace.h>
-#include <core/util.h>
+#include <mlk/core/core.h>
+#include <mlk/core/event.h>
+#include <mlk/core/game.h>
+#include <mlk/core/sys.h>
+#include <mlk/core/window.h>
+#include <mlk/core/painter.h>
+#include <mlk/core/panic.h>
+#include <mlk/core/state.h>
+#include <mlk/core/trace.h>
+#include <mlk/core/util.h>
 
-#include <ui/theme.h>
-#include <ui/ui.h>
+#include <mlk/ui/theme.h>
+#include <mlk/ui/ui.h>
 
-#include "trace_hud.h"
+#include <mlk/example/trace-hud.h>
 
 #define W 1280
 #define H 720
@@ -49,14 +49,14 @@ init(void)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_KEYDOWN:
+	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
-		case KEY_ESCAPE:
+		case MLK_KEY_ESCAPE:
 			trace_hud_clear();
 			break;
 		default:
@@ -64,11 +64,11 @@ handle(struct state *st, const union event *ev)
 			break;
 		}
 		break;
-	case EVENT_CLICKDOWN:
+	case MLK_EVENT_CLICKDOWN:
 		tracef("click at %d,%d", ev->click.x, ev->click.y);
 		break;
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		break;
@@ -88,10 +88,10 @@ draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0x4f8fbaff);
-	painter_clear();
+	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_clear();
 	trace_hud_draw();
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -103,9 +103,9 @@ run(void)
 		.draw = draw
 	};
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 }
 
 static void

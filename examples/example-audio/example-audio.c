@@ -39,7 +39,7 @@
 #define H       720
 
 static struct state *states[1];
-static struct music music;
+static struct mlk_music music;
 static struct sound sound;
 
 static struct label label_music = {
@@ -63,8 +63,8 @@ init(void)
 		panic();
 	if (window_open("Example - Audio", W, H) < 0)
 		panic();
-	if (music_openmem(&music, assets_vabsounds_romance, sizeof (assets_vabsounds_romance)) < 0 ||
-	    sound_openmem(&sound, assets_fire, sizeof (assets_fire)) < 0)
+	if (mlk_music_openmem(&music, assets_music_vabsounds_romance, sizeof (assets_music_vabsounds_romance)) < 0 ||
+	    sound_openmem(&sound, assets_sounds_fire, sizeof (assets_sounds_fire)) < 0)
 		panic();
 }
 
@@ -77,38 +77,38 @@ quit(void)
 }
 
 static void
-handle(struct state *st, const union event *ev)
+handle(struct state *st, const union mlk_event *ev)
 {
 	(void)st;
 
 	switch (ev->type) {
-	case EVENT_CLICKDOWN:
+	case MLK_EVENT_CLICKDOWN:
 		if (sound_play(&sound) < 0)
 			panic();
 		break;
-	case EVENT_KEYDOWN:
+	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
-		case KEY_p:
-			music_pause(&music);
+		case MLK_KEY_p:
+			mlk_music_pause(&music);
 			break;
-		case KEY_r:
-			music_resume(&music);
+		case MLK_KEY_r:
+			mlk_music_resume(&music);
 			break;
-		case KEY_q:
-			music_stop(&music);
+		case MLK_KEY_q:
+			mlk_music_stop(&music);
 			break;
-		case KEY_l:
-			music_play(&music, MUSIC_LOOP);
+		case MLK_KEY_l:
+			mlk_music_play(&music, MUSIC_LOOP);
 			break;
-		case KEY_SPACE:
-			music_play(&music, 0);
+		case MLK_KEY_SPACE:
+			mlk_music_play(&music, 0);
 			break;
 		default:
 			break;
 		}
 		break;
-	case EVENT_QUIT:
-		game_quit();
+	case MLK_EVENT_QUIT:
+		mlk_game_quit();
 		break;
 	default:
 		break;
@@ -120,11 +120,11 @@ draw(struct state *st)
 {
 	(void)st;
 
-	painter_set_color(0x006554ff);
-	painter_clear();
+	mlk_painter_set_color(0x006554ff);
+	mlk_painter_clear();
 	label_draw(&label_music);
 	label_draw(&label_sound);
-	painter_present();
+	mlk_painter_present();
 }
 
 static void
@@ -135,11 +135,11 @@ run(void)
 		.draw = draw
 	};
 
-	game_init(states, UTIL_SIZE(states));
-	game_push(&state);
-	game_loop();
+	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_push(&state);
+	mlk_game_loop();
 
-	music_finish(&music);
+	mlk_music_finish(&music);
 	sound_finish(&sound);
 }
 
