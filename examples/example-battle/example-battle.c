@@ -201,18 +201,18 @@ static struct battle_bar bar;
 static void
 prepare_to_fight(void)
 {
-	mlk_action_stack_init(&action_stack, actions, UTIL_SIZE(actions));
-	mlk_drawable_stack_init(&drawable_stack, drawables, UTIL_SIZE(drawables));
+	mlk_action_stack_init(&action_stack, actions, MLK_UTIL_SIZE(actions));
+	mlk_drawable_stack_init(&drawable_stack, drawables, MLK_UTIL_SIZE(drawables));
 
 	battle_init(&bt);
 	battle_bar_default_init(&default_bar);
 	battle_bar_default(&default_bar, &bar);
 
 	bt.team = entities_team;
-	bt.teamsz = UTIL_SIZE(entities_team);
+	bt.teamsz = MLK_UTIL_SIZE(entities_team);
 
 	bt.enemies = entities_enemies;
-	bt.enemiesz = UTIL_SIZE(entities_enemies);
+	bt.enemiesz = MLK_UTIL_SIZE(entities_enemies);
 
 	/* Black cat is near the previous monster. */
 	entities_team[0] = &entities[1].entity;
@@ -318,7 +318,7 @@ static struct mlk_state fight_state = {
 static void
 run(void)
 {
-	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&empty_state);
 	mlk_game_loop();
 }

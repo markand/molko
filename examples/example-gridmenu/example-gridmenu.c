@@ -110,12 +110,12 @@ run(void)
 		.draw = draw,
 	};
 
-	gridmenu_init(&menu, 3, 2, items, UTIL_SIZE(items));
+	gridmenu_init(&menu, 3, 2, items, MLK_UTIL_SIZE(items));
 	gridmenu_resize(&menu, 0, 0, 300, 100);
 
 	align(ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, W, H);
 
-	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

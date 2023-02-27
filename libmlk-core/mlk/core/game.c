@@ -122,7 +122,7 @@ mlk_game_loop(void)
 		 * a little to save CPU cycles.
 		 */
 		if ((elapsed = mlk_clock_elapsed(&clock)) < frametime)
-			util_delay(frametime - elapsed);
+			mlk_util_delay(frametime - elapsed);
 
 		elapsed = mlk_clock_elapsed(&clock);
 	}

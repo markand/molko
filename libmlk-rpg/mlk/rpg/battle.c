@@ -101,7 +101,7 @@ random_select(struct battle_entity **group, size_t groupsz)
 	struct battle_entity *ret = NULL, *et = NULL;
 
 	do {
-		et = group[util_nrand(0, groupsz - 1)];
+		et = group[mlk_util_nrand(0, groupsz - 1)];
 
 		if (et && et->ch)
 			ret = et;

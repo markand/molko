@@ -27,7 +27,7 @@ test_basics_nrand(void)
 
 	/* Only try from [2..5], util_nrand does not include upper range. */
 	for (int i = 0; i < 100000; ++i)
-		found[util_nrand(2, 6)] = 1;
+		found[mlk_util_nrand(2, 6)] = 1;
 
 	DT_ASSERT(!found[0]);
 	DT_ASSERT(!found[1]);

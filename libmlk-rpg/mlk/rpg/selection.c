@@ -28,7 +28,7 @@ static void
 random(struct selection *slt, struct battle_entity **entities, size_t entitiesz)
 {
 	do {
-		slt->index_character = util_nrand(0, entitiesz);
+		slt->index_character = mlk_util_nrand(0, entitiesz);
 	} while (!battle_entity_ok(entities[slt->index_character]));
 }
 

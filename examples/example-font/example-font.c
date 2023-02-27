@@ -72,7 +72,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 				ci--;
 			break;
 		case MLK_KEY_RIGHT:
-			if ((size_t)ci < UTIL_SIZE(colors))
+			if ((size_t)ci < MLK_UTIL_SIZE(colors))
 				ci++;
 			break;
 		case MLK_KEY_SPACE:
@@ -121,7 +121,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

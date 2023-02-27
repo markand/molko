@@ -111,7 +111,7 @@ init(void)
 	if (window_open("Example - Label", W, H) < 0)
 		mlk_panic();
 
-	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
+	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i) {
 		struct label *l = &table[i].label;
 		unsigned int w, h;
 
@@ -154,7 +154,7 @@ draw(struct mlk_state *st)
 	mlk_painter_set_color(0x4f8fbaff);
 	mlk_painter_clear();
 
-	for (size_t i = 0; i < UTIL_SIZE(table); ++i)
+	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i)
 		label_draw(&table[i].label);
 
 	label_draw(&mlabel);
@@ -169,7 +169,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

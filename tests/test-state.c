@@ -204,7 +204,7 @@ test_basics_game(void)
 	};
 
 	/* 0 becomes active and should start. */
-	mlk_game_init(mainstates, UTIL_SIZE(mainstates));
+	mlk_game_init(mainstates, MLK_UTIL_SIZE(mainstates));
 	mlk_game_push(&states[0].state);
 
 	DT_EQ_UINT(states[0].inv.start, 1U);

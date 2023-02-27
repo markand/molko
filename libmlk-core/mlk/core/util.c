@@ -27,13 +27,13 @@
 #include "util.h"
 
 void
-util_delay(unsigned int ms)
+mlk_util_delay(unsigned int ms)
 {
 	SDL_Delay(ms);
 }
 
 const char *
-util_pathf(const char *fmt, ...)
+mlk_util_pathf(const char *fmt, ...)
 {
 	static char path[PATH_MAX];
 	va_list ap;
@@ -46,7 +46,7 @@ util_pathf(const char *fmt, ...)
 }
 
 unsigned int
-util_nrand(unsigned int lower, unsigned int upper)
+mlk_util_nrand(unsigned int lower, unsigned int upper)
 {
 	assert(upper <= RAND_MAX);
 

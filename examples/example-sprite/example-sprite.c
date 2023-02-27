@@ -138,7 +138,7 @@ run(void)
 
 	changed();
 
-	mlk_game_init(states, UTIL_SIZE(states));
+	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

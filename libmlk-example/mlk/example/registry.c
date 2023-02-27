@@ -84,7 +84,7 @@ static const struct {
 static void
 load_images(void)
 {
-	for (size_t i = 0; i < UTIL_SIZE(images); ++i) {
+	for (size_t i = 0; i < MLK_UTIL_SIZE(images); ++i) {
 		struct mlk_texture *texture = &registry_images[images[i].index];
 
 		if (mlk_image_openmem(texture, images[i].data, images[i].datasz) < 0)
@@ -95,7 +95,7 @@ load_images(void)
 static void
 load_textures_and_sprites(void)
 {
-	for (size_t i = 0; i < UTIL_SIZE(textures); ++i) {
+	for (size_t i = 0; i < MLK_UTIL_SIZE(textures); ++i) {
 		struct mlk_texture *texture = &registry_textures[textures[i].index];
 		struct mlk_sprite *sprite = &registry_sprites[textures[i].index];
 
@@ -112,7 +112,7 @@ load_textures_and_sprites(void)
 static void
 load_sounds(void)
 {
-	for (size_t i = 0; i < UTIL_SIZE(sounds); ++i) {
+	for (size_t i = 0; i < MLK_UTIL_SIZE(sounds); ++i) {
 		struct mlk_sound *sound = &registry_sounds[sounds[i].index];
 
 		if (mlk_sound_openmem(sound, sounds[i].data, sounds[i].datasz) < 0)
@@ -131,10 +131,10 @@ registry_init(void)
 void
 registry_finish(void)
 {
-	for (size_t i = 0; i < UTIL_SIZE(registry_images); ++i)
+	for (size_t i = 0; i < MLK_UTIL_SIZE(registry_images); ++i)
 		mlk_texture_finish(&registry_images[i]);
-	for (size_t i = 0; i < UTIL_SIZE(registry_textures); ++i)
+	for (size_t i = 0; i < MLK_UTIL_SIZE(registry_textures); ++i)
 		mlk_texture_finish(&registry_textures[i]);
-	for (size_t i = 0; i < UTIL_SIZE(registry_sounds); ++i)
+	for (size_t i = 0; i < MLK_UTIL_SIZE(registry_sounds); ++i)
 		mlk_sound_finish(&registry_sounds[i]);
 }

@@ -50,7 +50,7 @@ exec(struct save *db, const char *sql)
 static const char *
 path(unsigned int idx)
 {
-	return util_pathf("%s%u.db", mlk_sys_dir(MLK_SYS_DIR_SAVE), idx);
+	return mlk_util_pathf("%s%u.db", mlk_sys_dir(MLK_SYS_DIR_SAVE), idx);
 }
 
 static int
@@ -71,7 +71,7 @@ verify(struct save *db)
 	};
 
 	/* Ensure create and update dates are present. */
-	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
+	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i) {
 		if (property_load(&table[i].prop, db) < 0) {
 			sqlite3_close(db->handle);
 			return errorf("database not initialized correctly");

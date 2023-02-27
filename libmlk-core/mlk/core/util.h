@@ -21,18 +21,18 @@
 
 #include "core.h"
 
-#define UTIL_SIZE(x) sizeof ((x)) / sizeof ((x)[0])
+#define MLK_UTIL_SIZE(x) (sizeof ((x)) / sizeof ((x)[0]))
 
 MLK_CORE_BEGIN_DECLS
 
 void
-util_delay(unsigned int);
+mlk_util_delay(unsigned int);
 
 const char *
-util_pathf(const char *, ...);
+mlk_util_pathf(const char *, ...);
 
 unsigned int
-util_nrand(unsigned int, unsigned int);
+mlk_util_nrand(unsigned int, unsigned int);
 
 MLK_CORE_END_DECLS
 

@@ -211,7 +211,7 @@ parse_line(struct context *ctx, const char *line)
 		{ "layer",      parse_layer             },
 	};
 
-	for (size_t i = 0; i < UTIL_SIZE(props); ++i)
+	for (size_t i = 0; i < MLK_UTIL_SIZE(props); ++i)
 		if (strncmp(line, props[i].property, strlen(props[i].property)) == 0)
 			return props[i].read(ctx, line);
 

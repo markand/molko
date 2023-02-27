@@ -371,7 +371,7 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 		.h = geo->h
 	});
 
-	for (size_t i = 0; i < UTIL_SIZE(buttons); ++i) {
+	for (size_t i = 0; i < MLK_UTIL_SIZE(buttons); ++i) {
 		buttons[i].label.theme = theme;
 
 		label_query(&buttons[i].label, &buttons[i].w, &buttons[i].h);

@@ -44,7 +44,7 @@ test_basics_load(struct save *save)
 		.name = "0001-getting-started",
 		.description = "Initial quest for adventurer.",
 		.steps = steps,
-		.stepsz = UTIL_SIZE(steps)
+		.stepsz = MLK_UTIL_SIZE(steps)
 	};
 
 	DT_EQ_INT(quest_save(&quest, save), 0);
