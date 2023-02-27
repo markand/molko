@@ -20,67 +20,45 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "action-script.h"
 #include "action.h"
 #include "err.h"
-#include "script.h"
 
-static struct mlk_action *
-current(struct script *s)
+static inline struct mlk_action *
+current(struct mlk_action_script *s)
 {
-	if (s->cur >= s->actionsz)
+	if (s->cur >= s->size)
 		return NULL;
 
 	return s->actions[s->cur];
 }
 
-static void
-handle(struct mlk_action *a, const union mlk_event *ev)
-{
-	script_handle(a->data, ev);
-}
-
-static int
-update(struct mlk_action *a, unsigned int ticks)
-{
-	return script_update(a->data, ticks);
-}
-
-static void
-draw(struct mlk_action *a)
-{
-	script_draw(a->data);
-}
-
-static void
-finish(struct mlk_action *a)
-{
-	script_finish(a->data);
-}
-
 void
-script_init(struct script *s)
+mlk_action_script_init(struct mlk_action_script *s, struct mlk_action **actions, size_t max)
 {
 	assert(s);
-
-	memset(s, 0, sizeof (*s));
+	
+	s->actions = actions;
+	s->max = max;
+	s->size = s->cur = 0;
 }
 
 int
-script_append(struct script *s, struct mlk_action *a)
+mlk_action_script_append(struct mlk_action_script *s, struct mlk_action *a)
 {
 	assert(s);
 	assert(a);
 
-	if (s->actionsz >= SCRIPT_ACTION_MAX)
+	if (s->size >= s->max)
 		return MLK_ERR_NO_MEM;
 
-	s->actions[s->actionsz++] = a;
+	s->actions[s->size++] = a;
 
 	return 0;
 }
 
 void
-script_handle(struct script *s, const union mlk_event *ev)
+mlk_action_script_handle(struct mlk_action_script *s, const union mlk_event *ev)
 {
 	assert(s);
 	assert(ev);
@@ -92,13 +70,14 @@ script_handle(struct script *s, const union mlk_event *ev)
 }
 
 int
-script_update(struct script *s, unsigned int ticks)
+mlk_action_script_update(struct mlk_action_script *s, unsigned int ticks)
 {
 	assert(s);
 
-	struct mlk_action *a = current(s);
+	struct mlk_action *a;
 
-	if (!a)
+	/* No action left means completed. */
+	if (!(a = current(s)))
 		return 1;
 
 	if (mlk_action_update(a, ticks)) {
@@ -106,49 +85,33 @@ script_update(struct script *s, unsigned int ticks)
 		s->cur++;
 	}
 
-	return s->cur >= s->actionsz;
+	return s->cur >= s->size;
 }
 
 void
-script_draw(struct script *s)
+mlk_action_script_draw(struct mlk_action_script *s)
 {
 	assert(s);
 
-	struct mlk_action *a = current(s);
+	struct mlk_action *a;
 
-	if (a)
+	if ((a = current(s)))
 		mlk_action_draw(a);
 }
 
 int
-script_completed(const struct script *s)
+mlk_action_script_completed(const struct mlk_action_script *s)
 {
 	assert(s);
 
-	return s->cur >= s->actionsz;
+	return s->cur >= s->size;
 }
 
 void
-script_finish(struct script *s)
+mlk_action_script_finish(struct mlk_action_script *s)
 {
 	assert(s);
 
-	for (size_t i = 0; i < s->actionsz; ++i)
+	for (size_t i = 0; i < s->size; ++i)
 		mlk_action_finish(s->actions[i]);
-
-	memset(s, 0, sizeof (*s));
-}
-
-void
-script_action(struct script *s, struct mlk_action *action)
-{
-	assert(s);
-	assert(action);
-
-	memset(action, 0, sizeof (*action));
-	action->data = s;
-	action->handle = handle;
-	action->update = update;
-	action->draw = draw;
-	action->finish = finish;
 }

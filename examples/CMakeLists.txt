@@ -20,7 +20,6 @@ project(examples)
 
 set(
 	DIRS
-	example-action
 	example-animation
 	example-audio
 	example-battle

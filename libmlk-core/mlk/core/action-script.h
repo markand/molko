@@ -16,51 +16,47 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_SCRIPT_H
-#define MLK_CORE_SCRIPT_H
+#ifndef MLK_CORE_ACTION_SCRIPT_H
+#define MLK_CORE_ACTION_SCRIPT_H
 
 #include <stddef.h>
 
 #include "core.h"
 
-#define SCRIPT_ACTION_MAX (128)
-
 struct mlk_action;
 
 union mlk_event;
 
-struct script {
-	struct mlk_action *actions[SCRIPT_ACTION_MAX];
-	size_t actionsz;
+struct mlk_action_script {
+	struct mlk_action **actions;
+	size_t size;
+	size_t max;
 	size_t cur;
 };
 
 MLK_CORE_BEGIN_DECLS
 
 void
-script_init(struct script *);
+mlk_action_script_init(struct mlk_action_script *, struct mlk_action **, size_t);
 
 int
-script_append(struct script *, struct mlk_action *);
+mlk_action_script_append(struct mlk_action_script *, struct mlk_action *);
 
 void
-script_handle(struct script *, const union mlk_event *);
+mlk_action_script_handle(struct mlk_action_script *, const union mlk_event *);
 
 int
-script_update(struct script *, unsigned int);
+mlk_action_script_update(struct mlk_action_script *, unsigned int);
 
 void
-script_draw(struct script *);
+mlk_action_script_draw(struct mlk_action_script *);
 
 int
-script_completed(const struct script *);
+mlk_action_script_completed(const struct mlk_action_script *);
 
 void
-script_finish(struct script *);
-
-void
-script_action(struct script *s, struct mlk_action *);
+mlk_action_script_finish(struct mlk_action_script *);
 
 MLK_CORE_END_DECLS
 
-#endif /* !MLK_CORE_SCRIPT_H */
+#endif /* !MLK_CORE_ACTION_SCRIPT_H */

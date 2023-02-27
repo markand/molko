@@ -17,8 +17,9 @@
  */
 
 #include <mlk/core/action.h>
+#include <mlk/core/err.h>
 #include <mlk/core/event.h>
-#include <mlk/core/script.h>
+#include <mlk/core/action-script.h>
 
 #include <dt.h>
 
@@ -88,39 +89,50 @@ my_finish(struct mlk_action *act)
 static void
 test_basics_init(void)
 {
-	struct script sc;
+	struct mlk_action_script sc;
+	struct mlk_action *actions[10];
 
-	script_init(&sc);
+	mlk_action_script_init(&sc, actions, 10);
 
-	DT_EQ_UINT(sc.actionsz, 0U);
-	DT_EQ_UINT(sc.cur, 0U);
+	DT_EQ_SIZE(sc.size, 0U);
+	DT_EQ_SIZE(sc.max, 10U);
+	DT_EQ_SIZE(sc.cur, 0U);
 }
 
 static void
 test_basics_append(void)
 {
-	struct mlk_action act[3] = {0};
-	struct script sc = {0};
+	struct mlk_action actions[4] = {0};
+	struct mlk_action *array[3] = {0};
+	struct mlk_action_script sc = {0};
 
-	DT_ASSERT(script_append(&sc, &act[0]) == 0);
-	DT_EQ_UINT(sc.cur, 0U);
-	DT_EQ_UINT(sc.actionsz, 1U);
-	DT_EQ_PTR(sc.actions[0], &act[0]);
+	mlk_action_script_init(&sc, array, 3);
 
-	DT_ASSERT(script_append(&sc, &act[1]) == 0);
-	DT_EQ_UINT(sc.cur, 0U);
-	DT_EQ_UINT(sc.actionsz, 2U);
-	DT_EQ_PTR(sc.actions[0], &act[0]);
-	DT_EQ_PTR(sc.actions[1], &act[1]);
+	DT_ASSERT(mlk_action_script_append(&sc, &actions[0]) == 0);
+	DT_EQ_SIZE(sc.size, 1U);
+	DT_EQ_SIZE(sc.max, 3U);
+	DT_EQ_SIZE(sc.cur, 0U);
+	DT_EQ_PTR(sc.actions[0], &actions[0]);
 
-	DT_ASSERT(script_append(&sc, &act[2]) == 0);
-	DT_EQ_UINT(sc.cur, 0U);
-	DT_EQ_UINT(sc.actionsz, 3U);
-	DT_EQ_PTR(sc.actions[0], &act[0]);
-	DT_EQ_PTR(sc.actions[1], &act[1]);
-	DT_EQ_PTR(sc.actions[2], &act[2]);
+	DT_ASSERT(mlk_action_script_append(&sc, &actions[1]) == 0);
+	DT_EQ_SIZE(sc.size, 2U);
+	DT_EQ_SIZE(sc.max, 3U);
+	DT_EQ_SIZE(sc.cur, 0U);
+	DT_EQ_PTR(sc.actions[0], &actions[0]);
+	DT_EQ_PTR(sc.actions[1], &actions[1]);
 
-	script_finish(&sc);
+	DT_ASSERT(mlk_action_script_append(&sc, &actions[2]) == 0);
+	DT_EQ_SIZE(sc.size, 3U);
+	DT_EQ_SIZE(sc.max, 3U);
+	DT_EQ_SIZE(sc.cur, 0U);
+	DT_EQ_PTR(sc.actions[0], &actions[0]);
+	DT_EQ_PTR(sc.actions[1], &actions[1]);
+	DT_EQ_PTR(sc.actions[2], &actions[2]);
+
+	/* This can not fit. */
+	DT_ASSERT(mlk_action_script_append(&sc, &actions[3]) == MLK_ERR_NO_MEM);
+
+	mlk_action_script_finish(&sc);
 }
 
 static void
@@ -135,14 +147,17 @@ test_basics_handle(void)
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
 
-	struct script sc = {0};
+	struct mlk_action array[3] = {0};
+	struct mlk_action_script sc = {0};
 
-	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
+	mlk_action_script_init(&sc, array, 3);
+
+	DT_ASSERT(mlk_action_script_append(&sc, &table[0].act) == 0);
+	DT_ASSERT(mlk_action_script_append(&sc, &table[1].act) == 0);
+	DT_ASSERT(mlk_action_script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
-	script_handle(&sc, &(union mlk_event){0});
+	mlk_action_script_handle(&sc, &(union mlk_event){0});
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 0);
 	DT_EQ_INT(table[0].inv.draw, 0);
@@ -160,8 +175,8 @@ test_basics_handle(void)
 	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* [0] -> [1] */
-	DT_ASSERT(!script_update(&sc, 0));
-	script_handle(&sc, &(union mlk_event){0});
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
+	mlk_action_script_handle(&sc, &(union mlk_event){0});
 
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 1);
@@ -180,8 +195,8 @@ test_basics_handle(void)
 	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* [2] */
-	DT_ASSERT(!script_update(&sc, 0));
-	script_handle(&sc, &(union mlk_event){0});
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
+	mlk_action_script_handle(&sc, &(union mlk_event){0});
 
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 1);
@@ -198,6 +213,8 @@ test_basics_handle(void)
 	DT_EQ_INT(table[2].inv.draw, 0);
 	DT_EQ_INT(table[2].inv.end, 0);
 	DT_EQ_INT(table[2].inv.finish, 0);
+
+	mlk_action_script_finish(&sc);
 }
 
 static void
@@ -212,14 +229,17 @@ test_basics_update(void)
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
 
-	struct script sc = {0};
+	struct mlk_action array[3];
+	struct mlk_action_script sc = {0};
 
-	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
+	mlk_action_script_init(&sc, array, 3);
+
+	DT_ASSERT(mlk_action_script_append(&sc, &table[0].act) == 0);
+	DT_ASSERT(mlk_action_script_append(&sc, &table[1].act) == 0);
+	DT_ASSERT(mlk_action_script_append(&sc, &table[2].act) == 0);
 
 	/* 0 -> 1 */
-	DT_ASSERT(!script_update(&sc, 0));
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 0);
@@ -237,7 +257,7 @@ test_basics_update(void)
 	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* 1 -> 2 */
-	DT_ASSERT(!script_update(&sc, 0));
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 0);
@@ -255,9 +275,9 @@ test_basics_update(void)
 	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* 2 stays, it never ends. */
-	DT_ASSERT(!script_update(&sc, 0));
-	DT_ASSERT(!script_update(&sc, 0));
-	DT_ASSERT(!script_update(&sc, 0));
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 0);
@@ -276,7 +296,7 @@ test_basics_update(void)
 
 	/* Now, change its update function to complete the script. */
 	table[2].act.update = my_update_true;
-	DT_ASSERT(script_update(&sc, 0));
+	DT_ASSERT(mlk_action_script_update(&sc, 0));
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 0);
@@ -292,6 +312,8 @@ test_basics_update(void)
 	DT_EQ_INT(table[2].inv.draw, 0);
 	DT_EQ_INT(table[2].inv.end, 1);
 	DT_EQ_INT(table[2].inv.finish, 0);
+
+	mlk_action_script_finish(&sc);
 }
 
 static void
@@ -306,14 +328,17 @@ test_basics_draw(void)
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
 
-	struct script sc = {0};
+	struct mlk_action array[3];
+	struct mlk_action_script sc = {0};
 
-	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
+	mlk_action_script_init(&sc, array, 3);
+
+	DT_ASSERT(mlk_action_script_append(&sc, &table[0].act) == 0);
+	DT_ASSERT(mlk_action_script_append(&sc, &table[1].act) == 0);
+	DT_ASSERT(mlk_action_script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
-	script_draw(&sc);
+	mlk_action_script_draw(&sc);
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 0);
 	DT_EQ_INT(table[0].inv.draw, 1);
@@ -331,8 +356,8 @@ test_basics_draw(void)
 	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* [0] -> [1] */
-	DT_ASSERT(!script_update(&sc, 0));
-	script_draw(&sc);
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
+	mlk_action_script_draw(&sc);
 
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
@@ -351,8 +376,8 @@ test_basics_draw(void)
 	DT_EQ_INT(table[2].inv.finish, 0);
 
 	/* [2] */
-	DT_ASSERT(!script_update(&sc, 0));
-	script_draw(&sc);
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
+	mlk_action_script_draw(&sc);
 
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
@@ -383,16 +408,19 @@ test_basics_finish(void)
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
 
-	struct script sc = {0};
+	struct mlk_action array[3];
+	struct mlk_action_script sc = {0};
 
-	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
+	mlk_action_script_init(&sc, array, 3);
+
+	DT_ASSERT(mlk_action_script_append(&sc, &table[0].act) == 0);
+	DT_ASSERT(mlk_action_script_append(&sc, &table[1].act) == 0);
+	DT_ASSERT(mlk_action_script_append(&sc, &table[2].act) == 0);
 
 	/* Update once so that the current action goes to 1. */
-	DT_ASSERT(!script_update(&sc, 0));
+	DT_ASSERT(!mlk_action_script_update(&sc, 0));
 
-	script_finish(&sc);
+	mlk_action_script_finish(&sc);
 
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
@@ -411,131 +439,6 @@ test_basics_finish(void)
 	DT_EQ_INT(table[2].inv.finish, 1);
 }
 
-static void
-test_action_simple(void)
-{
-	struct {
-		struct invokes inv;
-		struct mlk_action act;
-	} table[] = {
-		{ .act = INIT(&table[0].inv, my_update_true)    },
-		{ .act = INIT(&table[1].inv, my_update_true)    },
-		{ .act = INIT(&table[2].inv, my_update_false)   }
-	};
-
-	struct script sc = {0};
-	struct mlk_action act;
-
-	DT_ASSERT(script_append(&sc, &table[0].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[1].act) == 0);
-	DT_ASSERT(script_append(&sc, &table[2].act) == 0);
-
-	/* Now convert this script into an action itself. */
-	script_action(&sc, &act);
-
-	/* Draw and input before updating. */
-	mlk_action_handle(&act, &(union mlk_event){0});
-	mlk_action_draw(&act);
-
-	/* [0] -> [1] */
-	DT_ASSERT(!mlk_action_update(&act, 0));
-	DT_EQ_INT(table[0].inv.handle, 1);
-	DT_EQ_INT(table[0].inv.update, 1);
-	DT_EQ_INT(table[0].inv.draw, 1);
-	DT_EQ_INT(table[0].inv.end, 1);
-	DT_EQ_INT(table[0].inv.finish, 0);
-	DT_EQ_INT(table[1].inv.handle, 0);
-	DT_EQ_INT(table[1].inv.update, 0);
-	DT_EQ_INT(table[1].inv.draw, 0);
-	DT_EQ_INT(table[1].inv.end, 0);
-	DT_EQ_INT(table[1].inv.finish, 0);
-	DT_EQ_INT(table[2].inv.handle, 0);
-	DT_EQ_INT(table[2].inv.update, 0);
-	DT_EQ_INT(table[2].inv.draw, 0);
-	DT_EQ_INT(table[2].inv.end, 0);
-	DT_EQ_INT(table[2].inv.finish, 0);
-
-	mlk_action_handle(&act, &(union mlk_event){0});
-	mlk_action_draw(&act);
-
-	/* [1] -> [2] */
-	DT_ASSERT(!mlk_action_update(&act, 0));
-	DT_EQ_INT(table[0].inv.handle, 1);
-	DT_EQ_INT(table[0].inv.update, 1);
-	DT_EQ_INT(table[0].inv.draw, 1);
-	DT_EQ_INT(table[0].inv.end, 1);
-	DT_EQ_INT(table[0].inv.finish, 0);
-	DT_EQ_INT(table[1].inv.handle, 1);
-	DT_EQ_INT(table[1].inv.update, 1);
-	DT_EQ_INT(table[1].inv.draw, 1);
-	DT_EQ_INT(table[1].inv.end, 1);
-	DT_EQ_INT(table[1].inv.finish, 0);
-	DT_EQ_INT(table[2].inv.handle, 0);
-	DT_EQ_INT(table[2].inv.update, 0);
-	DT_EQ_INT(table[2].inv.draw, 0);
-	DT_EQ_INT(table[2].inv.end, 0);
-	DT_EQ_INT(table[2].inv.finish, 0);
-
-	mlk_action_handle(&act, &(union mlk_event){0});
-	mlk_action_draw(&act);
-
-	/* 2 stays, it never ends. */
-	DT_ASSERT(!mlk_action_update(&act, 0));
-	DT_ASSERT(!mlk_action_update(&act, 0));
-	DT_ASSERT(!mlk_action_update(&act, 0));
-	DT_EQ_INT(table[0].inv.handle, 1);
-	DT_EQ_INT(table[0].inv.update, 1);
-	DT_EQ_INT(table[0].inv.draw, 1);
-	DT_EQ_INT(table[0].inv.end, 1);
-	DT_EQ_INT(table[0].inv.finish, 0);
-	DT_EQ_INT(table[1].inv.handle, 1);
-	DT_EQ_INT(table[1].inv.update, 1);
-	DT_EQ_INT(table[1].inv.draw, 1);
-	DT_EQ_INT(table[1].inv.end, 1);
-	DT_EQ_INT(table[1].inv.finish, 0);
-	DT_EQ_INT(table[2].inv.handle, 1);
-	DT_EQ_INT(table[2].inv.update, 3);
-	DT_EQ_INT(table[2].inv.draw, 1);
-	DT_EQ_INT(table[2].inv.end, 0);
-	DT_EQ_INT(table[2].inv.finish, 0);
-
-	table[2].act.update = my_update_true;
-	DT_ASSERT(mlk_action_update(&act, 0));
-	DT_EQ_INT(table[0].inv.handle, 1);
-	DT_EQ_INT(table[0].inv.update, 1);
-	DT_EQ_INT(table[0].inv.draw, 1);
-	DT_EQ_INT(table[0].inv.end, 1);
-	DT_EQ_INT(table[0].inv.finish, 0);
-	DT_EQ_INT(table[1].inv.handle, 1);
-	DT_EQ_INT(table[1].inv.update, 1);
-	DT_EQ_INT(table[1].inv.draw, 1);
-	DT_EQ_INT(table[1].inv.end, 1);
-	DT_EQ_INT(table[1].inv.finish, 0);
-	DT_EQ_INT(table[2].inv.handle, 1);
-	DT_EQ_INT(table[2].inv.update, 4);
-	DT_EQ_INT(table[2].inv.draw, 1);
-	DT_EQ_INT(table[2].inv.end, 1);
-	DT_EQ_INT(table[2].inv.finish, 0);
-
-	/* Also dispose resources. */
-	mlk_action_finish(&act);
-	DT_EQ_INT(table[0].inv.handle, 1);
-	DT_EQ_INT(table[0].inv.update, 1);
-	DT_EQ_INT(table[0].inv.draw, 1);
-	DT_EQ_INT(table[0].inv.end, 1);
-	DT_EQ_INT(table[0].inv.finish, 1);
-	DT_EQ_INT(table[1].inv.handle, 1);
-	DT_EQ_INT(table[1].inv.update, 1);
-	DT_EQ_INT(table[1].inv.draw, 1);
-	DT_EQ_INT(table[1].inv.end, 1);
-	DT_EQ_INT(table[1].inv.finish, 1);
-	DT_EQ_INT(table[2].inv.handle, 1);
-	DT_EQ_INT(table[2].inv.update, 4);
-	DT_EQ_INT(table[2].inv.draw, 1);
-	DT_EQ_INT(table[2].inv.end, 1);
-	DT_EQ_INT(table[2].inv.finish, 1);
-}
-
 int
 main(void)
 {
@@ -545,6 +448,5 @@ main(void)
 	DT_RUN(test_basics_update);
 	DT_RUN(test_basics_draw);
 	DT_RUN(test_basics_finish);
-	DT_RUN(test_action_simple);
 	DT_SUMMARY();
 }

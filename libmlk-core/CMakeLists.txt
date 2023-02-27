@@ -20,6 +20,8 @@ project(libmlk-core)
 
 set(
 	SOURCES
+	${libmlk-core_SOURCE_DIR}/mlk/core/action-script.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/action-script.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/action-stack.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/action-stack.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/action.c
@@ -60,8 +62,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/painter.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/panic.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/panic.h
-	${libmlk-core_SOURCE_DIR}/mlk/core/script.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/script.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/sound.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/sound.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/sprite.c
