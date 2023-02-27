@@ -32,7 +32,7 @@ struct mlk_music {
 	void *handle;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 mlk_music_open(struct mlk_music *, const char *);
@@ -58,6 +58,6 @@ mlk_music_stop(struct mlk_music *);
 void
 mlk_music_finish(struct mlk_music *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_MUSIC_H */

@@ -31,7 +31,7 @@ struct sprite {
 	unsigned int ncols;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 sprite_init(struct sprite *, struct texture *, unsigned int, unsigned int);
@@ -51,6 +51,6 @@ sprite_scale(const struct sprite *,
              unsigned int,
              unsigned int);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_SPRITE_H */

@@ -47,7 +47,7 @@ struct selection {
 	unsigned int index_side;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 selection_first(struct selection *, const struct battle *);
@@ -55,6 +55,6 @@ selection_first(struct selection *, const struct battle *);
 void
 selection_random(struct selection *, const struct battle *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_SELECTION_H */

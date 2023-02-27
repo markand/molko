@@ -93,7 +93,7 @@ test_error_image(void)
 int
 main(void)
 {
-	if (core_init("fr.malikania", "test") < 0 || window_open("test-tileset", 100, 100) < 0)
+	if (mlk_core_init("fr.malikania", "test") < 0 || window_open("test-tileset", 100, 100) < 0)
 		return 1;
 
 	DT_RUN(test_basics_sample);

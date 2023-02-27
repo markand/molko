@@ -29,7 +29,7 @@ struct battle_message {
 	unsigned int elapsed;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 battle_message_update(struct battle_message *, unsigned int);
@@ -37,6 +37,6 @@ battle_message_update(struct battle_message *, unsigned int);
 void
 battle_message_draw(const struct battle_message *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_BATTLE_MESSAGE_H */

@@ -20,21 +20,21 @@
 #define MLK_CORE_CORE_H
 
 #if defined(__cplusplus)
-#       define CORE_BEGIN_DECLS extern "C" {
-#       define CORE_END_DECLS }
+#       define MLK_CORE_BEGIN_DECLS extern "C" {
+#       define MLK_CORE_END_DECLS }
 #else
-#       define CORE_BEGIN_DECLS
-#       define CORE_END_DECLS
+#       define MLK_CORE_BEGIN_DECLS
+#       define MLK_CORE_END_DECLS
 #endif
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
-core_init(const char *, const char *);
+mlk_core_init(const char *, const char *);
 
 void
-core_finish(void);
+mlk_core_finish(void);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_CORE_H */

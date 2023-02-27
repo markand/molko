@@ -28,7 +28,7 @@ struct mlk_drawable_stack {
 	size_t objectsz;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 mlk_drawable_stack_init(struct mlk_drawable_stack *, struct mlk_drawable **, size_t);
@@ -48,6 +48,6 @@ mlk_drawable_stack_completed(const struct mlk_drawable_stack *);
 void
 mlk_drawable_stack_finish(struct mlk_drawable_stack *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_DRAWABLE_STACK_H */

@@ -21,7 +21,7 @@
 
 #include "core.h"
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 enum mlk_gamepad_button {
 	MLK_GAMEPAD_BUTTON_UNKNOWN,
@@ -75,6 +75,6 @@ mlk_gamepad_iter_begin(struct mlk_gamepad_iter *);
 int
 mlk_gamepad_iter_next(struct mlk_gamepad_iter *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_GAMEPAD_H */

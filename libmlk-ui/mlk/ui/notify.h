@@ -41,7 +41,7 @@ struct notify_system {
 	void (*draw)(const struct notify *, size_t);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 notify(const struct texture *, const char *, const char *);
@@ -55,6 +55,6 @@ notify_draw(void);
 void
 notify_set_system(const struct notify_system *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /*! MLK_UI_NOTIFY_H */

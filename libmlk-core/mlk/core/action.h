@@ -32,7 +32,7 @@ struct mlk_action {
 	void (*finish)(struct mlk_action *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 mlk_action_handle(struct mlk_action *, const union mlk_event *);
@@ -49,6 +49,6 @@ mlk_action_end(struct mlk_action *);
 void
 mlk_action_finish(struct mlk_action *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_ACTION_H */

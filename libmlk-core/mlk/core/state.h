@@ -35,7 +35,7 @@ struct state {
 	void (*finish)(struct state *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 state_start(struct state *);
@@ -61,6 +61,6 @@ state_end(struct state *);
 void
 state_finish(struct state *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_STATE_H */

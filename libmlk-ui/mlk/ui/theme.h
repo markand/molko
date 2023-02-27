@@ -60,7 +60,7 @@ struct theme {
 	void (*draw_checkbox)(const struct theme *t, const struct checkbox *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 theme_init(void);
@@ -86,6 +86,6 @@ theme_draw_checkbox(const struct theme *, const struct checkbox *);
 void
 theme_finish(void);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_UI_THEME_H */

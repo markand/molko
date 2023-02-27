@@ -41,7 +41,7 @@ enum window_cursor {
 
 extern struct window window;
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 window_open(const char *, unsigned int, unsigned int);
@@ -52,6 +52,6 @@ window_set_cursor(enum window_cursor);
 void
 window_finish(void);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_WINDOW_H */

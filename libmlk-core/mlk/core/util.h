@@ -23,7 +23,7 @@
 
 #define UTIL_SIZE(x) sizeof ((x)) / sizeof ((x)[0])
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 util_delay(unsigned int);
@@ -34,6 +34,6 @@ util_pathf(const char *, ...);
 unsigned int
 util_nrand(unsigned int, unsigned int);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_UTIL_H */

@@ -25,7 +25,7 @@ struct mlk_clock {
 	unsigned int ticks;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 mlk_clock_start(struct mlk_clock *);
@@ -33,6 +33,6 @@ mlk_clock_start(struct mlk_clock *);
 unsigned int
 mlk_clock_elapsed(const struct mlk_clock *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_CLOCK_H */

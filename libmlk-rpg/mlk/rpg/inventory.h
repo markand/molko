@@ -34,7 +34,7 @@ struct inventory {
 	struct inventory_slot items[INVENTORY_ITEM_MAX];
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 inventory_add(struct inventory *, const struct item *, unsigned int);
@@ -42,6 +42,6 @@ inventory_add(struct inventory *, const struct item *, unsigned int);
 void
 inventory_consume(struct inventory *, const struct item *, unsigned int);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_INVENTORY_H */

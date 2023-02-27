@@ -32,7 +32,7 @@ struct mlk_action_stack {
 	size_t actionsz;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 mlk_action_stack_init(struct mlk_action_stack *, struct mlk_action **, size_t);
@@ -55,6 +55,6 @@ mlk_action_stack_completed(const struct mlk_action_stack *);
 void
 mlk_action_stack_finish(struct mlk_action_stack *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_ACTION_STACK_H */

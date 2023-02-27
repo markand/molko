@@ -41,7 +41,7 @@ struct button {
 	const struct theme *theme;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 button_handle(struct button *, const union mlk_event *);
@@ -55,6 +55,6 @@ button_draw_default(const struct theme *, const struct button *);
 void
 button_draw(const struct button *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_UI_BUTTON_H */

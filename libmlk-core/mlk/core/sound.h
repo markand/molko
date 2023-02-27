@@ -32,7 +32,7 @@ struct sound {
 	int channel;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 sound_open(struct sound *, const char *);
@@ -61,6 +61,6 @@ sound_stop(struct sound *);
 void
 sound_finish(struct sound *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_SOUND_H */

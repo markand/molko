@@ -37,7 +37,7 @@ struct battle_indicator {
 	struct texture tex[2];
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 battle_indicator_start(struct battle_indicator *);
@@ -57,6 +57,6 @@ battle_indicator_draw(const struct battle_indicator *, int, int);
 void
 battle_indicator_finish(struct battle_indicator *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_BATTLE_INDICATOR_H */

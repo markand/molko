@@ -98,7 +98,7 @@ struct map {
 	struct map_layer layers[MAP_LAYER_TYPE_NUM];
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 map_init(struct map *map);
@@ -115,6 +115,6 @@ map_draw(const struct map *map);
 void
 map_finish(struct map *map);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_MAP_H */

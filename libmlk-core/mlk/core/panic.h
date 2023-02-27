@@ -26,7 +26,7 @@
 extern void (*panic_handler)(void);
 extern void *panic_data;
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 panicf(const char *, ...);
@@ -37,6 +37,6 @@ panicva(const char *, va_list);
 void
 panic(void);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_PANIC_H */

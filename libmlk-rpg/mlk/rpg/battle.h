@@ -86,7 +86,7 @@ struct battle {
 	struct battle_bar *bar;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 battle_init(struct battle *);
@@ -148,6 +148,6 @@ battle_draw(const struct battle *);
 void
 battle_finish(struct battle *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* MLK_RPG_BATTLE_H */

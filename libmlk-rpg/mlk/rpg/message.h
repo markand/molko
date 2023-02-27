@@ -63,7 +63,7 @@ struct message {
 	double scale;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 message_start(struct message *msg);
@@ -86,6 +86,6 @@ message_hide(struct message *msg);
 void
 message_action(struct message *msg, struct mlk_action *act);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_MESSAGE_H */

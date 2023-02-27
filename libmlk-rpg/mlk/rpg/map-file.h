@@ -40,7 +40,7 @@ struct map_file {
 	struct mlk_alloc_pool blocks;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 map_file_open(struct map_file *file, struct map *map, const char *path);
@@ -48,6 +48,6 @@ map_file_open(struct map_file *file, struct map *map, const char *path);
 void
 map_file_finish(struct map_file *file);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_MAP_FILE_H */

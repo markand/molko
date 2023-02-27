@@ -36,7 +36,7 @@ struct battle_state {
 	void (*finish)(struct battle_state *, struct battle *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 battle_state_handle(struct battle_state *, struct battle *, const union mlk_event *);
@@ -50,6 +50,6 @@ battle_state_draw(const struct battle_state *, const struct battle *);
 void
 battle_state_finish(struct battle_state *, struct battle *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_BATTLE_STATE_H */

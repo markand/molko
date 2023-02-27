@@ -36,7 +36,7 @@ enum texture_blend {
 	TEXTURE_BLEND_LAST
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 texture_new(struct texture *, unsigned int, unsigned int);
@@ -71,6 +71,6 @@ texture_scale(const struct texture *,
 void
 texture_finish(struct texture *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_TEXTURE_H */

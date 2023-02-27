@@ -28,7 +28,7 @@
 extern void (*trace_handler)(const char *);
 extern void *trace_data;
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 tracef(const char *, ...);
@@ -36,6 +36,6 @@ tracef(const char *, ...);
 void
 traceva(const char *, va_list);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_TRACE_H */

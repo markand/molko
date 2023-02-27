@@ -34,7 +34,7 @@ struct checkbox {
 	const struct theme *theme;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 checkbox_draw_default(const struct theme *, const struct checkbox *);
@@ -45,6 +45,6 @@ checkbox_handle(struct checkbox *, const union mlk_event *);
 void
 checkbox_draw(const struct checkbox *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_UI_CHECKBOX_H */

@@ -38,7 +38,7 @@ struct label {
 	const struct theme *theme;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 label_draw_default(const struct theme *, const struct label *);
@@ -52,6 +52,6 @@ label_query(const struct label *, unsigned int *, unsigned int *);
 void
 label_draw(const struct label *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_UI_LABEL_H */

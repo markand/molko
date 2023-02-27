@@ -32,7 +32,7 @@ struct mlk_animation {
 	unsigned int elapsed;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 mlk_animation_init(struct mlk_animation *, const struct sprite *, unsigned int);
@@ -52,6 +52,6 @@ mlk_animation_draw(const struct mlk_animation *, int, int);
 void
 mlk_animation_drawable(struct mlk_animation *, struct mlk_drawable *, int, int);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_ANIMATION_H */

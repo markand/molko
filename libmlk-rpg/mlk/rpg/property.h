@@ -31,7 +31,7 @@ struct property {
 	char value[PROPERTY_VALUE_MAX + 1];
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 property_save(const struct property *, struct save *);
@@ -42,6 +42,6 @@ property_load(struct property *, struct save *);
 int
 property_remove(struct property *, struct save *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_PROPERTY_H */

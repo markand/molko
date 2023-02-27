@@ -27,7 +27,7 @@ enum sys_dir {
 	SYS_DIR_SAVE
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 sys_init(const char *, const char *);
@@ -41,6 +41,6 @@ sys_mkdir(const char *);
 void
 sys_finish(void);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_SYS_H */

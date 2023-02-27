@@ -38,7 +38,7 @@ struct quest {
 	size_t stepsz;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 quest_save(struct quest *, struct save *);
@@ -46,6 +46,6 @@ quest_save(struct quest *, struct save *);
 int
 quest_load(struct quest *, struct save *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_QUEST_H */

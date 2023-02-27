@@ -84,7 +84,7 @@ struct character {
 	void (*exec)(struct character *owner, struct battle *bt);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 character_ok(const struct character *ch);
@@ -104,6 +104,6 @@ character_save(const struct character *ch, struct save *s);
 int
 character_load(struct character *, struct save *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_CHARACTER_H */

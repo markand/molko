@@ -25,7 +25,7 @@
 #include "sys.h"
 
 int
-core_init(const char *organization, const char *name)
+mlk_core_init(const char *organization, const char *name)
 {
 	assert(organization);
 	assert(name);
@@ -39,7 +39,7 @@ core_init(const char *organization, const char *name)
 }
 
 void
-core_finish(void)
+mlk_core_finish(void)
 {
 	sys_finish();
 }

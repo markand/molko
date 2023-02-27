@@ -23,7 +23,7 @@
 
 #include "core.h"
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 const char *
 error(void);
@@ -34,6 +34,6 @@ errorf(const char *, ...);
 int
 errorva(const char *, va_list);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_ERROR_H */

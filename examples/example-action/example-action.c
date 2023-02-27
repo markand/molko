@@ -336,7 +336,7 @@ chest_init(void)
 static void
 init(void)
 {
-	if (core_init("fr.malikania", "example-action") < 0 || ui_init() < 0 || rpg_init() < 0)
+	if (mlk_core_init("fr.malikania", "example-action") < 0 || ui_init() < 0 || rpg_init() < 0)
 		panic();
 	if (window_open("Example - Action", W, H) < 0)
 		panic();
@@ -407,7 +407,7 @@ quit(void)
 	window_finish();
 	rpg_finish();
 	ui_finish();
-	core_finish();
+	mlk_core_finish();
 }
 
 int

@@ -25,7 +25,7 @@
 
 struct texture;
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 mlk_image_open(struct texture *, const char *);
@@ -33,6 +33,6 @@ mlk_image_open(struct texture *, const char *);
 int
 mlk_image_openmem(struct texture *, const void *, size_t);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_IMAGE_H */

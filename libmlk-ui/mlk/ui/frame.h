@@ -37,7 +37,7 @@ struct frame {
 	const struct theme *theme;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 frame_draw_default(const struct theme *, const struct frame *);
@@ -45,6 +45,6 @@ frame_draw_default(const struct theme *, const struct frame *);
 void
 frame_draw(const struct frame *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_UI_FRAME_H */

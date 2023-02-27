@@ -39,7 +39,7 @@ struct mlk_alloc_pool {
 	void (*finalizer)(void *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 /* allocator functions. */
 void
@@ -85,6 +85,6 @@ mlk_alloc_pool_shrink(struct mlk_alloc_pool *);
 void
 mlk_alloc_pool_finish(struct mlk_alloc_pool *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_ALLOC_H */

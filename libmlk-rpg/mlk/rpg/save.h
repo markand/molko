@@ -45,7 +45,7 @@ enum save_stmt_errno {
 	SAVE_STMT_ERROR
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 save_open(struct save *, unsigned int, enum save_mode);
@@ -82,6 +82,6 @@ save_tx_rollback(struct save *);
 void
 save_tx_commit(struct save *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_SAVE_H */

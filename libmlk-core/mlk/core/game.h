@@ -37,7 +37,7 @@ struct mlk_game {
 
 extern struct mlk_game game;
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 mlk_game_init(struct state **, size_t);
@@ -63,6 +63,6 @@ mlk_game_loop(void);
 void
 mlk_game_quit(void);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_GAME_H */

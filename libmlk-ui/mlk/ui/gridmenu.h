@@ -48,7 +48,7 @@ struct gridmenu {
 	unsigned int spaceh;    /* and vertically */
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 gridmenu_init(struct gridmenu *, unsigned int, unsigned int, const char * const *, size_t);
@@ -62,6 +62,6 @@ gridmenu_handle(struct gridmenu *, const union mlk_event *);
 void
 gridmenu_draw(const struct gridmenu *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_UI_GRIDMENU_H */

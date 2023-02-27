@@ -21,7 +21,7 @@
 
 #include <mlk/core/core.h>
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 ui_init(void);
@@ -29,6 +29,6 @@ ui_init(void);
 void
 ui_finish(void);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_UI_UI_H */

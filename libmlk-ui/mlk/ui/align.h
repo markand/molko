@@ -34,7 +34,7 @@ enum align {
 	ALIGN_LEFT
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 align(enum align,
@@ -47,6 +47,6 @@ align(enum align,
       unsigned int,
       unsigned int);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_UI_ALIGN_H */

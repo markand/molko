@@ -36,7 +36,7 @@ struct battle_bar {
 	void (*finish)(struct battle_bar *, struct battle *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 battle_bar_start(struct battle_bar *, struct battle *);
@@ -56,6 +56,6 @@ battle_bar_draw(const struct battle_bar *, const struct battle *);
 void
 battle_bar_finish(struct battle_bar *, struct battle *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_BATTLE_BAR_H */

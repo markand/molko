@@ -51,7 +51,7 @@ struct spell {
 	void (*use)(struct character *, const struct selection *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 spell_select(const struct spell *, const struct battle *, struct selection *);
@@ -62,6 +62,6 @@ spell_action(const struct spell *, struct battle *, struct character *, const st
 void
 spell_use(struct spell *, struct character *, const struct selection *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_SPELL_H */

@@ -37,7 +37,7 @@ struct debug_report {
 	unsigned int count;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 extern struct debug_options debug_options;
 
@@ -48,6 +48,6 @@ debugf(struct debug_report *, const char *, ...);
 void
 debugva(struct debug_report *, const char *, va_list);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_UI_DEBUG_H */

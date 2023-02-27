@@ -31,7 +31,7 @@ struct mlk_drawable {
 	void (*finish)(struct mlk_drawable *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 mlk_drawable_update(struct mlk_drawable *, unsigned int);
@@ -45,6 +45,6 @@ mlk_drawable_end(struct mlk_drawable *);
 void
 mlk_drawable_finish(struct mlk_drawable *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_DRAWABLE_H */

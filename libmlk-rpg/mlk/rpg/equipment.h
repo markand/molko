@@ -53,7 +53,7 @@ struct equipment {
 	void (*equip)(const struct equipment *, struct character *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 equipment_ok(const struct equipment *);
@@ -61,6 +61,6 @@ equipment_ok(const struct equipment *);
 void
 equipment_equip(const struct equipment *, struct character *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_EQUIPMENT_H */

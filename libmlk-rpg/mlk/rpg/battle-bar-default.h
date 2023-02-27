@@ -59,7 +59,7 @@ struct battle_bar_default {
 	struct gridmenu grid;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 battle_bar_default_init(struct battle_bar_default *);
@@ -88,6 +88,6 @@ battle_bar_default_finish(struct battle_bar_default *);
 void
 battle_bar_default(struct battle_bar_default *, struct battle_bar *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_BATTLE_BAR_DEFAULT_H */

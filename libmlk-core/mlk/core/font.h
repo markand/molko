@@ -36,7 +36,7 @@ struct mlk_font {
 	void *handle;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 mlk_font_open(struct mlk_font *, const char *, unsigned int);
@@ -59,6 +59,6 @@ mlk_font_query(const struct mlk_font *, const char *, unsigned int *, unsigned i
 void
 mlk_font_finish(struct mlk_font *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_FONT_H */

@@ -31,7 +31,7 @@ struct battle_entity_state {
 	void (*finish)(struct battle_entity_state *, struct battle_entity *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 battle_entity_state_update(struct battle_entity_state *, struct battle_entity *, unsigned int);
@@ -42,6 +42,6 @@ battle_entity_state_draw(const struct battle_entity_state *, const struct battle
 void
 battle_entity_state_finish(struct battle_entity_state *, struct battle_entity *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_BATTLE_ENTITY_STATE_H */

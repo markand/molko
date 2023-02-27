@@ -35,7 +35,7 @@ struct script {
 	size_t cur;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 script_init(struct script *);
@@ -61,6 +61,6 @@ script_finish(struct script *);
 void
 script_action(struct script *s, struct mlk_action *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_SCRIPT_H */

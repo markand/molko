@@ -77,11 +77,11 @@ union mlk_event {
 	struct mlk_event_axis axis;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 mlk_event_poll(union mlk_event *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_CORE_EVENT_H */

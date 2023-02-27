@@ -36,7 +36,7 @@ struct tileset_file {
 	struct sprite sprite;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 tileset_file_open(struct tileset_file *, struct tileset *, const char *);
@@ -44,6 +44,6 @@ tileset_file_open(struct tileset_file *, struct tileset *, const char *);
 void
 tileset_file_finish(struct tileset_file *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_TILESET_FILE_H */

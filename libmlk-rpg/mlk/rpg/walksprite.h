@@ -60,7 +60,7 @@ struct walksprite {
 	unsigned int elapsed;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 walksprite_init(struct walksprite *, struct sprite *, unsigned int);
@@ -74,6 +74,6 @@ walksprite_update(struct walksprite *, unsigned int);
 void
 walksprite_draw(const struct walksprite *, unsigned int, int, int);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_WALKSPRITE_H */

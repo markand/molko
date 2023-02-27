@@ -46,7 +46,7 @@ struct tileset {
 	struct sprite *sprite;
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 int
 tileset_ok(const struct tileset *);
@@ -60,6 +60,6 @@ tileset_update(struct tileset *, unsigned int);
 void
 tileset_draw(const struct tileset *, unsigned int, unsigned int, int, int);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_TILESET_H */

@@ -38,7 +38,7 @@ struct item {
 	                    struct character *);
 };
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 void
 item_exec_menu(const struct item *, struct character *);
@@ -49,6 +49,6 @@ item_exec_battle(const struct item *,
                  struct character *,
                  struct character *);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #endif /* !MLK_RPG_ITEM_H */

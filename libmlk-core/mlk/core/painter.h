@@ -23,7 +23,7 @@
 
 struct texture;
 
-CORE_BEGIN_DECLS
+MLK_CORE_BEGIN_DECLS
 
 struct texture *
 mlk_painter_get_target(void);
@@ -55,7 +55,7 @@ mlk_painter_clear(void);
 void
 mlk_painter_present(void);
 
-CORE_END_DECLS
+MLK_CORE_END_DECLS
 
 #define MLK_PAINTER_BEGIN(tex)                                          \
 do {                                                                    \
