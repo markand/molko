@@ -68,10 +68,10 @@ mlk_font_render(struct mlk_font *font, struct texture *tex, const char *text, un
 	assert(text);
 
 	SDL_Color fg = {
-		.r = COLOR_R(color),
-		.g = COLOR_G(color),
-		.b = COLOR_B(color),
-		.a = COLOR_A(color)
+		.r = MLK_COLOR_R(color),
+		.g = MLK_COLOR_G(color),
+		.b = MLK_COLOR_B(color),
+		.a = MLK_COLOR_A(color)
 	};
 	SDL_Surface *surface;
 	SDL_Surface *(*func)(TTF_Font *, const char *, SDL_Color);

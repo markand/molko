@@ -47,7 +47,7 @@ mlk_painter_get_color(void)
 
 	SDL_GetRenderDrawColor(RENDERER(), &r, &g, &b, &a);
 
-	return COLOR_HEX(r, g, b, a);
+	return MLK_COLOR_HEX(r, g, b, a);
 }
 
 void
@@ -55,10 +55,10 @@ mlk_painter_set_color(unsigned long color)
 {
 	SDL_SetRenderDrawColor(
 		RENDERER(),
-		COLOR_R(color),
-		COLOR_G(color),
-		COLOR_B(color),
-		COLOR_A(color)
+		MLK_COLOR_R(color),
+		MLK_COLOR_G(color),
+		MLK_COLOR_B(color),
+		MLK_COLOR_A(color)
 	);
 }
 

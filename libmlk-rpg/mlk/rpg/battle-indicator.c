@@ -43,9 +43,9 @@ static inline int
 colored(const struct battle_indicator *bti)
 {
 	/* Only check r, g, b and ignore alpha. */
-	return COLOR_R(bti->cur) == COLOR_R(bti->color) &&
-	       COLOR_G(bti->cur) == COLOR_G(bti->color) &&
-	       COLOR_B(bti->cur) == COLOR_B(bti->color);
+	return MLK_COLOR_R(bti->cur) == MLK_COLOR_R(bti->color) &&
+	       MLK_COLOR_G(bti->cur) == MLK_COLOR_G(bti->color) &&
+	       MLK_COLOR_B(bti->cur) == MLK_COLOR_B(bti->color);
 }
 
 void
@@ -93,10 +93,10 @@ battle_indicator_update(struct battle_indicator *bti, unsigned int ticks)
 
 		if (!colored(bti)) {
 			/* Update colors first. */
-			bti->cur = COLOR_HEX(
-			    inc(COLOR_R(bti->cur), COLOR_R(bti->color)),
-			    inc(COLOR_G(bti->cur), COLOR_G(bti->color)),
-			    inc(COLOR_B(bti->cur), COLOR_B(bti->color)),
+			bti->cur = MLK_COLOR_HEX(
+			    inc(MLK_COLOR_R(bti->cur), MLK_COLOR_R(bti->color)),
+			    inc(MLK_COLOR_G(bti->cur), MLK_COLOR_G(bti->color)),
+			    inc(MLK_COLOR_B(bti->cur), MLK_COLOR_B(bti->color)),
 			    255
 			);
 

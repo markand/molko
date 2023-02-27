@@ -90,7 +90,7 @@ texture_set_color_mod(struct texture *tex, unsigned long color)
 {
 	assert(texture_ok(tex));
 
-	if (SDL_SetTextureColorMod(tex->handle, COLOR_R(color), COLOR_G(color), COLOR_B(color)) < 0)
+	if (SDL_SetTextureColorMod(tex->handle, MLK_COLOR_R(color), MLK_COLOR_G(color), MLK_COLOR_B(color)) < 0)
 		return errorf("%s", SDL_GetError());
 
 	return 0;

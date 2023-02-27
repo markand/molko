@@ -19,14 +19,15 @@
 #ifndef MLK_CORE_COLOR_H
 #define MLK_CORE_COLOR_H
 
-#define COLOR_R(c)              (c >> 24 & 0xff)
-#define COLOR_G(c)              (c >> 16 & 0xff)
-#define COLOR_B(c)              (c >> 8  & 0xff)
-#define COLOR_A(c)              (c       & 0xff)
-#define COLOR_HEX(r, g, b, a)   \
-        ((r << 24 & 0xff000000) | \
-         (g << 16 & 0x00ff0000) | \
-         (b << 8  & 0x0000ff00) | \
-         (a       & 0x000000ff))
+#define MLK_COLOR_R(c)                  ((c >> 24) & 0xff)
+#define MLK_COLOR_G(c)                  ((c >> 16) & 0xff)
+#define MLK_COLOR_B(c)                  ((c >> 8) & 0xff)
+#define MLK_COLOR_A(c)                  ((c) & 0xff)
+
+#define MLK_COLOR_HEX(r, g, b, a)       \
+        (((r << 24) & 0xff000000) |     \
+         ((g << 16) & 0x00ff0000) |     \
+         ((b << 8)  & 0x0000ff00) |     \
+         ((a)       & 0x000000ff))
 
 #endif /* !MLK_CORE_COLOR_H */
