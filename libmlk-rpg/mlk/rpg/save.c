@@ -50,7 +50,7 @@ exec(struct save *db, const char *sql)
 static const char *
 path(unsigned int idx)
 {
-	return util_pathf("%s%u.db", sys_dir(SYS_DIR_SAVE), idx);
+	return util_pathf("%s%u.db", mlk_sys_dir(MLK_SYS_DIR_SAVE), idx);
 }
 
 static int
