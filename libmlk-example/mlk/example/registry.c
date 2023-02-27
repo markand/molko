@@ -28,6 +28,7 @@
 #include <assets/images/haunted-wood.h>
 
 #include <assets/sounds/fire.h>
+#include <assets/sounds/open-chest.h>
 
 #include <assets/sprites/chest.h>
 #include <assets/sprites/explosion.h>
@@ -80,7 +81,8 @@ static const struct {
 	const unsigned char *data;
 	size_t datasz;
 } sounds[] = {
-	REGISTRY_SOUND(REGISTRY_SOUND_FIRE, assets_sounds_fire)
+	REGISTRY_SOUND(REGISTRY_SOUND_FIRE, assets_sounds_fire),
+	REGISTRY_SOUND(REGISTRY_SOUND_OPEN_CHEST, assets_sounds_open_chest)
 };
 
 static void

@@ -52,6 +52,7 @@ enum registry_image {
 
 enum registry_sound {
 	REGISTRY_SOUND_FIRE,
+	REGISTRY_SOUND_OPEN_CHEST,
 	REGISTRY_SOUND_LAST
 };
 

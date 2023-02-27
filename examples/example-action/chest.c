@@ -20,6 +20,7 @@
 
 #include <mlk/core/event.h>
 #include <mlk/core/maths.h>
+#include <mlk/core/sound.h>
 #include <mlk/core/sprite.h>
 
 #include <mlk/example/registry.h>
@@ -51,7 +52,9 @@ handle(struct mlk_action *act, const union mlk_event *ev)
 	if (!mlk_maths_is_boxed(chest->x, chest->y, cw, ch, ev->click.x, ev->click.y))
 		return;
 
+	mlk_sound_play(&registry_sounds[REGISTRY_SOUND_OPEN_CHEST]);
 	mlk_animation_start(&chest->animation);
+
 	chest->state = CHEST_STATE_OPENING;
 }
 
