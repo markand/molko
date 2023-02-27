@@ -31,10 +31,10 @@
 #       include <alc.h>
 #endif
 
-extern ALCdevice *audio_dev;
-extern ALCcontext *audio_ctx;
+extern ALCdevice *mlk__audio_dev;
+extern ALCcontext *mlk__audio_ctx;
 
-struct audiostream {
+struct mlk__audiostream {
 	short *samples;
 	ALsizei samplesz;
 	ALsizei samplerate;
@@ -44,12 +44,12 @@ struct audiostream {
 };
 
 int
-audiostream_open(struct audiostream **, const char *);
+mlk__audiostream_open(struct mlk__audiostream **, const char *);
 
 int
-audiostream_openmem(struct audiostream **, const void *, size_t);
+mlk__audiostream_openmem(struct mlk__audiostream **, const void *, size_t);
 
 void
-audiostream_finish(struct audiostream *);
+mlk__audiostream_finish(struct mlk__audiostream *);
 
 #endif /* !MLK_CORE_SYS_P_H */

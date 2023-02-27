@@ -23,23 +23,23 @@
 
 #include "core.h"
 
-enum sys_dir {
-	SYS_DIR_SAVE
+enum mlk_sys_dir {
+	MLK_SYS_DIR_SAVE
 };
 
 MLK_CORE_BEGIN_DECLS
 
 int
-sys_init(const char *, const char *);
+mlk_sys_init(const char *, const char *);
 
 const char *
-sys_dir(enum sys_dir);
+mlk_sys_dir(enum mlk_sys_dir);
 
 int
-sys_mkdir(const char *);
+mlk_sys_mkdir(const char *);
 
 void
-sys_finish(void);
+mlk_sys_finish(void);
 
 MLK_CORE_END_DECLS
 

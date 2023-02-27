@@ -48,8 +48,8 @@
 #include "sys.h"
 #include "sys_p.h"
 
-ALCdevice *audio_dev = NULL;
-ALCcontext *audio_ctx = NULL;
+ALCdevice *mlk__audio_dev = NULL;
+ALCcontext *mlk__audio_ctx = NULL;
 
 static struct {
 	char organization[128];
@@ -76,7 +76,7 @@ normalize(char *str)
 }
 
 static const char *
-user_directory(enum sys_dir kind)
+user_directory(enum mlk_sys_dir kind)
 {
 	/* Kept for future use. */
 	(void)kind;
@@ -171,7 +171,7 @@ sndfile_to_err(int e)
 }
 
 int
-sys_init(const char *organization, const char *name)
+mlk_sys_init(const char *organization, const char *name)
 {
 #if defined(__MINGW64__)
 	/* On MinGW buffering leads to painful debugging. */
@@ -198,24 +198,24 @@ sys_init(const char *organization, const char *name)
 	putenv("ALSOFT_LOGLEVEL=0");
 #endif
 
-	if (!(audio_dev = alcOpenDevice(NULL)))
+	if (!(mlk__audio_dev = alcOpenDevice(NULL)))
 		return errorf("unable to create audio device");
-	if (!(audio_ctx = alcCreateContext(audio_dev, NULL)))
+	if (!(mlk__audio_ctx = alcCreateContext(mlk__audio_dev, NULL)))
 		return errorf("unable to create audio context");
 
-	alcMakeContextCurrent(audio_ctx);
+	alcMakeContextCurrent(mlk__audio_ctx);
 
 	return 0;
 }
 
 const char *
-sys_dir(enum sys_dir kind)
+mlk_sys_dir(enum mlk_sys_dir kind)
 {
 	return user_directory(kind);
 }
 
 int
-sys_mkdir(const char *directory)
+mlk_sys_mkdir(const char *directory)
 {
 	char path[PATH_MAX], *p;
 
@@ -248,7 +248,7 @@ sys_mkdir(const char *directory)
 }
 
 void
-sys_finish(void)
+mlk_sys_finish(void)
 {
 	TTF_Quit();
 	IMG_Quit();
@@ -256,20 +256,20 @@ sys_finish(void)
 
 	alcMakeContextCurrent(NULL);
 
-	if (audio_ctx) {
-		alcDestroyContext(audio_ctx);
-		audio_ctx = NULL;
+	if (mlk__audio_ctx) {
+		alcDestroyContext(mlk__audio_ctx);
+		mlk__audio_ctx = NULL;
 	}
-	if (audio_dev) {
-		alcCloseDevice(audio_dev);
-		audio_dev = NULL;
+	if (mlk__audio_dev) {
+		alcCloseDevice(mlk__audio_dev);
+		mlk__audio_dev = NULL;
 	}
 }
 
 static int
-create_audiostream(struct audiostream **ptr, SNDFILE *file, const SF_INFO *info)
+create_audiostream(struct mlk__audiostream **ptr, SNDFILE *file, const SF_INFO *info)
 {
-	struct audiostream *stream;
+	struct mlk__audiostream *stream;
 	int ret = 0;
 
 	stream = mlk_alloc_new(1, sizeof (*stream));
@@ -301,7 +301,7 @@ create_audiostream(struct audiostream **ptr, SNDFILE *file, const SF_INFO *info)
 }
 
 int
-audiostream_open(struct audiostream **stream, const char *path)
+mlk__audiostream_open(struct mlk__audiostream **stream, const char *path)
 {
 	assert(path);
 
@@ -315,7 +315,7 @@ audiostream_open(struct audiostream **stream, const char *path)
 }
 
 int
-audiostream_openmem(struct audiostream **stream, const void *data, size_t datasz)
+mlk__audiostream_openmem(struct mlk__audiostream **stream, const void *data, size_t datasz)
 {
 	assert(data);
 
@@ -339,7 +339,7 @@ audiostream_openmem(struct audiostream **stream, const void *data, size_t datasz
 }
 
 void
-audiostream_finish(struct audiostream *s)
+mlk__audiostream_finish(struct mlk__audiostream *s)
 {
 	assert(s);
 

@@ -32,7 +32,7 @@ mlk_core_init(const char *organization, const char *name)
 
 	srand(time(NULL));
 
-	if (sys_init(organization, name) < 0)
+	if (mlk_sys_init(organization, name) < 0)
 		return -1;
 
 	return 0;
@@ -41,5 +41,5 @@ mlk_core_init(const char *organization, const char *name)
 void
 mlk_core_finish(void)
 {
-	sys_finish();
+	mlk_sys_finish();
 }

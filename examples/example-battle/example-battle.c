@@ -329,7 +329,7 @@ quit(void)
 	registry_finish();
 	theme_finish();
 	window_finish();
-	sys_finish();
+	mlk_sys_finish();
 }
 
 int

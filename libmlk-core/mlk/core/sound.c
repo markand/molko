@@ -24,7 +24,7 @@
 #include "sound.h"
 #include "sys_p.h"
 
-#define SOURCE(snd) ((const struct audiostream *)snd->handle)->source
+#define SOURCE(snd) ((const struct mlk__audiostream *)snd->handle)->source
 
 int
 mlk_sound_open(struct mlk_sound *snd, const char *path)
@@ -32,7 +32,7 @@ mlk_sound_open(struct mlk_sound *snd, const char *path)
 	assert(snd);
 	assert(path);
 
-	return audiostream_open((struct audiostream **)&snd->handle, path);
+	return mlk__audiostream_open((struct mlk__audiostream **)&snd->handle, path);
 }
 
 int
@@ -41,7 +41,7 @@ mlk_sound_openmem(struct mlk_sound *snd, const void *buffer, size_t buffersz)
 	assert(snd);
 	assert(buffer);
 
-	return audiostream_openmem((struct audiostream **)&snd->handle, buffer, buffersz);
+	return mlk__audiostream_openmem((struct mlk__audiostream **)&snd->handle, buffer, buffersz);
 }
 
 int
@@ -91,7 +91,7 @@ mlk_sound_finish(struct mlk_sound *snd)
 
 	if (snd->handle) {
 		mlk_sound_stop(snd);
-		audiostream_finish(snd->handle);
+		mlk__audiostream_finish(snd->handle);
 	}
 
 	memset(snd, 0, sizeof (*snd));

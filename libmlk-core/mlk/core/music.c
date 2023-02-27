@@ -23,7 +23,7 @@
 #include "music.h"
 #include "sys_p.h"
 
-#define SOURCE(mus) ((const struct audiostream *)mus->handle)->source
+#define SOURCE(mus) ((const struct mlk__audiostream *)mus->handle)->source
 
 int
 mlk_music_open(struct mlk_music *mus, const char *path)
@@ -31,7 +31,7 @@ mlk_music_open(struct mlk_music *mus, const char *path)
 	assert(mus);
 	assert(path);
 
-	return audiostream_open((struct audiostream **)&mus->handle, path);
+	return mlk__audiostream_open((struct mlk__audiostream **)&mus->handle, path);
 }
 
 int
@@ -40,7 +40,7 @@ mlk_music_openmem(struct mlk_music *mus, const void *buffer, size_t buffersz)
 	assert(mus);
 	assert(buffer);
 
-	return audiostream_openmem((struct audiostream **)&mus->handle, buffer, buffersz);
+	return mlk__audiostream_openmem((struct mlk__audiostream **)&mus->handle, buffer, buffersz);
 }
 
 int
@@ -96,7 +96,7 @@ mlk_music_finish(struct mlk_music *mus)
 
 	if (mus->handle) {
 		mlk_music_stop(mus);
-		audiostream_finish(mus->handle);
+		mlk__audiostream_finish(mus->handle);
 	}
 
 	memset(mus, 0, sizeof (*mus));
