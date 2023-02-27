@@ -84,7 +84,7 @@ fadeout(struct battle *bt, struct battle_entity *et)
 	struct fadeout *fade;
 
 	if (!bt->effects) {
-		tracef("can't create a fadeout effect without a drawable_stack");
+		mlk_tracef("can't create a fadeout effect without a drawable_stack");
 		return;
 	}
 

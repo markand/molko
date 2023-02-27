@@ -88,7 +88,7 @@ parse_actions(struct context *ctx)
 		struct map_block *reg;
 
 		if (!ctx->mf->load_action) {
-			tracef("ignoring action %d,%d,%u,%u,%d,%s", x, y, w, h, block, exec);
+			mlk_tracef("ignoring action %d,%d,%u,%u,%d,%s", x, y, w, h, block, exec);
 			continue;
 		}
 

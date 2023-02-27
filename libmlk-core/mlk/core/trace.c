@@ -29,34 +29,33 @@ default_handler(const char *line)
 	puts(line);
 }
 
-void (*trace_handler)(const char *) = default_handler;
-void *trace_data = NULL;
+void (*mlk_trace_handler)(const char *) = default_handler;
 
 void
-tracef(const char *fmt, ...)
+mlk_tracef(const char *fmt, ...)
 {
 	assert(fmt);
 
 	va_list ap;
 
-	if (!trace_handler)
+	if (!mlk_trace_handler)
 		return;
 
 	va_start(ap, fmt);
-	traceva(fmt, ap);
+	mlk_traceva(fmt, ap);
 	va_end(ap);
 }
 
 void
-traceva(const char *fmt, va_list ap)
+mlk_traceva(const char *fmt, va_list ap)
 {
 	assert(fmt);
 
 	char buf[TRACE_LINE_MAX];
 
-	if (!trace_handler)
+	if (!mlk_trace_handler)
 		return;
 
 	vsnprintf(buf, sizeof (buf), fmt, ap);
-	trace_handler(buf);
+	mlk_trace_handler(buf);
 }

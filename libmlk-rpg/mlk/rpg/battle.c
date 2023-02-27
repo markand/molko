@@ -395,7 +395,7 @@ battle_indicator_hp(struct battle *bt, const struct character *target, long amou
 	struct indicator *id;
 
 	if (!(bt->effects)) {
-		tracef("unable to add id without a drawable_stack");
+		mlk_tracef("unable to add id without a drawable_stack");
 		return;
 	}
 

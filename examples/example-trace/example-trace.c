@@ -45,7 +45,7 @@ init(void)
 	if (window_open("Example - Trace", W, H) < 0)
 		mlk_panic();
 
-	trace_handler = trace_hud_handler;
+	mlk_trace_handler = trace_hud_handler;
 }
 
 static void
@@ -60,12 +60,12 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 			trace_hud_clear();
 			break;
 		default:
-			tracef("keydown pressed: %d", ev->key.key);
+			mlk_tracef("keydown pressed: %d", ev->key.key);
 			break;
 		}
 		break;
 	case MLK_EVENT_CLICKDOWN:
-		tracef("click at %d,%d", ev->click.x, ev->click.y);
+		mlk_tracef("click at %d,%d", ev->click.x, ev->click.y);
 		break;
 	case MLK_EVENT_QUIT:
 		mlk_game_quit();

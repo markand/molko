@@ -25,16 +25,15 @@
 
 #define TRACE_LINE_MAX (1024)
 
-extern void (*trace_handler)(const char *);
-extern void *trace_data;
+extern void (*mlk_trace_handler)(const char *);
 
 MLK_CORE_BEGIN_DECLS
 
 void
-tracef(const char *, ...);
+mlk_tracef(const char *, ...);
 
 void
-traceva(const char *, va_list);
+mlk_traceva(const char *, va_list);
 
 MLK_CORE_END_DECLS
 

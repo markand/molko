@@ -80,7 +80,7 @@ geometry(struct geo *geo, const struct notify *n, size_t index)
 
 	/* Align icon at the left center. */
 	if (n->icon->h >= HEIGHT) {
-		tracef("notification icon is too large: %u > %u", n->icon->h, HEIGHT);
+		mlk_tracef("notification icon is too large: %u > %u", n->icon->h, HEIGHT);
 		geo->icon_x = x + geo->theme->padding;
 		geo->icon_y = y + geo->theme->padding;
 	} else {

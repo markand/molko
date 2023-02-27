@@ -128,9 +128,9 @@ draw_lines(const struct message *msg)
 		label.flags = LABEL_FLAGS_SHADOW;
 
 		if (label.x + lw > msg->w)
-			tracef("message width too small: %u < %u", msg->w, min_width(msg));
+			mlk_tracef("message width too small: %u < %u", msg->w, min_width(msg));
 		if (label.y + lh > msg->h)
-			tracef("message height too small: %u < %u", msg->h, min_height(msg));
+			mlk_tracef("message height too small: %u < %u", msg->h, min_height(msg));
 
 		/*
 		 * The function label_draw will use THEME_COLOR_NORMAL to draw
@@ -161,7 +161,7 @@ message_start(struct message *msg)
 	    : MESSAGE_STATE_SHOWING;
 
 	if (msg->flags & MESSAGE_FLAGS_AUTOMATIC && msg->timeout == 0)
-		tracef("message is automatic but has zero timeout");
+		mlk_tracef("message is automatic but has zero timeout");
 }
 
 void
@@ -267,7 +267,7 @@ message_draw(const struct message *msg)
 	unsigned int w, h;
 
 	if (msg->w == 0 || msg->h == 0) {
-		tracef("message has null dimensions");
+		mlk_tracef("message has null dimensions");
 		return;
 	}
 

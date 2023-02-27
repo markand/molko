@@ -156,7 +156,7 @@ switch_selection_spell(struct battle_bar_default *bar, struct battle *bt)
 
 	/* A cursor should be present. */
 	if (!mlk_sprite_ok(BATTLE_THEME(bt)->sprites[THEME_SPRITE_CURSOR]))
-		tracef("battle: no cursor sprite in theme");
+		mlk_tracef("battle: no cursor sprite in theme");
 }
 
 static void

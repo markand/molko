@@ -66,7 +66,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 		break;
 	default:
 		if (gridmenu_handle(st->data, ev))
-			tracef("selected index: %zu (%s)", menu->selected, menu->items[menu->selected]);
+			mlk_tracef("selected index: %zu (%s)", menu->selected, menu->items[menu->selected]);
 		break;
 	}
 }
