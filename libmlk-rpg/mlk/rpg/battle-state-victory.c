@@ -83,7 +83,7 @@ battle_state_victory_init(struct battle_state_victory *vic, struct battle *bt)
 	bt->status = BATTLE_STATUS_WON;
 
 	if (bt->music[1])
-		mlk_music_play(bt->music[1], MUSIC_NONE);
+		mlk_music_play(bt->music[1], MLK_MUSIC_NONE);
 }
 
 void

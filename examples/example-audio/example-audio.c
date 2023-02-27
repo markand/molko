@@ -98,7 +98,7 @@ handle(struct state *st, const union mlk_event *ev)
 			mlk_music_stop(&music);
 			break;
 		case MLK_KEY_l:
-			mlk_music_play(&music, MUSIC_LOOP);
+			mlk_music_play(&music, MLK_MUSIC_LOOP);
 			break;
 		case MLK_KEY_SPACE:
 			mlk_music_play(&music, 0);

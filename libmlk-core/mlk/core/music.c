@@ -54,7 +54,7 @@ mlk_music_play(struct mlk_music *mus, enum mlk_music_flags flags)
 {
 	assert(mus);
 
-	if (flags & MUSIC_LOOP)
+	if (flags & MLK_MUSIC_LOOP)
 		alSourcei(SOURCE(mus), AL_LOOPING, AL_TRUE);
 	else
 		alSourcei(SOURCE(mus), AL_LOOPING, AL_TRUE);

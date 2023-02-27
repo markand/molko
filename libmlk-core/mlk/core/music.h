@@ -24,8 +24,8 @@
 #include "core.h"
 
 enum mlk_music_flags {
-	MUSIC_NONE      = 0,
-	MUSIC_LOOP      = (1 << 0)
+	MLK_MUSIC_NONE  = 0,
+	MLK_MUSIC_LOOP  = (1 << 0)
 };
 
 struct mlk_music {
