@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <mlk/core/action.h>
 #include <mlk/core/event.h>
 #include <mlk/core/font.h>
 #include <mlk/core/maths.h>
@@ -38,31 +37,6 @@
 #include "message.h"
 
 #define THEME(msg)      (msg->theme ? msg->theme : theme_default())
-
-static void
-handle(struct mlk_action *action, const union mlk_event *ev)
-{
-	assert(action);
-	assert(ev);
-
-	message_handle(action->data, ev);
-}
-
-static int
-update(struct mlk_action *action, unsigned int ticks)
-{
-	assert(action);
-
-	return message_update(action->data, ticks);
-}
-
-static void
-draw(struct mlk_action *action)
-{
-	assert(action);
-
-	message_draw(action->data);
-}
 
 static void
 draw_frame(const struct message *msg)
@@ -298,19 +272,4 @@ message_hide(struct message *msg)
 
 	msg->state = MESSAGE_STATE_HIDING;
 	msg->elapsed = 0;
-}
-
-void
-message_action(struct message *msg, struct mlk_action *action)
-{
-	assert(msg);
-	assert(action);
-
-	memset(action, 0, sizeof (struct mlk_action));
-	action->data = msg;
-	action->handle = handle;
-	action->update = update;
-	action->draw = draw;
-
-	message_start(msg);
 }

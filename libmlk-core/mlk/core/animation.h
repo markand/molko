@@ -21,7 +21,6 @@
 
 #include "core.h"
 
-struct mlk_drawable;
 struct mlk_sprite;
 
 struct mlk_animation {
@@ -48,9 +47,6 @@ mlk_animation_update(struct mlk_animation *, unsigned int);
 
 int
 mlk_animation_draw(const struct mlk_animation *, int, int);
-
-void
-mlk_animation_drawable(struct mlk_animation *, struct mlk_drawable *, int, int);
 
 MLK_CORE_END_DECLS
 

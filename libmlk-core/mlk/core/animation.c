@@ -19,21 +19,8 @@
 #include <assert.h>
 #include <string.h>
 
-#include "drawable.h"
 #include "animation.h"
 #include "sprite.h"
-
-static int
-update(struct mlk_drawable *dw, unsigned int ticks)
-{
-	return mlk_animation_update(dw->data, ticks);
-}
-
-static void
-draw(struct mlk_drawable *dw)
-{
-	mlk_animation_draw(dw->data, dw->x, dw->y);
-}
 
 void
 mlk_animation_init(struct mlk_animation *an, const struct mlk_sprite *sprite, unsigned int delay)
@@ -100,21 +87,4 @@ mlk_animation_draw(const struct mlk_animation *an, int x, int y)
 	assert(an);
 
 	return mlk_sprite_draw(an->sprite, an->row, an->column, x, y);
-}
-
-void
-mlk_animation_drawable(struct mlk_animation *an, struct mlk_drawable *dw, int x, int y)
-{
-	assert(an);
-	assert(dw);
-
-	memset(dw, 0, sizeof (*dw));
-	
-	dw->data = an;
-	dw->x = x - (an->sprite->cellw / 2);
-	dw->y = y - (an->sprite->cellh / 2);
-	dw->update = update;
-	dw->draw = draw;
-
-	mlk_animation_start(an);
 }
