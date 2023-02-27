@@ -33,7 +33,7 @@ label_draw_default(const struct theme *t, const struct label *label)
 	assert(label);
 
 	struct mlk_font *font;
-	struct texture tex;
+	struct mlk_texture tex;
 	unsigned long color;
 
 	font = label->flags & LABEL_FLAGS_IMPORTANT
@@ -48,16 +48,16 @@ label_draw_default(const struct theme *t, const struct label *label)
 		if (mlk_font_render(font, &tex, label->text, t->colors[THEME_COLOR_SHADOW]) < 0)
 			mlk_panic();
 
-		texture_draw(&tex, label->x + 1, label->y + 1);
-		texture_finish(&tex);
+		mlk_texture_draw(&tex, label->x + 1, label->y + 1);
+		mlk_texture_finish(&tex);
 	}
 
 	/* Normal text. */
 	if (mlk_font_render(font, &tex, label->text, color) < 0)
 		mlk_panic();
 
-	texture_draw(&tex, label->x, label->y);
-	texture_finish(&tex);
+	mlk_texture_draw(&tex, label->x, label->y);
+	mlk_texture_finish(&tex);
 }
 
 int

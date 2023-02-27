@@ -65,17 +65,17 @@ battle_state_closing_init(struct battle_state_closing *cls)
 {
 	assert(cls);
 
-	if (texture_new(&cls->texture, window.w, window.h) < 0)
+	if (mlk_texture_new(&cls->texture, window.w, window.h) < 0)
 		mlk_panic();
 
 	MLK_PAINTER_BEGIN(&cls->texture);
-	texture_set_blend_mode(&cls->texture, TEXTURE_BLEND_BLEND);
+	mlk_texture_set_blend_mode(&cls->texture, MLK_TEXTURE_BLEND_BLEND);
 	mlk_painter_set_color(0x000000ff);
 	mlk_painter_clear();
 	mlk_painter_draw_rectangle(0, 0, window.w, window.h);
 	MLK_PAINTER_END();
 
-	texture_set_alpha_mod(&cls->texture, 0);
+	mlk_texture_set_alpha_mod(&cls->texture, 0);
 }
 
 int
@@ -98,7 +98,7 @@ battle_state_closing_update(struct battle_state_closing *cls, unsigned int ticks
 		}
 
 		cls->alpha += 5;
-		texture_set_alpha_mod(&cls->texture, cls->alpha);
+		mlk_texture_set_alpha_mod(&cls->texture, cls->alpha);
 	}
 
 	return 0;
@@ -110,7 +110,7 @@ battle_state_closing_draw(const struct battle_state_closing *cls, const struct b
 	assert(cls);
 
 	battle_draw_component(bt, BATTLE_COMPONENT_ALL);
-	texture_draw(&cls->texture, 0, 0);
+	mlk_texture_draw(&cls->texture, 0, 0);
 }
 
 void
@@ -118,7 +118,7 @@ battle_state_closing_finish(struct battle_state_closing *cls)
 {
 	assert(cls);
 
-	texture_finish(&cls->texture);
+	mlk_texture_finish(&cls->texture);
 	memset(cls, 0, sizeof (*cls));
 }
 

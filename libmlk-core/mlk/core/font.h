@@ -23,7 +23,7 @@
 
 #include "core.h"
 
-struct texture;
+struct mlk_texture;
 
 enum mlk_font_style {
 	MLK_FONT_STYLE_ANTIALIASED,
@@ -48,7 +48,7 @@ int
 mlk_font_ok(const struct mlk_font *);
 
 int
-mlk_font_render(struct mlk_font *, struct texture *, const char *, unsigned long);
+mlk_font_render(struct mlk_font *, struct mlk_texture *, const char *, unsigned long);
 
 unsigned int
 mlk_font_height(const struct mlk_font *);

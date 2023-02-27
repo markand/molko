@@ -25,16 +25,16 @@
 #include "window_p.h"
 
 /* Current texture renderer. */
-static struct texture *renderer;
+static struct mlk_texture *renderer;
 
-struct texture *
+struct mlk_texture *
 mlk_painter_get_target(void)
 {
 	return renderer;
 }
 
 void
-mlk_painter_set_target(struct texture *tex)
+mlk_painter_set_target(struct mlk_texture *tex)
 {
 	renderer = tex;
 	SDL_SetRenderTarget(RENDERER(), tex ? tex->handle : NULL);

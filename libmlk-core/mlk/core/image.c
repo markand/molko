@@ -26,7 +26,7 @@
 #include "window_p.h"
 
 static void
-dimensions(struct texture *tex)
+dimensions(struct mlk_texture *tex)
 {
 	int w, h;
 
@@ -39,7 +39,7 @@ dimensions(struct texture *tex)
 }
 
 int
-mlk_image_open(struct texture *tex, const char *path)
+mlk_image_open(struct mlk_texture *tex, const char *path)
 {
 	assert(tex);
 	assert(path);
@@ -53,7 +53,7 @@ mlk_image_open(struct texture *tex, const char *path)
 }
 
 int
-mlk_image_openmem(struct texture *tex, const void *buffer, size_t size)
+mlk_image_openmem(struct mlk_texture *tex, const void *buffer, size_t size)
 {
 	assert(buffer);
 

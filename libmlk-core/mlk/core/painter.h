@@ -21,15 +21,15 @@
 
 #include "core.h"
 
-struct texture;
+struct mlk_texture;
 
 MLK_CORE_BEGIN_DECLS
 
-struct texture *
+struct mlk_texture *
 mlk_painter_get_target(void);
 
 void
-mlk_painter_set_target(struct texture *);
+mlk_painter_set_target(struct mlk_texture *);
 
 unsigned long
 mlk_painter_get_color(void);
@@ -59,7 +59,7 @@ MLK_CORE_END_DECLS
 
 #define MLK_PAINTER_BEGIN(tex)                                          \
 do {                                                                    \
-        struct texture *__current_texture__;                            \
+        struct mlk_texture *__current_texture__;                        \
                                                                         \
         __current_texture__ = mlk_painter_get_target();                 \
         mlk_painter_set_target((tex))

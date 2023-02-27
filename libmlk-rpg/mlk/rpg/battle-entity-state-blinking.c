@@ -60,7 +60,7 @@ battle_entity_state_blinking_init(struct battle_entity_state_blinking *blk, stru
 	assert(battle_entity_ok(et));
 
 	blk->tex = et->ch->sprites[CHARACTER_SPRITE_NORMAL]->texture;
-	texture_set_alpha_mod(blk->tex, TRANSPARENT);
+	mlk_texture_set_alpha_mod(blk->tex, TRANSPARENT);
 }
 
 int
@@ -75,7 +75,7 @@ battle_entity_state_blinking_update(struct battle_entity_state_blinking *blk, un
 		blk->elapsed = 0;
 	}
 
-	texture_set_alpha_mod(blk->tex, blk->count % 2 == 0 ? TRANSPARENT : OPAQUE);
+	mlk_texture_set_alpha_mod(blk->tex, blk->count % 2 == 0 ? TRANSPARENT : OPAQUE);
 
 	return blk->count >= 3;
 }

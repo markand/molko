@@ -21,10 +21,10 @@
 
 #include "core.h"
 
-struct texture;
+struct mlk_texture;
 
 struct mlk_sprite {
-	struct texture *texture;
+	struct mlk_texture *texture;
 	unsigned int cellw;
 	unsigned int cellh;
 	unsigned int nrows;
@@ -34,7 +34,7 @@ struct mlk_sprite {
 MLK_CORE_BEGIN_DECLS
 
 void
-mlk_sprite_init(struct mlk_sprite *, struct texture *, unsigned int, unsigned int);
+mlk_sprite_init(struct mlk_sprite *, struct mlk_texture *, unsigned int, unsigned int);
 
 int
 mlk_sprite_ok(const struct mlk_sprite *);

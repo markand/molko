@@ -63,7 +63,7 @@ static struct mlk_drawable_stack stack;
  */
 
 /* 0: Explosion animation. */
-static struct texture explosion_tex;
+static struct mlk_texture explosion_tex;
 static struct mlk_sprite explosion_sprite;
 
 struct explosion {

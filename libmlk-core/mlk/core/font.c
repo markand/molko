@@ -62,7 +62,7 @@ mlk_font_ok(const struct mlk_font *font)
 }
 
 int
-mlk_font_render(struct mlk_font *font, struct texture *tex, const char *text, unsigned long color)
+mlk_font_render(struct mlk_font *font, struct mlk_texture *tex, const char *text, unsigned long color)
 {
 	assert(mlk_font_ok(font));
 	assert(text);

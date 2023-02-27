@@ -262,7 +262,7 @@ message_draw(const struct message *msg)
 {
 	assert(msg);
 
-	struct texture tex;
+	struct mlk_texture tex;
 	int x, y;
 	unsigned int w, h;
 
@@ -271,7 +271,7 @@ message_draw(const struct message *msg)
 		return;
 	}
 
-	if (texture_new(&tex, msg->w, msg->h) < 0)
+	if (mlk_texture_new(&tex, msg->w, msg->h) < 0)
 		mlk_panic();
 
 	MLK_PAINTER_BEGIN(&tex);
@@ -287,8 +287,8 @@ message_draw(const struct message *msg)
 	align(ALIGN_CENTER, &x, &y, w, h, msg->x, msg->y, msg->w, msg->h);
 
 	/* Draw and clear. */
-	texture_scale(&tex, 0, 0, msg->w, msg->h, x, y, w, h, 0);
-	texture_finish(&tex);
+	mlk_texture_scale(&tex, 0, 0, msg->w, msg->h, x, y, w, h, 0);
+	mlk_texture_finish(&tex);
 }
 
 void

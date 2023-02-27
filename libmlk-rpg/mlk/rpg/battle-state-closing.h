@@ -24,7 +24,7 @@
 struct battle;
 
 struct battle_state_closing {
-	struct texture texture;
+	struct mlk_texture texture;
 	unsigned int alpha;
 	unsigned int elapsed;
 };

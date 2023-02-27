@@ -23,15 +23,15 @@
 
 #include "core.h"
 
-struct texture;
+struct mlk_texture;
 
 MLK_CORE_BEGIN_DECLS
 
 int
-mlk_image_open(struct texture *, const char *);
+mlk_image_open(struct mlk_texture *, const char *);
 
 int
-mlk_image_openmem(struct texture *, const void *, size_t);
+mlk_image_openmem(struct mlk_texture *, const void *, size_t);
 
 MLK_CORE_END_DECLS
 

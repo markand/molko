@@ -50,7 +50,7 @@ battle_entity_init(struct battle_entity *et)
 	assert(et);
 
 	character_reset(et->ch);
-	texture_set_alpha_mod(et->ch->sprites[CHARACTER_SPRITE_NORMAL]->texture, 255);
+	mlk_texture_set_alpha_mod(et->ch->sprites[CHARACTER_SPRITE_NORMAL]->texture, 255);
 
 	battle_entity_state_normal(et);
 }

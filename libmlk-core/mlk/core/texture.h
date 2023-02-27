@@ -22,42 +22,42 @@
 #include "core.h"
 #include "err.h"
 
-struct texture {
+struct mlk_texture {
 	unsigned int w;
 	unsigned int h;
 	void *handle;
 };
 
-enum texture_blend {
-	TEXTURE_BLEND_NONE,
-	TEXTURE_BLEND_BLEND,
-	TEXTURE_BLEND_ADD,
-	TEXTURE_BLEND_MODULATE,
-	TEXTURE_BLEND_LAST
+enum mlk_texture_blend {
+	MLK_TEXTURE_BLEND_NONE,
+	MLK_TEXTURE_BLEND_BLEND,
+	MLK_TEXTURE_BLEND_ADD,
+	MLK_TEXTURE_BLEND_MODULATE,
+	MLK_TEXTURE_BLEND_LAST
 };
 
 MLK_CORE_BEGIN_DECLS
 
 int
-texture_new(struct texture *, unsigned int, unsigned int);
+mlk_texture_new(struct mlk_texture *, unsigned int, unsigned int);
 
 int
-texture_ok(const struct texture *);
+mlk_texture_ok(const struct mlk_texture *);
 
 int
-texture_set_blend_mode(struct texture *, enum texture_blend);
+mlk_texture_set_blend_mode(struct mlk_texture *, enum mlk_texture_blend);
 
 int
-texture_set_alpha_mod(struct texture *, unsigned int);
+mlk_texture_set_alpha_mod(struct mlk_texture *, unsigned int);
 
 int
-texture_set_color_mod(struct texture *, unsigned long);
+mlk_texture_set_color_mod(struct mlk_texture *, unsigned long);
 
 int
-texture_draw(const struct texture *, int, int);
+mlk_texture_draw(const struct mlk_texture *, int, int);
 
 int
-texture_scale(const struct texture *,
+mlk_texture_scale(const struct mlk_texture *,
               int,
               int,
               unsigned int,
@@ -69,7 +69,7 @@ texture_scale(const struct texture *,
               double);
 
 void
-texture_finish(struct texture *);
+mlk_texture_finish(struct mlk_texture *);
 
 MLK_CORE_END_DECLS
 

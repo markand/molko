@@ -36,8 +36,8 @@
 
 #include "registry.h"
 
-struct texture registry_images[REGISTRY_IMAGE_NUM];
-struct texture registry_textures[REGISTRY_TEXTURE_NUM];
+struct mlk_texture registry_images[REGISTRY_IMAGE_NUM];
+struct mlk_texture registry_textures[REGISTRY_TEXTURE_NUM];
 struct mlk_sprite registry_sprites[REGISTRY_TEXTURE_NUM];
 struct mlk_sound registry_sounds[REGISTRY_SOUND_NUM];
 
@@ -85,7 +85,7 @@ static void
 load_images(void)
 {
 	for (size_t i = 0; i < UTIL_SIZE(images); ++i) {
-		struct texture *texture = &registry_images[images[i].index];
+		struct mlk_texture *texture = &registry_images[images[i].index];
 
 		if (mlk_image_openmem(texture, images[i].data, images[i].datasz) < 0)
 			mlk_panic();
@@ -96,7 +96,7 @@ static void
 load_textures_and_sprites(void)
 {
 	for (size_t i = 0; i < UTIL_SIZE(textures); ++i) {
-		struct texture *texture = &registry_textures[textures[i].index];
+		struct mlk_texture *texture = &registry_textures[textures[i].index];
 		struct mlk_sprite *sprite = &registry_sprites[textures[i].index];
 
 		if (mlk_image_openmem(texture, textures[i].data, textures[i].datasz) < 0)
@@ -132,9 +132,9 @@ void
 registry_finish(void)
 {
 	for (size_t i = 0; i < UTIL_SIZE(registry_images); ++i)
-		texture_finish(&registry_images[i]);
+		mlk_texture_finish(&registry_images[i]);
 	for (size_t i = 0; i < UTIL_SIZE(registry_textures); ++i)
-		texture_finish(&registry_textures[i]);
+		mlk_texture_finish(&registry_textures[i]);
 	for (size_t i = 0; i < UTIL_SIZE(registry_sounds); ++i)
 		mlk_sound_finish(&registry_sounds[i]);
 }

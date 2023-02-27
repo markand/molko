@@ -28,7 +28,7 @@
 #include "window_p.h"
 
 int
-texture_new(struct texture *tex, unsigned int w, unsigned int h)
+mlk_texture_new(struct mlk_texture *tex, unsigned int w, unsigned int h)
 {
 	assert(tex);
 	assert(w);
@@ -49,22 +49,22 @@ texture_new(struct texture *tex, unsigned int w, unsigned int h)
 }
 
 int
-texture_ok(const struct texture *tex)
+mlk_texture_ok(const struct mlk_texture *tex)
 {
 	return tex && tex->handle && tex->w && tex->h;
 }
 
 int
-texture_set_blend_mode(struct texture *tex, enum texture_blend blend)
+mlk_texture_set_blend_mode(struct mlk_texture *tex, enum mlk_texture_blend blend)
 {
 	assert(tex);
-	assert(blend >= TEXTURE_BLEND_NONE && blend <= TEXTURE_BLEND_MODULATE);
+	assert(blend >= MLK_TEXTURE_BLEND_NONE && blend < MLK_TEXTURE_BLEND_LAST);
 
 	static const SDL_BlendMode table[] = {
-		[TEXTURE_BLEND_NONE] = SDL_BLENDMODE_NONE,
-		[TEXTURE_BLEND_BLEND] = SDL_BLENDMODE_BLEND,
-		[TEXTURE_BLEND_ADD] = SDL_BLENDMODE_ADD,
-		[TEXTURE_BLEND_MODULATE] = SDL_BLENDMODE_MOD
+		[MLK_TEXTURE_BLEND_NONE] = SDL_BLENDMODE_NONE,
+		[MLK_TEXTURE_BLEND_BLEND] = SDL_BLENDMODE_BLEND,
+		[MLK_TEXTURE_BLEND_ADD] = SDL_BLENDMODE_ADD,
+		[MLK_TEXTURE_BLEND_MODULATE] = SDL_BLENDMODE_MOD
 	};
 
 	if (SDL_SetTextureBlendMode(tex->handle, table[blend]) < 0)
@@ -74,9 +74,9 @@ texture_set_blend_mode(struct texture *tex, enum texture_blend blend)
 }
 
 int
-texture_set_alpha_mod(struct texture *tex, unsigned int alpha)
+mlk_texture_set_alpha_mod(struct mlk_texture *tex, unsigned int alpha)
 {
-	assert(texture_ok(tex));
+	assert(mlk_texture_ok(tex));
 	assert(alpha <= 255);
 
 	if (SDL_SetTextureAlphaMod(tex->handle, alpha) < 0)
@@ -86,9 +86,9 @@ texture_set_alpha_mod(struct texture *tex, unsigned int alpha)
 }
 
 int
-texture_set_color_mod(struct texture *tex, unsigned long color)
+mlk_texture_set_color_mod(struct mlk_texture *tex, unsigned long color)
 {
-	assert(texture_ok(tex));
+	assert(mlk_texture_ok(tex));
 
 	if (SDL_SetTextureColorMod(tex->handle, MLK_COLOR_R(color), MLK_COLOR_G(color), MLK_COLOR_B(color)) < 0)
 		return errorf("%s", SDL_GetError());
@@ -97,7 +97,7 @@ texture_set_color_mod(struct texture *tex, unsigned long color)
 }
 
 int
-texture_draw(const struct texture *tex, int x, int y)
+mlk_texture_draw(const struct mlk_texture *tex, int x, int y)
 {
 	assert(tex);
 
@@ -115,7 +115,7 @@ texture_draw(const struct texture *tex, int x, int y)
 }
 
 int
-texture_scale(const struct texture *tex,
+mlk_texture_scale(const struct mlk_texture *tex,
               int src_x,
               int src_y,
               unsigned src_w,
@@ -146,7 +146,7 @@ texture_scale(const struct texture *tex,
 }
 
 void
-texture_finish(struct texture *tex)
+mlk_texture_finish(struct mlk_texture *tex)
 {
 	assert(tex);
 
@@ -159,7 +159,7 @@ texture_finish(struct texture *tex)
 /* private */
 
 int
-texture_from_surface(struct texture *tex, SDL_Surface *surface)
+texture_from_surface(struct mlk_texture *tex, SDL_Surface *surface)
 {
 	assert(tex);
 	assert(surface);

@@ -44,7 +44,7 @@
 #define HEADER "Keys: <Left>/<Right> and <Up/Down> to select a column/row. Current: %u, %u (total %u/%u)"
 
 static char msg[512];
-static struct texture texture;
+static struct mlk_texture texture;
 static struct mlk_sprite sprite;
 static unsigned int row, column;
 static struct mlk_state *states[1];
@@ -146,7 +146,7 @@ run(void)
 static void
 quit(void)
 {
-	texture_finish(&texture);
+	mlk_texture_finish(&texture);
 	window_finish();
 	ui_finish();
 	mlk_core_finish();

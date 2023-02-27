@@ -20,10 +20,10 @@
 #define MLK_RPG_BATTLE_ENTITY_STATE_BLINKING_H
 
 struct battle_entity;
-struct texture;
+struct mlk_texture;
 
 struct battle_entity_state_blinking {
-	struct texture *tex;
+	struct mlk_texture *tex;
 	unsigned int elapsed;
 	unsigned int count;
 };

@@ -77,7 +77,7 @@ struct battle {
 	struct battle_entity **order;
 	struct battle_entity **ordercur;
 	size_t ordersz;
-	struct texture *background;
+	struct mlk_texture *background;
 	struct mlk_music *music[3];
 	struct theme *theme;
 	struct mlk_drawable_stack *effects;

@@ -468,8 +468,8 @@ battle_draw_component(const struct battle *bt, enum battle_component comp)
 {
 	assert(bt);
 
-	if ((comp & BATTLE_COMPONENT_BACKGROUND) && texture_ok(bt->background))
-		texture_scale(bt->background,
+	if ((comp & BATTLE_COMPONENT_BACKGROUND) && mlk_texture_ok(bt->background))
+		mlk_texture_scale(bt->background,
 		    0, 0, bt->background->w, bt->background->h,
 		    0, 0, window.w, window.h,
 		    0.f);

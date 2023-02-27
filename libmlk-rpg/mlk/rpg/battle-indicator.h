@@ -34,7 +34,7 @@ struct battle_indicator {
 	unsigned int cur;
 	unsigned int elapsed;
 	unsigned int alpha;
-	struct texture tex[2];
+	struct mlk_texture tex[2];
 };
 
 MLK_CORE_BEGIN_DECLS

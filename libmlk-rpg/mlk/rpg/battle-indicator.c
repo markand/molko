@@ -78,7 +78,7 @@ battle_indicator_completed(const struct battle_indicator *bti)
 int
 battle_indicator_ok(const struct battle_indicator *bti)
 {
-	return bti && texture_ok(&bti->tex[0]) && texture_ok(&bti->tex[1]);
+	return bti && mlk_texture_ok(&bti->tex[0]) && mlk_texture_ok(&bti->tex[1]);
 }
 
 int
@@ -100,13 +100,13 @@ battle_indicator_update(struct battle_indicator *bti, unsigned int ticks)
 			    255
 			);
 
-			texture_set_color_mod(&bti->tex[0], bti->cur);
+			mlk_texture_set_color_mod(&bti->tex[0], bti->cur);
 		} else {
 			/* Update alpha next. */
 			bti->alpha -= 10;
 
-			texture_set_alpha_mod(&bti->tex[0], bti->alpha);
-			texture_set_alpha_mod(&bti->tex[1], bti->alpha);
+			mlk_texture_set_alpha_mod(&bti->tex[0], bti->alpha);
+			mlk_texture_set_alpha_mod(&bti->tex[1], bti->alpha);
 		}
 	}
 
@@ -118,8 +118,8 @@ battle_indicator_draw(const struct battle_indicator *bti, int x, int y)
 {
 	assert(battle_indicator_ok(bti));
 
-	texture_draw(&bti->tex[1], x + 1, y + 1);
-	texture_draw(&bti->tex[0], x, y);
+	mlk_texture_draw(&bti->tex[1], x + 1, y + 1);
+	mlk_texture_draw(&bti->tex[0], x, y);
 }
 
 void
@@ -127,8 +127,8 @@ battle_indicator_finish(struct battle_indicator *bti)
 {
 	assert(bti);
 
-	texture_finish(&bti->tex[0]);
-	texture_finish(&bti->tex[1]);
+	mlk_texture_finish(&bti->tex[0]);
+	mlk_texture_finish(&bti->tex[1]);
 
 	memset(bti, 0, sizeof (*bti));
 }

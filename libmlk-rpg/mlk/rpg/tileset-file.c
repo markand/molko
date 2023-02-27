@@ -65,7 +65,7 @@
  */
 
 struct tileset_animation_block {
-	struct texture texture;
+	struct mlk_texture texture;
 	struct mlk_sprite sprite;
 	struct mlk_animation animation;
 };
@@ -94,7 +94,7 @@ tileset_animation_block_finish(void *data)
 {
 	struct tileset_animation_block *anim = data;
 
-	texture_finish(&anim->texture);
+	mlk_texture_finish(&anim->texture);
 }
 
 static int
@@ -330,7 +330,7 @@ tileset_file_finish(struct tileset_file *tf)
 	mlk_alloc_pool_finish(&tf->anims[0]);
 	mlk_alloc_pool_finish(&tf->anims[1]);
 
-	texture_finish(&tf->image);
+	mlk_texture_finish(&tf->image);
 
 	memset(tf, 0, sizeof (*tf));
 }

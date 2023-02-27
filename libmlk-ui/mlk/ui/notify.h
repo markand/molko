@@ -26,11 +26,11 @@
 #define NOTIFY_MAX              (4)
 #define NOTIFY_TIMEOUT_DEFAULT  (5000)
 
-struct texture;
+struct mlk_texture;
 struct theme;
 
 struct notify {
-	const struct texture *icon;
+	const struct mlk_texture *icon;
 	const char *title;
 	const char *body;
 	unsigned int elapsed;
@@ -44,7 +44,7 @@ struct notify_system {
 MLK_CORE_BEGIN_DECLS
 
 void
-notify(const struct texture *, const char *, const char *);
+notify(const struct mlk_texture *, const char *, const char *);
 
 void
 notify_update(unsigned int ticks);

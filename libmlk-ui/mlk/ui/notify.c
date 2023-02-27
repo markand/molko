@@ -115,7 +115,7 @@ draw_frame(const struct geo *geo)
 static void
 draw_icon(const struct geo *geo, const struct notify *n)
 {
-	texture_draw(n->icon, geo->icon_x, geo->icon_y);
+	mlk_texture_draw(n->icon, geo->icon_x, geo->icon_y);
 }
 
 #include <stdio.h>
@@ -161,7 +161,7 @@ draw(const struct notify *n, size_t index)
 }
 
 void
-notify(const struct texture *icon, const char *title, const char *body)
+notify(const struct mlk_texture *icon, const char *title, const char *body)
 {
 	assert(icon);
 	assert(title);

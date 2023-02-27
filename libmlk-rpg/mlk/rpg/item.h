@@ -23,12 +23,12 @@
 
 struct battle;
 struct character;
-struct texture;
+struct mlk_texture;
 
 struct item {
 	const char *name;
 	const char *description;
-	struct texture *icon;
+	struct mlk_texture *icon;
 
 	void (*exec_menu)(const struct item *, struct character *);
 

@@ -22,7 +22,7 @@
 #include <mlk/core/core.h>
 
 struct character;
-struct texture;
+struct mlk_texture;
 
 enum equipment_type {
 	/* Attack weapons. */
@@ -48,7 +48,7 @@ struct equipment {
 	const char *description;
 	unsigned int price;
 	enum equipment_type type;
-	struct texture *icon;
+	struct mlk_texture *icon;
 
 	void (*equip)(const struct equipment *, struct character *);
 };

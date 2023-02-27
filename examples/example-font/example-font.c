@@ -100,7 +100,7 @@ draw(struct mlk_state *st)
 	(void)st;
 
 	struct mlk_font *font = theme_default()->fonts[THEME_FONT_INTERFACE];
-	struct texture tex;
+	struct mlk_texture tex;
 
 	mlk_painter_set_color(0xffffffff);
 	mlk_painter_clear();
@@ -108,9 +108,9 @@ draw(struct mlk_state *st)
 	if (mlk_font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]) < 0)
 		mlk_panic();
 
-	texture_draw(&tex, 10, 10);
+	mlk_texture_draw(&tex, 10, 10);
 	mlk_painter_present();
-	texture_finish(&tex);
+	mlk_texture_finish(&tex);
 }
 
 static void

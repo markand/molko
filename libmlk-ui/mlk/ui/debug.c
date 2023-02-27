@@ -58,7 +58,7 @@ debugva(struct debug_report *report, const char *fmt, va_list ap)
 	char line[DEBUG_LINE_MAX];
 	const struct theme *theme;
 	struct mlk_font *font;
-	struct texture tex;
+	struct mlk_texture tex;
 	int x, y;
 
 	vsnprintf(line, sizeof (line), fmt, ap);
@@ -73,6 +73,6 @@ debugva(struct debug_report *report, const char *fmt, va_list ap)
 	y = (theme->padding * (report->count + 1)) + (tex.h * (report->count));
 	report->count++;
 
-	texture_draw(&tex, x, y);
-	texture_finish(&tex);
+	mlk_texture_draw(&tex, x, y);
+	mlk_texture_finish(&tex);
 }

@@ -46,7 +46,7 @@ static struct label label = {
 };
 
 static struct mlk_state *states[1];
-static struct texture numbers;
+static struct mlk_texture numbers;
 static struct mlk_animation animation;
 static struct mlk_sprite sprite;
 static int completed = 1;

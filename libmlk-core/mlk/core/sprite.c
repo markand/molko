@@ -23,12 +23,12 @@
 
 void
 mlk_sprite_init(struct mlk_sprite *sprite,
-            struct texture *tex,
+            struct mlk_texture *tex,
             unsigned int cellw,
             unsigned int cellh)
 {
 	assert(sprite);
-	assert(tex && texture_ok(tex));
+	assert(tex && mlk_texture_ok(tex));
 
 	sprite->texture = tex;
 	sprite->cellw = cellw;
@@ -40,7 +40,7 @@ mlk_sprite_init(struct mlk_sprite *sprite,
 int
 mlk_sprite_ok(const struct mlk_sprite *sprite)
 {
-	return sprite && texture_ok(sprite->texture) && sprite->cellw != 0 && sprite->cellh != 0;
+	return sprite && mlk_texture_ok(sprite->texture) && sprite->cellw != 0 && sprite->cellh != 0;
 }
 
 int
@@ -62,7 +62,7 @@ mlk_sprite_scale(const struct mlk_sprite *sprite,
 	assert(r < sprite->nrows);
 	assert(c < sprite->ncols);
 
-	return texture_scale(
+	return mlk_texture_scale(
 		sprite->texture,
 		c * sprite->cellw,      /* src y */
 		r * sprite->cellh,      /* src x */

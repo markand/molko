@@ -45,7 +45,7 @@ static struct label help = {
 	.y = 10,
 	.flags = LABEL_FLAGS_SHADOW
 };
-static struct texture icon;
+static struct mlk_texture icon;
 static struct mlk_state *states[1];
 
 static void
