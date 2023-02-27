@@ -41,17 +41,7 @@
 #include <mlk/rpg/message.h>
 
 #include "chest.h"
-
-/* Message width is 80% of window width and height is auto computed. */
-#define QMW (MLK_EXAMPLE_W * 0.8)
-
-/* Position of each message. */
-#define QMX ((MLK_EXAMPLE_W - QMW) / 2)
-#define QMY (MLK_EXAMPLE_H * 0.2)
-
-/* Fading time and spacing. */
-#define QMD 250
-#define QMS 10
+#include "dialog.h"
 
 static struct mlk_state *states[8];
 
@@ -66,18 +56,11 @@ static struct mlk_state *states[8];
 static struct chest chests[2];
 
 /*
- * This structure is the item that will be pushed into the mlk_action_script
+ * This structure is the dialog that will be pushed into the mlk_action_script
  * to create a sequence of message the user has to complete.
  */
-struct item {
-	struct message msg;
-	struct mlk_action act;
-};
 
-static struct mlk_action *chests_stack_actions[16] = {
-	[0] = &chests[0].action,
-	[1] = &chests[1].action
-};
+static struct mlk_action *chests_stack_actions[16];
 static struct mlk_action_stack chests_stack = {
 	.actions = chests_stack_actions,
 	.actionsz = MLK_UTIL_SIZE(chests_stack_actions)
@@ -91,14 +74,12 @@ static struct label label = {
 	.text = "Select your destiny."
 };
 
-static void     item_handle(struct mlk_action *, const union mlk_event *);
-static int      item_update(struct mlk_action *, unsigned int);
-static void     item_draw(struct mlk_action *);
+static void script_left_response(struct dialog *, unsigned int);
+static void script_right_response(struct dialog *, unsigned int);
 
-static void     response_quest1_start(struct mlk_action *);
-static void     response_quest2_start(struct mlk_action *);
+/* {{{ left chest script */
 
-static struct item quest1[] = {
+static struct dialog script_left[] = {
 	{
 		.msg = {
 			.flags = MESSAGE_FLAGS_FADEIN,
@@ -106,12 +87,6 @@ static struct item quest1[] = {
 			.lines = (const char *[]) {
 				"Welcome to this game."
 			}
-		},
-		.act = {
-			.data = &quest1[0].msg,
-			.handle = item_handle,
-			.update = item_update,
-			.draw = item_draw
 		}
 	},
 	{
@@ -122,15 +97,10 @@ static struct item quest1[] = {
 				"you must take this before going any further",
 				"Are you ready?"
 			}
-		},
-		.act = {
-			.data = &quest1[1].msg,
-			.handle = item_handle,
-			.update = item_update,
-			.draw = item_draw
 		}
 	},
 	{
+		.response = script_left_response,
 		.msg = {
 			.flags = MESSAGE_FLAGS_QUESTION,
 			.linesz = 2,
@@ -138,30 +108,36 @@ static struct item quest1[] = {
 				"Of course I am",
 				"No I'm not sure"
 			}
-		},
-		.act = {
-			.data = &quest1[2].msg,
-			.handle = item_handle,
-			.update = item_update,
-			.draw = item_draw,
-		}
-	},
-	/* Text will be replaced on start depending on the question. */
-	{
-		.msg = {
-			.flags = MESSAGE_FLAGS_FADEOUT
-		},
-		.act = {
-			.data = &quest1[3].msg,
-			.start = response_quest1_start,
-			.handle = item_handle,
-			.update = item_update,
-			.draw = item_draw
 		}
 	}
 };
 
-static struct item quest2[] = {
+static struct dialog script_left_responses[] = {
+	{
+		.msg = {
+			.flags = MESSAGE_FLAGS_FADEOUT,
+			.linesz = 1,
+			.lines = (const char *[]) {
+				 "Don't be so confident"
+			}
+		},
+	},
+	{
+		.msg = {
+			.flags = MESSAGE_FLAGS_FADEOUT,
+			.linesz = 1,
+			.lines = (const char *[]) {
+				 "Nevermind, I'll do it myself"
+			}
+		}
+	}
+};
+
+/* }}} */
+
+/* {{{ right chest script */
+
+static struct dialog script_right[] = {
 	{
 		.msg = {
 			.flags = MESSAGE_FLAGS_FADEIN,
@@ -169,15 +145,10 @@ static struct item quest2[] = {
 			.lines = (const char *[]) {
 				"Why did you select this chest?"
 			}
-		},
-		.act = {
-			.data = &quest2[0].msg,
-			.handle = item_handle,
-			.update = item_update,
-			.draw = item_draw
 		}
 	},
 	{
+		.response = script_right_response,
 		.msg = {
 			.flags = MESSAGE_FLAGS_QUESTION,
 			.linesz = 2,
@@ -185,29 +156,32 @@ static struct item quest2[] = {
 				"Because I think there was some gold",
 				"I have no freaking idea"
 			}
-		},
-		.act = {
-			.data = &quest2[1].msg,
-			.handle = item_handle,
-			.update = item_update,
-			.draw = item_draw,
-		}
-	},
-
-	/* See comment in quest 1. */
-	{
-		.msg = {
-			.flags = MESSAGE_FLAGS_FADEOUT
-		},
-		.act = {
-			.data = &quest2[2].msg,
-			.start = response_quest2_start,
-			.handle = item_handle,
-			.update = item_update,
-			.draw = item_draw
 		}
 	}
 };
+
+static struct dialog script_right_responses[] = {
+	{
+		.msg = {
+			.flags = MESSAGE_FLAGS_FADEOUT,
+			.linesz = 1,
+			.lines = (const char *[]) {
+				"Go away!"
+			}
+		},
+	},
+	{
+		.msg = {
+			.flags = MESSAGE_FLAGS_FADEOUT,
+			.linesz = 1,
+			.lines = (const char *[]) {
+				"Install OpenBSD then"
+			}
+		}
+	}
+};
+
+/* }}} */
 
 /*
  * This is the main script that the loop will execute, we will initialize it
@@ -217,42 +191,33 @@ static struct mlk_action *script_actions[16];
 static struct mlk_action_script script;
 
 static void
-item_handle(struct mlk_action *act, const union mlk_event *ev)
+script_left_response(struct dialog *dlg, unsigned int index)
 {
-	message_handle(act->data, ev);
-}
+	(void)dlg;
 
-static int
-item_update(struct mlk_action *act, unsigned int ticks)
-{
-	return message_update(act->data, ticks);
+	mlk_action_script_append(&script, dialog_init(&script_left_responses[index]));
 }
 
 static void
-item_draw(struct mlk_action *act)
+script_right_response(struct dialog *dlg, unsigned int index)
 {
-	message_draw(act->data);
+	(void)dlg;
+
+	mlk_action_script_append(&script, dialog_init(&script_right_responses[index]));
 }
 
 static void
-script_init_quest(struct item *m, size_t n)
+script_init(struct dialog *msgs, size_t msgsz)
 {
 	int err;
+	struct mlk_action *action;
 
-	memset(script_actions, 0, sizeof (script_actions));
 	mlk_action_script_init(&script, script_actions, MLK_UTIL_SIZE(script_actions));
 
-	for (size_t i = 0; i < n; ++i) {
-		m[i].msg.x = QMX;
-		m[i].msg.y = QMY;
-		m[i].msg.w = QMW;
-		m[i].msg.delay = QMD;
-		m[i].msg.spacing = QMS;
+	for (size_t i = 0; i < msgsz; ++i) {
+		action = dialog_init(&msgs[i]);
 
-		message_start(&m[i].msg);
-		message_query(&m[i].msg, NULL, &m[i].msg.h);
-
-		if ((err = mlk_action_script_append(&script, &m[i].act)) < 0)
+		if ((err = mlk_action_script_append(&script, action)) < 0)
 			mlk_panicf("%s", mlk_err_string(err));
 	}
 
@@ -260,57 +225,19 @@ script_init_quest(struct item *m, size_t n)
 }
 
 static void
-script_init_quest1(struct chest *chest)
+script_left_run(struct chest *chest)
 {
 	(void)chest;
 
-	script_init_quest(quest1, MLK_UTIL_SIZE(quest1));
+	script_init(script_left, MLK_UTIL_SIZE(script_left));
 }
 
 static void
-script_init_quest2(struct chest *chest)
+script_right_run(struct chest *chest)
 {
 	(void)chest;
 
-	script_init_quest(quest2, MLK_UTIL_SIZE(quest2));
-}
-
-static void
-response_quest1_start(struct mlk_action *act)
-{
-	static const char *line;
-
-	struct message *question = &quest1[2].msg;
-	struct message *cur = act->data;
-
-	cur->linesz = 1;
-	cur->lines = &line;
-
-	if (question->index == 0)
-		 line = "Don't be so confident";
-	else
-		 line = "Nevermind, I'll do it myself";
-
-	message_query(cur, NULL, &cur->h);
-}
-
-static void
-response_quest2_start(struct mlk_action *act)
-{
-	static const char *line;
-
-	struct message *question = &quest2[1].msg;
-	struct message *cur = act->data;
-
-	cur->linesz = 1;
-	cur->lines = &line;
-
-	if (question->index == 0)
-		line = "Go away!";
-	else
-		line = "Install OpenBSD then";
-
-	message_query(cur, NULL, &cur->h);
+	script_init(script_right, MLK_UTIL_SIZE(script_right));
 }
 
 static void
@@ -328,11 +255,11 @@ chests_init(void)
 	align(ALIGN_CENTER, &chests[1].x, &chests[1].y, cw, ch,
 	    MLK_EXAMPLE_W / 2, 0, MLK_EXAMPLE_W / 2, MLK_EXAMPLE_H);
 
-	chests[0].run = script_init_quest1;
-	chests[1].run = script_init_quest2;
+	chests[0].run = script_left_run;
+	chests[1].run = script_right_run;
 
-	chest_init(&chests[0]);
-	chest_init(&chests[1]);
+	mlk_action_stack_add(&chests_stack, chest_init(&chests[0]));
+	mlk_action_stack_add(&chests_stack, chest_init(&chests[1]));
 }
 
 static void

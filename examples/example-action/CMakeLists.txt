@@ -22,6 +22,8 @@ set(
 	SOURCES
 	${example-action_SOURCE_DIR}/chest.c
 	${example-action_SOURCE_DIR}/chest.h
+	${example-action_SOURCE_DIR}/dialog.c
+	${example-action_SOURCE_DIR}/dialog.h
 	${example-action_SOURCE_DIR}/example-action.c
 )
 

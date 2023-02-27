@@ -37,10 +37,13 @@ void
 mlk_action_script_init(struct mlk_action_script *s, struct mlk_action **actions, size_t max)
 {
 	assert(s);
-	
+
 	s->actions = actions;
 	s->max = max;
 	s->size = s->cur = 0;
+
+	for (size_t i = 0; i < max; ++i)
+		s->actions[i] = NULL;
 }
 
 void

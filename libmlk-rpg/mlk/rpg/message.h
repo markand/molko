@@ -19,6 +19,8 @@
 #ifndef MLK_RPG_MESSAGE_H
 #define MLK_RPG_MESSAGE_H
 
+#include <stddef.h>
+
 #include <mlk/core/core.h>
 #include <mlk/core/texture.h>
 
