@@ -63,9 +63,9 @@ mlk_action_script_handle(struct mlk_action_script *s, const union mlk_event *ev)
 	assert(s);
 	assert(ev);
 
-	struct mlk_action *a = current(s);
+	struct mlk_action *a;
 
-	if (a)
+	if ((a = current(s)))
 		mlk_action_handle(a, ev);
 }
 
@@ -114,4 +114,6 @@ mlk_action_script_finish(struct mlk_action_script *s)
 
 	for (size_t i = 0; i < s->size; ++i)
 		mlk_action_finish(s->actions[i]);
+
+	memset(s, 0, sizeof (*s));
 }
