@@ -26,7 +26,7 @@ struct checkbox;
 struct mlk_font;
 struct frame;
 struct label;
-struct sprite;
+struct mlk_sprite;
 
 enum theme_font {
 	THEME_FONT_DEBUG,
@@ -50,7 +50,7 @@ enum theme_sprite {
 
 struct theme {
 	struct mlk_font *fonts[THEME_FONT_NUM];
-	const struct sprite *sprites[THEME_SPRITE_NUM];
+	const struct mlk_sprite *sprites[THEME_SPRITE_NUM];
 	unsigned long colors[THEME_COLOR_NUM];
 	unsigned int padding;
 

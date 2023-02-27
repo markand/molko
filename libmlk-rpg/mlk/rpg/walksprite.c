@@ -24,7 +24,7 @@
 #include "walksprite.h"
 
 void
-walksprite_init(struct walksprite *ws, struct sprite *sprite, unsigned int delay)
+walksprite_init(struct walksprite *ws, struct mlk_sprite *sprite, unsigned int delay)
 {
 	assert(ws);
 	assert(sprite);
@@ -65,5 +65,5 @@ walksprite_draw(const struct walksprite *ws, unsigned int orientation, int x, in
 	assert(ws);
 	assert(orientation < 8);
 
-	sprite_draw(ws->sprite, orientation, ws->index, x, y);
+	mlk_sprite_draw(ws->sprite, orientation, ws->index, x, y);
 }

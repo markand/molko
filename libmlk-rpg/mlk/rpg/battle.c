@@ -133,7 +133,7 @@ static void
 positionate_name(struct battle_entity *et, const struct battle *bt)
 {
 	unsigned int lw;
-	struct sprite *sprite;
+	struct mlk_sprite *sprite;
 
 	/* Show the character name below its sprite. */
 	sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];

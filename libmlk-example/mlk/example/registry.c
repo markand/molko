@@ -38,7 +38,7 @@
 
 struct texture registry_images[REGISTRY_IMAGE_NUM];
 struct texture registry_textures[REGISTRY_TEXTURE_NUM];
-struct sprite registry_sprites[REGISTRY_TEXTURE_NUM];
+struct mlk_sprite registry_sprites[REGISTRY_TEXTURE_NUM];
 struct mlk_sound registry_sounds[REGISTRY_SOUND_NUM];
 
 #define REGISTRY_IMAGE(i, data) \
@@ -97,15 +97,15 @@ load_textures_and_sprites(void)
 {
 	for (size_t i = 0; i < UTIL_SIZE(textures); ++i) {
 		struct texture *texture = &registry_textures[textures[i].index];
-		struct sprite *sprite = &registry_sprites[textures[i].index];
+		struct mlk_sprite *sprite = &registry_sprites[textures[i].index];
 
 		if (mlk_image_openmem(texture, textures[i].data, textures[i].datasz) < 0)
 			mlk_panic();
 
 		if (textures[i].cellw == 0 || textures[i].cellh == 0)
-			sprite_init(sprite, texture, texture->w, texture->h);
+			mlk_sprite_init(sprite, texture, texture->w, texture->h);
 		else
-			sprite_init(sprite, texture, textures[i].cellw, textures[i].cellh);
+			mlk_sprite_init(sprite, texture, textures[i].cellw, textures[i].cellh);
 	}
 }
 

@@ -36,7 +36,7 @@ draw(struct mlk_drawable *dw)
 }
 
 void
-mlk_animation_init(struct mlk_animation *an, const struct sprite *sprite, unsigned int delay)
+mlk_animation_init(struct mlk_animation *an, const struct mlk_sprite *sprite, unsigned int delay)
 {
 	assert(an);
 	assert(sprite);
@@ -99,7 +99,7 @@ mlk_animation_draw(const struct mlk_animation *an, int x, int y)
 {
 	assert(an);
 
-	return sprite_draw(an->sprite, an->row, an->column, x, y);
+	return mlk_sprite_draw(an->sprite, an->row, an->column, x, y);
 }
 
 void

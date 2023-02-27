@@ -116,7 +116,7 @@ static void
 draw_cursor(const struct battle *bt, const struct battle_entity *et)
 {
 	const struct theme *theme = BATTLE_THEME(bt);
-	const struct sprite *cursor = theme->sprites[THEME_SPRITE_CURSOR];
+	const struct mlk_sprite *cursor = theme->sprites[THEME_SPRITE_CURSOR];
 	int x, y;
 	unsigned int lh;
 
@@ -128,7 +128,7 @@ draw_cursor(const struct battle *bt, const struct battle_entity *et)
 	x = et->name.x - cursor->cellw - theme->padding;
 	y = et->name.y + (((int)(lh) - (int)(cursor->cellh)) / 2);
 
-	sprite_draw(cursor, 1, 2, x, y);
+	mlk_sprite_draw(cursor, 1, 2, x, y);
 }
 
 static void

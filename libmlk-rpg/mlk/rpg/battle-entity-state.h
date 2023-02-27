@@ -22,7 +22,7 @@
 #include <mlk/core/core.h>
 
 struct battle_entity;
-struct sprite;
+struct mlk_sprite;
 
 struct battle_entity_state {
 	void *data;

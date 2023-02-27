@@ -55,7 +55,7 @@ draw(struct mlk_drawable *dw)
 {
 	const struct self *self = dw->data;
 	const struct battle_entity *et = self->battle->enemies[self->selection];
-	const struct sprite *sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
+	const struct mlk_sprite *sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
 	int x, y;
 
 	align(ALIGN_CENTER,

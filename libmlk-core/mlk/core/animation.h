@@ -22,10 +22,10 @@
 #include "core.h"
 
 struct mlk_drawable;
-struct sprite;
+struct mlk_sprite;
 
 struct mlk_animation {
-	const struct sprite *sprite;
+	const struct mlk_sprite *sprite;
 	unsigned int row;
 	unsigned int column;
 	unsigned int delay;
@@ -35,7 +35,7 @@ struct mlk_animation {
 MLK_CORE_BEGIN_DECLS
 
 void
-mlk_animation_init(struct mlk_animation *, const struct sprite *, unsigned int);
+mlk_animation_init(struct mlk_animation *, const struct mlk_sprite *, unsigned int);
 
 void
 mlk_animation_start(struct mlk_animation *);

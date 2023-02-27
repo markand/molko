@@ -22,14 +22,14 @@
 #include <mlk/core/animation.h>
 
 struct battle_entity;
-struct sprite;
+struct mlk_sprite;
 
 struct battle_entity_state_attacking {
 	struct mlk_animation anim;
 };
 
 void
-battle_entity_state_attacking_init(struct battle_entity_state_attacking *, const struct sprite *);
+battle_entity_state_attacking_init(struct battle_entity_state_attacking *, const struct mlk_sprite *);
 
 int
 battle_entity_state_attacking_update(struct battle_entity_state_attacking *, unsigned int);
@@ -38,6 +38,6 @@ void
 battle_entity_state_attacking_draw(const struct battle_entity_state_attacking *, const struct battle_entity *);
 
 void
-battle_entity_state_attacking(struct battle_entity *, const struct sprite *);
+battle_entity_state_attacking(struct battle_entity *, const struct mlk_sprite *);
 
 #endif /* !MLK_RPG_BATTLE_ENTITY_STATE_ATTACKING_H */

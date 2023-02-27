@@ -23,7 +23,7 @@
 
 struct texture;
 
-struct sprite {
+struct mlk_sprite {
 	struct texture *texture;
 	unsigned int cellw;
 	unsigned int cellh;
@@ -34,16 +34,16 @@ struct sprite {
 MLK_CORE_BEGIN_DECLS
 
 void
-sprite_init(struct sprite *, struct texture *, unsigned int, unsigned int);
+mlk_sprite_init(struct mlk_sprite *, struct texture *, unsigned int, unsigned int);
 
 int
-sprite_ok(const struct sprite *);
+mlk_sprite_ok(const struct mlk_sprite *);
 
 int
-sprite_draw(const struct sprite *, unsigned int, unsigned int, int, int);
+mlk_sprite_draw(const struct mlk_sprite *, unsigned int, unsigned int, int, int);
 
 int
-sprite_scale(const struct sprite *,
+mlk_sprite_scale(const struct mlk_sprite *,
              unsigned int,
              unsigned int,
              int,

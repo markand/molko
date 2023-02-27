@@ -75,7 +75,7 @@ struct map {
 	struct mlk_action_stack astack_seq; /*!< (+) Blocking actions. */
 
 	/* Player. */
-	struct sprite *player_sprite;   /*!< (+) The sprite to use */
+	struct mlk_sprite *player_sprite;   /*!< (+) The sprite to use */
 	struct walksprite player_ws;    /*!< (-) Walking sprite for moving the player. */
 	int player_x;                   /*!< (+) Player position in x */
 	int player_y;                   /*!< (+) Player position in y */

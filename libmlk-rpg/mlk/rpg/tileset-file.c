@@ -66,7 +66,7 @@
 
 struct tileset_animation_block {
 	struct texture texture;
-	struct sprite sprite;
+	struct mlk_sprite sprite;
 	struct mlk_animation animation;
 };
 
@@ -196,7 +196,7 @@ parse_animations(struct context *ctx, const char *line)
 		if (mlk_image_open(&anim->texture, util_pathf("%s/%s", ctx->basedir, filename)) < 0)
 			return -1;
 
-		sprite_init(&anim->sprite, &anim->texture, ctx->tilewidth, ctx->tileheight);
+		mlk_sprite_init(&anim->sprite, &anim->texture, ctx->tilewidth, ctx->tileheight);
 		mlk_animation_init(&anim->animation, &anim->sprite, delay);
 	}
 
@@ -239,7 +239,7 @@ parse_image(struct context *ctx, const char *line)
 	if (mlk_image_open(&ctx->tf->image, util_pathf("%s/%s", ctx->basedir, p + 1)) < 0)
 		return -1;
 
-	sprite_init(&ctx->tf->sprite, &ctx->tf->image, ctx->tilewidth, ctx->tileheight);
+	mlk_sprite_init(&ctx->tf->sprite, &ctx->tf->image, ctx->tilewidth, ctx->tileheight);
 	ctx->tileset->sprite = &ctx->tf->sprite;
 
 	return 0;

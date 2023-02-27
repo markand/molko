@@ -25,7 +25,7 @@
 
 struct battle;
 struct save;
-struct sprite;
+struct mlk_sprite;
 struct spell;
 
 enum character_status {
@@ -76,7 +76,7 @@ struct character {
 	unsigned int luckbonus;
 	unsigned int team_order;
 
-	struct sprite *sprites[CHARACTER_SPRITE_NUM];
+	struct mlk_sprite *sprites[CHARACTER_SPRITE_NUM];
 	const struct equipment *equipments[CHARACTER_EQUIPMENT_NUM];
 	const struct spell *spells[CHARACTER_SPELL_MAX];
 

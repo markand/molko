@@ -33,7 +33,7 @@ struct tileset_file {
 	struct mlk_alloc_pool tiledefs;
 	struct mlk_alloc_pool anims[2];
 	struct texture image;
-	struct sprite sprite;
+	struct mlk_sprite sprite;
 };
 
 MLK_CORE_BEGIN_DECLS

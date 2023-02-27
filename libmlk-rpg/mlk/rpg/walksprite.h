@@ -21,7 +21,7 @@
 
 #include <mlk/core/core.h>
 
-struct sprite;
+struct mlk_sprite;
 
 /**
  * \brief Sprite designed for walking entities.
@@ -54,7 +54,7 @@ struct sprite;
  * ```
  */
 struct walksprite {
-	struct sprite *sprite;
+	struct mlk_sprite *sprite;
 	unsigned int delay;
 	unsigned int index;
 	unsigned int elapsed;
@@ -63,7 +63,7 @@ struct walksprite {
 MLK_CORE_BEGIN_DECLS
 
 void
-walksprite_init(struct walksprite *, struct sprite *, unsigned int);
+walksprite_init(struct walksprite *, struct mlk_sprite *, unsigned int);
 
 void
 walksprite_reset(struct walksprite *);

@@ -65,10 +65,10 @@ static void
 fadeout_draw(struct mlk_drawable *dw)
 {
 	const struct fadeout *fade = dw->data;
-	struct sprite *sprite = fade->ch->sprites[CHARACTER_SPRITE_NORMAL];
+	struct mlk_sprite *sprite = fade->ch->sprites[CHARACTER_SPRITE_NORMAL];
 
 	texture_set_alpha_mod(sprite->texture, fade->alpha);
-	sprite_draw(sprite, 0, 0, fade->x, fade->y);
+	mlk_sprite_draw(sprite, 0, 0, fade->x, fade->y);
 	texture_set_alpha_mod(sprite->texture, 255);
 }
 

@@ -23,7 +23,7 @@
 
 #include <mlk/core/core.h>
 
-struct sprite;
+struct mlk_sprite;
 
 struct tileset_tiledef {
 	unsigned short id;
@@ -43,7 +43,7 @@ struct tileset {
 	size_t tiledefsz;
 	struct tileset_animation *anims;
 	size_t animsz;
-	struct sprite *sprite;
+	struct mlk_sprite *sprite;
 };
 
 MLK_CORE_BEGIN_DECLS

@@ -45,7 +45,7 @@
 
 static char msg[512];
 static struct texture texture;
-static struct sprite sprite;
+static struct mlk_sprite sprite;
 static unsigned int row, column;
 static struct state *states[1];
 
@@ -72,7 +72,7 @@ init(void)
 	if (mlk_image_openmem(&texture, assets_sprites_people, sizeof (assets_sprites_people)) < 0)
 		mlk_panic();
 
-	sprite_init(&sprite, &texture, 48, 48);
+	mlk_sprite_init(&sprite, &texture, 48, 48);
 }
 
 static void
@@ -123,7 +123,7 @@ draw(struct state *st)
 	mlk_painter_set_color(0xebede9ff);
 	mlk_painter_clear();
 	align(ALIGN_CENTER, &x, &y, sprite.cellw, sprite.cellh, 0, 0, W, H);
-	sprite_draw(&sprite, row, column, x, y);
+	mlk_sprite_draw(&sprite, row, column, x, y);
 	label_draw(&help);
 	mlk_painter_present();
 }

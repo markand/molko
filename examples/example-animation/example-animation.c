@@ -48,7 +48,7 @@ static struct label label = {
 static struct state *states[1];
 static struct texture numbers;
 static struct mlk_animation animation;
-static struct sprite sprite;
+static struct mlk_sprite sprite;
 static int completed = 1;
 
 static void
@@ -119,7 +119,7 @@ run(void)
 		.draw = draw
 	};
 
-	sprite_init(&sprite, &numbers, 48, 48);
+	mlk_sprite_init(&sprite, &numbers, 48, 48);
 	mlk_animation_init(&animation, &sprite, 1000);
 
 	mlk_game_init(states, UTIL_SIZE(states));

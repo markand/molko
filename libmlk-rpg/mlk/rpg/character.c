@@ -30,7 +30,7 @@
 int
 character_ok(const struct character *ch)
 {
-	return ch && ch->name && ch->reset && sprite_ok(ch->sprites[CHARACTER_SPRITE_NORMAL]);
+	return ch && ch->name && ch->reset && mlk_sprite_ok(ch->sprites[CHARACTER_SPRITE_NORMAL]);
 }
 
 const char *

@@ -22,7 +22,7 @@
 #include "texture.h"
 
 void
-sprite_init(struct sprite *sprite,
+mlk_sprite_init(struct mlk_sprite *sprite,
             struct texture *tex,
             unsigned int cellw,
             unsigned int cellh)
@@ -38,19 +38,19 @@ sprite_init(struct sprite *sprite,
 }
 
 int
-sprite_ok(const struct sprite *sprite)
+mlk_sprite_ok(const struct mlk_sprite *sprite)
 {
 	return sprite && texture_ok(sprite->texture) && sprite->cellw != 0 && sprite->cellh != 0;
 }
 
 int
-sprite_draw(const struct sprite *sprite, unsigned int r, unsigned int c, int x, int y)
+mlk_sprite_draw(const struct mlk_sprite *sprite, unsigned int r, unsigned int c, int x, int y)
 {
-	return sprite_scale(sprite, r, c, x, y, sprite->cellw, sprite->cellh);
+	return mlk_sprite_scale(sprite, r, c, x, y, sprite->cellw, sprite->cellh);
 }
 
 int
-sprite_scale(const struct sprite *sprite,
+mlk_sprite_scale(const struct mlk_sprite *sprite,
 	     unsigned int r,
 	     unsigned int c,
 	     int x,
@@ -58,7 +58,7 @@ sprite_scale(const struct sprite *sprite,
 	     unsigned int w,
 	     unsigned int h)
 {
-	assert(sprite_ok(sprite));
+	assert(mlk_sprite_ok(sprite));
 	assert(r < sprite->nrows);
 	assert(c < sprite->ncols);
 

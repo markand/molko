@@ -84,7 +84,7 @@ battle_entity_update(struct battle_entity *et, unsigned int ticks)
 void
 battle_entity_draw_sprite(const struct battle_entity *et)
 {
-	struct sprite *sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
+	struct mlk_sprite *sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
 	int row;
 
 	/*
@@ -97,7 +97,7 @@ battle_entity_draw_sprite(const struct battle_entity *et)
 	else
 		row = 0;
 
-	sprite_draw(sprite, row, 0, et->x, et->y);
+	mlk_sprite_draw(sprite, row, 0, et->x, et->y);
 }
 
 void

@@ -56,10 +56,10 @@ finish(struct battle_entity_state *st, struct battle_entity *et)
 }
 
 void
-battle_entity_state_attacking_init(struct battle_entity_state_attacking *atk, const struct sprite *which)
+battle_entity_state_attacking_init(struct battle_entity_state_attacking *atk, const struct mlk_sprite *which)
 {
 	assert(atk);
-	assert(sprite_ok(which));
+	assert(mlk_sprite_ok(which));
 
 	mlk_animation_init(&atk->anim, which, 100);
 	mlk_animation_start(&atk->anim);
@@ -83,10 +83,10 @@ battle_entity_state_attacking_draw(const struct battle_entity_state_attacking *a
 }
 
 void
-battle_entity_state_attacking(struct battle_entity *et, const struct sprite *which)
+battle_entity_state_attacking(struct battle_entity *et, const struct mlk_sprite *which)
 {
 	assert(battle_entity_ok(et));
-	assert(sprite_ok(which));
+	assert(mlk_sprite_ok(which));
 
 	struct self *self;
 

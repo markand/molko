@@ -51,7 +51,7 @@ find(const struct tileset *ts, unsigned int r, unsigned int c)
 int
 tileset_ok(const struct tileset *ts)
 {
-	return ts && sprite_ok(ts->sprite);
+	return ts && mlk_sprite_ok(ts->sprite);
 }
 
 void
@@ -89,5 +89,5 @@ tileset_draw(const struct tileset *ts, unsigned int r, unsigned int c, int x, in
 	if ((ta = find(ts, r, c)))
 		mlk_animation_draw(ta->animation, x, y);
 	else
-		sprite_draw(ts->sprite, r, c, x, y);
+		mlk_sprite_draw(ts->sprite, r, c, x, y);
 }

@@ -64,7 +64,7 @@ static struct mlk_drawable_stack stack;
 
 /* 0: Explosion animation. */
 static struct texture explosion_tex;
-static struct sprite explosion_sprite;
+static struct mlk_sprite explosion_sprite;
 
 struct explosion {
 	struct mlk_animation anim;
@@ -83,7 +83,7 @@ init(void)
 	if (mlk_image_openmem(&explosion_tex, assets_sprites_explosion, sizeof (assets_sprites_explosion)) < 0)
 		mlk_panic();
 
-	sprite_init(&explosion_sprite, &explosion_tex, 256, 256);
+	mlk_sprite_init(&explosion_sprite, &explosion_tex, 256, 256);
 }
 
 static int
