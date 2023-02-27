@@ -24,15 +24,15 @@
 #include "core.h"
 #include "inhibit.h"
 
-struct state;
+struct mlk_state;
 
 union mlk_event;
 
 struct mlk_game {
 	enum mlk_inhibit inhibit;
-	struct state **states;
+	struct mlk_state **states;
 	size_t statesz;
-	struct state **state;
+	struct mlk_state **state;
 };
 
 extern struct mlk_game game;
@@ -40,10 +40,10 @@ extern struct mlk_game game;
 MLK_CORE_BEGIN_DECLS
 
 void
-mlk_game_init(struct state **, size_t);
+mlk_game_init(struct mlk_state **, size_t);
 
 void
-mlk_game_push(struct state *);
+mlk_game_push(struct mlk_state *);
 
 void
 mlk_game_pop(void);

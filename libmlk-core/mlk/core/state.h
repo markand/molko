@@ -23,43 +23,43 @@
 
 union mlk_event;
 
-struct state {
+struct mlk_state {
 	void *data;
-	void (*start)(struct state *);
-	void (*handle)(struct state *, const union mlk_event *);
-	void (*update)(struct state *, unsigned int);
-	void (*draw)(struct state *);
-	void (*suspend)(struct state *);
-	void (*resume)(struct state *);
-	void (*end)(struct state *);
-	void (*finish)(struct state *);
+	void (*start)(struct mlk_state *);
+	void (*handle)(struct mlk_state *, const union mlk_event *);
+	void (*update)(struct mlk_state *, unsigned int);
+	void (*draw)(struct mlk_state *);
+	void (*suspend)(struct mlk_state *);
+	void (*resume)(struct mlk_state *);
+	void (*end)(struct mlk_state *);
+	void (*finish)(struct mlk_state *);
 };
 
 MLK_CORE_BEGIN_DECLS
 
 void
-state_start(struct state *);
+mlk_state_start(struct mlk_state *);
 
 void
-state_handle(struct state *, const union mlk_event *);
+mlk_state_handle(struct mlk_state *, const union mlk_event *);
 
 void
-state_update(struct state *, unsigned int);
+mlk_state_update(struct mlk_state *, unsigned int);
 
 void
-state_draw(struct state *);
+mlk_state_draw(struct mlk_state *);
 
 void
-state_suspend(struct state *);
+mlk_state_suspend(struct mlk_state *);
 
 void
-state_resume(struct state *);
+mlk_state_resume(struct mlk_state *);
 
 void
-state_end(struct state *);
+mlk_state_end(struct mlk_state *);
 
 void
-state_finish(struct state *);
+mlk_state_finish(struct mlk_state *);
 
 MLK_CORE_END_DECLS
 

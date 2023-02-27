@@ -43,7 +43,7 @@
 #define MX      ((W / 2) - (MW / 2))
 #define MY      (100)
 
-static struct state *states[1];
+static struct mlk_state *states[1];
 
 static void
 init(void)
@@ -64,7 +64,7 @@ quit(void)
 }
 
 static void
-handle(struct state *st, const union mlk_event *ev)
+handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	switch (ev->type) {
 	case MLK_EVENT_QUIT:
@@ -77,14 +77,14 @@ handle(struct state *st, const union mlk_event *ev)
 }
 
 static void
-update(struct state *st, unsigned int ticks)
+update(struct mlk_state *st, unsigned int ticks)
 {
 	if (message_update(st->data, ticks))
 		mlk_game_quit();
 }
 
 static void
-draw(struct state *st)
+draw(struct mlk_state *st)
 {
 	mlk_painter_set_color(0xffffffff);
 	mlk_painter_clear();
@@ -95,7 +95,7 @@ draw(struct state *st)
 static void
 run(struct message *msg)
 {
-	struct state state = {
+	struct mlk_state state = {
 		.data = msg,
 		.handle = handle,
 		.update = update,

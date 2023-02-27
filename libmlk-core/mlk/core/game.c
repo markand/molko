@@ -29,7 +29,7 @@
 struct mlk_game game = {0};
 
 void
-mlk_game_init(struct state **states, size_t statesz)
+mlk_game_init(struct mlk_state **states, size_t statesz)
 {
 	assert(states);
 	assert(statesz);
@@ -44,17 +44,17 @@ mlk_game_init(struct state **states, size_t statesz)
 }
 
 void
-mlk_game_push(struct state *state)
+mlk_game_push(struct mlk_state *state)
 {
 	assert(state);
 	assert(!game.state || game.state != &game.states[game.statesz - 1]);
 
 	if (!game.state) {
 		game.state = &game.states[0];
-		state_start(*game.state = state);
+		mlk_state_start(*game.state = state);
 	} else {
-		state_suspend(*game.state);
-		state_start(*(++game.state) = state);
+		mlk_state_suspend(*game.state);
+		mlk_state_start(*(++game.state) = state);
 	}
 }
 
@@ -63,13 +63,13 @@ mlk_game_pop(void)
 {
 	assert(game.state);
 
-	state_end(*game.state);
-	state_finish(*game.state);
+	mlk_state_end(*game.state);
+	mlk_state_finish(*game.state);
 
 	if (game.state == game.states)
 		game.state = NULL;
 	else
-		state_resume(*--game.state);
+		mlk_state_resume(*--game.state);
 }
 
 void
@@ -78,21 +78,21 @@ mlk_game_handle(const union mlk_event *ev)
 	assert(ev);
 
 	if (*game.state && !(game.inhibit & MLK_INHIBIT_STATE_INPUT))
-		state_handle(*game.state, ev);
+		mlk_state_handle(*game.state, ev);
 }
 
 void
 mlk_game_update(unsigned int ticks)
 {
 	if (*game.state && !(game.inhibit & MLK_INHIBIT_STATE_UPDATE))
-		state_update(*game.state, ticks);
+		mlk_state_update(*game.state, ticks);
 }
 
 void
 mlk_game_draw(void)
 {
 	if (*game.state && !(game.inhibit & MLK_INHIBIT_STATE_DRAW))
-		state_draw(*game.state);
+		mlk_state_draw(*game.state);
 }
 
 void
@@ -133,7 +133,7 @@ mlk_game_quit(void)
 {
 	for (size_t i = 0; i < game.statesz; ++i) {
 		if (game.states[i])
-			state_finish(game.states[i]);
+			mlk_state_finish(game.states[i]);
 
 		game.states[i] = NULL;
 	}

@@ -141,8 +141,8 @@ init(void)
 	theme_default()->sprites[THEME_SPRITE_CURSOR] = &registry_sprites[REGISTRY_TEXTURE_CURSOR];
 }
 
-static struct state *states[2];
-static struct state fight_state;
+static struct mlk_state *states[2];
+static struct mlk_state fight_state;
 
 static struct {
 	struct character ch;
@@ -230,7 +230,7 @@ prepare_to_fight(void)
 }
 
 static void
-empty_handle(struct state *st, const union mlk_event *ev)
+empty_handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
 
@@ -248,7 +248,7 @@ empty_handle(struct state *st, const union mlk_event *ev)
 }
 
 static void
-empty_draw(struct state *st)
+empty_draw(struct mlk_state *st)
 {
 	(void)st;
 
@@ -265,13 +265,13 @@ empty_draw(struct state *st)
 	mlk_painter_present();
 }
 
-static struct state empty_state = {
+static struct mlk_state empty_state = {
 	.handle = empty_handle,
 	.draw = empty_draw
 };
 
 static void
-fight_handle(struct state *st, const union mlk_event *ev)
+fight_handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
 
@@ -279,7 +279,7 @@ fight_handle(struct state *st, const union mlk_event *ev)
 }
 
 static void
-fight_update(struct state *st, unsigned int ticks)
+fight_update(struct mlk_state *st, unsigned int ticks)
 {
 	(void)st;
 
@@ -288,7 +288,7 @@ fight_update(struct state *st, unsigned int ticks)
 }
 
 static void
-fight_draw(struct state *st)
+fight_draw(struct mlk_state *st)
 {
 	(void)st;
 
@@ -299,7 +299,7 @@ fight_draw(struct state *st)
 }
 
 static void
-fight_finish(struct state *st)
+fight_finish(struct mlk_state *st)
 {
 	(void)st;
 
@@ -308,7 +308,7 @@ fight_finish(struct state *st)
 	battle_finish(&bt);
 }
 
-static struct state fight_state = {
+static struct mlk_state fight_state = {
 	.handle = fight_handle,
 	.update = fight_update,
 	.draw = fight_draw,

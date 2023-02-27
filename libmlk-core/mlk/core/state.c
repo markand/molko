@@ -21,7 +21,7 @@
 #include "state.h"
 
 void
-state_start(struct state *state)
+mlk_state_start(struct mlk_state *state)
 {
 	assert(state);
 
@@ -30,7 +30,7 @@ state_start(struct state *state)
 }
 
 void
-state_handle(struct state *state, const union mlk_event *ev)
+mlk_state_handle(struct mlk_state *state, const union mlk_event *ev)
 {
 	assert(state);
 	assert(ev);
@@ -40,7 +40,7 @@ state_handle(struct state *state, const union mlk_event *ev)
 }
 
 void
-state_update(struct state *state, unsigned int ticks)
+mlk_state_update(struct mlk_state *state, unsigned int ticks)
 {
 	assert(state);
 
@@ -49,7 +49,7 @@ state_update(struct state *state, unsigned int ticks)
 }
 
 void
-state_draw(struct state *state)
+mlk_state_draw(struct mlk_state *state)
 {
 	assert(state);
 
@@ -58,7 +58,7 @@ state_draw(struct state *state)
 }
 
 void
-state_suspend(struct state *state)
+mlk_state_suspend(struct mlk_state *state)
 {
 	assert(state);
 
@@ -67,7 +67,7 @@ state_suspend(struct state *state)
 }
 
 void
-state_resume(struct state *state)
+mlk_state_resume(struct mlk_state *state)
 {
 	assert(state);
 
@@ -76,7 +76,7 @@ state_resume(struct state *state)
 }
 
 void
-state_end(struct state *state)
+mlk_state_end(struct mlk_state *state)
 {
 	assert(state);
 
@@ -85,7 +85,7 @@ state_end(struct state *state)
 }
 
 void
-state_finish(struct state *state)
+mlk_state_finish(struct mlk_state *state)
 {
 	assert(state);
 

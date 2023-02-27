@@ -32,7 +32,7 @@
 #define W 1280
 #define H 720
 
-static struct state *states[1];
+static struct mlk_state *states[1];
 static int mouse_x;
 static int mouse_y;
 
@@ -48,7 +48,7 @@ init(void)
 }
 
 static void
-handle(struct state *st, const union mlk_event *ev)
+handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
 
@@ -66,7 +66,7 @@ handle(struct state *st, const union mlk_event *ev)
 }
 
 static void
-draw(struct state *st)
+draw(struct mlk_state *st)
 {
 	(void)st;
 
@@ -82,7 +82,7 @@ draw(struct state *st)
 static void
 run(void)
 {
-	struct state state = {
+	struct mlk_state state = {
 		.handle = handle,
 		.draw = draw
 	};

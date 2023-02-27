@@ -36,16 +36,16 @@ struct invokes {
 	unsigned int finish;
 };
 
-static struct state *mainstates[16];
+static struct mlk_state *mainstates[16];
 
 static void
-my_start(struct state *state)
+my_start(struct mlk_state *state)
 {
 	((struct invokes *)state->data)->start++;
 }
 
 static void
-my_handle(struct state *state, const union mlk_event *ev)
+my_handle(struct mlk_state *state, const union mlk_event *ev)
 {
 	(void)ev;
 
@@ -53,7 +53,7 @@ my_handle(struct state *state, const union mlk_event *ev)
 }
 
 static void
-my_update(struct state *state, unsigned int ticks)
+my_update(struct mlk_state *state, unsigned int ticks)
 {
 	(void)ticks;
 
@@ -61,31 +61,31 @@ my_update(struct state *state, unsigned int ticks)
 }
 
 static void
-my_draw(struct state *state)
+my_draw(struct mlk_state *state)
 {
 	((struct invokes *)state->data)->draw++;
 }
 
 static void
-my_suspend(struct state *state)
+my_suspend(struct mlk_state *state)
 {
 	((struct invokes *)state->data)->suspend++;
 }
 
 static void
-my_resume(struct state *state)
+my_resume(struct mlk_state *state)
 {
 	((struct invokes *)state->data)->resume++;
 }
 
 static void
-my_end(struct state *state)
+my_end(struct mlk_state *state)
 {
 	((struct invokes *)state->data)->end++;
 }
 
 static void
-my_finish(struct state *state)
+my_finish(struct mlk_state *state)
 {
 	((struct invokes *)state->data)->finish++;
 }
@@ -106,9 +106,9 @@ static void
 test_basics_start(void)
 {
 	struct invokes inv = {0};
-	struct state state = INIT(&inv);
+	struct mlk_state state = INIT(&inv);
 
-	state_start(&state);
+	mlk_state_start(&state);
 	DT_EQ_UINT(inv.start, 1U);
 	DT_EQ_UINT(inv.handle, 0U);
 	DT_EQ_UINT(inv.update, 0U);
@@ -121,9 +121,9 @@ static void
 test_basics_handle(void)
 {
 	struct invokes inv = {0};
-	struct state state = INIT(&inv);
+	struct mlk_state state = INIT(&inv);
 
-	state_handle(&state, &(const union mlk_event){0});
+	mlk_state_handle(&state, &(const union mlk_event){0});
 	DT_EQ_UINT(inv.start, 0U);
 	DT_EQ_UINT(inv.handle, 1U);
 	DT_EQ_UINT(inv.update, 0U);
@@ -136,9 +136,9 @@ static void
 test_basics_update(void)
 {
 	struct invokes inv = {0};
-	struct state state = INIT(&inv);
+	struct mlk_state state = INIT(&inv);
 
-	state_update(&state, 0);
+	mlk_state_update(&state, 0);
 	DT_EQ_UINT(inv.start, 0U);
 	DT_EQ_UINT(inv.handle, 0U);
 	DT_EQ_UINT(inv.update, 1U);
@@ -151,9 +151,9 @@ static void
 test_basics_draw(void)
 {
 	struct invokes inv = {0};
-	struct state state = INIT(&inv);
+	struct mlk_state state = INIT(&inv);
 
-	state_draw(&state);
+	mlk_state_draw(&state);
 	DT_EQ_UINT(inv.start, 0U);
 	DT_EQ_UINT(inv.handle, 0U);
 	DT_EQ_UINT(inv.update, 0U);
@@ -166,9 +166,9 @@ static void
 test_basics_end(void)
 {
 	struct invokes inv = {0};
-	struct state state = INIT(&inv);
+	struct mlk_state state = INIT(&inv);
 
-	state_end(&state);
+	mlk_state_end(&state);
 	DT_EQ_UINT(inv.start, 0U);
 	DT_EQ_UINT(inv.handle, 0U);
 	DT_EQ_UINT(inv.update, 0U);
@@ -181,9 +181,9 @@ static void
 test_basics_finish(void)
 {
 	struct invokes inv = {0};
-	struct state state = INIT(&inv);
+	struct mlk_state state = INIT(&inv);
 
-	state_finish(&state);
+	mlk_state_finish(&state);
 	DT_EQ_UINT(inv.start, 0U);
 	DT_EQ_UINT(inv.handle, 0U);
 	DT_EQ_UINT(inv.update, 0U);
@@ -197,7 +197,7 @@ test_basics_game(void)
 {
 	static struct {
 		struct invokes inv;
-		struct state state;
+		struct mlk_state state;
 	} states[] = {
 		{ .state = INIT(&states[0].inv) },
 		{ .state = INIT(&states[1].inv) }
