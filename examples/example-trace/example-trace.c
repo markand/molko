@@ -41,9 +41,9 @@ static void
 init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-trace") < 0 || ui_init() < 0)
-		panic();
+		mlk_panic();
 	if (window_open("Example - Trace", W, H) < 0)
-		panic();
+		mlk_panic();
 
 	trace_handler = trace_hud_handler;
 }

@@ -124,9 +124,9 @@ static void
 init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-ui") < 0 || ui_init() < 0)
-		panic();
+		mlk_panic();
 	if (window_open("Example - UI", W, H) < 0)
-		panic();
+		mlk_panic();
 }
 
 static void

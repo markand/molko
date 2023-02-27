@@ -275,7 +275,7 @@ static void
 guide_init(void)
 {
 	if (mlk_image_openmem(&guide.image, assets_sprites_people, sizeof (assets_sprites_people)) < 0)
-		panic();
+		mlk_panic();
 
 	sprite_init(&guide.sprite, &guide.image, 48, 48);
 
@@ -323,7 +323,7 @@ static void
 chest_init(void)
 {
 	if (mlk_image_openmem(&chest.image, assets_sprites_chest, sizeof (assets_sprites_chest)) < 0)
-		panic();
+		mlk_panic();
 
 	sprite_init(&chest.sprite, &chest.image, 32, 32);
 
@@ -337,9 +337,9 @@ static void
 init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-action") < 0 || ui_init() < 0 || rpg_init() < 0)
-		panic();
+		mlk_panic();
 	if (window_open("Example - Action", W, H) < 0)
-		panic();
+		mlk_panic();
 
 	guide_init();
 	chest_init();

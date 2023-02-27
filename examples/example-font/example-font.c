@@ -54,9 +54,9 @@ static void
 init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-font") < 0 || ui_init() < 0)
-		panic();
+		mlk_panic();
 	if (window_open("Example - Font", W, H) < 0)
-		panic();
+		mlk_panic();
 }
 
 static void
@@ -106,7 +106,7 @@ draw(struct state *st)
 	mlk_painter_clear();
 
 	if (mlk_font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]) < 0)
-		panic();
+		mlk_panic();
 
 	texture_draw(&tex, 10, 10);
 	mlk_painter_present();

@@ -66,11 +66,11 @@ static void
 init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-sprite") < 0 || ui_init() < 0)
-		panic();
+		mlk_panic();
 	if (window_open("Example - Sprite", W, H) < 0)
-		panic();
+		mlk_panic();
 	if (mlk_image_openmem(&texture, assets_sprites_people, sizeof (assets_sprites_people)) < 0)
-		panic();
+		mlk_panic();
 
 	sprite_init(&sprite, &texture, 48, 48);
 }

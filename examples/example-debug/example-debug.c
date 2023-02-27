@@ -40,9 +40,9 @@ static void
 init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-debug") < 0 || ui_init() < 0)
-		panic();
+		mlk_panic();
 	if (window_open("Example - Debug", W, H) < 0)
-		panic();
+		mlk_panic();
 
 	debug_options.enable = 1;
 }

@@ -88,7 +88,7 @@ load_images(void)
 		struct texture *texture = &registry_images[images[i].index];
 
 		if (mlk_image_openmem(texture, images[i].data, images[i].datasz) < 0)
-			panic();
+			mlk_panic();
 	}
 }
 
@@ -100,7 +100,7 @@ load_textures_and_sprites(void)
 		struct sprite *sprite = &registry_sprites[textures[i].index];
 
 		if (mlk_image_openmem(texture, textures[i].data, textures[i].datasz) < 0)
-			panic();
+			mlk_panic();
 
 		if (textures[i].cellw == 0 || textures[i].cellh == 0)
 			sprite_init(sprite, texture, texture->w, texture->h);
@@ -116,7 +116,7 @@ load_sounds(void)
 		struct sound *sound = &registry_sounds[sounds[i].index];
 
 		if (sound_openmem(sound, sounds[i].data, sounds[i].datasz) < 0)
-			panic();
+			mlk_panic();
 	}
 }
 

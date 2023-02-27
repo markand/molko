@@ -89,7 +89,7 @@ min_width(const struct message *msg)
 		if (!msg->lines[i])
 			continue;
 		if (mlk_font_query(THEME(msg)->fonts[THEME_FONT_INTERFACE], msg->lines[i], &w, NULL) < 0)
-			panic();
+			mlk_panic();
 		if (w > maxw)
 			maxw = w;
 	}
@@ -119,7 +119,7 @@ draw_lines(const struct message *msg)
 		if (!msg->lines[i])
 			continue;
 		if (mlk_font_query(theme->fonts[THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh) < 0)
-			panic();
+			mlk_panic();
 
 		label.theme = theme;
 		label.x = theme->padding;
@@ -272,7 +272,7 @@ message_draw(const struct message *msg)
 	}
 
 	if (texture_new(&tex, msg->w, msg->h) < 0)
-		panic();
+		mlk_panic();
 
 	MLK_PAINTER_BEGIN(&tex);
 	draw_frame(msg);

@@ -42,7 +42,7 @@ panic_alloc(size_t size)
 	void *mem;
 
 	if (!(mem = malloc(size)))
-		panicf(OOM_MSG);
+		mlk_panicf(OOM_MSG);
 
 	return mem;
 }
@@ -53,7 +53,7 @@ panic_realloc(void *ptr, size_t size)
 	void *mem;
 
 	if (!(mem = realloc(ptr, size)) && size != 0)
-		panicf(OOM_MSG);
+		mlk_panicf(OOM_MSG);
 
 	return mem;
 }

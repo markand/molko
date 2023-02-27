@@ -60,12 +60,12 @@ static void
 init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-audio") < 0 || ui_init() < 0)
-		panic();
+		mlk_panic();
 	if (window_open("Example - Audio", W, H) < 0)
-		panic();
+		mlk_panic();
 	if (mlk_music_openmem(&music, assets_music_vabsounds_romance, sizeof (assets_music_vabsounds_romance)) < 0 ||
 	    sound_openmem(&sound, assets_sounds_fire, sizeof (assets_sounds_fire)) < 0)
-		panic();
+		mlk_panic();
 }
 
 static void
@@ -84,7 +84,7 @@ handle(struct state *st, const union mlk_event *ev)
 	switch (ev->type) {
 	case MLK_EVENT_CLICKDOWN:
 		if (sound_play(&sound) < 0)
-			panic();
+			mlk_panic();
 		break;
 	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {

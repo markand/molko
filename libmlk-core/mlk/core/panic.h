@@ -24,18 +24,17 @@
 #include "core.h"
 
 extern void (*panic_handler)(void);
-extern void *panic_data;
 
 MLK_CORE_BEGIN_DECLS
 
 void
-panicf(const char *, ...);
+mlk_panicf(const char *, ...);
 
 void
-panicva(const char *, va_list);
+mlk_panicva(const char *, va_list);
 
 void
-panic(void);
+mlk_panic(void);
 
 MLK_CORE_END_DECLS
 

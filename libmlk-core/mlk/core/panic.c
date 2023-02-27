@@ -32,10 +32,9 @@ terminate(void)
 }
 
 void (*panic_handler)(void) = terminate;
-void *panic_data = NULL;
 
 void
-panicf(const char *fmt, ...)
+mlk_panicf(const char *fmt, ...)
 {
 	assert(fmt);
 
@@ -49,21 +48,21 @@ panicf(const char *fmt, ...)
 	errorva(fmt, ap);
 	va_end(ap);
 
-	panic();
+	mlk_panic();
 }
 
 void
-panicva(const char *fmt, va_list ap)
+mlk_panicva(const char *fmt, va_list ap)
 {
 	assert(fmt);
 	assert(panic_handler);
 
 	errorva(fmt, ap);
-	panic();
+	mlk_panic();
 }
 
 void
-panic(void)
+mlk_panic(void)
 {
 	assert(panic_handler);
 

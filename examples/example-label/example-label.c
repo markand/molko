@@ -107,9 +107,9 @@ static void
 init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-label") < 0 || ui_init() < 0)
-		panic();
+		mlk_panic();
 	if (window_open("Example - Label", W, H) < 0)
-		panic();
+		mlk_panic();
 
 	for (size_t i = 0; i < UTIL_SIZE(table); ++i) {
 		struct label *l = &table[i].label;

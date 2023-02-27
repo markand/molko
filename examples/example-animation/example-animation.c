@@ -55,11 +55,11 @@ static void
 init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-animation") < 0 || ui_init() < 0)
-		panic();
+		mlk_panic();
 	if (window_open("Example - Animation", W, H) < 0)
-		panic();
+		mlk_panic();
 	if (mlk_image_openmem(&numbers, assets_sprites_numbers, sizeof (assets_sprites_numbers)) < 0)
-		panic();
+		mlk_panic();
 }
 
 static void
