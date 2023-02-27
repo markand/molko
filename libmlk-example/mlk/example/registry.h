@@ -38,24 +38,27 @@ enum registry_texture {
 	REGISTRY_TEXTURE_HAUNTED_WOOD,
 	REGISTRY_TEXTURE_BLACK_CAT,
 
+	/* Objects. */
+	REGISTRY_TEXTURE_CHEST,
+
 	/* Unused.*/
-	REGISTRY_TEXTURE_NUM
+	REGISTRY_TEXTURE_LAST
 };
 
 enum registry_image {
 	REGISTRY_IMAGE_BATTLE_BACKGROUND,
-	REGISTRY_IMAGE_NUM
+	REGISTRY_IMAGE_LAST
 };
 
 enum registry_sound {
 	REGISTRY_SOUND_FIRE,
-	REGISTRY_SOUND_NUM
+	REGISTRY_SOUND_LAST
 };
 
-extern struct mlk_texture registry_images[REGISTRY_IMAGE_NUM];
-extern struct mlk_texture registry_textures[REGISTRY_TEXTURE_NUM];
-extern struct mlk_sprite registry_sprites[REGISTRY_TEXTURE_NUM];
-extern struct mlk_sound registry_sounds[REGISTRY_SOUND_NUM];
+extern struct mlk_texture registry_images[REGISTRY_IMAGE_LAST];
+extern struct mlk_texture registry_textures[REGISTRY_TEXTURE_LAST];
+extern struct mlk_sprite registry_sprites[REGISTRY_TEXTURE_LAST];
+extern struct mlk_sound registry_sounds[REGISTRY_SOUND_LAST];
 
 void
 registry_init(void);

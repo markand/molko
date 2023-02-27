@@ -29,6 +29,7 @@
 
 #include <assets/sounds/fire.h>
 
+#include <assets/sprites/chest.h>
 #include <assets/sprites/explosion.h>
 #include <assets/sprites/john-sword.h>
 #include <assets/sprites/john-walk.h>
@@ -36,10 +37,10 @@
 
 #include "registry.h"
 
-struct mlk_texture registry_images[REGISTRY_IMAGE_NUM];
-struct mlk_texture registry_textures[REGISTRY_TEXTURE_NUM];
-struct mlk_sprite registry_sprites[REGISTRY_TEXTURE_NUM];
-struct mlk_sound registry_sounds[REGISTRY_SOUND_NUM];
+struct mlk_texture registry_images[REGISTRY_IMAGE_LAST] = {0};
+struct mlk_texture registry_textures[REGISTRY_TEXTURE_LAST] = {0};
+struct mlk_sprite registry_sprites[REGISTRY_TEXTURE_LAST] = {0};
+struct mlk_sound registry_sounds[REGISTRY_SOUND_LAST] = {0};
 
 #define REGISTRY_IMAGE(i, data) \
 	{ (i), (data), sizeof (data) }
@@ -67,7 +68,8 @@ static const struct {
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_SWORD, assets_sprites_john_sword, 256, 256),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_WALK, assets_sprites_john_walk, 256, 256),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_HAUNTED_WOOD, assets_images_haunted_wood, 0, 0),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_BLACK_CAT, assets_images_black_cat, 0, 0)
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_BLACK_CAT, assets_images_black_cat, 0, 0),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CHEST, assets_sprites_chest, 32, 32)
 };
 
 #define REGISTRY_SOUND(s, data) \
@@ -95,9 +97,12 @@ load_images(void)
 static void
 load_textures_and_sprites(void)
 {
+	struct mlk_texture *texture;
+	struct mlk_sprite *sprite;
+
 	for (size_t i = 0; i < MLK_UTIL_SIZE(textures); ++i) {
-		struct mlk_texture *texture = &registry_textures[textures[i].index];
-		struct mlk_sprite *sprite = &registry_sprites[textures[i].index];
+		texture = &registry_textures[textures[i].index];
+		sprite = &registry_sprites[textures[i].index];
 
 		if (mlk_image_openmem(texture, textures[i].data, textures[i].datasz) < 0)
 			mlk_panic();
