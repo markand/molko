@@ -108,7 +108,9 @@ mlk_alloc_set(const struct mlk_alloc_funcs *newfuncs)
 static inline struct block *
 blockat(void *ptr)
 {
-	return ptr - BLKSIZE;
+	unsigned char *addr = (unsigned char *)ptr;
+
+	return (struct block *)&addr[-BLKSIZE];
 }
 
 static inline void *
