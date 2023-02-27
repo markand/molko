@@ -31,7 +31,7 @@ terminate(void)
 	exit(1);
 }
 
-void (*panic_handler)(void) = terminate;
+void (*mlk_panic_handler)(void) = terminate;
 
 void
 mlk_panicf(const char *fmt, ...)
@@ -55,7 +55,7 @@ void
 mlk_panicva(const char *fmt, va_list ap)
 {
 	assert(fmt);
-	assert(panic_handler);
+	assert(mlk_panic_handler);
 
 	errorva(fmt, ap);
 	mlk_panic();
@@ -64,13 +64,13 @@ mlk_panicva(const char *fmt, va_list ap)
 void
 mlk_panic(void)
 {
-	assert(panic_handler);
+	assert(mlk_panic_handler);
 
-	panic_handler();
+	mlk_panic_handler();
 
 	/*
 	 * This should not happen, if it does it means the user did not fully
-	 * satisfied the constraint of panic_handler.
+	 * satisfied the constraint of mlk_panic_handler.
 	 */
 	fprintf(stderr, "abort: panic handler returned\n");
 	exit(1);

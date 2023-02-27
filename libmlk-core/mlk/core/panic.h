@@ -23,7 +23,7 @@
 
 #include "core.h"
 
-extern void (*panic_handler)(void);
+extern void (*mlk_panic_handler)(void);
 
 MLK_CORE_BEGIN_DECLS
 
