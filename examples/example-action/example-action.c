@@ -24,7 +24,6 @@
 #include <mlk/core/err.h>
 #include <mlk/core/event.h>
 #include <mlk/core/game.h>
-#include <mlk/core/maths.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
 #include <mlk/core/sprite.h>
@@ -40,6 +39,8 @@
 #include <mlk/ui/label.h>
 
 #include <mlk/rpg/message.h>
+
+#include "chest.h"
 
 /* Message width is 80% of window width and height is auto computed. */
 #define QMW (MLK_EXAMPLE_W * 0.8)
@@ -61,33 +62,8 @@ static struct mlk_state *states[8];
  * For convenience, we arrange those two chests into a mlk_action_stack to
  * avoid calling all mlk_action functions for every chests.
  */
-static void chest_handle(struct mlk_action *, const union mlk_event *);
-static void chest_draw(struct mlk_action *);
 
-static struct chest {
-	int x;
-	int y;
-	int open;
-	struct mlk_sprite *sprite;
-	struct mlk_action action;
-} chests[2] = {
-	[0] = {
-		.sprite = &registry_sprites[REGISTRY_TEXTURE_CHEST],
-		.action = {
-			.data = &chests[0],
-			.draw = chest_draw,
-			.handle = chest_handle,
-		}
-	},
-	[1] = {
-		.sprite = &registry_sprites[REGISTRY_TEXTURE_CHEST],
-		.action = {
-			.data = &chests[1],
-			.draw = chest_draw,
-			.handle = chest_handle,
-		}
-	}
-};
+static struct chest chests[2];
 
 /*
  * This structure is the item that will be pushed into the mlk_action_script
@@ -118,9 +94,6 @@ static struct label label = {
 static void     item_handle(struct mlk_action *, const union mlk_event *);
 static int      item_update(struct mlk_action *, unsigned int);
 static void     item_draw(struct mlk_action *);
-
-static void     script_init_quest1(void);
-static void     script_init_quest2(void);
 
 static void     response_quest1_start(struct mlk_action *);
 static void     response_quest2_start(struct mlk_action *);
@@ -244,59 +217,6 @@ static struct mlk_action *script_actions[16];
 static struct mlk_action_script script;
 
 static void
-chest_handle(struct mlk_action *act, const union mlk_event *ev)
-{
-	struct chest *chest = act->data;
-	unsigned int cw, ch;
-
-	/* Make sure that we don't operate on a already opened chest. */
-	if (chest->open)
-		return;
-
-	/*
-	 * We are only interested if the event is a click on the chest itself
-	 * so we have to test because actions have no notion of geometry.
-	 */
-	if (ev->type != MLK_EVENT_CLICKDOWN)
-		return;
-
-	cw = registry_sprites[REGISTRY_TEXTURE_CHEST].cellw;
-	ch = registry_sprites[REGISTRY_TEXTURE_CHEST].cellh;
-
-	if (!mlk_maths_is_boxed(chest->x, chest->y, cw, ch, ev->click.x, ev->click.y))
-		return;
-
-	/* Also, make sure that we don't operate on a already opened chest. */
-	chest->open = 1;
-
-	/*
-	 * Now depending on the chest, update the main script with actual code
-	 * we're interested in.
-	 */
-	memset(script_actions, 0, sizeof (script_actions));
-	mlk_action_script_init(&script, script_actions, MLK_UTIL_SIZE(script_actions));
-
-	if (chest == &chests[0])
-		script_init_quest1();
-	else
-		script_init_quest2();
-}
-
-static void
-chest_draw(struct mlk_action *act)
-{
-	const struct chest *chest = act->data;
-	int column;
-
-	if (chest->open)
-		column = 3;
-	else
-		column = 0;
-
-	mlk_sprite_draw(chest->sprite, 0, column, chest->x, chest->y);
-}
-
-static void
 item_handle(struct mlk_action *act, const union mlk_event *ev)
 {
 	message_handle(act->data, ev);
@@ -319,6 +239,9 @@ script_init_quest(struct item *m, size_t n)
 {
 	int err;
 
+	memset(script_actions, 0, sizeof (script_actions));
+	mlk_action_script_init(&script, script_actions, MLK_UTIL_SIZE(script_actions));
+
 	for (size_t i = 0; i < n; ++i) {
 		m[i].msg.x = QMX;
 		m[i].msg.y = QMY;
@@ -337,14 +260,18 @@ script_init_quest(struct item *m, size_t n)
 }
 
 static void
-script_init_quest1(void)
+script_init_quest1(struct chest *chest)
 {
+	(void)chest;
+
 	script_init_quest(quest1, MLK_UTIL_SIZE(quest1));
 }
 
 static void
-script_init_quest2(void)
+script_init_quest2(struct chest *chest)
 {
+	(void)chest;
+
 	script_init_quest(quest2, MLK_UTIL_SIZE(quest2));
 }
 
@@ -400,6 +327,12 @@ chests_init(void)
 	    0, 0, MLK_EXAMPLE_W / 2, MLK_EXAMPLE_H);
 	align(ALIGN_CENTER, &chests[1].x, &chests[1].y, cw, ch,
 	    MLK_EXAMPLE_W / 2, 0, MLK_EXAMPLE_W / 2, MLK_EXAMPLE_H);
+
+	chests[0].run = script_init_quest1;
+	chests[1].run = script_init_quest2;
+
+	chest_init(&chests[0]);
+	chest_init(&chests[1]);
 }
 
 static void

@@ -20,6 +20,8 @@ project(example-action)
 
 set(
 	SOURCES
+	${example-action_SOURCE_DIR}/chest.c
+	${example-action_SOURCE_DIR}/chest.h
 	${example-action_SOURCE_DIR}/example-action.c
 )
 
