@@ -116,7 +116,7 @@ fire_action(struct battle *bt, struct character *owner, const struct selection *
 	mlk_animation_init(&self->animation, &registry_sprites[REGISTRY_TEXTURE_EXPLOSION], 12);
 	mlk_animation_start(&self->animation);
 
-	sound_play(&registry_sounds[REGISTRY_SOUND_FIRE]);
+	mlk_sound_play(&registry_sounds[REGISTRY_SOUND_FIRE]);
 	battle_state_rendering(bt, &self->drawable);
 }
 

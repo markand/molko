@@ -40,7 +40,7 @@
 
 static struct state *states[1];
 static struct mlk_music music;
-static struct sound sound;
+static struct mlk_sound sound;
 
 static struct label label_music = {
 	.text = "Music: <Space> play, <p> pause, <r> resume, <q> stop, <l> loop.",
@@ -64,7 +64,7 @@ init(void)
 	if (window_open("Example - Audio", W, H) < 0)
 		mlk_panic();
 	if (mlk_music_openmem(&music, assets_music_vabsounds_romance, sizeof (assets_music_vabsounds_romance)) < 0 ||
-	    sound_openmem(&sound, assets_sounds_fire, sizeof (assets_sounds_fire)) < 0)
+	    mlk_sound_openmem(&sound, assets_sounds_fire, sizeof (assets_sounds_fire)) < 0)
 		mlk_panic();
 }
 
@@ -83,7 +83,7 @@ handle(struct state *st, const union mlk_event *ev)
 
 	switch (ev->type) {
 	case MLK_EVENT_CLICKDOWN:
-		if (sound_play(&sound) < 0)
+		if (mlk_sound_play(&sound) < 0)
 			mlk_panic();
 		break;
 	case MLK_EVENT_KEYDOWN:
@@ -140,7 +140,7 @@ run(void)
 	mlk_game_loop();
 
 	mlk_music_finish(&music);
-	sound_finish(&sound);
+	mlk_sound_finish(&sound);
 }
 
 int

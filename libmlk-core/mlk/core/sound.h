@@ -23,11 +23,9 @@
 
 #include "core.h"
 
-#define SOUND_CHANNELS_MAX (256)
+#define MLK_SOUND_CHANNELS_MAX (256)
 
-struct vfs_file;
-
-struct sound {
+struct mlk_sound {
 	void *handle;
 	int channel;
 };
@@ -35,31 +33,28 @@ struct sound {
 MLK_CORE_BEGIN_DECLS
 
 int
-sound_open(struct sound *, const char *);
+mlk_sound_open(struct mlk_sound *, const char *);
 
 int
-sound_openmem(struct sound *, const void *, size_t);
+mlk_sound_openmem(struct mlk_sound *, const void *, size_t);
 
 int
-sound_openvfs(struct sound *, struct vfs_file *);
+mlk_sound_ok(const struct mlk_sound *);
 
 int
-sound_ok(const struct sound *);
-
-int
-sound_play(struct sound *);
+mlk_sound_play(struct mlk_sound *);
 
 void
-sound_pause(struct sound *);
+mlk_sound_pause(struct mlk_sound *);
 
 void
-sound_resume(struct sound *);
+mlk_sound_resume(struct mlk_sound *);
 
 void
-sound_stop(struct sound *);
+mlk_sound_stop(struct mlk_sound *);
 
 void
-sound_finish(struct sound *);
+mlk_sound_finish(struct mlk_sound *);
 
 MLK_CORE_END_DECLS
 

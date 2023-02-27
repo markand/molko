@@ -27,7 +27,7 @@
 #define SOURCE(snd) ((const struct audiostream *)snd->handle)->source
 
 int
-sound_open(struct sound *snd, const char *path)
+mlk_sound_open(struct mlk_sound *snd, const char *path)
 {
 	assert(snd);
 	assert(path);
@@ -36,7 +36,7 @@ sound_open(struct sound *snd, const char *path)
 }
 
 int
-sound_openmem(struct sound *snd, const void *buffer, size_t buffersz)
+mlk_sound_openmem(struct mlk_sound *snd, const void *buffer, size_t buffersz)
 {
 	assert(snd);
 	assert(buffer);
@@ -45,15 +45,15 @@ sound_openmem(struct sound *snd, const void *buffer, size_t buffersz)
 }
 
 int
-sound_ok(const struct sound *snd)
+mlk_sound_ok(const struct mlk_sound *snd)
 {
 	return snd && snd->handle;
 }
 
 int
-sound_play(struct sound *snd)
+mlk_sound_play(struct mlk_sound *snd)
 {
-	assert(sound_ok(snd));
+	assert(mlk_sound_ok(snd));
 
 	alSourcePlay(SOURCE(snd));
 
@@ -61,36 +61,36 @@ sound_play(struct sound *snd)
 }
 
 void
-sound_pause(struct sound *snd)
+mlk_sound_pause(struct mlk_sound *snd)
 {
-	assert(sound_ok(snd));
+	assert(mlk_sound_ok(snd));
 
 	alSourcePause(SOURCE(snd));
 }
 
 void
-sound_resume(struct sound *snd)
+mlk_sound_resume(struct mlk_sound *snd)
 {
-	assert(sound_ok(snd));
+	assert(mlk_sound_ok(snd));
 
 	alSourcePlay(SOURCE(snd));
 }
 
 void
-sound_stop(struct sound *snd)
+mlk_sound_stop(struct mlk_sound *snd)
 {
-	assert(sound_ok(snd));
+	assert(mlk_sound_ok(snd));
 
 	alSourceStop(SOURCE(snd));
 }
 
 void
-sound_finish(struct sound *snd)
+mlk_sound_finish(struct mlk_sound *snd)
 {
 	assert(snd);
 
 	if (snd->handle) {
-		sound_stop(snd);
+		mlk_sound_stop(snd);
 		audiostream_finish(snd->handle);
 	}
 

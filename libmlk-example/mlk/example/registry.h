@@ -55,7 +55,7 @@ enum registry_sound {
 extern struct texture registry_images[REGISTRY_IMAGE_NUM];
 extern struct texture registry_textures[REGISTRY_TEXTURE_NUM];
 extern struct sprite registry_sprites[REGISTRY_TEXTURE_NUM];
-extern struct sound registry_sounds[REGISTRY_SOUND_NUM];
+extern struct mlk_sound registry_sounds[REGISTRY_SOUND_NUM];
 
 void
 registry_init(void);
