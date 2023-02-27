@@ -77,7 +77,7 @@ indicator_free(struct mlk_drawable *dw)
 	struct indicator *id = dw->data;
 
 	battle_indicator_finish(&id->bti);
-	free(id);
+	mlk_alloc_free(id);
 }
 
 static struct battle_entity *
@@ -267,8 +267,13 @@ battle_order(struct battle *bt)
 	struct battle_entity **porder;
 
 	/* Create a pointer list to every entity. */
-	bt->order = mlk_alloc_renew0(bt->order, bt->teamsz + bt->enemiesz);
 	bt->ordersz = bt->teamsz + bt->enemiesz;
+
+	if (!bt->order)
+		bt->order = mlk_alloc_new0(bt->ordersz, sizeof (*bt->order));
+	else
+		bt->order = mlk_alloc_renew0(bt->order, bt->ordersz);
+
 	bt->ordercur = porder = bt->order;
 
 	for (size_t i = 0; i < bt->teamsz; ++i)
@@ -496,6 +501,6 @@ battle_finish(struct battle *bt)
 	if (bt->state)
 		battle_state_finish(bt->state, bt);
 
-	free(bt->order);
+	mlk_alloc_free(bt->order);
 	memset(bt, 0, sizeof (*bt));
 }

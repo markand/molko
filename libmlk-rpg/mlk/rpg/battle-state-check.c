@@ -75,7 +75,7 @@ fadeout_draw(struct mlk_drawable *dw)
 static void
 fadeout_finish(struct mlk_drawable *dw)
 {
-	free(dw->data);
+	mlk_alloc_free(dw->data);
 }
 
 static void
@@ -164,7 +164,7 @@ finish(struct battle_state *st, struct battle *bt)
 {
 	(void)bt;
 
-	free(st);
+	mlk_alloc_free(st);
 }
 
 void

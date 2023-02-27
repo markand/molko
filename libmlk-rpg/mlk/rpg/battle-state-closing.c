@@ -57,7 +57,7 @@ finish(struct battle_state *st, struct battle *bt)
 	(void)bt;
 
 	battle_state_closing_finish(st->data);
-	free(st->data);
+	mlk_alloc_free(st->data);
 }
 
 void

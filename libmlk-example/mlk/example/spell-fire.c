@@ -86,7 +86,7 @@ end(struct mlk_drawable *dw)
 static void
 finish(struct mlk_drawable *dw)
 {
-	free(dw->data);
+	mlk_alloc_free(dw->data);
 }
 
 static void

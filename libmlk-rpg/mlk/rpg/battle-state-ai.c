@@ -50,7 +50,7 @@ finish(struct battle_state *st, struct battle *bt)
 {
 	(void)bt;
 
-	free(st);
+	mlk_alloc_free(st);
 }
 
 void
