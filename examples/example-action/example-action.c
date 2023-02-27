@@ -122,8 +122,8 @@ static void     item_draw(struct mlk_action *);
 static void     script_init_quest1(void);
 static void     script_init_quest2(void);
 
-static void     terminate_quest1(struct mlk_action *);
-static void     terminate_quest2(struct mlk_action *);
+static void     response_quest1_start(struct mlk_action *);
+static void     response_quest2_start(struct mlk_action *);
 
 static struct item quest1[] = {
 	{
@@ -171,20 +171,16 @@ static struct item quest1[] = {
 			.handle = item_handle,
 			.update = item_update,
 			.draw = item_draw,
-			.end = terminate_quest1
 		}
 	},
-
-	/*
-	 * This final action is a placeholder that will be updated once the
-	 * last message question is completed through the end callback.
-	 */
+	/* Text will be replaced on start depending on the question. */
 	{
 		.msg = {
 			.flags = MESSAGE_FLAGS_FADEOUT
 		},
 		.act = {
 			.data = &quest1[3].msg,
+			.start = response_quest1_start,
 			.handle = item_handle,
 			.update = item_update,
 			.draw = item_draw
@@ -222,7 +218,6 @@ static struct item quest2[] = {
 			.handle = item_handle,
 			.update = item_update,
 			.draw = item_draw,
-			.end = terminate_quest2
 		}
 	},
 
@@ -233,6 +228,7 @@ static struct item quest2[] = {
 		},
 		.act = {
 			.data = &quest2[2].msg,
+			.start = response_quest2_start,
 			.handle = item_handle,
 			.update = item_update,
 			.draw = item_draw
@@ -336,6 +332,8 @@ script_init_quest(struct item *m, size_t n)
 		if ((err = mlk_action_script_append(&script, &m[i].act)) < 0)
 			mlk_panicf("%s", mlk_err_string(err));
 	}
+
+	mlk_action_script_start(&script);
 }
 
 static void
@@ -345,47 +343,47 @@ script_init_quest1(void)
 }
 
 static void
-terminate_quest1(struct mlk_action *act)
+script_init_quest2(void)
+{
+	script_init_quest(quest2, MLK_UTIL_SIZE(quest2));
+}
+
+static void
+response_quest1_start(struct mlk_action *act)
 {
 	static const char *line;
 
+	struct message *question = &quest1[2].msg;
 	struct message *cur = act->data;
-	struct message *nxt = &quest1[3].msg;
 
-	nxt->linesz = 1;
-	nxt->lines = &line;
+	cur->linesz = 1;
+	cur->lines = &line;
 
-	if (cur->index == 0)
+	if (question->index == 0)
 		 line = "Don't be so confident";
 	else
 		 line = "Nevermind, I'll do it myself";
 
-	message_query(nxt, NULL, &nxt->h);
+	message_query(cur, NULL, &cur->h);
 }
 
 static void
-terminate_quest2(struct mlk_action *act)
+response_quest2_start(struct mlk_action *act)
 {
 	static const char *line;
 
+	struct message *question = &quest2[1].msg;
 	struct message *cur = act->data;
-	struct message *nxt = &quest2[2].msg;
 
-	nxt->linesz = 1;
-	nxt->lines = &line;
+	cur->linesz = 1;
+	cur->lines = &line;
 
-	if (cur->index == 0)
+	if (question->index == 0)
 		line = "Go away!";
 	else
 		line = "Install OpenBSD then";
 
-	message_query(nxt, NULL, &nxt->h);
-}
-
-static void
-script_init_quest2(void)
-{
-	script_init_quest(quest2, MLK_UTIL_SIZE(quest2));
+	message_query(cur, NULL, &cur->h);
 }
 
 static void

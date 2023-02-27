@@ -1,0 +1,23 @@
+.Dd $Mdocdate$
+.Dt MLK_ACTION_START 3
+.Os
+.Sh NAME
+.Nm mlk_action_start
+.Nd start an action
+.Sh LIBRARY
+libmlk-core (-lmlk-core)
+.Sh SYNOPSIS
+.In mlk/core/action.h
+.Ft void
+.Fn mlk_action_start "struct mlk_action *self"
+.Sh DESCRIPTION
+Invoke the start callback on the action
+.Fa self
+if it is not null.
+.Sh SEE ALSO
+.Xr mlk-action 3
+.Sh AUTHORS
+The
+.Nm
+library was written by
+.An David Demelier Aq Mt markand@malikania.fr .

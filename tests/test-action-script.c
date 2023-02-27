@@ -24,6 +24,7 @@
 #include <dt.h>
 
 struct invokes {
+	int start;
 	int handle;
 	int update;
 	int draw;
@@ -33,11 +34,18 @@ struct invokes {
 
 #define INIT(dat, up) {         \
 	.data = (dat),          \
+	.start = my_start,      \
 	.handle = my_handle,    \
 	.update = (up),         \
 	.draw = my_draw,        \
 	.end = my_end,          \
 	.finish = my_finish     \
+}
+
+static void
+my_start(struct mlk_action *act)
+{
+	((struct invokes *)act->data)->start++;
 }
 
 static void
@@ -238,18 +246,23 @@ test_basics_update(void)
 	DT_ASSERT(mlk_action_script_append(&sc, &table[1].act) == 0);
 	DT_ASSERT(mlk_action_script_append(&sc, &table[2].act) == 0);
 
+	mlk_action_script_start(&sc);
+
 	/* 0 -> 1 */
 	DT_ASSERT(!mlk_action_script_update(&sc, 0));
+	DT_EQ_INT(table[0].inv.start, 1);
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 0);
 	DT_EQ_INT(table[0].inv.end, 1);
 	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.start, 1);
 	DT_EQ_INT(table[1].inv.handle, 0);
 	DT_EQ_INT(table[1].inv.update, 0);
 	DT_EQ_INT(table[1].inv.draw, 0);
 	DT_EQ_INT(table[1].inv.end, 0);
 	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.start, 0);
 	DT_EQ_INT(table[2].inv.handle, 0);
 	DT_EQ_INT(table[2].inv.update, 0);
 	DT_EQ_INT(table[2].inv.draw, 0);
@@ -258,16 +271,19 @@ test_basics_update(void)
 
 	/* 1 -> 2 */
 	DT_ASSERT(!mlk_action_script_update(&sc, 0));
+	DT_EQ_INT(table[0].inv.start, 1);
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 0);
 	DT_EQ_INT(table[0].inv.end, 1);
 	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.start, 1);
 	DT_EQ_INT(table[1].inv.handle, 0);
 	DT_EQ_INT(table[1].inv.update, 1);
 	DT_EQ_INT(table[1].inv.draw, 0);
 	DT_EQ_INT(table[1].inv.end, 1);
 	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.start, 1);
 	DT_EQ_INT(table[2].inv.handle, 0);
 	DT_EQ_INT(table[2].inv.update, 0);
 	DT_EQ_INT(table[2].inv.draw, 0);
@@ -278,16 +294,19 @@ test_basics_update(void)
 	DT_ASSERT(!mlk_action_script_update(&sc, 0));
 	DT_ASSERT(!mlk_action_script_update(&sc, 0));
 	DT_ASSERT(!mlk_action_script_update(&sc, 0));
+	DT_EQ_INT(table[0].inv.start, 1);
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 0);
 	DT_EQ_INT(table[0].inv.end, 1);
 	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.start, 1);
 	DT_EQ_INT(table[1].inv.handle, 0);
 	DT_EQ_INT(table[1].inv.update, 1);
 	DT_EQ_INT(table[1].inv.draw, 0);
 	DT_EQ_INT(table[1].inv.end, 1);
 	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.start, 1);
 	DT_EQ_INT(table[2].inv.handle, 0);
 	DT_EQ_INT(table[2].inv.update, 3);
 	DT_EQ_INT(table[2].inv.draw, 0);
@@ -297,16 +316,19 @@ test_basics_update(void)
 	/* Now, change its update function to complete the script. */
 	table[2].act.update = my_update_true;
 	DT_ASSERT(mlk_action_script_update(&sc, 0));
+	DT_EQ_INT(table[0].inv.start, 1);
 	DT_EQ_INT(table[0].inv.handle, 0);
 	DT_EQ_INT(table[0].inv.update, 1);
 	DT_EQ_INT(table[0].inv.draw, 0);
 	DT_EQ_INT(table[0].inv.end, 1);
 	DT_EQ_INT(table[0].inv.finish, 0);
+	DT_EQ_INT(table[1].inv.start, 1);
 	DT_EQ_INT(table[1].inv.handle, 0);
 	DT_EQ_INT(table[1].inv.update, 1);
 	DT_EQ_INT(table[1].inv.draw, 0);
 	DT_EQ_INT(table[1].inv.end, 1);
 	DT_EQ_INT(table[1].inv.finish, 0);
+	DT_EQ_INT(table[2].inv.start, 1);
 	DT_EQ_INT(table[2].inv.handle, 0);
 	DT_EQ_INT(table[2].inv.update, 4);
 	DT_EQ_INT(table[2].inv.draw, 0);

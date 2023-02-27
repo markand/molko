@@ -39,6 +39,9 @@ MLK_CORE_BEGIN_DECLS
 void
 mlk_action_script_init(struct mlk_action_script *, struct mlk_action **, size_t);
 
+void
+mlk_action_script_start(struct mlk_action_script *);
+
 int
 mlk_action_script_append(struct mlk_action_script *, struct mlk_action *);
 

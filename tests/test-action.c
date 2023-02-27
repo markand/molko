@@ -24,6 +24,7 @@
 #include <dt.h>
 
 struct invokes {
+	int start;
 	int handle;
 	int update;
 	int draw;
@@ -35,11 +36,18 @@ static union mlk_event dummy;
 
 #define INIT(dat, up) {         \
         .data = (dat),          \
+        .start = my_start,      \
         .handle = my_handle,    \
         .update = (up),         \
         .draw = my_draw,        \
         .end = my_end,          \
         .finish = my_finish     \
+}
+
+static void
+my_start(struct mlk_action *act)
+{
+	((struct invokes *)act->data)->start = 1;
 }
 
 static void
@@ -89,6 +97,22 @@ my_finish(struct mlk_action *act)
 }
 
 static void
+test_basics_start(void)
+{
+	struct invokes inv = {0};
+	struct mlk_action act = INIT(&inv, my_update_true);
+
+	mlk_action_start(&act);
+
+	DT_ASSERT(inv.start);
+	DT_ASSERT(!inv.handle);
+	DT_ASSERT(!inv.update);
+	DT_ASSERT(!inv.draw);
+	DT_ASSERT(!inv.end);
+	DT_ASSERT(!inv.finish);
+}
+
+static void
 test_basics_handle(void)
 {
 	struct invokes inv = {0};
@@ -96,6 +120,7 @@ test_basics_handle(void)
 
 	mlk_action_handle(&act, &dummy);
 
+	DT_ASSERT(!inv.start);
 	DT_ASSERT(inv.handle);
 	DT_ASSERT(!inv.update);
 	DT_ASSERT(!inv.draw);
@@ -116,6 +141,7 @@ test_basics_update(void)
 
 	/* True version. */
 	DT_ASSERT(mlk_action_update(&table[0].act, 0));
+	DT_ASSERT(!table[0].inv.start);
 	DT_ASSERT(!table[0].inv.handle);
 	DT_ASSERT(table[0].inv.update);
 	DT_ASSERT(!table[0].inv.draw);
@@ -124,6 +150,7 @@ test_basics_update(void)
 
 	/* False version. */
 	DT_ASSERT(!mlk_action_update(&table[1].act, 0));
+	DT_ASSERT(!table[1].inv.start);
 	DT_ASSERT(!table[1].inv.handle);
 	DT_ASSERT(table[1].inv.update);
 	DT_ASSERT(!table[1].inv.draw);
@@ -139,6 +166,7 @@ test_basics_draw(void)
 
 	mlk_action_draw(&act);
 
+	DT_ASSERT(!inv.start);
 	DT_ASSERT(!inv.handle);
 	DT_ASSERT(!inv.update);
 	DT_ASSERT(inv.draw);
@@ -154,6 +182,7 @@ test_basics_end(void)
 
 	mlk_action_end(&act);
 
+	DT_ASSERT(!inv.start);
 	DT_ASSERT(!inv.handle);
 	DT_ASSERT(!inv.update);
 	DT_ASSERT(!inv.draw);
@@ -169,6 +198,7 @@ test_basics_finish(void)
 
 	mlk_action_finish(&act);
 
+	DT_ASSERT(!inv.start);
 	DT_ASSERT(!inv.handle);
 	DT_ASSERT(!inv.update);
 	DT_ASSERT(!inv.draw);
@@ -196,15 +226,14 @@ test_stack_add(void)
 }
 
 static void
-test_stack_handle(void)
+test_stack_start(void)
 {
 	struct {
-		int called;
+		struct invokes inv;
 		struct mlk_action act;
 	} table[] = {
-		{ 0, { .data = &table[0].called, .handle = my_handle } },
-		{ 0, { .data = &table[1].called, .handle = my_handle } },
-		{ 0, { .data = &table[2].called, .handle = my_handle } },
+		{ .act = INIT(&table[0], my_update_true)        },
+		{ .act = INIT(&table[1], my_update_true)        },
 	};
 
 	struct mlk_action *actions[10];
@@ -213,12 +242,55 @@ test_stack_handle(void)
 	mlk_action_stack_init(&st, actions, 10);
 	mlk_action_stack_add(&st, &table[0].act);
 	mlk_action_stack_add(&st, &table[1].act);
-	mlk_action_stack_add(&st, &table[2].act);
+	mlk_action_stack_start(&st);
+
+	DT_ASSERT(table[0].inv.start);
+	DT_ASSERT(!table[0].inv.handle);
+	DT_ASSERT(!table[0].inv.update);
+	DT_ASSERT(!table[0].inv.draw);
+	DT_ASSERT(!table[0].inv.end);
+	DT_ASSERT(!table[0].inv.finish);
+
+	DT_ASSERT(table[1].inv.start);
+	DT_ASSERT(!table[1].inv.handle);
+	DT_ASSERT(!table[1].inv.update);
+	DT_ASSERT(!table[1].inv.draw);
+	DT_ASSERT(!table[1].inv.end);
+	DT_ASSERT(!table[1].inv.finish);
+}
+
+static void
+test_stack_handle(void)
+{
+	struct {
+		struct invokes inv;
+		struct mlk_action act;
+	} table[] = {
+		{ .act = INIT(&table[0], my_update_true)        },
+		{ .act = INIT(&table[1], my_update_true)        },
+	};
+
+	struct mlk_action *actions[10];
+	struct mlk_action_stack st = {0};
+
+	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_add(&st, &table[0].act);
+	mlk_action_stack_add(&st, &table[1].act);
 	mlk_action_stack_handle(&st, &dummy);
 
-	DT_ASSERT(table[0].called);
-	DT_ASSERT(table[1].called);
-	DT_ASSERT(table[2].called);
+	DT_ASSERT(!table[0].inv.start);
+	DT_ASSERT(table[0].inv.handle);
+	DT_ASSERT(!table[0].inv.update);
+	DT_ASSERT(!table[0].inv.draw);
+	DT_ASSERT(!table[0].inv.end);
+	DT_ASSERT(!table[0].inv.finish);
+
+	DT_ASSERT(!table[1].inv.start);
+	DT_ASSERT(table[1].inv.handle);
+	DT_ASSERT(!table[1].inv.update);
+	DT_ASSERT(!table[1].inv.draw);
+	DT_ASSERT(!table[1].inv.end);
+	DT_ASSERT(!table[1].inv.finish);
 }
 
 static void
@@ -398,7 +470,7 @@ test_stack_finish(void)
 		struct mlk_action act;
 	} table[] = {
 		{ .act = INIT(&table[0], my_update_true)        },
-		{ .act = INIT(&table[0], my_update_false)       },
+		{ .act = INIT(&table[1], my_update_false)       },
 	};
 
 	struct mlk_action *actions[10];
@@ -415,22 +487,24 @@ test_stack_finish(void)
 	DT_ASSERT(table[0].inv.end);
 	DT_ASSERT(table[0].inv.finish);
 
-	DT_ASSERT(!table[0].inv.handle);
-	DT_ASSERT(!table[0].inv.update);
-	DT_ASSERT(!table[0].inv.draw);
-	DT_ASSERT(table[0].inv.end);
-	DT_ASSERT(table[0].inv.finish);
+	DT_ASSERT(!table[1].inv.handle);
+	DT_ASSERT(!table[1].inv.update);
+	DT_ASSERT(!table[1].inv.draw);
+	DT_ASSERT(table[1].inv.end);
+	DT_ASSERT(table[1].inv.finish);
 }
 
 int
 main(void)
 {
+	DT_RUN(test_basics_start);
 	DT_RUN(test_basics_handle);
 	DT_RUN(test_basics_update);
 	DT_RUN(test_basics_draw);
 	DT_RUN(test_basics_end);
 	DT_RUN(test_basics_finish);
 	DT_RUN(test_stack_add);
+	DT_RUN(test_stack_start);
 	DT_RUN(test_stack_handle);
 	DT_RUN(test_stack_update);
 	DT_RUN(test_stack_draw);

@@ -21,6 +21,15 @@
 #include "action.h"
 
 void
+mlk_action_start(struct mlk_action *act)
+{
+	assert(act);
+
+	if (act->start)
+		act->start(act);
+}
+
+void
 mlk_action_handle(struct mlk_action *act, const union mlk_event *ev)
 {
 	assert(act);

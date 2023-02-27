@@ -31,6 +31,7 @@ This header defines the
 .Bd -literal
 struct mlk_action {
 	void *data;
+	void (*start)(struct mlk_action *self);
 	void (*handle)(struct mlk_action *self, const union mlk_event *ev);
 	int (*update)(struct mlk_action *self, unsigned int ticks);
 	void (*draw)(struct mlk_action *self);
@@ -44,6 +45,11 @@ arguments after. Its fields are:
 .Bl -tag
 .It Va data
 Optional user data.
+.It Va start
+This function is called when the action is going to start. User can set a
+function to prepare the action especially in a sequence (see
+.Xr mlk-action-script 3
+for example).
 .It Va handle
 Handle the event
 .Fa ev .

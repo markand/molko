@@ -43,6 +43,17 @@ mlk_action_script_init(struct mlk_action_script *s, struct mlk_action **actions,
 	s->size = s->cur = 0;
 }
 
+void
+mlk_action_script_start(struct mlk_action_script *s)
+{
+	assert(s);
+
+	struct mlk_action *a;
+
+	if ((a = current(s)))
+		mlk_action_start(a);
+}
+
 int
 mlk_action_script_append(struct mlk_action_script *s, struct mlk_action *a)
 {
@@ -83,6 +94,10 @@ mlk_action_script_update(struct mlk_action_script *s, unsigned int ticks)
 	if (mlk_action_update(a, ticks)) {
 		mlk_action_end(a);
 		s->cur++;
+
+		/* Start this action now. */
+		if ((a = current(s)))
+			mlk_action_start(a);
 	}
 
 	return s->cur >= s->size;
