@@ -138,8 +138,8 @@ run(void)
 	mlk_game_push(&state);
 	mlk_game_loop();
 
-	mlk_music_finish(&music);
-	mlk_sound_finish(&sound);
+	mlk_music_finish(music);
+	mlk_sound_finish(sound);
 }
 
 int
