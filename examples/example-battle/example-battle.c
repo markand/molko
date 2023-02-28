@@ -324,10 +324,7 @@ run(void)
 static void
 quit(void)
 {
-	registry_finish();
-	mlk_theme_finish();
-	mlk_window_finish();
-	mlk_sys_finish();
+	mlk_example_finish();
 }
 
 int

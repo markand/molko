@@ -95,9 +95,7 @@ run(void)
 static void
 quit(void)
 {
-	mlk_window_finish();
-	mlk_ui_finish();
-	mlk_core_finish();
+	mlk_example_finish();
 }
 
 int

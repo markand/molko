@@ -21,7 +21,6 @@
 #include <mlk/core/event.h>
 #include <mlk/core/game.h>
 #include <mlk/core/image.h>
-#include <mlk/core/sys.h>
 #include <mlk/core/window.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
@@ -128,9 +127,7 @@ run(void)
 static void
 quit(void)
 {
-	mlk_window_finish();
-	mlk_ui_finish();
-	mlk_core_finish();
+	mlk_example_finish();
 }
 
 int

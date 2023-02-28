@@ -122,14 +122,6 @@ init(void)
 }
 
 static void
-quit(void)
-{
-	mlk_window_finish();
-	mlk_ui_finish();
-	mlk_core_finish();
-}
-
-static void
 handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
@@ -173,6 +165,12 @@ run(void)
 	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);
 	mlk_game_loop();
+}
+
+static void
+quit(void)
+{
+	mlk_example_finish();
 }
 
 int

@@ -54,15 +54,6 @@ init(void)
 }
 
 static void
-quit(void)
-{
-	mlk_window_finish();
-	rpg_finish();
-	mlk_ui_finish();
-	mlk_core_finish();
-}
-
-static void
 handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	switch (ev->type) {
@@ -326,6 +317,12 @@ custom(void)
 	theme.colors[MLK_THEME_COLOR_NORMAL] = 0x0000ffff;
 
 	run(&msg);
+}
+
+static void
+quit(void)
+{
+	mlk_example_finish();
 }
 
 int
