@@ -44,7 +44,7 @@ init(void)
 	if ((err = mlk_example_init("example-debug")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	debug_options.enable = 1;
+	mlk_debug_options.enable = 1;
 }
 
 static void
@@ -70,12 +70,12 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	struct debug_report report = {0};
+	struct mlk_debug_report report = {0};
 
 	mlk_painter_set_color(0x4f8fbaff);
 	mlk_painter_clear();
-	debugf(&report, "Game running.");
-	debugf(&report, "mouse: %d, %d", mouse_x, mouse_y);
+	mlk_debugf(&report, "Game running.");
+	mlk_debugf(&report, "mouse: %d, %d", mouse_x, mouse_y);
 	mlk_painter_present();
 }
 

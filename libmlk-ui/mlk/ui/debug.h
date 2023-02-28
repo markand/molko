@@ -24,29 +24,29 @@
 #include <mlk/core/core.h>
 #include <mlk/core/font.h>
 
-#define DEBUG_LINE_MAX 1024
+#define MLK_DEBUG_LINE_MAX 256
 
 struct theme;
 
-struct debug_options {
+struct mlk_debug_options {
 	int enable;
 };
 
-struct debug_report {
+struct mlk_debug_report {
 	const struct theme *theme;
 	unsigned int count;
 };
 
 MLK_CORE_BEGIN_DECLS
 
-extern struct debug_options debug_options;
+extern struct mlk_debug_options mlk_debug_options;
 
 void
-debugf(struct debug_report *, const char *, ...);
+mlk_debugf(struct mlk_debug_report *, const char *, ...);
 
 
 void
-debugva(struct debug_report *, const char *, va_list);
+mlk_debugva(struct mlk_debug_report *, const char *, va_list);
 
 MLK_CORE_END_DECLS
 

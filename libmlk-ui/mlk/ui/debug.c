@@ -24,38 +24,38 @@
 #include "debug.h"
 #include "theme.h"
 
-struct debug_options debug_options = {
+struct mlk_debug_options mlk_debug_options = {
 #if !defined(NDEBUG)
 	.enable = 1
 #endif
 };
 
 void
-debugf(struct debug_report *report, const char *fmt, ...)
+mlk_debugf(struct mlk_debug_report *report, const char *fmt, ...)
 {
 	assert(report);
 	assert(fmt);
 
-	if (!debug_options.enable)
+	if (!mlk_debug_options.enable)
 		return;
 
 	va_list ap;
 
 	va_start(ap, fmt);
-	debugva(report, fmt, ap);
+	mlk_debugva(report, fmt, ap);
 	va_end(ap);
 }
 
 void
-debugva(struct debug_report *report, const char *fmt, va_list ap)
+mlk_debugva(struct mlk_debug_report *report, const char *fmt, va_list ap)
 {
 	assert(report);
 	assert(fmt);
 
-	if (!debug_options.enable)
+	if (!mlk_debug_options.enable)
 		return;
 
-	char line[DEBUG_LINE_MAX];
+	char line[MLK_DEBUG_LINE_MAX];
 	const struct theme *theme;
 	struct mlk_font *font;
 	struct mlk_texture tex;
