@@ -25,7 +25,7 @@ union mlk_event;
 
 struct theme;
 
-struct checkbox {
+struct mlk_checkbox {
 	int x;
 	int y;
 	unsigned int w;
@@ -37,13 +37,13 @@ struct checkbox {
 MLK_CORE_BEGIN_DECLS
 
 void
-checkbox_draw_default(const struct theme *, const struct checkbox *);
+mlk_checkbox_draw_default(const struct theme *, const struct mlk_checkbox *);
 
 int
-checkbox_handle(struct checkbox *, const union mlk_event *);
+mlk_checkbox_handle(struct mlk_checkbox *, const union mlk_event *);
 
 void
-checkbox_draw(const struct checkbox *);
+mlk_checkbox_draw(const struct mlk_checkbox *);
 
 MLK_CORE_END_DECLS
 

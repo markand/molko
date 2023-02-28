@@ -22,7 +22,7 @@
 #include <mlk/core/core.h>
 
 struct mlk_button;
-struct checkbox;
+struct mlk_checkbox;
 struct mlk_font;
 struct frame;
 struct label;
@@ -57,7 +57,7 @@ struct theme {
 	void (*draw_frame)(const struct theme *, const struct frame *);
 	void (*draw_label)(const struct theme *, const struct label *);
 	void (*draw_button)(const struct theme *, const struct mlk_button *);
-	void (*draw_checkbox)(const struct theme *t, const struct checkbox *);
+	void (*draw_checkbox)(const struct theme *t, const struct mlk_checkbox *);
 };
 
 MLK_CORE_BEGIN_DECLS
@@ -81,7 +81,7 @@ void
 theme_draw_button(const struct theme *, const struct mlk_button *);
 
 void
-theme_draw_checkbox(const struct theme *, const struct checkbox *);
+theme_draw_checkbox(const struct theme *, const struct mlk_checkbox *);
 
 void
 theme_finish(void);

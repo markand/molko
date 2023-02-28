@@ -76,7 +76,7 @@ static struct {
 	} header;
 
 	struct {
-		struct checkbox cb;
+		struct mlk_checkbox cb;
 		struct label label;
 	} autosave;
 
@@ -148,7 +148,7 @@ resize_autosave(void)
 {
 	unsigned int padding = theme_default()->padding;
 	struct frame *f = &ui.panel.frame;
-	struct checkbox *c = &ui.autosave.cb;
+	struct mlk_checkbox *c = &ui.autosave.cb;
 	struct label *l = &ui.autosave.label;
 
 	c->x = f->x + padding;
@@ -230,7 +230,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 		break;
 	}
 
-	checkbox_handle(&ui.autosave.cb, ev);
+	mlk_checkbox_handle(&ui.autosave.cb, ev);
 
 	if (mlk_button_handle(&ui.quit.button, ev))
 		mlk_game_quit();
@@ -245,7 +245,7 @@ draw(struct mlk_state *st)
 	mlk_painter_clear();
 	frame_draw(&ui.panel.frame);
 	label_draw(&ui.header.label);
-	checkbox_draw(&ui.autosave.cb);
+	mlk_checkbox_draw(&ui.autosave.cb);
 	label_draw(&ui.autosave.label);
 	mlk_button_draw(&ui.quit.button);
 	mlk_painter_present();
