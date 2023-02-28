@@ -27,22 +27,22 @@
 static inline struct mlk_action *
 current(struct mlk_action_script *s)
 {
-	if (s->cur >= s->size)
+	if (s->cur >= s->len)
 		return NULL;
 
 	return s->actions[s->cur];
 }
 
 void
-mlk_action_script_init(struct mlk_action_script *s, struct mlk_action **actions, size_t max)
+mlk_action_script_init(struct mlk_action_script *s, struct mlk_action **actions, size_t cap)
 {
 	assert(s);
 
 	s->actions = actions;
-	s->max = max;
-	s->size = s->cur = 0;
+	s->cap = cap;
+	s->len = s->cur = 0;
 
-	for (size_t i = 0; i < max; ++i)
+	for (size_t i = 0; i < s->cap; ++i)
 		s->actions[i] = NULL;
 }
 
@@ -63,10 +63,10 @@ mlk_action_script_append(struct mlk_action_script *s, struct mlk_action *a)
 	assert(s);
 	assert(a);
 
-	if (s->size >= s->max)
+	if (s->len >= s->cap)
 		return MLK_ERR_NO_MEM;
 
-	s->actions[s->size++] = a;
+	s->actions[s->len++] = a;
 
 	return 0;
 }
@@ -103,7 +103,7 @@ mlk_action_script_update(struct mlk_action_script *s, unsigned int ticks)
 			mlk_action_start(a);
 	}
 
-	return s->cur >= s->size;
+	return s->cur >= s->len;
 }
 
 void
@@ -122,7 +122,7 @@ mlk_action_script_completed(const struct mlk_action_script *s)
 {
 	assert(s);
 
-	return s->cur >= s->size;
+	return s->cur >= s->len;
 }
 
 void
@@ -130,7 +130,7 @@ mlk_action_script_finish(struct mlk_action_script *s)
 {
 	assert(s);
 
-	for (size_t i = 0; i < s->size; ++i)
+	for (size_t i = 0; i < s->len; ++i)
 		mlk_action_finish(s->actions[i]);
 
 	memset(s, 0, sizeof (*s));

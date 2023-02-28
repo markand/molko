@@ -102,8 +102,8 @@ test_basics_init(void)
 
 	mlk_action_script_init(&sc, actions, 10);
 
-	DT_EQ_SIZE(sc.size, 0U);
-	DT_EQ_SIZE(sc.max, 10U);
+	DT_EQ_SIZE(sc.len, 0U);
+	DT_EQ_SIZE(sc.cap, 10U);
 	DT_EQ_SIZE(sc.cur, 0U);
 }
 
@@ -117,21 +117,21 @@ test_basics_append(void)
 	mlk_action_script_init(&sc, array, 3);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &actions[0]) == 0);
-	DT_EQ_SIZE(sc.size, 1U);
-	DT_EQ_SIZE(sc.max, 3U);
+	DT_EQ_SIZE(sc.len, 1U);
+	DT_EQ_SIZE(sc.cap, 3U);
 	DT_EQ_SIZE(sc.cur, 0U);
 	DT_EQ_PTR(sc.actions[0], &actions[0]);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &actions[1]) == 0);
-	DT_EQ_SIZE(sc.size, 2U);
-	DT_EQ_SIZE(sc.max, 3U);
+	DT_EQ_SIZE(sc.len, 2U);
+	DT_EQ_SIZE(sc.cap, 3U);
 	DT_EQ_SIZE(sc.cur, 0U);
 	DT_EQ_PTR(sc.actions[0], &actions[0]);
 	DT_EQ_PTR(sc.actions[1], &actions[1]);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &actions[2]) == 0);
-	DT_EQ_SIZE(sc.size, 3U);
-	DT_EQ_SIZE(sc.max, 3U);
+	DT_EQ_SIZE(sc.len, 3U);
+	DT_EQ_SIZE(sc.cap, 3U);
 	DT_EQ_SIZE(sc.cur, 0U);
 	DT_EQ_PTR(sc.actions[0], &actions[0]);
 	DT_EQ_PTR(sc.actions[1], &actions[1]);

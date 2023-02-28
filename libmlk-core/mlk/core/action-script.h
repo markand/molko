@@ -29,8 +29,8 @@ union mlk_event;
 
 struct mlk_action_script {
 	struct mlk_action **actions;
-	size_t size;
-	size_t max;
+	size_t cap;
+	size_t len;
 	size_t cur;
 };
 
