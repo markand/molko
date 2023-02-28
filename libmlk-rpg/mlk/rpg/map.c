@@ -164,8 +164,8 @@ static void
 init(struct map *map)
 {
 	/* Adjust view. */
-	map->view_w = window.w;
-	map->view_h = window.h;
+	map->view_w = mlk_window.w;
+	map->view_h = mlk_window.h;
 
 	/* Adjust margin. */
 	map->margin_w = map->view_w - (MARGIN_WIDTH * 2) - map->player_sprite->cellw;

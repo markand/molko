@@ -56,7 +56,7 @@ init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-animation") < 0 || ui_init() < 0)
 		mlk_panic();
-	if (window_open("Example - Animation", W, H) < 0)
+	if (mlk_window_open("Example - Animation", W, H) < 0)
 		mlk_panic();
 	if (mlk_image_openmem(&numbers, assets_sprites_numbers, sizeof (assets_sprites_numbers)) < 0)
 		mlk_panic();
@@ -105,7 +105,7 @@ draw(struct mlk_state *st)
 	label_draw(&label);
 
 	if (!completed)
-		mlk_animation_draw(&animation, (window.w - sprite.cellw) / 2, (window.h - sprite.cellh) / 2);
+		mlk_animation_draw(&animation, (mlk_window.w - sprite.cellw) / 2, (mlk_window.h - sprite.cellh) / 2);
 
 	mlk_painter_present();
 }
@@ -130,7 +130,7 @@ run(void)
 static void
 quit(void)
 {
-	window_finish();
+	mlk_window_finish();
 	ui_finish();
 	mlk_core_finish();
 }

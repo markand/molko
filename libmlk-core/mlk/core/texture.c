@@ -34,7 +34,7 @@ mlk_texture_new(struct mlk_texture *tex, unsigned int w, unsigned int h)
 	assert(w);
 	assert(h);
 
-	tex->handle = SDL_CreateTexture(RENDERER(),
+	tex->handle = SDL_CreateTexture(MLK__RENDERER(),
 	    SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
 
 	if (!tex->handle) {
@@ -108,7 +108,7 @@ mlk_texture_draw(const struct mlk_texture *tex, int x, int y)
 		.h = tex->h
 	};
 
-	if (SDL_RenderCopy(RENDERER(), tex->handle, NULL, &dst) < 0)
+	if (SDL_RenderCopy(MLK__RENDERER(), tex->handle, NULL, &dst) < 0)
 		return errorf("%s", SDL_GetError());
 
 	return 0;
@@ -139,7 +139,7 @@ mlk_texture_scale(const struct mlk_texture *tex,
 		.h = dst_h
 	};
 
-	if (SDL_RenderCopyEx(RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE) < 0)
+	if (SDL_RenderCopyEx(MLK__RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE) < 0)
 		return errorf("%s", SDL_GetError());
 
 	return 0;
@@ -164,7 +164,7 @@ texture_from_surface(struct mlk_texture *tex, SDL_Surface *surface)
 	assert(tex);
 	assert(surface);
 
-	if (!(tex->handle = SDL_CreateTextureFromSurface(RENDERER(), surface))) {
+	if (!(tex->handle = SDL_CreateTextureFromSurface(MLK__RENDERER(), surface))) {
 		tex->w = tex->h = 0;
 		return MLK_ERR_SDL;
 	}

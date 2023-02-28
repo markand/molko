@@ -82,8 +82,8 @@ battle_state_opening_draw(const struct battle_state_opening *op, const struct ba
 	assert(op);
 	assert(bt);
 
-	const unsigned int w = window.w;
-	const unsigned int h = window.h / 2;
+	const unsigned int w = mlk_window.w;
+	const unsigned int h = mlk_window.h / 2;
 	const unsigned int ch = op->elapsed * h / DELAY;
 
 	battle_draw_component(bt, BATTLE_COMPONENT_BACKGROUND | BATTLE_COMPONENT_ENTITIES);

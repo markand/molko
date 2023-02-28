@@ -61,7 +61,7 @@ init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-audio") < 0 || ui_init() < 0)
 		mlk_panic();
-	if (window_open("Example - Audio", W, H) < 0)
+	if (mlk_window_open("Example - Audio", W, H) < 0)
 		mlk_panic();
 	if (mlk_music_openmem(&music, assets_music_vabsounds_romance, sizeof (assets_music_vabsounds_romance)) < 0 ||
 	    mlk_sound_openmem(&sound, assets_sounds_fire, sizeof (assets_sounds_fire)) < 0)
@@ -71,7 +71,7 @@ init(void)
 static void
 quit(void)
 {
-	window_finish();
+	mlk_window_finish();
 	ui_finish();
 	mlk_core_finish();
 }

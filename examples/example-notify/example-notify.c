@@ -53,7 +53,7 @@ init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-notify") < 0 || ui_init() < 0)
 		mlk_panic();
-	if (window_open("Example - Notify", W, H) < 0)
+	if (mlk_window_open("Example - Notify", W, H) < 0)
 		mlk_panic();
 	if (mlk_image_openmem(&icon, assets_images_sword, sizeof (assets_images_sword)) < 0)
 		mlk_panic();
@@ -114,7 +114,7 @@ run(void)
 static void
 quit(void)
 {
-	window_finish();
+	mlk_window_finish();
 	ui_finish();
 	mlk_core_finish();
 }

@@ -37,7 +37,7 @@
 
 static struct mlk_state *states[1];
 static char help_text[128];
-static enum window_cursor cursor = WINDOW_CURSOR_ARROW;
+static enum mlk_window_cursor cursor = MLK_WINDOW_CURSOR_ARROW;
 
 static struct label help = {
 	.x = 10,
@@ -51,12 +51,12 @@ init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-cursor") < 0 || ui_init() < 0)
 		mlk_panic();
-	if (window_open("Example - Cursor", W, H) < 0)
+	if (mlk_window_open("Example - Cursor", W, H) < 0)
 		mlk_panic();
 }
 
 static void
-change(enum window_cursor cursor)
+change(enum mlk_window_cursor cursor)
 {
 	static const char *names[] = {
 		[WINDOW_CURSOR_ARROW]           = "WINDOW_CURSOR_ARROW",
@@ -69,7 +69,7 @@ change(enum window_cursor cursor)
 	};
 
 	snprintf(help_text, sizeof (help_text), "Keys: <Left>/<Right> to change cursor. Current: %s", names[cursor]);
-	window_set_cursor(cursor);
+	mlk_window_set_cursor(cursor);
 }
 
 static void
@@ -85,7 +85,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 				change(--cursor);
 			break;
 		case MLK_KEY_RIGHT:
-			if (cursor + 1 < WINDOW_CURSOR_LAST)
+			if (cursor + 1 < MLK_WINDOW_CURSOR_LAST)
 				change(++cursor);
 			break;
 		default:
@@ -131,7 +131,7 @@ run(void)
 static void
 quit(void)
 {
-	window_finish();
+	mlk_window_finish();
 	ui_finish();
 	mlk_core_finish();
 }

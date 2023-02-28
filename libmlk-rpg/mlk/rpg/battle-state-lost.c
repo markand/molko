@@ -75,9 +75,9 @@ battle_state_lost_init(struct battle_state_lost *lost, struct battle *bt)
 	message_start(&lost->msg);
 	message_query(&lost->msg, NULL, &lost->msg.h);
 
-	lost->msg.w = window.w * 0.6;
-	lost->msg.y = window.h * 0.1;
-	lost->msg.x = (window.w - lost->msg.w) / 2;
+	lost->msg.w = mlk_window.w * 0.6;
+	lost->msg.y = mlk_window.h * 0.1;
+	lost->msg.x = (mlk_window.w - lost->msg.w) / 2;
 
 	bt->status = BATTLE_STATUS_LOST;
 

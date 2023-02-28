@@ -65,14 +65,14 @@ battle_state_closing_init(struct battle_state_closing *cls)
 {
 	assert(cls);
 
-	if (mlk_texture_new(&cls->texture, window.w, window.h) < 0)
+	if (mlk_texture_new(&cls->texture, mlk_window.w, mlk_window.h) < 0)
 		mlk_panic();
 
 	MLK_PAINTER_BEGIN(&cls->texture);
 	mlk_texture_set_blend_mode(&cls->texture, MLK_TEXTURE_BLEND_BLEND);
 	mlk_painter_set_color(0x000000ff);
 	mlk_painter_clear();
-	mlk_painter_draw_rectangle(0, 0, window.w, window.h);
+	mlk_painter_draw_rectangle(0, 0, mlk_window.w, mlk_window.h);
 	MLK_PAINTER_END();
 
 	mlk_texture_set_alpha_mod(&cls->texture, 0);

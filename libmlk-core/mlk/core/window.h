@@ -21,36 +21,36 @@
 
 #include "core.h"
 
-struct window {
+struct mlk_window {
 	unsigned int w;
 	unsigned int h;
 	unsigned int framerate;
 	void *handle;
 };
 
-enum window_cursor {
-	WINDOW_CURSOR_ARROW,
-	WINDOW_CURSOR_EDIT,
-	WINDOW_CURSOR_WAIT,
-	WINDOW_CURSOR_CROSSHAIR,
-	WINDOW_CURSOR_SIZE,
-	WINDOW_CURSOR_NO,
-	WINDOW_CURSOR_HAND,
-	WINDOW_CURSOR_LAST
+enum mlk_window_cursor {
+	MLK_WINDOW_CURSOR_ARROW,
+	MLK_WINDOW_CURSOR_EDIT,
+	MLK_WINDOW_CURSOR_WAIT,
+	MLK_WINDOW_CURSOR_CROSSHAIR,
+	MLK_WINDOW_CURSOR_SIZE,
+	MLK_WINDOW_CURSOR_NO,
+	MLK_WINDOW_CURSOR_HAND,
+	MLK_WINDOW_CURSOR_LAST
 };
 
-extern struct window window;
+extern struct mlk_window mlk_window;
 
 MLK_CORE_BEGIN_DECLS
 
 int
-window_open(const char *, unsigned int, unsigned int);
+mlk_window_open(const char *, unsigned int, unsigned int);
 
 void
-window_set_cursor(enum window_cursor);
+mlk_window_set_cursor(enum mlk_window_cursor);
 
 void
-window_finish(void);
+mlk_window_finish(void);
 
 MLK_CORE_END_DECLS
 

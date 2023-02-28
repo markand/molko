@@ -102,8 +102,8 @@ mlk_game_loop(void)
 	unsigned int elapsed = 0;
 	unsigned int frametime;
 
-	if (window.framerate > 0)
-		frametime = 1000 / window.framerate;
+	if (mlk_window.framerate > 0)
+		frametime = 1000 / mlk_window.framerate;
 	else
 		/* Assuming 50.0 FPS. */
 		frametime = 1000.0 / 50.0;

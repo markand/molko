@@ -125,7 +125,7 @@ init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-ui") < 0 || ui_init() < 0)
 		mlk_panic();
-	if (window_open("Example - UI", W, H) < 0)
+	if (mlk_window_open("Example - UI", W, H) < 0)
 		mlk_panic();
 }
 
@@ -219,12 +219,12 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 			ui.motion.active = 1;
 			ui.motion.x = ev->click.x;
 			ui.motion.y = ev->click.y;
-			window_set_cursor(WINDOW_CURSOR_SIZE);
+			mlk_window_set_cursor(WINDOW_CURSOR_SIZE);
 		}
 		break;
 	case MLK_EVENT_CLICKUP:
 		ui.motion.active = 0;
-		window_set_cursor(WINDOW_CURSOR_ARROW);
+		mlk_window_set_cursor(WINDOW_CURSOR_ARROW);
 		break;
 	default:
 		break;
@@ -269,7 +269,7 @@ run(void)
 static void
 quit(void)
 {
-	window_finish();
+	mlk_window_finish();
 	ui_finish();
 	mlk_core_finish();
 }

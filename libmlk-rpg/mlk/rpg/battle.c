@@ -177,8 +177,8 @@ positionate_team(struct battle *bt)
 	}
 
 	/* TODO: compute a correct x placement. */
-	spacing = (window.h - requirement) / (nmemb + 1);
-	x = window.w - 200;
+	spacing = (mlk_window.h - requirement) / (nmemb + 1);
+	x = mlk_window.w - 200;
 	y = spacing;
 
 	BATTLE_TEAM_FOREACH(bt, et) {
@@ -471,7 +471,7 @@ battle_draw_component(const struct battle *bt, enum battle_component comp)
 	if ((comp & BATTLE_COMPONENT_BACKGROUND) && mlk_texture_ok(bt->background))
 		mlk_texture_scale(bt->background,
 		    0, 0, bt->background->w, bt->background->h,
-		    0, 0, window.w, window.h,
+		    0, 0, mlk_window.w, mlk_window.h,
 		    0.f);
 	if (comp & BATTLE_COMPONENT_ENTITIES) {
 		draw_entities(bt, bt->team, bt->teamsz);

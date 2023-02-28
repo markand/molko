@@ -1,5 +1,5 @@
 /*
- * window.c -- (PRIVATE) basic window management
+ * window_p.h -- (PRIVATE) basic window management
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -21,13 +21,13 @@
 
 #include <SDL.h>
 
-struct window_handle {
+struct mlk__window_handle {
 	SDL_Window *win;
 	SDL_Renderer *renderer;
 };
 
 /* Convenient macros to access the native handle from global window object. */
-#define WINDOW()        (((struct window_handle *)window.handle)->win)
-#define RENDERER()      (((struct window_handle *)window.handle)->renderer)
+#define MLK__WINDOW()        (((struct mlk__window_handle *)mlk_window.handle)->win)
+#define MLK__RENDERER()      (((struct mlk__window_handle *)mlk_window.handle)->renderer)
 
 #endif /* !MLK_CORE_WINDOW_P_H */

@@ -56,7 +56,7 @@ dimensions(struct geo geo[2], const struct battle_bar_default *bar)
 	geo[0].w = bar->w * 0.2;
 	geo[0].h = bar->h;
 	geo[0].x = bar->x + (bar->w / 2) - (geo[0].w / 2);
-	geo[0].y = window.h - bar->h;
+	geo[0].y = mlk_window.h - bar->h;
 
 	/* 1 == status frame */
 	geo[1].x = geo[0].x + geo[0].w;
@@ -535,10 +535,10 @@ battle_bar_default_init(struct battle_bar_default *bar)
 
 	memset(bar, 0, sizeof (*bar));
 
-	bar->w = window.w;
-	bar->h = window.h * 0.12;
+	bar->w = mlk_window.w;
+	bar->h = mlk_window.h * 0.12;
 	bar->x = 0;
-	bar->y = window.h - bar->h;
+	bar->y = mlk_window.h - bar->h;
 
 	dimensions(geo, bar);
 

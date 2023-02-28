@@ -37,7 +37,7 @@ void
 mlk_painter_set_target(struct mlk_texture *tex)
 {
 	renderer = tex;
-	SDL_SetRenderTarget(RENDERER(), tex ? tex->handle : NULL);
+	SDL_SetRenderTarget(MLK__RENDERER(), tex ? tex->handle : NULL);
 }
 
 unsigned long
@@ -45,7 +45,7 @@ mlk_painter_get_color(void)
 {
 	Uint8 r = 0, g = 0, b = 0, a = 0;
 
-	SDL_GetRenderDrawColor(RENDERER(), &r, &g, &b, &a);
+	SDL_GetRenderDrawColor(MLK__RENDERER(), &r, &g, &b, &a);
 
 	return MLK_COLOR_HEX(r, g, b, a);
 }
@@ -54,7 +54,7 @@ void
 mlk_painter_set_color(unsigned long color)
 {
 	SDL_SetRenderDrawColor(
-		RENDERER(),
+		MLK__RENDERER(),
 		MLK_COLOR_R(color),
 		MLK_COLOR_G(color),
 		MLK_COLOR_B(color),
@@ -65,13 +65,13 @@ mlk_painter_set_color(unsigned long color)
 void
 mlk_painter_draw_line(int x1, int y1, int x2, int y2)
 {
-	SDL_RenderDrawLine(RENDERER(), x1, y1, x2, y2);
+	SDL_RenderDrawLine(MLK__RENDERER(), x1, y1, x2, y2);
 }
 
 void
 mlk_painter_draw_point(int x1, int y1)
 {
-	SDL_RenderDrawPoint(RENDERER(), x1, y1);
+	SDL_RenderDrawPoint(MLK__RENDERER(), x1, y1);
 }
 
 void
@@ -84,7 +84,7 @@ mlk_painter_draw_rectangle(int x, int y, unsigned int width, unsigned int height
 		.y = y
 	};
 
-	SDL_RenderFillRect(RENDERER(), &rect);
+	SDL_RenderFillRect(MLK__RENDERER(), &rect);
 }
 
 void
@@ -97,19 +97,19 @@ mlk_painter_draw_circle(int x, int y, int radius)
 	for (double dy = 1; dy <= radius; dy += 1.0) {
 		double dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
 
-		SDL_RenderDrawLine(RENDERER(), x - dx, y + dy - radius, x + dx, y + dy - radius);
-		SDL_RenderDrawLine(RENDERER(), x - dx, y - dy + radius, x + dx, y - dy + radius);
+		SDL_RenderDrawLine(MLK__RENDERER(), x - dx, y + dy - radius, x + dx, y + dy - radius);
+		SDL_RenderDrawLine(MLK__RENDERER(), x - dx, y - dy + radius, x + dx, y - dy + radius);
 	}
 }
 
 void
 mlk_painter_clear(void)
 {
-	SDL_RenderClear(RENDERER());
+	SDL_RenderClear(MLK__RENDERER());
 }
 
 void
 mlk_painter_present(void)
 {
-	SDL_RenderPresent(RENDERER());
+	SDL_RenderPresent(MLK__RENDERER());
 }

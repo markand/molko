@@ -67,7 +67,7 @@ init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-sprite") < 0 || ui_init() < 0)
 		mlk_panic();
-	if (window_open("Example - Sprite", W, H) < 0)
+	if (mlk_window_open("Example - Sprite", W, H) < 0)
 		mlk_panic();
 	if (mlk_image_openmem(&texture, assets_sprites_people, sizeof (assets_sprites_people)) < 0)
 		mlk_panic();
@@ -147,7 +147,7 @@ static void
 quit(void)
 {
 	mlk_texture_finish(&texture);
-	window_finish();
+	mlk_window_finish();
 	ui_finish();
 	mlk_core_finish();
 }

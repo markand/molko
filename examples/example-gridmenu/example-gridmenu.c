@@ -43,14 +43,14 @@ init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-gridmenu") < 0 || ui_init() < 0)
 		mlk_panic();
-	if (window_open("Example - Grid menu", W, H) < 0)
+	if (mlk_window_open("Example - Grid menu", W, H) < 0)
 		mlk_panic();
 }
 
 static void
 quit(void)
 {
-	window_finish();
+	mlk_window_finish();
 	ui_finish();
 	mlk_core_finish();
 }

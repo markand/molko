@@ -26,27 +26,27 @@
 #include "window.h"
 #include "window_p.h"
 
-static struct window_handle handle = {
+static struct mlk__window_handle handle = {
 	.win = NULL,
 	.renderer = NULL
 };
 
-static SDL_Cursor *cursors[WINDOW_CURSOR_LAST];
+static SDL_Cursor *cursors[MLK_WINDOW_CURSOR_LAST];
 
-struct window window = {
+struct mlk_window mlk_window = {
 	.handle = &handle
 };
 
 static void
 load_cursors(void)
 {
-	cursors[WINDOW_CURSOR_ARROW] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-	cursors[WINDOW_CURSOR_EDIT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
-	cursors[WINDOW_CURSOR_WAIT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
-	cursors[WINDOW_CURSOR_CROSSHAIR] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
-	cursors[WINDOW_CURSOR_SIZE] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
-	cursors[WINDOW_CURSOR_NO] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
-	cursors[WINDOW_CURSOR_HAND] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+	cursors[MLK_WINDOW_CURSOR_ARROW] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+	cursors[MLK_WINDOW_CURSOR_EDIT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
+	cursors[MLK_WINDOW_CURSOR_WAIT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
+	cursors[MLK_WINDOW_CURSOR_CROSSHAIR] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
+	cursors[MLK_WINDOW_CURSOR_SIZE] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
+	cursors[MLK_WINDOW_CURSOR_NO] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
+	cursors[MLK_WINDOW_CURSOR_HAND] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
 }
 
 static void
@@ -55,7 +55,7 @@ load_framerate(void)
 	SDL_DisplayMode mode;
 
 	if (SDL_GetWindowDisplayMode(handle.win, &mode) == 0)
-		window.framerate = mode.refresh_rate;
+		mlk_window.framerate = mode.refresh_rate;
 }
 
 static void
@@ -79,15 +79,15 @@ load_renderer(void)
 }
 
 int
-window_open(const char *title, unsigned int w, unsigned int h)
+mlk_window_open(const char *title, unsigned int w, unsigned int h)
 {
 	assert(title);
 
 	if (!load_window(title, w, h) || !load_renderer())
 		return MLK_ERR_SDL;
 
-	window.w = w;
-	window.h = h;
+	mlk_window.w = w;
+	mlk_window.h = h;
 
 	load_framerate();
 	load_cursors();
@@ -96,15 +96,15 @@ window_open(const char *title, unsigned int w, unsigned int h)
 }
 
 void
-window_set_cursor(enum window_cursor cursor)
+mlk_window_set_cursor(enum mlk_window_cursor cursor)
 {
-	assert(cursor < WINDOW_CURSOR_LAST);
+	assert(cursor < MLK_WINDOW_CURSOR_LAST);
 
 	SDL_SetCursor(cursors[cursor]);
 }
 
 void
-window_finish(void)
+mlk_window_finish(void)
 {
 	if (handle.renderer)
 		SDL_DestroyRenderer(handle.renderer);

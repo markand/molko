@@ -31,8 +31,8 @@
 #include "notify.h"
 #include "theme.h"
 
-#define WIDTH   (window.w / 3)
-#define HEIGHT  (window.h / 10)
+#define WIDTH   (mlk_window.w / 3)
+#define HEIGHT  (mlk_window.h / 10)
 
 struct geo {
 	const struct theme *theme;
@@ -66,7 +66,7 @@ geometry(struct geo *geo, const struct notify *n, size_t index)
 	geo->theme = system->theme ? system->theme : theme_default();
 
 	/* Determine notification position. */
-	x  = window.w - geo->theme->padding;
+	x  = mlk_window.w - geo->theme->padding;
 	x -= WIDTH;
 
 	y  = geo->theme->padding * (index + 1);;

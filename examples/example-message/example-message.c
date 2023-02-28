@@ -50,14 +50,14 @@ init(void)
 {
 	if (mlk_core_init("fr.malikania", "example-message") < 0 || ui_init() < 0 || rpg_init() < 0)
 		mlk_panic();
-	if (window_open("Example - Message", W, H) < 0)
+	if (mlk_window_open("Example - Message", W, H) < 0)
 		mlk_panic();
 }
 
 static void
 quit(void)
 {
-	window_finish();
+	mlk_window_finish();
 	rpg_finish();
 	ui_finish();
 	mlk_core_finish();
@@ -244,10 +244,10 @@ question(void)
 static void
 smallbottom(void)
 {
-	const unsigned int w = window.w / 4;
+	const unsigned int w = mlk_window.w / 4;
 	const unsigned int h = MH;
-	const int x = (window.w / 2) - (w / 2);
-	const int y = (window.h - h - 10);
+	const int x = (mlk_window.w / 2) - (w / 2);
+	const int y = (mlk_window.h - h - 10);
 	const char * const text[] = {
 		"This one is small here."
 	};

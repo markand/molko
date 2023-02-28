@@ -48,12 +48,12 @@ battle_message_draw(const struct battle_message *msg)
 	unsigned int lw = 0, lh = 0;
 
 	/* Prepare message frame. */
-	f.w = window.w / 3;
-	f.h = window.h / 15;
+	f.w = mlk_window.w / 3;
+	f.h = mlk_window.h / 15;
 	f.theme = msg->theme;
 
 	/* Center on top. */
-	align(ALIGN_TOP, &f.x, &f.y, f.w, f.h, 0, 20, window.w, window.h);
+	align(ALIGN_TOP, &f.x, &f.y, f.w, f.h, 0, 20, mlk_window.w, mlk_window.h);
 
 	/* Prepare message label box. */
 	l.text = msg->text;

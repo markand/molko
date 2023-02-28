@@ -76,9 +76,9 @@ battle_state_victory_init(struct battle_state_victory *vic, struct battle *bt)
 	message_start(&vic->msg);
 	message_query(&vic->msg, NULL, &vic->msg.h);
 
-	vic->msg.w = window.w * 0.6;
-	vic->msg.y = window.h * 0.1;
-	vic->msg.x = (window.w - vic->msg.w) / 2;
+	vic->msg.w = mlk_window.w * 0.6;
+	vic->msg.y = mlk_window.h * 0.1;
+	vic->msg.x = (mlk_window.w - vic->msg.w) / 2;
 
 	bt->status = BATTLE_STATUS_WON;
 

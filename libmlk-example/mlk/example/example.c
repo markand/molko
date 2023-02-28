@@ -42,7 +42,7 @@ mlk_example_init(const char *name)
 		return err;
 	if ((err = rpg_init()) < 0)
 		return err;
-	if (window_open(name, MLK_EXAMPLE_W, MLK_EXAMPLE_H) < 0)
+	if (mlk_window_open(name, MLK_EXAMPLE_W, MLK_EXAMPLE_H) < 0)
 		return err;
 
 	registry_init();
@@ -53,7 +53,7 @@ mlk_example_init(const char *name)
 void
 mlk_example_finish(void)
 {
-	window_finish();
+	mlk_window_finish();
 	rpg_finish();
 	ui_finish();
 	mlk_core_finish();
