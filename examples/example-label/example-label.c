@@ -125,7 +125,7 @@ static void
 quit(void)
 {
 	mlk_window_finish();
-	ui_finish();
+	mlk_ui_finish();
 	mlk_core_finish();
 }
 

@@ -58,7 +58,7 @@ quit(void)
 {
 	mlk_window_finish();
 	rpg_finish();
-	ui_finish();
+	mlk_ui_finish();
 	mlk_core_finish();
 }
 

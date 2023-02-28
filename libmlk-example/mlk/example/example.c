@@ -38,7 +38,7 @@ mlk_example_init(const char *name)
 
 	if ((err = mlk_core_init("fr.malikania", name)) < 0)
 		return err;
-	if ((err = ui_init()) < 0)
+	if ((err = mlk_ui_init()) < 0)
 		return err;
 	if ((err = rpg_init()) < 0)
 		return err;
@@ -55,6 +55,6 @@ mlk_example_finish(void)
 {
 	mlk_window_finish();
 	rpg_finish();
-	ui_finish();
+	mlk_ui_finish();
 	mlk_core_finish();
 }

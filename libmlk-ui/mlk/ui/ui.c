@@ -20,13 +20,13 @@
 #include "ui.h"
 
 int
-ui_init(void)
+mlk_ui_init(void)
 {
 	return mlk_theme_init();
 }
 
 void
-ui_finish(void)
+mlk_ui_finish(void)
 {
 	mlk_theme_finish();
 }

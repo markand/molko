@@ -24,10 +24,10 @@
 MLK_CORE_BEGIN_DECLS
 
 int
-ui_init(void);
+mlk_ui_init(void);
 
 void
-ui_finish(void);
+mlk_ui_finish(void);
 
 MLK_CORE_END_DECLS
 
