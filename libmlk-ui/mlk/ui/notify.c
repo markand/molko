@@ -48,17 +48,17 @@ struct geo {
 	int body_y;
 };
 
-static void draw(const struct notify *, size_t);
+static void draw(const struct mlk_notify *, size_t);
 
-static const struct notify_system default_system = {
+static const struct mlk_notify_system default_system = {
 	.draw = draw
 };
-static const struct notify_system *system = &default_system;
-static struct notify stack[NOTIFY_MAX];
+static const struct mlk_notify_system *system = &default_system;
+static struct mlk_notify stack[MLK_NOTIFY_MAX];
 static size_t stacksz;
 
 static void
-geometry(struct geo *geo, const struct notify *n, size_t index)
+geometry(struct geo *geo, const struct mlk_notify *n, size_t index)
 {
 	int x, y;
 
@@ -113,7 +113,7 @@ draw_frame(const struct geo *geo)
 }
 
 static void
-draw_icon(const struct geo *geo, const struct notify *n)
+draw_icon(const struct geo *geo, const struct mlk_notify *n)
 {
 	mlk_texture_draw(n->icon, geo->icon_x, geo->icon_y);
 }
@@ -121,7 +121,7 @@ draw_icon(const struct geo *geo, const struct notify *n)
 #include <stdio.h>
 
 static void
-draw_title(const struct geo *geo, const struct notify *n)
+draw_title(const struct geo *geo, const struct mlk_notify *n)
 {
 	const struct mlk_label l = {
 		.x = geo->title_x,
@@ -134,7 +134,7 @@ draw_title(const struct geo *geo, const struct notify *n)
 }
 
 static void
-draw_body(const struct geo *geo, const struct notify *n)
+draw_body(const struct geo *geo, const struct mlk_notify *n)
 {
 	const struct mlk_label l = {
 		.x = geo->body_x,
@@ -147,7 +147,7 @@ draw_body(const struct geo *geo, const struct notify *n)
 }
 
 static void
-draw(const struct notify *n, size_t index)
+draw(const struct mlk_notify *n, size_t index)
 {
 	struct geo geo;
 
@@ -161,17 +161,17 @@ draw(const struct notify *n, size_t index)
 }
 
 void
-notify(const struct mlk_texture *icon, const char *title, const char *body)
+mlk_notify(const struct mlk_texture *icon, const char *title, const char *body)
 {
 	assert(icon);
 	assert(title);
 	assert(body);
 
-	struct notify *n;
+	struct mlk_notify *n;
 
-	if (stacksz >= NOTIFY_MAX) {
-		memmove(&stack[0], &stack[1], sizeof (stack[0]) - NOTIFY_MAX - 1);
-		n = &stack[NOTIFY_MAX - 1];
+	if (stacksz >= MLK_NOTIFY_MAX) {
+		memmove(&stack[0], &stack[1], sizeof (stack[0]) - MLK_NOTIFY_MAX - 1);
+		n = &stack[MLK_NOTIFY_MAX - 1];
 	} else
 		n = &stack[stacksz++];
 
@@ -182,28 +182,28 @@ notify(const struct mlk_texture *icon, const char *title, const char *body)
 }
 
 void
-notify_update(unsigned int ticks)
+mlk_notify_update(unsigned int ticks)
 {
-	struct notify *n;
+	struct mlk_notify *n;
 
 	for (size_t i = 0; i < stacksz; ++i) {
 		n = &stack[i];
 		n->elapsed += ticks;
 
-		if (n->elapsed >= NOTIFY_TIMEOUT_DEFAULT)
+		if (n->elapsed >= MLK_NOTIFY_TIMEOUT_DEFAULT)
 			memmove(n, n + 1, sizeof (*n) * (--stacksz - i));
 	}
 }
 
 void
-notify_draw(void)
+mlk_notify_draw(void)
 {
 	for (size_t i = 0; i < stacksz; ++i)
 		system->draw(&stack[i], i);
 }
 
 void
-notify_set_system(const struct notify_system *sys)
+mlk_notify_set_system(const struct mlk_notify_system *sys)
 {
 	system = sys ? sys : &default_system;
 }

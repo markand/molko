@@ -67,7 +67,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 		break;
 	case MLK_EVENT_KEYDOWN:
 		if (ev->key.key == MLK_KEY_SPACE)
-			notify(icon, "Quest", "Quest finished.");
+			mlk_notify(icon, "Quest", "Quest finished.");
 		break;
 	default:
 		break;
@@ -79,7 +79,7 @@ update(struct mlk_state *st, unsigned int ticks)
 {
 	(void)st;
 
-	notify_update(ticks);
+	mlk_notify_update(ticks);
 }
 
 static void
@@ -90,7 +90,7 @@ draw(struct mlk_state *st)
 	mlk_painter_set_color(0xffffffff);
 	mlk_painter_clear();
 	mlk_label_draw(&help);
-	notify_draw();
+	mlk_notify_draw();
 	mlk_painter_present();
 }
 
