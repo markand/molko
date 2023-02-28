@@ -20,7 +20,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <mlk/core/action.h>
 #include <mlk/core/font.h>
 #include <mlk/core/trace.h>
 #include <mlk/core/window.h>
@@ -38,12 +37,12 @@ static struct {
 	unsigned int elapsed;
 } data;
 
-struct trace_hud trace_hud = {
-	.timeout = TRACE_HUD_TIMEOUT_DEFAULT
+struct mlk_trace_hud mlk_trace_hud = {
+	.timeout = MLK_TRACE_HUD_TIMEOUT_DEFAULT
 };
 
 void
-trace_hud_handler(const char *str)
+mlk_trace_hud_handler(const char *str)
 {
 	assert(str);
 
@@ -64,7 +63,7 @@ trace_hud_handler(const char *str)
 }
 
 void
-trace_hud_update(unsigned int ticks)
+mlk_trace_hud_update(unsigned int ticks)
 {
 	data.elapsed += ticks;
 
@@ -79,19 +78,19 @@ trace_hud_update(unsigned int ticks)
 	 * [n] = "ldkf"
 	 * [LINES_MAX + 1] = "\0"
 	 */
-	if (data.elapsed >= trace_hud.timeout) {
+	if (data.elapsed >= mlk_trace_hud.timeout) {
 		data.elapsed = 0;
 		memmove(&data.lines[0], &data.lines[1], sizeof (data.lines[0]) * LINES_MAX);
 	}
 }
 
 void
-trace_hud_draw(void)
+mlk_trace_hud_draw(void)
 {
 	struct mlk_theme *th;
 	int x, y;
 
-	th = THEME(trace_hud.theme);
+	th = THEME(mlk_trace_hud.theme);
 	x = th->padding;
 	y = th->padding;
 
@@ -110,36 +109,7 @@ trace_hud_draw(void)
 }
 
 void
-trace_hud_clear(void)
+mlk_trace_hud_clear(void)
 {
 	memset(&data, 0, sizeof (data));
-}
-
-static int
-update(struct mlk_action *a, unsigned int ticks)
-{
-	(void)a;
-
-	trace_hud_update(ticks);
-
-	return 0;
-}
-
-static void
-draw(struct mlk_action *a)
-{
-	(void)a;
-
-	trace_hud_draw();
-}
-
-struct mlk_action *
-trace_hud_action(void)
-{
-	static struct mlk_action a = {
-		.update = update,
-		.draw = draw
-	};
-
-	return &a;
 }

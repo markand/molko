@@ -53,7 +53,7 @@ init(void)
 	if ((err = mlk_example_init("example-notify")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	icon = &registry_textures[REGISTRY_TEXTURE_SWORD];
+	icon = &mlk_registry_textures[MLK_REGISTRY_TEXTURE_SWORD];
 }
 
 static void

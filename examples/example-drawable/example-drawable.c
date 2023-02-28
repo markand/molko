@@ -77,8 +77,8 @@ init(void)
 	if ((err = mlk_example_init("example-drawable")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	explosion_tex = &registry_textures[REGISTRY_TEXTURE_EXPLOSION];
-	explosion_sprite = &registry_sprites[REGISTRY_TEXTURE_EXPLOSION];
+	explosion_tex = &mlk_registry_textures[MLK_REGISTRY_TEXTURE_EXPLOSION];
+	explosion_sprite = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_EXPLOSION];
 }
 
 static int

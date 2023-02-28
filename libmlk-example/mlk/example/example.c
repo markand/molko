@@ -45,7 +45,7 @@ mlk_example_init(const char *name)
 	if (mlk_window_open(name, MLK_EXAMPLE_W, MLK_EXAMPLE_H) < 0)
 		return err;
 
-	registry_init();
+	mlk_registry_init();
 
 	return 0;
 }

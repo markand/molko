@@ -69,7 +69,7 @@ init(void)
 	if ((err = mlk_example_init("example-sprite")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	sprite = &registry_sprites[REGISTRY_TEXTURE_PEOPLE];
+	sprite = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_PEOPLE];
 }
 
 static void

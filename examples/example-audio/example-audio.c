@@ -61,8 +61,8 @@ init(void)
 	if ((err = mlk_example_init("example-audio")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	sound = &registry_sounds[REGISTRY_SOUND_FIRE];
-	music = &registry_music[REGISTRY_MUSIC_ROMANCE];
+	sound = &mlk_registry_sounds[MLK_REGISTRY_SOUND_FIRE];
+	music = &mlk_registry_music[MLK_REGISTRY_MUSIC_ROMANCE];
 }
 
 static void

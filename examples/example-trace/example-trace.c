@@ -44,7 +44,7 @@ init(void)
 	if ((err = mlk_example_init("example-trace")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	mlk_trace_handler = trace_hud_handler;
+	mlk_trace_handler = mlk_trace_hud_handler;
 }
 
 static void
@@ -56,7 +56,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
 		case MLK_KEY_ESCAPE:
-			trace_hud_clear();
+			mlk_trace_hud_clear();
 			break;
 		default:
 			mlk_tracef("keydown pressed: %d", ev->key.key);
@@ -79,7 +79,7 @@ update(struct mlk_state *st, unsigned int ticks)
 {
 	(void)st;
 
-	trace_hud_update(ticks);
+	mlk_trace_hud_update(ticks);
 }
 
 static void
@@ -89,7 +89,7 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0x4f8fbaff);
 	mlk_painter_clear();
-	trace_hud_draw();
+	mlk_trace_hud_draw();
 	mlk_painter_present();
 }
 

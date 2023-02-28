@@ -247,8 +247,8 @@ chests_init(void)
 	 * Chest #0 is at center 1st half of the screen.
 	 * Chest #1 is at center of 2nd half of the sreen.
 	 */
-	const unsigned int cw = registry_sprites[REGISTRY_TEXTURE_CHEST].cellw;
-	const unsigned int ch = registry_sprites[REGISTRY_TEXTURE_CHEST].cellh;
+	const unsigned int cw = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST].cellw;
+	const unsigned int ch = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST].cellh;
 
 	mlk_align(MLK_ALIGN_CENTER, &chests[0].x, &chests[0].y, cw, ch,
 	    0, 0, MLK_EXAMPLE_W / 2, MLK_EXAMPLE_H);

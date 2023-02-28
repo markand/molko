@@ -113,14 +113,14 @@ fire_action(struct battle *bt, struct character *owner, const struct selection *
 	self->drawable.finish = finish;
 	self->drawable.end = end;
 
-	mlk_animation_init(&self->animation, &registry_sprites[REGISTRY_TEXTURE_EXPLOSION], 12);
+	mlk_animation_init(&self->animation, &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_EXPLOSION], 12);
 	mlk_animation_start(&self->animation);
 
-	mlk_sound_play(&registry_sounds[REGISTRY_SOUND_FIRE]);
+	mlk_sound_play(&mlk_registry_sounds[MLK_REGISTRY_SOUND_FIRE]);
 	battle_state_rendering(bt, &self->drawable);
 }
 
-const struct spell spell_fire = {
+const struct spell mlk_spell_fire = {
 	.name = "Fire",
 	.description = "A delicate fire.",
 	.mp = 5,

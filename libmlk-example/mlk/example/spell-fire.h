@@ -19,6 +19,6 @@
 #ifndef EXAMPLES_BATTLE_SPELL_FIRE_H
 #define EXAMPLES_BATTLE_SPELL_FIRE_H
 
-extern const struct spell spell_fire;
+extern const struct spell mlk_spell_fire;
 
 #endif /* !EXAMPLES_BATTLE_SPELL_FIRE_H */

@@ -19,31 +19,27 @@
 #ifndef EXAMPLES_TRACE_TRACE_HUD_H
 #define EXAMPLES_TRACE_TRACE_HUD_H
 
-#define TRACE_HUD_TIMEOUT_DEFAULT (3000)
+#define MLK_TRACE_HUD_TIMEOUT_DEFAULT (3000)
 
-struct action;
 struct mlk_theme;
 
-struct trace_hud {
+struct mlk_trace_hud {
 	struct mlk_theme *theme;
 	unsigned int timeout;
 };
 
-extern struct trace_hud trace_hud;
+extern struct mlk_trace_hud mlk_trace_hud;
 
 void
-trace_hud_handler(const char *);
+mlk_trace_hud_handler(const char *);
 
 void
-trace_hud_update(unsigned int);
+mlk_trace_hud_update(unsigned int);
 
 void
-trace_hud_draw(void);
+mlk_trace_hud_draw(void);
 
 void
-trace_hud_clear(void);
-
-struct mlk_action *
-trace_hud_action(void);
+mlk_trace_hud_clear(void);
 
 #endif /* !EXAMPLES_TRACE_TRACE_HUD_H */

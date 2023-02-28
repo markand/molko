@@ -155,7 +155,7 @@ test_basics_handle(void)
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
 
-	struct mlk_action array[3] = {0};
+	struct mlk_action *array[3] = {0};
 	struct mlk_action_script sc = {0};
 
 	mlk_action_script_init(&sc, array, 3);
@@ -237,7 +237,7 @@ test_basics_update(void)
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
 
-	struct mlk_action array[3];
+	struct mlk_action *array[3];
 	struct mlk_action_script sc = {0};
 
 	mlk_action_script_init(&sc, array, 3);
@@ -350,7 +350,7 @@ test_basics_draw(void)
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
 
-	struct mlk_action array[3];
+	struct mlk_action *array[3];
 	struct mlk_action_script sc = {0};
 
 	mlk_action_script_init(&sc, array, 3);
@@ -430,7 +430,7 @@ test_basics_finish(void)
 		{ .act = INIT(&table[2].inv, my_update_false)   }
 	};
 
-	struct mlk_action array[3];
+	struct mlk_action *array[3];
 	struct mlk_action_script sc = {0};
 
 	mlk_action_script_init(&sc, array, 3);

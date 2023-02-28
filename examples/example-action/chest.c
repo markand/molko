@@ -46,13 +46,13 @@ handle(struct mlk_action *act, const union mlk_event *ev)
 	if (ev->type != MLK_EVENT_CLICKDOWN)
 		return;
 
-	cw = registry_sprites[REGISTRY_TEXTURE_CHEST].cellw;
-	ch = registry_sprites[REGISTRY_TEXTURE_CHEST].cellh;
+	cw = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST].cellw;
+	ch = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST].cellh;
 
 	if (!mlk_maths_is_boxed(chest->x, chest->y, cw, ch, ev->click.x, ev->click.y))
 		return;
 
-	mlk_sound_play(&registry_sounds[REGISTRY_SOUND_OPEN_CHEST]);
+	mlk_sound_play(&mlk_registry_sounds[MLK_REGISTRY_SOUND_OPEN_CHEST]);
 	mlk_animation_start(&chest->animation);
 
 	chest->state = CHEST_STATE_OPENING;
@@ -112,7 +112,7 @@ chest_init(struct chest *chest)
 	chest->action.update = update;
 	chest->action.draw = draw;
 
-	mlk_animation_init(&chest->animation, &registry_sprites[REGISTRY_TEXTURE_CHEST], CHEST_DELAY);
+	mlk_animation_init(&chest->animation, &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST], CHEST_DELAY);
 
 	return &chest->action;
 }

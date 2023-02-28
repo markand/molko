@@ -41,10 +41,10 @@ const struct character character_john = {
 	.mp = 50,
 	.reset = adventurer_reset,
 	.sprites = {
-		[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
-		[CHARACTER_SPRITE_SWORD] = &registry_sprites[REGISTRY_TEXTURE_JOHN_SWORD]
+		[CHARACTER_SPRITE_NORMAL] = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_JOHN_WALK],
+		[CHARACTER_SPRITE_SWORD] = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_JOHN_SWORD]
 	},
 	.spells = {
-		&spell_fire
+		&mlk_spell_fire
 	}
 };

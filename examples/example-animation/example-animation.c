@@ -95,8 +95,8 @@ draw(struct mlk_state *st)
 
 	unsigned int cellw, cellh;
 
-	cellw = registry_sprites[REGISTRY_TEXTURE_NUMBERS].cellw;
-	cellh = registry_sprites[REGISTRY_TEXTURE_NUMBERS].cellh;
+	cellw = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_NUMBERS].cellw;
+	cellh = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_NUMBERS].cellh;
 
 	mlk_painter_set_color(0x4f8fbaff);
 	mlk_painter_clear();
@@ -117,7 +117,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_animation_init(&animation, &registry_sprites[REGISTRY_TEXTURE_NUMBERS], 1000);
+	mlk_animation_init(&animation, &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_NUMBERS], 1000);
 
 	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);

@@ -118,7 +118,7 @@ static struct character haunted_wood = {
 	.level = 30,
 	.reset = haunted_wood_reset,
 	.sprites = {
-		[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_HAUNTED_WOOD],
+		[CHARACTER_SPRITE_NORMAL] = &registry_sprites[MLK_REGISTRY_TEXTURE_HAUNTED_WOOD],
 	},
 	.exec = haunted_wood_strat
 };
@@ -133,10 +133,9 @@ init(void)
 	if ((err = mlk_example_init("example-battle")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	registry_init();
-
 	/* Set cursor in default theme. */
-	mlk_theme_default()->sprites[MLK_THEME_SPRITE_CURSOR] = &registry_sprites[REGISTRY_TEXTURE_CURSOR];
+	mlk_registry_init();
+	mlk_theme_default()->sprites[MLK_THEME_SPRITE_CURSOR] = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CURSOR];
 }
 
 static struct mlk_state *states[2];
@@ -153,7 +152,7 @@ static struct {
 			.level = 6,
 			.reset = black_cat_reset,
 			.sprites = {
-				[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_BLACK_CAT],
+				[CHARACTER_SPRITE_NORMAL] = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_BLACK_CAT],
 			},
 			.exec = black_cat_strat
 		},
@@ -171,11 +170,11 @@ static struct {
 			.mp = 50,
 			.reset = adventurer_reset,
 			.sprites = {
-				[CHARACTER_SPRITE_NORMAL] = &registry_sprites[REGISTRY_TEXTURE_JOHN_WALK],
-				[CHARACTER_SPRITE_SWORD] = &registry_sprites[REGISTRY_TEXTURE_JOHN_SWORD],
+				[CHARACTER_SPRITE_NORMAL] = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_JOHN_WALK],
+				[CHARACTER_SPRITE_SWORD] = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_JOHN_SWORD],
 			},
 			.spells = {
-				&spell_fire
+				&mlk_spell_fire
 			}
 		},
 		.entity = {
@@ -218,7 +217,7 @@ prepare_to_fight(void)
 	entities_enemies[0]->x = 500;
 	entities_enemies[0]->y = 100;
 
-	bt.background = &registry_images[REGISTRY_IMAGE_BATTLE_BACKGROUND];
+	bt.background = &mlk_registry_images[MLK_REGISTRY_IMAGE_BATTLE_BACKGROUND];
 	bt.bar = &bar;
 	bt.actions = &action_stack;
 	bt.effects = &drawable_stack;
