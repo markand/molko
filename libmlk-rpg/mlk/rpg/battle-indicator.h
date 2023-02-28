@@ -25,12 +25,12 @@
 #define BATTLE_INDICATOR_HP_COLOR (0xa5303000)
 #define BATTLE_INDICATOR_MP_COLOR (0xa23e8c00)
 
-struct theme;
+struct mlk_theme;
 
 struct battle_indicator {
 	unsigned int color;
 	unsigned int amount;
-	const struct theme *theme;
+	const struct mlk_theme *theme;
 	unsigned int cur;
 	unsigned int elapsed;
 	unsigned int alpha;

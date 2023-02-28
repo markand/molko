@@ -41,7 +41,7 @@ is_boxed(const struct mlk_button *button, const struct mlk_event_click *click)
 }
 
 void
-mlk_button_draw_default(const struct theme *t, const struct mlk_button *button)
+mlk_button_draw_default(const struct mlk_theme *t, const struct mlk_button *button)
 {
 	assert(t);
 	assert(button);
@@ -111,5 +111,5 @@ mlk_button_draw(const struct mlk_button *button)
 {
 	assert(button);
 
-	theme_draw_button(button->theme, button);
+	mlk_theme_draw_button(button->theme, button);
 }

@@ -81,7 +81,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 			else
 				style = MLK_FONT_STYLE_ANTIALIASED;
 
-			theme_default()->fonts[THEME_FONT_INTERFACE]->style = style;
+			mlk_theme_default()->fonts[MLK_THEME_FONT_INTERFACE]->style = style;
 		default:
 			break;
 		}
@@ -99,7 +99,7 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	struct mlk_font *font = theme_default()->fonts[THEME_FONT_INTERFACE];
+	struct mlk_font *font = mlk_theme_default()->fonts[MLK_THEME_FONT_INTERFACE];
 	struct mlk_texture tex;
 	int err;
 

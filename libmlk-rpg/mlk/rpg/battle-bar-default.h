@@ -27,7 +27,7 @@ struct battle;
 struct battle_bar;
 struct character;
 struct selection;
-struct theme;
+struct mlk_theme;
 
 union mlk_event;
 
@@ -49,7 +49,7 @@ struct battle_bar_default {
 	int y;
 	unsigned int w;
 	unsigned int h;
-	struct theme *theme;
+	struct mlk_theme *theme;
 	enum battle_bar_default_state state;
 	enum battle_bar_default_menu menu;
 

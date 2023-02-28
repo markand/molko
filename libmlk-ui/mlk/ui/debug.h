@@ -26,14 +26,14 @@
 
 #define MLK_DEBUG_LINE_MAX 256
 
-struct theme;
+struct mlk_theme;
 
 struct mlk_debug_options {
 	int enable;
 };
 
 struct mlk_debug_report {
-	const struct theme *theme;
+	const struct mlk_theme *theme;
 	unsigned int count;
 };
 

@@ -109,7 +109,7 @@ run(struct message *msg)
 }
 
 static void
-my_draw_frame(const struct theme *th, const struct mlk_frame *f)
+my_draw_frame(const struct mlk_theme *th, const struct mlk_frame *f)
 {
 	(void)th;
 
@@ -309,7 +309,7 @@ custom(void)
 		"This one will destroy your eyes.",
 		"Because it use a terrible custom theme."
 	};
-	struct theme theme;
+	struct mlk_theme theme;
 	struct message msg = {
 		.x = MX,
 		.y = MY,
@@ -321,9 +321,9 @@ custom(void)
 	};
 
 	/* Borrow default theme and change its frame drawing. */
-	theme_shallow(&theme, NULL);
+	mlk_theme_shallow(&theme, NULL);
 	theme.draw_frame = my_draw_frame;
-	theme.colors[THEME_COLOR_NORMAL] = 0x0000ffff;
+	theme.colors[MLK_THEME_COLOR_NORMAL] = 0x0000ffff;
 
 	run(&msg);
 }

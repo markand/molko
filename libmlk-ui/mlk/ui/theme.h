@@ -25,66 +25,66 @@ struct mlk_button;
 struct mlk_checkbox;
 struct mlk_font;
 struct mlk_frame;
-struct label;
+struct mlk_label;
 struct mlk_sprite;
 
-enum theme_font {
-	THEME_FONT_DEBUG,
-	THEME_FONT_INTERFACE,
-	THEME_FONT_IMPORTANT,
-	THEME_FONT_NUM
+enum mlk_theme_font {
+	MLK_THEME_FONT_DEBUG,
+	MLK_THEME_FONT_INTERFACE,
+	MLK_THEME_FONT_IMPORTANT,
+	MLK_THEME_FONT_NUM
 };
 
-enum theme_color {
-	THEME_COLOR_DEBUG,
-	THEME_COLOR_NORMAL,
-	THEME_COLOR_SELECTED,
-	THEME_COLOR_SHADOW,
-	THEME_COLOR_NUM
+enum mlk_theme_color {
+	MLK_THEME_COLOR_DEBUG,
+	MLK_THEME_COLOR_NORMAL,
+	MLK_THEME_COLOR_SELECTED,
+	MLK_THEME_COLOR_SHADOW,
+	MLK_THEME_COLOR_NUM
 };
 
-enum theme_sprite {
-	THEME_SPRITE_CURSOR,
-	THEME_SPRITE_NUM
+enum mlk_theme_sprite {
+	MLK_THEME_SPRITE_CURSOR,
+	MLK_THEME_SPRITE_NUM
 };
 
-struct theme {
-	struct mlk_font *fonts[THEME_FONT_NUM];
-	const struct mlk_sprite *sprites[THEME_SPRITE_NUM];
-	unsigned long colors[THEME_COLOR_NUM];
+struct mlk_theme {
+	struct mlk_font *fonts[MLK_THEME_FONT_NUM];
+	const struct mlk_sprite *sprites[MLK_THEME_SPRITE_NUM];
+	unsigned long colors[MLK_THEME_COLOR_NUM];
 	unsigned int padding;
 
-	void (*draw_frame)(const struct theme *, const struct mlk_frame *);
-	void (*draw_label)(const struct theme *, const struct label *);
-	void (*draw_button)(const struct theme *, const struct mlk_button *);
-	void (*draw_checkbox)(const struct theme *t, const struct mlk_checkbox *);
+	void (*draw_frame)(const struct mlk_theme *, const struct mlk_frame *);
+	void (*draw_label)(const struct mlk_theme *, const struct mlk_label *);
+	void (*draw_button)(const struct mlk_theme *, const struct mlk_button *);
+	void (*draw_checkbox)(const struct mlk_theme *t, const struct mlk_checkbox *);
 };
 
 MLK_CORE_BEGIN_DECLS
 
 int
-theme_init(void);
+mlk_theme_init(void);
 
-struct theme *
-theme_default(void);
-
-void
-theme_shallow(struct theme *, const struct theme *);
+struct mlk_theme *
+mlk_theme_default(void);
 
 void
-theme_draw_frame(const struct theme *, const struct mlk_frame *);
+mlk_theme_shallow(struct mlk_theme *, const struct mlk_theme *);
 
 void
-theme_draw_label(const struct theme *, const struct label *);
+mlk_theme_draw_frame(const struct mlk_theme *, const struct mlk_frame *);
 
 void
-theme_draw_button(const struct theme *, const struct mlk_button *);
+mlk_theme_draw_label(const struct mlk_theme *, const struct mlk_label *);
 
 void
-theme_draw_checkbox(const struct theme *, const struct mlk_checkbox *);
+mlk_theme_draw_button(const struct mlk_theme *, const struct mlk_button *);
 
 void
-theme_finish(void);
+mlk_theme_draw_checkbox(const struct mlk_theme *, const struct mlk_checkbox *);
+
+void
+mlk_theme_finish(void);
 
 MLK_CORE_END_DECLS
 

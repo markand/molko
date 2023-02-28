@@ -56,17 +56,17 @@ mlk_debugva(struct mlk_debug_report *report, const char *fmt, va_list ap)
 		return;
 
 	char line[MLK_DEBUG_LINE_MAX];
-	const struct theme *theme;
+	const struct mlk_theme *theme;
 	struct mlk_font *font;
 	struct mlk_texture tex;
 	int x, y;
 
 	vsnprintf(line, sizeof (line), fmt, ap);
 
-	theme = report->theme ? report->theme : theme_default();
-	font = theme->fonts[THEME_FONT_DEBUG];
+	theme = report->theme ? report->theme : mlk_theme_default();
+	font = theme->fonts[MLK_THEME_FONT_DEBUG];
 
-	if (mlk_font_render(font, &tex, line, theme->colors[THEME_COLOR_DEBUG]) < 0)
+	if (mlk_font_render(font, &tex, line, theme->colors[MLK_THEME_COLOR_DEBUG]) < 0)
 		return;
 
 	x = theme->padding;

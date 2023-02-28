@@ -22,10 +22,10 @@
 #define TRACE_HUD_TIMEOUT_DEFAULT (3000)
 
 struct action;
-struct theme;
+struct mlk_theme;
 
 struct trace_hud {
-	struct theme *theme;
+	struct mlk_theme *theme;
 	unsigned int timeout;
 };
 

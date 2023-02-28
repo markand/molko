@@ -140,13 +140,13 @@ resize_header(void)
 	mlk_label_query(l, &w, &h);
 	mlk_align(MLK_ALIGN_LEFT, &l->x, &l->y, w, h, f->x, f->y, f->w, HEADER_HEIGHT);
 
-	l->x += theme_default()->padding;
+	l->x += mlk_theme_default()->padding;
 }
 
 static void
 resize_autosave(void)
 {
-	unsigned int padding = theme_default()->padding;
+	unsigned int padding = mlk_theme_default()->padding;
 	struct mlk_frame *f = &ui.panel.frame;
 	struct mlk_checkbox *c = &ui.autosave.cb;
 	struct mlk_label *l = &ui.autosave.label;
@@ -161,7 +161,7 @@ resize_autosave(void)
 static void
 resize_button(void)
 {
-	unsigned int padding = theme_default()->padding;
+	unsigned int padding = mlk_theme_default()->padding;
 	struct mlk_frame *f = &ui.panel.frame;
 	struct mlk_button *b = &ui.quit.button;
 

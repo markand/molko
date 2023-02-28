@@ -31,7 +31,7 @@
 #include "trace-hud.h"
 
 #define LINES_MAX       (4)
-#define THEME(t)        ((t) ? (t) : theme_default())
+#define THEME(t)        ((t) ? (t) : mlk_theme_default())
 
 static struct {
 	char lines[LINES_MAX + 1][TRACE_LINE_MAX];
@@ -88,7 +88,7 @@ trace_hud_update(unsigned int ticks)
 void
 trace_hud_draw(void)
 {
-	struct theme *th;
+	struct mlk_theme *th;
 	int x, y;
 
 	th = THEME(trace_hud.theme);
@@ -104,7 +104,7 @@ trace_hud_draw(void)
 			.flags = MLK_LABEL_FLAGS_SHADOW
 		});
 
-		y += mlk_font_height(th->fonts[THEME_FONT_INTERFACE]);
+		y += mlk_font_height(th->fonts[MLK_THEME_FONT_INTERFACE]);
 		y += th->padding;
 	}
 }

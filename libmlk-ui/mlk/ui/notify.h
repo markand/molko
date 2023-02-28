@@ -28,7 +28,7 @@
 #define MLK_NOTIFY_TIMEOUT_DEFAULT      (5000)
 
 struct mlk_texture;
-struct theme;
+struct mlk_theme;
 
 struct mlk_notify {
 	const struct mlk_texture *icon;
@@ -38,7 +38,7 @@ struct mlk_notify {
 };
 
 struct mlk_notify_system {
-	struct theme *theme;
+	struct mlk_theme *theme;
 	void (*draw)(const struct mlk_notify *, size_t);
 };
 

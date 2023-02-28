@@ -21,7 +21,7 @@
 
 #include <mlk/core/core.h>
 
-struct theme;
+struct mlk_theme;
 
 enum mlk_frame_style {
 	MLK_FRAME_STYLE_NORMAL,
@@ -34,13 +34,13 @@ struct mlk_frame {
 	unsigned int w;
 	unsigned int h;
 	enum mlk_frame_style style;
-	const struct theme *theme;
+	const struct mlk_theme *theme;
 };
 
 MLK_CORE_BEGIN_DECLS
 
 void
-mlk_frame_draw_default(const struct theme *, const struct mlk_frame *);
+mlk_frame_draw_default(const struct mlk_theme *, const struct mlk_frame *);
 
 void
 mlk_frame_draw(const struct mlk_frame *);

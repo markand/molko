@@ -36,7 +36,7 @@
 
 #include "message.h"
 
-#define THEME(msg)      (msg->theme ? msg->theme : theme_default())
+#define THEME(msg)      (msg->theme ? msg->theme : mlk_theme_default())
 
 static void
 draw_frame(const struct message *msg)
@@ -63,7 +63,7 @@ min_width(const struct message *msg)
 	for (size_t i = 0; i < msg->linesz; ++i) {
 		if (!msg->lines[i])
 			continue;
-		if ((err = mlk_font_query(THEME(msg)->fonts[THEME_FONT_INTERFACE], msg->lines[i], &w, NULL)) < 0)
+		if ((err = mlk_font_query(THEME(msg)->fonts[MLK_THEME_FONT_INTERFACE], msg->lines[i], &w, NULL)) < 0)
 			mlk_panic(err);
 		if (w > maxw)
 			maxw = w;
@@ -77,8 +77,8 @@ min_height(const struct message *msg)
 {
 	assert(msg);
 
-	const struct theme *th = THEME(msg);
-	const unsigned int lh  = mlk_font_height(th->fonts[THEME_FONT_INTERFACE]);
+	const struct mlk_theme *th = THEME(msg);
+	const unsigned int lh  = mlk_font_height(th->fonts[MLK_THEME_FONT_INTERFACE]);
 
 	return (th->padding * 2) + (msg->linesz * lh) + ((msg->linesz - 1) * msg->spacing);
 }
@@ -86,7 +86,7 @@ min_height(const struct message *msg)
 static void
 draw_lines(const struct message *msg)
 {
-	const struct theme *theme = THEME(msg);
+	const struct mlk_theme *theme = THEME(msg);
 	struct mlk_label label;
 	unsigned int lw, lh;
 	int err;
@@ -94,7 +94,7 @@ draw_lines(const struct message *msg)
 	for (size_t i = 0; i < msg->linesz; ++i) {
 		if (!msg->lines[i])
 			continue;
-		if ((err = mlk_font_query(theme->fonts[THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh)) < 0)
+		if ((err = mlk_font_query(theme->fonts[MLK_THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh)) < 0)
 			mlk_panic(err);
 
 		label.theme = theme;

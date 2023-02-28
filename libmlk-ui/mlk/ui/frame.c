@@ -25,7 +25,7 @@
 #include "theme.h"
 
 void
-mlk_frame_draw_default(const struct theme *t, const struct mlk_frame *frame)
+mlk_frame_draw_default(const struct mlk_theme *t, const struct mlk_frame *frame)
 {
 	assert(t);
 	assert(frame);
@@ -45,5 +45,5 @@ mlk_frame_draw(const struct mlk_frame *frame)
 {
 	assert(frame);
 
-	theme_draw_frame(frame->theme, frame);
+	mlk_theme_draw_frame(frame->theme, frame);
 }

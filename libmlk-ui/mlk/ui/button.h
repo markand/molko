@@ -23,7 +23,7 @@
 
 union mlk_event;
 
-struct theme;
+struct mlk_theme;
 
 enum mlk_button_state {
 	MLK_BUTTON_STATE_NONE,
@@ -38,7 +38,7 @@ struct mlk_button {
 	unsigned int h;
 	const char *text;
 	enum mlk_button_state state;
-	const struct theme *theme;
+	const struct mlk_theme *theme;
 };
 
 MLK_CORE_BEGIN_DECLS
@@ -50,7 +50,7 @@ void
 mlk_button_reset(struct mlk_button *);
 
 void
-mlk_button_draw_default(const struct theme *, const struct mlk_button *);
+mlk_button_draw_default(const struct mlk_theme *, const struct mlk_button *);
 
 void
 mlk_button_draw(const struct mlk_button *);

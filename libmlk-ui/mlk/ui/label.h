@@ -21,7 +21,7 @@
 
 #include <mlk/core/core.h>
 
-struct theme;
+struct mlk_theme;
 
 enum mlk_label_flags {
 	MLK_LABEL_FLAGS_NONE,
@@ -35,13 +35,13 @@ struct mlk_label {
 	int y;
 	const char *text;
 	enum mlk_label_flags flags;
-	const struct theme *theme;
+	const struct mlk_theme *theme;
 };
 
 MLK_CORE_BEGIN_DECLS
 
 void
-mlk_label_draw_default(const struct theme *, const struct mlk_label *);
+mlk_label_draw_default(const struct mlk_theme *, const struct mlk_label *);
 
 int
 mlk_label_ok(const struct mlk_label *);

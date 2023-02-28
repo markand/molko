@@ -25,7 +25,7 @@
 
 #include "label.h"
 
-struct theme;
+struct mlk_theme;
 
 union mlk_event;
 
@@ -36,7 +36,7 @@ struct mlk_gridmenu {
 	unsigned int w;
 	unsigned int h;
 	size_t selected;
-	const struct theme *theme;
+	const struct mlk_theme *theme;
 	const char * const *items;
 	size_t itemsz;
 	unsigned int nrows;

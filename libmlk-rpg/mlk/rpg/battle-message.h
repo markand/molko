@@ -21,11 +21,11 @@
 
 #include <mlk/core/core.h>
 
-struct theme;
+struct mlk_theme;
 
 struct battle_message {
 	const char *text;
-	struct theme *theme;
+	struct mlk_theme *theme;
 	unsigned int elapsed;
 };
 

@@ -22,11 +22,11 @@
 int
 ui_init(void)
 {
-	return theme_init();
+	return mlk_theme_init();
 }
 
 void
 ui_finish(void)
 {
-	theme_finish();
+	mlk_theme_finish();
 }

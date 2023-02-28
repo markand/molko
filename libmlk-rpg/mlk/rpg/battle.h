@@ -42,14 +42,14 @@ struct item;
 struct mlk_music;
 struct selection;
 struct spell;
-struct theme;
+struct mlk_theme;
 
 #define BATTLE_TEAM_FOREACH(bt, iter) \
 	for (size_t i = 0; i < (bt)->teamsz && ((iter) = (bt)->team[i]); ++i)
 #define BATTLE_ENEMY_FOREACH(bt, iter) \
 	for (size_t i = 0; i < (bt)->enemiesz && ((iter) = (bt)->enemies[i]); ++i)
 
-#define BATTLE_THEME(bt) ((bt)->theme ? (bt)->theme : theme_default())
+#define BATTLE_THEME(bt) ((bt)->theme ? (bt)->theme : mlk_theme_default())
 
 enum battle_status {
 	BATTLE_STATUS_NONE,
@@ -79,7 +79,7 @@ struct battle {
 	size_t ordersz;
 	struct mlk_texture *background;
 	struct mlk_music *music[3];
-	struct theme *theme;
+	struct mlk_theme *theme;
 	struct mlk_drawable_stack *effects;
 	struct mlk_action_stack *actions;
 	struct inventory *inventory;

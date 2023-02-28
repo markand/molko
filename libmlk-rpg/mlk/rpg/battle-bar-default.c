@@ -42,7 +42,7 @@
 #include "item.h"
 #include "spell.h"
 
-#define THEME(bar) ((bar)->theme ? (bar)->theme : theme_default())
+#define THEME(bar) ((bar)->theme ? (bar)->theme : mlk_theme_default())
 
 struct geo {
 	int x, y;
@@ -155,7 +155,7 @@ switch_selection_spell(struct battle_bar_default *bar, struct battle *bt)
 	battle_state_selection(bt, &sel);
 
 	/* A cursor should be present. */
-	if (!mlk_sprite_ok(BATTLE_THEME(bt)->sprites[THEME_SPRITE_CURSOR]))
+	if (!mlk_sprite_ok(BATTLE_THEME(bt)->sprites[MLK_THEME_SPRITE_CURSOR]))
 		mlk_tracef("battle: no cursor sprite in theme");
 }
 
@@ -228,13 +228,13 @@ draw_status_character_stats(const struct battle_bar_default *bar,
                             int y,
                             unsigned int h)
 {
-	const struct theme *theme = THEME(bar);
+	const struct mlk_theme *theme = THEME(bar);
 	struct mlk_label label;
 	unsigned int spacing, lw, lh;
 	char line[64];
 
 	/* Compute spacing between elements. */
-	spacing = h - (mlk_font_height(theme->fonts[THEME_FONT_INTERFACE]) * 3);
+	spacing = h - (mlk_font_height(theme->fonts[MLK_THEME_FONT_INTERFACE]) * 3);
 	spacing /= 4;
 
 	/* Reuse the same label. */
@@ -353,7 +353,7 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 		}
 	};
 
-	const struct theme *theme = THEME(bar);
+	const struct mlk_theme *theme = THEME(bar);
 	int bx, by;
 	unsigned int bw, bh;
 

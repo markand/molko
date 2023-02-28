@@ -37,7 +37,7 @@ is_boxed(const struct mlk_checkbox *cb, const struct mlk_event_click *click)
 }
 
 void
-mlk_checkbox_draw_default(const struct theme *t, const struct mlk_checkbox *cb)
+mlk_checkbox_draw_default(const struct mlk_theme *t, const struct mlk_checkbox *cb)
 {
 	(void)t;
 
@@ -75,5 +75,5 @@ mlk_checkbox_handle(struct mlk_checkbox *cb, const union mlk_event *ev)
 void
 mlk_checkbox_draw(const struct mlk_checkbox *cb)
 {
-	theme_draw_checkbox(cb->theme, cb);
+	mlk_theme_draw_checkbox(cb->theme, cb);
 }

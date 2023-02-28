@@ -32,7 +32,7 @@
 #include "gridmenu.h"
 #include "theme.h"
 
-#define THEME(m) ((m)->theme ? (m)->theme : theme_default())
+#define THEME(m) ((m)->theme ? (m)->theme : mlk_theme_default())
 
 struct index {
 	unsigned int row;
@@ -51,7 +51,7 @@ get_index(const struct mlk_gridmenu *menu)
 static void
 geometry(struct mlk_gridmenu *menu)
 {
-	const struct theme *theme = THEME(menu);
+	const struct mlk_theme *theme = THEME(menu);
 	struct mlk_label label = {
 		.theme = theme,
 		.flags = MLK_LABEL_FLAGS_SHADOW
@@ -117,7 +117,7 @@ draw_labels(const struct mlk_gridmenu *menu)
 {
 	size_t pagesz, pagenr, item, c = 0, r = 0;
 	struct mlk_label label = {0};
-	const struct theme *theme = THEME(menu);
+	const struct mlk_theme *theme = THEME(menu);
 
 	label.theme = theme;
 	label.flags = MLK_LABEL_FLAGS_SHADOW;
@@ -195,7 +195,7 @@ handle_clickdown(struct mlk_gridmenu *menu, const struct mlk_event_click *click)
 {
 	assert(click->type == MLK_EVENT_CLICKDOWN);
 
-	const struct theme *theme = THEME(menu);
+	const struct mlk_theme *theme = THEME(menu);
 	size_t pagesz, pagenr, selected, c = 0, r = 0;
 	int x, y;
 

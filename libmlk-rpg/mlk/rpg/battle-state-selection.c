@@ -115,8 +115,8 @@ handle_keydown(struct battle_state_selection *stl, struct battle *bt, const unio
 static void
 draw_cursor(const struct battle *bt, const struct battle_entity *et)
 {
-	const struct theme *theme = BATTLE_THEME(bt);
-	const struct mlk_sprite *cursor = theme->sprites[THEME_SPRITE_CURSOR];
+	const struct mlk_theme *theme = BATTLE_THEME(bt);
+	const struct mlk_sprite *cursor = theme->sprites[MLK_THEME_SPRITE_CURSOR];
 	int x, y;
 	unsigned int lh;
 

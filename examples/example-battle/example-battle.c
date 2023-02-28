@@ -136,7 +136,7 @@ init(void)
 	registry_init();
 
 	/* Set cursor in default theme. */
-	theme_default()->sprites[THEME_SPRITE_CURSOR] = &registry_sprites[REGISTRY_TEXTURE_CURSOR];
+	mlk_theme_default()->sprites[MLK_THEME_SPRITE_CURSOR] = &registry_sprites[REGISTRY_TEXTURE_CURSOR];
 }
 
 static struct mlk_state *states[2];
@@ -325,7 +325,7 @@ static void
 quit(void)
 {
 	registry_finish();
-	theme_finish();
+	mlk_theme_finish();
 	mlk_window_finish();
 	mlk_sys_finish();
 }

@@ -45,12 +45,12 @@
 	{ bin, sizeof (bin), size, &default_theme.fonts[index], {0} }
 
 /* Default theme. */
-static struct theme default_theme = {
+static struct mlk_theme default_theme = {
 	.colors = {
-		[THEME_COLOR_DEBUG]     = 0xff0000ff,
-		[THEME_COLOR_NORMAL]    = 0xffffffff,
-		[THEME_COLOR_SELECTED]  = 0x006554ff,
-		[THEME_COLOR_SHADOW]    = 0x000000ff
+		[MLK_THEME_COLOR_DEBUG]         = 0xff0000ff,
+		[MLK_THEME_COLOR_NORMAL]        = 0xffffffff,
+		[MLK_THEME_COLOR_SELECTED]      = 0x006554ff,
+		[MLK_THEME_COLOR_SHADOW]        = 0x000000ff
 	},
 	.padding = 10,
 	.draw_frame = mlk_frame_draw_default,
@@ -66,13 +66,13 @@ static struct font_catalog {
 	struct mlk_font **dest;
 	struct mlk_font font;
 } default_fonts[] = {
-	FONT(assets_fonts_opensans_light, 12, THEME_FONT_DEBUG),
-	FONT(assets_fonts_opensans_regular, 14, THEME_FONT_INTERFACE),
-	FONT(assets_fonts_opensans_medium, 14, THEME_FONT_IMPORTANT)
+	FONT(assets_fonts_opensans_light, 12, MLK_THEME_FONT_DEBUG),
+	FONT(assets_fonts_opensans_regular, 14, MLK_THEME_FONT_INTERFACE),
+	FONT(assets_fonts_opensans_medium, 14, MLK_THEME_FONT_IMPORTANT)
 };
 
 int
-theme_init(void)
+mlk_theme_init(void)
 {
 	/* Open all fonts. */
 	for (size_t i = 0; i < MLK_UTIL_SIZE(default_fonts); ++i) {
@@ -88,25 +88,25 @@ theme_init(void)
 	return 0;
 
 failed:
-	theme_finish();
+	mlk_theme_finish();
 
 	return -1;
 }
 
-struct theme *
-theme_default(void)
+struct mlk_theme *
+mlk_theme_default(void)
 {
 	return &default_theme;
 }
 
 unsigned int
-theme_padding(const struct theme *t)
+theme_padding(const struct mlk_theme *t)
 {
 	return THEME(t)->padding;
 }
 
 void
-theme_shallow(struct theme *dst, const struct theme *src)
+mlk_theme_shallow(struct mlk_theme *dst, const struct mlk_theme *src)
 {
 	assert(dst);
 
@@ -114,7 +114,7 @@ theme_shallow(struct theme *dst, const struct theme *src)
 }
 
 void
-theme_draw_frame(const struct theme *t, const struct mlk_frame *frame)
+mlk_theme_draw_frame(const struct mlk_theme *t, const struct mlk_frame *frame)
 {
 	assert(frame);
 
@@ -122,7 +122,7 @@ theme_draw_frame(const struct theme *t, const struct mlk_frame *frame)
 }
 
 void
-theme_draw_label(const struct theme *t, const struct label *label)
+mlk_theme_draw_label(const struct mlk_theme *t, const struct mlk_label *label)
 {
 	assert(label);
 
@@ -130,7 +130,7 @@ theme_draw_label(const struct theme *t, const struct label *label)
 }
 
 void
-theme_draw_button(const struct theme *t, const struct mlk_button *button)
+mlk_theme_draw_button(const struct mlk_theme *t, const struct mlk_button *button)
 {
 	assert(button);
 
@@ -138,7 +138,7 @@ theme_draw_button(const struct theme *t, const struct mlk_button *button)
 }
 
 void
-theme_draw_checkbox(const struct theme *t, const struct mlk_checkbox *cb)
+mlk_theme_draw_checkbox(const struct mlk_theme *t, const struct mlk_checkbox *cb)
 {
 	assert(cb);
 
@@ -146,7 +146,7 @@ theme_draw_checkbox(const struct theme *t, const struct mlk_checkbox *cb)
 }
 
 void
-theme_finish(void)
+mlk_theme_finish(void)
 {
 	for (size_t i = 0; i < MLK_UTIL_SIZE(default_fonts); ++i) {
 		mlk_font_finish(&default_fonts[i].font);

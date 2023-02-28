@@ -25,7 +25,7 @@
 #include <mlk/core/texture.h>
 
 struct mlk_font;
-struct theme;
+struct mlk_theme;
 
 union mlk_event;
 
@@ -59,7 +59,7 @@ struct message {
 	unsigned int index;
 	enum message_flags flags;
 	enum message_state state;
-	const struct theme *theme;
+	const struct mlk_theme *theme;
 	unsigned int elapsed;
 	double scale;
 };
