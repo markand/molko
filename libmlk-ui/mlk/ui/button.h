@@ -25,35 +25,35 @@ union mlk_event;
 
 struct theme;
 
-enum button_state {
-	BUTTON_STATE_NONE,
-	BUTTON_STATE_PRESSED,
-	BUTTON_STATE_ACTIVATED
+enum mlk_button_state {
+	MLK_BUTTON_STATE_NONE,
+	MLK_BUTTON_STATE_PRESSED,
+	MLK_BUTTON_STATE_ACTIVATED
 };
 
-struct button {
+struct mlk_button {
 	int x;
 	int y;
 	unsigned int w;
 	unsigned int h;
 	const char *text;
-	enum button_state state;
+	enum mlk_button_state state;
 	const struct theme *theme;
 };
 
 MLK_CORE_BEGIN_DECLS
 
 int
-button_handle(struct button *, const union mlk_event *);
+mlk_button_handle(struct mlk_button *, const union mlk_event *);
 
 void
-button_reset(struct button *);
+mlk_button_reset(struct mlk_button *);
 
 void
-button_draw_default(const struct theme *, const struct button *);
+mlk_button_draw_default(const struct theme *, const struct mlk_button *);
 
 void
-button_draw(const struct button *);
+mlk_button_draw(const struct mlk_button *);
 
 MLK_CORE_END_DECLS
 

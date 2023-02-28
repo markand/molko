@@ -55,7 +55,7 @@ static struct theme default_theme = {
 	.padding = 10,
 	.draw_frame = frame_draw_default,
 	.draw_label = label_draw_default,
-	.draw_button = button_draw_default,
+	.draw_button = mlk_button_draw_default,
 	.draw_checkbox = checkbox_draw_default
 };
 
@@ -130,7 +130,7 @@ theme_draw_label(const struct theme *t, const struct label *label)
 }
 
 void
-theme_draw_button(const struct theme *t, const struct button *button)
+theme_draw_button(const struct theme *t, const struct mlk_button *button)
 {
 	assert(button);
 

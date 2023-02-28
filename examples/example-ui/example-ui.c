@@ -81,7 +81,7 @@ static struct {
 	} autosave;
 
 	struct {
-		struct button button;
+		struct mlk_button button;
 	} quit;
 } ui = {
 	.panel = {
@@ -163,7 +163,7 @@ resize_button(void)
 {
 	unsigned int padding = theme_default()->padding;
 	struct frame *f = &ui.panel.frame;
-	struct button *b = &ui.quit.button;
+	struct mlk_button *b = &ui.quit.button;
 
 	/* Button. */
 	b->w = f->w / 4;
@@ -232,7 +232,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 
 	checkbox_handle(&ui.autosave.cb, ev);
 
-	if (button_handle(&ui.quit.button, ev))
+	if (mlk_button_handle(&ui.quit.button, ev))
 		mlk_game_quit();
 }
 
@@ -247,7 +247,7 @@ draw(struct mlk_state *st)
 	label_draw(&ui.header.label);
 	checkbox_draw(&ui.autosave.cb);
 	label_draw(&ui.autosave.label);
-	button_draw(&ui.quit.button);
+	mlk_button_draw(&ui.quit.button);
 	mlk_painter_present();
 }
 

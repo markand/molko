@@ -30,7 +30,7 @@
 #include "theme.h"
 
 static int
-is_boxed(const struct button *button, const struct mlk_event_click *click)
+is_boxed(const struct mlk_button *button, const struct mlk_event_click *click)
 {
 	assert(button);
 	assert(click);
@@ -41,7 +41,7 @@ is_boxed(const struct button *button, const struct mlk_event_click *click)
 }
 
 void
-button_draw_default(const struct theme *t, const struct button *button)
+mlk_button_draw_default(const struct theme *t, const struct mlk_button *button)
 {
 	assert(t);
 	assert(button);
@@ -70,7 +70,7 @@ button_draw_default(const struct theme *t, const struct button *button)
 }
 
 int
-button_handle(struct button *button, const union mlk_event *ev)
+mlk_button_handle(struct mlk_button *button, const union mlk_event *ev)
 {
 	assert(button);
 	assert(ev);
@@ -78,7 +78,7 @@ button_handle(struct button *button, const union mlk_event *ev)
 	switch (ev->type) {
 	case MLK_EVENT_CLICKDOWN:
 		if (is_boxed(button, &ev->click))
-			button->state = BUTTON_STATE_PRESSED;
+			button->state = MLK_BUTTON_STATE_PRESSED;
 		break;
 	case MLK_EVENT_CLICKUP:
 		/*
@@ -87,27 +87,27 @@ button_handle(struct button *button, const union mlk_event *ev)
 		 * outside the button to "forget" the press.
 		 */
 		if (!is_boxed(button, &ev->click))
-			button->state = BUTTON_STATE_NONE;
-		else if (button->state == BUTTON_STATE_PRESSED)
-			button->state = BUTTON_STATE_ACTIVATED;
+			button->state = MLK_BUTTON_STATE_NONE;
+		else if (button->state == MLK_BUTTON_STATE_PRESSED)
+			button->state = MLK_BUTTON_STATE_ACTIVATED;
 		break;
 	default:
 		break;
 	}
 
-	return button->state == BUTTON_STATE_ACTIVATED;
+	return button->state == MLK_BUTTON_STATE_ACTIVATED;
 }
 
 void
-button_reset(struct button *button)
+mlk_button_reset(struct mlk_button *button)
 {
 	assert(button);
 
-	button->state = BUTTON_STATE_NONE;
+	button->state = MLK_BUTTON_STATE_NONE;
 }
 
 void
-button_draw(const struct button *button)
+mlk_button_draw(const struct mlk_button *button)
 {
 	assert(button);
 
