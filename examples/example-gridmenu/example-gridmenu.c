@@ -59,14 +59,14 @@ quit(void)
 static void
 handle(struct mlk_state *st, const union mlk_event *ev)
 {
-	struct gridmenu *menu = st->data;
+	struct mlk_gridmenu *menu = st->data;
 
 	switch (ev->type) {
 	case MLK_EVENT_QUIT:
 		mlk_game_quit();
 		break;
 	default:
-		if (gridmenu_handle(st->data, ev))
+		if (mlk_gridmenu_handle(st->data, ev))
 			mlk_tracef("selected index: %zu (%s)", menu->selected, menu->items[menu->selected]);
 		break;
 	}
@@ -77,7 +77,7 @@ draw(struct mlk_state *st)
 {
 	mlk_painter_set_color(0x4f8fbaff);
 	mlk_painter_clear();
-	gridmenu_draw(st->data);
+	mlk_gridmenu_draw(st->data);
 	mlk_painter_present();
 }
 
@@ -104,15 +104,15 @@ run(void)
 	    "Double tour"
 	};
 
-	struct gridmenu menu = {0};
+	struct mlk_gridmenu menu = {0};
 	struct mlk_state state = {
 		.data = &menu,
 		.handle = handle,
 		.draw = draw,
 	};
 
-	gridmenu_init(&menu, 3, 2, items, MLK_UTIL_SIZE(items));
-	gridmenu_resize(&menu, 0, 0, 300, 100);
+	mlk_gridmenu_init(&menu, 3, 2, items, MLK_UTIL_SIZE(items));
+	mlk_gridmenu_resize(&menu, 0, 0, 300, 100);
 
 	mlk_align(MLK_ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, mlk_window.w, mlk_window.h);
 

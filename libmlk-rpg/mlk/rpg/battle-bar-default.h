@@ -56,7 +56,7 @@ struct battle_bar_default {
 	/* Private fields. */
 	const char **items;
 	size_t itemsz;
-	struct gridmenu grid;
+	struct mlk_gridmenu grid;
 };
 
 MLK_CORE_BEGIN_DECLS

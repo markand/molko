@@ -40,7 +40,7 @@ struct index {
 };
 
 static struct index
-get_index(const struct gridmenu *menu)
+get_index(const struct mlk_gridmenu *menu)
 {
 	return (struct index) {
 		.row = menu->selected / menu->ncols,
@@ -49,7 +49,7 @@ get_index(const struct gridmenu *menu)
 }
 
 static void
-geometry(struct gridmenu *menu)
+geometry(struct mlk_gridmenu *menu)
 {
 	const struct theme *theme = THEME(menu);
 	struct label label = {
@@ -99,7 +99,7 @@ geometry(struct gridmenu *menu)
 }
 
 static void
-draw_frame(const struct gridmenu *menu)
+draw_frame(const struct mlk_gridmenu *menu)
 {
 	const struct mlk_frame f = {
 		.x = menu->x,
@@ -113,7 +113,7 @@ draw_frame(const struct gridmenu *menu)
 }
 
 static void
-draw_labels(const struct gridmenu *menu)
+draw_labels(const struct mlk_gridmenu *menu)
 {
 	size_t pagesz, pagenr, item, c = 0, r = 0;
 	struct label label = {0};
@@ -154,7 +154,7 @@ draw_labels(const struct gridmenu *menu)
 }
 
 static int
-handle_keydown(struct gridmenu *menu, const struct mlk_event_key *key)
+handle_keydown(struct mlk_gridmenu *menu, const struct mlk_event_key *key)
 {
 	assert(key->type == MLK_EVENT_KEYDOWN);
 
@@ -191,7 +191,7 @@ handle_keydown(struct gridmenu *menu, const struct mlk_event_key *key)
 }
 
 static int
-handle_clickdown(struct gridmenu *menu, const struct mlk_event_click *click)
+handle_clickdown(struct mlk_gridmenu *menu, const struct mlk_event_click *click)
 {
 	assert(click->type == MLK_EVENT_CLICKDOWN);
 
@@ -226,7 +226,7 @@ handle_clickdown(struct gridmenu *menu, const struct mlk_event_click *click)
 }
 
 void
-gridmenu_init(struct gridmenu *menu,
+mlk_gridmenu_init(struct mlk_gridmenu *menu,
               unsigned int nr,
               unsigned int nc,
               const char * const *items,
@@ -245,7 +245,7 @@ gridmenu_init(struct gridmenu *menu,
 }
 
 void
-gridmenu_resize(struct gridmenu *menu, int x, int y, unsigned int w, unsigned int h)
+mlk_gridmenu_resize(struct mlk_gridmenu *menu, int x, int y, unsigned int w, unsigned int h)
 {
 	assert(menu);
 
@@ -258,7 +258,7 @@ gridmenu_resize(struct gridmenu *menu, int x, int y, unsigned int w, unsigned in
 }
 
 int
-gridmenu_handle(struct gridmenu *menu, const union mlk_event *ev)
+mlk_gridmenu_handle(struct mlk_gridmenu *menu, const union mlk_event *ev)
 {
 	assert(menu);
 	assert(ev);
@@ -278,7 +278,7 @@ gridmenu_handle(struct gridmenu *menu, const union mlk_event *ev)
 }
 
 void
-gridmenu_draw(const struct gridmenu *menu)
+mlk_gridmenu_draw(const struct mlk_gridmenu *menu)
 {
 	assert(menu);
 

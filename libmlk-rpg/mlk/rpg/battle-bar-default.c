@@ -445,7 +445,7 @@ handle_keydown_grid(struct battle_bar_default *bar, struct battle *bt, const uni
 	/* Go back to main menu if I press escape. */
 	if (ev->key.key == MLK_KEY_ESCAPE)
 		bar->state = BATTLE_BAR_DEFAULT_STATE_MENU;
-	else if (gridmenu_handle(&bar->grid, ev)) {
+	else if (mlk_gridmenu_handle(&bar->grid, ev)) {
 		switch (bar->menu) {
 		case BATTLE_BAR_DEFAULT_MENU_MAGIC:
 			switch_selection_spell(bar, bt);
@@ -542,8 +542,8 @@ battle_bar_default_init(struct battle_bar_default *bar)
 
 	dimensions(geo, bar);
 
-	gridmenu_init(&bar->grid, 2, 2, NULL, 0);
-	gridmenu_resize(&bar->grid, bar->x, geo[0].y, geo[1].w, bar->h);
+	mlk_gridmenu_init(&bar->grid, 2, 2, NULL, 0);
+	mlk_gridmenu_resize(&bar->grid, bar->x, geo[0].y, geo[1].w, bar->h);
 	bar->grid.theme = bar->theme;
 }
 
@@ -668,7 +668,7 @@ battle_bar_default_draw(const struct battle_bar_default *bar, const struct battl
 
 	/* Sub menu is only shown if state is set to it. */
 	if (bar->state == BATTLE_BAR_DEFAULT_STATE_GRID)
-		gridmenu_draw(&bar->grid);
+		mlk_gridmenu_draw(&bar->grid);
 }
 
 void

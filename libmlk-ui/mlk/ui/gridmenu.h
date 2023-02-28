@@ -29,7 +29,8 @@ struct theme;
 
 union mlk_event;
 
-struct gridmenu {
+struct mlk_gridmenu {
+	/* public */
 	int x;
 	int y;
 	unsigned int w;
@@ -41,7 +42,7 @@ struct gridmenu {
 	unsigned int nrows;
 	unsigned int ncols;
 
-	/* Private fields. */
+	/* private */
 	unsigned int eltw;      /* maximum entry label width */
 	unsigned int elth;      /* maximum entry label height */
 	unsigned int spacew;    /* space between element horizontally */
@@ -51,16 +52,16 @@ struct gridmenu {
 MLK_CORE_BEGIN_DECLS
 
 void
-gridmenu_init(struct gridmenu *, unsigned int, unsigned int, const char * const *, size_t);
+mlk_gridmenu_init(struct mlk_gridmenu *, unsigned int, unsigned int, const char * const *, size_t);
 
 void
-gridmenu_resize(struct gridmenu *, int, int, unsigned int, unsigned int);
+mlk_gridmenu_resize(struct mlk_gridmenu *, int, int, unsigned int, unsigned int);
 
 int
-gridmenu_handle(struct gridmenu *, const union mlk_event *);
+mlk_gridmenu_handle(struct mlk_gridmenu *, const union mlk_event *);
 
 void
-gridmenu_draw(const struct gridmenu *);
+mlk_gridmenu_draw(const struct mlk_gridmenu *);
 
 MLK_CORE_END_DECLS
 
