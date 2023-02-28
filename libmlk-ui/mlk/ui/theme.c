@@ -53,7 +53,7 @@ static struct theme default_theme = {
 		[THEME_COLOR_SHADOW]    = 0x000000ff
 	},
 	.padding = 10,
-	.draw_frame = frame_draw_default,
+	.draw_frame = mlk_frame_draw_default,
 	.draw_label = label_draw_default,
 	.draw_button = mlk_button_draw_default,
 	.draw_checkbox = mlk_checkbox_draw_default
@@ -114,7 +114,7 @@ theme_shallow(struct theme *dst, const struct theme *src)
 }
 
 void
-theme_draw_frame(const struct theme *t, const struct frame *frame)
+theme_draw_frame(const struct theme *t, const struct mlk_frame *frame)
 {
 	assert(frame);
 

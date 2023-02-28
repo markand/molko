@@ -68,7 +68,7 @@ static struct {
 	} motion;
 
 	struct {
-		struct frame frame;
+		struct mlk_frame frame;
 	} panel;
 
 	struct {
@@ -132,7 +132,7 @@ init(void)
 static void
 resize_header(void)
 {
-	struct frame *f = &ui.panel.frame;
+	struct mlk_frame *f = &ui.panel.frame;
 	struct label *l = &ui.header.label;
 	unsigned int w, h;
 
@@ -147,7 +147,7 @@ static void
 resize_autosave(void)
 {
 	unsigned int padding = theme_default()->padding;
-	struct frame *f = &ui.panel.frame;
+	struct mlk_frame *f = &ui.panel.frame;
 	struct mlk_checkbox *c = &ui.autosave.cb;
 	struct label *l = &ui.autosave.label;
 
@@ -162,7 +162,7 @@ static void
 resize_button(void)
 {
 	unsigned int padding = theme_default()->padding;
-	struct frame *f = &ui.panel.frame;
+	struct mlk_frame *f = &ui.panel.frame;
 	struct mlk_button *b = &ui.quit.button;
 
 	/* Button. */
@@ -243,7 +243,7 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0xffffffff);
 	mlk_painter_clear();
-	frame_draw(&ui.panel.frame);
+	mlk_frame_draw(&ui.panel.frame);
 	label_draw(&ui.header.label);
 	mlk_checkbox_draw(&ui.autosave.cb);
 	label_draw(&ui.autosave.label);

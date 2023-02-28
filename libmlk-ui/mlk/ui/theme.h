@@ -24,7 +24,7 @@
 struct mlk_button;
 struct mlk_checkbox;
 struct mlk_font;
-struct frame;
+struct mlk_frame;
 struct label;
 struct mlk_sprite;
 
@@ -54,7 +54,7 @@ struct theme {
 	unsigned long colors[THEME_COLOR_NUM];
 	unsigned int padding;
 
-	void (*draw_frame)(const struct theme *, const struct frame *);
+	void (*draw_frame)(const struct theme *, const struct mlk_frame *);
 	void (*draw_label)(const struct theme *, const struct label *);
 	void (*draw_button)(const struct theme *, const struct mlk_button *);
 	void (*draw_checkbox)(const struct theme *t, const struct mlk_checkbox *);
@@ -72,7 +72,7 @@ void
 theme_shallow(struct theme *, const struct theme *);
 
 void
-theme_draw_frame(const struct theme *, const struct frame *);
+theme_draw_frame(const struct theme *, const struct mlk_frame *);
 
 void
 theme_draw_label(const struct theme *, const struct label *);

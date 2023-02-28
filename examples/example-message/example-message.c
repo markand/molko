@@ -109,7 +109,7 @@ run(struct message *msg)
 }
 
 static void
-my_draw_frame(const struct theme *th, const struct frame *f)
+my_draw_frame(const struct theme *th, const struct mlk_frame *f)
 {
 	(void)th;
 

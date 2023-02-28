@@ -102,14 +102,14 @@ geometry(struct geo *geo, const struct notify *n, size_t index)
 static void
 draw_frame(const struct geo *geo)
 {
-	const struct frame f = {
+	const struct mlk_frame f = {
 		.x = geo->frame_x,
 		.y = geo->frame_y,
 		.w = geo->frame_w,
 		.h = geo->frame_h
 	};
 
-	frame_draw(&f);
+	mlk_frame_draw(&f);
 }
 
 static void

@@ -43,7 +43,7 @@ battle_message_draw(const struct battle_message *msg)
 {
 	assert(msg);
 
-	struct frame f = {0};
+	struct mlk_frame f = {0};
 	struct label l = {0};
 	unsigned int lw = 0, lh = 0;
 
@@ -64,6 +64,6 @@ battle_message_draw(const struct battle_message *msg)
 	/* Align the text in the box. */
 	mlk_align(MLK_ALIGN_CENTER, &l.x, &l.y, lw, lh, f.x, f.y, f.w, f.h);
 
-	frame_draw(&f);
+	mlk_frame_draw(&f);
 	label_draw(&l);
 }

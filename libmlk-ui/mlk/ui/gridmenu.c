@@ -101,7 +101,7 @@ geometry(struct gridmenu *menu)
 static void
 draw_frame(const struct gridmenu *menu)
 {
-	const struct frame f = {
+	const struct mlk_frame f = {
 		.x = menu->x,
 		.y = menu->y,
 		.w = menu->w,
@@ -109,7 +109,7 @@ draw_frame(const struct gridmenu *menu)
 		.theme = menu->theme,
 	};
 
-	frame_draw(&f);
+	mlk_frame_draw(&f);
 }
 
 static void

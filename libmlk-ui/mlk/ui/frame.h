@@ -23,27 +23,27 @@
 
 struct theme;
 
-enum frame_style {
-	FRAME_STYLE_NORMAL,
-	FRAME_STYLE_BOX
+enum mlk_frame_style {
+	MLK_FRAME_STYLE_NORMAL,
+	MLK_FRAME_STYLE_BOX
 };
 
-struct frame {
+struct mlk_frame {
 	int x;
 	int y;
 	unsigned int w;
 	unsigned int h;
-	enum frame_style style;
+	enum mlk_frame_style style;
 	const struct theme *theme;
 };
 
 MLK_CORE_BEGIN_DECLS
 
 void
-frame_draw_default(const struct theme *, const struct frame *);
+mlk_frame_draw_default(const struct theme *, const struct mlk_frame *);
 
 void
-frame_draw(const struct frame *);
+mlk_frame_draw(const struct mlk_frame *);
 
 MLK_CORE_END_DECLS
 

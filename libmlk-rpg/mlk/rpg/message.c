@@ -43,13 +43,13 @@ draw_frame(const struct message *msg)
 {
 	assert(msg);
 
-	struct frame frame = {
+	struct mlk_frame frame = {
 		.w = msg->w,
 		.h = msg->h,
 		.theme = msg->theme
 	};
 
-	frame_draw(&frame);
+	mlk_frame_draw(&frame);
 }
 
 static inline unsigned int

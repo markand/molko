@@ -305,7 +305,7 @@ draw_status_characters(const struct battle_bar_default *bar,
 static void
 draw_status(const struct battle_bar_default *bar, const struct battle *bt, const struct geo *geo)
 {
-	frame_draw(&(const struct frame) {
+	mlk_frame_draw(&(const struct mlk_frame) {
 		.x = geo->x,
 		.y = geo->y,
 		.w = geo->w,
@@ -364,7 +364,7 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 	bh = geo->h - theme->padding * 2;
 
 	/* Draw menu frame. */
-	frame_draw(&(const struct frame) {
+	mlk_frame_draw(&(const struct mlk_frame) {
 		.x = geo->x,
 		.y = geo->y,
 		.w = geo->w,

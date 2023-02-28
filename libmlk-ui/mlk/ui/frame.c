@@ -25,14 +25,14 @@
 #include "theme.h"
 
 void
-frame_draw_default(const struct theme *t, const struct frame *frame)
+mlk_frame_draw_default(const struct theme *t, const struct mlk_frame *frame)
 {
 	assert(t);
 	assert(frame);
 
 	(void)t;
 
-	if (frame->style == FRAME_STYLE_BOX)
+	if (frame->style == MLK_FRAME_STYLE_BOX)
 		mlk_painter_set_color(0x7a4841ff);
 	else
 		mlk_painter_set_color(0xad7757ff);
@@ -41,7 +41,7 @@ frame_draw_default(const struct theme *t, const struct frame *frame)
 }
 
 void
-frame_draw(const struct frame *frame)
+mlk_frame_draw(const struct mlk_frame *frame)
 {
 	assert(frame);
 
