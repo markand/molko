@@ -19,6 +19,7 @@
 #include <stdio.h>
 
 #include <mlk/core/core.h>
+#include <mlk/core/err.h>
 #include <mlk/core/event.h>
 #include <mlk/core/game.h>
 #include <mlk/core/key.h>
@@ -32,8 +33,7 @@
 #include <mlk/ui/label.h>
 #include <mlk/ui/ui.h>
 
-#define W 1280
-#define H 720
+#include <mlk/example/example.h>
 
 static struct mlk_state *states[1];
 static char help_text[128];
@@ -49,23 +49,23 @@ static struct label help = {
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-cursor") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Cursor", W, H) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-cursor")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 }
 
 static void
 change(enum mlk_window_cursor cursor)
 {
 	static const char *names[] = {
-		[WINDOW_CURSOR_ARROW]           = "WINDOW_CURSOR_ARROW",
-		[WINDOW_CURSOR_EDIT]            = "WINDOW_CURSOR_EDIT",
-		[WINDOW_CURSOR_WAIT]            = "WINDOW_CURSOR_WAIT",
-		[WINDOW_CURSOR_CROSSHAIR]       = "WINDOW_CURSOR_CROSSHAIR",
-		[WINDOW_CURSOR_SIZE]            = "WINDOW_CURSOR_SIZE",
-		[WINDOW_CURSOR_NO]              = "WINDOW_CURSOR_NO",
-		[WINDOW_CURSOR_HAND]            = "WINDOW_CURSOR_HAND"
+		[MLK_WINDOW_CURSOR_ARROW]       = "MLK_WINDOW_CURSOR_ARROW",
+		[MLK_WINDOW_CURSOR_EDIT]        = "MLK_WINDOW_CURSOR_EDIT",
+		[MLK_WINDOW_CURSOR_WAIT]        = "MLK_WINDOW_CURSOR_WAIT",
+		[MLK_WINDOW_CURSOR_CROSSHAIR]   = "MLK_WINDOW_CURSOR_CROSSHAIR",
+		[MLK_WINDOW_CURSOR_SIZE]        = "MLK_WINDOW_CURSOR_SIZE",
+		[MLK_WINDOW_CURSOR_NO]          = "MLK_WINDOW_CURSOR_NO",
+		[MLK_WINDOW_CURSOR_HAND]        = "MLK_WINDOW_CURSOR_HAND"
 	};
 
 	snprintf(help_text, sizeof (help_text), "Keys: <Left>/<Right> to change cursor. Current: %s", names[cursor]);
@@ -91,7 +91,6 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 		default:
 			break;
 		}
-
 
 		break;
 	case MLK_EVENT_QUIT:

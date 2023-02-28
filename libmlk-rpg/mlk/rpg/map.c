@@ -21,7 +21,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <mlk/core/error.h>
 #include <mlk/core/event.h>
 #include <mlk/core/image.h>
 #include <mlk/core/maths.h>

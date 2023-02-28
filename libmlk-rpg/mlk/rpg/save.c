@@ -25,7 +25,7 @@
 
 #include <mlk/util/util.h>
 
-#include <mlk/core/error.h>
+#include <mlk/core/err.h>
 #include <mlk/core/sys.h>
 #include <mlk/core/util.h>
 
@@ -42,7 +42,7 @@ static int
 exec(struct save *db, const char *sql)
 {
 	if (sqlite3_exec(db->handle, sql, NULL, NULL, NULL) != SQLITE_OK)
-		return errorf("%s", sqlite3_errmsg(db->handle));
+		return MLK_ERR_DATABASE;
 
 	return 0;
 }
@@ -74,7 +74,7 @@ verify(struct save *db)
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i) {
 		if (property_load(&table[i].prop, db) < 0) {
 			sqlite3_close(db->handle);
-			return errorf("database not initialized correctly");
+			return -1;
 		}
 
 		*table[i].date = strtoull(table[i].prop.value, NULL, 10);
@@ -110,14 +110,14 @@ prepare(struct save *s, struct save_stmt *stmt, const char *sql, const char *arg
 		case ' ':
 			break;
 		default:
-			return errorf("invalid format: %c", *args);
+			return MLK_ERR_DATABASE;
 		}
 	}
 
 	return 0;
 
 sqlite3_err:
-	return errorf("%s", sqlite3_errmsg(s->handle));
+	return MLK_ERR_DATABASE;
 }
 
 static int
@@ -127,7 +127,7 @@ extract(struct save_stmt *stmt, const char *args, va_list ap)
 
 	for (int c = 0; args && *args; ++args) {
 		if (c >= ncols)
-			return errorf("too many arguments");
+			return MLK_ERR_DATABASE;
 
 		/* TODO: type check. */
 		switch (*args) {
@@ -148,7 +148,7 @@ extract(struct save_stmt *stmt, const char *args, va_list ap)
 		case ' ':
 			break;
 		default:
-			return errorf("invalid format: %c", *args);
+			return MLK_ERR_DATABASE;
 		}
 	}
 
@@ -189,12 +189,11 @@ save_open_path(struct save *db, const char *path, enum save_mode mode)
 	return verify(db);
 
 sqlite3_err:
-	errorf("%s", sqlite3_errmsg(db->handle));
 	sqlite3_close(db->handle);
 
 	memset(db, 0, sizeof (*db));
 
-	return -1;
+	return MLK_ERR_DATABASE;
 }
 
 int
@@ -277,7 +276,6 @@ save_stmt_next(struct save_stmt *stmt, const char *args, ...)
 		ret = SAVE_STMT_DONE;
 		break;
 	default:
-		errorf("%s", sqlite3_errmsg(stmt->parent->handle));
 		break;
 	}
 

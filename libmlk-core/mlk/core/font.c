@@ -23,7 +23,6 @@
 
 #include "color.h"
 #include "err.h"
-#include "error.h"
 #include "font.h"
 #include "texture_p.h"
 #include "util.h"

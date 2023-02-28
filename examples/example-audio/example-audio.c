@@ -32,15 +32,12 @@
 #include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
-#include <assets/music/vabsounds-romance.h>
-#include <assets/sounds/fire.h>
-
-#define W       1280
-#define H       720
+#include <mlk/example/example.h>
+#include <mlk/example/registry.h>
 
 static struct mlk_state *states[1];
-static struct mlk_music music;
-static struct mlk_sound sound;
+static struct mlk_music *music;
+static struct mlk_sound *sound;
 
 static struct label label_music = {
 	.text = "Music: <Space> play, <p> pause, <r> resume, <q> stop, <l> loop.",
@@ -59,13 +56,13 @@ static struct label label_sound = {
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-audio") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Audio", W, H) < 0)
-		mlk_panic();
-	if (mlk_music_openmem(&music, assets_music_vabsounds_romance, sizeof (assets_music_vabsounds_romance)) < 0 ||
-	    mlk_sound_openmem(&sound, assets_sounds_fire, sizeof (assets_sounds_fire)) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-audio")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+
+	sound = &registry_sounds[REGISTRY_SOUND_FIRE];
+	music = &registry_music[REGISTRY_MUSIC_ROMANCE];
 }
 
 static void
@@ -81,27 +78,29 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
 
+	int err;
+
 	switch (ev->type) {
 	case MLK_EVENT_CLICKDOWN:
-		if (mlk_sound_play(&sound) < 0)
-			mlk_panic();
+		if ((err = mlk_sound_play(sound)) < 0)
+			mlk_panic(err);
 		break;
 	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
 		case MLK_KEY_p:
-			mlk_music_pause(&music);
+			mlk_music_pause(music);
 			break;
 		case MLK_KEY_r:
-			mlk_music_resume(&music);
+			mlk_music_resume(music);
 			break;
 		case MLK_KEY_q:
-			mlk_music_stop(&music);
+			mlk_music_stop(music);
 			break;
 		case MLK_KEY_l:
-			mlk_music_play(&music, MLK_MUSIC_LOOP);
+			mlk_music_play(music, MLK_MUSIC_LOOP);
 			break;
 		case MLK_KEY_SPACE:
-			mlk_music_play(&music, 0);
+			mlk_music_play(music, 0);
 			break;
 		default:
 			break;

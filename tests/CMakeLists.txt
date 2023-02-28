@@ -26,7 +26,6 @@ set(
 	character
 	color
 	drawable
-	error
 	map
 	save
 	save-quest

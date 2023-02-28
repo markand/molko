@@ -33,10 +33,8 @@
 #include <mlk/ui/label.h>
 #include <mlk/ui/ui.h>
 
-#include <assets/sprites/numbers.h>
-
-#define W       1280
-#define H       720
+#include <mlk/example/example.h>
+#include <mlk/example/registry.h>
 
 static struct label label = {
 	.text = "Keys: <Space> start or reset the animation.",
@@ -46,20 +44,16 @@ static struct label label = {
 };
 
 static struct mlk_state *states[1];
-static struct mlk_texture numbers;
 static struct mlk_animation animation;
-static struct mlk_sprite sprite;
 static int completed = 1;
 
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-animation") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Animation", W, H) < 0)
-		mlk_panic();
-	if (mlk_image_openmem(&numbers, assets_sprites_numbers, sizeof (assets_sprites_numbers)) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-animation")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 }
 
 static void
@@ -100,12 +94,17 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
+	unsigned int cellw, cellh;
+
+	cellw = registry_sprites[REGISTRY_TEXTURE_NUMBERS].cellw;
+	cellh = registry_sprites[REGISTRY_TEXTURE_NUMBERS].cellh;
+
 	mlk_painter_set_color(0x4f8fbaff);
 	mlk_painter_clear();
 	label_draw(&label);
 
 	if (!completed)
-		mlk_animation_draw(&animation, (mlk_window.w - sprite.cellw) / 2, (mlk_window.h - sprite.cellh) / 2);
+		mlk_animation_draw(&animation, (mlk_window.w - cellw) / 2, (mlk_window.h - cellh) / 2);
 
 	mlk_painter_present();
 }
@@ -119,8 +118,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_sprite_init(&sprite, &numbers, 48, 48);
-	mlk_animation_init(&animation, &sprite, 1000);
+	mlk_animation_init(&animation, &registry_sprites[REGISTRY_TEXTURE_NUMBERS], 1000);
 
 	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);

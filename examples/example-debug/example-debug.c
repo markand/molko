@@ -17,6 +17,7 @@
  */
 
 #include <mlk/core/core.h>
+#include <mlk/core/err.h>
 #include <mlk/core/event.h>
 #include <mlk/core/game.h>
 #include <mlk/core/window.h>
@@ -29,8 +30,7 @@
 #include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
-#define W 1280
-#define H 720
+#include <mlk/example/example.h>
 
 static struct mlk_state *states[1];
 static int mouse_x;
@@ -39,10 +39,10 @@ static int mouse_y;
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-debug") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Debug", W, H) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-debug")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
 	debug_options.enable = 1;
 }

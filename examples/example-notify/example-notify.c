@@ -33,11 +33,8 @@
 #include <mlk/ui/label.h>
 #include <mlk/ui/ui.h>
 
-/* Sword by Icongeek26 (https://www.flaticon.com). */
-#include <assets/images/sword.h>
-
-#define W       1280
-#define H       720
+#include <mlk/example/example.h>
+#include <mlk/example/registry.h>
 
 static struct label help = {
 	.text = "Keys: <Space> to generate a notification.",
@@ -45,18 +42,18 @@ static struct label help = {
 	.y = 10,
 	.flags = LABEL_FLAGS_SHADOW
 };
-static struct mlk_texture icon;
+static struct mlk_texture *icon;
 static struct mlk_state *states[1];
 
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-notify") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Notify", W, H) < 0)
-		mlk_panic();
-	if (mlk_image_openmem(&icon, assets_images_sword, sizeof (assets_images_sword)) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-notify")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+
+	icon = &registry_textures[REGISTRY_TEXTURE_SWORD];
 }
 
 static void
@@ -70,7 +67,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 		break;
 	case MLK_EVENT_KEYDOWN:
 		if (ev->key.key == MLK_KEY_SPACE)
-			notify(&icon, "Quest", "Quest finished.");
+			notify(icon, "Quest", "Quest finished.");
 		break;
 	default:
 		break;

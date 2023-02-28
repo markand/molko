@@ -17,6 +17,7 @@
  */
 
 #include <mlk/core/core.h>
+#include <mlk/core/err.h>
 #include <mlk/core/event.h>
 #include <mlk/core/game.h>
 #include <mlk/core/painter.h>
@@ -33,18 +34,18 @@
 #include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
-#define W       (1280)
-#define H       (720)
+#include <mlk/example/example.h>
+#include <mlk/example/registry.h>
 
 static struct mlk_state *states[1];
 
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-gridmenu") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Grid menu", W, H) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-gridmenu")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 }
 
 static void
@@ -113,7 +114,7 @@ run(void)
 	gridmenu_init(&menu, 3, 2, items, MLK_UTIL_SIZE(items));
 	gridmenu_resize(&menu, 0, 0, 300, 100);
 
-	align(ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, W, H);
+	align(ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, mlk_window.w, mlk_window.h);
 
 	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);

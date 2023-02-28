@@ -24,7 +24,6 @@
 #include <SDL.h>
 
 #include "alloc.h"
-#include "error.h"
 #include "panic.h"
 
 #define OOM_MSG "out of memory"

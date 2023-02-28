@@ -41,8 +41,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/drawable.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/err.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/err.h
-	${libmlk-core_SOURCE_DIR}/mlk/core/error.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/error.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/event.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/event.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/font.c

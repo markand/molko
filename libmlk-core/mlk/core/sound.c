@@ -20,7 +20,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "error.h"
 #include "sound.h"
 #include "sys_p.h"
 

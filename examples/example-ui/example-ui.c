@@ -17,6 +17,7 @@
  */
 
 #include <mlk/core/core.h>
+#include <mlk/core/err.h>
 #include <mlk/core/event.h>
 #include <mlk/core/game.h>
 #include <mlk/core/maths.h>
@@ -35,8 +36,7 @@
 #include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
-#define W               (1280)
-#define H               (720)
+#include <mlk/example/example.h>
 
 #define FRAME_ORIGIN_X  (10)
 #define FRAME_ORIGIN_Y  (10)
@@ -123,10 +123,10 @@ static struct mlk_state *states[1];
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-ui") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - UI", W, H) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-ui")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 }
 
 static void
@@ -219,12 +219,12 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 			ui.motion.active = 1;
 			ui.motion.x = ev->click.x;
 			ui.motion.y = ev->click.y;
-			mlk_window_set_cursor(WINDOW_CURSOR_SIZE);
+			mlk_window_set_cursor(MLK_WINDOW_CURSOR_SIZE);
 		}
 		break;
 	case MLK_EVENT_CLICKUP:
 		ui.motion.active = 0;
-		mlk_window_set_cursor(WINDOW_CURSOR_ARROW);
+		mlk_window_set_cursor(MLK_WINDOW_CURSOR_ARROW);
 		break;
 	default:
 		break;

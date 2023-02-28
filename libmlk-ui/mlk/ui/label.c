@@ -35,6 +35,7 @@ label_draw_default(const struct theme *t, const struct label *label)
 	struct mlk_font *font;
 	struct mlk_texture tex;
 	unsigned long color;
+	int err;
 
 	font = label->flags & LABEL_FLAGS_IMPORTANT
 		? t->fonts[THEME_FONT_IMPORTANT]
@@ -45,16 +46,16 @@ label_draw_default(const struct theme *t, const struct label *label)
 
 	/* Shadow text, only if enabled. */
 	if (label->flags & LABEL_FLAGS_SHADOW) {
-		if (mlk_font_render(font, &tex, label->text, t->colors[THEME_COLOR_SHADOW]) < 0)
-			mlk_panic();
+		if ((err = mlk_font_render(font, &tex, label->text, t->colors[THEME_COLOR_SHADOW])) < 0)
+			mlk_panic(err);
 
 		mlk_texture_draw(&tex, label->x + 1, label->y + 1);
 		mlk_texture_finish(&tex);
 	}
 
 	/* Normal text. */
-	if (mlk_font_render(font, &tex, label->text, color) < 0)
-		mlk_panic();
+	if ((err = mlk_font_render(font, &tex, label->text, color)) < 0)
+		mlk_panic(err);
 
 	mlk_texture_draw(&tex, label->x, label->y);
 	mlk_texture_finish(&tex);
@@ -76,9 +77,10 @@ label_query(const struct label *label, unsigned int *w, unsigned int *h)
 	const struct mlk_font *f = label->flags & LABEL_FLAGS_IMPORTANT
 		? t->fonts[THEME_FONT_IMPORTANT]
 		: t->fonts[THEME_FONT_INTERFACE];
+	int err;
 
-	if (mlk_font_query(f, label->text, w, h) < 0)
-		mlk_panic();
+	if ((err = mlk_font_query(f, label->text, w, h)) < 0)
+		mlk_panic(err);
 }
 
 void

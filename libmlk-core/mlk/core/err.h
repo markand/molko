@@ -24,6 +24,9 @@
 #define MLK_ERR_NO_SUPPORT     -2
 #define MLK_ERR_FORMAT         -3
 #define MLK_ERR_SDL            -4
+#define MLK_ERR_ERRNO          -5
+#define MLK_ERR_OPENAL         -6
+#define MLK_ERR_DATABASE       -7
 
 const char *
 mlk_err_string(int e);

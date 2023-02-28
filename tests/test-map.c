@@ -17,7 +17,6 @@
  */
 
 #include <mlk/core/core.h>
-#include <mlk/core/error.h>
 #include <mlk/core/panic.h>
 #include <mlk/core/sys.h>
 #include <mlk/core/window.h>

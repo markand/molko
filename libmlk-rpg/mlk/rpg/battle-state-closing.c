@@ -65,8 +65,10 @@ battle_state_closing_init(struct battle_state_closing *cls)
 {
 	assert(cls);
 
-	if (mlk_texture_new(&cls->texture, mlk_window.w, mlk_window.h) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_texture_new(&cls->texture, mlk_window.w, mlk_window.h)) < 0)
+		mlk_panic(err);
 
 	MLK_PAINTER_BEGIN(&cls->texture);
 	mlk_texture_set_blend_mode(&cls->texture, MLK_TEXTURE_BLEND_BLEND);

@@ -41,10 +41,8 @@
 #include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
-#include <assets/sprites/explosion.h>
-
-#define W       1280
-#define H       720
+#include <mlk/example/example.h>
+#include <mlk/example/registry.h>
 
 static struct label help = {
 	.x = 10,
@@ -63,8 +61,8 @@ static struct mlk_drawable_stack stack;
  */
 
 /* 0: Explosion animation. */
-static struct mlk_texture explosion_tex;
-static struct mlk_sprite explosion_sprite;
+static struct mlk_texture *explosion_tex;
+static struct mlk_sprite *explosion_sprite;
 
 struct explosion {
 	struct mlk_animation anim;
@@ -74,16 +72,13 @@ struct explosion {
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-drawable") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Drawable", W, H) < 0)
-		mlk_panic();
+	int err;
 
-	/* 0: Explosion animation. */
-	if (mlk_image_openmem(&explosion_tex, assets_sprites_explosion, sizeof (assets_sprites_explosion)) < 0)
-		mlk_panic();
+	if ((err = mlk_example_init("example-drawable")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	mlk_sprite_init(&explosion_sprite, &explosion_tex, 256, 256);
+	explosion_tex = &registry_textures[REGISTRY_TEXTURE_EXPLOSION];
+	explosion_sprite = &registry_sprites[REGISTRY_TEXTURE_EXPLOSION];
 }
 
 static int
@@ -113,11 +108,11 @@ spawn(int x, int y)
 {
 	struct explosion *ex = mlk_alloc_new0(1, sizeof (*ex));
 
-	mlk_animation_init(&ex->anim, &explosion_sprite, 15);
+	mlk_animation_init(&ex->anim, explosion_sprite, 15);
 
 	ex->dw.data = ex;
-	ex->dw.x = x - (int)(explosion_sprite.cellw / 2);
-	ex->dw.y = y - (int)(explosion_sprite.cellh / 2);
+	ex->dw.x = x - (int)(explosion_sprite->cellw / 2);
+	ex->dw.y = y - (int)(explosion_sprite->cellh / 2);
 	ex->dw.update = explosion_update;
 	ex->dw.draw = explosion_draw;
 	ex->dw.finish = explosion_finish;
@@ -157,7 +152,6 @@ update(struct mlk_state *st, unsigned int ticks)
 	(void)st;
 
 	mlk_drawable_stack_update(&stack, ticks);
-
 }
 
 static void

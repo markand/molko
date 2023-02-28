@@ -17,6 +17,7 @@
  */
 
 #include <mlk/core/core.h>
+#include <mlk/core/err.h>
 #include <mlk/core/event.h>
 #include <mlk/core/font.h>
 #include <mlk/core/game.h>
@@ -31,8 +32,7 @@
 #include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
-#define W       (1280)
-#define H       (720)
+#include <mlk/example/example.h>
 
 /* Friendly taken from: https://lospec.com/palette-list/apollo */
 static const unsigned long colors[] = {
@@ -53,10 +53,10 @@ static enum mlk_font_style style = MLK_FONT_STYLE_ANTIALIASED;
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-font") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Font", W, H) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-font")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 }
 
 static void
@@ -101,12 +101,13 @@ draw(struct mlk_state *st)
 
 	struct mlk_font *font = theme_default()->fonts[THEME_FONT_INTERFACE];
 	struct mlk_texture tex;
+	int err;
 
 	mlk_painter_set_color(0xffffffff);
 	mlk_painter_clear();
 
-	if (mlk_font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]) < 0)
-		mlk_panic();
+	if ((err = mlk_font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci])) < 0)
+		mlk_panic(err);
 
 	mlk_texture_draw(&tex, 10, 10);
 	mlk_painter_present();

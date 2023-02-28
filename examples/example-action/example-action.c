@@ -278,7 +278,7 @@ init(void)
 	int err;
 
 	if ((err = mlk_example_init("example-action")) < 0)
-		mlk_panicf("example_init: %s", mlk_err_string(err));
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
 	chests_init();
 	label_init();

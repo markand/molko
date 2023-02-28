@@ -26,6 +26,7 @@
 #include <assets/images/battle-background.h>
 #include <assets/images/black-cat.h>
 #include <assets/images/haunted-wood.h>
+#include <assets/images/sword.h>
 
 #include <assets/sounds/fire.h>
 #include <assets/sounds/open-chest.h>
@@ -34,7 +35,11 @@
 #include <assets/sprites/explosion.h>
 #include <assets/sprites/john-sword.h>
 #include <assets/sprites/john-walk.h>
+#include <assets/sprites/numbers.h>
+#include <assets/sprites/people.h>
 #include <assets/sprites/ui-cursor.h>
+
+#include <assets/music/vabsounds-romance.h>
 
 #include "registry.h"
 
@@ -42,6 +47,7 @@ struct mlk_texture registry_images[REGISTRY_IMAGE_LAST] = {0};
 struct mlk_texture registry_textures[REGISTRY_TEXTURE_LAST] = {0};
 struct mlk_sprite registry_sprites[REGISTRY_TEXTURE_LAST] = {0};
 struct mlk_sound registry_sounds[REGISTRY_SOUND_LAST] = {0};
+struct mlk_music registry_music[REGISTRY_MUSIC_LAST] = {0};
 
 #define REGISTRY_IMAGE(i, data) \
 	{ (i), (data), sizeof (data) }
@@ -70,7 +76,10 @@ static const struct {
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_JOHN_WALK, assets_sprites_john_walk, 256, 256),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_HAUNTED_WOOD, assets_images_haunted_wood, 0, 0),
 	REGISTRY_TEXTURE(REGISTRY_TEXTURE_BLACK_CAT, assets_images_black_cat, 0, 0),
-	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CHEST, assets_sprites_chest, 32, 32)
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_CHEST, assets_sprites_chest, 32, 32),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_NUMBERS, assets_sprites_numbers, 48, 48),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_SWORD, assets_images_sword, 0, 0),
+	REGISTRY_TEXTURE(REGISTRY_TEXTURE_PEOPLE, assets_sprites_people, 48, 48)
 };
 
 #define REGISTRY_SOUND(s, data) \
@@ -85,14 +94,28 @@ static const struct {
 	REGISTRY_SOUND(REGISTRY_SOUND_OPEN_CHEST, assets_sounds_open_chest)
 };
 
+#define REGISTRY_MUSIC(m, data) \
+	{ (m), (data), sizeof (data) }
+
+static const struct {
+	enum registry_music index;
+	const unsigned char *data;
+	size_t datasz;
+} musics[] = {
+	REGISTRY_MUSIC(REGISTRY_MUSIC_ROMANCE, assets_music_vabsounds_romance)
+};
+
 static void
 load_images(void)
 {
-	for (size_t i = 0; i < MLK_UTIL_SIZE(images); ++i) {
-		struct mlk_texture *texture = &registry_images[images[i].index];
+	int err;
+	struct mlk_texture *texture;
 
-		if (mlk_image_openmem(texture, images[i].data, images[i].datasz) < 0)
-			mlk_panic();
+	for (size_t i = 0; i < MLK_UTIL_SIZE(images); ++i) {
+		texture = &registry_images[images[i].index];
+
+		if ((err = mlk_image_openmem(texture, images[i].data, images[i].datasz)) < 0)
+			mlk_panic(err);
 	}
 }
 
@@ -101,13 +124,14 @@ load_textures_and_sprites(void)
 {
 	struct mlk_texture *texture;
 	struct mlk_sprite *sprite;
+	int err;
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(textures); ++i) {
 		texture = &registry_textures[textures[i].index];
 		sprite = &registry_sprites[textures[i].index];
 
-		if (mlk_image_openmem(texture, textures[i].data, textures[i].datasz) < 0)
-			mlk_panic();
+		if ((err = mlk_image_openmem(texture, textures[i].data, textures[i].datasz)) < 0)
+			mlk_panic(err);
 
 		if (textures[i].cellw == 0 || textures[i].cellh == 0)
 			mlk_sprite_init(sprite, texture, texture->w, texture->h);
@@ -119,11 +143,28 @@ load_textures_and_sprites(void)
 static void
 load_sounds(void)
 {
-	for (size_t i = 0; i < MLK_UTIL_SIZE(sounds); ++i) {
-		struct mlk_sound *sound = &registry_sounds[sounds[i].index];
+	int err;
+	struct mlk_sound *sound;
 
-		if (mlk_sound_openmem(sound, sounds[i].data, sounds[i].datasz) < 0)
-			mlk_panic();
+	for (size_t i = 0; i < MLK_UTIL_SIZE(sounds); ++i) {
+		sound = &registry_sounds[sounds[i].index];
+
+		if ((err = mlk_sound_openmem(sound, sounds[i].data, sounds[i].datasz)) < 0)
+			mlk_panic(err);
+	}
+}
+
+static void
+load_music(void)
+{
+	int err;
+	struct mlk_music *music;
+
+	for (size_t i = 0; i < MLK_UTIL_SIZE(musics); ++i) {
+		music = &registry_music[musics[i].index];
+
+		if ((err = mlk_music_openmem(music, musics[i].data, musics[i].datasz)) < 0)
+			mlk_panic(err);
 	}
 }
 
@@ -133,6 +174,7 @@ registry_init(void)
 	load_images();
 	load_textures_and_sprites();
 	load_sounds();
+	load_music();
 }
 
 void
@@ -144,4 +186,6 @@ registry_finish(void)
 		mlk_texture_finish(&registry_textures[i]);
 	for (size_t i = 0; i < MLK_UTIL_SIZE(registry_sounds); ++i)
 		mlk_sound_finish(&registry_sounds[i]);
+	for (size_t i = 0; i < MLK_UTIL_SIZE(registry_music); ++i)
+		mlk_music_finish(&registry_music[i]);
 }

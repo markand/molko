@@ -19,6 +19,7 @@
 #include <stdio.h>
 
 #include <mlk/core/core.h>
+#include <mlk/core/err.h>
 #include <mlk/core/event.h>
 #include <mlk/core/game.h>
 #include <mlk/core/image.h>
@@ -37,15 +38,13 @@
 #include <mlk/ui/label.h>
 #include <mlk/ui/ui.h>
 
-#include <assets/sprites/people.h>
+#include <mlk/example/example.h>
+#include <mlk/example/registry.h>
 
-#define W       1280
-#define H       720
 #define HEADER "Keys: <Left>/<Right> and <Up/Down> to select a column/row. Current: %u, %u (total %u/%u)"
 
 static char msg[512];
-static struct mlk_texture texture;
-static struct mlk_sprite sprite;
+static struct mlk_sprite *sprite;
 static unsigned int row, column;
 static struct mlk_state *states[1];
 
@@ -59,20 +58,18 @@ static struct label help = {
 static void
 changed(void)
 {
-	snprintf(msg, sizeof (msg), HEADER, column, row, sprite.ncols, sprite.nrows);
+	snprintf(msg, sizeof (msg), HEADER, column, row, sprite->ncols, sprite->nrows);
 }
 
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-sprite") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Sprite", W, H) < 0)
-		mlk_panic();
-	if (mlk_image_openmem(&texture, assets_sprites_people, sizeof (assets_sprites_people)) < 0)
-		mlk_panic();
+	int err;
 
-	mlk_sprite_init(&sprite, &texture, 48, 48);
+	if ((err = mlk_example_init("example-sprite")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+
+	sprite = &registry_sprites[REGISTRY_TEXTURE_PEOPLE];
 }
 
 static void
@@ -88,7 +85,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 				column--;
 			break;
 		case MLK_KEY_RIGHT:
-			if (column + 1 < sprite.ncols)
+			if (column + 1 < sprite->ncols)
 				column++;
 			break;
 		case MLK_KEY_UP:
@@ -96,7 +93,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 				row--;
 			break;
 		case MLK_KEY_DOWN:
-			if (row + 1 < sprite.nrows)
+			if (row + 1 < sprite->nrows)
 				row++;
 			break;
 		default:
@@ -122,8 +119,8 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0xebede9ff);
 	mlk_painter_clear();
-	align(ALIGN_CENTER, &x, &y, sprite.cellw, sprite.cellh, 0, 0, W, H);
-	mlk_sprite_draw(&sprite, row, column, x, y);
+	align(ALIGN_CENTER, &x, &y, sprite->cellw, sprite->cellh, 0, 0, mlk_window.w, mlk_window.h);
+	mlk_sprite_draw(sprite, row, column, x, y);
 	label_draw(&help);
 	mlk_painter_present();
 }
@@ -146,7 +143,6 @@ run(void)
 static void
 quit(void)
 {
-	mlk_texture_finish(&texture);
 	mlk_window_finish();
 	ui_finish();
 	mlk_core_finish();

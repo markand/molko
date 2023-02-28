@@ -35,12 +35,11 @@
 #include <mlk/rpg/message.h>
 #include <mlk/rpg/rpg.h>
 
-#define W       (1280)
-#define H       (720)
+#include <mlk/example/example.h>
 
-#define MW      (W * 0.75)
-#define MH      (H * 0.120)
-#define MX      ((W / 2) - (MW / 2))
+#define MW      (MLK_EXAMPLE_W * 0.75)
+#define MH      (MLK_EXAMPLE_H * 0.120)
+#define MX      ((MLK_EXAMPLE_W / 2) - (MW / 2))
 #define MY      (100)
 
 static struct mlk_state *states[1];
@@ -48,10 +47,10 @@ static struct mlk_state *states[1];
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-message") < 0 || ui_init() < 0 || rpg_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Message", W, H) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-message")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 }
 
 static void

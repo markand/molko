@@ -23,7 +23,9 @@
 
 #include "core.h"
 
-extern void (*mlk_panic_handler)(void);
+#define PANIC_LINE_MAX (256)
+
+extern void (*mlk_panic_handler)(const char *);
 
 MLK_CORE_BEGIN_DECLS
 
@@ -34,7 +36,7 @@ void
 mlk_panicva(const char *, va_list);
 
 void
-mlk_panic(void);
+mlk_panic(int err);
 
 MLK_CORE_END_DECLS
 

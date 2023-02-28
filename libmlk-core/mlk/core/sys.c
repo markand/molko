@@ -42,7 +42,6 @@
 
 #include "alloc.h"
 #include "err.h"
-#include "error.h"
 #include "panic.h"
 #include "sound.h"
 #include "sys.h"
@@ -102,7 +101,7 @@ mkpath(const char *path)
 		return errorf("unable to create directory: %s", path);
 #else
 	if (mkdir(path, 0755) < 0 && errno != EEXIST)
-		return errorf("%s", strerror(errno));
+		return MLK_ERR_ERRNO;
 #endif
 
 	return 0;
@@ -185,11 +184,11 @@ mlk_sys_init(const char *organization, const char *name)
 
 	/* SDL2. */
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
-		return errorf("%s", SDL_GetError());
+		return MLK_ERR_SDL;
 	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
-		return errorf("%s", SDL_GetError());
+		return MLK_ERR_SDL;
 	if (TTF_Init() < 0)
-		return errorf("%s", SDL_GetError());
+		return MLK_ERR_SDL;
 
 	/* OpenAL. */
 #if defined(MLK_OS_WINDOW)
@@ -199,9 +198,9 @@ mlk_sys_init(const char *organization, const char *name)
 #endif
 
 	if (!(mlk__audio_dev = alcOpenDevice(NULL)))
-		return errorf("unable to create audio device");
+		return MLK_ERR_OPENAL;
 	if (!(mlk__audio_ctx = alcCreateContext(mlk__audio_dev, NULL)))
-		return errorf("unable to create audio context");
+		return MLK_ERR_OPENAL;
 
 	alcMakeContextCurrent(mlk__audio_ctx);
 

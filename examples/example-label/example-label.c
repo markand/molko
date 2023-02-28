@@ -19,6 +19,7 @@
 #include <stddef.h>
 
 #include <mlk/core/core.h>
+#include <mlk/core/err.h>
 #include <mlk/core/event.h>
 #include <mlk/core/game.h>
 #include <mlk/core/painter.h>
@@ -33,8 +34,7 @@
 #include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
-#define W       (1280)
-#define H       (720)
+#include <mlk/example/example.h>
 
 struct {
 	enum align align;
@@ -106,17 +106,17 @@ static struct mlk_state *states[1];
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-label") < 0 || ui_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Label", W, H) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-label")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i) {
 		struct label *l = &table[i].label;
 		unsigned int w, h;
 
 		label_query(l, &w, &h);
-		align(table[i].align, &l->x, &l->y, w, h, 0, 0, W, H);
+		align(table[i].align, &l->x, &l->y, w, h, 0, 0, mlk_window.w, mlk_window.h);
 	}
 }
 

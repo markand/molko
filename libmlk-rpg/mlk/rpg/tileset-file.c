@@ -28,7 +28,6 @@
 
 #include <mlk/core/alloc.h>
 #include <mlk/core/animation.h>
-#include <mlk/core/error.h>
 #include <mlk/core/image.h>
 #include <mlk/core/util.h>
 
@@ -129,7 +128,7 @@ static int
 parse_tilewidth(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "tilewidth|%u", &ctx->tilewidth) != 1 || ctx->tilewidth == 0)
-		return errorf("tilewidth is null");
+		return MLK_ERR_FORMAT;
 
 	return 0;
 }
@@ -138,7 +137,7 @@ static int
 parse_tileheight(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "tileheight|%u", &ctx->tileheight) != 1 || ctx->tileheight == 0)
-		return errorf("tileheight is null");
+		return MLK_ERR_FORMAT;
 
 	return 0;
 }
@@ -230,14 +229,14 @@ static int
 parse_image(struct context *ctx, const char *line)
 {
 	char *p;
+	int err;
 
 	if (ctx->tilewidth == 0 || ctx->tileheight == 0)
-		return errorf("missing tile dimensions before image");
+		return MLK_ERR_FORMAT;
 	if (!(p = strchr(line, '|')))
-		return errorf("could not parse image");
-
-	if (mlk_image_open(&ctx->tf->image, mlk_util_pathf("%s/%s", ctx->basedir, p + 1)) < 0)
-		return -1;
+		return MLK_ERR_FORMAT;
+	if ((err = mlk_image_open(&ctx->tf->image, mlk_util_pathf("%s/%s", ctx->basedir, p + 1))) < 0)
+		return err;
 
 	mlk_sprite_init(&ctx->tf->sprite, &ctx->tf->image, ctx->tilewidth, ctx->tileheight);
 	ctx->tileset->sprite = &ctx->tf->sprite;
@@ -291,7 +290,7 @@ static int
 check(const struct tileset *tileset)
 {
 	if (!tileset->sprite)
-		return errorf("missing tileset image");
+		return MLK_ERR_FORMAT;
 
 	return 0;
 }

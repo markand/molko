@@ -20,18 +20,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "error.h"
+#include "err.h"
 #include "panic.h"
 
 static void
-terminate(void)
+terminate(const char *what)
 {
-	fprintf(stderr, "abort: %s\n", error());
+	fprintf(stderr, "abort: %s\n", what);
 	abort();
 	exit(1);
 }
 
-void (*mlk_panic_handler)(void) = terminate;
+void (*mlk_panic_handler)(const char *) = terminate;
+
+static void
+alive(void)
+{
+	/*
+	 * This should not happen, if it does it means the user did not fully
+	 * satisfied the constraint of mlk_panic_handler.
+	 */
+	fprintf(stderr, "abort: panic handler returned\n");
+	exit(1);
+}
 
 void
 mlk_panicf(const char *fmt, ...)
@@ -39,16 +50,18 @@ mlk_panicf(const char *fmt, ...)
 	assert(fmt);
 
 	va_list ap;
+	char buf[PANIC_LINE_MAX];
 
 	/*
-	 * Store the error before calling panic because va_end would not be
-	 * called.
+	 * We can't use mlk_panicva directly because we won't be able to call
+	 * va_end then.
 	 */
 	va_start(ap, fmt);
-	errorva(fmt, ap);
+	vsnprintf(buf, sizeof (buf), fmt, ap);
 	va_end(ap);
 
-	mlk_panic();
+	mlk_panic_handler(buf);
+	alive();
 }
 
 void
@@ -57,21 +70,15 @@ mlk_panicva(const char *fmt, va_list ap)
 	assert(fmt);
 	assert(mlk_panic_handler);
 
-	errorva(fmt, ap);
-	mlk_panic();
+	char buf[PANIC_LINE_MAX];
+
+	vsnprintf(buf, sizeof (buf), fmt, ap);
+	mlk_panic_handler(buf);
+	alive();
 }
 
 void
-mlk_panic(void)
+mlk_panic(int err)
 {
-	assert(mlk_panic_handler);
-
-	mlk_panic_handler();
-
-	/*
-	 * This should not happen, if it does it means the user did not fully
-	 * satisfied the constraint of mlk_panic_handler.
-	 */
-	fprintf(stderr, "abort: panic handler returned\n");
-	exit(1);
+	mlk_panicf("%s", mlk_err_string(err));
 }

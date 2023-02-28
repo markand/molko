@@ -19,6 +19,7 @@
 #ifndef EXAMPLES_BATTLE_REGISTRY_H
 #define EXAMPLES_BATTLE_REGISTRY_H
 
+#include <mlk/core/music.h>
 #include <mlk/core/sound.h>
 #include <mlk/core/sprite.h>
 #include <mlk/core/texture.h>
@@ -26,6 +27,7 @@
 enum registry_texture {
 	/* UI. */
 	REGISTRY_TEXTURE_CURSOR,
+	REGISTRY_TEXTURE_NUMBERS,
 
 	/* Animations. */
 	REGISTRY_TEXTURE_EXPLOSION,
@@ -33,6 +35,7 @@ enum registry_texture {
 	/* Characters. */
 	REGISTRY_TEXTURE_JOHN_WALK,
 	REGISTRY_TEXTURE_JOHN_SWORD,
+	REGISTRY_TEXTURE_PEOPLE,
 
 	/* Enemies. */
 	REGISTRY_TEXTURE_HAUNTED_WOOD,
@@ -40,6 +43,9 @@ enum registry_texture {
 
 	/* Objects. */
 	REGISTRY_TEXTURE_CHEST,
+
+	/* Sword by Icongeek26 (https://www.flaticon.com). */
+	REGISTRY_TEXTURE_SWORD,
 
 	/* Unused.*/
 	REGISTRY_TEXTURE_LAST
@@ -56,10 +62,16 @@ enum registry_sound {
 	REGISTRY_SOUND_LAST
 };
 
+enum registry_music {
+	REGISTRY_MUSIC_ROMANCE,
+	REGISTRY_MUSIC_LAST
+};
+
 extern struct mlk_texture registry_images[REGISTRY_IMAGE_LAST];
 extern struct mlk_texture registry_textures[REGISTRY_TEXTURE_LAST];
 extern struct mlk_sprite registry_sprites[REGISTRY_TEXTURE_LAST];
 extern struct mlk_sound registry_sounds[REGISTRY_SOUND_LAST];
+extern struct mlk_music registry_music[REGISTRY_MUSIC_LAST];
 
 void
 registry_init(void);

@@ -47,11 +47,9 @@
 #include <mlk/rpg/rpg.h>
 #include <mlk/rpg/spell.h>
 
+#include <mlk/example/example.h>
 #include <mlk/example/registry.h>
 #include <mlk/example/spell-fire.h>
-
-#define W 1280
-#define H 720
 
 static void
 adventurer_reset(struct character *ch)
@@ -130,10 +128,10 @@ static struct character haunted_wood = {
 static void
 init(void)
 {
-	if (mlk_core_init("fr.malikania", "example-battle") < 0 || ui_init() < 0 || rpg_init() < 0)
-		mlk_panic();
-	if (mlk_window_open("Example - Battle", W, H) < 0)
-		mlk_panic();
+	int err;
+
+	if ((err = mlk_example_init("example-battle")) < 0)
+		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
 	registry_init();
 
