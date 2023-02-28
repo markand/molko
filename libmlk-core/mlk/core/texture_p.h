@@ -24,6 +24,6 @@
 struct mlk_texture;
 
 int
-texture_from_surface(struct mlk_texture *, SDL_Surface *);
+mlk__texture_from_surface(struct mlk_texture *, SDL_Surface *);
 
 #endif /* !MLK_CORE_TEXTURE_P_H */

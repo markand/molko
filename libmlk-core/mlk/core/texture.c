@@ -158,7 +158,7 @@ mlk_texture_finish(struct mlk_texture *tex)
 /* private */
 
 int
-texture_from_surface(struct mlk_texture *tex, SDL_Surface *surface)
+mlk__texture_from_surface(struct mlk_texture *tex, SDL_Surface *surface)
 {
 	assert(tex);
 	assert(surface);

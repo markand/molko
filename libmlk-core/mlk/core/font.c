@@ -87,7 +87,7 @@ mlk_font_render(struct mlk_font *font, struct mlk_texture *tex, const char *text
 	if (!(surface = func(font->handle, text, fg)))
 		return MLK_ERR_SDL;
 
-	return texture_from_surface(tex, surface);
+	return mlk__texture_from_surface(tex, surface);
 }
 
 unsigned int
