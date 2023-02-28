@@ -260,7 +260,7 @@ message_draw(const struct message *msg)
 	h = msg->h * msg->scale;
 
 	/* Centerize within its drawing area. */
-	align(ALIGN_CENTER, &x, &y, w, h, msg->x, msg->y, msg->w, msg->h);
+	mlk_align(MLK_ALIGN_CENTER, &x, &y, w, h, msg->x, msg->y, msg->w, msg->h);
 
 	/* Draw and clear. */
 	mlk_texture_scale(&tex, 0, 0, msg->w, msg->h, x, y, w, h, 0);

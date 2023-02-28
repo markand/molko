@@ -138,7 +138,7 @@ resize_header(void)
 
 	/* Header. */
 	label_query(l, &w, &h);
-	align(ALIGN_LEFT, &l->x, &l->y, w, h, f->x, f->y, f->w, HEADER_HEIGHT);
+	mlk_align(MLK_ALIGN_LEFT, &l->x, &l->y, w, h, f->x, f->y, f->w, HEADER_HEIGHT);
 
 	l->x += theme_default()->padding;
 }
@@ -168,7 +168,7 @@ resize_button(void)
 	/* Button. */
 	b->w = f->w / 4;
 
-	align(ALIGN_BOTTOM_RIGHT, &b->x, &b->y, b->w, b->h,
+	mlk_align(MLK_ALIGN_BOTTOM_RIGHT, &b->x, &b->y, b->w, b->h,
 	    f->x, f->y, f->w, f->h);
 
 	b->x -= padding;

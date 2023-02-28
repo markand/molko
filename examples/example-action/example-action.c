@@ -250,9 +250,9 @@ chests_init(void)
 	const unsigned int cw = registry_sprites[REGISTRY_TEXTURE_CHEST].cellw;
 	const unsigned int ch = registry_sprites[REGISTRY_TEXTURE_CHEST].cellh;
 
-	align(ALIGN_CENTER, &chests[0].x, &chests[0].y, cw, ch,
+	mlk_align(MLK_ALIGN_CENTER, &chests[0].x, &chests[0].y, cw, ch,
 	    0, 0, MLK_EXAMPLE_W / 2, MLK_EXAMPLE_H);
-	align(ALIGN_CENTER, &chests[1].x, &chests[1].y, cw, ch,
+	mlk_align(MLK_ALIGN_CENTER, &chests[1].x, &chests[1].y, cw, ch,
 	    MLK_EXAMPLE_W / 2, 0, MLK_EXAMPLE_W / 2, MLK_EXAMPLE_H);
 
 	chests[0].run = script_left_run;
@@ -268,7 +268,7 @@ label_init(void)
 	unsigned int lw, lh;
 
 	label_query(&label, &lw, &lh);
-	align(ALIGN_CENTER, &label.x, &label.y, lw, lh,
+	mlk_align(MLK_ALIGN_CENTER, &label.x, &label.y, lw, lh,
 	    0, 0, MLK_EXAMPLE_W, MLK_EXAMPLE_H / 2);
 }
 

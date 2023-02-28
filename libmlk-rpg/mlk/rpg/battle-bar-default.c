@@ -320,32 +320,32 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 {
 	struct {
 		unsigned int w, h;
-		enum align align;
+		enum mlk_align align;
 		struct label label;
 	} buttons[] = {
 		{
-			.align = ALIGN_TOP,
+			.align = MLK_ALIGN_TOP,
 			.label = {
 				.text = "Attack",
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		},
 		{
-			.align = ALIGN_RIGHT,
+			.align = MLK_ALIGN_RIGHT,
 			.label = {
 				.text = "Magic",
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		},
 		{
-			.align = ALIGN_BOTTOM,
+			.align = MLK_ALIGN_BOTTOM,
 			.label = {
 				.text = "Objects",
 				.flags = LABEL_FLAGS_SHADOW
 			}
 		},
 		{
-			.align = ALIGN_LEFT,
+			.align = MLK_ALIGN_LEFT,
 			.label = {
 				.text = "Special",
 				.flags = LABEL_FLAGS_SHADOW
@@ -382,7 +382,7 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 		else
 			buttons[i].label.flags &= ~LABEL_FLAGS_SELECTED;
 
-		align(buttons[i].align,
+		mlk_align(buttons[i].align,
 		    &buttons[i].label.x, &buttons[i].label.y, buttons[i].w, buttons[i].h,
 		    bx, by, bw, bh);
 		label_draw(&buttons[i].label);

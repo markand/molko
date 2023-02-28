@@ -21,23 +21,22 @@
 
 #include <mlk/core/core.h>
 
-enum align {
-	ALIGN_NONE,
-	ALIGN_CENTER,
-	ALIGN_TOP_LEFT,
-	ALIGN_TOP,
-	ALIGN_TOP_RIGHT,
-	ALIGN_RIGHT,
-	ALIGN_BOTTOM_RIGHT,
-	ALIGN_BOTTOM,
-	ALIGN_BOTTOM_LEFT,
-	ALIGN_LEFT
+enum mlk_align {
+	MLK_ALIGN_CENTER,
+	MLK_ALIGN_TOP_LEFT,
+	MLK_ALIGN_TOP,
+	MLK_ALIGN_TOP_RIGHT,
+	MLK_ALIGN_RIGHT,
+	MLK_ALIGN_BOTTOM_RIGHT,
+	MLK_ALIGN_BOTTOM,
+	MLK_ALIGN_BOTTOM_LEFT,
+	MLK_ALIGN_LEFT
 };
 
 MLK_CORE_BEGIN_DECLS
 
 void
-align(enum align,
+mlk_align(enum mlk_align,
       int *,
       int *,
       unsigned int,

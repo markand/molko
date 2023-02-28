@@ -60,7 +60,7 @@ button_draw_default(const struct theme *t, const struct button *button)
 	if (lh > button->h)
 		mlk_tracef("button height is too small for text: %u < %u", button->h, lh);
 
-	align(ALIGN_CENTER, &label.x, &label.y, lw, lh,
+	mlk_align(MLK_ALIGN_CENTER, &label.x, &label.y, lw, lh,
 	    button->x, button->y, button->w, button->h);
 
 	mlk_painter_set_color(0x577277ff);

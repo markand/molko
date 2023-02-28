@@ -22,7 +22,7 @@
 #define CENTER(p, c, rs, es) if (p) (*p) = c + (rs / 2) - (es / 2)
 
 void
-align(enum align align,
+mlk_align(enum mlk_align align,
       int *x,
       int *y,
       unsigned int w,
@@ -33,39 +33,39 @@ align(enum align align,
       unsigned int ph)
 {
 	switch (align) {
-	case ALIGN_CENTER:
+	case MLK_ALIGN_CENTER:
 		CENTER(x, px, pw, w);
 		CENTER(y, py, ph, h);
 		break;
-	case ALIGN_TOP_LEFT:
+	case MLK_ALIGN_TOP_LEFT:
 		SET(x, px);
 		SET(y, py);
 		break;
-	case ALIGN_TOP:
+	case MLK_ALIGN_TOP:
 		CENTER(x, px, pw, w);
 		SET(y, py);
 		break;
-	case ALIGN_TOP_RIGHT:
+	case MLK_ALIGN_TOP_RIGHT:
 		SET(x, px + pw - w);
 		SET(y, py);
 		break;
-	case ALIGN_RIGHT:
+	case MLK_ALIGN_RIGHT:
 		SET(x, px + pw - w);
 		CENTER(y, py, ph, h);
 		break;
-	case ALIGN_BOTTOM_RIGHT:
+	case MLK_ALIGN_BOTTOM_RIGHT:
 		SET(x, px + pw - w);
 		SET(y, py + ph - h);
 		break;
-	case ALIGN_BOTTOM:
+	case MLK_ALIGN_BOTTOM:
 		CENTER(x, px, pw, w);
 		SET(y, py + ph - h);
 		break;
-	case ALIGN_BOTTOM_LEFT:
+	case MLK_ALIGN_BOTTOM_LEFT:
 		SET(x, px);
 		SET(y, py + ph - h);
 		break;
-	case ALIGN_LEFT:
+	case MLK_ALIGN_LEFT:
 		CENTER(y, py, ph, h);
 		SET(x, px);
 		break;

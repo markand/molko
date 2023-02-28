@@ -114,7 +114,7 @@ run(void)
 	gridmenu_init(&menu, 3, 2, items, MLK_UTIL_SIZE(items));
 	gridmenu_resize(&menu, 0, 0, 300, 100);
 
-	align(ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, mlk_window.w, mlk_window.h);
+	mlk_align(MLK_ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, mlk_window.w, mlk_window.h);
 
 	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);

@@ -119,7 +119,7 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0xebede9ff);
 	mlk_painter_clear();
-	align(ALIGN_CENTER, &x, &y, sprite->cellw, sprite->cellh, 0, 0, mlk_window.w, mlk_window.h);
+	mlk_align(MLK_ALIGN_CENTER, &x, &y, sprite->cellw, sprite->cellh, 0, 0, mlk_window.w, mlk_window.h);
 	mlk_sprite_draw(sprite, row, column, x, y);
 	label_draw(&help);
 	mlk_painter_present();

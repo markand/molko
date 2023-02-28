@@ -84,7 +84,7 @@ geometry(struct geo *geo, const struct notify *n, size_t index)
 		geo->icon_x = x + geo->theme->padding;
 		geo->icon_y = y + geo->theme->padding;
 	} else {
-		align(ALIGN_LEFT, &geo->icon_x, &geo->icon_y, n->icon->w, n->icon->h, x, y, WIDTH, HEIGHT);
+		mlk_align(MLK_ALIGN_LEFT, &geo->icon_x, &geo->icon_y, n->icon->w, n->icon->h, x, y, WIDTH, HEIGHT);
 		geo->icon_x += geo->icon_y - y;
 	}
 

@@ -37,59 +37,59 @@
 #include <mlk/example/example.h>
 
 struct {
-	enum align align;
+	enum mlk_align align;
 	struct label label;
 } table[] = {
 	{
-		.align = ALIGN_TOP_LEFT,
+		.align = MLK_ALIGN_TOP_LEFT,
 		.label = {
 			.text = "Top left"
 		}
 	},
 	{
-		.align = ALIGN_TOP,
+		.align = MLK_ALIGN_TOP,
 		.label = {
 			.text = "Top",
 		}
 	},
 	{
-		.align = ALIGN_TOP_RIGHT,
+		.align = MLK_ALIGN_TOP_RIGHT,
 		.label = {
 			.text = "Top right",
 		}
 	},
 	{
-		.align = ALIGN_RIGHT,
+		.align = MLK_ALIGN_RIGHT,
 		.label = {
 			.text = "Right",
 		}
 	},
 	{
-		.align = ALIGN_BOTTOM_RIGHT,
+		.align = MLK_ALIGN_BOTTOM_RIGHT,
 		.label = {
 			.text = "Bottom right",
 		}
 	},
 	{
-		.align = ALIGN_BOTTOM,
+		.align = MLK_ALIGN_BOTTOM,
 		.label = {
 			.text = "Bottom",
 		}
 	},
 	{
-		.align = ALIGN_BOTTOM_LEFT,
+		.align = MLK_ALIGN_BOTTOM_LEFT,
 		.label = {
 			.text = "Bottom left",
 		}
 	},
 	{
-		.align = ALIGN_LEFT,
+		.align = MLK_ALIGN_LEFT,
 		.label = {
 			.text = "Left",
 		}
 	},
 	{
-		.align = ALIGN_CENTER,
+		.align = MLK_ALIGN_CENTER,
 		.label = {
 			.text = "The world is Malikania.",
 			.flags = LABEL_FLAGS_SHADOW
@@ -116,7 +116,7 @@ init(void)
 		unsigned int w, h;
 
 		label_query(l, &w, &h);
-		align(table[i].align, &l->x, &l->y, w, h, 0, 0, mlk_window.w, mlk_window.h);
+		mlk_align(table[i].align, &l->x, &l->y, w, h, 0, 0, mlk_window.w, mlk_window.h);
 	}
 }
 

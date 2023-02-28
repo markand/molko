@@ -58,7 +58,7 @@ draw(struct mlk_drawable *dw)
 	const struct mlk_sprite *sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
 	int x, y;
 
-	align(ALIGN_CENTER,
+	mlk_align(MLK_ALIGN_CENTER,
 	    &x, &y, self->animation.sprite->cellw, self->animation.sprite->cellh,
 	    et->x, et->y, sprite->cellw, sprite->cellh);
 
