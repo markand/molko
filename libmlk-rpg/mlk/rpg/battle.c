@@ -139,8 +139,8 @@ positionate_name(struct battle_entity *et, const struct battle *bt)
 	sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
 
 	et->name.text = et->ch->name;
-	et->name.flags = LABEL_FLAGS_SHADOW;
-	label_query(&et->name, &lw, NULL);
+	et->name.flags = MLK_LABEL_FLAGS_SHADOW;
+	mlk_label_query(&et->name, &lw, NULL);
 	et->name.y = et->y + sprite->cellh + BATTLE_THEME(bt)->padding;
 	et->name.x = et->x + (sprite->cellw / 2) - (lw / 2);
 }

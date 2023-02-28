@@ -23,34 +23,34 @@
 
 struct theme;
 
-enum label_flags {
-	LABEL_FLAGS_NONE,
-	LABEL_FLAGS_SHADOW      = (1 << 0),
-	LABEL_FLAGS_IMPORTANT   = (1 << 1),
-	LABEL_FLAGS_SELECTED    = (1 << 2)
+enum mlk_label_flags {
+	MLK_LABEL_FLAGS_NONE,
+	MLK_LABEL_FLAGS_SHADOW          = (1 << 0),
+	MLK_LABEL_FLAGS_IMPORTANT       = (1 << 1),
+	MLK_LABEL_FLAGS_SELECTED        = (1 << 2)
 };
 
-struct label {
+struct mlk_label {
 	int x;
 	int y;
 	const char *text;
-	enum label_flags flags;
+	enum mlk_label_flags flags;
 	const struct theme *theme;
 };
 
 MLK_CORE_BEGIN_DECLS
 
 void
-label_draw_default(const struct theme *, const struct label *);
+mlk_label_draw_default(const struct theme *, const struct mlk_label *);
 
 int
-label_ok(const struct label *);
+mlk_label_ok(const struct mlk_label *);
 
 void
-label_query(const struct label *, unsigned int *, unsigned int *);
+mlk_label_query(const struct mlk_label *, unsigned int *, unsigned int *);
 
 void
-label_draw(const struct label *);
+mlk_label_draw(const struct mlk_label *);
 
 MLK_CORE_END_DECLS
 

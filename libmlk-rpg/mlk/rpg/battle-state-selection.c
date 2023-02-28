@@ -123,7 +123,7 @@ draw_cursor(const struct battle *bt, const struct battle_entity *et)
 	if (!cursor)
 		return;
 
-	label_query(&et->name, NULL, &lh);
+	mlk_label_query(&et->name, NULL, &lh);
 
 	x = et->name.x - cursor->cellw - theme->padding;
 	y = et->name.y + (((int)(lh) - (int)(cursor->cellh)) / 2);

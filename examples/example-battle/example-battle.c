@@ -250,16 +250,16 @@ empty_draw(struct mlk_state *st)
 {
 	(void)st;
 
-	static const struct label info = {
+	static const struct mlk_label info = {
 		.text = "Press <Space> to start a battle.",
 		.x = 10,
 		.y = 10,
-		.flags = LABEL_FLAGS_SHADOW
+		.flags = MLK_LABEL_FLAGS_SHADOW
 	};
 
 	mlk_painter_set_color(0x4f8fbaff);
 	mlk_painter_clear();
-	label_draw(&info);
+	mlk_label_draw(&info);
 	mlk_painter_present();
 }
 

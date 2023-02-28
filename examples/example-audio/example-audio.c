@@ -39,18 +39,18 @@ static struct mlk_state *states[1];
 static struct mlk_music *music;
 static struct mlk_sound *sound;
 
-static struct label label_music = {
+static struct mlk_label label_music = {
 	.text = "Music: <Space> play, <p> pause, <r> resume, <q> stop, <l> loop.",
 	.x = 10,
 	.y = 10,
-	.flags = LABEL_FLAGS_SHADOW
+	.flags = MLK_LABEL_FLAGS_SHADOW
 };
 
-static struct label label_sound = {
+static struct mlk_label label_sound = {
 	.text = "Sound: click anywhere to pop a sound.",
 	.x = 10,
 	.y = 30,
-	.flags = LABEL_FLAGS_SHADOW
+	.flags = MLK_LABEL_FLAGS_SHADOW
 };
 
 static void
@@ -121,8 +121,8 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0x006554ff);
 	mlk_painter_clear();
-	label_draw(&label_music);
-	label_draw(&label_sound);
+	mlk_label_draw(&label_music);
+	mlk_label_draw(&label_sound);
 	mlk_painter_present();
 }
 

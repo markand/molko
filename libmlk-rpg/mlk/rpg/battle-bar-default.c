@@ -180,15 +180,15 @@ switch_selection_item(struct battle *bt)
 static void
 draw_help(const struct battle_bar_default *bar, const char *what)
 {
-	struct label label = {0};
+	struct mlk_label label = {0};
 	unsigned int lw = 0, lh = 0;
 
-	label.flags = LABEL_FLAGS_SHADOW;
+	label.flags = MLK_LABEL_FLAGS_SHADOW;
 	label.text = what;
-	label_query(&label, &lw, &lh);
+	mlk_label_query(&label, &lw, &lh);
 	label.x = bar->grid.x + (bar->grid.w / 2) - (lw / 2);
 	label.y = bar->grid.y - lh - THEME(bar)->padding;
-	label_draw(&label);
+	mlk_label_draw(&label);
 }
 
 static void
@@ -229,7 +229,7 @@ draw_status_character_stats(const struct battle_bar_default *bar,
                             unsigned int h)
 {
 	const struct theme *theme = THEME(bar);
-	struct label label;
+	struct mlk_label label;
 	unsigned int spacing, lw, lh;
 	char line[64];
 
@@ -240,28 +240,28 @@ draw_status_character_stats(const struct battle_bar_default *bar,
 	/* Reuse the same label. */
 	label.theme = theme;
 	label.text = line;
-	label.flags = LABEL_FLAGS_SHADOW;
+	label.flags = MLK_LABEL_FLAGS_SHADOW;
 
 	/* Name. */
 	snprintf(line, sizeof (line), "%s", ch->name);
-	label_query(&label, &lw, &lh);
+	mlk_label_query(&label, &lw, &lh);
 	label.x = x + theme->padding;
 	label.y = y + spacing;
-	label_draw(&label);
+	mlk_label_draw(&label);
 
 	/* HP. */
 	snprintf(line, sizeof (line), "%d/%u", ch->hp, ch->hpmax);
-	label_query(&label, &lw, &lh);
+	mlk_label_query(&label, &lw, &lh);
 	label.x = x + theme->padding;
 	label.y = label.y + lh + spacing;
-	label_draw(&label);
+	mlk_label_draw(&label);
 
 	/* MP. */
 	snprintf(line, sizeof (line), "%d/%u", ch->mp, ch->mpmax);
-	label_query(&label, &lw, &lh);
+	mlk_label_query(&label, &lw, &lh);
 	label.x = x + theme->padding;
 	label.y = label.y + lh + spacing;
-	label_draw(&label);
+	mlk_label_draw(&label);
 
 	/* Status. */
 	/* TODO: list all status. */
@@ -321,34 +321,34 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 	struct {
 		unsigned int w, h;
 		enum mlk_align align;
-		struct label label;
+		struct mlk_label label;
 	} buttons[] = {
 		{
 			.align = MLK_ALIGN_TOP,
 			.label = {
 				.text = "Attack",
-				.flags = LABEL_FLAGS_SHADOW
+				.flags = MLK_LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = MLK_ALIGN_RIGHT,
 			.label = {
 				.text = "Magic",
-				.flags = LABEL_FLAGS_SHADOW
+				.flags = MLK_LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = MLK_ALIGN_BOTTOM,
 			.label = {
 				.text = "Objects",
-				.flags = LABEL_FLAGS_SHADOW
+				.flags = MLK_LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = MLK_ALIGN_LEFT,
 			.label = {
 				.text = "Special",
-				.flags = LABEL_FLAGS_SHADOW
+				.flags = MLK_LABEL_FLAGS_SHADOW
 			}
 		}
 	};
@@ -374,18 +374,18 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 	for (size_t i = 0; i < MLK_UTIL_SIZE(buttons); ++i) {
 		buttons[i].label.theme = theme;
 
-		label_query(&buttons[i].label, &buttons[i].w, &buttons[i].h);
+		mlk_label_query(&buttons[i].label, &buttons[i].w, &buttons[i].h);
 
 		/* Change theme if it's selected. */
 		if ((size_t)bar->menu == i)
-			buttons[i].label.flags |=  LABEL_FLAGS_SELECTED;
+			buttons[i].label.flags |=  MLK_LABEL_FLAGS_SELECTED;
 		else
-			buttons[i].label.flags &= ~LABEL_FLAGS_SELECTED;
+			buttons[i].label.flags &= ~MLK_LABEL_FLAGS_SELECTED;
 
 		mlk_align(buttons[i].align,
 		    &buttons[i].label.x, &buttons[i].label.y, buttons[i].w, buttons[i].h,
 		    bx, by, bw, bh);
-		label_draw(&buttons[i].label);
+		mlk_label_draw(&buttons[i].label);
 	}
 }
 

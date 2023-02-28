@@ -48,12 +48,12 @@ mlk_button_draw_default(const struct theme *t, const struct mlk_button *button)
 
 	(void)t;
 
-	struct label label = {
+	struct mlk_label label = {
 		.text = button->text,
 	};
 	unsigned int lw, lh;
 
-	label_query(&label, &lw, &lh);
+	mlk_label_query(&label, &lw, &lh);
 
 	if (lw > button->w)
 		mlk_tracef("button width is too small for text: %u < %u", button->w, lw);
@@ -66,7 +66,7 @@ mlk_button_draw_default(const struct theme *t, const struct mlk_button *button)
 	mlk_painter_set_color(0x577277ff);
 	mlk_painter_draw_rectangle(button->x, button->y, button->w, button->h);
 
-	label_draw(&label);
+	mlk_label_draw(&label);
 }
 
 int

@@ -44,11 +44,11 @@
 #include <mlk/example/example.h>
 #include <mlk/example/registry.h>
 
-static struct label help = {
+static struct mlk_label help = {
 	.x = 10,
 	.y = 10,
 	.text = "Keys: <Esc> to reset. Click anywhere to spawn a drawable.",
-	.flags = LABEL_FLAGS_SHADOW
+	.flags = MLK_LABEL_FLAGS_SHADOW
 };
 
 static struct mlk_state *states[1];
@@ -161,7 +161,7 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0xebede9ff);
 	mlk_painter_clear();
-	label_draw(&help);
+	mlk_label_draw(&help);
 	mlk_drawable_stack_draw(&stack);
 	mlk_painter_present();
 }

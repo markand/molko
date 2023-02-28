@@ -36,11 +36,11 @@
 #include <mlk/example/example.h>
 #include <mlk/example/registry.h>
 
-static struct label help = {
+static struct mlk_label help = {
 	.text = "Keys: <Space> to generate a notification.",
 	.x = 10,
 	.y = 10,
-	.flags = LABEL_FLAGS_SHADOW
+	.flags = MLK_LABEL_FLAGS_SHADOW
 };
 static struct mlk_texture *icon;
 static struct mlk_state *states[1];
@@ -89,7 +89,7 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0xffffffff);
 	mlk_painter_clear();
-	label_draw(&help);
+	mlk_label_draw(&help);
 	notify_draw();
 	mlk_painter_present();
 }

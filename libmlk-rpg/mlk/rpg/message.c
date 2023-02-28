@@ -87,7 +87,7 @@ static void
 draw_lines(const struct message *msg)
 {
 	const struct theme *theme = THEME(msg);
-	struct label label;
+	struct mlk_label label;
 	unsigned int lw, lh;
 	int err;
 
@@ -101,7 +101,7 @@ draw_lines(const struct message *msg)
 		label.x = theme->padding;
 		label.y = theme->padding + (i * (lh + msg->spacing));
 		label.text = msg->lines[i];
-		label.flags = LABEL_FLAGS_SHADOW;
+		label.flags = MLK_LABEL_FLAGS_SHADOW;
 
 		if (label.x + lw > msg->w)
 			mlk_tracef("message width too small: %u < %u", msg->w, min_width(msg));
@@ -113,12 +113,12 @@ draw_lines(const struct message *msg)
 		 * text and THEME_COLOR_SHADOW so if we have selected a line
 		 * we need to cheat the normal color.
 		 */
-		if (msg->flags & MESSAGE_FLAGS_QUESTION && msg->index == (unsigned int)i)
-			label.flags |= LABEL_FLAGS_SELECTED;
+		if ((msg->flags & MESSAGE_FLAGS_QUESTION) && msg->index == (unsigned int)i)
+			label.flags |= MLK_LABEL_FLAGS_SELECTED;
 		else
-			label.flags &= ~(LABEL_FLAGS_SELECTED);
+			label.flags &= ~(MLK_LABEL_FLAGS_SELECTED);
 
-		label_draw(&label);
+		mlk_label_draw(&label);
 	}
 }
 

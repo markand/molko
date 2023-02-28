@@ -54,7 +54,7 @@ static struct theme default_theme = {
 	},
 	.padding = 10,
 	.draw_frame = mlk_frame_draw_default,
-	.draw_label = label_draw_default,
+	.draw_label = mlk_label_draw_default,
 	.draw_button = mlk_button_draw_default,
 	.draw_checkbox = mlk_checkbox_draw_default
 };

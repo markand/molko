@@ -31,7 +31,7 @@ struct battle_entity {
 	struct character *ch;
 	int x;
 	int y;
-	struct label name;
+	struct mlk_label name;
 	struct battle_entity_state *state;
 };
 

@@ -52,9 +52,9 @@ static void
 geometry(struct mlk_gridmenu *menu)
 {
 	const struct theme *theme = THEME(menu);
-	struct label label = {
+	struct mlk_label label = {
 		.theme = theme,
-		.flags = LABEL_FLAGS_SHADOW
+		.flags = MLK_LABEL_FLAGS_SHADOW
 	};
 	unsigned int reqw = 0, reqh = 0, lw, lh;
 
@@ -67,7 +67,7 @@ geometry(struct mlk_gridmenu *menu)
 			continue;
 
 
-		label_query(&label, &lw, &lh);
+		mlk_label_query(&label, &lw, &lh);
 
 		menu->eltw = fmax(menu->eltw, lw);
 		menu->elth = fmax(menu->elth, lh);
@@ -116,11 +116,11 @@ static void
 draw_labels(const struct mlk_gridmenu *menu)
 {
 	size_t pagesz, pagenr, item, c = 0, r = 0;
-	struct label label = {0};
+	struct mlk_label label = {0};
 	const struct theme *theme = THEME(menu);
 
 	label.theme = theme;
-	label.flags = LABEL_FLAGS_SHADOW;
+	label.flags = MLK_LABEL_FLAGS_SHADOW;
 
 	/*
 	 * Select the first top-left column based on the current selection and
@@ -140,11 +140,11 @@ draw_labels(const struct mlk_gridmenu *menu)
 		label.y = menu->y + theme->padding + (r * menu->elth) + (r * menu->spaceh);
 
 		if (i == menu->selected % pagesz)
-			label.flags |= LABEL_FLAGS_SELECTED;
+			label.flags |= MLK_LABEL_FLAGS_SELECTED;
 		else
-			label.flags &= ~(LABEL_FLAGS_SELECTED);
+			label.flags &= ~(MLK_LABEL_FLAGS_SELECTED);
 
-		label_draw(&label);
+		mlk_label_draw(&label);
 
 		if (++c >= menu->ncols) {
 			++r;

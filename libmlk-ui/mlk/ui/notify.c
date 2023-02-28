@@ -123,27 +123,27 @@ draw_icon(const struct geo *geo, const struct notify *n)
 static void
 draw_title(const struct geo *geo, const struct notify *n)
 {
-	const struct label l = {
+	const struct mlk_label l = {
 		.x = geo->title_x,
 		.y = geo->title_y,
 		.text = n->title,
-		.flags = LABEL_FLAGS_SHADOW | LABEL_FLAGS_IMPORTANT
+		.flags = MLK_LABEL_FLAGS_SHADOW | MLK_LABEL_FLAGS_IMPORTANT
 	};
 
-	label_draw(&l);
+	mlk_label_draw(&l);
 }
 
 static void
 draw_body(const struct geo *geo, const struct notify *n)
 {
-	const struct label l = {
+	const struct mlk_label l = {
 		.x = geo->body_x,
 		.y = geo->body_y,
 		.text = n->body,
-		.flags = LABEL_FLAGS_SHADOW
+		.flags = MLK_LABEL_FLAGS_SHADOW
 	};
 
-	label_draw(&l);
+	mlk_label_draw(&l);
 }
 
 static void

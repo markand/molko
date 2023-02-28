@@ -96,12 +96,12 @@ trace_hud_draw(void)
 	y = th->padding;
 
 	for (int i = 0; i < LINES_MAX && data.lines[i][0]; ++i) {
-		label_draw(&(struct label) {
+		mlk_label_draw(&(struct mlk_label) {
 			.x = x,
 			.y = y,
 			.text = data.lines[i],
 			.theme = th,
-			.flags = LABEL_FLAGS_SHADOW
+			.flags = MLK_LABEL_FLAGS_SHADOW
 		});
 
 		y += mlk_font_height(th->fonts[THEME_FONT_INTERFACE]);

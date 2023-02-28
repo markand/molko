@@ -72,12 +72,12 @@ static struct {
 	} panel;
 
 	struct {
-		struct label label;
+		struct mlk_label label;
 	} header;
 
 	struct {
 		struct mlk_checkbox cb;
-		struct label label;
+		struct mlk_label label;
 	} autosave;
 
 	struct {
@@ -97,7 +97,7 @@ static struct {
 			.text = "Preferences",
 			.x = FRAME_ORIGIN_X,
 			.y = FRAME_ORIGIN_Y,
-			.flags = LABEL_FLAGS_SHADOW,
+			.flags = MLK_LABEL_FLAGS_SHADOW,
 		}
 	},
 	.autosave = {
@@ -107,7 +107,7 @@ static struct {
 		},
 		.label = {
 			.text = "Auto save game",
-			.flags = LABEL_FLAGS_SHADOW,
+			.flags = MLK_LABEL_FLAGS_SHADOW,
 		}
 	},
 	.quit = {
@@ -133,11 +133,11 @@ static void
 resize_header(void)
 {
 	struct mlk_frame *f = &ui.panel.frame;
-	struct label *l = &ui.header.label;
+	struct mlk_label *l = &ui.header.label;
 	unsigned int w, h;
 
 	/* Header. */
-	label_query(l, &w, &h);
+	mlk_label_query(l, &w, &h);
 	mlk_align(MLK_ALIGN_LEFT, &l->x, &l->y, w, h, f->x, f->y, f->w, HEADER_HEIGHT);
 
 	l->x += theme_default()->padding;
@@ -149,7 +149,7 @@ resize_autosave(void)
 	unsigned int padding = theme_default()->padding;
 	struct mlk_frame *f = &ui.panel.frame;
 	struct mlk_checkbox *c = &ui.autosave.cb;
-	struct label *l = &ui.autosave.label;
+	struct mlk_label *l = &ui.autosave.label;
 
 	c->x = f->x + padding;
 	c->y = f->y + HEADER_HEIGHT + padding;
@@ -244,9 +244,9 @@ draw(struct mlk_state *st)
 	mlk_painter_set_color(0xffffffff);
 	mlk_painter_clear();
 	mlk_frame_draw(&ui.panel.frame);
-	label_draw(&ui.header.label);
+	mlk_label_draw(&ui.header.label);
 	mlk_checkbox_draw(&ui.autosave.cb);
-	label_draw(&ui.autosave.label);
+	mlk_label_draw(&ui.autosave.label);
 	mlk_button_draw(&ui.quit.button);
 	mlk_painter_present();
 }

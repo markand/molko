@@ -48,11 +48,11 @@ static struct mlk_sprite *sprite;
 static unsigned int row, column;
 static struct mlk_state *states[1];
 
-static struct label help = {
+static struct mlk_label help = {
 	.x = 10,
 	.y = 10,
 	.text = msg,
-	.flags = LABEL_FLAGS_SHADOW
+	.flags = MLK_LABEL_FLAGS_SHADOW
 };
 
 static void
@@ -121,7 +121,7 @@ draw(struct mlk_state *st)
 	mlk_painter_clear();
 	mlk_align(MLK_ALIGN_CENTER, &x, &y, sprite->cellw, sprite->cellh, 0, 0, mlk_window.w, mlk_window.h);
 	mlk_sprite_draw(sprite, row, column, x, y);
-	label_draw(&help);
+	mlk_label_draw(&help);
 	mlk_painter_present();
 }
 

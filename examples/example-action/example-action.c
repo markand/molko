@@ -69,8 +69,8 @@ static struct mlk_action_stack chests_stack = {
 /*
  * Just a label to explain to the user what to do.
  */
-static struct label label = {
-	.flags = LABEL_FLAGS_SHADOW,
+static struct mlk_label label = {
+	.flags = MLK_LABEL_FLAGS_SHADOW,
 	.text = "Select your destiny."
 };
 
@@ -267,7 +267,7 @@ label_init(void)
 {
 	unsigned int lw, lh;
 
-	label_query(&label, &lw, &lh);
+	mlk_label_query(&label, &lw, &lh);
 	mlk_align(MLK_ALIGN_CENTER, &label.x, &label.y, lw, lh,
 	    0, 0, MLK_EXAMPLE_W, MLK_EXAMPLE_H / 2);
 }
@@ -324,7 +324,7 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0x4f8fbaff);
 	mlk_painter_clear();
-	label_draw(&label);
+	mlk_label_draw(&label);
 	mlk_action_stack_draw(&chests_stack);
 
 	/*

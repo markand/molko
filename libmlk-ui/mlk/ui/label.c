@@ -27,7 +27,7 @@
 #include "theme.h"
 
 void
-label_draw_default(const struct theme *t, const struct label *label)
+mlk_label_draw_default(const struct theme *t, const struct mlk_label *label)
 {
 	assert(t);
 	assert(label);
@@ -37,15 +37,15 @@ label_draw_default(const struct theme *t, const struct label *label)
 	unsigned long color;
 	int err;
 
-	font = label->flags & LABEL_FLAGS_IMPORTANT
+	font = label->flags & MLK_LABEL_FLAGS_IMPORTANT
 		? t->fonts[THEME_FONT_IMPORTANT]
 		: t->fonts[THEME_FONT_INTERFACE];
-	color = label->flags & LABEL_FLAGS_SELECTED
+	color = label->flags & MLK_LABEL_FLAGS_SELECTED
 		? t->colors[THEME_COLOR_SELECTED]
 	        : t->colors[THEME_COLOR_NORMAL];
 
 	/* Shadow text, only if enabled. */
-	if (label->flags & LABEL_FLAGS_SHADOW) {
+	if (label->flags & MLK_LABEL_FLAGS_SHADOW) {
 		if ((err = mlk_font_render(font, &tex, label->text, t->colors[THEME_COLOR_SHADOW])) < 0)
 			mlk_panic(err);
 
@@ -62,19 +62,19 @@ label_draw_default(const struct theme *t, const struct label *label)
 }
 
 int
-label_ok(const struct label *label)
+mlk_label_ok(const struct mlk_label *label)
 {
 	return label && label->text && strlen(label->text) > 0;
 }
 
 void
-label_query(const struct label *label, unsigned int *w, unsigned int *h)
+mlk_label_query(const struct mlk_label *label, unsigned int *w, unsigned int *h)
 {
 	assert(label);
 	assert(label->text);
 
 	const struct theme *t = label->theme ? label->theme : theme_default();
-	const struct mlk_font *f = label->flags & LABEL_FLAGS_IMPORTANT
+	const struct mlk_font *f = label->flags & MLK_LABEL_FLAGS_IMPORTANT
 		? t->fonts[THEME_FONT_IMPORTANT]
 		: t->fonts[THEME_FONT_INTERFACE];
 	int err;
@@ -84,7 +84,7 @@ label_query(const struct label *label, unsigned int *w, unsigned int *h)
 }
 
 void
-label_draw(const struct label *label)
+mlk_label_draw(const struct mlk_label *label)
 {
 	assert(label);
 	assert(label->text);

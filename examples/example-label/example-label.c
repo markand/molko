@@ -38,7 +38,7 @@
 
 struct {
 	enum mlk_align align;
-	struct label label;
+	struct mlk_label label;
 } table[] = {
 	{
 		.align = MLK_ALIGN_TOP_LEFT,
@@ -92,12 +92,12 @@ struct {
 		.align = MLK_ALIGN_CENTER,
 		.label = {
 			.text = "The world is Malikania.",
-			.flags = LABEL_FLAGS_SHADOW
+			.flags = MLK_LABEL_FLAGS_SHADOW
 		}
 	}
 };
 
-static struct label mlabel = {
+static struct mlk_label mlabel = {
 	.text = "This one follows your mouse and is not aligned."
 };
 
@@ -106,16 +106,17 @@ static struct mlk_state *states[1];
 static void
 init(void)
 {
+	unsigned int w, h;
 	int err;
+	struct mlk_label *l;
 
 	if ((err = mlk_example_init("example-label")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i) {
-		struct label *l = &table[i].label;
-		unsigned int w, h;
+		l = &table[i].label;
 
-		label_query(l, &w, &h);
+		mlk_label_query(l, &w, &h);
 		mlk_align(table[i].align, &l->x, &l->y, w, h, 0, 0, mlk_window.w, mlk_window.h);
 	}
 }
@@ -155,9 +156,9 @@ draw(struct mlk_state *st)
 	mlk_painter_clear();
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i)
-		label_draw(&table[i].label);
+		mlk_label_draw(&table[i].label);
 
-	label_draw(&mlabel);
+	mlk_label_draw(&mlabel);
 	mlk_painter_present();
 }
 

@@ -39,11 +39,11 @@ static struct mlk_state *states[1];
 static char help_text[128];
 static enum mlk_window_cursor cursor = MLK_WINDOW_CURSOR_ARROW;
 
-static struct label help = {
+static struct mlk_label help = {
 	.x = 10,
 	.y = 10,
 	.text = help_text,
-	.flags = LABEL_FLAGS_SHADOW
+	.flags = MLK_LABEL_FLAGS_SHADOW
 };
 
 static void
@@ -108,7 +108,7 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0xebede9ff);
 	mlk_painter_clear();
-	label_draw(&help);
+	mlk_label_draw(&help);
 	mlk_painter_present();
 }
 

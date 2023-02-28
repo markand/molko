@@ -44,7 +44,7 @@ battle_message_draw(const struct battle_message *msg)
 	assert(msg);
 
 	struct mlk_frame f = {0};
-	struct label l = {0};
+	struct mlk_label l = {0};
 	unsigned int lw = 0, lh = 0;
 
 	/* Prepare message frame. */
@@ -57,13 +57,13 @@ battle_message_draw(const struct battle_message *msg)
 
 	/* Prepare message label box. */
 	l.text = msg->text;
-	l.flags = LABEL_FLAGS_SHADOW;
+	l.flags = MLK_LABEL_FLAGS_SHADOW;
 	l.theme = msg->theme;
-	label_query(&l, &lw, &lh);
+	mlk_label_query(&l, &lw, &lh);
 
 	/* Align the text in the box. */
 	mlk_align(MLK_ALIGN_CENTER, &l.x, &l.y, lw, lh, f.x, f.y, f.w, f.h);
 
 	mlk_frame_draw(&f);
-	label_draw(&l);
+	mlk_label_draw(&l);
 }

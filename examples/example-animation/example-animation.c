@@ -36,11 +36,11 @@
 #include <mlk/example/example.h>
 #include <mlk/example/registry.h>
 
-static struct label label = {
+static struct mlk_label label = {
 	.text = "Keys: <Space> start or reset the animation.",
 	.x = 10,
 	.y = 10,
-	.flags = LABEL_FLAGS_SHADOW
+	.flags = MLK_LABEL_FLAGS_SHADOW
 };
 
 static struct mlk_state *states[1];
@@ -101,7 +101,7 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(0x4f8fbaff);
 	mlk_painter_clear();
-	label_draw(&label);
+	mlk_label_draw(&label);
 
 	if (!completed)
 		mlk_animation_draw(&animation, (mlk_window.w - cellw) / 2, (mlk_window.h - cellh) / 2);
