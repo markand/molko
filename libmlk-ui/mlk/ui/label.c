@@ -26,27 +26,35 @@
 #include "label.h"
 #include "theme.h"
 
-void
-mlk_label_draw_default(const struct mlk_theme *t, const struct mlk_label *label)
-{
-	assert(t);
-	assert(label);
+#define STYLE_INVOKE(s, f, ...)                                                 \
+do {                                                                            \
+        if (s && s->f)                                                          \
+                s->f(s, __VA_ARGS__);                                           \
+        else if (mlk_label_style.f)                                             \
+                mlk_label_style.f(s ? s : &mlk_label_style, __VA_ARGS__);       \
+} while (0)
 
+static inline struct mlk_font *
+style_font(struct mlk_label_style *style)
+{
+	if (style && style->text_font)
+		return style->text_font;
+
+	return mlk_theme.fonts[MLK_THEME_FONT_INTERFACE];
+}
+
+static void
+draw(struct mlk_label_style *style, const struct mlk_label *label)
+{
 	struct mlk_font *font;
 	struct mlk_texture tex;
-	unsigned long color;
 	int err;
 
-	font = label->flags & MLK_LABEL_FLAGS_IMPORTANT
-		? t->fonts[MLK_THEME_FONT_IMPORTANT]
-		: t->fonts[MLK_THEME_FONT_INTERFACE];
-	color = label->flags & MLK_LABEL_FLAGS_SELECTED
-		? t->colors[MLK_THEME_COLOR_SELECTED]
-	        : t->colors[MLK_THEME_COLOR_NORMAL];
+	font = style_font(style);
 
 	/* Shadow text, only if enabled. */
 	if (label->flags & MLK_LABEL_FLAGS_SHADOW) {
-		if ((err = mlk_font_render(font, &tex, label->text, t->colors[MLK_THEME_COLOR_SHADOW])) < 0)
+		if ((err = mlk_font_render(font, &tex, label->text, style->shadow_color)) < 0)
 			mlk_panic(err);
 
 		mlk_texture_draw(&tex, label->x + 1, label->y + 1);
@@ -54,12 +62,18 @@ mlk_label_draw_default(const struct mlk_theme *t, const struct mlk_label *label)
 	}
 
 	/* Normal text. */
-	if ((err = mlk_font_render(font, &tex, label->text, color)) < 0)
+	if ((err = mlk_font_render(font, &tex, label->text, style->text_color)) < 0)
 		mlk_panic(err);
 
 	mlk_texture_draw(&tex, label->x, label->y);
 	mlk_texture_finish(&tex);
 }
+
+struct mlk_label_style mlk_label_style = {
+	.shadow_color   = 0x000000ff,
+	.text_color     = 0xffffffff,
+	.draw           = draw
+};
 
 int
 mlk_label_ok(const struct mlk_label *label)
@@ -67,27 +81,34 @@ mlk_label_ok(const struct mlk_label *label)
 	return label && label->text && strlen(label->text) > 0;
 }
 
-void
+int
 mlk_label_query(const struct mlk_label *label, unsigned int *w, unsigned int *h)
 {
-	assert(label);
-	assert(label->text);
+	assert(mlk_label_ok(label));
 
-	const struct mlk_theme *t = label->theme ? label->theme : mlk_theme_default();
-	const struct mlk_font *f = label->flags & MLK_LABEL_FLAGS_IMPORTANT
-		? t->fonts[MLK_THEME_FONT_IMPORTANT]
-		: t->fonts[MLK_THEME_FONT_INTERFACE];
+	struct mlk_font *font;
 	int err;
 
-	if ((err = mlk_font_query(f, label->text, w, h)) < 0)
-		mlk_panic(err);
+	font = style_font(label->style);
+
+	if ((err = mlk_font_query(font, label->text, w, h)) < 0)
+		return err;
+
+	return err;
 }
 
 void
 mlk_label_draw(const struct mlk_label *label)
 {
-	assert(label);
-	assert(label->text);
+	assert(mlk_label_ok(label));
 
-	mlk_theme_draw_label(label->theme, label);
+	STYLE_INVOKE(label->style, draw, label);
+}
+
+void
+mlk_label_finish(struct mlk_label *label)
+{
+	assert(mlk_label_ok(label));
+
+	STYLE_INVOKE(label->style, finish, label);
 }

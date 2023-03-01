@@ -21,29 +21,34 @@
 
 #include <mlk/core/core.h>
 
-struct mlk_theme;
+struct mlk_frame;
 
-enum mlk_frame_style {
-	MLK_FRAME_STYLE_NORMAL,
-	MLK_FRAME_STYLE_BOX
+struct mlk_frame_style {
+	unsigned long bg_color;
+	void (*init)(struct mlk_frame_style *, struct mlk_frame *);
+	void (*update)(struct mlk_frame_style *, struct mlk_frame *, unsigned int);
+	void (*draw)(struct mlk_frame_style *, const struct mlk_frame *);
+	void (*finish)(struct mlk_frame_style *, struct mlk_frame *);
 };
 
 struct mlk_frame {
-	int x;
-	int y;
-	unsigned int w;
-	unsigned int h;
-	enum mlk_frame_style style;
-	const struct mlk_theme *theme;
+	int x, y;
+	unsigned int w, h;
+	struct mlk_frame_style *style;
 };
+
+extern struct mlk_frame_style mlk_frame_style;
 
 MLK_CORE_BEGIN_DECLS
 
 void
-mlk_frame_draw_default(const struct mlk_theme *, const struct mlk_frame *);
+mlk_frame_init(struct mlk_frame *);
 
 void
 mlk_frame_draw(const struct mlk_frame *);
+
+void
+mlk_frame_finish(struct mlk_frame *);
 
 MLK_CORE_END_DECLS
 

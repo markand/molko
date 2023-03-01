@@ -21,36 +21,50 @@
 
 #include <mlk/core/core.h>
 
-struct mlk_theme;
+struct mlk_font;
+struct mlk_label;
 
 enum mlk_label_flags {
-	MLK_LABEL_FLAGS_NONE,
-	MLK_LABEL_FLAGS_SHADOW          = (1 << 0),
-	MLK_LABEL_FLAGS_IMPORTANT       = (1 << 1),
-	MLK_LABEL_FLAGS_SELECTED        = (1 << 2)
+	MLK_LABEL_FLAGS_NONE	= 0,
+	MLK_LABEL_FLAGS_SHADOW  = (1 << 0)
+};
+
+struct mlk_label_style {
+	void *data;
+	unsigned long shadow_color;
+	unsigned long text_color;
+	struct mlk_font *text_font;
+	void (*init)(struct mlk_label_style *, struct mlk_label *);
+	void (*update)(struct mlk_label_style *, struct mlk_label *, unsigned int);
+	void (*draw)(struct mlk_label_style *, const struct mlk_label *);
+	void (*finish)(struct mlk_label_style *, struct mlk_label *);
 };
 
 struct mlk_label {
-	int x;
-	int y;
+	int x, y;
 	const char *text;
 	enum mlk_label_flags flags;
-	const struct mlk_theme *theme;
+	struct mlk_label_style *style;
 };
+
+extern struct mlk_label_style mlk_label_style;
 
 MLK_CORE_BEGIN_DECLS
 
 void
-mlk_label_draw_default(const struct mlk_theme *, const struct mlk_label *);
+mlk_label_init(struct mlk_label *);
 
 int
 mlk_label_ok(const struct mlk_label *);
 
-void
+int
 mlk_label_query(const struct mlk_label *, unsigned int *, unsigned int *);
 
 void
 mlk_label_draw(const struct mlk_label *);
+
+void
+mlk_label_finish(struct mlk_label *);
 
 MLK_CORE_END_DECLS
 

@@ -49,7 +49,7 @@ struct mlk_theme;
 #define BATTLE_ENEMY_FOREACH(bt, iter) \
 	for (size_t i = 0; i < (bt)->enemiesz && ((iter) = (bt)->enemies[i]); ++i)
 
-#define BATTLE_THEME(bt) ((bt)->theme ? (bt)->theme : mlk_theme_default())
+#define BATTLE_THEME(bt) ((bt)->theme ? (bt)->theme : &mlk_theme)
 
 enum battle_status {
 	BATTLE_STATUS_NONE,

@@ -29,7 +29,7 @@
 
 #include "battle-indicator.h"
 
-#define THEME(bti)      ((bti)->theme ? (bti)->theme : mlk_theme_default())
+#define THEME(bti)      ((bti)->theme ? (bti)->theme : &mlk_theme)
 #define STEP            (2)
 #define DELAY           (5)
 

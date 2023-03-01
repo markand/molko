@@ -42,7 +42,7 @@
 #include "item.h"
 #include "spell.h"
 
-#define THEME(bar) ((bar)->theme ? (bar)->theme : mlk_theme_default())
+#define THEME(bar) ((bar)->theme ? (bar)->theme : &mlk_theme)
 
 struct geo {
 	int x, y;
@@ -238,7 +238,6 @@ draw_status_character_stats(const struct battle_bar_default *bar,
 	spacing /= 4;
 
 	/* Reuse the same label. */
-	label.theme = theme;
 	label.text = line;
 	label.flags = MLK_LABEL_FLAGS_SHADOW;
 
@@ -372,15 +371,15 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 	});
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(buttons); ++i) {
-		buttons[i].label.theme = theme;
-
 		mlk_label_query(&buttons[i].label, &buttons[i].w, &buttons[i].h);
 
 		/* Change theme if it's selected. */
+#if 0
 		if ((size_t)bar->menu == i)
 			buttons[i].label.flags |=  MLK_LABEL_FLAGS_SELECTED;
 		else
 			buttons[i].label.flags &= ~MLK_LABEL_FLAGS_SELECTED;
+#endif
 
 		mlk_align(buttons[i].align,
 		    &buttons[i].label.x, &buttons[i].label.y, buttons[i].w, buttons[i].h,
@@ -560,7 +559,7 @@ battle_bar_default_open_magic(struct battle_bar_default *bar, const struct battl
 		bar->items = mlk_alloc_new0(CHARACTER_SPELL_MAX, sizeof (*bar->items));
 	else
 		bar->items = mlk_alloc_renew0(bar->items, CHARACTER_SPELL_MAX);
-	
+
 	bar->itemsz = CHARACTER_SPELL_MAX;
 	bar->state = BATTLE_BAR_DEFAULT_STATE_GRID;
 

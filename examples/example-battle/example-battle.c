@@ -135,7 +135,9 @@ init(void)
 
 	/* Set cursor in default theme. */
 	mlk_registry_init();
+#if 0
 	mlk_theme_default()->sprites[MLK_THEME_SPRITE_CURSOR] = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CURSOR];
+#endif
 }
 
 static struct mlk_state *states[2];

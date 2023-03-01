@@ -32,7 +32,7 @@
 #include "gridmenu.h"
 #include "theme.h"
 
-#define THEME(m) ((m)->theme ? (m)->theme : mlk_theme_default())
+#define THEME(m) ((m)->theme ? (m)->theme : &mlk_theme)
 
 struct index {
 	unsigned int row;
@@ -53,7 +53,6 @@ geometry(struct mlk_gridmenu *menu)
 {
 	const struct mlk_theme *theme = THEME(menu);
 	struct mlk_label label = {
-		.theme = theme,
 		.flags = MLK_LABEL_FLAGS_SHADOW
 	};
 	unsigned int reqw = 0, reqh = 0, lw, lh;
@@ -106,7 +105,6 @@ draw_frame(const struct mlk_gridmenu *menu)
 		.y = menu->y,
 		.w = menu->w,
 		.h = menu->h,
-		.theme = menu->theme,
 	};
 
 	mlk_frame_draw(&f);
@@ -119,7 +117,6 @@ draw_labels(const struct mlk_gridmenu *menu)
 	struct mlk_label label = {0};
 	const struct mlk_theme *theme = THEME(menu);
 
-	label.theme = theme;
 	label.flags = MLK_LABEL_FLAGS_SHADOW;
 
 	/*
@@ -139,10 +136,12 @@ draw_labels(const struct mlk_gridmenu *menu)
 		label.x = menu->x + theme->padding + (c * menu->eltw) + (c * menu->spacew);
 		label.y = menu->y + theme->padding + (r * menu->elth) + (r * menu->spaceh);
 
+#if 0
 		if (i == menu->selected % pagesz)
 			label.flags |= MLK_LABEL_FLAGS_SELECTED;
 		else
 			label.flags &= ~(MLK_LABEL_FLAGS_SELECTED);
+#endif
 
 		mlk_label_draw(&label);
 

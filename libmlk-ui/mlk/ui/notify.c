@@ -63,7 +63,7 @@ geometry(struct geo *geo, const struct mlk_notify *n, size_t index)
 	int x, y;
 
 	/* Determine theme. */
-	geo->theme = system->theme ? system->theme : mlk_theme_default();
+	geo->theme = system->theme ? system->theme : &mlk_theme;
 
 	/* Determine notification position. */
 	x  = mlk_window.w - geo->theme->padding;
@@ -91,7 +91,7 @@ geometry(struct geo *geo, const struct mlk_notify *n, size_t index)
 	/* Align title to the right of the icon at the same y coordinate. */
 	geo->title_x  = geo->icon_x + n->icon->w + geo->theme->padding;
 	geo->title_y  = geo->icon_y;
-	geo->title_y -= mlk_font_height(geo->theme->fonts[MLK_THEME_FONT_IMPORTANT]) / 2;
+	geo->title_y -= mlk_font_height(geo->theme->fonts[MLK_THEME_FONT_INTERFACE]) / 2;
 
 	/* Align body so it ends at the end of the icon. */
 	geo->body_x  = geo->title_x;
@@ -118,8 +118,6 @@ draw_icon(const struct geo *geo, const struct mlk_notify *n)
 	mlk_texture_draw(n->icon, geo->icon_x, geo->icon_y);
 }
 
-#include <stdio.h>
-
 static void
 draw_title(const struct geo *geo, const struct mlk_notify *n)
 {
@@ -127,7 +125,7 @@ draw_title(const struct geo *geo, const struct mlk_notify *n)
 		.x = geo->title_x,
 		.y = geo->title_y,
 		.text = n->title,
-		.flags = MLK_LABEL_FLAGS_SHADOW | MLK_LABEL_FLAGS_IMPORTANT
+		.flags = MLK_LABEL_FLAGS_SHADOW
 	};
 
 	mlk_label_draw(&l);

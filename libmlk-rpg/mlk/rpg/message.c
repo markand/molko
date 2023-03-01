@@ -36,7 +36,7 @@
 
 #include "message.h"
 
-#define THEME(msg)      (msg->theme ? msg->theme : mlk_theme_default())
+#define THEME(msg)      (msg->theme ? msg->theme : &mlk_theme)
 
 static void
 draw_frame(const struct message *msg)
@@ -45,8 +45,7 @@ draw_frame(const struct message *msg)
 
 	struct mlk_frame frame = {
 		.w = msg->w,
-		.h = msg->h,
-		.theme = msg->theme
+		.h = msg->h
 	};
 
 	mlk_frame_draw(&frame);
@@ -97,7 +96,6 @@ draw_lines(const struct message *msg)
 		if ((err = mlk_font_query(theme->fonts[MLK_THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh)) < 0)
 			mlk_panic(err);
 
-		label.theme = theme;
 		label.x = theme->padding;
 		label.y = theme->padding + (i * (lh + msg->spacing));
 		label.text = msg->lines[i];
@@ -113,10 +111,12 @@ draw_lines(const struct message *msg)
 		 * text and THEME_COLOR_SHADOW so if we have selected a line
 		 * we need to cheat the normal color.
 		 */
+#if 0
 		if ((msg->flags & MESSAGE_FLAGS_QUESTION) && msg->index == (unsigned int)i)
 			label.flags |= MLK_LABEL_FLAGS_SELECTED;
 		else
 			label.flags &= ~(MLK_LABEL_FLAGS_SELECTED);
+#endif
 
 		mlk_label_draw(&label);
 	}

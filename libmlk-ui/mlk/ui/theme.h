@@ -22,15 +22,12 @@
 #include <mlk/core/core.h>
 
 struct mlk_font;
-struct mlk_frame;
-struct mlk_label;
 struct mlk_sprite;
 
 enum mlk_theme_font {
 	MLK_THEME_FONT_DEBUG,
 	MLK_THEME_FONT_INTERFACE,
-	MLK_THEME_FONT_IMPORTANT,
-	MLK_THEME_FONT_NUM
+	MLK_THEME_FONT_LAST
 };
 
 enum mlk_theme_color {
@@ -38,40 +35,27 @@ enum mlk_theme_color {
 	MLK_THEME_COLOR_NORMAL,
 	MLK_THEME_COLOR_SELECTED,
 	MLK_THEME_COLOR_SHADOW,
-	MLK_THEME_COLOR_NUM
+	MLK_THEME_COLOR_LAST
 };
 
 enum mlk_theme_sprite {
 	MLK_THEME_SPRITE_CURSOR,
-	MLK_THEME_SPRITE_NUM
+	MLK_THEME_SPRITE_LAST
 };
 
 struct mlk_theme {
-	struct mlk_font *fonts[MLK_THEME_FONT_NUM];
-	const struct mlk_sprite *sprites[MLK_THEME_SPRITE_NUM];
-	unsigned long colors[MLK_THEME_COLOR_NUM];
+	struct mlk_font *fonts[MLK_THEME_FONT_LAST];
+	const struct mlk_sprite *sprites[MLK_THEME_SPRITE_LAST];
+	unsigned long colors[MLK_THEME_COLOR_LAST];
 	unsigned int padding;
-
-	void (*draw_frame)(const struct mlk_theme *, const struct mlk_frame *);
-	void (*draw_label)(const struct mlk_theme *, const struct mlk_label *);
 };
+
+extern struct mlk_theme mlk_theme;
 
 MLK_CORE_BEGIN_DECLS
 
 int
 mlk_theme_init(void);
-
-struct mlk_theme *
-mlk_theme_default(void);
-
-void
-mlk_theme_shallow(struct mlk_theme *, const struct mlk_theme *);
-
-void
-mlk_theme_draw_frame(const struct mlk_theme *, const struct mlk_frame *);
-
-void
-mlk_theme_draw_label(const struct mlk_theme *, const struct mlk_label *);
 
 void
 mlk_theme_finish(void);

@@ -63,7 +63,7 @@ mlk_debugva(struct mlk_debug_report *report, const char *fmt, va_list ap)
 
 	vsnprintf(line, sizeof (line), fmt, ap);
 
-	theme = report->theme ? report->theme : mlk_theme_default();
+	theme = &mlk_theme;
 	font = theme->fonts[MLK_THEME_FONT_DEBUG];
 
 	if (mlk_font_render(font, &tex, line, theme->colors[MLK_THEME_COLOR_DEBUG]) < 0)

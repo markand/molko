@@ -99,6 +99,7 @@ run(struct message *msg)
 	mlk_game_loop();
 }
 
+#if 0
 static void
 my_draw_frame(const struct mlk_theme *th, const struct mlk_frame *f)
 {
@@ -107,6 +108,7 @@ my_draw_frame(const struct mlk_theme *th, const struct mlk_frame *f)
 	mlk_painter_set_color(0xff0000ff);
 	mlk_painter_draw_rectangle(f->x, f->y, f->w, f->h);
 }
+#endif
 
 static void
 basic(void)
@@ -296,6 +298,7 @@ toosmallw(void)
 static void
 custom(void)
 {
+#if 0
 	const char * const text[] = {
 		"This one will destroy your eyes.",
 		"Because it use a terrible custom theme."
@@ -312,11 +315,11 @@ custom(void)
 	};
 
 	/* Borrow default theme and change its frame drawing. */
-	mlk_theme_shallow(&theme, NULL);
 	theme.draw_frame = my_draw_frame;
 	theme.colors[MLK_THEME_COLOR_NORMAL] = 0x0000ffff;
 
 	run(&msg);
+#endif
 }
 
 static void

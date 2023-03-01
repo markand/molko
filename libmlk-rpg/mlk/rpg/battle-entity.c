@@ -32,14 +32,20 @@
 static void
 draw_name(const struct battle_entity *et, const struct battle *bt)
 {
+	(void)bt;
+
 	struct mlk_label label = et->name;
 
+#if 0
 	label.theme = BATTLE_THEME(bt);
+#endif
 
+#if 0
 	if (et == battle_current(bt))
 		label.flags |=  MLK_LABEL_FLAGS_SELECTED;
 	else
 		label.flags &= ~MLK_LABEL_FLAGS_SELECTED;
+#endif
 
 	mlk_label_draw(&label);
 }

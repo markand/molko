@@ -17,27 +17,37 @@
  */
 
 #include <assert.h>
-#include <string.h>
 
 #include <mlk/core/painter.h>
 
 #include "frame.h"
-#include "theme.h"
+
+#define STYLE_INVOKE(s, f, ...)                                                 \
+do {                                                                            \
+        if (s && s->f)                                                          \
+                s->f(s, __VA_ARGS__);                                           \
+        else if (mlk_frame_style.f)                                             \
+                mlk_frame_style.f(s ? s : &mlk_frame_style, __VA_ARGS__);       \
+} while (0)
+
+static void
+draw(struct mlk_frame_style *style, const struct mlk_frame *frame)
+{
+	mlk_painter_set_color(style->bg_color);
+	mlk_painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
+}
+
+struct mlk_frame_style mlk_frame_style = {
+	.bg_color       = 0xad7757ff,
+	.draw           = draw
+};
 
 void
-mlk_frame_draw_default(const struct mlk_theme *t, const struct mlk_frame *frame)
+mlk_frame_init(struct mlk_frame *frame)
 {
-	assert(t);
 	assert(frame);
 
-	(void)t;
-
-	if (frame->style == MLK_FRAME_STYLE_BOX)
-		mlk_painter_set_color(0x7a4841ff);
-	else
-		mlk_painter_set_color(0xad7757ff);
-
-	mlk_painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
+	STYLE_INVOKE(frame->style, init, frame);
 }
 
 void
@@ -45,5 +55,13 @@ mlk_frame_draw(const struct mlk_frame *frame)
 {
 	assert(frame);
 
-	mlk_theme_draw_frame(frame->theme, frame);
+	STYLE_INVOKE(frame->style, draw, frame);
+}
+
+void
+mlk_frame_finish(struct mlk_frame *frame)
+{
+	assert(frame);
+
+	STYLE_INVOKE(frame->style, finish, frame);
 }

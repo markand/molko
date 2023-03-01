@@ -50,7 +50,6 @@ battle_message_draw(const struct battle_message *msg)
 	/* Prepare message frame. */
 	f.w = mlk_window.w / 3;
 	f.h = mlk_window.h / 15;
-	f.theme = msg->theme;
 
 	/* Center on top. */
 	mlk_align(MLK_ALIGN_TOP, &f.x, &f.y, f.w, f.h, 0, 20, mlk_window.w, mlk_window.h);
@@ -58,7 +57,6 @@ battle_message_draw(const struct battle_message *msg)
 	/* Prepare message label box. */
 	l.text = msg->text;
 	l.flags = MLK_LABEL_FLAGS_SHADOW;
-	l.theme = msg->theme;
 	mlk_label_query(&l, &lw, &lh);
 
 	/* Align the text in the box. */

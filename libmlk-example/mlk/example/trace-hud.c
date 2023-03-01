@@ -30,7 +30,7 @@
 #include "trace-hud.h"
 
 #define LINES_MAX       (4)
-#define THEME(t)        ((t) ? (t) : mlk_theme_default())
+#define THEME(t)        ((t) ? (t) : &mlk_theme)
 
 static struct {
 	char lines[LINES_MAX + 1][TRACE_LINE_MAX];
@@ -99,7 +99,6 @@ mlk_trace_hud_draw(void)
 			.x = x,
 			.y = y,
 			.text = data.lines[i],
-			.theme = th,
 			.flags = MLK_LABEL_FLAGS_SHADOW
 		});
 
