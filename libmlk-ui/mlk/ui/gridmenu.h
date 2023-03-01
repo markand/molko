@@ -25,22 +25,36 @@
 
 #include "label.h"
 
-struct mlk_theme;
-
 union mlk_event;
+
+struct mlk_gridmenu;
+
+struct mlk_gridmenu_style {
+	void *data;
+	unsigned long bg_color;
+	unsigned long border_color;
+	unsigned int padding;
+	void (*init)(struct mlk_gridmenu_style *, struct mlk_gridmenu *);
+	void (*update)(struct mlk_gridmenu_style *, struct mlk_gridmenu *, unsigned int);
+	void (*draw)(struct mlk_gridmenu_style *, const struct mlk_gridmenu *);
+	void (*finish)(struct mlk_gridmenu_style *, struct mlk_gridmenu *);
+};
 
 struct mlk_gridmenu {
 	/* public */
-	int x;
-	int y;
-	unsigned int w;
-	unsigned int h;
-	size_t selected;
-	const struct mlk_theme *theme;
+	int x, y;
+	unsigned int w, h;
+
 	const char * const *items;
 	size_t itemsz;
+	size_t selected;
+
 	unsigned int nrows;
 	unsigned int ncols;
+
+	struct mlk_gridmenu_style *style;
+	struct mlk_label_style *text_style;
+	struct mlk_label_style *text_selected_style;
 
 	/* private */
 	unsigned int eltw;      /* maximum entry label width */
@@ -48,6 +62,8 @@ struct mlk_gridmenu {
 	unsigned int spacew;    /* space between element horizontally */
 	unsigned int spaceh;    /* and vertically */
 };
+
+extern struct mlk_gridmenu_style mlk_gridmenu_style;
 
 MLK_CORE_BEGIN_DECLS
 
@@ -62,6 +78,9 @@ mlk_gridmenu_handle(struct mlk_gridmenu *, const union mlk_event *);
 
 void
 mlk_gridmenu_draw(const struct mlk_gridmenu *);
+
+void
+mlk_gridmenu_finish(struct mlk_gridmenu *);
 
 MLK_CORE_END_DECLS
 

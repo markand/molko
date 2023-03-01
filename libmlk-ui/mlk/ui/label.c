@@ -24,7 +24,7 @@
 #include <mlk/core/texture.h>
 
 #include "label.h"
-#include "theme.h"
+#include "ui.h"
 
 #define STYLE_INVOKE(s, f, ...)                                                 \
 do {                                                                            \
@@ -40,7 +40,7 @@ style_font(struct mlk_label_style *style)
 	if (style && style->text_font)
 		return style->text_font;
 
-	return mlk_theme.fonts[MLK_THEME_FONT_INTERFACE];
+	return mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 }
 
 static void
@@ -52,16 +52,6 @@ draw(struct mlk_label_style *style, const struct mlk_label *label)
 
 	font = style_font(style);
 
-	/* Shadow text, only if enabled. */
-	if (label->flags & MLK_LABEL_FLAGS_SHADOW) {
-		if ((err = mlk_font_render(font, &tex, label->text, style->shadow_color)) < 0)
-			mlk_panic(err);
-
-		mlk_texture_draw(&tex, label->x + 1, label->y + 1);
-		mlk_texture_finish(&tex);
-	}
-
-	/* Normal text. */
 	if ((err = mlk_font_render(font, &tex, label->text, style->text_color)) < 0)
 		mlk_panic(err);
 
@@ -70,10 +60,22 @@ draw(struct mlk_label_style *style, const struct mlk_label *label)
 }
 
 struct mlk_label_style mlk_label_style = {
-	.shadow_color   = 0x000000ff,
-	.text_color     = 0xffffffff,
+	.text_color     = 0x000000ff,
 	.draw           = draw
 };
+
+struct mlk_label_style mlk_label_style_selected = {
+	.text_color     = 0x7da42dff,
+	.draw           = draw
+};
+
+void
+mlk_label_init(struct mlk_label *label)
+{
+	assert(mlk_label_ok(label));
+
+	STYLE_INVOKE(label->style, init, label);
+}
 
 int
 mlk_label_ok(const struct mlk_label *label)

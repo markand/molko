@@ -26,8 +26,6 @@
 #include <mlk/core/sprite.h>
 #include <mlk/core/util.h>
 
-#include <mlk/ui/theme.h>
-
 #include "battle-bar.h"
 #include "battle-state-item.h"
 #include "battle-state-menu.h"
@@ -115,6 +113,7 @@ handle_keydown(struct battle_state_selection *stl, struct battle *bt, const unio
 static void
 draw_cursor(const struct battle *bt, const struct battle_entity *et)
 {
+#if 0
 	const struct mlk_theme *theme = BATTLE_THEME(bt);
 	const struct mlk_sprite *cursor = theme->sprites[MLK_THEME_SPRITE_CURSOR];
 	int x, y;
@@ -129,6 +128,7 @@ draw_cursor(const struct battle *bt, const struct battle_entity *et)
 	y = et->name.y + (((int)(lh) - (int)(cursor->cellh)) / 2);
 
 	mlk_sprite_draw(cursor, 1, 2, x, y);
+#endif
 }
 
 static void

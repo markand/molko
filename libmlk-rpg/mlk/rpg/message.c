@@ -32,11 +32,8 @@
 #include <mlk/ui/align.h>
 #include <mlk/ui/frame.h>
 #include <mlk/ui/label.h>
-#include <mlk/ui/theme.h>
 
 #include "message.h"
-
-#define THEME(msg)      (msg->theme ? msg->theme : &mlk_theme)
 
 static void
 draw_frame(const struct message *msg)
@@ -54,6 +51,7 @@ draw_frame(const struct message *msg)
 static inline unsigned int
 min_width(const struct message *msg)
 {
+#if 0
 	assert(msg);
 
 	unsigned int maxw = 0, w = 0;
@@ -69,6 +67,8 @@ min_width(const struct message *msg)
 	}
 
 	return (THEME(msg)->padding * 2) + maxw;
+#endif
+	return 0;
 }
 
 static inline unsigned int
@@ -76,15 +76,19 @@ min_height(const struct message *msg)
 {
 	assert(msg);
 
+#if 0
 	const struct mlk_theme *th = THEME(msg);
 	const unsigned int lh  = mlk_font_height(th->fonts[MLK_THEME_FONT_INTERFACE]);
 
 	return (th->padding * 2) + (msg->linesz * lh) + ((msg->linesz - 1) * msg->spacing);
+#endif
+	return 0;
 }
 
 static void
 draw_lines(const struct message *msg)
 {
+#if 0
 	const struct mlk_theme *theme = THEME(msg);
 	struct mlk_label label;
 	unsigned int lw, lh;
@@ -120,6 +124,7 @@ draw_lines(const struct message *msg)
 
 		mlk_label_draw(&label);
 	}
+#endif
 }
 
 void

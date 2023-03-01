@@ -25,6 +25,7 @@ struct mlk_frame;
 
 struct mlk_frame_style {
 	unsigned long bg_color;
+	unsigned long border_color;
 	void (*init)(struct mlk_frame_style *, struct mlk_frame *);
 	void (*update)(struct mlk_frame_style *, struct mlk_frame *, unsigned int);
 	void (*draw)(struct mlk_frame_style *, const struct mlk_frame *);

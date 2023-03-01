@@ -22,7 +22,6 @@
 #include <mlk/core/texture.h>
 
 #include "debug.h"
-#include "theme.h"
 
 struct mlk_debug_options mlk_debug_options = {
 #if !defined(NDEBUG)
@@ -49,6 +48,7 @@ mlk_debugf(struct mlk_debug_report *report, const char *fmt, ...)
 void
 mlk_debugva(struct mlk_debug_report *report, const char *fmt, va_list ap)
 {
+#if 0
 	assert(report);
 	assert(fmt);
 
@@ -66,7 +66,7 @@ mlk_debugva(struct mlk_debug_report *report, const char *fmt, va_list ap)
 	theme = &mlk_theme;
 	font = theme->fonts[MLK_THEME_FONT_DEBUG];
 
-	if (mlk_font_render(font, &tex, line, theme->colors[MLK_THEME_COLOR_DEBUG]) < 0)
+	if (mlk_font_render(font, &tex, line, MLK_THEME_COLOR_DEBUG) < 0)
 		return;
 
 	x = theme->padding;
@@ -75,4 +75,5 @@ mlk_debugva(struct mlk_debug_report *report, const char *fmt, va_list ap)
 
 	mlk_texture_draw(&tex, x, y);
 	mlk_texture_finish(&tex);
+#endif
 }

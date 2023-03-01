@@ -25,7 +25,6 @@
 #include <mlk/core/window.h>
 
 #include <mlk/ui/label.h>
-#include <mlk/ui/theme.h>
 
 #include "trace-hud.h"
 
@@ -87,6 +86,7 @@ mlk_trace_hud_update(unsigned int ticks)
 void
 mlk_trace_hud_draw(void)
 {
+#if 0
 	struct mlk_theme *th;
 	int x, y;
 
@@ -105,6 +105,7 @@ mlk_trace_hud_draw(void)
 		y += mlk_font_height(th->fonts[MLK_THEME_FONT_INTERFACE]);
 		y += th->padding;
 	}
+#endif
 }
 
 void

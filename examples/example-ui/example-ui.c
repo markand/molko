@@ -35,7 +35,6 @@
 #include <mlk/ui/frame.h>
 #include <mlk/ui/label.h>
 #include <mlk/ui/notify.h>
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
@@ -51,6 +50,8 @@
 #define HEADER_HEIGHT   (32)
 
 #define ELEMENT_HEIGHT  (20)
+
+#define PADDING         (10)
 
 /*
  * We design a basic UI like this.
@@ -90,6 +91,7 @@ static struct {
 		struct mlk_button hello;
 
 		/* [Quit] with custom style color. */
+		struct mlk_label_style quit_text_style;
 		struct mlk_button_style quit_style;
 		struct mlk_button quit;
 
@@ -112,8 +114,7 @@ static struct {
 		.label = {
 			.text = "Preferences",
 			.x = FRAME_ORIGIN_X,
-			.y = FRAME_ORIGIN_Y,
-			.flags = MLK_LABEL_FLAGS_SHADOW,
+			.y = FRAME_ORIGIN_Y
 		}
 	},
 	.autosave = {
@@ -122,8 +123,7 @@ static struct {
 			.h = ELEMENT_HEIGHT
 		},
 		.label = {
-			.text = "Auto save game",
-			.flags = MLK_LABEL_FLAGS_SHADOW,
+			.text = "Auto save game"
 		}
 	},
 	.buttons = {
@@ -132,17 +132,25 @@ static struct {
 			.h = ELEMENT_HEIGHT
 		},
 		.quit_style = {
-			.bg_color = 0x235b7cff
+			.bg_color = 0x24aed6ff,
+			.border_color = 0x328ca7ff
+		},
+		.quit_text_style = {
+			.text_color = 0xf5f7faff
 		},
 		.quit = {
 			.text = "Quit",
 			.h = ELEMENT_HEIGHT,
-			.style = &ui.buttons.quit_style
+			.style = &ui.buttons.quit_style,
+			.text_style = &ui.buttons.quit_text_style
 		},
 		.download_glow = {
 			.colors = {
 				BUTTON_STYLE_GLOW_COLOR_1,
 				BUTTON_STYLE_GLOW_COLOR_2
+			},
+			.style = {
+				.border_color = BUTTON_STYLE_GLOW_COLOR_1
 			},
 			.delay = BUTTON_STYLE_GLOW_DELAY
 		},
@@ -150,7 +158,8 @@ static struct {
 			.w = 180,
 			.h = 32,
 			.text = "!! Download free RAM !!",
-			.style = &ui.buttons.download_glow.style
+			.style = &ui.buttons.download_glow.style,
+			.text_style = &ui.buttons.quit_text_style
 		}
 	}
 };
@@ -168,28 +177,26 @@ resize_header(void)
 	mlk_label_query(l, &w, &h);
 	mlk_align(MLK_ALIGN_LEFT, &l->x, &l->y, w, h, f->x, f->y, f->w, HEADER_HEIGHT);
 
-	l->x += mlk_theme.padding;
+	l->x += PADDING;
 }
 
 static void
 resize_autosave(void)
 {
-	unsigned int padding = mlk_theme.padding;
 	struct mlk_frame *f = &ui.panel.frame;
 	struct mlk_checkbox *c = &ui.autosave.cb;
 	struct mlk_label *l = &ui.autosave.label;
 
-	c->x = f->x + padding;
-	c->y = f->y + HEADER_HEIGHT + padding;
+	c->x = f->x + PADDING;
+	c->y = f->y + HEADER_HEIGHT + PADDING;
 
-	l->x = c->x + c->w + padding;
+	l->x = c->x + c->w + PADDING;
 	l->y = c->y;
 }
 
 static void
 resize_button(void)
 {
-	unsigned int padding = mlk_theme.padding;
 	struct mlk_frame *f = &ui.panel.frame;
 	struct mlk_button *quit = &ui.buttons.quit;
 	struct mlk_button *hello = &ui.buttons.hello;
@@ -201,11 +208,11 @@ resize_button(void)
 	mlk_align(MLK_ALIGN_BOTTOM_RIGHT, &quit->x, &quit->y, quit->w, quit->h,
 	    f->x, f->y, f->w, f->h);
 
-	quit->x -= padding;
-	quit->y -= padding;
+	quit->x -= PADDING;
+	quit->y -= PADDING;
 
 	/* Hello is immediately left. */
-	hello->x = quit->x - quit->w - padding;
+	hello->x = quit->x - quit->w - PADDING;
 	hello->y = quit->y;
 
 	/* Download free ram is at the bottom center. */
@@ -302,7 +309,7 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	mlk_painter_set_color(0xffffffff);
+	mlk_painter_set_color(0x88d6ffff);
 	mlk_painter_clear();
 	mlk_frame_draw(&ui.panel.frame);
 	mlk_label_draw(&ui.header.label);

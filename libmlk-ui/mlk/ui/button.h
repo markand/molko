@@ -23,13 +23,14 @@
 
 union mlk_event;
 
-struct mlk_theme;
 struct mlk_button;
+struct mlk_label_style;
+struct mlk_theme;
 
 struct mlk_button_style {
 	void *data;
 	unsigned long bg_color;
-	unsigned long text_color;
+	unsigned long border_color;
 	void (*init)(struct mlk_button_style *, struct mlk_button *);
 	void (*update)(struct mlk_button_style *, struct mlk_button *, unsigned int);
 	void (*draw)(struct mlk_button_style *, const struct mlk_button *);
@@ -41,6 +42,7 @@ struct mlk_button {
 	unsigned int w, h;
 	const char *text;
 	struct mlk_button_style *style;
+	struct mlk_label_style *text_style;
 	int pressed;
 };
 

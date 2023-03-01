@@ -34,7 +34,6 @@
 #include <mlk/ui/align.h>
 #include <mlk/ui/frame.h>
 #include <mlk/ui/label.h>
-#include <mlk/ui/theme.h>
 
 #include "battle-bar.h"
 #include "battle-indicator.h"
@@ -132,6 +131,7 @@ is_team(const struct battle *bt, const struct character *ch)
 static void
 positionate_name(struct battle_entity *et, const struct battle *bt)
 {
+#if 0
 	unsigned int lw;
 	struct mlk_sprite *sprite;
 
@@ -139,10 +139,10 @@ positionate_name(struct battle_entity *et, const struct battle *bt)
 	sprite = et->ch->sprites[CHARACTER_SPRITE_NORMAL];
 
 	et->name.text = et->ch->name;
-	et->name.flags = MLK_LABEL_FLAGS_SHADOW;
 	mlk_label_query(&et->name, &lw, NULL);
 	et->name.y = et->y + sprite->cellh + BATTLE_THEME(bt)->padding;
 	et->name.x = et->x + (sprite->cellw / 2) - (lw / 2);
+#endif
 }
 
 static void

@@ -21,8 +21,8 @@
 
 #include <mlk/ui/button.h>
 
-#define BUTTON_STYLE_GLOW_COLOR_1       0x235b7cff
-#define BUTTON_STYLE_GLOW_COLOR_2       0x2d80a6ff
+#define BUTTON_STYLE_GLOW_COLOR_1       0x7da42dff
+#define BUTTON_STYLE_GLOW_COLOR_2       0xa6cc34ff
 #define BUTTON_STYLE_GLOW_DELAY         20
 
 struct button_style_glow {

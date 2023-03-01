@@ -33,12 +33,15 @@ do {                                                                            
 static void
 draw(struct mlk_frame_style *style, const struct mlk_frame *frame)
 {
-	mlk_painter_set_color(style->bg_color);
+	mlk_painter_set_color(style->border_color);
 	mlk_painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
+	mlk_painter_set_color(style->bg_color);
+	mlk_painter_draw_rectangle(frame->x + 1, frame->y + 1, frame->w - 2, frame->h - 2);
 }
 
 struct mlk_frame_style mlk_frame_style = {
-	.bg_color       = 0xad7757ff,
+	.bg_color       = 0xf5f7faff,
+	.border_color   = 0xcdd2daff,
 	.draw           = draw
 };
 

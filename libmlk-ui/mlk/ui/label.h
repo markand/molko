@@ -24,14 +24,8 @@
 struct mlk_font;
 struct mlk_label;
 
-enum mlk_label_flags {
-	MLK_LABEL_FLAGS_NONE	= 0,
-	MLK_LABEL_FLAGS_SHADOW  = (1 << 0)
-};
-
 struct mlk_label_style {
 	void *data;
-	unsigned long shadow_color;
 	unsigned long text_color;
 	struct mlk_font *text_font;
 	void (*init)(struct mlk_label_style *, struct mlk_label *);
@@ -43,11 +37,11 @@ struct mlk_label_style {
 struct mlk_label {
 	int x, y;
 	const char *text;
-	enum mlk_label_flags flags;
 	struct mlk_label_style *style;
 };
 
 extern struct mlk_label_style mlk_label_style;
+extern struct mlk_label_style mlk_label_style_selected;
 
 MLK_CORE_BEGIN_DECLS
 

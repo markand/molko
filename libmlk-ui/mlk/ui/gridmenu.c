@@ -30,9 +30,16 @@
 #include "frame.h"
 #include "label.h"
 #include "gridmenu.h"
-#include "theme.h"
 
-#define THEME(m) ((m)->theme ? (m)->theme : &mlk_theme)
+#define STYLE_INVOKE(s, f, ...)                                                 \
+do {                                                                            \
+        if (s && s->f)                                                          \
+                s->f(s, __VA_ARGS__);                                           \
+        else if (mlk_gridmenu_style.f)                                          \
+                mlk_gridmenu_style.f(s ? s : &mlk_gridmenu_style, __VA_ARGS__); \
+} while (0)
+
+#define STYLE_GET(s, p) (s ? s->p : mlk_gridmenu_style.p)
 
 struct index {
 	unsigned int row;
@@ -51,9 +58,8 @@ get_index(const struct mlk_gridmenu *menu)
 static void
 geometry(struct mlk_gridmenu *menu)
 {
-	const struct mlk_theme *theme = THEME(menu);
 	struct mlk_label label = {
-		.flags = MLK_LABEL_FLAGS_SHADOW
+		.style = menu->text_style
 	};
 	unsigned int reqw = 0, reqh = 0, lw, lh;
 
@@ -65,7 +71,6 @@ geometry(struct mlk_gridmenu *menu)
 		if (!(label.text = menu->items[i]))
 			continue;
 
-
 		mlk_label_query(&label, &lw, &lh);
 
 		menu->eltw = fmax(menu->eltw, lw);
@@ -73,8 +78,8 @@ geometry(struct mlk_gridmenu *menu)
 	}
 
 	/* Total texture size required to draw items. */
-	reqw = (theme->padding * 2) + (menu->eltw * menu->ncols);
-	reqh = (theme->padding * 2) + (menu->elth * menu->nrows);
+	reqw = (STYLE_GET(menu->style, padding) * 2) + (menu->eltw * menu->ncols);
+	reqh = (STYLE_GET(menu->style, padding) * 2) + (menu->elth * menu->nrows);
 
 	/*
 	 * Compute spacing between elements. We remove the padding because it
@@ -84,7 +89,7 @@ geometry(struct mlk_gridmenu *menu)
 		mlk_tracef("gridmenu width is too small: %u < %u", menu->w, reqw);
 		menu->spacew = 1;
 	} else if (menu->ncols > 1) {
-		reqw -= theme->padding * 2;
+		reqw -= STYLE_GET(menu->style, padding) * 2;
 		menu->spacew = (menu->w - reqw) / menu->ncols;
 	}
 
@@ -92,7 +97,7 @@ geometry(struct mlk_gridmenu *menu)
 		mlk_tracef("gridmenu height is too small: %u < %u", menu->h, reqh);
 		menu->spaceh = 1;
 	} else if (menu->nrows > 1) {
-		reqh -= theme->padding * 2;
+		reqh -= STYLE_GET(menu->style, padding) * 2;
 		menu->spaceh = (menu->h - reqh) / menu->nrows;
 	}
 }
@@ -115,9 +120,6 @@ draw_labels(const struct mlk_gridmenu *menu)
 {
 	size_t pagesz, pagenr, item, c = 0, r = 0;
 	struct mlk_label label = {0};
-	const struct mlk_theme *theme = THEME(menu);
-
-	label.flags = MLK_LABEL_FLAGS_SHADOW;
 
 	/*
 	 * Select the first top-left column based on the current selection and
@@ -133,15 +135,15 @@ draw_labels(const struct mlk_gridmenu *menu)
 			continue;
 
 		label.text = menu->items[item];
-		label.x = menu->x + theme->padding + (c * menu->eltw) + (c * menu->spacew);
-		label.y = menu->y + theme->padding + (r * menu->elth) + (r * menu->spaceh);
+		label.x = menu->x + STYLE_GET(menu->style, padding) + (c * menu->eltw) + (c * menu->spacew);
+		label.y = menu->y + STYLE_GET(menu->style, padding) + (r * menu->elth) + (r * menu->spaceh);
 
-#if 0
 		if (i == menu->selected % pagesz)
-			label.flags |= MLK_LABEL_FLAGS_SELECTED;
+			label.style = menu->text_selected_style
+			     ? menu->text_selected_style
+			     : &mlk_label_style_selected;
 		else
-			label.flags &= ~(MLK_LABEL_FLAGS_SELECTED);
-#endif
+			label.style = menu->text_style;
 
 		mlk_label_draw(&label);
 
@@ -194,7 +196,6 @@ handle_clickdown(struct mlk_gridmenu *menu, const struct mlk_event_click *click)
 {
 	assert(click->type == MLK_EVENT_CLICKDOWN);
 
-	const struct mlk_theme *theme = THEME(menu);
 	size_t pagesz, pagenr, selected, c = 0, r = 0;
 	int x, y;
 
@@ -202,8 +203,8 @@ handle_clickdown(struct mlk_gridmenu *menu, const struct mlk_event_click *click)
 	pagenr = menu->selected / pagesz;
 
 	for (size_t i = 0; i < pagesz; ++i) {
-		x = menu->x + theme->padding + (c * menu->eltw) + (c * menu->spacew);
-		y = menu->y + theme->padding + (r * menu->elth) + (r * menu->spaceh);
+		x = menu->x + STYLE_GET(menu->style, padding) + (c * menu->eltw) + (c * menu->spacew);
+		y = menu->y + STYLE_GET(menu->style, padding) + (r * menu->elth) + (r * menu->spaceh);
 
 		if (mlk_maths_is_boxed(x, y, menu->eltw, menu->elth, click->x, click->y)) {
 			selected  = c + r * menu->ncols;
@@ -283,4 +284,13 @@ mlk_gridmenu_draw(const struct mlk_gridmenu *menu)
 
 	draw_frame(menu);
 	draw_labels(menu);
+}
+
+void
+mlk_gridmenu_finish(struct mlk_gridmenu *menu)
+{
+	assert(menu);
+
+	
+
 }

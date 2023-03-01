@@ -25,11 +25,8 @@
 #include <mlk/core/font.h>
 #include <mlk/core/panic.h>
 
-#include <mlk/ui/theme.h>
-
 #include "battle-indicator.h"
 
-#define THEME(bti)      ((bti)->theme ? (bti)->theme : &mlk_theme)
 #define STEP            (2)
 #define DELAY           (5)
 
@@ -54,7 +51,6 @@ battle_indicator_start(struct battle_indicator *bti)
 	assert(bti);
 
 	char buf[128];
-	const struct mlk_theme *theme = THEME(bti);
 	int err;
 
 	snprintf(buf, sizeof (buf), "%u", bti->amount);
@@ -63,9 +59,11 @@ battle_indicator_start(struct battle_indicator *bti)
 	bti->elapsed = 0;
 	bti->alpha = 250;
 
+#if 0
 	if ((err = mlk_font_render(theme->fonts[MLK_THEME_FONT_INTERFACE], &bti->tex[0], buf, bti->cur)) < 0 ||
 	    (err = mlk_font_render(theme->fonts[MLK_THEME_FONT_INTERFACE], &bti->tex[1], buf, 0x000000ff)) < 0)
 		mlk_panic(err);
+#endif
 }
 
 int

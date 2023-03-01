@@ -21,8 +21,6 @@
 #include <mlk/core/sprite.h>
 #include <mlk/core/texture.h>
 
-#include <mlk/ui/theme.h>
-
 #include "battle.h"
 #include "battle-entity.h"
 #include "battle-entity-state.h"

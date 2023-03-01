@@ -23,6 +23,15 @@
 
 MLK_CORE_BEGIN_DECLS
 
+struct mlk_font;
+
+enum mlk_ui_font {
+	MLK_UI_FONT_INTERFACE,
+	MLK_UI_FONT_LAST
+};
+
+extern struct mlk_font *mlk_ui_fonts[MLK_UI_FONT_LAST];
+
 int
 mlk_ui_init(void);
 

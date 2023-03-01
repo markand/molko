@@ -29,7 +29,6 @@
 #include "frame.h"
 #include "label.h"
 #include "notify.h"
-#include "theme.h"
 
 #define WIDTH   (mlk_window.w / 3)
 #define HEIGHT  (mlk_window.h / 10)
@@ -60,6 +59,7 @@ static size_t stacksz;
 static void
 geometry(struct geo *geo, const struct mlk_notify *n, size_t index)
 {
+#if 0
 	int x, y;
 
 	/* Determine theme. */
@@ -97,6 +97,7 @@ geometry(struct geo *geo, const struct mlk_notify *n, size_t index)
 	geo->body_x  = geo->title_x;
 	geo->body_y  = geo->icon_y + n->icon->h;
 	geo->body_y -= mlk_font_height(geo->theme->fonts[MLK_THEME_FONT_INTERFACE]) / 2;
+#endif
 }
 
 static void
@@ -121,6 +122,7 @@ draw_icon(const struct geo *geo, const struct mlk_notify *n)
 static void
 draw_title(const struct geo *geo, const struct mlk_notify *n)
 {
+#if 0
 	const struct mlk_label l = {
 		.x = geo->title_x,
 		.y = geo->title_y,
@@ -129,11 +131,13 @@ draw_title(const struct geo *geo, const struct mlk_notify *n)
 	};
 
 	mlk_label_draw(&l);
+#endif
 }
 
 static void
 draw_body(const struct geo *geo, const struct mlk_notify *n)
 {
+#if 0
 	const struct mlk_label l = {
 		.x = geo->body_x,
 		.y = geo->body_y,
@@ -142,6 +146,7 @@ draw_body(const struct geo *geo, const struct mlk_notify *n)
 	};
 
 	mlk_label_draw(&l);
+#endif
 }
 
 static void

@@ -30,7 +30,6 @@
 #include <mlk/core/window.h>
 
 #include <mlk/ui/align.h>
-#include <mlk/ui/theme.h>
 
 #include "battle-bar-default.h"
 #include "battle-bar.h"
@@ -141,6 +140,7 @@ switch_selection_attack(struct battle_bar_default *bar, struct battle *bt)
 static void
 switch_selection_spell(struct battle_bar_default *bar, struct battle *bt)
 {
+#if 0
 	const struct character *ch = battle_current(bt)->ch;
 	const struct spell *sp = ch->spells[bar->grid.selected];
 	struct selection sel = {0};
@@ -157,11 +157,13 @@ switch_selection_spell(struct battle_bar_default *bar, struct battle *bt)
 	/* A cursor should be present. */
 	if (!mlk_sprite_ok(BATTLE_THEME(bt)->sprites[MLK_THEME_SPRITE_CURSOR]))
 		mlk_tracef("battle: no cursor sprite in theme");
+#endif
 }
 
 static void
 switch_selection_item(struct battle *bt)
 {
+#if 0
 	const struct selection slt = {
 		.allowed_kinds = SELECTION_KIND_ONE,
 		.allowed_sides = SELECTION_SIDE_TEAM | SELECTION_SIDE_ENEMY,
@@ -170,6 +172,7 @@ switch_selection_item(struct battle *bt)
 	};
 
 	battle_state_selection(bt, &slt);
+#endif
 }
 
 /*
@@ -180,15 +183,16 @@ switch_selection_item(struct battle *bt)
 static void
 draw_help(const struct battle_bar_default *bar, const char *what)
 {
+#if 0
 	struct mlk_label label = {0};
 	unsigned int lw = 0, lh = 0;
 
-	label.flags = MLK_LABEL_FLAGS_SHADOW;
 	label.text = what;
 	mlk_label_query(&label, &lw, &lh);
 	label.x = bar->grid.x + (bar->grid.w / 2) - (lw / 2);
 	label.y = bar->grid.y - lh - THEME(bar)->padding;
 	mlk_label_draw(&label);
+#endif
 }
 
 static void
@@ -228,6 +232,7 @@ draw_status_character_stats(const struct battle_bar_default *bar,
                             int y,
                             unsigned int h)
 {
+#if 0
 	const struct mlk_theme *theme = THEME(bar);
 	struct mlk_label label;
 	unsigned int spacing, lw, lh;
@@ -264,6 +269,7 @@ draw_status_character_stats(const struct battle_bar_default *bar,
 
 	/* Status. */
 	/* TODO: list all status. */
+#endif
 }
 
 static void
@@ -317,6 +323,7 @@ draw_status(const struct battle_bar_default *bar, const struct battle *bt, const
 static void
 draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 {
+#if 0
 	struct {
 		unsigned int w, h;
 		enum mlk_align align;
@@ -326,28 +333,24 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 			.align = MLK_ALIGN_TOP,
 			.label = {
 				.text = "Attack",
-				.flags = MLK_LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = MLK_ALIGN_RIGHT,
 			.label = {
 				.text = "Magic",
-				.flags = MLK_LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = MLK_ALIGN_BOTTOM,
 			.label = {
 				.text = "Objects",
-				.flags = MLK_LABEL_FLAGS_SHADOW
 			}
 		},
 		{
 			.align = MLK_ALIGN_LEFT,
 			.label = {
 				.text = "Special",
-				.flags = MLK_LABEL_FLAGS_SHADOW
 			}
 		}
 	};
@@ -386,6 +389,7 @@ draw_menu(const struct battle_bar_default *bar, const struct geo *geo)
 		    bx, by, bw, bh);
 		mlk_label_draw(&buttons[i].label);
 	}
+#endif
 }
 
 /*
@@ -528,6 +532,7 @@ self_draw(const struct battle_bar *bar, const struct battle *bt)
 void
 battle_bar_default_init(struct battle_bar_default *bar)
 {
+#if 0
 	assert(bar);
 
 	struct geo geo[2];
@@ -544,6 +549,7 @@ battle_bar_default_init(struct battle_bar_default *bar)
 	mlk_gridmenu_init(&bar->grid, 2, 2, NULL, 0);
 	mlk_gridmenu_resize(&bar->grid, bar->x, geo[0].y, geo[1].w, bar->h);
 	bar->grid.theme = bar->theme;
+#endif
 }
 
 void

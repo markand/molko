@@ -56,7 +56,6 @@ battle_message_draw(const struct battle_message *msg)
 
 	/* Prepare message label box. */
 	l.text = msg->text;
-	l.flags = MLK_LABEL_FLAGS_SHADOW;
 	mlk_label_query(&l, &lw, &lh);
 
 	/* Align the text in the box. */

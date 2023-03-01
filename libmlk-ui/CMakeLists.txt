@@ -36,16 +36,12 @@ set(
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/label.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/notify.c
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/notify.h
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/theme.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/theme.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui.c
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui.h
 )
 
 set(
 	ASSETS
-	${libmlk-ui_SOURCE_DIR}/assets/fonts/opensans-light.ttf
-	${libmlk-ui_SOURCE_DIR}/assets/fonts/opensans-medium.ttf
 	${libmlk-ui_SOURCE_DIR}/assets/fonts/opensans-regular.ttf
 )
 

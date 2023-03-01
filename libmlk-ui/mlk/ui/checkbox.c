@@ -46,9 +46,9 @@ is_boxed(const struct mlk_checkbox *cb, const struct mlk_event_click *click)
 static void
 draw(struct mlk_checkbox_style *style, const struct mlk_checkbox *cb)
 {
-	mlk_painter_set_color(style->bg_color);
-	mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
 	mlk_painter_set_color(style->border_color);
+	mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
+	mlk_painter_set_color(style->bg_color);
 	mlk_painter_draw_rectangle(cb->x + 1, cb->y + 1, cb->w - 2, cb->h - 2);
 
 	if (cb->checked) {
@@ -58,9 +58,9 @@ draw(struct mlk_checkbox_style *style, const struct mlk_checkbox *cb)
 }
 
 struct mlk_checkbox_style mlk_checkbox_style = {
-	.bg_color       = 0x151d28ff,
-	.border_color   = 0xd7b594ff,
-	.check_color    = 0x341c27ff,
+	.bg_color       = 0xebf0f6ff,
+	.border_color   = 0xbac7dbff,
+	.check_color    = 0x848795ff,
 	.draw           = draw
 };
 

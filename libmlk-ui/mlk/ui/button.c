@@ -27,7 +27,6 @@
 #include "align.h"
 #include "button.h"
 #include "label.h"
-#include "theme.h"
 
 #define STYLE_INVOKE(s, f, ...)                                                 \
 do {                                                                            \
@@ -42,10 +41,10 @@ draw(struct mlk_button_style *style, const struct mlk_button *button)
 {
 	struct mlk_label label = {
 		.text = button->text,
+		.style = button->text_style
 	};
 	unsigned int lw, lh;
 
-	// TODO: once label has style, copy color.
 	mlk_label_query(&label, &lw, &lh);
 
 	if (lw > button->w)
@@ -56,9 +55,10 @@ draw(struct mlk_button_style *style, const struct mlk_button *button)
 	mlk_align(MLK_ALIGN_CENTER, &label.x, &label.y, lw, lh,
 	    button->x, button->y, button->w, button->h);
 
-	mlk_painter_set_color(style->bg_color);
+	mlk_painter_set_color(style->border_color);
 	mlk_painter_draw_rectangle(button->x, button->y, button->w, button->h);
-
+	mlk_painter_set_color(style->bg_color);
+	mlk_painter_draw_rectangle(button->x + 1, button->y + 1, button->w - 2, button->h - 2);
 	mlk_label_draw(&label);
 }
 
@@ -74,9 +74,9 @@ is_boxed(const struct mlk_button *button, const struct mlk_event_click *click)
 }
 
 struct mlk_button_style mlk_button_style = {
-	.bg_color = 0x577277ff,
-	.text_color = 0xffffffff,
-	.draw = draw
+	.bg_color       = 0xebf0f6ff,
+	.border_color   = 0xbac7dbff,
+	.draw           = draw
 };
 
 void
