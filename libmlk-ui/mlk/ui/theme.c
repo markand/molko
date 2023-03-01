@@ -32,8 +32,6 @@
 #include <assets/fonts/opensans-regular.h>
 
 #include "align.h"
-#include "button.h"
-#include "checkbox.h"
 #include "frame.h"
 #include "label.h"
 #include "theme.h"
@@ -55,7 +53,6 @@ static struct mlk_theme default_theme = {
 	.padding = 10,
 	.draw_frame = mlk_frame_draw_default,
 	.draw_label = mlk_label_draw_default,
-	.draw_checkbox = mlk_checkbox_draw_default
 };
 
 static struct font_catalog {
@@ -126,22 +123,6 @@ mlk_theme_draw_label(const struct mlk_theme *t, const struct mlk_label *label)
 	assert(label);
 
 	THEME(t)->draw_label(THEME(t), label);
-}
-
-void
-mlk_theme_draw_button(const struct mlk_theme *t, const struct mlk_button *button)
-{
-	assert(button);
-
-	THEME(t)->draw_button(THEME(t), button);
-}
-
-void
-mlk_theme_draw_checkbox(const struct mlk_theme *t, const struct mlk_checkbox *cb)
-{
-	assert(cb);
-
-	THEME(t)->draw_checkbox(THEME(t), cb);
 }
 
 void

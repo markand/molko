@@ -25,7 +25,14 @@
 
 #include "label.h"
 #include "checkbox.h"
-#include "theme.h"
+
+#define STYLE_INVOKE(s, f, ...)                                                 \
+do {                                                                            \
+        if (s && s->f)                                                          \
+                s->f(s, __VA_ARGS__);                                           \
+        else if (mlk_checkbox_style.f)                                          \
+                mlk_checkbox_style.f(s ? s : &mlk_checkbox_style, __VA_ARGS__); \
+} while (0)
 
 static int
 is_boxed(const struct mlk_checkbox *cb, const struct mlk_event_click *click)
@@ -36,22 +43,33 @@ is_boxed(const struct mlk_checkbox *cb, const struct mlk_event_click *click)
 	return mlk_maths_is_boxed(cb->x, cb->y, cb->w, cb->h, click->x, click->y);
 }
 
-void
-mlk_checkbox_draw_default(const struct mlk_theme *t, const struct mlk_checkbox *cb)
+static void
+draw(struct mlk_checkbox_style *style, const struct mlk_checkbox *cb)
 {
-	(void)t;
-
-	assert(cb);
-
-	mlk_painter_set_color(0x151d28ff);
+	mlk_painter_set_color(style->bg_color);
 	mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
-	mlk_painter_set_color(0xd7b594ff);
+	mlk_painter_set_color(style->border_color);
 	mlk_painter_draw_rectangle(cb->x + 1, cb->y + 1, cb->w - 2, cb->h - 2);
 
 	if (cb->checked) {
-		mlk_painter_set_color(0x341c27ff);
+		mlk_painter_set_color(style->check_color);
 		mlk_painter_draw_rectangle(cb->x + 5, cb->y + 5, cb->w - 10, cb->h - 10);
 	}
+}
+
+struct mlk_checkbox_style mlk_checkbox_style = {
+	.bg_color       = 0x151d28ff,
+	.border_color   = 0xd7b594ff,
+	.check_color    = 0x341c27ff,
+	.draw           = draw
+};
+
+void
+mlk_checkbox_init(struct mlk_checkbox *cb)
+{
+	assert(cb);
+
+	STYLE_INVOKE(cb->style, init, cb);
 }
 
 int
@@ -75,5 +93,16 @@ mlk_checkbox_handle(struct mlk_checkbox *cb, const union mlk_event *ev)
 void
 mlk_checkbox_draw(const struct mlk_checkbox *cb)
 {
-	mlk_theme_draw_checkbox(cb->theme, cb);
+	assert(cb);
+
+	STYLE_INVOKE(cb->style, draw, cb);
+}
+
+void
+mlk_checkbox_finish(struct mlk_checkbox *cb)
+{
+	assert(cb);
+
+	STYLE_INVOKE(cb->style, finish, cb);
+
 }

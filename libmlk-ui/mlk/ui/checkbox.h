@@ -23,7 +23,18 @@
 
 union mlk_event;
 
-struct mlk_theme;
+struct mlk_checkbox;
+
+struct mlk_checkbox_style {
+	void *data;
+	unsigned long bg_color;
+	unsigned long border_color;
+	unsigned long check_color;
+	void (*init)(struct mlk_checkbox_style *, struct mlk_checkbox *);
+	void (*update)(struct mlk_checkbox_style *, struct mlk_checkbox *, unsigned int);
+	void (*draw)(struct mlk_checkbox_style *, const struct mlk_checkbox *);
+	void (*finish)(struct mlk_checkbox_style *, struct mlk_checkbox *);
+};
 
 struct mlk_checkbox {
 	int x;
@@ -31,19 +42,24 @@ struct mlk_checkbox {
 	unsigned int w;
 	unsigned int h;
 	int checked;
-	const struct mlk_theme *theme;
+	struct mlk_checkbox_style *style;
 };
+
+extern struct mlk_checkbox_style mlk_checkbox_style;
 
 MLK_CORE_BEGIN_DECLS
 
 void
-mlk_checkbox_draw_default(const struct mlk_theme *, const struct mlk_checkbox *);
+mlk_checkbox_init(struct mlk_checkbox *);
 
 int
 mlk_checkbox_handle(struct mlk_checkbox *, const union mlk_event *);
 
 void
 mlk_checkbox_draw(const struct mlk_checkbox *);
+
+void
+mlk_checkbox_finish(struct mlk_checkbox *);
 
 MLK_CORE_END_DECLS
 

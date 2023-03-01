@@ -21,8 +21,6 @@
 
 #include <mlk/core/core.h>
 
-struct mlk_button;
-struct mlk_checkbox;
 struct mlk_font;
 struct mlk_frame;
 struct mlk_label;
@@ -56,8 +54,6 @@ struct mlk_theme {
 
 	void (*draw_frame)(const struct mlk_theme *, const struct mlk_frame *);
 	void (*draw_label)(const struct mlk_theme *, const struct mlk_label *);
-	void (*draw_button)(const struct mlk_theme *, const struct mlk_button *);
-	void (*draw_checkbox)(const struct mlk_theme *t, const struct mlk_checkbox *);
 };
 
 MLK_CORE_BEGIN_DECLS
@@ -76,12 +72,6 @@ mlk_theme_draw_frame(const struct mlk_theme *, const struct mlk_frame *);
 
 void
 mlk_theme_draw_label(const struct mlk_theme *, const struct mlk_label *);
-
-void
-mlk_theme_draw_button(const struct mlk_theme *, const struct mlk_button *);
-
-void
-mlk_theme_draw_checkbox(const struct mlk_theme *, const struct mlk_checkbox *);
 
 void
 mlk_theme_finish(void);
