@@ -24,36 +24,44 @@
 union mlk_event;
 
 struct mlk_theme;
+struct mlk_button;
 
-enum mlk_button_state {
-	MLK_BUTTON_STATE_NONE,
-	MLK_BUTTON_STATE_PRESSED,
-	MLK_BUTTON_STATE_ACTIVATED
+struct mlk_button_style {
+	void *data;
+	unsigned long bg_color;
+	unsigned long text_color;
+	void (*init)(struct mlk_button_style *, struct mlk_button *);
+	void (*update)(struct mlk_button_style *, struct mlk_button *, unsigned int);
+	void (*draw)(struct mlk_button_style *, const struct mlk_button *);
+	void (*finish)(struct mlk_button_style *, struct mlk_button *);
 };
 
 struct mlk_button {
-	int x;
-	int y;
-	unsigned int w;
-	unsigned int h;
+	int x, y;
+	unsigned int w, h;
 	const char *text;
-	enum mlk_button_state state;
-	const struct mlk_theme *theme;
+	struct mlk_button_style *style;
+	int pressed;
 };
 
+extern struct mlk_button_style mlk_button_style;
+
 MLK_CORE_BEGIN_DECLS
+
+void
+mlk_button_init(struct mlk_button *);
 
 int
 mlk_button_handle(struct mlk_button *, const union mlk_event *);
 
 void
-mlk_button_reset(struct mlk_button *);
-
-void
-mlk_button_draw_default(const struct mlk_theme *, const struct mlk_button *);
+mlk_button_update(struct mlk_button *, unsigned int);
 
 void
 mlk_button_draw(const struct mlk_button *);
+
+void
+mlk_button_finish(struct mlk_button *);
 
 MLK_CORE_END_DECLS
 
