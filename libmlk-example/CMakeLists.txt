@@ -24,6 +24,8 @@ set(
 	${libmlk-example_SOURCE_DIR}/mlk/example/character-john.h
 	${libmlk-example_SOURCE_DIR}/mlk/example/example.c
 	${libmlk-example_SOURCE_DIR}/mlk/example/example.h
+	${libmlk-example_SOURCE_DIR}/mlk/example/glower.c
+	${libmlk-example_SOURCE_DIR}/mlk/example/glower.h
 	${libmlk-example_SOURCE_DIR}/mlk/example/registry.c
 	${libmlk-example_SOURCE_DIR}/mlk/example/registry.h
 	${libmlk-example_SOURCE_DIR}/mlk/example/spell-fire.c

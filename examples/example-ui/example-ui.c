@@ -38,6 +38,7 @@
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
+#include <mlk/example/glower.h>
 #include <mlk/example/registry.h>
 
 #include "button-style-glow.h"
@@ -98,7 +99,8 @@ static struct {
 		/*
 		 * [Download free RAM] with custom style drawing.
 		 */
-		struct button_style_glow download_glow;
+		struct mlk_glower download_glow;
+		struct button_style_glow download_style;
 		struct mlk_button download;
 	} buttons;
 } ui = {
@@ -145,20 +147,21 @@ static struct {
 			.text_style = &ui.buttons.quit_text_style
 		},
 		.download_glow = {
-			.colors = {
-				BUTTON_STYLE_GLOW_COLOR_1,
-				BUTTON_STYLE_GLOW_COLOR_2
-			},
+			.start = BUTTON_STYLE_GLOW_COLOR_1,
+			.end = BUTTON_STYLE_GLOW_COLOR_2,
+			.delay = BUTTON_STYLE_GLOW_DELAY
+		},
+		.download_style = {
+			.glow = &ui.buttons.download_glow,
 			.style = {
 				.border_color = BUTTON_STYLE_GLOW_COLOR_1
-			},
-			.delay = BUTTON_STYLE_GLOW_DELAY
+			}
 		},
 		.download = {
 			.w = 180,
 			.h = 32,
 			.text = "!! Download free RAM !!",
-			.style = &ui.buttons.download_glow.style,
+			.style = &ui.buttons.download_style.style,
 			.text_style = &ui.buttons.quit_text_style
 		}
 	}
@@ -309,7 +312,7 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	mlk_painter_set_color(0x88d6ffff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_frame_draw(&ui.panel.frame);
 	mlk_label_draw(&ui.header.label);
@@ -330,7 +333,7 @@ init(void)
 	if ((err = mlk_example_init("example-ui")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	button_style_glow_init(&ui.buttons.download_glow);
+	button_style_glow_init(&ui.buttons.download_style);
 
 	mlk_button_init(&ui.buttons.hello);
 	mlk_button_init(&ui.buttons.quit);

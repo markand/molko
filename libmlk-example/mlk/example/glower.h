@@ -1,5 +1,5 @@
 /*
- * example.h -- libmlk-example entry point
+ * glower.h -- simple color animation
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,17 +16,25 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_EXAMPLE_EXAMPLE_H
-#define MLK_EXAMPLE_EXAMPLE_H
+#ifndef MLK_EXAMPLE_GLOWER_H
+#define MLK_EXAMPLE_GLOWER_H
 
-#define MLK_EXAMPLE_W   960
-#define MLK_EXAMPLE_H   540
-#define MLK_EXAMPLE_BG	0xc6ecffff
+struct mlk_glower {
+	/* public */
+	unsigned long start;
+	unsigned long end;
+	unsigned long *color;
+	unsigned int delay;
 
-int
-mlk_example_init(const char *);
+	/* private */
+	unsigned long target;
+	unsigned int elapsed;
+};
 
 void
-mlk_example_finish(void);
+mlk_glower_init(struct mlk_glower *);
 
-#endif /* !MLK_EXAMPLE_EXAMPLE_H */
+void
+mlk_glower_update(struct mlk_glower *, unsigned int);
+
+#endif /* !MLK_EXAMPLE_GLOWER_H */

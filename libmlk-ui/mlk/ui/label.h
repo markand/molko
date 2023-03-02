@@ -41,7 +41,6 @@ struct mlk_label {
 };
 
 extern struct mlk_label_style mlk_label_style;
-extern struct mlk_label_style mlk_label_style_selected;
 
 MLK_CORE_BEGIN_DECLS
 

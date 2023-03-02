@@ -20,6 +20,8 @@
 
 #include <mlk/core/color.h>
 
+#include <mlk/example/glower.h>
+
 #include "button-style-glow.h"
 
 /*
@@ -35,32 +37,16 @@
  * bg_color property that will be reused.
  */
 
-static inline unsigned int
-increment(unsigned long ccmp, unsigned long ctgt)
-{
-	if (ctgt > ccmp)
-		return ccmp + 2 > ctgt ? ctgt : ccmp + 2;
-	if (ctgt < ccmp)
-		return ccmp - 2 < ctgt ? ctgt : ccmp - 2;
-
-	return ccmp;
-}
-
 static void
 init(struct mlk_button_style *style, struct mlk_button *button)
 {
 	(void)button;
 
-	struct button_style_glow *glow = style->data;
+	struct button_style_glow *styler = style->data;
 
-	/*
-	 * We start at colors[0] and reach colors[1], colors[2] will be the
-	 * destination color that will swap over time.
-	 */
-	glow->colors[2] = glow->colors[1];
-	glow->elapsed = 0;
+	styler->glow->color = &style->bg_color;
 
-	style->bg_color = glow->colors[0];
+	mlk_glower_init(styler->glow);
 }
 
 static void
@@ -68,45 +54,18 @@ update(struct mlk_button_style *style, struct mlk_button *button, unsigned int t
 {
 	(void)button;
 
-	struct button_style_glow *glow = style->data;
-	unsigned int red, green, blue;
+	struct button_style_glow *styler = style->data;
 
-	glow->elapsed += ticks;
-
-	if (glow->elapsed >= glow->delay) {
-		glow->elapsed = 0;
-
-		/* Color target reached, invert logic. */
-		if (style->bg_color == glow->colors[2]) {
-			if (glow->colors[2] == glow->colors[0])
-				glow->colors[2] = glow->colors[1];
-			else
-				glow->colors[2] = glow->colors[0];
-		} else {
-			red = increment(
-				MLK_COLOR_R(style->bg_color),
-				MLK_COLOR_R(glow->colors[2])
-			);
-			green = increment(
-				MLK_COLOR_G(style->bg_color),
-				MLK_COLOR_G(glow->colors[2])
-			);
-			blue = increment(
-				MLK_COLOR_B(style->bg_color),
-				MLK_COLOR_B(glow->colors[2])
-			);
-
-			style->bg_color = MLK_COLOR_HEX(red, green, blue, 0xff);
-		}
-	}
+	mlk_glower_update(styler->glow, ticks);
 }
 
 void
-button_style_glow_init(struct button_style_glow *glow)
+button_style_glow_init(struct button_style_glow *styler)
 {
-	assert(glow);
+	assert(styler);
+	assert(styler->glow);
 
-	glow->style.data = glow;
-	glow->style.init = init;
-	glow->style.update = update;
+	styler->style.data = styler;
+	styler->style.init = init;
+	styler->style.update = update;
 }

@@ -64,11 +64,6 @@ struct mlk_label_style mlk_label_style = {
 	.draw           = draw
 };
 
-struct mlk_label_style mlk_label_style_selected = {
-	.text_color     = 0x7da42dff,
-	.draw           = draw
-};
-
 void
 mlk_label_init(struct mlk_label *label)
 {

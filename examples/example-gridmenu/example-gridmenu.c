@@ -29,15 +29,58 @@
 #include <mlk/core/window.h>
 
 #include <mlk/ui/align.h>
+#include <mlk/ui/frame.h>
 #include <mlk/ui/gridmenu.h>
 #include <mlk/ui/label.h>
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
+#include <mlk/example/glower.h>
 #include <mlk/example/registry.h>
 
-static struct mlk_state *states[1];
+static struct mlk_state *states[8];
+
+static const char * const items[] = {
+	"Feu mineur",
+	"Feu majeur",
+	"Feu septième",
+	"Glace mineure",
+	"Glace majeure",
+	"Glace septième",
+	"Foudre mineure",
+	"Foudre majeure",
+	"Foudre septième",
+	"Choc mineur",
+	"Choc majeur",
+	"Choc septième",
+	"Portée",
+	"Escapade",
+	"Destruction",
+	"Résurrection",
+	"Double tour"
+};
+
+static struct mlk_frame frame = {
+	.w = 300,
+	.h = 100
+};
+static struct mlk_gridmenu_style menu_style = {
+	.padding = 10,
+	.text_color = 0x222323ff
+};
+static struct mlk_gridmenu menu = {
+	.nrows = 3,
+	.ncols = 2,
+	.items = items,
+	.itemsz = MLK_UTIL_SIZE(items),
+	.style = &menu_style
+};
+static struct mlk_glower menu_glower = {
+	.color = &menu_style.text_selected_color,
+	.start = 0x00bfa3ff,
+	.end = 0x006b6dff,
+	.delay = 20
+};
 
 static void
 init(void)
@@ -46,67 +89,62 @@ init(void)
 
 	if ((err = mlk_example_init("example-gridmenu")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+
+	mlk_glower_init(&menu_glower);
 }
 
 static void
 handle(struct mlk_state *st, const union mlk_event *ev)
 {
-	struct mlk_gridmenu *menu = st->data;
+	(void)st;
 
 	switch (ev->type) {
 	case MLK_EVENT_QUIT:
 		mlk_game_quit();
 		break;
 	default:
-		if (mlk_gridmenu_handle(st->data, ev))
-			mlk_tracef("selected index: %zu (%s)", menu->selected, menu->items[menu->selected]);
+		if (mlk_gridmenu_handle(&menu, ev))
+			mlk_tracef("selected index: %zu (%s)", menu.selected, menu.items[menu.selected]);
 		break;
 	}
 }
 
 static void
+update(struct mlk_state *st, unsigned int ticks)
+{
+	(void)st;
+
+	mlk_glower_update(&menu_glower, ticks);
+	mlk_gridmenu_update(&menu, ticks);
+}
+
+static void
 draw(struct mlk_state *st)
 {
-	mlk_painter_set_color(0x4f8fbaff);
+	(void)st;
+
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
-	mlk_gridmenu_draw(st->data);
+	mlk_frame_draw(&frame);
+	mlk_gridmenu_draw(&menu);
 	mlk_painter_present();
 }
 
 static void
 run(void)
 {
-	const char * const items[] = {
-	    "Feu mineur",
-	    "Feu majeur",
-	    "Feu septième",
-	    "Glace mineure",
-	    "Glace majeure",
-	    "Glace septième",
-	    "Foudre mineure",
-	    "Foudre majeure",
-	    "Foudre septième",
-	    "Choc mineur",
-	    "Choc majeur",
-	    "Choc septième",
-	    "Portée",
-	    "Escapade",
-	    "Destruction",
-	    "Résurrection",
-	    "Double tour"
-	};
-
-	struct mlk_gridmenu menu = {0};
 	struct mlk_state state = {
-		.data = &menu,
 		.handle = handle,
+		.update = update,
 		.draw = draw,
 	};
 
-	mlk_gridmenu_init(&menu, 3, 2, items, MLK_UTIL_SIZE(items));
+	mlk_gridmenu_init(&menu);
 	mlk_gridmenu_resize(&menu, 0, 0, 300, 100);
 
 	mlk_align(MLK_ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, mlk_window.w, mlk_window.h);
+	frame.x = menu.x;
+	frame.y = menu.y;
 
 	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);

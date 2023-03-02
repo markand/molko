@@ -25,10 +25,10 @@
 #define BUTTON_STYLE_GLOW_COLOR_2       0xa6cc34ff
 #define BUTTON_STYLE_GLOW_DELAY         20
 
+struct mlk_glower;
+
 struct button_style_glow {
-	unsigned long colors[3];
-	unsigned int delay;
-	unsigned int elapsed;
+	struct mlk_glower *glow;
 	struct mlk_button_style style;
 };
 
