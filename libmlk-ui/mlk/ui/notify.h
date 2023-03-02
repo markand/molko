@@ -23,12 +23,8 @@
 
 #include <mlk/core/core.h>
 
-/* TODO: make this configurable at runtime. */
-#define MLK_NOTIFY_MAX                  (4)
-#define MLK_NOTIFY_TIMEOUT_DEFAULT      (5000)
-
+struct mlk_font;
 struct mlk_texture;
-struct mlk_theme;
 
 struct mlk_notify {
 	const struct mlk_texture *icon;
@@ -37,10 +33,26 @@ struct mlk_notify {
 	unsigned int elapsed;
 };
 
-struct mlk_notify_system {
-	struct mlk_theme *theme;
-	void (*draw)(const struct mlk_notify *, size_t);
+struct mlk_notify_style {
+	unsigned long bg_color;
+	unsigned long text_color;
+	struct mlk_font *text_font;
+	unsigned long border_color;
+	unsigned int border_size;
+	unsigned int delay;
+	unsigned int padding;
 };
+
+struct mlk_notify_delegate {
+	struct mlk_notify *stack;
+	size_t stacksz;
+	size_t length;
+	void (*update)(unsigned int ticks);
+	void (*draw)(const struct mlk_notify *notif, size_t index);
+};
+
+extern struct mlk_notify_style mlk_notify_style;
+extern struct mlk_notify_delegate mlk_notify_delegate;
 
 MLK_CORE_BEGIN_DECLS
 
@@ -52,9 +64,6 @@ mlk_notify_update(unsigned int ticks);
 
 void
 mlk_notify_draw(void);
-
-void
-mlk_notify_set_system(const struct mlk_notify_system *);
 
 MLK_CORE_END_DECLS
 

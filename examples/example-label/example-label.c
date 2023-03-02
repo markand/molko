@@ -31,77 +31,115 @@
 
 #include <mlk/ui/align.h>
 #include <mlk/ui/label.h>
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
+#include <mlk/example/glower.h>
 
-struct {
+static struct mlk_state *states[8];
+
+static struct mlk_label_style style = {
+	.color = 0x005162ff
+};
+
+/*
+ * Add a glower effect to the main label in the middle.
+ */
+static void main_update(struct mlk_label_delegate *, struct mlk_label *, unsigned int);
+
+static struct mlk_glower main_glower = {
+	.start  = 0xffce7fff,
+	.end    = 0xd58d6bff,
+	.delay  = 22
+};
+static struct mlk_label_delegate main_delegate = {
+	.update = main_update
+};
+static struct mlk_label_style main_style;
+
+static struct {
 	enum mlk_align align;
 	struct mlk_label label;
 } table[] = {
 	{
+		.align = MLK_ALIGN_CENTER,
+		.label = {
+			.text = "The world is Malikania.",
+			.style = &main_style,
+			.delegate = &main_delegate
+		}
+	},
+	{
 		.align = MLK_ALIGN_TOP_LEFT,
 		.label = {
-			.text = "Top left"
+			.text = "Top left",
+			.style = &style
 		}
 	},
 	{
 		.align = MLK_ALIGN_TOP,
 		.label = {
 			.text = "Top",
+			.style = &style
 		}
 	},
 	{
 		.align = MLK_ALIGN_TOP_RIGHT,
 		.label = {
 			.text = "Top right",
+			.style = &style
 		}
 	},
 	{
 		.align = MLK_ALIGN_RIGHT,
 		.label = {
 			.text = "Right",
+			.style = &style
 		}
 	},
 	{
 		.align = MLK_ALIGN_BOTTOM_RIGHT,
 		.label = {
 			.text = "Bottom right",
+			.style = &style
 		}
 	},
 	{
 		.align = MLK_ALIGN_BOTTOM,
 		.label = {
 			.text = "Bottom",
+			.style = &style
 		}
 	},
 	{
 		.align = MLK_ALIGN_BOTTOM_LEFT,
 		.label = {
 			.text = "Bottom left",
+			.style = &style
 		}
 	},
 	{
 		.align = MLK_ALIGN_LEFT,
 		.label = {
 			.text = "Left",
-		}
-	},
-	{
-		.align = MLK_ALIGN_CENTER,
-		.label = {
-			.text = "The world is Malikania.",
-			.flags = MLK_LABEL_FLAGS_SHADOW
+			.style = &style
 		}
 	}
 };
 
-static struct mlk_label mlabel = {
-	.text = "This one follows your mouse and is not aligned."
+static struct mlk_label mouse_label = {
+	.text = "This one follows your mouse and is not aligned.",
+	.style = &style
 };
 
-static struct mlk_state *states[1];
+static void
+main_update(struct mlk_label_delegate *delegate, struct mlk_label *label, unsigned int ticks)
+{
+	(void)delegate;
+
+	mlk_glower_update(&main_glower, ticks);
+	label->style->color = main_glower.color;
+}
 
 static void
 init(void)
@@ -115,10 +153,11 @@ init(void)
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i) {
 		l = &table[i].label;
-
 		mlk_label_query(l, &w, &h);
 		mlk_align(table[i].align, &l->x, &l->y, w, h, 0, 0, mlk_window.w, mlk_window.h);
 	}
+
+	mlk_glower_init(&main_glower);
 }
 
 static void
@@ -128,8 +167,8 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 
 	switch (ev->type) {
 	case MLK_EVENT_MOUSE:
-		mlabel.x = ev->mouse.x;
-		mlabel.y = ev->mouse.y;
+		mouse_label.x = ev->mouse.x;
+		mouse_label.y = ev->mouse.y;
 		break;
 	case MLK_EVENT_QUIT:
 		mlk_game_quit();
@@ -140,17 +179,28 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 }
 
 static void
+update(struct mlk_state *st, unsigned int ticks)
+{
+	(void)st;
+
+	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i)
+		mlk_label_update(&table[i].label, ticks);
+
+	mlk_label_update(&mouse_label, ticks);
+}
+
+static void
 draw(struct mlk_state *st)
 {
 	(void)st;
 
-	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i)
 		mlk_label_draw(&table[i].label);
 
-	mlk_label_draw(&mlabel);
+	mlk_label_draw(&mouse_label);
 	mlk_painter_present();
 }
 
@@ -159,6 +209,7 @@ run(void)
 {
 	struct mlk_state state = {
 		.handle = handle,
+		.update = update,
 		.draw = draw
 	};
 

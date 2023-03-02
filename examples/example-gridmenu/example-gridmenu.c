@@ -38,6 +38,8 @@
 #include <mlk/example/glower.h>
 #include <mlk/example/registry.h>
 
+static void menu_update(struct mlk_gridmenu_delegate *, struct mlk_gridmenu *, unsigned int);
+
 static struct mlk_state *states[8];
 
 static const char * const items[] = {
@@ -64,23 +66,33 @@ static struct mlk_frame frame = {
 	.w = 300,
 	.h = 100
 };
-static struct mlk_gridmenu_style menu_style = {
-	.padding = 10,
-	.text_color = 0x222323ff
+static struct mlk_gridmenu_style menu_style = {0};
+static struct mlk_gridmenu_delegate menu_delegate = {
+	.update = menu_update
 };
 static struct mlk_gridmenu menu = {
 	.nrows = 3,
 	.ncols = 2,
 	.items = items,
 	.itemsz = MLK_UTIL_SIZE(items),
-	.style = &menu_style
+	.style = &menu_style,
+	.delegate = &menu_delegate
 };
 static struct mlk_glower menu_glower = {
-	.color = &menu_style.text_selected_color,
 	.start = 0x00bfa3ff,
 	.end = 0x006b6dff,
 	.delay = 20
 };
+
+static void
+menu_update(struct mlk_gridmenu_delegate *delegate, struct mlk_gridmenu *menu, unsigned int ticks)
+{
+	(void)delegate;
+	(void)menu;
+
+	mlk_glower_update(&menu_glower, ticks);
+	menu_style.selected_color = menu_glower.color;
+}
 
 static void
 init(void)
@@ -90,6 +102,7 @@ init(void)
 	if ((err = mlk_example_init("example-gridmenu")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
+	menu_style = mlk_gridmenu_style;
 	mlk_glower_init(&menu_glower);
 }
 
@@ -139,7 +152,6 @@ run(void)
 		.draw = draw,
 	};
 
-	mlk_gridmenu_init(&menu);
 	mlk_gridmenu_resize(&menu, 0, 0, 300, 100);
 
 	mlk_align(MLK_ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, mlk_window.w, mlk_window.h);

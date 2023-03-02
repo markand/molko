@@ -1,5 +1,5 @@
 /*
- * debug.h -- debugging interfaces
+ * ui_p.h -- private helpers for libmlk-ui
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,36 +16,18 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_UI_DEBUG_H
-#define MLK_UI_DEBUG_H
+#ifndef MLK_UI_P_H
+#define MLK_UI_P_H
 
-#include <stdarg.h>
+#define MLK__DELEGATE_INVOKE(d, def, f, ...)    \
+do {                                            \
+        if (d && d->f)                          \
+                d->f(d, __VA_ARGS__);           \
+        else if (def.f)                         \
+                def.f(&def, __VA_ARGS__);       \
+} while (0)
 
-#include <mlk/core/core.h>
-#include <mlk/core/font.h>
+#define MLK__STYLE(w, d)                        \
+        (w->style ? w->style : &d)
 
-#define MLK_DEBUG_LINE_MAX 256
-
-struct mlk_theme;
-
-struct mlk_debug_options {
-	int enable;
-};
-
-struct mlk_debug_report {
-	unsigned int count;
-};
-
-MLK_CORE_BEGIN_DECLS
-
-extern struct mlk_debug_options mlk_debug_options;
-
-void
-mlk_debugf(struct mlk_debug_report *, const char *, ...);
-
-void
-mlk_debugva(struct mlk_debug_report *, const char *, va_list);
-
-MLK_CORE_END_DECLS
-
-#endif /* !MLK_UI_DEBUG_H */
+#endif /* !MLK_UI_P_H */

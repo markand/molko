@@ -23,14 +23,14 @@
 
 void
 mlk_align(enum mlk_align align,
-      int *x,
-      int *y,
-      unsigned int w,
-      unsigned int h,
-      int px,
-      int py,
-      unsigned int pw,
-      unsigned int ph)
+          int *x,
+          int *y,
+          unsigned int w,
+          unsigned int h,
+          int px,
+          int py,
+          unsigned int pw,
+          unsigned int ph)
 {
 	switch (align) {
 	case MLK_ALIGN_CENTER:
@@ -70,6 +70,8 @@ mlk_align(enum mlk_align align,
 		SET(x, px);
 		break;
 	default:
+		*x = px;
+		*y = py;
 		break;
 	}
 }

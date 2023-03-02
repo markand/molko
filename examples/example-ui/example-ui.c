@@ -41,7 +41,7 @@
 #include <mlk/example/glower.h>
 #include <mlk/example/registry.h>
 
-#include "button-style-glow.h"
+#include "button-glower.h"
 
 #define FRAME_ORIGIN_X  (10)
 #define FRAME_ORIGIN_Y  (10)
@@ -53,6 +53,8 @@
 #define ELEMENT_HEIGHT  (20)
 
 #define PADDING         (10)
+
+static struct mlk_state *states[8];
 
 /*
  * We design a basic UI like this.
@@ -92,15 +94,13 @@ static struct {
 		struct mlk_button hello;
 
 		/* [Quit] with custom style color. */
-		struct mlk_label_style quit_text_style;
 		struct mlk_button_style quit_style;
 		struct mlk_button quit;
 
 		/*
-		 * [Download free RAM] with custom style drawing.
+		 * [Download free RAM] with custom style using a delegate.
 		 */
-		struct mlk_glower download_glow;
-		struct button_style_glow download_style;
+		struct button_glower download_glower;
 		struct mlk_button download;
 	} buttons;
 } ui = {
@@ -135,39 +135,32 @@ static struct {
 		},
 		.quit_style = {
 			.bg_color = 0x24aed6ff,
-			.border_color = 0x328ca7ff
-		},
-		.quit_text_style = {
-			.text_color = 0xf5f7faff
+			.text_color = 0xffffffff
 		},
 		.quit = {
 			.text = "Quit",
 			.h = ELEMENT_HEIGHT,
-			.style = &ui.buttons.quit_style,
-			.text_style = &ui.buttons.quit_text_style
+			.style = &ui.buttons.quit_style
 		},
-		.download_glow = {
-			.start = BUTTON_STYLE_GLOW_COLOR_1,
-			.end = BUTTON_STYLE_GLOW_COLOR_2,
-			.delay = BUTTON_STYLE_GLOW_DELAY
-		},
-		.download_style = {
-			.glow = &ui.buttons.download_glow,
+		.download_glower = {
+			.glower = {
+				.start = BUTTON_STYLE_GLOW_COLOR_1,
+				.end = BUTTON_STYLE_GLOW_COLOR_2,
+				.delay = BUTTON_STYLE_GLOW_DELAY
+			},
 			.style = {
-				.border_color = BUTTON_STYLE_GLOW_COLOR_1
+				.text_color = 0xffffffff,
+				.border_color = BUTTON_STYLE_GLOW_COLOR_1,
+				.border_size = 2
 			}
 		},
 		.download = {
 			.w = 180,
 			.h = 32,
 			.text = "!! Download free RAM !!",
-			.style = &ui.buttons.download_style.style,
-			.text_style = &ui.buttons.quit_text_style
 		}
 	}
 };
-
-static struct mlk_state *states[1];
 
 static void
 resize_header(void)
@@ -333,11 +326,7 @@ init(void)
 	if ((err = mlk_example_init("example-ui")) < 0)
 		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
 
-	button_style_glow_init(&ui.buttons.download_style);
-
-	mlk_button_init(&ui.buttons.hello);
-	mlk_button_init(&ui.buttons.quit);
-	mlk_button_init(&ui.buttons.download);
+	button_glower_init(&ui.buttons.download_glower, &ui.buttons.download);
 }
 
 static void

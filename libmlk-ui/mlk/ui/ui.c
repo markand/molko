@@ -16,13 +16,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <assert.h>
 #include <stddef.h>
+#include <string.h>
 
+#include <mlk/core/err.h>
 #include <mlk/core/font.h>
+#include <mlk/core/texture.h>
+#include <mlk/core/trace.h>
 #include <mlk/core/util.h>
 
 #include <assets/fonts/opensans-regular.h>
 
+#include "align.h"
 #include "ui.h"
 
 /* Default font catalog. */
@@ -69,6 +75,31 @@ failed:
 	mlk_ui_finish();
 
 	return err;
+}
+
+void
+mlk_ui_draw_text(enum mlk_align align,
+                 struct mlk_font *font,
+                 unsigned long color,
+                 const char *text,
+                 int px,
+                 int py,
+                 unsigned int pw,
+                 unsigned int ph)
+{
+	assert(font);
+	assert(text && strlen(text) > 0);
+
+	struct mlk_texture texture;
+	int x, y, err;
+
+	if ((err = mlk_font_render(font, &texture, text, color)) < 0)
+		mlk_tracef("mlk_font_render: %s", mlk_err_string(err));
+	else {
+		mlk_align(align, &x, &y, texture.w, texture.h, px, py, pw, ph);
+		mlk_texture_draw(&texture, x, y);
+		mlk_texture_finish(&texture);
+	}
 }
 
 void

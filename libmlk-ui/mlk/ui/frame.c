@@ -17,40 +17,54 @@
  */
 
 #include <assert.h>
+#include <stddef.h>
 
 #include <mlk/core/painter.h>
 
 #include "frame.h"
-
-#define STYLE_INVOKE(s, f, ...)                                                 \
-do {                                                                            \
-        if (s && s->f)                                                          \
-                s->f(s, __VA_ARGS__);                                           \
-        else if (mlk_frame_style.f)                                             \
-                mlk_frame_style.f(s ? s : &mlk_frame_style, __VA_ARGS__);       \
-} while (0)
+#include "ui.h"
+#include "ui_p.h"
 
 static void
-draw(struct mlk_frame_style *style, const struct mlk_frame *frame)
+delegate_draw(struct mlk_frame_delegate *delegate, const struct mlk_frame *frame)
 {
+	(void)delegate;
+
+	const struct mlk_frame_style *style = MLK__STYLE(frame, mlk_frame_style);
+
 	mlk_painter_set_color(style->border_color);
 	mlk_painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
 	mlk_painter_set_color(style->bg_color);
-	mlk_painter_draw_rectangle(frame->x + 1, frame->y + 1, frame->w - 2, frame->h - 2);
+	mlk_painter_draw_rectangle(
+		frame->x + style->border_size,
+		frame->y + style->border_size,
+		frame->w - (style->border_size * 2),
+		frame->h - (style->border_size * 2)
+	);
 }
 
 struct mlk_frame_style mlk_frame_style = {
-	.bg_color       = 0xf5f7faff,
-	.border_color   = 0xcdd2daff,
-	.draw           = draw
+	.bg_color       = MLK_UI_COLOR_BG,
+	.border_color   = MLK_UI_COLOR_BORDER,
+	.border_size    = 2
 };
 
+struct mlk_frame_delegate mlk_frame_delegate = {
+	.draw           = delegate_draw
+};
+
+int
+mlk_frame_ok(const struct mlk_frame *frame)
+{
+	return frame != NULL;
+}
+
 void
-mlk_frame_init(struct mlk_frame *frame)
+mlk_frame_update(struct mlk_frame *frame, unsigned int ticks)
 {
 	assert(frame);
 
-	STYLE_INVOKE(frame->style, init, frame);
+	MLK__DELEGATE_INVOKE(frame->delegate, mlk_frame_delegate, update, frame, ticks);
 }
 
 void
@@ -58,13 +72,5 @@ mlk_frame_draw(const struct mlk_frame *frame)
 {
 	assert(frame);
 
-	STYLE_INVOKE(frame->style, draw, frame);
-}
-
-void
-mlk_frame_finish(struct mlk_frame *frame)
-{
-	assert(frame);
-
-	STYLE_INVOKE(frame->style, finish, frame);
+	MLK__DELEGATE_INVOKE(frame->delegate, mlk_frame_delegate, draw, frame);
 }

@@ -1,5 +1,5 @@
 /*
- * debug.h -- debugging interfaces
+ * button-style-glow.c -- example of glowing button
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,36 +16,33 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_UI_DEBUG_H
-#define MLK_UI_DEBUG_H
+#include <assert.h>
 
-#include <stdarg.h>
+#include "button-glower.h"
 
-#include <mlk/core/core.h>
-#include <mlk/core/font.h>
+static void
+update(struct mlk_button_delegate *delegate, struct mlk_button *button, unsigned int ticks)
+{
+	(void)button;
 
-#define MLK_DEBUG_LINE_MAX 256
+	struct button_glower *glower = delegate->data;
 
-struct mlk_theme;
-
-struct mlk_debug_options {
-	int enable;
-};
-
-struct mlk_debug_report {
-	unsigned int count;
-};
-
-MLK_CORE_BEGIN_DECLS
-
-extern struct mlk_debug_options mlk_debug_options;
+	mlk_glower_update(&glower->glower, ticks);
+	glower->style.bg_color = glower->glower.color;
+}
 
 void
-mlk_debugf(struct mlk_debug_report *, const char *, ...);
+button_glower_init(struct button_glower *glower, struct mlk_button *button)
+{
+	assert(glower);
 
-void
-mlk_debugva(struct mlk_debug_report *, const char *, va_list);
+	glower->style.bg_color = glower->glower.start;
+	glower->delegate.data = glower;
+	glower->delegate.update = update;
 
-MLK_CORE_END_DECLS
+	/* Link this style and delegate to the button. */
+	button->style = &glower->style;
+	button->delegate = &glower->delegate;
 
-#endif /* !MLK_UI_DEBUG_H */
+	mlk_glower_init(&glower->glower);
+}

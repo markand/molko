@@ -22,6 +22,7 @@
 #include <mlk/core/core.h>
 
 enum mlk_align {
+	MLK_ALIGN_NONE,
 	MLK_ALIGN_CENTER,
 	MLK_ALIGN_TOP_LEFT,
 	MLK_ALIGN_TOP,
@@ -37,14 +38,14 @@ MLK_CORE_BEGIN_DECLS
 
 void
 mlk_align(enum mlk_align,
-      int *,
-      int *,
-      unsigned int,
-      unsigned int,
-      int,
-      int,
-      unsigned int,
-      unsigned int);
+          int *,
+          int *,
+          unsigned int,
+          unsigned int,
+          int,
+          int,
+          unsigned int,
+          unsigned int);
 
 MLK_CORE_END_DECLS
 

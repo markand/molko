@@ -23,16 +23,9 @@
 #include <mlk/core/maths.h>
 #include <mlk/core/painter.h>
 
-#include "label.h"
 #include "checkbox.h"
-
-#define STYLE_INVOKE(s, f, ...)                                                 \
-do {                                                                            \
-        if (s && s->f)                                                          \
-                s->f(s, __VA_ARGS__);                                           \
-        else if (mlk_checkbox_style.f)                                          \
-                mlk_checkbox_style.f(s ? s : &mlk_checkbox_style, __VA_ARGS__); \
-} while (0)
+#include "ui.h"
+#include "ui_p.h"
 
 static int
 is_boxed(const struct mlk_checkbox *cb, const struct mlk_event_click *click)
@@ -44,12 +37,26 @@ is_boxed(const struct mlk_checkbox *cb, const struct mlk_event_click *click)
 }
 
 static void
-draw(struct mlk_checkbox_style *style, const struct mlk_checkbox *cb)
+draw(struct mlk_checkbox_delegate *delegate, const struct mlk_checkbox *cb)
 {
-	mlk_painter_set_color(style->border_color);
-	mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
-	mlk_painter_set_color(style->bg_color);
-	mlk_painter_draw_rectangle(cb->x + 1, cb->y + 1, cb->w - 2, cb->h - 2);
+	(void)delegate;
+
+	const struct mlk_checkbox_style *style = MLK__STYLE(cb, mlk_checkbox_style);
+
+	if (!style->border_size) {
+		mlk_painter_set_color(style->bg_color);
+		mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
+	} else {
+		mlk_painter_set_color(style->border_color);
+		mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
+		mlk_painter_set_color(style->bg_color);
+		mlk_painter_draw_rectangle(
+			cb->x + style->border_size,
+			cb->y + style->border_size,
+			cb->w - (style->border_size * 2),
+			cb->h - (style->border_size * 2)
+		);
+	}
 
 	if (cb->checked) {
 		mlk_painter_set_color(style->check_color);
@@ -58,24 +65,26 @@ draw(struct mlk_checkbox_style *style, const struct mlk_checkbox *cb)
 }
 
 struct mlk_checkbox_style mlk_checkbox_style = {
-	.bg_color       = 0xebf0f6ff,
-	.border_color   = 0xbac7dbff,
-	.check_color    = 0x848795ff,
-	.draw           = draw
+	.bg_color = MLK_UI_COLOR_BG,
+	.check_color = MLK_UI_COLOR_TEXT,
+	.border_color = MLK_UI_COLOR_BORDER,
+	.border_size = 1
 };
 
-void
-mlk_checkbox_init(struct mlk_checkbox *cb)
-{
-	assert(cb);
+struct mlk_checkbox_delegate mlk_checkbox_delegate = {
+	.draw = draw
+};
 
-	STYLE_INVOKE(cb->style, init, cb);
+int
+mlk_checkbox_ok(const struct mlk_checkbox *cb)
+{
+	return cb != NULL;
 }
 
 int
 mlk_checkbox_handle(struct mlk_checkbox *cb, const union mlk_event *ev)
 {
-	assert(cb);
+	assert(mlk_checkbox_ok(cb));
 	assert(ev);
 
 	switch (ev->type) {
@@ -91,18 +100,17 @@ mlk_checkbox_handle(struct mlk_checkbox *cb, const union mlk_event *ev)
 }
 
 void
-mlk_checkbox_draw(const struct mlk_checkbox *cb)
+mlk_checkbox_update(struct mlk_checkbox *cb, unsigned int ticks)
 {
-	assert(cb);
+	assert(mlk_checkbox_ok(cb));
 
-	STYLE_INVOKE(cb->style, draw, cb);
+	MLK__DELEGATE_INVOKE(cb->delegate, mlk_checkbox_delegate, update, cb, ticks);
 }
 
 void
-mlk_checkbox_finish(struct mlk_checkbox *cb)
+mlk_checkbox_draw(const struct mlk_checkbox *cb)
 {
-	assert(cb);
+	assert(mlk_checkbox_ok(cb));
 
-	STYLE_INVOKE(cb->style, finish, cb);
-
+	MLK__DELEGATE_INVOKE(cb->delegate, mlk_checkbox_delegate, draw, cb);
 }

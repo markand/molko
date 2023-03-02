@@ -24,34 +24,39 @@
 union mlk_event;
 
 struct mlk_button;
-struct mlk_label_style;
-struct mlk_theme;
+struct mlk_font;
 
 struct mlk_button_style {
-	void *data;
 	unsigned long bg_color;
 	unsigned long border_color;
-	void (*init)(struct mlk_button_style *, struct mlk_button *);
-	void (*update)(struct mlk_button_style *, struct mlk_button *, unsigned int);
-	void (*draw)(struct mlk_button_style *, const struct mlk_button *);
-	void (*finish)(struct mlk_button_style *, struct mlk_button *);
+	unsigned long border_size;
+	unsigned long text_color;
+	struct mlk_font *text_font;
+};
+
+struct mlk_button_delegate {
+	void *data;
+	void (*update)(struct mlk_button_delegate *delegate, struct mlk_button *button, unsigned int ticks);
+	void (*draw_frame)(struct mlk_button_delegate *delegate, const struct mlk_button *button);
+	void (*draw_text)(struct mlk_button_delegate *delegate, const struct mlk_button *button);
 };
 
 struct mlk_button {
 	int x, y;
 	unsigned int w, h;
 	const char *text;
-	struct mlk_button_style *style;
-	struct mlk_label_style *text_style;
 	int pressed;
+	struct mlk_button_style *style;
+	struct mlk_button_delegate *delegate;
 };
 
 extern struct mlk_button_style mlk_button_style;
+extern struct mlk_button_delegate mlk_button_delegate;
 
 MLK_CORE_BEGIN_DECLS
 
-void
-mlk_button_init(struct mlk_button *);
+int
+mlk_button_ok(const struct mlk_button *);
 
 int
 mlk_button_handle(struct mlk_button *, const union mlk_event *);
@@ -61,9 +66,6 @@ mlk_button_update(struct mlk_button *, unsigned int);
 
 void
 mlk_button_draw(const struct mlk_button *);
-
-void
-mlk_button_finish(struct mlk_button *);
 
 MLK_CORE_END_DECLS
 

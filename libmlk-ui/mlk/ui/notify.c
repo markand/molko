@@ -21,17 +21,20 @@
 #include <string.h>
 
 #include <mlk/core/font.h>
+#include <mlk/core/painter.h>
 #include <mlk/core/texture.h>
 #include <mlk/core/trace.h>
+#include <mlk/core/util.h>
 #include <mlk/core/window.h>
 
 #include "align.h"
-#include "frame.h"
-#include "label.h"
 #include "notify.h"
+#include "ui.h"
 
-#define WIDTH   (mlk_window.w / 3)
+#define WIDTH   (mlk_window.w / 2.5)
 #define HEIGHT  (mlk_window.h / 10)
+#define MAX     (4)
+#define FONT    (mlk_notify_style.text_font ? mlk_notify_style.text_font : mlk_ui_fonts[MLK_UI_FONT_INTERFACE])
 
 struct geo {
 	const struct mlk_theme *theme;
@@ -47,30 +50,22 @@ struct geo {
 	int body_y;
 };
 
-static void draw(const struct mlk_notify *, size_t);
-
-static const struct mlk_notify_system default_system = {
-	.draw = draw
-};
-static const struct mlk_notify_system *system = &default_system;
-static struct mlk_notify stack[MLK_NOTIFY_MAX];
-static size_t stacksz;
+static struct mlk_notify stack[MAX];
 
 static void
 geometry(struct geo *geo, const struct mlk_notify *n, size_t index)
 {
-#if 0
+	struct mlk_font *font;
 	int x, y;
 
-	/* Determine theme. */
-	geo->theme = system->theme ? system->theme : &mlk_theme;
-
 	/* Determine notification position. */
-	x  = mlk_window.w - geo->theme->padding;
+	x  = mlk_window.w - mlk_notify_style.padding;
 	x -= WIDTH;
 
-	y  = geo->theme->padding * (index + 1);;
+	y  = mlk_notify_style.padding * (index + 1);
 	y += HEIGHT * index;
+
+	font = mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 
 	/* Content frame. */
 	geo->frame_x = x;
@@ -81,36 +76,36 @@ geometry(struct geo *geo, const struct mlk_notify *n, size_t index)
 	/* Align icon at the left center. */
 	if (n->icon->h >= HEIGHT) {
 		mlk_tracef("notification icon is too large: %u > %u", n->icon->h, HEIGHT);
-		geo->icon_x = x + geo->theme->padding;
-		geo->icon_y = y + geo->theme->padding;
+		geo->icon_x = x + mlk_notify_style.padding;
+		geo->icon_y = y + mlk_notify_style.padding;
 	} else {
 		mlk_align(MLK_ALIGN_LEFT, &geo->icon_x, &geo->icon_y, n->icon->w, n->icon->h, x, y, WIDTH, HEIGHT);
 		geo->icon_x += geo->icon_y - y;
 	}
 
 	/* Align title to the right of the icon at the same y coordinate. */
-	geo->title_x  = geo->icon_x + n->icon->w + geo->theme->padding;
-	geo->title_y  = geo->icon_y;
-	geo->title_y -= mlk_font_height(geo->theme->fonts[MLK_THEME_FONT_INTERFACE]) / 2;
+	geo->title_x  = geo->icon_x + n->icon->w + mlk_notify_style.padding;
+	geo->title_y  = geo->icon_y + (mlk_notify_style.padding / 2);
+	geo->title_y -= mlk_font_height(font) / 2;
 
 	/* Align body so it ends at the end of the icon. */
 	geo->body_x  = geo->title_x;
-	geo->body_y  = geo->icon_y + n->icon->h;
-	geo->body_y -= mlk_font_height(geo->theme->fonts[MLK_THEME_FONT_INTERFACE]) / 2;
-#endif
+	geo->body_y  = geo->icon_y + n->icon->h - (mlk_notify_style.padding / 2);
+	geo->body_y -= mlk_font_height(font) / 2;
 }
 
 static void
 draw_frame(const struct geo *geo)
 {
-	const struct mlk_frame f = {
-		.x = geo->frame_x,
-		.y = geo->frame_y,
-		.w = geo->frame_w,
-		.h = geo->frame_h
-	};
-
-	mlk_frame_draw(&f);
+	mlk_painter_set_color(mlk_notify_style.border_color);
+	mlk_painter_draw_rectangle(geo->frame_x, geo->frame_y, geo->frame_w, geo->frame_h);
+	mlk_painter_set_color(mlk_notify_style.bg_color);
+	mlk_painter_draw_rectangle(
+		geo->frame_x +  mlk_notify_style.border_size,
+		geo->frame_y +  mlk_notify_style.border_size,
+		geo->frame_w - (mlk_notify_style.border_size * 2),
+		geo->frame_h - (mlk_notify_style.border_size * 2)
+	);
 }
 
 static void
@@ -122,35 +117,35 @@ draw_icon(const struct geo *geo, const struct mlk_notify *n)
 static void
 draw_title(const struct geo *geo, const struct mlk_notify *n)
 {
-#if 0
-	const struct mlk_label l = {
-		.x = geo->title_x,
-		.y = geo->title_y,
-		.text = n->title,
-		.flags = MLK_LABEL_FLAGS_SHADOW
-	};
-
-	mlk_label_draw(&l);
-#endif
+	mlk_ui_draw_text(
+		MLK_ALIGN_NONE,
+		FONT,
+		mlk_notify_style.text_color,
+		n->title,
+		geo->title_x,
+		geo->title_y,
+		0,
+		0
+	);
 }
 
 static void
 draw_body(const struct geo *geo, const struct mlk_notify *n)
 {
-#if 0
-	const struct mlk_label l = {
-		.x = geo->body_x,
-		.y = geo->body_y,
-		.text = n->body,
-		.flags = MLK_LABEL_FLAGS_SHADOW
-	};
-
-	mlk_label_draw(&l);
-#endif
+	mlk_ui_draw_text(
+		MLK_ALIGN_NONE,
+		FONT,
+		mlk_notify_style.text_color,
+		n->body,
+		geo->body_x,
+		geo->body_y,
+		0,
+		0
+	);
 }
 
 static void
-draw(const struct mlk_notify *n, size_t index)
+delegate_draw(const struct mlk_notify *n, size_t index)
 {
 	struct geo geo;
 
@@ -163,6 +158,20 @@ draw(const struct mlk_notify *n, size_t index)
 	draw_body(&geo, n);
 }
 
+struct mlk_notify_style mlk_notify_style = {
+	.bg_color       = MLK_UI_COLOR_BG,
+	.border_color   = MLK_UI_COLOR_BORDER,
+	.border_size    = 2,
+	.delay          = 5000,
+	.padding        = 10
+};
+
+struct mlk_notify_delegate mlk_notify_delegate = {
+	.stack          = stack,
+	.stacksz        = MLK_UTIL_SIZE(stack),
+	.draw           = delegate_draw
+};
+
 void
 mlk_notify(const struct mlk_texture *icon, const char *title, const char *body)
 {
@@ -172,11 +181,13 @@ mlk_notify(const struct mlk_texture *icon, const char *title, const char *body)
 
 	struct mlk_notify *n;
 
-	if (stacksz >= MLK_NOTIFY_MAX) {
-		memmove(&stack[0], &stack[1], sizeof (stack[0]) - MLK_NOTIFY_MAX - 1);
-		n = &stack[MLK_NOTIFY_MAX - 1];
+	if (mlk_notify_delegate.length >= mlk_notify_delegate.stacksz) {
+		memmove(&mlk_notify_delegate.stack[0],
+			&mlk_notify_delegate.stack[1],
+			sizeof (mlk_notify_delegate.stack[0]) - mlk_notify_delegate.stacksz - 1);
+		n = &mlk_notify_delegate.stack[mlk_notify_delegate.length - 1];
 	} else
-		n = &stack[stacksz++];
+		n = &mlk_notify_delegate.stack[mlk_notify_delegate.length++];
 
 	memset(n, 0, sizeof (*n));
 	n->icon = icon;
@@ -189,24 +200,19 @@ mlk_notify_update(unsigned int ticks)
 {
 	struct mlk_notify *n;
 
-	for (size_t i = 0; i < stacksz; ++i) {
-		n = &stack[i];
+	for (size_t i = 0; i < mlk_notify_delegate.length; ++i) {
+		n = &mlk_notify_delegate.stack[i];
 		n->elapsed += ticks;
 
-		if (n->elapsed >= MLK_NOTIFY_TIMEOUT_DEFAULT)
-			memmove(n, n + 1, sizeof (*n) * (--stacksz - i));
+		if (n->elapsed >= mlk_notify_style.delay)
+			memmove(n, n + 1, sizeof (*n) * (--mlk_notify_delegate.length - i));
 	}
 }
 
 void
 mlk_notify_draw(void)
 {
-	for (size_t i = 0; i < stacksz; ++i)
-		system->draw(&stack[i], i);
-}
-
-void
-mlk_notify_set_system(const struct mlk_notify_system *sys)
-{
-	system = sys ? sys : &default_system;
+	for (size_t i = 0; i < mlk_notify_delegate.length; ++i)
+		if (mlk_notify_delegate.draw)
+			mlk_notify_delegate.draw(&mlk_notify_delegate.stack[i], i);
 }

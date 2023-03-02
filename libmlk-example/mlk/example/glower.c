@@ -37,9 +37,8 @@ void
 mlk_glower_init(struct mlk_glower *glow)
 {
 	assert(glow);
-	assert(glow->color);
 
-	*glow->color = glow->start;
+	glow->color = glow->start;
 	glow->target = glow->end;
 }
 
@@ -56,14 +55,14 @@ mlk_glower_update(struct mlk_glower *glow, unsigned int ticks)
 		glow->elapsed = 0;
 
 		/* Color target reached, invert target color. */
-		if (*glow->color == glow->target)
+		if (glow->color == glow->target)
 			glow->target = glow->target == glow->start ? glow->end : glow->start;
 		else {
-			r = increment(MLK_COLOR_R(*glow->color), MLK_COLOR_R(glow->target));
-			g = increment(MLK_COLOR_G(*glow->color), MLK_COLOR_G(glow->target));
-			b = increment(MLK_COLOR_B(*glow->color), MLK_COLOR_B(glow->target));
+			r = increment(MLK_COLOR_R(glow->color), MLK_COLOR_R(glow->target));
+			g = increment(MLK_COLOR_G(glow->color), MLK_COLOR_G(glow->target));
+			b = increment(MLK_COLOR_B(glow->color), MLK_COLOR_B(glow->target));
 
-			*glow->color = MLK_COLOR_HEX(r, g, b, 0xff);
+			glow->color = MLK_COLOR_HEX(r, g, b, 0xff);
 		}
 	}
 }

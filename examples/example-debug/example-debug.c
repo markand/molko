@@ -27,7 +27,6 @@
 #include <mlk/core/util.h>
 
 #include <mlk/ui/debug.h>
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
@@ -72,7 +71,7 @@ draw(struct mlk_state *st)
 
 	struct mlk_debug_report report = {0};
 
-	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_debugf(&report, "Game running.");
 	mlk_debugf(&report, "mouse: %d, %d", mouse_x, mouse_y);

@@ -16,23 +16,24 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_EXAMPLE_BUTTON_STYLE_H
-#define MLK_EXAMPLE_BUTTON_STYLE_H
+#ifndef MLK_EXAMPLE_UI_BUTTON_GLOWER_H
+#define MLK_EXAMPLE_UI_BUTTON_GLOWER_H
 
 #include <mlk/ui/button.h>
+
+#include <mlk/example/glower.h>
 
 #define BUTTON_STYLE_GLOW_COLOR_1       0x7da42dff
 #define BUTTON_STYLE_GLOW_COLOR_2       0xa6cc34ff
 #define BUTTON_STYLE_GLOW_DELAY         20
 
-struct mlk_glower;
-
-struct button_style_glow {
-	struct mlk_glower *glow;
+struct button_glower {
+	struct mlk_glower glower;
 	struct mlk_button_style style;
+	struct mlk_button_delegate delegate;
 };
 
 void
-button_style_glow_init(struct button_style_glow *);
+button_glower_init(struct button_glower *glower, struct mlk_button *button);
 
-#endif /* !MLK_EXAMPLE_BUTTON_GLOW_STYLE_H */
+#endif /* !MLK_EXAMPLE_UI_BUTTON_GLOWER_H */

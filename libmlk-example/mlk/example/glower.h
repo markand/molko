@@ -23,7 +23,7 @@ struct mlk_glower {
 	/* public */
 	unsigned long start;
 	unsigned long end;
-	unsigned long *color;
+	unsigned long color;
 	unsigned int delay;
 
 	/* private */

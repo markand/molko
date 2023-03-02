@@ -20,8 +20,8 @@ project(example-ui)
 
 set(
 	SOURCES
-	${example-ui_SOURCE_DIR}/button-style-glow.c
-	${example-ui_SOURCE_DIR}/button-style-glow.h
+	${example-ui_SOURCE_DIR}/button-glower.c
+	${example-ui_SOURCE_DIR}/button-glower.h
 	${example-ui_SOURCE_DIR}/example-ui.c
 )
 

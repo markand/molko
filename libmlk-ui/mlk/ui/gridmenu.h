@@ -31,15 +31,16 @@ struct mlk_font;
 struct mlk_gridmenu;
 
 struct mlk_gridmenu_style {
-	void *data;
 	unsigned int padding;
 	unsigned long text_color;
-	unsigned long text_selected_color;
 	struct mlk_font *text_font;
-	void (*init)(struct mlk_gridmenu_style *, struct mlk_gridmenu *);
-	void (*update)(struct mlk_gridmenu_style *, struct mlk_gridmenu *, unsigned int);
-	void (*draw)(struct mlk_gridmenu_style *, const struct mlk_gridmenu *);
-	void (*finish)(struct mlk_gridmenu_style *, struct mlk_gridmenu *);
+	unsigned long selected_color;
+};
+
+struct mlk_gridmenu_delegate {
+	void *data;
+	void (*update)(struct mlk_gridmenu_delegate *, struct mlk_gridmenu *, unsigned int);
+	void (*draw)(struct mlk_gridmenu_delegate *, const struct mlk_gridmenu *);
 };
 
 struct mlk_gridmenu {
@@ -52,6 +53,7 @@ struct mlk_gridmenu {
 	unsigned int nrows;
 	unsigned int ncols;
 	struct mlk_gridmenu_style *style;
+	struct mlk_gridmenu_delegate *delegate;
 
 	/* private */
 	unsigned int eltw;      /* maximum entry label width */
@@ -61,11 +63,9 @@ struct mlk_gridmenu {
 };
 
 extern struct mlk_gridmenu_style mlk_gridmenu_style;
+extern struct mlk_gridmenu_delegate mlk_gridmenu_delegate;
 
 MLK_CORE_BEGIN_DECLS
-
-void
-mlk_gridmenu_init(struct mlk_gridmenu *);
 
 int
 mlk_gridmenu_ok(const struct mlk_gridmenu *);
@@ -81,9 +81,6 @@ mlk_gridmenu_update(struct mlk_gridmenu *, unsigned int);
 
 void
 mlk_gridmenu_draw(const struct mlk_gridmenu *);
-
-void
-mlk_gridmenu_finish(struct mlk_gridmenu *);
 
 MLK_CORE_END_DECLS
 

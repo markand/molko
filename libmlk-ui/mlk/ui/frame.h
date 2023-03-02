@@ -26,30 +26,35 @@ struct mlk_frame;
 struct mlk_frame_style {
 	unsigned long bg_color;
 	unsigned long border_color;
-	void (*init)(struct mlk_frame_style *, struct mlk_frame *);
-	void (*update)(struct mlk_frame_style *, struct mlk_frame *, unsigned int);
-	void (*draw)(struct mlk_frame_style *, const struct mlk_frame *);
-	void (*finish)(struct mlk_frame_style *, struct mlk_frame *);
+	unsigned long border_size;
+};
+
+struct mlk_frame_delegate {
+	void *data;
+	void (*update)(struct mlk_frame_delegate *, struct mlk_frame *, unsigned int);
+	void (*draw)(struct mlk_frame_delegate *, const struct mlk_frame *);
 };
 
 struct mlk_frame {
 	int x, y;
 	unsigned int w, h;
 	struct mlk_frame_style *style;
+	struct mlk_frame_delegate *delegate;
 };
 
 extern struct mlk_frame_style mlk_frame_style;
+extern struct mlk_frame_delegate mlk_frame_delegate;
 
 MLK_CORE_BEGIN_DECLS
 
-void
-mlk_frame_init(struct mlk_frame *);
+int
+mlk_frame_ok(const struct mlk_frame *frame);
 
 void
-mlk_frame_draw(const struct mlk_frame *);
+mlk_frame_update(struct mlk_frame *frame, unsigned int ticks);
 
 void
-mlk_frame_finish(struct mlk_frame *);
+mlk_frame_draw(const struct mlk_frame *frame);
 
 MLK_CORE_END_DECLS
 

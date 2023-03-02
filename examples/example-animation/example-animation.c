@@ -39,7 +39,6 @@ static struct mlk_label label = {
 	.text = "Keys: <Space> start or reset the animation.",
 	.x = 10,
 	.y = 10,
-	.flags = MLK_LABEL_FLAGS_SHADOW
 };
 
 static struct mlk_state *states[1];

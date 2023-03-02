@@ -38,6 +38,7 @@ set(
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/notify.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui.c
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui.h
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui_p.h
 )
 
 set(

@@ -25,27 +25,28 @@ struct mlk_font;
 struct mlk_label;
 
 struct mlk_label_style {
+	unsigned long color;
+	struct mlk_font *font;
+};
+
+struct mlk_label_delegate {
 	void *data;
-	unsigned long text_color;
-	struct mlk_font *text_font;
-	void (*init)(struct mlk_label_style *, struct mlk_label *);
-	void (*update)(struct mlk_label_style *, struct mlk_label *, unsigned int);
-	void (*draw)(struct mlk_label_style *, const struct mlk_label *);
-	void (*finish)(struct mlk_label_style *, struct mlk_label *);
+	void (*query)(struct mlk_label_delegate *, const struct mlk_label *, unsigned int *, unsigned *);
+	void (*update)(struct mlk_label_delegate *, struct mlk_label *, unsigned int);
+	void (*draw)(struct mlk_label_delegate *, const struct mlk_label *);
 };
 
 struct mlk_label {
 	int x, y;
 	const char *text;
 	struct mlk_label_style *style;
+	struct mlk_label_delegate *delegate;
 };
 
 extern struct mlk_label_style mlk_label_style;
+extern struct mlk_label_delegate mlk_label_delegate;
 
 MLK_CORE_BEGIN_DECLS
-
-void
-mlk_label_init(struct mlk_label *);
 
 int
 mlk_label_ok(const struct mlk_label *);
@@ -54,10 +55,10 @@ int
 mlk_label_query(const struct mlk_label *, unsigned int *, unsigned int *);
 
 void
-mlk_label_draw(const struct mlk_label *);
+mlk_label_update(struct mlk_label *, unsigned int ticks);
 
 void
-mlk_label_finish(struct mlk_label *);
+mlk_label_draw(const struct mlk_label *);
 
 MLK_CORE_END_DECLS
 
