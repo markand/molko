@@ -28,7 +28,6 @@
 #include <mlk/core/trace.h>
 #include <mlk/core/util.h>
 
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
@@ -87,7 +86,7 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_trace_hud_draw();
 	mlk_painter_present();

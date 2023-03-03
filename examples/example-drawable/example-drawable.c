@@ -38,7 +38,6 @@
 #include <mlk/core/window.h>
 
 #include <mlk/ui/label.h>
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
@@ -47,8 +46,7 @@
 static struct mlk_label help = {
 	.x = 10,
 	.y = 10,
-	.text = "Keys: <Esc> to reset. Click anywhere to spawn a drawable.",
-	.flags = MLK_LABEL_FLAGS_SHADOW
+	.text = "Keys: <Esc> to reset. Click anywhere to spawn a drawable."
 };
 
 static struct mlk_state *states[1];
@@ -159,7 +157,7 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	mlk_painter_set_color(0xebede9ff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_label_draw(&help);
 	mlk_drawable_stack_draw(&stack);

@@ -118,5 +118,6 @@ mlk_drawable_stack_finish(struct mlk_drawable_stack *st)
 		}
 	}
 
-	memset(st, 0, sizeof (*st));
+	for (size_t i = 0; i < st->objectsz; ++i)
+		st->objects[i] = NULL;
 }

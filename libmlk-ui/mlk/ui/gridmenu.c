@@ -178,6 +178,8 @@ handle_clickdown(struct mlk_gridmenu *menu, const struct mlk_event_click *click)
 static void
 draw(struct mlk_gridmenu_delegate *delegate, const struct mlk_gridmenu *menu)
 {
+	(void)delegate;
+
 	size_t pagesz, pagenr, item, c = 0, r = 0;
 	const struct mlk_gridmenu_style *style;
 	struct mlk_texture tex;

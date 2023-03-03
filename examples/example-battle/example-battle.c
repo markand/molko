@@ -37,7 +37,6 @@
 
 #include <mlk/ui/align.h>
 #include <mlk/ui/label.h>
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/rpg/battle-bar-default.h>
@@ -254,11 +253,10 @@ empty_draw(struct mlk_state *st)
 	static const struct mlk_label info = {
 		.text = "Press <Space> to start a battle.",
 		.x = 10,
-		.y = 10,
-		.flags = MLK_LABEL_FLAGS_SHADOW
+		.y = 10
 	};
 
-	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_label_draw(&info);
 	mlk_painter_present();

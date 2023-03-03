@@ -39,8 +39,7 @@
 static struct mlk_label help = {
 	.text = "Keys: <Space> to generate a notification.",
 	.x = 10,
-	.y = 10,
-	.flags = MLK_LABEL_FLAGS_SHADOW
+	.y = 10
 };
 static struct mlk_texture *icon;
 static struct mlk_state *states[1];
@@ -87,7 +86,7 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	mlk_painter_set_color(0xffffffff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_label_draw(&help);
 	mlk_notify_draw();

@@ -29,7 +29,6 @@
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
 
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
@@ -101,11 +100,11 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	struct mlk_font *font = mlk_theme.fonts[MLK_THEME_FONT_INTERFACE];
+	struct mlk_font *font = mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 	struct mlk_texture tex;
 	int err;
 
-	mlk_painter_set_color(0xffffffff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 
 	if ((err = mlk_font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci])) < 0)

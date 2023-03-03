@@ -29,7 +29,6 @@
 #include <mlk/core/window.h>
 
 #include <mlk/ui/label.h>
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
@@ -42,15 +41,13 @@ static struct mlk_sound *sound;
 static struct mlk_label label_music = {
 	.text = "Music: <Space> play, <p> pause, <r> resume, <q> stop, <l> loop.",
 	.x = 10,
-	.y = 10,
-	.flags = MLK_LABEL_FLAGS_SHADOW
+	.y = 10
 };
 
 static struct mlk_label label_sound = {
 	.text = "Sound: click anywhere to pop a sound.",
 	.x = 10,
-	.y = 30,
-	.flags = MLK_LABEL_FLAGS_SHADOW
+	.y = 30
 };
 
 static void
@@ -117,7 +114,7 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	mlk_painter_set_color(0x006554ff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_label_draw(&label_music);
 	mlk_label_draw(&label_sound);

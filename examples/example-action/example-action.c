@@ -70,7 +70,6 @@ static struct mlk_action_stack chests_stack = {
  * Just a label to explain to the user what to do.
  */
 static struct mlk_label label = {
-	.flags = MLK_LABEL_FLAGS_SHADOW,
 	.text = "Select your destiny."
 };
 
@@ -322,7 +321,7 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_label_draw(&label);
 	mlk_action_stack_draw(&chests_stack);

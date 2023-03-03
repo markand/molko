@@ -97,7 +97,7 @@ draw(struct mlk_state *st)
 	cellw = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_NUMBERS].cellw;
 	cellh = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_NUMBERS].cellh;
 
-	mlk_painter_set_color(0x4f8fbaff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_label_draw(&label);
 

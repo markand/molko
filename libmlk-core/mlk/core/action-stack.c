@@ -143,5 +143,6 @@ mlk_action_stack_finish(struct mlk_action_stack *st)
 		}
 	}
 
-	memset(st, 0, sizeof (*st));
+	for (size_t i = 0; i < st->actionsz; ++i)
+		st->actions[i] = NULL;
 }

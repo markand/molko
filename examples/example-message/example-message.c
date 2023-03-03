@@ -29,7 +29,6 @@
 #include <mlk/core/window.h>
 
 #include <mlk/ui/frame.h>
-#include <mlk/ui/theme.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/rpg/message.h>
@@ -76,7 +75,7 @@ update(struct mlk_state *st, unsigned int ticks)
 static void
 draw(struct mlk_state *st)
 {
-	mlk_painter_set_color(0xffffffff);
+	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	message_draw(st->data);
 	mlk_painter_present();
