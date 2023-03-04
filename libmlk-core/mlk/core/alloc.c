@@ -134,6 +134,7 @@ static inline void *
 reallocate(void *ptr, size_t n, int zero)
 {
 	assert(ptr);
+	assert(n);
 
 	struct block *b = blockat(ptr);
 	size_t osize = b->n * b->w;
