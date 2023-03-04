@@ -20,7 +20,7 @@
 #define MLK_CORE_MOUSE_H
 
 /**
- * \file mouse.h
+ * \file mlk/core/mouse.h
  * \brief Mouse definitions
  */
 

@@ -20,7 +20,7 @@
 #define MLK_CORE_FONT_H
 
 /**
- * \file font.h
+ * \file mlk/core/font.h
  * \brief Basic font management
  *
  * Open and use fonts for rendering UTF-8 text.

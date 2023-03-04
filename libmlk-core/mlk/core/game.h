@@ -20,7 +20,7 @@
 #define MLK_CORE_GAME_H
 
 /**
- * \file game.h
+ * \file mlk/core/game.h
  * \brief Main game object
  *
  * For convenience, the default game structure is already initialized with an

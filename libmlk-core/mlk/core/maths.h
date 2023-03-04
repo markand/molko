@@ -20,7 +20,7 @@
 #define MLK_CORE_MATHS_H
 
 /**
- * \file maths.h
+ * \file mlk/core/maths.h
  * \brief Basic maths
  */
 
