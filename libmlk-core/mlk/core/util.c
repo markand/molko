@@ -35,7 +35,7 @@ mlk_util_delay(unsigned int ms)
 const char *
 mlk_util_pathf(const char *fmt, ...)
 {
-	static char path[PATH_MAX];
+	static char path[MLK_PATH_MAX];
 	va_list ap;
 
 	va_start(ap, fmt);

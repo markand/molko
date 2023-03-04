@@ -212,7 +212,7 @@ write_layers(const json_t *layers)
 static void
 write_tileset(const json_t *tilesets)
 {
-	char path[PATH_MAX];
+	char path[MLK_PATH_MAX];
 	char filename[FILENAME_MAX] = {0}, *ext;
 	const json_t *tileset, *source;
 

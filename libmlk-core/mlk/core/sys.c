@@ -80,7 +80,7 @@ user_directory(enum mlk_sys_dir kind)
 	/* Kept for future use. */
 	(void)kind;
 
-	static char path[PATH_MAX];
+	static char path[MLK_PATH_MAX];
 	char *pref;
 
 	if ((pref = SDL_GetPrefPath(info.organization, info.name))) {
@@ -216,7 +216,7 @@ mlk_sys_dir(enum mlk_sys_dir kind)
 int
 mlk_sys_mkdir(const char *directory)
 {
-	char path[PATH_MAX], *p;
+	char path[MLK_PATH_MAX], *p;
 
 	/* Copy the directory to normalize and iterate over '/'. */
 	mlk_util_strlcpy(path, directory, sizeof (path));

@@ -74,7 +74,7 @@ struct context {
 	struct tileset *tileset;
 	FILE *fp;
 
-	char basedir[PATH_MAX];
+	char basedir[MLK_PATH_MAX];
 
 	/*
 	 * The following properties aren't stored in the tileset because they
@@ -279,8 +279,7 @@ parse_line(struct context *ctx, const char *line)
 static int
 parse(struct context *ctx, const char *path)
 {
-	char line[1024];
-	char basedir[PATH_MAX];
+	char line[1024], basedir[MLK_PATH_MAX];
 
 	mlk_util_strlcpy(basedir, path, sizeof (basedir));
 	mlk_util_strlcpy(ctx->basedir, mlk_util_dirname(basedir), sizeof (ctx->basedir));

@@ -20,14 +20,12 @@
 #include <limits.h>
 #include <string.h>
 
-#ifndef PATH_MAX
-#       define PATH_MAX 2048
-#endif
+#include <mlk/util/util.h>
 
 char *
 mlk_util_dirname(char *path)
 {
-	static char dname[PATH_MAX];
+	static char dname[MLK_PATH_MAX];
 	size_t len;
 	const char *endp;
 

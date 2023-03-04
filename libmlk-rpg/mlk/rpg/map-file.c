@@ -40,7 +40,7 @@ struct context {
 	struct map_file *mf;            /* Map loader. */
 	struct map *map;                /* Map object to fill. */
 	FILE *fp;                       /* Map file pointer. */
-	char basedir[PATH_MAX];         /* Parent map directory */
+	char basedir[MLK_PATH_MAX];     /* Parent map directory */
 };
 
 static int
@@ -140,7 +140,7 @@ parse_layer(struct context *ctx, const char *line)
 static int
 parse_tileset(struct context *ctx, const char *line)
 {
-	char path[PATH_MAX] = {0}, *p;
+	char path[MLK_PATH_MAX] = {0}, *p;
 	struct map_file *mf = ctx->mf;
 	struct tileset_file *tf = &mf->tileset_file;
 
@@ -220,8 +220,7 @@ parse_line(struct context *ctx, const char *line)
 static int
 parse(struct context *ctx, const char *path)
 {
-	char line[1024];
-	char basedir[PATH_MAX];
+	char line[1024], basedir[MLK_PATH_MAX];
 
 	mlk_util_strlcpy(basedir, path, sizeof (basedir));
 	mlk_util_strlcpy(ctx->basedir, mlk_util_dirname(basedir), sizeof (ctx->basedir));
