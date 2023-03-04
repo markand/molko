@@ -19,10 +19,36 @@
 #ifndef MLK_CORE_MOUSE_H
 #define MLK_CORE_MOUSE_H
 
+/**
+ * \file mouse.h
+ * \brief Mouse definitions
+ */
+
+/**
+ * \enum mlk_mouse_button
+ * \brief Mouse button
+ *
+ * This enumeration is implemented as a bitmask.
+ */
 enum mlk_mouse_button {
+	/**
+	 * No button pressed.
+	 */
 	MLK_MOUSE_BUTTON_NONE   = 0,
+
+	/**
+	 * Left button.
+	 */
 	MLK_MOUSE_BUTTON_LEFT   = (1 << 0),
+
+	/**
+	 * Middle click button.
+	 */
 	MLK_MOUSE_BUTTON_MIDDLE = (1 << 1),
+
+	/**
+	 * Right button.
+	 */
 	MLK_MOUSE_BUTTON_RIGHT  = (1 << 2)
 };
 
