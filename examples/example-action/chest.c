@@ -49,7 +49,7 @@ handle(struct mlk_action *act, const union mlk_event *ev)
 	cw = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST].cellw;
 	ch = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST].cellh;
 
-	if (!mlk_maths_is_boxed(chest->x, chest->y, cw, ch, ev->click.x, ev->click.y))
+	if (!mlk_maths_is_boxed(ev->click.x, ev->click.y, chest->x, chest->y, cw, ch))
 		return;
 
 	mlk_sound_play(&mlk_registry_sounds[MLK_REGISTRY_SOUND_OPEN_CHEST]);

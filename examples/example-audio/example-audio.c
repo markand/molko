@@ -81,16 +81,16 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 		break;
 	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
-		case MLK_KEY_p:
+		case MLK_KEY_P:
 			mlk_music_pause(music);
 			break;
-		case MLK_KEY_r:
+		case MLK_KEY_R:
 			mlk_music_resume(music);
 			break;
-		case MLK_KEY_q:
+		case MLK_KEY_Q:
 			mlk_music_stop(music);
 			break;
-		case MLK_KEY_l:
+		case MLK_KEY_L:
 			mlk_music_play(music, MLK_MUSIC_LOOP);
 			break;
 		case MLK_KEY_SPACE:

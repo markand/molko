@@ -19,12 +19,9 @@
 #include "maths.h"
 
 int
-mlk_maths_is_boxed(int x, int y, unsigned int w, unsigned int h, int px, int py)
+mlk_maths_is_boxed(int x, int y, int px, int py, unsigned int pw, unsigned int ph)
 {
-	return px > x &&
-	       py > y &&
-	       px < x + (int)w &&
-	       py < y + (int)h;
+	return x >= px && x <= (int)(px + pw) && y >= py && y <= (int)(py + ph);
 }
 
 float

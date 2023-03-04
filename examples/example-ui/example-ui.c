@@ -229,12 +229,12 @@ static int
 headerclick(int x, int y)
 {
 	return mlk_maths_is_boxed(
+	    x,
+	    y,
 	    ui.panel.frame.x,
 	    ui.panel.frame.y,
 	    ui.panel.frame.w,
-	    HEADER_HEIGHT,
-	    x,
-	    y
+	    HEADER_HEIGHT
 	);
 }
 

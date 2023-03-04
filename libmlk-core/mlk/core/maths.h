@@ -19,17 +19,41 @@
 #ifndef MLK_CORE_MATHS_H
 #define MLK_CORE_MATHS_H
 
-#include "core.h"
+/**
+ * \file maths.h
+ * \brief Basic maths
+ */
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * Returns non-zero if the coordinates x, y inside the bounding rectangle.
+ *
+ * \param x the x coordinate
+ * \param y the y coordinate
+ * \param px rectangle x coordinate
+ * \param py rectangle y coordinate
+ * \param pw rectangle width
+ * \param ph rectangle height
+ * \return non-zero if x, y is within pw, ph, px, py
+ */
 int
-mlk_maths_is_boxed(int, int, unsigned int, unsigned int, int, int);
+mlk_maths_is_boxed(int x, int y, int px, int py, unsigned int pw, unsigned int ph);
 
+/**
+ * Scale a value within two ranges.
+ *
+ * \param in the value to scale
+ * \param old_min old minimum
+ * \param old_max old maximum
+ * \param new_min new minimum
+ * \param new_max new maximum
+ * \return scaled value
+ */
 float
-mlk_maths_scale(float, float, float, float, float);
+mlk_maths_scale(float in, float old_min, float old_max, float new_min, float new_max);
 
 #if defined(__cplusplus)
 }

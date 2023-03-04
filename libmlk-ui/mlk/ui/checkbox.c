@@ -33,7 +33,7 @@ is_boxed(const struct mlk_checkbox *cb, const struct mlk_event_click *click)
 	assert(cb);
 	assert(click && click->type == MLK_EVENT_CLICKDOWN);
 
-	return mlk_maths_is_boxed(cb->x, cb->y, cb->w, cb->h, click->x, click->y);
+	return mlk_maths_is_boxed(click->x, click->y, cb->x, cb->y, cb->w, cb->h);
 }
 
 static void
