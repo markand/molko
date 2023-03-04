@@ -1,5 +1,5 @@
 /*
- * core.c -- libcore main entry
+ * core.h -- libmlk-core main entry
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -19,6 +19,13 @@
 #ifndef MLK_CORE_CORE_H
 #define MLK_CORE_CORE_H
 
+/**
+ * \file mlk/core/core.h
+ * \brief libmlk-core main entry
+ *
+ * This is the main header for the libmlk-core file.
+ */
+
 #if defined(__cplusplus)
 #       define MLK_CORE_BEGIN_DECLS extern "C" {
 #       define MLK_CORE_END_DECLS }
@@ -29,9 +36,27 @@
 
 MLK_CORE_BEGIN_DECLS
 
+/**
+ * Initialize the libmlk-core library.
+ *
+ * The caller should specify an organization and a game name, they can be used
+ * when retrieving home/special folder on some platforms.
+ *
+ * The organization is usually a reverse DNS name, e.g. com.example. The name
+ * is just your game name.
+ *
+ * \pre organization != NULL
+ * \pre name != NULL
+ * \param organization the organization name
+ * \param name the game name
+ * \return 0 on success or any error code instead
+ */
 int
-mlk_core_init(const char *, const char *);
+mlk_core_init(const char *organization, const char *name);
 
+/**
+ * Cleanup resources allocated by the library.
+ */
 void
 mlk_core_finish(void);
 

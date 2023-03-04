@@ -1,5 +1,5 @@
 /*
- * core.c -- libcore main entry
+ * core.c -- libmlk-core main entry
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -30,10 +30,12 @@ mlk_core_init(const char *organization, const char *name)
 	assert(organization);
 	assert(name);
 
+	int err;
+
 	srand(time(NULL));
 
-	if (mlk_sys_init(organization, name) < 0)
-		return -1;
+	if ((err = mlk_sys_init(organization, name)) < 0)
+		return err;
 
 	return 0;
 }
