@@ -15,6 +15,11 @@ MAX_INITIALIZER_LINES  = 0
 HIDE_UNDOC_MEMBERS     = YES
 HIDE_UNDOC_CLASSES     = YES
 
+STRIP_FROM_PATH        = libmlk-util \
+                         libmlk-core \
+                         libmlk-ui \
+                         libmlk-rpg
+
 SHOW_INCLUDE_FILES     = NO
 QUIET                  = YES
 
@@ -28,12 +33,14 @@ INPUT                  = libmlk-util \
                          libmlk-core \
                          libmlk-ui \
                          libmlk-rpg
+EXAMPLE_PATH           = examples
 
 FILE_PATTERNS          = *.c *.h
 RECURSIVE              = YES
 
 GENERATE_HTML          = YES
 GENERATE_LATEX         = NO
+
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 
