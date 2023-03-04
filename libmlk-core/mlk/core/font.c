@@ -40,7 +40,10 @@ mlk_font_open(struct mlk_font *font, const char *path, unsigned int size)
 }
 
 int
-mlk_font_openmem(struct mlk_font *font, const void *buffer, size_t buflen, unsigned int size)
+mlk_font_openmem(struct mlk_font *font,
+                 const void *buffer,
+                 size_t buflen,
+                 unsigned int size)
 {
 	assert(font);
 	assert(buffer);
@@ -120,8 +123,8 @@ mlk_font_finish(struct mlk_font *font)
 {
 	assert(font);
 
-	if (font->handle)
+	if (font->handle) {
 		TTF_CloseFont(font->handle);
-
-	memset(font, 0, sizeof (*font));
+		font->handle = NULL;
+	}
 }
