@@ -57,10 +57,19 @@ delegate_draw_frame(struct mlk_button_delegate *delegate, const struct mlk_butto
 	(void)delegate;
 
 	const struct mlk_button_style *style = MLK__STYLE(button, mlk_button_style);
+	unsigned long long border_color, bg_color;
 
-	mlk_painter_set_color(style->border_color);
+	if (button->pressed) {
+		bg_color = style->pressed_bg_color;
+		border_color = style->pressed_border_color;
+	} else {
+		bg_color = style->bg_color;
+		border_color = style->border_color;
+	}
+
+	mlk_painter_set_color(border_color);
 	mlk_painter_draw_rectangle(button->x, button->y, button->w, button->h);
-	mlk_painter_set_color(style->bg_color);
+	mlk_painter_set_color(bg_color);
 	mlk_painter_draw_rectangle(
 		button->x + style->border_size,
 		button->y + style->border_size,
@@ -75,11 +84,17 @@ delegate_draw_text(struct mlk_button_delegate *delegate, const struct mlk_button
 	(void)delegate;
 
 	const struct mlk_button_style *style = MLK__STYLE(button, mlk_button_style);
+	unsigned long long text_color;
+
+	if (button->pressed)
+		text_color = style->pressed_text_color;
+	else
+		text_color = style->text_color;
 
 	mlk_ui_draw_text(
 		MLK_ALIGN_CENTER,
 		style_font(button),
-		style->text_color,
+		text_color,
 		button->text,
 		button->x,
 		button->y,
@@ -89,10 +104,13 @@ delegate_draw_text(struct mlk_button_delegate *delegate, const struct mlk_button
 }
 
 struct mlk_button_style mlk_button_style = {
-	.bg_color       = MLK_UI_COLOR_BG,
-	.text_color     = MLK_UI_COLOR_TEXT,
-	.border_color   = MLK_UI_COLOR_BORDER,
-	.border_size    = 1
+	.bg_color               = MLK_UI_COLOR_BG,
+	.pressed_bg_color       = 0xcdd2daff,
+	.border_color           = MLK_UI_COLOR_BORDER,
+	.pressed_border_color   = 0xa6aebaff,
+	.border_size            = 1,
+	.text_color             = MLK_UI_COLOR_TEXT,
+	.pressed_text_color     = MLK_UI_COLOR_TEXT
 };
 
 struct mlk_button_delegate mlk_button_delegate = {

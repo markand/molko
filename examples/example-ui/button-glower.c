@@ -23,12 +23,14 @@
 static void
 update(struct mlk_button_delegate *delegate, struct mlk_button *button, unsigned int ticks)
 {
-	(void)button;
-
 	struct button_glower *glower = delegate->data;
 
-	mlk_glower_update(&glower->glower, ticks);
-	glower->style.bg_color = glower->glower.color;
+	/* Don't update if pressed. */
+	if (!button->pressed) {
+		mlk_glower_update(&glower->glower, ticks);
+		glower->style.bg_color = glower->glower.color;
+		glower->style.pressed_bg_color = glower->glower.color;
+	}
 }
 
 void
@@ -37,6 +39,7 @@ button_glower_init(struct button_glower *glower, struct mlk_button *button)
 	assert(glower);
 
 	glower->style.bg_color = glower->glower.start;
+	glower->style.pressed_bg_color = glower->glower.start;
 	glower->delegate.data = glower;
 	glower->delegate.update = update;
 

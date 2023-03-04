@@ -26,9 +26,12 @@ struct mlk_font;
 
 struct mlk_button_style {
 	unsigned long bg_color;
+	unsigned long pressed_bg_color;
 	unsigned long border_color;
+	unsigned long pressed_border_color;
 	unsigned long border_size;
 	unsigned long text_color;
+	unsigned long pressed_text_color;
 	struct mlk_font *text_font;
 };
 

@@ -135,7 +135,9 @@ static struct {
 		},
 		.quit_style = {
 			.bg_color = 0x24aed6ff,
-			.text_color = 0xffffffff
+			.pressed_bg_color = 0x328ca7ff,
+			.text_color = 0xffffffff,
+			.pressed_text_color = 0xffffffff
 		},
 		.quit = {
 			.text = "Quit",
@@ -150,7 +152,9 @@ static struct {
 			},
 			.style = {
 				.text_color = 0xffffffff,
+				.pressed_text_color = 0xffffffff,
 				.border_color = BUTTON_STYLE_GLOW_COLOR_1,
+				.pressed_border_color = BUTTON_STYLE_GLOW_COLOR_1,
 				.border_size = 2
 			}
 		},
