@@ -21,6 +21,9 @@ STRIP_FROM_PATH        = libmlk-util \
                          libmlk-rpg
 
 SHOW_INCLUDE_FILES     = NO
+INCLUDE_GRAPH          = NO
+INCLUDED_BY_GRAPH      = NO
+
 QUIET                  = YES
 
 GENERATE_TREEVIEW      = YES
