@@ -41,8 +41,11 @@ static struct mlk_label label = {
 	.y = 10,
 };
 
-static struct mlk_state *states[1];
-static struct mlk_animation animation;
+static struct mlk_state *states[8];
+static struct mlk_animation animation = {
+	.sprite = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_EXPLOSION],
+	.delay = 25
+};
 static int completed = 1;
 
 static void
@@ -94,8 +97,8 @@ draw(struct mlk_state *st)
 
 	unsigned int cellw, cellh;
 
-	cellw = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_NUMBERS].cellw;
-	cellh = mlk_registry_sprites[MLK_REGISTRY_TEXTURE_NUMBERS].cellh;
+	cellw = animation.sprite->cellw;
+	cellh = animation.sprite->cellh;
 
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
@@ -115,8 +118,6 @@ run(void)
 		.update = update,
 		.draw = draw
 	};
-
-	mlk_animation_init(&animation, &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_NUMBERS], 1000);
 
 	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);

@@ -61,7 +61,8 @@ battle_entity_state_attacking_init(struct battle_entity_state_attacking *atk, co
 	assert(atk);
 	assert(mlk_sprite_ok(which));
 
-	mlk_animation_init(&atk->anim, which, 100);
+	atk->anim.sprite = which;
+	atk->anim.delay = 100;
 	mlk_animation_start(&atk->anim);
 }
 

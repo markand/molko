@@ -107,12 +107,12 @@ chest_init(struct chest *chest)
 	assert(chest);
 
 	chest->state = CHEST_STATE_CLOSED;
+	chest->animation.sprite = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST];
+	chest->animation.delay = CHEST_DELAY;
 	chest->action.data = chest;
 	chest->action.handle = handle;
 	chest->action.update = update;
 	chest->action.draw = draw;
-
-	mlk_animation_init(&chest->animation, &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST], CHEST_DELAY);
 
 	return &chest->action;
 }

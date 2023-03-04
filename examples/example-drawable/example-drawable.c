@@ -106,15 +106,16 @@ spawn(int x, int y)
 {
 	struct explosion *ex = mlk_alloc_new0(1, sizeof (*ex));
 
-	mlk_animation_init(&ex->anim, explosion_sprite, 15);
-
 	ex->dw.data = ex;
+	ex->anim.sprite = explosion_sprite;
+	ex->anim.delay = 18;
 	ex->dw.x = x - (int)(explosion_sprite->cellw / 2);
 	ex->dw.y = y - (int)(explosion_sprite->cellh / 2);
 	ex->dw.update = explosion_update;
 	ex->dw.draw = explosion_draw;
 	ex->dw.finish = explosion_finish;
 
+	mlk_animation_start(&ex->anim);
 	mlk_drawable_stack_add(&stack, &ex->dw);
 }
 

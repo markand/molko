@@ -27,12 +27,9 @@
 	for (size_t i = 0; i < (st)->actionsz && ((iter) = (st)->actions[i], 1); ++i)
 
 void
-mlk_action_stack_init(struct mlk_action_stack *st, struct mlk_action **actions, size_t actionsz)
+mlk_action_stack_init(struct mlk_action_stack *st)
 {
 	assert(st);
-
-	st->actions = actions;
-	st->actionsz = actionsz;
 
 	for (size_t i = 0; i < st->actionsz; ++i)
 		st->actions[i] = NULL;

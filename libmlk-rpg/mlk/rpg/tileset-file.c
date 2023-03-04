@@ -196,7 +196,9 @@ parse_animations(struct context *ctx, const char *line)
 			return -1;
 
 		mlk_sprite_init(&anim->sprite, &anim->texture, ctx->tilewidth, ctx->tileheight);
-		mlk_animation_init(&anim->animation, &anim->sprite, delay);
+
+		anim->animation.sprite = &anim->sprite;
+		anim->animation.delay = delay;
 	}
 
 	/*

@@ -40,7 +40,7 @@ style_font(const struct mlk_label *label)
 	return mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 }
 
-static void
+static int
 delegate_query(struct mlk_label_delegate *delegate, const struct mlk_label *label, unsigned int *w, unsigned *h)
 {
 	(void)delegate;
@@ -51,7 +51,9 @@ delegate_query(struct mlk_label_delegate *delegate, const struct mlk_label *labe
 	font = style_font(label);
 
 	if ((err = mlk_font_query(font, label->text, w, h)) < 0)
-		mlk_tracef("mlk_font_query: %s", mlk_err_string(err));
+		return err;
+
+	return 0;
 }
 
 static void
@@ -93,7 +95,18 @@ mlk_label_query(const struct mlk_label *label, unsigned int *w, unsigned int *h)
 {
 	assert(mlk_label_ok(label));
 
-	MLK__DELEGATE_INVOKE(label->delegate, mlk_label_delegate, query, label, w, h);
+	MLK__DELEGATE_INVOKE_RET(label->delegate, mlk_label_delegate, query, label, w, h);
+
+	/*
+	 * Reached only if user decided to set NULL to query which isn't the
+	 * default.
+	 */
+	if (w)
+		*w = 0;
+	if (h)
+		*h = 0;
+
+	return MLK_ERR_NO_SUPPORT;
 }
 
 void

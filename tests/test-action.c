@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <mlk/core/util.h>
+
 #include <mlk/core/action-stack.h>
 #include <mlk/core/action.h>
 #include <mlk/core/err.h>
@@ -209,11 +211,14 @@ test_basics_finish(void)
 static void
 test_stack_add(void)
 {
-	struct mlk_action *actions[10];
-	struct mlk_action_stack st = {0};
 	struct mlk_action act = {0};
+	struct mlk_action *actions[10];
+	struct mlk_action_stack st = {
+		.actions = actions,
+		.actionsz = MLK_UTIL_SIZE(actions)
+	};
 
-	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_init(&st);
 
 	DT_EQ_INT(mlk_action_stack_add(&st, &act), 0);
 
@@ -237,9 +242,12 @@ test_stack_start(void)
 	};
 
 	struct mlk_action *actions[10];
-	struct mlk_action_stack st = {0};
+	struct mlk_action_stack st = {
+		.actions = actions,
+		.actionsz = MLK_UTIL_SIZE(actions)
+	};
 
-	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_init(&st);
 	mlk_action_stack_add(&st, &table[0].act);
 	mlk_action_stack_add(&st, &table[1].act);
 	mlk_action_stack_start(&st);
@@ -271,9 +279,12 @@ test_stack_handle(void)
 	};
 
 	struct mlk_action *actions[10];
-	struct mlk_action_stack st = {0};
+	struct mlk_action_stack st = {
+		.actions = actions,
+		.actionsz = MLK_UTIL_SIZE(actions)
+	};
 
-	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_init(&st);
 	mlk_action_stack_add(&st, &table[0].act);
 	mlk_action_stack_add(&st, &table[1].act);
 	mlk_action_stack_handle(&st, &dummy);
@@ -310,9 +321,12 @@ test_stack_update(void)
 	};
 
 	struct mlk_action *actions[10];
-	struct mlk_action_stack st = {0};
+	struct mlk_action_stack st = {
+		.actions = actions,
+		.actionsz = MLK_UTIL_SIZE(actions)
+	};
 
-	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_init(&st);
 	mlk_action_stack_add(&st, &table[0].act);
 	mlk_action_stack_add(&st, &table[1].act);
 	mlk_action_stack_add(&st, &table[2].act);
@@ -409,9 +423,12 @@ test_stack_draw(void)
 	};
 
 	struct mlk_action *actions[10];
-	struct mlk_action_stack st = {0};
+	struct mlk_action_stack st = {
+		.actions = actions,
+		.actionsz = MLK_UTIL_SIZE(actions)
+	};
 
-	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_init(&st);
 	mlk_action_stack_add(&st, &table[0].act);
 	mlk_action_stack_add(&st, &table[1].act);
 	mlk_action_stack_add(&st, &table[2].act);
@@ -474,9 +491,12 @@ test_stack_finish(void)
 	};
 
 	struct mlk_action *actions[10];
-	struct mlk_action_stack st = {0};
+	struct mlk_action_stack st = {
+		.actions = actions,
+		.actionsz = MLK_UTIL_SIZE(actions)
+	};
 
-	mlk_action_stack_init(&st, actions, 10);
+	mlk_action_stack_init(&st);
 	mlk_action_stack_add(&st, &table[0].act);
 	mlk_action_stack_add(&st, &table[1].act);
 	mlk_action_stack_finish(&st);
