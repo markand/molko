@@ -141,4 +141,6 @@ mlk_game_quit(void)
 
 		mlk_game.states[i] = NULL;
 	}
+
+	mlk_game.state = NULL;
 }
