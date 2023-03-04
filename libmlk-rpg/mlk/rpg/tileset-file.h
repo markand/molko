@@ -22,7 +22,6 @@
 #include <stddef.h>
 
 #include <mlk/core/alloc.h>
-#include <mlk/core/core.h>
 #include <mlk/core/sprite.h>
 #include <mlk/core/texture.h>
 
@@ -36,7 +35,9 @@ struct tileset_file {
 	struct mlk_sprite sprite;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 tileset_file_open(struct tileset_file *, struct tileset *, const char *);
@@ -44,6 +45,8 @@ tileset_file_open(struct tileset_file *, struct tileset *, const char *);
 void
 tileset_file_finish(struct tileset_file *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_TILESET_FILE_H */

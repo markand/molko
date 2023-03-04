@@ -19,8 +19,6 @@
 #ifndef MLK_CORE_DRAWABLE_H
 #define MLK_CORE_DRAWABLE_H
 
-#include "core.h"
-
 struct mlk_drawable {
 	void *data;
 	int x;
@@ -31,7 +29,9 @@ struct mlk_drawable {
 	void (*finish)(struct mlk_drawable *);
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_drawable_update(struct mlk_drawable *, unsigned int);
@@ -45,6 +45,8 @@ mlk_drawable_end(struct mlk_drawable *);
 void
 mlk_drawable_finish(struct mlk_drawable *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_DRAWABLE_H */

@@ -45,8 +45,6 @@
 
 #include <stddef.h>
 
-#include "core.h"
-
 struct mlk_action;
 
 union mlk_event;
@@ -90,7 +88,9 @@ struct mlk_action_script {
 	size_t current;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 /**
  * Initialize the action sequence structure.
@@ -184,6 +184,8 @@ mlk_action_script_draw(struct mlk_action_script *script);
 void
 mlk_action_script_finish(struct mlk_action_script *script);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_ACTION_SCRIPT_H */

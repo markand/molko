@@ -19,8 +19,6 @@
 #ifndef MLK_RPG_PROPERTY_H
 #define MLK_RPG_PROPERTY_H
 
-#include <mlk/core/core.h>
-
 #define PROPERTY_KEY_MAX        (64)
 #define PROPERTY_VALUE_MAX      (1024)
 
@@ -31,7 +29,9 @@ struct property {
 	char value[PROPERTY_VALUE_MAX + 1];
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 property_save(const struct property *, struct save *);
@@ -42,6 +42,8 @@ property_load(struct property *, struct save *);
 int
 property_remove(struct property *, struct save *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_PROPERTY_H */

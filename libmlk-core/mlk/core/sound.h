@@ -21,8 +21,6 @@
 
 #include <stddef.h>
 
-#include "core.h"
-
 #define MLK_SOUND_CHANNELS_MAX (256)
 
 struct mlk_sound {
@@ -30,7 +28,9 @@ struct mlk_sound {
 	int channel;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_sound_open(struct mlk_sound *, const char *);
@@ -56,6 +56,8 @@ mlk_sound_stop(struct mlk_sound *);
 void
 mlk_sound_finish(struct mlk_sound *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_SOUND_H */

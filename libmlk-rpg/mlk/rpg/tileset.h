@@ -21,8 +21,6 @@
 
 #include <stddef.h>
 
-#include <mlk/core/core.h>
-
 struct mlk_sprite;
 
 struct tileset_tiledef {
@@ -46,7 +44,9 @@ struct tileset {
 	struct mlk_sprite *sprite;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 tileset_ok(const struct tileset *);
@@ -60,6 +60,8 @@ tileset_update(struct tileset *, unsigned int);
 void
 tileset_draw(const struct tileset *, unsigned int, unsigned int, int, int);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_TILESET_H */

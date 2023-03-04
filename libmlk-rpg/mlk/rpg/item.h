@@ -19,8 +19,6 @@
 #ifndef MLK_RPG_ITEM_H
 #define MLK_RPG_ITEM_H
 
-#include <mlk/core/core.h>
-
 struct battle;
 struct character;
 struct mlk_texture;
@@ -38,7 +36,9 @@ struct item {
 	                    struct character *);
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 item_exec_menu(const struct item *, struct character *);
@@ -49,6 +49,8 @@ item_exec_battle(const struct item *,
                  struct character *,
                  struct character *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_ITEM_H */

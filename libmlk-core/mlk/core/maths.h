@@ -21,7 +21,9 @@
 
 #include "core.h"
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_maths_is_boxed(int, int, unsigned int, unsigned int, int, int);
@@ -29,6 +31,8 @@ mlk_maths_is_boxed(int, int, unsigned int, unsigned int, int, int);
 float
 mlk_maths_scale(float, float, float, float, float);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_MATHS_H */

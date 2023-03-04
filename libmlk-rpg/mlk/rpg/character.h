@@ -19,8 +19,6 @@
 #ifndef MLK_RPG_CHARACTER_H
 #define MLK_RPG_CHARACTER_H
 
-#include <mlk/core/core.h>
-
 #define CHARACTER_SPELL_MAX (64)
 
 struct battle;
@@ -84,7 +82,9 @@ struct character {
 	void (*exec)(struct character *owner, struct battle *bt);
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 character_ok(const struct character *ch);
@@ -104,6 +104,8 @@ character_save(const struct character *ch, struct save *s);
 int
 character_load(struct character *, struct save *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_CHARACTER_H */

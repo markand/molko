@@ -19,8 +19,6 @@
 #ifndef MLK_UI_ALIGN_H
 #define MLK_UI_ALIGN_H
 
-#include <mlk/core/core.h>
-
 enum mlk_align {
 	MLK_ALIGN_NONE,
 	MLK_ALIGN_CENTER,
@@ -34,7 +32,9 @@ enum mlk_align {
 	MLK_ALIGN_LEFT
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 mlk_align(enum mlk_align,
@@ -47,6 +47,8 @@ mlk_align(enum mlk_align,
           unsigned int,
           unsigned int);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_UI_ALIGN_H */

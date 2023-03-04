@@ -21,11 +21,11 @@
 
 #include <stddef.h>
 
-#include "core.h"
-
 struct mlk_texture;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_image_open(struct mlk_texture *, const char *);
@@ -33,6 +33,8 @@ mlk_image_open(struct mlk_texture *, const char *);
 int
 mlk_image_openmem(struct mlk_texture *, const void *, size_t);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_IMAGE_H */

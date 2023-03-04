@@ -23,7 +23,6 @@ set(
 	action
 	action-script
 	alloc
-	character
 	color
 	drawable
 	map

@@ -85,7 +85,9 @@ struct mlk_sprite {
 	unsigned int ncols;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 /**
  * Initialize the sprite by computing the number of rows and columns.
@@ -153,6 +155,8 @@ mlk_sprite_scale(const struct mlk_sprite *sprite,
                  unsigned int w,
                  unsigned int h);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_SPRITE_H */

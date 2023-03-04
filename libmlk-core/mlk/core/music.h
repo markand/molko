@@ -21,8 +21,6 @@
 
 #include <stddef.h>
 
-#include "core.h"
-
 enum mlk_music_flags {
 	MLK_MUSIC_NONE  = 0,
 	MLK_MUSIC_LOOP  = (1 << 0)
@@ -32,7 +30,9 @@ struct mlk_music {
 	void *handle;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_music_open(struct mlk_music *, const char *);
@@ -58,6 +58,8 @@ mlk_music_stop(struct mlk_music *);
 void
 mlk_music_finish(struct mlk_music *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_MUSIC_H */

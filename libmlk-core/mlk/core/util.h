@@ -19,11 +19,11 @@
 #ifndef MLK_CORE_UTIL_H
 #define MLK_CORE_UTIL_H
 
-#include "core.h"
-
 #define MLK_UTIL_SIZE(x) (sizeof ((x)) / sizeof ((x)[0]))
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 mlk_util_delay(unsigned int);
@@ -34,6 +34,8 @@ mlk_util_pathf(const char *, ...);
 unsigned int
 mlk_util_nrand(unsigned int, unsigned int);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_UTIL_H */

@@ -21,7 +21,6 @@
 
 #include <stddef.h>
 
-#include <mlk/core/core.h>
 #include <mlk/core/texture.h>
 
 struct mlk_font;
@@ -64,7 +63,9 @@ struct message {
 	double scale;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 message_start(struct message *msg);
@@ -84,6 +85,8 @@ message_draw(const struct message *msg);
 void
 message_hide(struct message *msg);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_MESSAGE_H */

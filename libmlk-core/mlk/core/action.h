@@ -34,8 +34,6 @@
  * battles, maps, etc).
  */
 
-#include "core.h"
-
 union mlk_event;
 
 /**
@@ -118,7 +116,9 @@ struct mlk_action {
 	void (*finish)(struct mlk_action *);
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 /**
  * Invoke ::mlk_action::start function if not null.
@@ -176,6 +176,8 @@ mlk_action_end(struct mlk_action *action);
 void
 mlk_action_finish(struct mlk_action *action);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_ACTION_H */

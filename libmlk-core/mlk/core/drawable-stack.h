@@ -21,14 +21,14 @@
 
 #include <stddef.h>
 
-#include "core.h"
-
 struct mlk_drawable_stack {
 	struct mlk_drawable **objects;
 	size_t objectsz;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 mlk_drawable_stack_init(struct mlk_drawable_stack *);
@@ -48,6 +48,8 @@ mlk_drawable_stack_completed(const struct mlk_drawable_stack *);
 void
 mlk_drawable_stack_finish(struct mlk_drawable_stack *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_DRAWABLE_STACK_H */

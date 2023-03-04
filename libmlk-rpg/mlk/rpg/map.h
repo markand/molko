@@ -23,7 +23,6 @@
 
 #include <mlk/core/action.h>
 #include <mlk/core/action-stack.h>
-#include <mlk/core/core.h>
 
 #include "walksprite.h"
 
@@ -98,7 +97,9 @@ struct map {
 	struct map_layer layers[MAP_LAYER_TYPE_NUM];
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 map_init(struct map *map);
@@ -115,6 +116,8 @@ map_draw(const struct map *map);
 void
 map_finish(struct map *map);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_MAP_H */

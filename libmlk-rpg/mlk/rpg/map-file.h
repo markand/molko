@@ -20,7 +20,6 @@
 #define MLK_RPG_MAP_FILE_H
 
 #include <mlk/core/alloc.h>
-#include <mlk/core/core.h>
 #include <mlk/core/sprite.h>
 #include <mlk/core/texture.h>
 
@@ -40,7 +39,9 @@ struct map_file {
 	struct mlk_alloc_pool blocks;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 map_file_open(struct map_file *file, struct map *map, const char *path);
@@ -48,6 +49,8 @@ map_file_open(struct map_file *file, struct map *map, const char *path);
 void
 map_file_finish(struct map_file *file);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_MAP_FILE_H */

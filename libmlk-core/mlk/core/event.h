@@ -19,7 +19,6 @@
 #ifndef MLK_CORE_EVENT_H
 #define MLK_CORE_EVENT_H
 
-#include "core.h"
 #include "key.h"
 #include "mouse.h"
 #include "gamepad.h"
@@ -77,11 +76,15 @@ union mlk_event {
 	struct mlk_event_axis axis;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_event_poll(union mlk_event *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_EVENT_H */

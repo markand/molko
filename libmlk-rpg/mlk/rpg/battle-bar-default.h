@@ -59,8 +59,6 @@ struct battle_bar_default {
 	struct mlk_gridmenu grid;
 };
 
-MLK_CORE_BEGIN_DECLS
-
 void
 battle_bar_default_init(struct battle_bar_default *);
 

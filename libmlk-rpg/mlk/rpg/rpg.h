@@ -19,9 +19,9 @@
 #ifndef MLK_RPG_RPG_H
 #define MLK_RPG_RPG_H
 
-#include <mlk/core/core.h>
-
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 rpg_init(void);
@@ -29,6 +29,8 @@ rpg_init(void);
 void
 rpg_finish(void);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_H */

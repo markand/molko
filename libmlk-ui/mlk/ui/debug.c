@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include <mlk/core/font.h>
 #include <mlk/core/texture.h>
 
 #include "debug.h"

@@ -19,8 +19,6 @@
 #ifndef MLK_RPG_EQUIPMENT_H
 #define MLK_RPG_EQUIPMENT_H
 
-#include <mlk/core/core.h>
-
 struct character;
 struct mlk_texture;
 
@@ -53,7 +51,9 @@ struct equipment {
 	void (*equip)(const struct equipment *, struct character *);
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 equipment_ok(const struct equipment *);
@@ -61,6 +61,8 @@ equipment_ok(const struct equipment *);
 void
 equipment_equip(const struct equipment *, struct character *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_EQUIPMENT_H */

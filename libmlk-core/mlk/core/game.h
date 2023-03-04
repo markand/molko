@@ -21,7 +21,6 @@
 
 #include <stddef.h>
 
-#include "core.h"
 #include "inhibit.h"
 
 struct mlk_state;
@@ -37,7 +36,9 @@ struct mlk_game {
 
 extern struct mlk_game game;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 mlk_game_init(struct mlk_state **, size_t);
@@ -63,6 +64,8 @@ mlk_game_loop(void);
 void
 mlk_game_quit(void);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_GAME_H */

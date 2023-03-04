@@ -19,11 +19,22 @@
 #ifndef MLK_CORE_PAINTER_H
 #define MLK_CORE_PAINTER_H
 
-#include "core.h"
+#define MLK_PAINTER_BEGIN(tex)                                          \
+do {                                                                    \
+        struct mlk_texture *__current_texture__;                        \
+                                                                        \
+        __current_texture__ = mlk_painter_get_target();                 \
+        mlk_painter_set_target((tex))
+
+#define MLK_PAINTER_END()                                               \
+        mlk_painter_set_target(__current_texture__);                    \
+} while (0)
 
 struct mlk_texture;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 struct mlk_texture *
 mlk_painter_get_target(void);
@@ -55,17 +66,8 @@ mlk_painter_clear(void);
 void
 mlk_painter_present(void);
 
-MLK_CORE_END_DECLS
-
-#define MLK_PAINTER_BEGIN(tex)                                          \
-do {                                                                    \
-        struct mlk_texture *__current_texture__;                        \
-                                                                        \
-        __current_texture__ = mlk_painter_get_target();                 \
-        mlk_painter_set_target((tex))
-
-#define MLK_PAINTER_END()                                               \
-        mlk_painter_set_target(__current_texture__);                    \
-} while (0)
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_PAINTER_H */

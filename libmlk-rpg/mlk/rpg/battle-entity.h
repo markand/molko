@@ -35,8 +35,6 @@ struct battle_entity {
 	struct battle_entity_state *state;
 };
 
-MLK_CORE_BEGIN_DECLS
-
 void
 battle_entity_init(struct battle_entity *);
 

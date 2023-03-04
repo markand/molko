@@ -124,8 +124,6 @@
 
 #include <stddef.h>
 
-#include "core.h"
-
 /**
  * \struct mlk_alloc_funcs
  * \brief Custom allocator
@@ -170,7 +168,9 @@ struct mlk_alloc_pool {
 	void (*finalizer)(void *);
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 /**
  * Replace the memory allocators.
@@ -284,6 +284,8 @@ mlk_alloc_pool_shrink(struct mlk_alloc_pool *);
 void
 mlk_alloc_pool_finish(struct mlk_alloc_pool *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_ALLOC_H */

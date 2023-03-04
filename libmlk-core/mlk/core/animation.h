@@ -29,8 +29,6 @@
  * draw next frames depending on delay set.
  */
 
-#include "core.h"
-
 struct mlk_sprite;
 
 /**
@@ -59,7 +57,9 @@ struct mlk_animation {
 	/** \endcond MLK_PRIVATE_DECLS */
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 /**
  * Start or reset the animation to the beginning.
@@ -107,6 +107,8 @@ mlk_animation_update(struct mlk_animation *animation, unsigned int ticks);
 int
 mlk_animation_draw(const struct mlk_animation *animation, int x, int y);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_ANIMATION_H */

@@ -19,8 +19,6 @@
 #ifndef MLK_UI_LABEL_H
 #define MLK_UI_LABEL_H
 
-#include <mlk/core/core.h>
-
 struct mlk_font;
 struct mlk_label;
 
@@ -46,7 +44,9 @@ struct mlk_label {
 extern struct mlk_label_style mlk_label_style;
 extern struct mlk_label_delegate mlk_label_delegate;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_label_ok(const struct mlk_label *);
@@ -60,6 +60,8 @@ mlk_label_update(struct mlk_label *, unsigned int ticks);
 void
 mlk_label_draw(const struct mlk_label *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_UI_LABEL_H */

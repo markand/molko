@@ -19,8 +19,6 @@
 #ifndef MLK_RPG_INVENTORY_H
 #define MLK_RPG_INVENTORY_H
 
-#include <mlk/core/core.h>
-
 #define INVENTORY_ITEM_MAX (512)
 
 struct item;
@@ -34,7 +32,9 @@ struct inventory {
 	struct inventory_slot items[INVENTORY_ITEM_MAX];
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 inventory_add(struct inventory *, const struct item *, unsigned int);
@@ -42,6 +42,8 @@ inventory_add(struct inventory *, const struct item *, unsigned int);
 void
 inventory_consume(struct inventory *, const struct item *, unsigned int);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_INVENTORY_H */

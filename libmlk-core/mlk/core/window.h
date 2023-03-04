@@ -19,8 +19,6 @@
 #ifndef MLK_CORE_WINDOW_H
 #define MLK_CORE_WINDOW_H
 
-#include "core.h"
-
 struct mlk_window {
 	unsigned int w;
 	unsigned int h;
@@ -41,7 +39,9 @@ enum mlk_window_cursor {
 
 extern struct mlk_window mlk_window;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_window_open(const char *, unsigned int, unsigned int);
@@ -52,6 +52,8 @@ mlk_window_set_cursor(enum mlk_window_cursor);
 void
 mlk_window_finish(void);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_WINDOW_H */

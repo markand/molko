@@ -19,8 +19,6 @@
 #ifndef MLK_UI_FRAME_H
 #define MLK_UI_FRAME_H
 
-#include <mlk/core/core.h>
-
 struct mlk_frame;
 
 struct mlk_frame_style {
@@ -45,7 +43,9 @@ struct mlk_frame {
 extern struct mlk_frame_style mlk_frame_style;
 extern struct mlk_frame_delegate mlk_frame_delegate;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_frame_ok(const struct mlk_frame *frame);
@@ -56,6 +56,8 @@ mlk_frame_update(struct mlk_frame *frame, unsigned int ticks);
 void
 mlk_frame_draw(const struct mlk_frame *frame);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_UI_FRAME_H */

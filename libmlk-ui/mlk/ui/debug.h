@@ -21,9 +21,6 @@
 
 #include <stdarg.h>
 
-#include <mlk/core/core.h>
-#include <mlk/core/font.h>
-
 #define MLK_DEBUG_LINE_MAX 256
 
 struct mlk_theme;
@@ -36,9 +33,11 @@ struct mlk_debug_report {
 	unsigned int count;
 };
 
-MLK_CORE_BEGIN_DECLS
-
 extern struct mlk_debug_options mlk_debug_options;
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 mlk_debugf(struct mlk_debug_report *, const char *, ...);
@@ -46,6 +45,8 @@ mlk_debugf(struct mlk_debug_report *, const char *, ...);
 void
 mlk_debugva(struct mlk_debug_report *, const char *, va_list);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_UI_DEBUG_H */

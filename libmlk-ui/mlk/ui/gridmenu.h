@@ -21,8 +21,6 @@
 
 #include <stddef.h>
 
-#include <mlk/core/core.h>
-
 #include "label.h"
 
 union mlk_event;
@@ -65,7 +63,9 @@ struct mlk_gridmenu {
 extern struct mlk_gridmenu_style mlk_gridmenu_style;
 extern struct mlk_gridmenu_delegate mlk_gridmenu_delegate;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_gridmenu_ok(const struct mlk_gridmenu *);
@@ -82,6 +82,8 @@ mlk_gridmenu_update(struct mlk_gridmenu *, unsigned int);
 void
 mlk_gridmenu_draw(const struct mlk_gridmenu *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_UI_GRIDMENU_H */

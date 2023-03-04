@@ -21,8 +21,6 @@
 
 #include <stddef.h>
 
-#include <mlk/core/core.h>
-
 struct mlk_font;
 struct mlk_texture;
 
@@ -54,7 +52,9 @@ struct mlk_notify_delegate {
 extern struct mlk_notify_style mlk_notify_style;
 extern struct mlk_notify_delegate mlk_notify_delegate;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 mlk_notify(const struct mlk_texture *, const char *, const char *);
@@ -65,6 +65,8 @@ mlk_notify_update(unsigned int ticks);
 void
 mlk_notify_draw(void);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /*! MLK_UI_NOTIFY_H */

@@ -19,8 +19,6 @@
 #ifndef MLK_UI_BUTTON_H
 #define MLK_UI_BUTTON_H
 
-#include <mlk/core/core.h>
-
 union mlk_event;
 
 struct mlk_button;
@@ -53,7 +51,9 @@ struct mlk_button {
 extern struct mlk_button_style mlk_button_style;
 extern struct mlk_button_delegate mlk_button_delegate;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_button_ok(const struct mlk_button *);
@@ -67,6 +67,8 @@ mlk_button_update(struct mlk_button *, unsigned int);
 void
 mlk_button_draw(const struct mlk_button *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_UI_BUTTON_H */

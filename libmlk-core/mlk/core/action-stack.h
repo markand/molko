@@ -32,8 +32,6 @@
 
 #include <stddef.h>
 
-#include "core.h"
-
 struct mlk_action;
 
 union mlk_event;
@@ -63,7 +61,9 @@ struct mlk_action_stack {
 	size_t actionsz;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 /**
  * Initialize the action sequence structure.
@@ -151,6 +151,8 @@ mlk_action_stack_draw(const struct mlk_action_stack *stack);
 void
 mlk_action_stack_finish(struct mlk_action_stack *stack);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_ACTION_STACK_H */

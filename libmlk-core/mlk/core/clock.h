@@ -29,8 +29,6 @@
  * get the frame ticks instead.
  */
 
-#include "core.h"
-
 /**
  * \struct mlk_clock
  * \brief Clock structure
@@ -43,7 +41,9 @@ struct mlk_clock {
 	/** \endcond MLK_PRIVATE_DECLS */
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 /**
  * Start or reset the clock.
@@ -65,6 +65,8 @@ mlk_clock_start(struct mlk_clock *clock);
 unsigned int
 mlk_clock_elapsed(const struct mlk_clock *clock);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_CLOCK_H */

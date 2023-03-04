@@ -19,8 +19,6 @@
 #ifndef MLK_RPG_WALKSPRITE_H
 #define MLK_RPG_WALKSPRITE_H
 
-#include <mlk/core/core.h>
-
 struct mlk_sprite;
 
 /**
@@ -60,7 +58,9 @@ struct walksprite {
 	unsigned int elapsed;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 walksprite_init(struct walksprite *, struct mlk_sprite *, unsigned int);
@@ -74,6 +74,8 @@ walksprite_update(struct walksprite *, unsigned int);
 void
 walksprite_draw(const struct walksprite *, unsigned int, int, int);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_WALKSPRITE_H */

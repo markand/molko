@@ -19,10 +19,6 @@
 #ifndef MLK_CORE_GAMEPAD_H
 #define MLK_CORE_GAMEPAD_H
 
-#include "core.h"
-
-MLK_CORE_BEGIN_DECLS
-
 enum mlk_gamepad_button {
 	MLK_GAMEPAD_BUTTON_UNKNOWN,
 	MLK_GAMEPAD_BUTTON_A,
@@ -63,6 +59,10 @@ struct mlk_gamepad_iter {
 	int end;
 };
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 int
 mlk_gamepad_open(struct mlk_gamepad *pad, int idx);
 
@@ -75,6 +75,8 @@ mlk_gamepad_iter_begin(struct mlk_gamepad_iter *);
 int
 mlk_gamepad_iter_next(struct mlk_gamepad_iter *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_GAMEPAD_H */

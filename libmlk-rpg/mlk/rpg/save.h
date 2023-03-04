@@ -45,7 +45,9 @@ enum save_stmt_errno {
 	SAVE_STMT_ERROR
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 save_open(struct save *, unsigned int, enum save_mode);
@@ -82,6 +84,8 @@ save_tx_rollback(struct save *);
 void
 save_tx_commit(struct save *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_SAVE_H */

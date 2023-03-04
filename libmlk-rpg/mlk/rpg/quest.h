@@ -21,8 +21,6 @@
 
 #include <stddef.h>
 
-#include <mlk/core/core.h>
-
 struct save;
 
 struct quest_step {
@@ -38,7 +36,9 @@ struct quest {
 	size_t stepsz;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 quest_save(struct quest *, struct save *);
@@ -46,6 +46,8 @@ quest_save(struct quest *, struct save *);
 int
 quest_load(struct quest *, struct save *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_QUEST_H */

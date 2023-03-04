@@ -19,8 +19,6 @@
 #ifndef MLK_CORE_STATE_H
 #define MLK_CORE_STATE_H
 
-#include "core.h"
-
 union mlk_event;
 
 struct mlk_state {
@@ -35,7 +33,9 @@ struct mlk_state {
 	void (*finish)(struct mlk_state *);
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 mlk_state_start(struct mlk_state *);
@@ -61,6 +61,8 @@ mlk_state_end(struct mlk_state *);
 void
 mlk_state_finish(struct mlk_state *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_STATE_H */

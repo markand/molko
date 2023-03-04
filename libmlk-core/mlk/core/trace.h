@@ -21,13 +21,13 @@
 
 #include <stdarg.h>
 
-#include "core.h"
-
 #define TRACE_LINE_MAX (1024)
 
 extern void (*mlk_trace_handler)(const char *);
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 mlk_tracef(const char *, ...);
@@ -35,6 +35,8 @@ mlk_tracef(const char *, ...);
 void
 mlk_traceva(const char *, va_list);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_TRACE_H */

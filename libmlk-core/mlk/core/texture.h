@@ -19,7 +19,6 @@
 #ifndef MLK_CORE_TEXTURE_H
 #define MLK_CORE_TEXTURE_H
 
-#include "core.h"
 #include "err.h"
 
 struct mlk_texture {
@@ -36,7 +35,9 @@ enum mlk_texture_blend {
 	MLK_TEXTURE_BLEND_LAST
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_texture_new(struct mlk_texture *, unsigned int, unsigned int);
@@ -71,6 +72,8 @@ mlk_texture_scale(const struct mlk_texture *,
 void
 mlk_texture_finish(struct mlk_texture *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_TEXTURE_H */

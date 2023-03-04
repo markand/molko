@@ -21,8 +21,6 @@
 
 #include <mlk/core/core.h>
 
-MLK_CORE_BEGIN_DECLS
-
 /* TODO: make this a global variable to allow modification of default theme. */
 /* https://lospec.com/palette-list/duel */
 #define MLK_UI_COLOR_TEXT       0x222323ff
@@ -42,6 +40,10 @@ enum mlk_ui_font {
 
 extern struct mlk_font *mlk_ui_fonts[MLK_UI_FONT_LAST];
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 int
 mlk_ui_init(void);
 
@@ -59,6 +61,8 @@ mlk_ui_draw_text(enum mlk_align align,
 void
 mlk_ui_finish(void);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_UI_UI_H */

@@ -21,13 +21,13 @@
 
 #include <stdarg.h>
 
-#include "core.h"
-
 #define PANIC_LINE_MAX (256)
 
 extern void (*mlk_panic_handler)(const char *);
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 mlk_panicf(const char *, ...);
@@ -38,6 +38,8 @@ mlk_panicva(const char *, va_list);
 void
 mlk_panic(int err);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_PANIC_H */

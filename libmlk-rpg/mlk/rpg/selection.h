@@ -47,7 +47,9 @@ struct selection {
 	unsigned int index_side;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 void
 selection_first(struct selection *, const struct battle *);

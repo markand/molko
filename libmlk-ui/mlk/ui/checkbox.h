@@ -19,8 +19,6 @@
 #ifndef MLK_UI_CHECKBOX_H
 #define MLK_UI_CHECKBOX_H
 
-#include <mlk/core/core.h>
-
 union mlk_event;
 
 struct mlk_checkbox;
@@ -49,7 +47,9 @@ struct mlk_checkbox {
 extern struct mlk_checkbox_style mlk_checkbox_style;
 extern struct mlk_checkbox_delegate mlk_checkbox_delegate;
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_checkbox_ok(const struct mlk_checkbox *cb);
@@ -63,6 +63,8 @@ mlk_checkbox_update(struct mlk_checkbox *cb, unsigned int ticks);
 void
 mlk_checkbox_draw(const struct mlk_checkbox *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_UI_CHECKBOX_H */

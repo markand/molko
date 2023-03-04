@@ -21,13 +21,13 @@
 
 #include <stdarg.h>
 
-#include "core.h"
-
 enum mlk_sys_dir {
 	MLK_SYS_DIR_SAVE
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_sys_init(const char *, const char *);
@@ -41,6 +41,8 @@ mlk_sys_mkdir(const char *);
 void
 mlk_sys_finish(void);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_SYS_H */

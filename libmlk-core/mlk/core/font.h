@@ -21,8 +21,6 @@
 
 #include <stddef.h>
 
-#include "core.h"
-
 struct mlk_texture;
 
 enum mlk_font_style {
@@ -36,7 +34,9 @@ struct mlk_font {
 	void *handle;
 };
 
-MLK_CORE_BEGIN_DECLS
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 int
 mlk_font_open(struct mlk_font *, const char *, unsigned int);
@@ -59,6 +59,8 @@ mlk_font_query(const struct mlk_font *, const char *, unsigned int *, unsigned i
 void
 mlk_font_finish(struct mlk_font *);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_FONT_H */

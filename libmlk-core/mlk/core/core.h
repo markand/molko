@@ -27,14 +27,8 @@
  */
 
 #if defined(__cplusplus)
-#       define MLK_CORE_BEGIN_DECLS extern "C" {
-#       define MLK_CORE_END_DECLS }
-#else
-#       define MLK_CORE_BEGIN_DECLS
-#       define MLK_CORE_END_DECLS
+extern "C" {
 #endif
-
-MLK_CORE_BEGIN_DECLS
 
 /**
  * Initialize the libmlk-core library.
@@ -60,6 +54,8 @@ mlk_core_init(const char *organization, const char *name);
 void
 mlk_core_finish(void);
 
-MLK_CORE_END_DECLS
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_CORE_CORE_H */
