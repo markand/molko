@@ -90,7 +90,7 @@ int
 mlk_drawable_stack_completed(const struct mlk_drawable_stack *stack);
 
 /**
- * Invoke ::mlk_draw_update on all drawables.
+ * Invoke ::mlk_drawable_update on all drawables.
  *
  * \pre stack != NULL
  * \param stack the drawable stack
@@ -101,7 +101,7 @@ int
 mlk_drawable_stack_update(struct mlk_drawable_stack *stack, unsigned int ticks);
 
 /**
- * Invoke ::mlk_draw_update on all drawables.
+ * Invoke ::mlk_drawable_update on all drawables.
  *
  * \pre stack != NULL
  * \param stack the drawable stack
@@ -110,7 +110,7 @@ void
 mlk_drawable_stack_draw(struct mlk_drawable_stack *stack);
 
 /**
- * Invoke ::mlk_draw_finish on all drawables left.
+ * Invoke ::mlk_drawable_finish on all drawables left.
  *
  * \pre stack != NULL
  * \param stack the drawable stack
