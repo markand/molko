@@ -51,18 +51,6 @@ mlk_action_stack_add(struct mlk_action_stack *st, struct mlk_action *act)
 	return MLK_ERR_NO_MEM;
 }
 
-void
-mlk_action_stack_start(struct mlk_action_stack *st)
-{
-	assert(st);
-
-	struct mlk_action *act;
-
-	FOREACH(st, act)
-		if (act)
-			mlk_action_start(act);
-}
-
 int
 mlk_action_stack_completed(const struct mlk_action_stack *st)
 {
@@ -75,6 +63,18 @@ mlk_action_stack_completed(const struct mlk_action_stack *st)
 			return 0;
 
 	return 1;
+}
+
+void
+mlk_action_stack_start(struct mlk_action_stack *st)
+{
+	assert(st);
+
+	struct mlk_action *act;
+
+	FOREACH(st, act)
+		if (act)
+			mlk_action_start(act);
 }
 
 void

@@ -53,7 +53,7 @@ struct mlk_action_stack {
 	/**
 	 * (read-write)
 	 *
-	 * Number of actions in array ::mlk_action_script::actions
+	 * Number of actions in array ::mlk_action_stack::actions
 	 *
 	 * \warning changing this value must be kept in sync with the array
 	 *          dimension.
@@ -66,7 +66,7 @@ extern "C" {
 #endif
 
 /**
- * Initialize the action sequence structure.
+ * Initialize the action stack structure.
  *
  * This function will set all pointers in the ::mlk_action_stack::actions to
  * NULL.
@@ -129,6 +129,7 @@ mlk_action_stack_handle(struct mlk_action_stack *stack,
  * \pre stack != NULL
  * \param stack the action stack
  * \param ticks frame ticks
+ * \return non-zero if completed
  */
 int
 mlk_action_stack_update(struct mlk_action_stack *stack,
@@ -144,6 +145,7 @@ void
 mlk_action_stack_draw(const struct mlk_action_stack *stack);
 
 /**
+ * Invoke ::mlk_action_finish on all actions left.
  *
  * \pre stack != NULL
  * \param stack the action stack

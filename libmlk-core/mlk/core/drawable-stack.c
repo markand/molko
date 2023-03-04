@@ -1,5 +1,5 @@
 /*
- * drawable-stack.c -- convenient stack of drawables
+ * drawable-stack.c -- convenient stack of drawable objects
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -52,6 +52,20 @@ mlk_drawable_stack_add(struct mlk_drawable_stack *st, struct mlk_drawable *dw)
 }
 
 int
+mlk_drawable_stack_completed(const struct mlk_drawable_stack *st)
+{
+	assert(st);
+
+	struct mlk_drawable *dw;
+
+	DRAWABLE_FOREACH(st, dw)
+		if (dw)
+			return 0;
+
+	return 1;
+}
+
+int
 mlk_drawable_stack_update(struct mlk_drawable_stack *st, unsigned int ticks)
 {
 	assert(st);
@@ -85,20 +99,6 @@ mlk_drawable_stack_draw(struct mlk_drawable_stack *st)
 	DRAWABLE_FOREACH(st, dw)
 		if (dw)
 			mlk_drawable_draw(dw);
-}
-
-int
-mlk_drawable_stack_completed(const struct mlk_drawable_stack *st)
-{
-	assert(st);
-
-	struct mlk_drawable *dw;
-
-	DRAWABLE_FOREACH(st, dw)
-		if (dw)
-			return 0;
-
-	return 1;
 }
 
 void
