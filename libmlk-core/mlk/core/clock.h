@@ -19,19 +19,51 @@
 #ifndef MLK_CORE_CLOCK_H
 #define MLK_CORE_CLOCK_H
 
+/**
+ * \file mlk/core/clock.h
+ * \brief Track elapsed time
+ *
+ * This simple module provide functions to keep track of elapsed time.
+ *
+ * It is mostly used in the game loop because most objects in the overall API
+ * get the frame ticks instead.
+ */
+
 #include "core.h"
 
+/**
+ * \struct mlk_clock
+ * \brief Clock structure
+ *
+ * This structure is non-opaque but has no public fields.
+ */
 struct mlk_clock {
+	/** \cond MLK_PRIVATE_DECLS */
 	unsigned int ticks;
+	/** \endcond MLK_PRIVATE_DECLS */
 };
 
 MLK_CORE_BEGIN_DECLS
 
+/**
+ * Start or reset the clock.
+ *
+ * \pre clock != NULL
+ * \param clock the clock timer
+ */
 void
-mlk_clock_start(struct mlk_clock *);
+mlk_clock_start(struct mlk_clock *clock);
 
+/**
+ * Returns the number of elapsed milliseconds since last call to
+ * ::mlk_clock_start.
+ *
+ * \pre clock != NULL
+ * \param clock the clock timer
+ * \return the number of elapsed milliseconds
+ */
 unsigned int
-mlk_clock_elapsed(const struct mlk_clock *);
+mlk_clock_elapsed(const struct mlk_clock *clock);
 
 MLK_CORE_END_DECLS
 
