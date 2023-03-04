@@ -22,17 +22,10 @@
 #include "texture.h"
 
 void
-mlk_sprite_init(struct mlk_sprite *sprite,
-            struct mlk_texture *tex,
-            unsigned int cellw,
-            unsigned int cellh)
+mlk_sprite_init(struct mlk_sprite *sprite)
 {
-	assert(sprite);
-	assert(tex && mlk_texture_ok(tex));
+	assert(mlk_sprite_ok(sprite));
 
-	sprite->texture = tex;
-	sprite->cellw = cellw;
-	sprite->cellh = cellh;
 	sprite->nrows = tex->h / cellh;
 	sprite->ncols = tex->w / cellw;
 }
@@ -40,12 +33,14 @@ mlk_sprite_init(struct mlk_sprite *sprite,
 int
 mlk_sprite_ok(const struct mlk_sprite *sprite)
 {
-	return sprite && mlk_texture_ok(sprite->texture) && sprite->cellw != 0 && sprite->cellh != 0;
+	return sprite && sprite->cellw && sprite->cellh && mlk_texture_ok(sprite->texture);
 }
 
 int
 mlk_sprite_draw(const struct mlk_sprite *sprite, unsigned int r, unsigned int c, int x, int y)
 {
+	assert(mlk_sprite_ok(sprite));
+
 	return mlk_sprite_scale(sprite, r, c, x, y, sprite->cellw, sprite->cellh);
 }
 

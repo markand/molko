@@ -102,7 +102,7 @@ mlk_animation_update(struct mlk_animation *animation, unsigned int ticks);
  * \param animation the animation
  * \param x the x coordinate
  * \param y the y coordinate
- * \return 0 on success or any error from ::mlk_sprite_draw function
+ * \return 0 on success or any error propagated from ::mlk_sprite_draw.
  */
 int
 mlk_animation_draw(const struct mlk_animation *animation, int x, int y);
