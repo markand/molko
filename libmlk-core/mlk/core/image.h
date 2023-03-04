@@ -19,6 +19,11 @@
 #ifndef MLK_CORE_IMAGE_H
 #define MLK_CORE_IMAGE_H
 
+/*
+ * \file mlk/core/image.h
+ * \brief Basic image management
+ */
+
 #include <stddef.h>
 
 struct mlk_texture;
@@ -27,11 +32,33 @@ struct mlk_texture;
 extern "C" {
 #endif
 
+/**
+ * Open an image from the given filesystem path.
+ *
+ * The texture must be destroyed using ::mlk_texture_finish once no longer
+ * needed.
+ *
+ * \pre texture != NULL
+ * \param texture the texture to initialize
+ * \param path path to the image file (e.g. .png, .jpeg, etc)
+ * \return 0 on success or any error code instead
+ */
 int
-mlk_image_open(struct mlk_texture *, const char *);
+mlk_image_open(struct mlk_texture *texture, const char *path);
 
+/**
+ * Open an image from a const binary data.
+ *
+ * The binary data must be kept alive until the texture is no longer used.
+ *
+ * \pre texture != NULL
+ * \param texture the texture to initialize
+ * \param data the image content
+ * \param datasz the image content length
+ * \return 0 on success or any error code instead
+ */
 int
-mlk_image_openmem(struct mlk_texture *, const void *, size_t);
+mlk_image_openmem(struct mlk_texture *texture, const void *data, size_t datasz);
 
 #if defined(__cplusplus)
 }
