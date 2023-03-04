@@ -41,8 +41,6 @@
 #define MX      ((MLK_EXAMPLE_W / 2) - (MW / 2))
 #define MY      (100)
 
-static struct mlk_state *states[1];
-
 static void
 init(void)
 {
@@ -93,7 +91,7 @@ run(struct message *msg)
 
 	message_start(msg);
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

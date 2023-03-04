@@ -54,8 +54,6 @@
 
 #define PADDING         (10)
 
-static struct mlk_state *states[8];
-
 /*
  * We design a basic UI like this.
  *
@@ -344,7 +342,7 @@ run(void)
 
 	resize();
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

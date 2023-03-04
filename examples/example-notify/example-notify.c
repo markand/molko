@@ -42,7 +42,6 @@ static struct mlk_label help = {
 	.y = 10
 };
 static struct mlk_texture *icon;
-static struct mlk_state *states[1];
 
 static void
 init(void)
@@ -102,7 +101,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

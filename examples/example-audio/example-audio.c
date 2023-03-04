@@ -34,7 +34,6 @@
 #include <mlk/example/example.h>
 #include <mlk/example/registry.h>
 
-static struct mlk_state *states[1];
 static struct mlk_music *music;
 static struct mlk_sound *sound;
 
@@ -129,7 +128,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 

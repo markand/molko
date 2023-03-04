@@ -43,8 +43,6 @@
 #include "chest.h"
 #include "dialog.h"
 
-static struct mlk_state *states[8];
-
 /*
  * Those are two chests shown on the script that the user can click. They will
  * fill up the script scene.
@@ -346,7 +344,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

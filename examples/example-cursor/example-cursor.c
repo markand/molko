@@ -35,7 +35,6 @@
 
 #include <mlk/example/example.h>
 
-static struct mlk_state *states[1];
 static char help_text[128];
 static enum mlk_window_cursor cursor = MLK_WINDOW_CURSOR_ARROW;
 
@@ -121,7 +120,7 @@ run(void)
 
 	change(cursor);
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

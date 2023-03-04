@@ -40,8 +40,6 @@
 
 static void menu_update(struct mlk_gridmenu_delegate *, struct mlk_gridmenu *, unsigned int);
 
-static struct mlk_state *states[8];
-
 static const char * const items[] = {
 	"Feu mineur",
 	"Feu majeur",
@@ -158,7 +156,7 @@ run(void)
 	frame.x = menu.x;
 	frame.y = menu.y;
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

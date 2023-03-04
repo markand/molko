@@ -41,7 +41,6 @@ static struct mlk_label label = {
 	.y = 10,
 };
 
-static struct mlk_state *states[8];
 static struct mlk_animation animation = {
 	.sprite = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_EXPLOSION],
 	.delay = 25
@@ -119,7 +118,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

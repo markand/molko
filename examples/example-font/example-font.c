@@ -45,7 +45,6 @@ static const unsigned long colors[] = {
 	0xc7cfccff,     /* Christian Grey. */
 };
 
-static struct mlk_state *states[1];
 static int ci = 0;
 static enum mlk_font_style style = MLK_FONT_STYLE_ANTIALIASED;
 
@@ -123,7 +122,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

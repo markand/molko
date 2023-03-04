@@ -20,56 +20,60 @@
 #include <string.h>
 
 #include "clock.h"
+#include "err.h"
 #include "event.h"
 #include "game.h"
 #include "state.h"
 #include "util.h"
 #include "window.h"
 
-struct mlk_game game = {0};
+static struct mlk_state *states[8];
+
+struct mlk_game mlk_game = {
+	.states = states,
+	.statesz = MLK_UTIL_SIZE(states)
+};
 
 void
-mlk_game_init(struct mlk_state **states, size_t statesz)
+mlk_game_init(void)
 {
-	assert(states);
-	assert(statesz);
-
-	memset(&game, 0, sizeof (game));
-
-	game.states = states;
-	game.statesz = statesz;
-
-	for (size_t i = 0; i < game.statesz; ++i)
-		game.states[i] = NULL;
+	for (size_t i = 0; i < mlk_game.statesz; ++i)
+		mlk_game.states[i] = NULL;
 }
 
-void
+int
 mlk_game_push(struct mlk_state *state)
 {
 	assert(state);
-	assert(!game.state || game.state != &game.states[game.statesz - 1]);
 
-	if (!game.state) {
-		game.state = &game.states[0];
-		mlk_state_start(*game.state = state);
-	} else {
-		mlk_state_suspend(*game.state);
-		mlk_state_start(*(++game.state) = state);
+	if (!mlk_game.state) {
+		mlk_game.state = &mlk_game.states[0];
+		mlk_state_start(*mlk_game.state = state);
+		return 0;
 	}
+
+	if (mlk_game.state == &mlk_game.states[mlk_game.statesz - 1])
+		return MLK_ERR_NO_MEM;
+
+	mlk_state_suspend(*mlk_game.state);
+	mlk_state_start(*(++mlk_game.state) = state);
+
+	return 0;
 }
 
 void
 mlk_game_pop(void)
 {
-	assert(game.state);
+	if (!mlk_game.state)
+		return;
 
-	mlk_state_end(*game.state);
-	mlk_state_finish(*game.state);
+	mlk_state_end(*mlk_game.state);
+	mlk_state_finish(*mlk_game.state);
 
-	if (game.state == game.states)
-		game.state = NULL;
+	if (mlk_game.state == mlk_game.states)
+		mlk_game.state = NULL;
 	else
-		mlk_state_resume(*--game.state);
+		mlk_state_resume(*--mlk_game.state);
 }
 
 void
@@ -77,22 +81,22 @@ mlk_game_handle(const union mlk_event *ev)
 {
 	assert(ev);
 
-	if (*game.state && !(game.inhibit & MLK_INHIBIT_STATE_INPUT))
-		mlk_state_handle(*game.state, ev);
+	if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_INPUT))
+		mlk_state_handle(*mlk_game.state, ev);
 }
 
 void
 mlk_game_update(unsigned int ticks)
 {
-	if (*game.state && !(game.inhibit & MLK_INHIBIT_STATE_UPDATE))
-		mlk_state_update(*game.state, ticks);
+	if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_UPDATE))
+		mlk_state_update(*mlk_game.state, ticks);
 }
 
 void
 mlk_game_draw(void)
 {
-	if (*game.state && !(game.inhibit & MLK_INHIBIT_STATE_DRAW))
-		mlk_state_draw(*game.state);
+	if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_DRAW))
+		mlk_state_draw(*mlk_game.state);
 }
 
 void
@@ -108,7 +112,7 @@ mlk_game_loop(void)
 		/* Assuming 50.0 FPS. */
 		frametime = 1000.0 / 50.0;
 
-	while (*game.state) {
+	while (mlk_game.state) {
 		mlk_clock_start(&clock);
 
 		for (union mlk_event ev; mlk_event_poll(&ev); )
@@ -131,10 +135,10 @@ mlk_game_loop(void)
 void
 mlk_game_quit(void)
 {
-	for (size_t i = 0; i < game.statesz; ++i) {
-		if (game.states[i])
-			mlk_state_finish(game.states[i]);
+	for (size_t i = 0; i < mlk_game.statesz; ++i) {
+		if (mlk_game.states[i])
+			mlk_state_finish(mlk_game.states[i]);
 
-		game.states[i] = NULL;
+		mlk_game.states[i] = NULL;
 	}
 }

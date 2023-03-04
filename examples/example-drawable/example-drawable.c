@@ -49,7 +49,6 @@ static struct mlk_label help = {
 	.text = "Keys: <Esc> to reset. Click anywhere to spawn a drawable."
 };
 
-static struct mlk_state *states[1];
 static struct mlk_drawable *drawables[64];
 static struct mlk_drawable_stack stack = {
 	.objects = drawables,
@@ -179,7 +178,7 @@ run(void)
 
 	mlk_drawable_stack_init(&stack);
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }

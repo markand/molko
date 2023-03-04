@@ -49,7 +49,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/game.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/image.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/image.h
-	${libmlk-core_SOURCE_DIR}/mlk/core/inhibit.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/key.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/maths.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/maths.h

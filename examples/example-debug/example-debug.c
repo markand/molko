@@ -31,7 +31,6 @@
 
 #include <mlk/example/example.h>
 
-static struct mlk_state *states[1];
 static int mouse_x;
 static int mouse_y;
 
@@ -86,7 +85,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_game_init(states, MLK_UTIL_SIZE(states));
+	mlk_game_init();
 	mlk_game_push(&state);
 	mlk_game_loop();
 }
@@ -107,4 +106,3 @@ main(int argc, char **argv)
 	run();
 	quit();
 }
-
