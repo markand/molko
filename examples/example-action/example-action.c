@@ -187,7 +187,10 @@ static struct dialog script_right_responses[] = {
  * depending on which chest the player clicks.
  */
 static struct mlk_action *script_actions[16];
-static struct mlk_action_script script;
+static struct mlk_action_script script = {
+	.actions = script_actions,
+	.actionsz = MLK_UTIL_SIZE(script_actions)
+};
 
 static void
 script_left_response(struct dialog *dlg, unsigned int index)
@@ -211,7 +214,7 @@ script_init(struct dialog *msgs, size_t msgsz)
 	int err;
 	struct mlk_action *action;
 
-	mlk_action_script_init(&script, script_actions, MLK_UTIL_SIZE(script_actions));
+	mlk_action_script_init(&script);
 
 	for (size_t i = 0; i < msgsz; ++i) {
 		action = dialog_init(&msgs[i]);

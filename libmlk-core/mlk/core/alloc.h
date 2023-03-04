@@ -1,5 +1,5 @@
 /*
- * alloc.h -- custom allocators
+ * alloc.h -- memory allocators
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -19,18 +19,62 @@
 #ifndef MLK_CORE_ALLOC_H
 #define MLK_CORE_ALLOC_H
 
+/**
+ * \file mlk/core/alloc.h
+ * \brief Memory allocators.
+ *
+ * This module provides function to dynamically allocate data on the heap.
+ *
+ * ## Synopsis
+ *
+ * Most of the Molko's Engine API does not allocate data except in very few
+ * cases, otherwise this module is used each time it is required.
+ *
+ * ## Pointer block
+ *
+ * Data allocated by this module isn't a simple pointer to the region data but
+ * a custom block data that holds the size of the element and the number of it.
+ * This has been designed in the sense that reallocating data is easier for the
+ * caller as it is not required to pass the data length along.
+ *
+ * An allocated blocks looks like this:
+ *
+ * | Type              | Description                 |
+ * |-------------------|-----------------------------|
+ * | `size_t`          | Number of items allocated   |
+ * | `size_t`          | Size of individual elements |
+ * | `unsigned char *` | User data                   |
+ *
+ * The structure is allocated using the [flexible array member][fam] to avoid
+ * allocating data twice.
+ *
+ * Example:
+ *
+ * Allocating three ints with `int *ptr = mlk_alloc_new(3, sizeof (int))` will
+ * create a block as following:
+ *
+ * | Type                      | Description                 |
+ * |---------------------------|-----------------------------|
+ * | `size_t` = 3              | Number of items allocated   |
+ * | `size_t` = `sizeof (int)` | Size of individual elements |
+ * | `unsigned char *`         | `int[3]`                    |
+ *
+ * Finally, calling `mlk_alloc_renew(ptr, 6)` will extend the memory for three
+ * more ints.
+ *
+ * [fam]: https://en.wikipedia.org/wiki/Flexible_array_member
+ */
+
 #include <stddef.h>
 
 #include "core.h"
 
-/* Custom allocator. */
 struct mlk_alloc_funcs {
 	void *(*alloc)(size_t);
 	void *(*realloc)(void *, size_t);
 	void (*free)(void *);
 };
 
-/* Minimalist growable array for loading data. */
 struct mlk_alloc_pool {
 	void *data;
 	size_t elemsize;
@@ -41,7 +85,6 @@ struct mlk_alloc_pool {
 
 MLK_CORE_BEGIN_DECLS
 
-/* allocator functions. */
 void
 mlk_alloc_set(const struct mlk_alloc_funcs *);
 

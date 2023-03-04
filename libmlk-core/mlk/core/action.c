@@ -1,5 +1,5 @@
 /*
- * action.c -- action states
+ * action.c -- generic in game actions
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *

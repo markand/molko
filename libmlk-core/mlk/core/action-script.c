@@ -1,5 +1,5 @@
 /*
- * script.c -- convenient sequence of actions
+ * action-script.c -- convenient sequence of actions
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -27,23 +27,33 @@
 static inline struct mlk_action *
 current(struct mlk_action_script *s)
 {
-	if (s->cur >= s->len)
+	if (s->current >= s->length)
 		return NULL;
 
-	return s->actions[s->cur];
+	return s->actions[s->current];
 }
 
 void
-mlk_action_script_init(struct mlk_action_script *s, struct mlk_action **actions, size_t cap)
+mlk_action_script_init(struct mlk_action_script *s)
 {
 	assert(s);
 
-	s->actions = actions;
-	s->cap = cap;
-	s->len = s->cur = 0;
-
-	for (size_t i = 0; i < s->cap; ++i)
+	for (size_t i = 0; i < s->actionsz; ++i)
 		s->actions[i] = NULL;
+}
+
+int
+mlk_action_script_append(struct mlk_action_script *s, struct mlk_action *a)
+{
+	assert(s);
+	assert(a);
+
+	if (s->length >= s->actionsz)
+		return MLK_ERR_NO_MEM;
+
+	s->actions[s->length++] = a;
+
+	return 0;
 }
 
 void
@@ -55,20 +65,6 @@ mlk_action_script_start(struct mlk_action_script *s)
 
 	if ((a = current(s)))
 		mlk_action_start(a);
-}
-
-int
-mlk_action_script_append(struct mlk_action_script *s, struct mlk_action *a)
-{
-	assert(s);
-	assert(a);
-
-	if (s->len >= s->cap)
-		return MLK_ERR_NO_MEM;
-
-	s->actions[s->len++] = a;
-
-	return 0;
 }
 
 void
@@ -96,14 +92,14 @@ mlk_action_script_update(struct mlk_action_script *s, unsigned int ticks)
 
 	if (mlk_action_update(a, ticks)) {
 		mlk_action_end(a);
-		s->cur++;
+		s->current++;
 
 		/* Start this action now. */
 		if ((a = current(s)))
 			mlk_action_start(a);
 	}
 
-	return s->cur >= s->len;
+	return s->current >= s->length;
 }
 
 void
@@ -122,7 +118,7 @@ mlk_action_script_completed(const struct mlk_action_script *s)
 {
 	assert(s);
 
-	return s->cur >= s->len;
+	return s->current >= s->length;
 }
 
 void
@@ -130,8 +126,12 @@ mlk_action_script_finish(struct mlk_action_script *s)
 {
 	assert(s);
 
-	for (size_t i = 0; i < s->len; ++i)
-		mlk_action_finish(s->actions[i]);
+	for (size_t i = 0; i < s->actionsz; ++i) {
+		if (i < s->length)
+			mlk_action_finish(s->actions[i]);
 
-	memset(s, 0, sizeof (*s));
+		s->actions[i] = NULL;
+	}
+
+	s->length = s->current = 0;
 }

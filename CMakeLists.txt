@@ -17,7 +17,13 @@
 #
 
 cmake_minimum_required(VERSION 3.20)
-project(molko C)
+project(
+	molko
+	VERSION "0.1.0"
+	DESCRIPTION "Molko's Engine"
+	HOMEPAGE_URL "http://hg.malikania.fr/molko"
+	LANGUAGES "C"
+)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS On)
 
@@ -39,7 +45,7 @@ elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS "/D_CRT_SECURE_NO_WARNINGS ${CMAKE_C_FLAGS}")
 endif ()
 
-option(MLK_WITH_DOC "Enable mkdocs documentation" On)
+option(MLK_WITH_DOXYGEN "Enable doxygen documentation" On)
 option(MLK_WITH_EXAMPLES "Enable examples" Off)
 option(MLK_WITH_NLS "Enable NLS support" On)
 option(MLK_WITH_TESTS "Enable unit tests" Off)
@@ -69,7 +75,7 @@ endif ()
 add_subdirectory(extern/libsqlite)
 add_subdirectory(extern/libdt)
 
-if (MLK_WITH_DOC)
+if (MLK_WITH_DOXYGEN)
 	add_subdirectory(doc)
 endif ()
 

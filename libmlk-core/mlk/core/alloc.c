@@ -1,5 +1,5 @@
 /*
- * alloc.h -- custom allocators
+ * alloc.c -- memory allocators
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *

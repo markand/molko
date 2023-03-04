@@ -16,10 +16,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <mlk/core/action-script.h>
 #include <mlk/core/action.h>
 #include <mlk/core/err.h>
 #include <mlk/core/event.h>
-#include <mlk/core/action-script.h>
+#include <mlk/core/util.h>
 
 #include <dt.h>
 
@@ -97,14 +98,24 @@ my_finish(struct mlk_action *act)
 static void
 test_basics_init(void)
 {
-	struct mlk_action_script sc;
 	struct mlk_action *actions[10];
+	struct mlk_action_script sc = {
+		.actions = actions,
+		.actionsz = MLK_UTIL_SIZE(actions)
+	};
 
-	mlk_action_script_init(&sc, actions, 10);
+	mlk_action_script_init(&sc);
 
-	DT_EQ_SIZE(sc.len, 0U);
-	DT_EQ_SIZE(sc.cap, 10U);
-	DT_EQ_SIZE(sc.cur, 0U);
+	DT_EQ_SIZE(sc.actionsz, 10U);
+	DT_EQ_SIZE(sc.length, 0U);
+	DT_EQ_SIZE(sc.current, 0U);
+
+	mlk_action_script_finish(&sc);
+
+	DT_EQ_PTR(sc.actions, actions);
+	DT_EQ_SIZE(sc.actionsz, 10U);
+	DT_EQ_SIZE(sc.length, 0U);
+	DT_EQ_SIZE(sc.current, 0U);
 }
 
 static void
@@ -112,27 +123,30 @@ test_basics_append(void)
 {
 	struct mlk_action actions[4] = {0};
 	struct mlk_action *array[3] = {0};
-	struct mlk_action_script sc = {0};
+	struct mlk_action_script sc = {
+		.actions = array,
+		.actionsz = MLK_UTIL_SIZE(array)
+	};
 
-	mlk_action_script_init(&sc, array, 3);
+	mlk_action_script_init(&sc);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &actions[0]) == 0);
-	DT_EQ_SIZE(sc.len, 1U);
-	DT_EQ_SIZE(sc.cap, 3U);
-	DT_EQ_SIZE(sc.cur, 0U);
+	DT_EQ_SIZE(sc.actionsz, 3U);
+	DT_EQ_SIZE(sc.length, 1U);
+	DT_EQ_SIZE(sc.current, 0U);
 	DT_EQ_PTR(sc.actions[0], &actions[0]);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &actions[1]) == 0);
-	DT_EQ_SIZE(sc.len, 2U);
-	DT_EQ_SIZE(sc.cap, 3U);
-	DT_EQ_SIZE(sc.cur, 0U);
+	DT_EQ_SIZE(sc.actionsz, 3U);
+	DT_EQ_SIZE(sc.length, 2U);
+	DT_EQ_SIZE(sc.current, 0U);
 	DT_EQ_PTR(sc.actions[0], &actions[0]);
 	DT_EQ_PTR(sc.actions[1], &actions[1]);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &actions[2]) == 0);
-	DT_EQ_SIZE(sc.len, 3U);
-	DT_EQ_SIZE(sc.cap, 3U);
-	DT_EQ_SIZE(sc.cur, 0U);
+	DT_EQ_SIZE(sc.actionsz, 3U);
+	DT_EQ_SIZE(sc.length, 3U);
+	DT_EQ_SIZE(sc.current, 0U);
 	DT_EQ_PTR(sc.actions[0], &actions[0]);
 	DT_EQ_PTR(sc.actions[1], &actions[1]);
 	DT_EQ_PTR(sc.actions[2], &actions[2]);
@@ -141,6 +155,11 @@ test_basics_append(void)
 	DT_ASSERT(mlk_action_script_append(&sc, &actions[3]) == MLK_ERR_NO_MEM);
 
 	mlk_action_script_finish(&sc);
+
+	DT_EQ_PTR(sc.actions, array);
+	DT_EQ_SIZE(sc.actionsz, 3U);
+	DT_EQ_SIZE(sc.length, 0U);
+	DT_EQ_SIZE(sc.current, 0U);
 }
 
 static void
@@ -156,16 +175,19 @@ test_basics_handle(void)
 	};
 
 	struct mlk_action *array[3] = {0};
-	struct mlk_action_script sc = {0};
+	struct mlk_action_script sc = {
+		.actions = array,
+		.actionsz = MLK_UTIL_SIZE(array)
+	};
 
-	mlk_action_script_init(&sc, array, 3);
+	mlk_action_script_init(&sc);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &table[0].act) == 0);
 	DT_ASSERT(mlk_action_script_append(&sc, &table[1].act) == 0);
 	DT_ASSERT(mlk_action_script_append(&sc, &table[2].act) == 0);
 
 	/* [0] */
-	mlk_action_script_handle(&sc, &(union mlk_event){0});
+	mlk_action_script_handle(&sc, &(const union mlk_event){0});
 	DT_EQ_INT(table[0].inv.handle, 1);
 	DT_EQ_INT(table[0].inv.update, 0);
 	DT_EQ_INT(table[0].inv.draw, 0);
@@ -238,9 +260,12 @@ test_basics_update(void)
 	};
 
 	struct mlk_action *array[3];
-	struct mlk_action_script sc = {0};
+	struct mlk_action_script sc = {
+		.actions = array,
+		.actionsz = MLK_UTIL_SIZE(array)
+	};
 
-	mlk_action_script_init(&sc, array, 3);
+	mlk_action_script_init(&sc);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &table[0].act) == 0);
 	DT_ASSERT(mlk_action_script_append(&sc, &table[1].act) == 0);
@@ -351,9 +376,12 @@ test_basics_draw(void)
 	};
 
 	struct mlk_action *array[3];
-	struct mlk_action_script sc = {0};
+	struct mlk_action_script sc = {
+		.actions = array,
+		.actionsz = MLK_UTIL_SIZE(array)
+	};
 
-	mlk_action_script_init(&sc, array, 3);
+	mlk_action_script_init(&sc);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &table[0].act) == 0);
 	DT_ASSERT(mlk_action_script_append(&sc, &table[1].act) == 0);
@@ -431,9 +459,12 @@ test_basics_finish(void)
 	};
 
 	struct mlk_action *array[3];
-	struct mlk_action_script sc = {0};
+	struct mlk_action_script sc = {
+		.actions = array,
+		.actionsz = MLK_UTIL_SIZE(array)
+	};
 
-	mlk_action_script_init(&sc, array, 3);
+	mlk_action_script_init(&sc);
 
 	DT_ASSERT(mlk_action_script_append(&sc, &table[0].act) == 0);
 	DT_ASSERT(mlk_action_script_append(&sc, &table[1].act) == 0);

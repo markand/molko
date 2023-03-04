@@ -20,70 +20,19 @@ project(doc)
 
 set(
 	SOURCES
-	${doc_SOURCE_DIR}/CMakeLists.txt
-	${doc_SOURCE_DIR}/mkdocs.yml
-	${doc_SOURCE_DIR}/docs
-	${doc_SOURCE_DIR}/docs/tools
-	${doc_SOURCE_DIR}/docs/tools/map.md
-	${doc_SOURCE_DIR}/docs/tools/bcc.md
-	${doc_SOURCE_DIR}/docs/tools/tileset.md
-	${doc_SOURCE_DIR}/docs/specs
-	${doc_SOURCE_DIR}/docs/specs/map.md
-	${doc_SOURCE_DIR}/docs/specs/tileset.md
-	${doc_SOURCE_DIR}/docs/install.md
-	${doc_SOURCE_DIR}/docs/index.md
-	${doc_SOURCE_DIR}/docs/dev
-	${doc_SOURCE_DIR}/docs/dev/faq.md
-	${doc_SOURCE_DIR}/docs/dev/error.md
-	${doc_SOURCE_DIR}/docs/dev/ownership.md
-	${doc_SOURCE_DIR}/docs/dev/api
-	${doc_SOURCE_DIR}/docs/dev/api/core
-	${doc_SOURCE_DIR}/docs/dev/api/core/texture.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/mouse.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/inhibit.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/sprite.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/animation.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/music.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/image.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/zfile.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/alloc.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/sys.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/state.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/maths.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/script.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/error.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/color.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/window.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/sound.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/save.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/translate.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/event.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/trace.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/core.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/action.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/font.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/panic.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/key.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/painter.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/game.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/util.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/clock.md
-	${doc_SOURCE_DIR}/docs/dev/api/core/drawable.md
-	${doc_SOURCE_DIR}/docs/dev/howto
-	${doc_SOURCE_DIR}/docs/dev/howto/01-init.md
-	${doc_SOURCE_DIR}/docs/about.md
+	${doc_SOURE_DIR}/Doxyfile
 )
+
+find_package(Doxygen REQUIRED)
 
 add_custom_target(
-	doc
-	SOURCES ${SOURCES}
+	doxygen
+	SOURCES ${doc_SOURCE_DIR}/Doxyfile
+	COMMAND Doxygen::doxygen ${doc_BINARY_DIR}/Doxyfile
+	WORKING_DIRECTORY ${molko_SOURCE_DIR}
 )
 
-add_custom_target(
-	doc-serve
-	SOURCES ${SOURCES}
-	COMMAND mkdocs serve
-	WORKING_DIRECTORY ${doc_SOURCE_DIR}
+configure_file(
+	${doc_SOURCE_DIR}/Doxyfile
+	${doc_BINARY_DIR}/Doxyfile
 )
-
-source_group(TREE ${doc_SOURCE_DIR} FILES ${SOURCES})

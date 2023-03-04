@@ -66,6 +66,20 @@ mlk_action_stack_start(struct mlk_action_stack *st)
 			mlk_action_start(act);
 }
 
+int
+mlk_action_stack_completed(const struct mlk_action_stack *st)
+{
+	assert(st);
+
+	struct mlk_action *act;
+
+	FOREACH(st, act)
+		if (act)
+			return 0;
+
+	return 1;
+}
+
 void
 mlk_action_stack_handle(struct mlk_action_stack *st, const union mlk_event *ev)
 {
@@ -113,20 +127,6 @@ mlk_action_stack_draw(const struct mlk_action_stack *st)
 	FOREACH(st, act)
 		if (act)
 			mlk_action_draw(act);
-}
-
-int
-mlk_action_stack_completed(const struct mlk_action_stack *st)
-{
-	assert(st);
-
-	struct mlk_action *act;
-
-	FOREACH(st, act)
-		if (act)
-			return 0;
-
-	return 1;
 }
 
 void
