@@ -195,10 +195,14 @@ parse_animations(struct context *ctx, const char *line)
 		if (mlk_image_open(&anim->texture, mlk_util_pathf("%s/%s", ctx->basedir, filename)) < 0)
 			return -1;
 
-		mlk_sprite_init(&anim->sprite, &anim->texture, ctx->tilewidth, ctx->tileheight);
+		anim->sprite.texture = &anim->texture;
+		anim->sprite.cellw = ctx->tilewidth;
+		anim->sprite.cellh = ctx->tileheight;
 
 		anim->animation.sprite = &anim->sprite;
 		anim->animation.delay = delay;
+
+		mlk_sprite_init(&anim->sprite);
 	}
 
 	/*
@@ -240,7 +244,11 @@ parse_image(struct context *ctx, const char *line)
 	if ((err = mlk_image_open(&ctx->tf->image, mlk_util_pathf("%s/%s", ctx->basedir, p + 1))) < 0)
 		return err;
 
-	mlk_sprite_init(&ctx->tf->sprite, &ctx->tf->image, ctx->tilewidth, ctx->tileheight);
+	ctx->tf->sprite.texture = &ctx->tf->image;
+	ctx->tf->sprite.cellw = ctx->tilewidth;
+	ctx->tf->sprite.cellh = ctx->tileheight;
+	mlk_sprite_init(&ctx->tf->sprite);
+
 	ctx->tileset->sprite = &ctx->tf->sprite;
 
 	return 0;

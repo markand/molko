@@ -185,7 +185,10 @@ static struct {
 };
 
 static struct mlk_drawable *drawables[16];
-static struct mlk_drawable_stack drawable_stack;
+static struct mlk_drawable_stack drawable_stack = {
+	.objects = drawables,
+	.objectsz = MLK_UTIL_SIZE(drawables)
+};
 
 static struct mlk_action *actions[16];
 static struct mlk_action_stack action_stack = {
@@ -203,7 +206,7 @@ static void
 prepare_to_fight(void)
 {
 	mlk_action_stack_init(&action_stack);
-	mlk_drawable_stack_init(&drawable_stack, drawables, MLK_UTIL_SIZE(drawables));
+	mlk_drawable_stack_init(&drawable_stack);
 
 	battle_init(&bt);
 	battle_bar_default_init(&default_bar);

@@ -27,12 +27,9 @@
 	for (size_t i = 0; i < (st)->objectsz && ((iter) = (st)->objects[i], 1); ++i)
 
 void
-mlk_drawable_stack_init(struct mlk_drawable_stack *st, struct mlk_drawable **objects, size_t objectsz)
+mlk_drawable_stack_init(struct mlk_drawable_stack *st)
 {
 	assert(st);
-
-	st->objects = objects;
-	st->objectsz = objectsz;
 
 	for (size_t i = 0; i < st->objectsz; ++i)
 		st->objects[i] = NULL;

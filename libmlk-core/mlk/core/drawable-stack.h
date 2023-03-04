@@ -31,7 +31,7 @@ struct mlk_drawable_stack {
 MLK_CORE_BEGIN_DECLS
 
 void
-mlk_drawable_stack_init(struct mlk_drawable_stack *, struct mlk_drawable **, size_t);
+mlk_drawable_stack_init(struct mlk_drawable_stack *);
 
 int
 mlk_drawable_stack_add(struct mlk_drawable_stack *, struct mlk_drawable *);

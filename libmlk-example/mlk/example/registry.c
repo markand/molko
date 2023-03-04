@@ -130,10 +130,16 @@ load_textures_and_sprites(void)
 		if ((err = mlk_image_openmem(texture, textures[i].data, textures[i].datasz)) < 0)
 			mlk_panic(err);
 
-		if (textures[i].cellw == 0 || textures[i].cellh == 0)
-			mlk_sprite_init(sprite, texture, texture->w, texture->h);
-		else
-			mlk_sprite_init(sprite, texture, textures[i].cellw, textures[i].cellh);
+		if (textures[i].cellw == 0 || textures[i].cellh == 0) {
+			sprite->cellw = texture->w;
+			sprite->cellh = texture->h;
+		} else {
+			sprite->cellw = textures[i].cellw;
+			sprite->cellh = textures[i].cellh;
+		}
+
+		sprite->texture = texture;
+		mlk_sprite_init(sprite);
 	}
 }
 

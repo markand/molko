@@ -51,7 +51,10 @@ static struct mlk_label help = {
 
 static struct mlk_state *states[1];
 static struct mlk_drawable *drawables[64];
-static struct mlk_drawable_stack stack;
+static struct mlk_drawable_stack stack = {
+	.objects = drawables,
+	.objectsz = MLK_UTIL_SIZE(drawables)
+};
 
 /*
  * List of drawables for this example.
@@ -108,7 +111,7 @@ spawn(int x, int y)
 
 	ex->dw.data = ex;
 	ex->anim.sprite = explosion_sprite;
-	ex->anim.delay = 18;
+	ex->anim.delay = 1000 / 60;
 	ex->dw.x = x - (int)(explosion_sprite->cellw / 2);
 	ex->dw.y = y - (int)(explosion_sprite->cellh / 2);
 	ex->dw.update = explosion_update;
@@ -174,7 +177,7 @@ run(void)
 		.draw = draw
 	};
 
-	mlk_drawable_stack_init(&stack, drawables, MLK_UTIL_SIZE(drawables));
+	mlk_drawable_stack_init(&stack);
 
 	mlk_game_init(states, MLK_UTIL_SIZE(states));
 	mlk_game_push(&state);

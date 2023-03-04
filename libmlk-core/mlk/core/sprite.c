@@ -24,10 +24,11 @@
 void
 mlk_sprite_init(struct mlk_sprite *sprite)
 {
-	assert(mlk_sprite_ok(sprite));
+	assert(sprite);
+	assert(mlk_texture_ok(sprite->texture));
 
-	sprite->nrows = tex->h / cellh;
-	sprite->ncols = tex->w / cellw;
+	sprite->nrows = sprite->texture->h / sprite->cellh;
+	sprite->ncols = sprite->texture->w / sprite->cellw;
 }
 
 int

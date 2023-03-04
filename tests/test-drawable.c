@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <mlk/core/util.h>
+
 #include <mlk/core/drawable-stack.h>
 #include <mlk/core/drawable.h>
 #include <mlk/core/err.h>
@@ -147,11 +149,14 @@ test_basics_finish(void)
 static void
 test_stack_add(void)
 {
-	struct mlk_drawable *drawables[10];
-	struct mlk_drawable_stack st = {0};
 	struct mlk_drawable dw = {0};
+	struct mlk_drawable *drawables[10];
+	struct mlk_drawable_stack st = {
+		.objects = drawables,
+		.objectsz = MLK_UTIL_SIZE(drawables)
+	};
 
-	mlk_drawable_stack_init(&st, drawables, 10);
+	mlk_drawable_stack_init(&st);
 
 	DT_EQ_INT(mlk_drawable_stack_add(&st, &dw), 0);
 
@@ -180,9 +185,12 @@ test_stack_update(void)
 	};
 
 	struct mlk_drawable *drawables[10];
-	struct mlk_drawable_stack st = {0};
+	struct mlk_drawable_stack st = {
+		.objects = drawables,
+		.objectsz = MLK_UTIL_SIZE(drawables)
+	};
 
-	mlk_drawable_stack_init(&st, drawables, 10);
+	mlk_drawable_stack_init(&st);
 	mlk_drawable_stack_add(&st, &table[0].dw);
 	mlk_drawable_stack_add(&st, &table[1].dw);
 	mlk_drawable_stack_add(&st, &table[2].dw);
@@ -271,9 +279,12 @@ test_stack_draw(void)
 	};
 
 	struct mlk_drawable *drawables[10];
-	struct mlk_drawable_stack st = {0};
+	struct mlk_drawable_stack st = {
+		.objects = drawables,
+		.objectsz = MLK_UTIL_SIZE(drawables)
+	};
 
-	mlk_drawable_stack_init(&st, drawables, 10);
+	mlk_drawable_stack_init(&st);
 	mlk_drawable_stack_add(&st, &table[0].dw);
 	mlk_drawable_stack_add(&st, &table[1].dw);
 	mlk_drawable_stack_add(&st, &table[2].dw);
@@ -328,9 +339,12 @@ test_stack_finish(void)
 	};
 
 	struct mlk_drawable *drawables[10];
-	struct mlk_drawable_stack st = {0};
+	struct mlk_drawable_stack st = {
+		.objects = drawables,
+		.objectsz = MLK_UTIL_SIZE(drawables)
+	};
 
-	mlk_drawable_stack_init(&st, drawables, 10);
+	mlk_drawable_stack_init(&st);
 	mlk_drawable_stack_add(&st, &table[0].dw);
 	mlk_drawable_stack_add(&st, &table[1].dw);
 	mlk_drawable_stack_finish(&st);
