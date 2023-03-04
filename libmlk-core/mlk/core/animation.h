@@ -19,34 +19,93 @@
 #ifndef MLK_CORE_ANIMATION_H
 #define MLK_CORE_ANIMATION_H
 
+/**
+ * \file mlk/core/animation.h
+ * \brief Basic animations
+ *
+ * Drawable animations.
+ *
+ * Animations are small objects using a ::mlk_sprite to update themselves and
+ * draw next frames depending on delay set.
+ */
+
 #include "core.h"
 
 struct mlk_sprite;
 
+/**
+ * \struct mlk_animation
+ * \brief Animation structure
+ */
 struct mlk_animation {
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * The sprite to draw.
+	 */
 	const struct mlk_sprite *sprite;
+
+	/**
+	 * (read-write)
+	 *
+	 * Delay in milliseconds between each frame.
+	 */
+	unsigned int delay;
+
+	/** \cond MLK_PRIVATE_DECLS */
+	unsigned int elapsed;
 	unsigned int row;
 	unsigned int column;
-	unsigned int delay;
-	unsigned int elapsed;
+	/** \endcond MLK_PRIVATE_DECLS */
 };
 
 MLK_CORE_BEGIN_DECLS
 
+/**
+ * Start or reset the animation to the beginning.
+ *
+ * \pre animation != NULL
+ * \param animation the animation
+ */
 void
-mlk_animation_init(struct mlk_animation *, const struct mlk_sprite *, unsigned int);
+mlk_animation_start(struct mlk_animation *animation);
 
-void
-mlk_animation_start(struct mlk_animation *);
-
+/**
+ * Tells if the animation is complete.
+ *
+ * \pre animation != NULL
+ * \param animation the animation
+ * \return non-zero if completed
+ */
 int
-mlk_animation_completed(const struct mlk_animation *);
+mlk_animation_completed(const struct mlk_animation *animation);
 
+/**
+ * Update the animation.
+ *
+ * This function MUST not be called if the animation is complete.
+ *
+ * \pre animation != NULL and animation is not complete
+ * \param animation the animation
+ * \param ticks frame ticks
+ * \return non-zero if completed
+ */
 int
-mlk_animation_update(struct mlk_animation *, unsigned int);
+mlk_animation_update(struct mlk_animation *animation, unsigned int ticks);
 
+/**
+ * Draw the animation at the given position
+ *
+ * This function MUST not be called if the animation is complete.
+ *
+ * \pre animation != NULL and animation is not complete
+ * \param animation the animation
+ * \param x the x coordinate
+ * \param y the y coordinate
+ * \return 0 on success or any error from ::mlk_sprite_draw function
+ */
 int
-mlk_animation_draw(const struct mlk_animation *, int, int);
+mlk_animation_draw(const struct mlk_animation *animation, int x, int y);
 
 MLK_CORE_END_DECLS
 

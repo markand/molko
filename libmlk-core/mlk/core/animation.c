@@ -23,19 +23,6 @@
 #include "sprite.h"
 
 void
-mlk_animation_init(struct mlk_animation *an, const struct mlk_sprite *sprite, unsigned int delay)
-{
-	assert(an);
-	assert(sprite);
-
-	an->sprite = sprite;
-	an->row = 0;
-	an->column = 0;
-	an->delay = delay;
-	an->elapsed = 0;
-}
-
-void
 mlk_animation_start(struct mlk_animation *an)
 {
 	assert(an);
@@ -59,6 +46,7 @@ int
 mlk_animation_update(struct mlk_animation *an, unsigned int ticks)
 {
 	assert(an);
+	assert(!mlk_animation_completed(an));
 
 	an->elapsed += ticks;
 
@@ -85,6 +73,7 @@ int
 mlk_animation_draw(const struct mlk_animation *an, int x, int y)
 {
 	assert(an);
+	assert(!mlk_animation_completed(an));
 
 	return mlk_sprite_draw(an->sprite, an->row, an->column, x, y);
 }
