@@ -29,10 +29,6 @@
 #define QMX ((MLK_EXAMPLE_W - QMW) / 2)
 #define QMY (MLK_EXAMPLE_H * 0.2)
 
-/* Fading time and spacing. */
-#define QMD 250
-#define QMS 10
-
 static void
 handle(struct mlk_action *act, const union mlk_event *ev)
 {
@@ -74,11 +70,9 @@ dialog_init(struct dialog *dlg)
 	dlg->msg.x = QMX;
 	dlg->msg.y = QMY;
 	dlg->msg.w = QMW;
-	dlg->msg.delay = QMD;
-	dlg->msg.spacing = QMS;
 
-	mlk_message_start(&dlg->msg);
 	mlk_message_query(&dlg->msg, NULL, &dlg->msg.h);
+	mlk_message_start(&dlg->msg);
 
 	dlg->action.data = dlg;
 	dlg->action.handle = handle;

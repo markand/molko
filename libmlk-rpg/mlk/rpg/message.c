@@ -152,6 +152,8 @@ delegate_query(struct mlk_message_delegate *self,
 		*w = min_width(msg);
 	if (h)
 		*h = min_height(msg);
+
+	return 0;
 }
 
 static void
