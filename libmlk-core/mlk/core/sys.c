@@ -80,7 +80,7 @@ user_directory(enum mlk_sys_dir kind)
 	/* Kept for future use. */
 	(void)kind;
 
-	static char path[MLK_PATH_MAX];
+	static _Thread_local char path[MLK_PATH_MAX];
 	char *pref;
 
 	if ((pref = SDL_GetPrefPath(info.organization, info.name))) {
@@ -98,7 +98,7 @@ mkpath(const char *path)
 #ifdef _WIN32
 	/* TODO: add error using the convenient FormatMessage function. */
 	if (!CreateDirectoryA(path, NULL) && GetLastError() != ERROR_ALREADY_EXISTS)
-		return errorf("unable to create directory: %s", path);
+		return MLK_ERR_ERRNO;
 #else
 	if (mkdir(path, 0755) < 0 && errno != EEXIST)
 		return MLK_ERR_ERRNO;
