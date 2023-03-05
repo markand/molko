@@ -21,10 +21,7 @@
 
 #define MLK_TRACE_HUD_TIMEOUT_DEFAULT (3000)
 
-struct mlk_theme;
-
 struct mlk_trace_hud {
-	struct mlk_theme *theme;
 	unsigned int timeout;
 };
 

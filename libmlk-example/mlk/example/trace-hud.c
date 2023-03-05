@@ -24,12 +24,13 @@
 #include <mlk/core/trace.h>
 #include <mlk/core/window.h>
 
-#include <mlk/ui/label.h>
+#include <mlk/ui/align.h>
+#include <mlk/ui/ui.h>
 
 #include "trace-hud.h"
 
-#define LINES_MAX       (4)
-#define THEME(t)        ((t) ? (t) : &mlk_theme)
+#define PAD             (2)
+#define LINES_MAX       (8)
 
 static struct {
 	char lines[LINES_MAX + 1][MLK_TRACE_LINE_MAX];
@@ -86,26 +87,24 @@ mlk_trace_hud_update(unsigned int ticks)
 void
 mlk_trace_hud_draw(void)
 {
-#if 0
-	struct mlk_theme *th;
-	int x, y;
+	struct mlk_font *font;
+	unsigned fh;
 
-	th = THEME(mlk_trace_hud.theme);
-	x = th->padding;
-	y = th->padding;
+	font = mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
+	fh = mlk_font_height(font);
 
 	for (int i = 0; i < LINES_MAX && data.lines[i][0]; ++i) {
-		mlk_label_draw(&(struct mlk_label) {
-			.x = x,
-			.y = y,
-			.text = data.lines[i],
-			.flags = MLK_LABEL_FLAGS_SHADOW
-		});
-
-		y += mlk_font_height(th->fonts[MLK_THEME_FONT_INTERFACE]);
-		y += th->padding;
+		mlk_ui_draw_text(
+			MLK_ALIGN_NONE,
+			font,
+			MLK_UI_COLOR_DEBUG,
+			data.lines[i],
+			PAD,
+			PAD + (i * fh),
+			0,
+			0
+		);
 	}
-#endif
 }
 
 void
