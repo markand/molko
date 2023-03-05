@@ -18,6 +18,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "trace.h"
 
@@ -51,11 +52,23 @@ mlk_traceva(const char *fmt, va_list ap)
 {
 	assert(fmt);
 
-	char buf[TRACE_LINE_MAX];
+	time_t timestamp;
+	struct tm *calendar;
+	size_t nw;
+	char buf[MLK_TRACE_LINE_MAX + 16];
 
 	if (!mlk_trace_handler)
 		return;
 
-	vsnprintf(buf, sizeof (buf), fmt, ap);
+	/*
+	 * Append default timestamp so that a line looks like this:
+	 *
+	 * 10:10:59: hello world
+	 */
+	timestamp = time(NULL);
+	calendar = localtime(&timestamp);
+	nw = strftime(buf, sizeof (buf), "%T: ", calendar);
+
+	vsnprintf(buf + nw, sizeof (buf) - nw, fmt, ap);
 	mlk_trace_handler(buf);
 }

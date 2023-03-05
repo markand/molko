@@ -32,7 +32,7 @@
 #define THEME(t)        ((t) ? (t) : &mlk_theme)
 
 static struct {
-	char lines[LINES_MAX + 1][TRACE_LINE_MAX];
+	char lines[LINES_MAX + 1][MLK_TRACE_LINE_MAX];
 	unsigned int elapsed;
 } data;
 
