@@ -78,7 +78,7 @@ mlk_music_open(struct mlk_music *music, const char *path);
 /**
  * Open a music from a const binary data.
  *
- * The binary data must be kept alive until the font is no longer used.
+ * The binary data must be kept alive until the music is no longer used.
  *
  * \pre music != NULL
  * \pre path != NULL
