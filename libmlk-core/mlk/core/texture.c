@@ -115,15 +115,15 @@ mlk_texture_draw(const struct mlk_texture *tex, int x, int y)
 
 int
 mlk_texture_scale(const struct mlk_texture *tex,
-              int src_x,
-              int src_y,
-              unsigned src_w,
-              unsigned src_h,
-              int dst_x,
-              int dst_y,
-              unsigned dst_w,
-              unsigned dst_h,
-              double angle)
+                 int src_x,
+                  int src_y,
+                  unsigned src_w,
+                  unsigned src_h,
+                  int dst_x,
+                  int dst_y,
+                  unsigned dst_w,
+                  unsigned dst_h,
+                  double angle)
 {
 	const SDL_Rect src = {
 		.x = src_x,
