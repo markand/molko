@@ -37,6 +37,10 @@ INPUT                  = libmlk-util \
                          libmlk-ui \
                          libmlk-rpg
 EXAMPLE_PATH           = examples
+EXCLUDE                = libmlk-core/mlk/core/sys_p.h           \
+                         libmlk-core/mlk/core/texture_p.h       \
+                         libmlk-core/mlk/core/window_p.h        \
+                         libmlk-ui/mlk/ui/ui_p.h
 
 FILE_PATTERNS          = *.c *.h
 RECURSIVE              = YES
