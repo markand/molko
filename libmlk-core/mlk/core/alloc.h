@@ -76,7 +76,7 @@
  * \warning The returned address is the `unsigned char *` so the user must
  *          never free this address directly.
  *
- * If you use ::mlk_alloc_renew, the storage will be expanded/shrinked
+ * If you use ::mlk_alloc_resize, the storage will be expanded/shrinked
  * automatically without the need to pass the actual size of the array.
  *
  * ```c
@@ -218,13 +218,36 @@ void *
 mlk_alloc_resize(void *ptr, size_t n);
 
 /**
- * \copydoc mlk_alloc_renew
+ * \copydoc mlk_alloc_resize
  *
- * Similar to ::mlk_alloc_new but also ensure expanded data is zero
+ * Similar to ::mlk_alloc_resize but also ensure expanded data is zero
  * initialized.
  */
 void *
 mlk_alloc_resize0(void *ptr, size_t n);
+
+/**
+ * Similar to ::mlk_alloc_resize but expands the storage by n.
+ *
+ * Example, if the current pointer holds 10 `int`, passing 90 as n argument
+ * will expand the memory to a total of 100 `int`.
+ *
+ * \pre ptr != NULL
+ * \param ptr the pointer to expand
+ * \param n the number of items to append
+ * \return whatever the allocator returned to rearrange the pointer memory
+ */
+void *
+mlk_alloc_expand(void *ptr, size_t n);
+
+/**
+ * \copydoc mlk_alloc_expand
+ *
+ * Similar to ::mlk_alloc_expand but also ensure expanded data is zero
+ * initialized.
+ */
+void *
+mlk_alloc_expand0(void *ptr, size_t n);
 
 /**
  * Duplicate a memory block.
@@ -257,6 +280,26 @@ mlk_alloc_sdup(const char *src);
  */
 char *
 mlk_alloc_sdupf(const char *fmt, ...);
+
+/**
+ * Get the number of items in ptr.
+ *
+ * \pre ptr != NULL
+ * \param ptr the pointer block
+ * \return how many number of elements ptr holds
+ */
+size_t
+mlk_alloc_getn(const void *ptr);
+
+/**
+ * Get the element width in ptr.
+ *
+ * \pre ptr != NULL
+ * \param ptr the pointer block
+ * \return size of individual elements ptr holds
+ */
+size_t
+mlk_alloc_getw(const void *ptr);
 
 /**
  * Free resources specified by pointer.

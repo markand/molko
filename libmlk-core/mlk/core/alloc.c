@@ -105,9 +105,9 @@ mlk_alloc_set(const struct mlk_alloc_funcs *newfuncs)
 }
 
 static inline struct block *
-blockat(void *ptr)
+blockat(const void *ptr)
 {
-	unsigned char *addr = (unsigned char *)ptr;
+	const unsigned char *addr = (const unsigned char *)ptr;
 
 	return (struct block *)&addr[-BLKSIZE];
 }
@@ -145,11 +145,23 @@ reallocate(void *ptr, size_t n, int zero)
 #endif
 
 	b = funcs->realloc(b, BLKSIZE + nsize);
+	b->n = n;
 
 	if (zero && nsize > osize)
 		memset(b->data + osize, 0, nsize - osize);
 
 	return b->data;
+}
+
+static inline void *
+expand(void *ptr, size_t n, int zero)
+{
+	struct block *b = blockat(ptr);
+
+	if (n <= b->n)
+		return ptr;
+
+	return reallocate(ptr, b->n + n, zero);
 }
 
 void *
@@ -180,6 +192,18 @@ void *
 mlk_alloc_resize0(void *ptr, size_t n)
 {
 	return reallocate(ptr, n, 1);
+}
+
+void *
+mlk_alloc_expand(void *ptr, size_t n)
+{
+	return reallocate(ptr, n, 0);
+}
+
+void *
+mlk_alloc_expand0(void *ptr, size_t n)
+{
+	return expand(ptr, n, 1);
 }
 
 void *
@@ -222,6 +246,22 @@ mlk_alloc_sdupf(const char *fmt, ...)
 	va_end(ap);
 
 	return str;
+}
+
+size_t
+mlk_alloc_getn(const void *ptr)
+{
+	assert(ptr);
+
+	return blockat(ptr)->n;
+}
+
+size_t
+mlk_alloc_getw(const void *ptr)
+{
+	assert(ptr);
+
+	return blockat(ptr)->w;
 }
 
 void

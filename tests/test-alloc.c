@@ -63,11 +63,13 @@ static const struct mlk_alloc_funcs my_funcs = {
 };
 
 static void
-test_basics_array0(void)
+test_basics_resize0(void)
 {
 	struct point *points;
 
 	points = mlk_alloc_new0(2, sizeof (*points));
+	DT_EQ_SIZE(mlk_alloc_getn(points), 2);
+	DT_EQ_SIZE(mlk_alloc_getw(points), sizeof (*points));
 	DT_EQ_INT(points[0].x, 0);
 	DT_EQ_INT(points[0].y, 0);
 	DT_EQ_INT(points[1].x, 0);
@@ -79,6 +81,8 @@ test_basics_array0(void)
 	points[1].y = 40;
 
 	points = mlk_alloc_resize0(points, 4);
+	DT_EQ_SIZE(mlk_alloc_getn(points), 4);
+	DT_EQ_SIZE(mlk_alloc_getw(points), sizeof (*points));
 
 	/* Make sure previous are still correct. */
 	DT_EQ_INT(points[0].x, 10);
@@ -91,6 +95,45 @@ test_basics_array0(void)
 	DT_EQ_INT(points[2].y, 0);
 	DT_EQ_INT(points[3].x, 0);
 	DT_EQ_INT(points[3].y, 0);
+}
+
+static void
+test_basics_expand0(void)
+{
+	struct point *points;
+
+	points = mlk_alloc_new0(2, sizeof (*points));
+	DT_EQ_SIZE(mlk_alloc_getn(points), 2);
+	DT_EQ_SIZE(mlk_alloc_getw(points), sizeof (*points));
+	DT_EQ_INT(points[0].x, 0);
+	DT_EQ_INT(points[0].y, 0);
+	DT_EQ_INT(points[1].x, 0);
+	DT_EQ_INT(points[1].y, 0);
+
+	points[0].x = 10;
+	points[0].y = 20;
+	points[1].x = 30;
+	points[1].y = 40;
+
+	points = mlk_alloc_expand0(points, 4);
+	DT_EQ_SIZE(mlk_alloc_getn(points), 6);
+	DT_EQ_SIZE(mlk_alloc_getw(points), sizeof (*points));
+
+	/* Make sure previous are still correct. */
+	DT_EQ_INT(points[0].x, 10);
+	DT_EQ_INT(points[0].y, 20);
+	DT_EQ_INT(points[1].x, 30);
+	DT_EQ_INT(points[1].y, 40);
+
+	/* Now the new items must be zero'ed. */
+	DT_EQ_INT(points[2].x, 0);
+	DT_EQ_INT(points[2].y, 0);
+	DT_EQ_INT(points[3].x, 0);
+	DT_EQ_INT(points[3].y, 0);
+	DT_EQ_INT(points[4].x, 0);
+	DT_EQ_INT(points[4].y, 0);
+	DT_EQ_INT(points[5].x, 0);
+	DT_EQ_INT(points[5].y, 0);
 }
 
 static void
@@ -170,7 +213,8 @@ test_custom_count(void)
 int
 main(void)
 {
-	DT_RUN(test_basics_array0);
+	DT_RUN(test_basics_resize0);
+	DT_RUN(test_basics_expand0);
 	DT_RUN(test_basics_pool_simple);
 	DT_RUN(test_basics_sdupf);
 	DT_RUN(test_custom_count);
