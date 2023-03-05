@@ -30,125 +30,123 @@
 #include <mlk/core/util.h>
 
 #include <mlk/ui/align.h>
-#include <mlk/ui/frame.h>
-#include <mlk/ui/label.h>
+#include <mlk/ui/ui.h>
+#include <mlk/ui/ui_p.h>
 
 #include "message.h"
 
-static void
-draw_frame(const struct message *msg)
+static inline struct mlk_font *
+style_font(const struct mlk_message *message)
 {
-	assert(msg);
+	const struct mlk_message_style *style = MLK__STYLE(message, mlk_message_style);
 
-	struct mlk_frame frame = {
-		.w = msg->w,
-		.h = msg->h
-	};
+	if (style->text_font)
+		return style->text_font;
 
-	mlk_frame_draw(&frame);
+	return mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 }
 
-static inline unsigned int
-min_width(const struct message *msg)
+static unsigned int
+min_width(const struct mlk_message *msg)
 {
-#if 0
 	assert(msg);
 
+	const struct mlk_message_style *style = MLK__STYLE(msg, mlk_message_style);
+	struct mlk_font *font;
 	unsigned int maxw = 0, w = 0;
 	int err;
+
+	font = style_font(msg);
 
 	for (size_t i = 0; i < msg->linesz; ++i) {
 		if (!msg->lines[i])
 			continue;
-		if ((err = mlk_font_query(THEME(msg)->fonts[MLK_THEME_FONT_INTERFACE], msg->lines[i], &w, NULL)) < 0)
-			mlk_panic(err);
+		if ((err = mlk_font_query(font, msg->lines[i], &w, NULL)) < 0)
+			return err;
 		if (w > maxw)
 			maxw = w;
 	}
 
-	return (THEME(msg)->padding * 2) + maxw;
-#endif
-	return 0;
+	return (style->padding * 2) + maxw;
 }
 
-static inline unsigned int
-min_height(const struct message *msg)
+static unsigned int
+min_height(const struct mlk_message *msg)
 {
 	assert(msg);
 
-#if 0
-	const struct mlk_theme *th = THEME(msg);
-	const unsigned int lh  = mlk_font_height(th->fonts[MLK_THEME_FONT_INTERFACE]);
+	const struct mlk_message_style *style = MLK__STYLE(msg, mlk_message_style);
+	struct mlk_font *font;
+	unsigned int lh;
 
-	return (th->padding * 2) + (msg->linesz * lh) + ((msg->linesz - 1) * msg->spacing);
-#endif
-	return 0;
+	font = style_font(msg);
+	lh = mlk_font_height(font);
+
+	return (style->padding * 2) + (msg->linesz * lh) + ((msg->linesz - 1) * style->padding);
 }
 
 static void
-draw_lines(const struct message *msg)
+draw_frame(const struct mlk_message *msg)
 {
-#if 0
-	const struct mlk_theme *theme = THEME(msg);
-	struct mlk_label label;
-	unsigned int lw, lh;
-	int err;
+	const struct mlk_message_style *style = MLK__STYLE(msg, mlk_message_style);
+
+	mlk_painter_set_color(style->border_color);
+	mlk_painter_draw_rectangle(0, 0, msg->w, msg->h);
+	mlk_painter_set_color(style->bg_color);
+	mlk_painter_draw_rectangle(
+		style->border_size,
+		style->border_size,
+		msg->w - (style->border_size * 2),
+		msg->h - (style->border_size * 2)
+	);
+}
+
+static void
+draw_lines(const struct mlk_message *msg)
+{
+	const struct mlk_message_style *style;
+	struct mlk_font *font;
+	struct mlk_texture texture;
+	unsigned long color;
+	int err, x, y;
+
+	style = MLK__STYLE(msg, mlk_message_style);
+	font = style_font(msg);
 
 	for (size_t i = 0; i < msg->linesz; ++i) {
 		if (!msg->lines[i])
 			continue;
-		if ((err = mlk_font_query(theme->fonts[MLK_THEME_FONT_INTERFACE], msg->lines[i], &lw, &lh)) < 0)
-			mlk_panic(err);
 
-		label.x = theme->padding;
-		label.y = theme->padding + (i * (lh + msg->spacing));
-		label.text = msg->lines[i];
-		label.flags = MLK_LABEL_FLAGS_SHADOW;
+		if ((msg->flags & MLK_MESSAGE_FLAGS_QUESTION) && msg->index == (unsigned int)i)
+			color = style->selected_color;
+		else
+			color = style->text_color;
 
-		if (label.x + lw > msg->w)
+		if ((err = mlk_font_render(font, &texture, msg->lines[i], color)) < 0) {
+			mlk_tracef("%s", mlk_err_string(err));
+			continue;
+		}
+
+		x = style->padding;
+		y = style->padding + (i * (texture.h + style->padding));
+
+		if (x + texture.w > msg->w)
 			mlk_tracef("message width too small: %u < %u", msg->w, min_width(msg));
-		if (label.y + lh > msg->h)
+		if (y + texture.h > msg->h)
 			mlk_tracef("message height too small: %u < %u", msg->h, min_height(msg));
 
-		/*
-		 * The function label_draw will use THEME_COLOR_NORMAL to draw
-		 * text and THEME_COLOR_SHADOW so if we have selected a line
-		 * we need to cheat the normal color.
-		 */
-#if 0
-		if ((msg->flags & MESSAGE_FLAGS_QUESTION) && msg->index == (unsigned int)i)
-			label.flags |= MLK_LABEL_FLAGS_SELECTED;
-		else
-			label.flags &= ~(MLK_LABEL_FLAGS_SELECTED);
-#endif
-
-		mlk_label_draw(&label);
+		mlk_texture_draw(&texture, x, y);
+		mlk_texture_finish(&texture);
 	}
-#endif
 }
 
-void
-message_start(struct message *msg)
+static int
+delegate_query(struct mlk_message_delegate *self,
+               const struct mlk_message *msg,
+               unsigned int *w,
+               unsigned int *h)
 {
-	assert(msg);
-
-	if (msg->flags & (MESSAGE_FLAGS_FADEIN|MESSAGE_FLAGS_FADEOUT))
-		assert(msg->delay > 0);
-
-	msg->elapsed = 0;
-	msg->scale = msg->flags & MESSAGE_FLAGS_FADEIN ? 0.0 : 1.0;
-	msg->state = msg->flags & MESSAGE_FLAGS_FADEIN
-	    ? MESSAGE_STATE_OPENING
-	    : MESSAGE_STATE_SHOWING;
-
-	if (msg->flags & MESSAGE_FLAGS_AUTOMATIC && msg->timeout == 0)
-		mlk_tracef("message is automatic but has zero timeout");
-}
-
-void
-message_query(const struct message *msg, unsigned int *w, unsigned int *h)
-{
-	assert(msg);
+	(void)self;
 
 	if (w)
 		*w = min_width(msg);
@@ -156,77 +154,47 @@ message_query(const struct message *msg, unsigned int *w, unsigned int *h)
 		*h = min_height(msg);
 }
 
-void
-message_handle(struct message *msg, const union mlk_event *ev)
+static void
+delegate_update(struct mlk_message_delegate *self,
+                struct mlk_message *msg,
+                unsigned int ticks)
 {
-	assert(msg);
-	assert(ev);
+	(void)self;
 
-	/* Skip if the message animation hasn't complete. */
-	if (msg->state != MESSAGE_STATE_SHOWING)
-		return;
-
-	/* Only keyboard event are valid. */
-	if (ev->type != MLK_EVENT_KEYDOWN || msg->state == MESSAGE_STATE_NONE)
-		return;
-
-	switch (ev->key.key) {
-	case MLK_KEY_UP:
-		if (msg->index > 0)
-			msg->index--;
-		break;
-	case MLK_KEY_DOWN:
-		if (msg->index + 1 < msg->linesz && msg->lines[msg->index + 1])
-			msg->index++;
-		break;
-	case MLK_KEY_ENTER:
-		msg->state = msg->flags & MESSAGE_FLAGS_FADEOUT
-		    ? MESSAGE_STATE_HIDING
-		    : MESSAGE_STATE_NONE;
-		msg->elapsed = 0;
-		break;
-	default:
-		break;
-	}
-}
-
-int
-message_update(struct message *msg, unsigned int ticks)
-{
-	assert(msg);
+	const struct mlk_message_style *style = MLK__STYLE(msg, mlk_message_style);
 
 	msg->elapsed += ticks;
 
 	switch (msg->state) {
-	case MESSAGE_STATE_OPENING:
-		msg->scale = (double)msg->elapsed / (double)msg->delay;
+	case MLK_MESSAGE_STATE_OPENING:
+		msg->scale = (double)msg->elapsed / (double)style->delay;
 
 		if (msg->scale > 1)
 			msg->scale = 1;
 
-		if (msg->elapsed >= msg->delay) {
-			msg->state = MESSAGE_STATE_SHOWING;
+		if (msg->elapsed >= style->delay) {
+			msg->state = MLK_MESSAGE_STATE_SHOWING;
 			msg->elapsed = 0;
 		}
 
 		break;
-	case MESSAGE_STATE_SHOWING:
+	case MLK_MESSAGE_STATE_SHOWING:
 		/* Do automatically switch state if requested by the user. */
-		if (msg->flags & MESSAGE_FLAGS_AUTOMATIC && msg->elapsed >= msg->timeout) {
-			msg->state = msg->flags & MESSAGE_FLAGS_FADEOUT
-			    ? MESSAGE_STATE_HIDING
-			    : MESSAGE_STATE_NONE;
+		if (msg->flags & MLK_MESSAGE_FLAGS_AUTOMATIC && msg->elapsed >= style->duration) {
+			msg->state = msg->flags & MLK_MESSAGE_FLAGS_FADEOUT
+			    ? MLK_MESSAGE_STATE_HIDING
+			    : MLK_MESSAGE_STATE_NONE;
 			msg->elapsed = 0;
 		}
 
 		break;
-	case MESSAGE_STATE_HIDING:
-		msg->scale = 1 - (double)msg->elapsed / (double)msg->delay;
+	case MLK_MESSAGE_STATE_HIDING:
+		msg->scale = 1 - (double)msg->elapsed / (double)style->delay;
 
 		if (msg->scale < 0)
 			msg->scale = 0;
-		if (msg->elapsed >= msg->delay) {
-			msg->state = MESSAGE_STATE_NONE;
+		if (msg->elapsed >= style->delay) {
+			msg->state = MLK_MESSAGE_STATE_NONE;
 			msg->elapsed = 0;
 		}
 
@@ -235,13 +203,12 @@ message_update(struct message *msg, unsigned int ticks)
 		break;
 	}
 
-	return msg->state == MESSAGE_STATE_NONE;
 }
 
-void
-message_draw(const struct message *msg)
+static void
+delegate_draw(struct mlk_message_delegate *self, const struct mlk_message *msg)
 {
-	assert(msg);
+	(void)self;
 
 	struct mlk_texture tex;
 	int x, y, err;
@@ -272,11 +239,114 @@ message_draw(const struct message *msg)
 	mlk_texture_finish(&tex);
 }
 
+struct mlk_message_style mlk_message_style = {
+	.padding        = MLK_UI_PADDING,
+	.delay          = MLK_MESSAGE_DELAY_DEFAULT,
+	.duration       = MLK_MESSAGE_DURATION_DEFAULT,
+	.bg_color       = MLK_UI_COLOR_BG,
+	.border_color   = MLK_UI_COLOR_BORDER,
+	.border_size    = MLK_UI_BORDER,
+	.text_color     = MLK_UI_COLOR_TEXT,
+	.selected_color = MLK_UI_COLOR_SELECTED
+};
+struct mlk_message_delegate mlk_message_delegate = {
+	.query          = delegate_query,
+	.update         = delegate_update,
+	.draw           = delegate_draw
+};
+
 void
-message_hide(struct message *msg)
+mlk_message_start(struct mlk_message *msg)
 {
 	assert(msg);
 
-	msg->state = MESSAGE_STATE_HIDING;
+	const struct mlk_message_style *style = MLK__STYLE(msg, mlk_message_style);
+
+	if ((msg->flags & (MLK_MESSAGE_FLAGS_FADEIN | MLK_MESSAGE_FLAGS_FADEOUT)) && style->delay == 0)
+		mlk_tracef("message has animation but zero delay");
+
+	msg->elapsed = 0;
+	msg->scale = msg->flags & MLK_MESSAGE_FLAGS_FADEIN ? 0.0 : 1.0;
+	msg->state = msg->flags & MLK_MESSAGE_FLAGS_FADEIN
+	    ? MLK_MESSAGE_STATE_OPENING
+	    : MLK_MESSAGE_STATE_SHOWING;
+
+	if (msg->flags & MLK_MESSAGE_FLAGS_AUTOMATIC && style->duration == 0)
+		mlk_tracef("message is automatic but has zero duration");
+}
+
+int
+mlk_message_query(const struct mlk_message *msg, unsigned int *w, unsigned int *h)
+{
+	assert(msg);
+
+	MLK__DELEGATE_INVOKE_RET(msg->delegate, mlk_message_delegate, query, msg, w, h);
+
+	if (w)
+		*w = 0;
+	if (h)
+		*h = 0;
+
+	return MLK_ERR_NO_SUPPORT;
+}
+
+void
+mlk_message_handle(struct mlk_message *msg, const union mlk_event *ev)
+{
+	assert(msg);
+	assert(ev);
+
+	/* Skip if the message animation hasn't complete. */
+	if (msg->state != MLK_MESSAGE_STATE_SHOWING)
+		return;
+
+	/* Only keyboard event are valid. */
+	if (ev->type != MLK_EVENT_KEYDOWN || msg->state == MLK_MESSAGE_STATE_NONE)
+		return;
+
+	switch (ev->key.key) {
+	case MLK_KEY_UP:
+		if (msg->index > 0)
+			msg->index--;
+		break;
+	case MLK_KEY_DOWN:
+		if (msg->index + 1 < msg->linesz && msg->lines[msg->index + 1])
+			msg->index++;
+		break;
+	case MLK_KEY_ENTER:
+		msg->state = msg->flags & MLK_MESSAGE_FLAGS_FADEOUT
+		    ? MLK_MESSAGE_STATE_HIDING
+		    : MLK_MESSAGE_STATE_NONE;
+		msg->elapsed = 0;
+		break;
+	default:
+		break;
+	}
+}
+
+int
+mlk_message_update(struct mlk_message *msg, unsigned int ticks)
+{
+	assert(msg);
+
+	MLK__DELEGATE_INVOKE(msg->delegate, mlk_message_delegate, update, msg, ticks);
+
+	return msg->state == MLK_MESSAGE_STATE_NONE;
+}
+
+void
+mlk_message_draw(const struct mlk_message *msg)
+{
+	assert(msg);
+
+	MLK__DELEGATE_INVOKE(msg->delegate, mlk_message_delegate, draw, msg);
+}
+
+void
+mlk_message_hide(struct mlk_message *msg)
+{
+	assert(msg);
+
+	msg->state = MLK_MESSAGE_STATE_HIDING;
 	msg->elapsed = 0;
 }

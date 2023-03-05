@@ -27,7 +27,7 @@ struct dialog {
 	/* public */
 	void *data;
 	void (*response)(struct dialog *, unsigned int);
-	struct message msg;
+	struct mlk_message msg;
 
 	/* private */
 	struct mlk_action action;

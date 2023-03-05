@@ -58,7 +58,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 		mlk_game_quit();
 		break;
 	default:
-		message_handle(st->data, ev);
+		mlk_message_handle(st->data, ev);
 		break;
 	}
 }
@@ -66,7 +66,7 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 static void
 update(struct mlk_state *st, unsigned int ticks)
 {
-	if (message_update(st->data, ticks))
+	if (mlk_message_update(st->data, ticks))
 		mlk_game_quit();
 }
 
@@ -75,12 +75,12 @@ draw(struct mlk_state *st)
 {
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
-	message_draw(st->data);
+	mlk_message_draw(st->data);
 	mlk_painter_present();
 }
 
 static void
-run(struct message *msg)
+run(struct mlk_message *msg)
 {
 	struct mlk_state state = {
 		.data = msg,
@@ -89,7 +89,7 @@ run(struct message *msg)
 		.draw = draw
 	};
 
-	message_start(msg);
+	mlk_message_start(msg);
 
 	mlk_game_init();
 	mlk_game_push(&state);
@@ -115,16 +115,15 @@ basic(void)
 		"Vertical spacing is automatically computed.",
 		"You need to press <Enter> to close it.",
 	};
-	struct message msg = {
+	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.spacing = 12,
 		.lines = text,
 		.linesz = 3
 	};
 
-	message_query(&msg, NULL, &msg.h);
+	mlk_message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -136,17 +135,16 @@ automatic(void)
 		"It will disappear in a few seconds.",
 		"You can still press <Enter> to close it quicker."
 	};
-	struct message msg = {
+	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.timeout = MESSAGE_TIMEOUT_DEFAULT,
 		.lines = text,
 		.linesz = 3,
-		.flags = MESSAGE_FLAGS_AUTOMATIC
+		.flags = MLK_MESSAGE_FLAGS_AUTOMATIC
 	};
 
-	message_query(&msg, NULL, &msg.h);
+	mlk_message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -156,17 +154,16 @@ fadein(void)
 	const char * const text[] = {
 		"This message will fade in."
 	};
-	struct message msg = {
+	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.delay = MESSAGE_DELAY_DEFAULT,
 		.lines = text,
 		.linesz = 1,
-		.flags = MESSAGE_FLAGS_FADEIN
+		.flags = MLK_MESSAGE_FLAGS_FADEIN
 	};
 
-	message_query(&msg, NULL, &msg.h);
+	mlk_message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -176,17 +173,16 @@ fadeout(void)
 	const char * const text[] = {
 		"This message will fade out."
 	};
-	struct message msg = {
+	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.delay = MESSAGE_DELAY_DEFAULT,
 		.lines = text,
 		.linesz = 1,
-		.flags = MESSAGE_FLAGS_FADEOUT
+		.flags = MLK_MESSAGE_FLAGS_FADEOUT
 	};
 
-	message_query(&msg, NULL, &msg.h);
+	mlk_message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -196,17 +192,16 @@ fade(void)
 	const char * const text[] = {
 		"This message will fade in and out."
 	};
-	struct message msg = {
+	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.delay = MESSAGE_DELAY_DEFAULT,
 		.lines = text,
 		.linesz = 1,
-		.flags = MESSAGE_FLAGS_FADEIN | MESSAGE_FLAGS_FADEOUT
+		.flags = MLK_MESSAGE_FLAGS_FADEIN | MLK_MESSAGE_FLAGS_FADEOUT
 	};
 
-	message_query(&msg, NULL, &msg.h);
+	mlk_message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -217,16 +212,16 @@ question(void)
 		"Okay, I've understood.",
 		"Nevermind, I'll do it again."
 	};
-	struct message msg = {
+	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
 		.lines = text,
 		.linesz = 2,
-		.flags = MESSAGE_FLAGS_QUESTION
+		.flags = MLK_MESSAGE_FLAGS_QUESTION
 	};
 
-	message_query(&msg, NULL, &msg.h);
+	mlk_message_query(&msg, NULL, &msg.h);
 	run(&msg);
 }
 
@@ -241,13 +236,12 @@ smallbottom(void)
 		"This one is small here."
 	};
 
-	struct message msg = {
+	struct mlk_message msg = {
 		.x = x,
 		.y = y,
 		.w = w,
 		.h = h,
-		.delay = MESSAGE_DELAY_DEFAULT,
-		.flags = MESSAGE_FLAGS_FADEIN | MESSAGE_FLAGS_FADEOUT,
+		.flags = MLK_MESSAGE_FLAGS_FADEIN | MLK_MESSAGE_FLAGS_FADEOUT,
 		.lines = text,
 		.linesz = 1
 	};
@@ -262,7 +256,7 @@ toosmallh(void)
 		"This one is too small in height and will emit a warning.",
 		"Because this line will be incomplete."
 	};
-	struct message msg = {
+	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
@@ -280,7 +274,7 @@ toosmallw(void)
 	const char * const text[] = {
 		"This one is too small in width."
 	};
-	struct message msg = {
+	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = 160,
@@ -295,28 +289,26 @@ toosmallw(void)
 static void
 custom(void)
 {
-#if 0
 	const char * const text[] = {
 		"This one will destroy your eyes.",
 		"Because it use a terrible custom theme."
 	};
-	struct mlk_theme theme;
-	struct message msg = {
+	struct mlk_message_style style = mlk_message_style;
+	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
-		.h = MH,
 		.lines = text,
 		.linesz = 2,
-		.theme = &theme
+		.style = &style
 	};
 
-	/* Borrow default theme and change its frame drawing. */
-	theme.draw_frame = my_draw_frame;
-	theme.colors[MLK_THEME_COLOR_NORMAL] = 0x0000ffff;
+	style.bg_color = 0xf85d80ff;
+	style.border_color = 0xd94a69ff;
+	style.text_color = 0xffffffff;
 
+	mlk_message_query(&msg, NULL, &msg.h);
 	run(&msg);
-#endif
 }
 
 static void

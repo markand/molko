@@ -38,7 +38,7 @@ handle(struct mlk_action *act, const union mlk_event *ev)
 {
 	struct dialog *dlg = act->data;
 
-	message_handle(&dlg->msg, ev);
+	mlk_message_handle(&dlg->msg, ev);
 }
 
 static int
@@ -46,7 +46,7 @@ update(struct mlk_action *act, unsigned int ticks)
 {
 	struct dialog *dlg = act->data;
 
-	return message_update(&dlg->msg, ticks);
+	return mlk_message_update(&dlg->msg, ticks);
 }
 
 static void
@@ -54,7 +54,7 @@ draw(struct mlk_action *act)
 {
 	struct dialog *dlg = act->data;
 
-	message_draw(&dlg->msg);
+	mlk_message_draw(&dlg->msg);
 }
 
 static void
@@ -62,7 +62,7 @@ end(struct mlk_action *act)
 {
 	struct dialog *dlg = act->data;
 
-	if ((dlg->msg.flags & MESSAGE_FLAGS_QUESTION) && dlg->response)
+	if ((dlg->msg.flags & MLK_MESSAGE_FLAGS_QUESTION) && dlg->response)
 		dlg->response(dlg, dlg->msg.index);
 }
 
@@ -77,8 +77,8 @@ dialog_init(struct dialog *dlg)
 	dlg->msg.delay = QMD;
 	dlg->msg.spacing = QMS;
 
-	message_start(&dlg->msg);
-	message_query(&dlg->msg, NULL, &dlg->msg.h);
+	mlk_message_start(&dlg->msg);
+	mlk_message_query(&dlg->msg, NULL, &dlg->msg.h);
 
 	dlg->action.data = dlg;
 	dlg->action.handle = handle;

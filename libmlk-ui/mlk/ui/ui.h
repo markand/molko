@@ -23,11 +23,14 @@
 
 /* TODO: make this a global variable to allow modification of default theme. */
 /* https://lospec.com/palette-list/duel */
-#define MLK_UI_COLOR_TEXT       0x222323ff
-#define MLK_UI_COLOR_SELECTED   0x55b67dff
-#define MLK_UI_COLOR_BG         0xf5f7faff
-#define MLK_UI_COLOR_BORDER     0xcdd2daff
-#define MLK_UI_COLOR_DEBUG      0xe45c5fff
+#define MLK_UI_COLOR_TEXT       (0x222323ff)
+#define MLK_UI_COLOR_SELECTED   (0x55b67dff)
+#define MLK_UI_COLOR_BG         (0xf5f7faff)
+#define MLK_UI_COLOR_BORDER     (0xcdd2daff)
+#define MLK_UI_COLOR_DEBUG      (0xe45c5fff)
+
+#define MLK_UI_PADDING          (10)
+#define MLK_UI_BORDER           (2)
 
 enum mlk_align;
 

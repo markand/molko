@@ -29,7 +29,7 @@ struct mlk_label_style {
 
 struct mlk_label_delegate {
 	void *data;
-	int (*query)(struct mlk_label_delegate *, const struct mlk_label *, unsigned int *, unsigned *);
+	int (*query)(struct mlk_label_delegate *, const struct mlk_label *, unsigned int *, unsigned int *);
 	void (*update)(struct mlk_label_delegate *, struct mlk_label *, unsigned int);
 	void (*draw)(struct mlk_label_delegate *, const struct mlk_label *);
 };

@@ -79,7 +79,7 @@ static void script_right_response(struct dialog *, unsigned int);
 static struct dialog script_left[] = {
 	{
 		.msg = {
-			.flags = MESSAGE_FLAGS_FADEIN,
+			.flags = MLK_MESSAGE_FLAGS_FADEIN,
 			.linesz = 1,
 			.lines = (const char *[]) {
 				"Welcome to this game."
@@ -99,7 +99,7 @@ static struct dialog script_left[] = {
 	{
 		.response = script_left_response,
 		.msg = {
-			.flags = MESSAGE_FLAGS_QUESTION,
+			.flags = MLK_MESSAGE_FLAGS_QUESTION,
 			.linesz = 2,
 			.lines = (const char *[]) {
 				"Of course I am",
@@ -112,7 +112,7 @@ static struct dialog script_left[] = {
 static struct dialog script_left_responses[] = {
 	{
 		.msg = {
-			.flags = MESSAGE_FLAGS_FADEOUT,
+			.flags = MLK_MESSAGE_FLAGS_FADEOUT,
 			.linesz = 1,
 			.lines = (const char *[]) {
 				 "Don't be so confident"
@@ -121,7 +121,7 @@ static struct dialog script_left_responses[] = {
 	},
 	{
 		.msg = {
-			.flags = MESSAGE_FLAGS_FADEOUT,
+			.flags = MLK_MESSAGE_FLAGS_FADEOUT,
 			.linesz = 1,
 			.lines = (const char *[]) {
 				 "Nevermind, I'll do it myself"
@@ -137,7 +137,7 @@ static struct dialog script_left_responses[] = {
 static struct dialog script_right[] = {
 	{
 		.msg = {
-			.flags = MESSAGE_FLAGS_FADEIN,
+			.flags = MLK_MESSAGE_FLAGS_FADEIN,
 			.linesz = 1,
 			.lines = (const char *[]) {
 				"Why did you select this chest?"
@@ -147,7 +147,7 @@ static struct dialog script_right[] = {
 	{
 		.response = script_right_response,
 		.msg = {
-			.flags = MESSAGE_FLAGS_QUESTION,
+			.flags = MLK_MESSAGE_FLAGS_QUESTION,
 			.linesz = 2,
 			.lines = (const char *[]) {
 				"Because I think there was some gold",
@@ -160,7 +160,7 @@ static struct dialog script_right[] = {
 static struct dialog script_right_responses[] = {
 	{
 		.msg = {
-			.flags = MESSAGE_FLAGS_FADEOUT,
+			.flags = MLK_MESSAGE_FLAGS_FADEOUT,
 			.linesz = 1,
 			.lines = (const char *[]) {
 				"Go away!"
@@ -169,7 +169,7 @@ static struct dialog script_right_responses[] = {
 	},
 	{
 		.msg = {
-			.flags = MESSAGE_FLAGS_FADEOUT,
+			.flags = MLK_MESSAGE_FLAGS_FADEOUT,
 			.linesz = 1,
 			.lines = (const char *[]) {
 				"Install OpenBSD then"

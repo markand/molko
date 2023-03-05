@@ -23,67 +23,94 @@
 
 #include <mlk/core/texture.h>
 
+#define MLK_MESSAGE_DELAY_DEFAULT       (150)
+#define MLK_MESSAGE_DURATION_DEFAULT    (5000)
+
 struct mlk_font;
-struct mlk_theme;
+struct mlk_message;
 
 union mlk_event;
 
-#define MESSAGE_DELAY_DEFAULT           (150)
-#define MESSAGE_TIMEOUT_DEFAULT         (5000)
-
-enum message_flags {
-	MESSAGE_FLAGS_AUTOMATIC         = (1 << 0),
-	MESSAGE_FLAGS_QUESTION          = (1 << 1),
-	MESSAGE_FLAGS_FADEIN            = (1 << 2),
-	MESSAGE_FLAGS_FADEOUT           = (1 << 3)
+enum mlk_message_flags {
+	MLK_MESSAGE_FLAGS_AUTOMATIC     = (1 << 0),
+	MLK_MESSAGE_FLAGS_QUESTION      = (1 << 1),
+	MLK_MESSAGE_FLAGS_FADEIN        = (1 << 2),
+	MLK_MESSAGE_FLAGS_FADEOUT       = (1 << 3)
 };
 
-enum message_state {
-	MESSAGE_STATE_NONE,
-	MESSAGE_STATE_OPENING,
-	MESSAGE_STATE_SHOWING,
-	MESSAGE_STATE_HIDING
+enum mlk_message_state {
+	MLK_MESSAGE_STATE_NONE,
+	MLK_MESSAGE_STATE_OPENING,
+	MLK_MESSAGE_STATE_SHOWING,
+	MLK_MESSAGE_STATE_HIDING
 };
 
-struct message {
-	int x;
-	int y;
-	unsigned int w;
-	unsigned int h;
-	unsigned int spacing;
+struct mlk_message_style {
+	unsigned int padding;
 	unsigned int delay;
-	unsigned int timeout;
+	unsigned int duration;
+	unsigned long bg_color;
+	unsigned long border_color;
+	unsigned long border_size;
+	unsigned long text_color;
+	unsigned long selected_color;
+	struct mlk_font *text_font;
+};
+
+struct mlk_message_delegate {
+	void *data;
+
+	int (*query)(struct mlk_message_delegate *self,
+	             const struct mlk_message *message,
+	             unsigned int *w,
+	             unsigned int *h);
+
+	void (*update)(struct mlk_message_delegate *self,
+	               struct mlk_message *message,
+	               unsigned int ticks);
+
+	void (*draw)(struct mlk_message_delegate *self,
+	             const struct mlk_message *message);
+};
+
+struct mlk_message {
+	int x, y;
+	unsigned int w, h;
 	const char * const *lines;
 	size_t linesz;
 	unsigned int index;
-	enum message_flags flags;
-	enum message_state state;
-	const struct mlk_theme *theme;
+	enum mlk_message_flags flags;
+	enum mlk_message_state state;
+	struct mlk_message_style *style;
+	struct mlk_message_delegate *delegate;
 	unsigned int elapsed;
 	double scale;
 };
+
+extern struct mlk_message_style mlk_message_style;
+extern struct mlk_message_delegate mlk_message_delegate;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 void
-message_start(struct message *msg);
-
-void
-message_query(const struct message *msg, unsigned int *w, unsigned int *h);
-
-void
-message_handle(struct message *msg, const union mlk_event *ev);
+mlk_message_start(struct mlk_message *msg);
 
 int
-message_update(struct message *msg, unsigned int ticks);
+mlk_message_query(const struct mlk_message *msg, unsigned int *w, unsigned int *h);
 
 void
-message_draw(const struct message *msg);
+mlk_message_handle(struct mlk_message *msg, const union mlk_event *ev);
+
+int
+mlk_message_update(struct mlk_message *msg, unsigned int ticks);
 
 void
-message_hide(struct message *msg);
+mlk_message_draw(const struct mlk_message *msg);
+
+void
+mlk_message_hide(struct mlk_message *msg);
 
 #if defined(__cplusplus)
 }
