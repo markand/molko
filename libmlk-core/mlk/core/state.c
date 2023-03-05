@@ -1,5 +1,5 @@
 /*
- * state.c -- abstract state
+ * state.c -- abstract game loop state
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
