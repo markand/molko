@@ -78,7 +78,7 @@ test_basics_array0(void)
 	points[1].x = 30;
 	points[1].y = 40;
 
-	points = mlk_alloc_renew0(points, 4);
+	points = mlk_alloc_resize0(points, 4);
 
 	/* Make sure previous are still correct. */
 	DT_EQ_INT(points[0].x, 10);

@@ -171,13 +171,13 @@ mlk_alloc_new0(size_t n, size_t w)
 }
 
 void *
-mlk_alloc_renew(void *ptr, size_t n)
+mlk_alloc_resize(void *ptr, size_t n)
 {
 	return reallocate(ptr, n, 0);
 }
 
 void *
-mlk_alloc_renew0(void *ptr, size_t n)
+mlk_alloc_resize0(void *ptr, size_t n)
 {
 	return reallocate(ptr, n, 1);
 }
@@ -255,7 +255,7 @@ mlk_alloc_pool_new(struct mlk_alloc_pool *pool)
 
 	if (pool->size >= pool->capacity) {
 		pool->capacity *= 2;
-		pool->data = mlk_alloc_renew(pool->data, pool->capacity);
+		pool->data = mlk_alloc_resize(pool->data, pool->capacity);
 	}
 
 	return ((unsigned char *)pool->data) + pool->size++ * pool->elemsize;
@@ -277,7 +277,7 @@ mlk_alloc_pool_shrink(struct mlk_alloc_pool *pool)
 
 	void *ptr;
 
-	ptr = mlk_alloc_renew(pool->data, pool->size);
+	ptr = mlk_alloc_resize(pool->data, pool->size);
 	memset(pool, 0, sizeof (*pool));
 
 	return ptr;

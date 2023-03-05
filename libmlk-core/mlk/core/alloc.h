@@ -215,7 +215,7 @@ mlk_alloc_new0(size_t n, size_t w);
  * \return whatever the allocator returned to rearrange the pointer memory
  */
 void *
-mlk_alloc_renew(void *ptr, size_t n);
+mlk_alloc_resize(void *ptr, size_t n);
 
 /**
  * \copydoc mlk_alloc_renew
@@ -224,7 +224,7 @@ mlk_alloc_renew(void *ptr, size_t n);
  * initialized.
  */
 void *
-mlk_alloc_renew0(void *ptr, size_t n);
+mlk_alloc_resize0(void *ptr, size_t n);
 
 /**
  * Duplicate a memory block.
