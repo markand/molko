@@ -40,7 +40,7 @@ mlk_example_init(const char *name)
 		return err;
 	if ((err = mlk_ui_init()) < 0)
 		return err;
-	if ((err = rpg_init()) < 0)
+	if ((err = mlk_rpg_init()) < 0)
 		return err;
 	if (mlk_window_open(name, MLK_EXAMPLE_W, MLK_EXAMPLE_H) < 0)
 		return err;
@@ -54,7 +54,7 @@ void
 mlk_example_finish(void)
 {
 	mlk_window_finish();
-	rpg_finish();
+	mlk_rpg_finish();
 	mlk_ui_finish();
 	mlk_core_finish();
 }

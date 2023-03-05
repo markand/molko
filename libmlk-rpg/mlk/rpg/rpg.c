@@ -19,12 +19,12 @@
 #include "rpg.h"
 
 int
-rpg_init(void)
+mlk_rpg_init(void)
 {
 	return 0;
 }
 
 void
-rpg_finish(void)
+mlk_rpg_finish(void)
 {
 }

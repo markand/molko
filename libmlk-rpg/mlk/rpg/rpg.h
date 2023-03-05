@@ -1,5 +1,5 @@
 /*
- * rpg.h -- librpg convenient header
+ * rpg.h -- libmlk-rpg main entry
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -19,15 +19,28 @@
 #ifndef MLK_RPG_RPG_H
 #define MLK_RPG_RPG_H
 
+/**
+ * \file mlk/rpg/rpg.h
+ * \brief libmlk-rpg main entry
+ */
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * Initialize the RPG library.
+ *
+ * \return 0 on success or any error code instead
+ */
 int
-rpg_init(void);
+mlk_rpg_init(void);
 
+/**
+ * Cleanup resources allocated by the library.
+ */
 void
-rpg_finish(void);
+mlk_rpg_finish(void);
 
 #if defined(__cplusplus)
 }
