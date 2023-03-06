@@ -27,7 +27,7 @@ project(
 
 set_property(GLOBAL PROPERTY USE_FOLDERS On)
 
-set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS On)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -69,7 +69,7 @@ find_library(M_LIBRARY m)
 
 if (MLK_WITH_NLS)
 	find_package(NLS REQUIRED)
-	find_package(Intl REQUIRED)
+	find_package(Intl)
 endif ()
 
 add_subdirectory(extern/libsqlite)
