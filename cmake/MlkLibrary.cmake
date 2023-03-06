@@ -18,11 +18,13 @@
 
 include(${CMAKE_CURRENT_LIST_DIR}/MlkBcc.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MlkNls.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MlkMap.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MlkTileset.cmake)
 
 function(mlk_library)
 	set(options "")
 	set(oneValueArgs "NAME;FOLDER;TYPE")
-	set(multiValueArgs "SOURCES;ASSETS;LANGS;LIBRARIES;INCLUDES;FLAGS;OPTIONS")
+	set(multiValueArgs "SOURCES;ASSETS;LANGS;LIBRARIES;INCLUDES;FLAGS;OPTIONS;MAPS;TILESETS")
 
 	cmake_parse_arguments(LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -45,7 +47,14 @@ function(mlk_library)
 		source_group(build/nls FILES ${MO})
 	endif ()
 
-	add_library(${LIB_NAME} ${LIB_TYPE} ${LIB_SOURCES} ${HEADERS} ${MO})
+	if (LIB_MAPS)
+		mlk_maps("${LIB_MAPS}" ${CMAKE_CURRENT_BINARY_DIR}/maps maps)
+	endif ()
+	if (LIB_TILESETS)
+		mlk_tilesets("${LIB_TILESETS}" ${CMAKE_CURRENT_BINARY_DIR}/tilesets tilesets)
+	endif ()
+
+	add_library(${LIB_NAME} ${LIB_TYPE} ${LIB_SOURCES} ${HEADERS} ${MO} ${maps} ${tilesets})
 
 	if (LIB_FOLDER)
 		set_target_properties(${LIB_NAME} PROPERTIES FOLDER extern)

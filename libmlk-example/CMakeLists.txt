@@ -48,16 +48,28 @@ set(
 	${libmlk-example_SOURCE_DIR}/assets/sprites/ui-cursor.png
 )
 
+set(
+	MAPS
+	${libmlk-example_SOURCE_DIR}/assets/maps/world.json
+)
+
+set(
+	TILESETS
+	${libmlk-example_SOURCE_DIR}/assets/tilesets/world.json
+)
+
 mlk_library(
 	NAME libmlk-example
 	SOURCES ${SOURCES}
 	ASSETS ${ASSETS}
 	TYPE STATIC
 	LIBRARIES libmlk-rpg
+	MAPS ${MAPS}
+	TILESETS ${TILESETS}
 	INCLUDES
 		PUBLIC
 			$<BUILD_INTERFACE:${libmlk-example_SOURCE_DIR}>
 			$<BUILD_INTERFACE:${libmlk-example_BINARY_DIR}>
 )
 
-source_group(TREE ${libmlk-example_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})
+source_group(TREE ${libmlk-example_SOURCE_DIR} FILES ${ASSETS} ${SOURCES} ${MAPS} ${TILESETS})

@@ -107,7 +107,7 @@ write_animation(const json_t *tile)
 }
 
 static void
-write_tiledef(const json_t *tile)
+write_collision(const json_t *tile)
 {
 	const json_t *id = json_object_get(tile, "id");
 	const json_t *objectgroup = json_object_get(tile, "objectgroup");
@@ -142,7 +142,7 @@ write_tiledef(const json_t *tile)
 }
 
 static void
-write_tiledefs(const json_t *tiles)
+write_collisions(const json_t *tiles)
 {
 	size_t index;
 	json_t *object;
@@ -150,13 +150,13 @@ write_tiledefs(const json_t *tiles)
 	if (!json_is_array(tiles))
 		return;
 
-	puts("tiledefs");
+	printf("collisions\n");
 
 	json_array_foreach(tiles, index, object) {
 		if (!json_is_object(object))
 			die("tile is not an object\n");
 
-		write_tiledef(object);
+		write_collision(object);
 	}
 }
 
@@ -169,7 +169,7 @@ write_animations(const json_t *tiles)
 	if (!json_is_array(tiles))
 		return;
 
-	puts("animations");
+	printf("animations\n");
 
 	json_array_foreach(tiles, index, object) {
 		if (!json_is_object(object))
@@ -197,7 +197,7 @@ main(int argc, char *argv[])
 
 	write_dimensions(document);
 	write_image(document);
-	write_tiledefs(json_object_get(document, "tiles"));
+	write_collisions(json_object_get(document, "tiles"));
 	write_animations(json_object_get(document, "tiles"));
 
 	json_decref(document);

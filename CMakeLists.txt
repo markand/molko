@@ -68,7 +68,6 @@ find_package(Jansson REQUIRED)
 find_library(M_LIBRARY m)
 
 if (MLK_WITH_NLS)
-	find_package(NLS REQUIRED)
 	find_package(Intl)
 endif ()
 

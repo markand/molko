@@ -17,19 +17,22 @@
 #
 
 function(mlk_map input output)
-	if (MLK_WITH_ZSTD)
-		set(cmd
-			COMMAND $<TARGET_FILE:mlk-map> < ${input} > ${output}.zst
-			COMMAND ZSTD::exe -17 -fq --rm ${output}.zst -o ${output}
-		)
-	else ()
-		set(cmd COMMAND $<TARGET_FILE:mlk-map> < ${input} > ${output})
-	endif ()
+	set(cmd COMMAND $<TARGET_FILE:mlk-map> < ${input} > ${output})
 
 	add_custom_command(
 		OUTPUT ${output}
 		COMMAND ${cmd}
 		DEPENDS $<TARGET_FILE:mlk-map>
-		COMMENT "Generating ${output}"
+		COMMENT "Generating map ${output}"
 	)
 endfunction()
+
+macro(mlk_maps inputs output_directory output_var)
+	file(MAKE_DIRECTORY ${output_directory})
+
+	foreach (i ${inputs})
+		get_filename_component(filename ${i} NAME_WE)
+		mlk_map(${i} ${output_directory}/${filename}.map)
+		list(APPEND ${output_var} ${output_directory}/${filename}.map)
+	endforeach ()
+endmacro()

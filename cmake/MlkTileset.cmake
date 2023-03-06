@@ -17,19 +17,22 @@
 #
 
 function(mlk_tileset input output)
-	if (MLK_WITH_ZSTD)
-		set(cmd
-			COMMAND $<TARGET_FILE:mlk-tileset> < ${input} > ${output}.zst
-			COMMAND ZSTD::exe -17 -fq --rm ${output}.zst -o ${output}
-		)
-	else ()
-		set(cmd COMMAND $<TARGET_FILE:mlk-tileset> < ${input} > ${output})
-	endif ()
+	set(cmd COMMAND $<TARGET_FILE:mlk-tileset> < ${input} > ${output})
 
 	add_custom_command(
 		OUTPUT ${output}
 		COMMAND ${cmd}
 		DEPENDS $<TARGET_FILE:mlk-tileset>
-		COMMENT "Generating ${output}"
+		COMMENT "Generating tileset ${output}"
 	)
 endfunction()
+
+macro(mlk_tilesets inputs output_directory output_var)
+	file(MAKE_DIRECTORY ${output_directory})
+
+	foreach (i ${inputs})
+		get_filename_component(filename ${i} NAME_WE)
+		mlk_tileset(${i} ${output_directory}/${filename}.tileset)
+		list(APPEND ${output_var} ${output_directory}/${filename}.tileset)
+	endforeach ()
+endmacro()
