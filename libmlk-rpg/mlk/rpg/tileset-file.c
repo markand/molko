@@ -128,7 +128,7 @@ static int
 parse_tilewidth(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "tilewidth|%u", &ctx->tilewidth) != 1 || ctx->tilewidth == 0)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("tilewidth is null");
 
 	return 0;
 }
@@ -137,7 +137,7 @@ static int
 parse_tileheight(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "tileheight|%u", &ctx->tileheight) != 1 || ctx->tileheight == 0)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("tileheight is null");
 
 	return 0;
 }
@@ -235,14 +235,13 @@ static int
 parse_image(struct context *ctx, const char *line)
 {
 	char *p;
-	int err;
 
 	if (ctx->tilewidth == 0 || ctx->tileheight == 0)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("missing tile dimensions before image");
 	if (!(p = strchr(line, '|')))
-		return MLK_ERR_FORMAT;
-	if ((err = mlk_image_open(&ctx->tf->image, mlk_util_pathf("%s/%s", ctx->basedir, p + 1))) < 0)
-		return err;
+		return mlk_errf("could not parse image");
+	if (mlk_image_open(&ctx->tf->image, mlk_util_pathf("%s/%s", ctx->basedir, p + 1)) < 0)
+		return -1;
 
 	ctx->tf->sprite.texture = &ctx->tf->image;
 	ctx->tf->sprite.cellw = ctx->tilewidth;
@@ -299,7 +298,7 @@ static int
 check(const struct tileset *tileset)
 {
 	if (!tileset->sprite)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("missing tileset image");
 
 	return 0;
 }

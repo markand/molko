@@ -48,7 +48,7 @@ mlk_action_stack_add(struct mlk_action_stack *st, struct mlk_action *act)
 		}
 	}
 
-	return MLK_ERR_NO_MEM;
+	return mlk_errf("no space in action stack");
 }
 
 int

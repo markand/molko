@@ -19,16 +19,45 @@
 #ifndef MLK_ERR_H
 #define MLK_ERR_H
 
-#define MLK_ERR_NONE            0
-#define MLK_ERR_NO_MEM         -1
-#define MLK_ERR_NO_SUPPORT     -2
-#define MLK_ERR_FORMAT         -3
-#define MLK_ERR_SDL            -4
-#define MLK_ERR_ERRNO          -5
-#define MLK_ERR_OPENAL         -6
-#define MLK_ERR_DATABASE       -7
+#include <stdarg.h>
+
+/**
+ * \file mlk/core/err.h
+ * \brief Error handling
+ *
+ * Because the Molko's Adventure framework use many different external
+ * libraries, it is not an easy task to transform all external error codes to
+ * a general one.
+ *
+ * Instead, the library stores a thread-local [errno]-like API that the user
+ * can access as a string. When a function fails, the user should retrieve the
+ * error as early as possible.
+ *
+ * [errno]: https://en.cppreference.com/w/c/error/errno
+ */
+
+/**
+ * Set the error using printf format string.
+ *
+ * \pre fmt != NULL
+ * \param fmt the format string
+ * \return -1 for convenience
+ */
+int
+mlk_errf(const char *fmt, ...);
+
+/**
+ * Similar to ::mlk_errf but using a `va_list` instead.
+ *
+ * \pre fmt != NULL
+ * \param fmt the printf format string
+ * \param ap the variadic handle
+ * \return -1 for convenience
+ */
+int
+mlk_errva(const char *fmt, va_list ap);
 
 const char *
-mlk_err_string(int e);
+mlk_err(void);
 
 #endif /* !MLK_ERROR_H */

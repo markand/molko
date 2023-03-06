@@ -34,7 +34,7 @@ mlk_font_open(struct mlk_font *font, const char *path, unsigned int size)
 	assert(path);
 
 	if (!(font->handle = TTF_OpenFont(path, size)))
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
 }
@@ -52,7 +52,7 @@ mlk_font_openmem(struct mlk_font *font,
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buflen)) ||
 	   (!(font->handle = TTF_OpenFontRW(ops, 1, size))))
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
 }
@@ -88,7 +88,7 @@ mlk_font_render(struct mlk_font *font, struct mlk_texture *tex, const char *text
 	}
 
 	if (!(surface = func(font->handle, text, fg)))
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return mlk__texture_from_surface(tex, surface);
 }
@@ -113,7 +113,7 @@ mlk_font_query(const struct mlk_font *font, const char *text, unsigned int *w, u
 		*h = 0;
 
 	if (TTF_SizeUTF8(font->handle, text, (int *)w, (int *)h) != 0)
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
 }

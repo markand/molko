@@ -53,7 +53,7 @@ mlk_game_push(struct mlk_state *state)
 	}
 
 	if (mlk_game.state == &mlk_game.states[mlk_game.statesz - 1])
-		return MLK_ERR_NO_MEM;
+		return mlk_errf("no space in game states stack");
 
 	mlk_state_suspend(*mlk_game.state);
 	mlk_state_start(*(++mlk_game.state) = state);

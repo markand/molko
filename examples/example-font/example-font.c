@@ -51,10 +51,8 @@ static enum mlk_font_style style = MLK_FONT_STYLE_ANTIALIASED;
 static void
 init(void)
 {
-	int err;
-
-	if ((err = mlk_example_init("example-font")) < 0)
-		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+	if (mlk_example_init("example-font") < 0)
+		mlk_panic();
 }
 
 static void
@@ -101,13 +99,12 @@ draw(struct mlk_state *st)
 
 	struct mlk_font *font = mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 	struct mlk_texture tex;
-	int err;
 
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 
-	if ((err = mlk_font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci])) < 0)
-		mlk_panic(err);
+	if (mlk_font_render(font, &tex, "Example of text. Use <Left>/<Right> to change color and <Space> to toggle antialiasing.", colors[ci]) < 0)
+		mlk_panic();
 
 	mlk_texture_draw(&tex, 10, 10);
 	mlk_painter_present();

@@ -16,23 +16,52 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <SDL.h>
+#include <assert.h>
+#include <stdio.h>
+
+#include <mlk/util/util.h>
 
 #include "err.h"
 
-const char *
-mlk_err_string(int e)
+#define ERR_MAX         128
+#define DEFAULT_ERR     "no error"
+
+static _Thread_local char err[ERR_MAX] = DEFAULT_ERR;
+
+int
+mlk_errf(const char *fmt, ...)
 {
-	switch (e) {
-	case MLK_ERR_SDL:
-		return SDL_GetError();
-	case MLK_ERR_NO_MEM:
-		return "out of memory";
-	case MLK_ERR_NO_SUPPORT:
-		return "operation not supported";
-	case MLK_ERR_FORMAT:
-		return "invalid format or corrupt file";
-	default:
-		return "no error";
-	}
+	assert(fmt);
+
+	va_list ap;
+
+	va_start(ap, fmt);
+	mlk_errva(fmt, ap);
+	va_end(ap);
+
+	return -1;
+}
+
+int
+mlk_errva(const char *fmt, va_list ap)
+{
+	assert(fmt);
+
+	int ret;
+
+	/* Don't keep an empty string... */
+	ret = vsnprintf(err, sizeof (err), fmt, ap);
+
+	if (ret < 0)
+		mlk_util_strlcpy(err, "unknown error", sizeof (err));
+	else if (ret == 0)
+		mlk_util_strlcpy(err, DEFAULT_ERR, sizeof (err));
+
+	return -1;
+}
+
+const char *
+mlk_err(void)
+{
+	return err;
 }

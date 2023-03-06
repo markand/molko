@@ -152,7 +152,7 @@ test_basics_append(void)
 	DT_EQ_PTR(sc.actions[2], &actions[2]);
 
 	/* This can not fit. */
-	DT_ASSERT(mlk_action_script_append(&sc, &actions[3]) == MLK_ERR_NO_MEM);
+	DT_ASSERT(mlk_action_script_append(&sc, &actions[3]) == -1);
 
 	mlk_action_script_finish(&sc);
 

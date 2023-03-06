@@ -84,7 +84,7 @@ mlk_window_open(const char *title, unsigned int w, unsigned int h)
 	assert(title);
 
 	if (!load_window(title, w, h) || !load_renderer())
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	mlk_window.w = w;
 	mlk_window.h = h;

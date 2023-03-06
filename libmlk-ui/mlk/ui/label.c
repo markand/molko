@@ -97,16 +97,12 @@ mlk_label_query(const struct mlk_label *label, unsigned int *w, unsigned int *h)
 
 	MLK__DELEGATE_INVOKE_RET(label->delegate, mlk_label_delegate, query, label, w, h);
 
-	/*
-	 * Reached only if user decided to set NULL to query which isn't the
-	 * default.
-	 */
 	if (w)
 		*w = 0;
 	if (h)
 		*h = 0;
 
-	return MLK_ERR_NO_SUPPORT;
+	return 0;
 }
 
 void

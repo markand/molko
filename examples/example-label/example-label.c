@@ -143,11 +143,10 @@ static void
 init(void)
 {
 	unsigned int w, h;
-	int err;
 	struct mlk_label *l;
 
-	if ((err = mlk_example_init("example-label")) < 0)
-		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+	if (mlk_example_init("example-label") < 0)
+		mlk_panic();
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i) {
 		l = &table[i].label;

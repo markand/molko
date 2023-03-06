@@ -108,7 +108,7 @@ draw_lines(const struct mlk_message *msg)
 	struct mlk_font *font;
 	struct mlk_texture texture;
 	unsigned long color;
-	int err, x, y;
+	int x, y;
 
 	style = MLK__STYLE(msg, mlk_message_style);
 	font = style_font(msg);
@@ -122,8 +122,8 @@ draw_lines(const struct mlk_message *msg)
 		else
 			color = style->text_color;
 
-		if ((err = mlk_font_render(font, &texture, msg->lines[i], color)) < 0) {
-			mlk_tracef("%s", mlk_err_string(err));
+		if (mlk_font_render(font, &texture, msg->lines[i], color) < 0) {
+			mlk_tracef("unable to render message text", mlk_err());
 			continue;
 		}
 
@@ -222,7 +222,7 @@ delegate_draw(struct mlk_message_delegate *self, const struct mlk_message *msg)
 	}
 
 	if ((err = mlk_texture_new(&tex, msg->w, msg->h)) < 0)
-		mlk_panic(err);
+		mlk_panic();
 
 	MLK_PAINTER_BEGIN(&tex);
 	draw_frame(msg);
@@ -289,7 +289,7 @@ mlk_message_query(const struct mlk_message *msg, unsigned int *w, unsigned int *
 	if (h)
 		*h = 0;
 
-	return MLK_ERR_NO_SUPPORT;
+	return 0;
 }
 
 void

@@ -323,10 +323,8 @@ draw(struct mlk_state *st)
 static void
 init(void)
 {
-	int err;
-
-	if ((err = mlk_example_init("example-ui")) < 0)
-		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+	if (mlk_example_init("example-ui") < 0)
+		mlk_panic();
 
 	button_glower_init(&ui.buttons.download_glower, &ui.buttons.download);
 }

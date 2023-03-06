@@ -52,10 +52,8 @@ static struct mlk_label label_sound = {
 static void
 init(void)
 {
-	int err;
-
-	if ((err = mlk_example_init("example-audio")) < 0)
-		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+	if (mlk_example_init("example-audio") < 0)
+		mlk_panic();
 
 	sound = &mlk_registry_sounds[MLK_REGISTRY_SOUND_FIRE];
 	music = &mlk_registry_music[MLK_REGISTRY_MUSIC_ROMANCE];
@@ -72,12 +70,10 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
 
-	int err;
-
 	switch (ev->type) {
 	case MLK_EVENT_CLICKDOWN:
-		if ((err = mlk_sound_play(sound)) < 0)
-			mlk_panic(err);
+		if (mlk_sound_play(sound) < 0)
+			mlk_panic();
 		break;
 	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {

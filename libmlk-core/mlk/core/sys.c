@@ -98,10 +98,10 @@ mkpath(const char *path)
 #ifdef _WIN32
 	/* TODO: add error using the convenient FormatMessage function. */
 	if (!CreateDirectoryA(path, NULL) && GetLastError() != ERROR_ALREADY_EXISTS)
-		return MLK_ERR_ERRNO;
+		return -1;
 #else
 	if (mkdir(path, 0755) < 0 && errno != EEXIST)
-		return MLK_ERR_ERRNO;
+		return mlk_errf("%s", strerror(errno));
 #endif
 
 	return 0;
@@ -156,16 +156,17 @@ vio_tell(void *data)
 	return vio->offset;
 }
 
-static inline int
-sndfile_to_err(int e)
+static void
+audio_finish(void)
 {
-	switch (e) {
-	case SF_ERR_UNRECOGNISED_FORMAT:
-	case SF_ERR_MALFORMED_FILE:
-	case SF_ERR_UNSUPPORTED_ENCODING:
-		return MLK_ERR_FORMAT;
-	default:
-		return MLK_ERR_NO_MEM;
+	if (mlk__audio_ctx) {
+		alcMakeContextCurrent(NULL);
+		alcDestroyContext(mlk__audio_ctx);
+		mlk__audio_ctx = NULL;
+	}
+	if (mlk__audio_dev) {
+		alcCloseDevice(mlk__audio_dev);
+		mlk__audio_dev = NULL;
 	}
 }
 
@@ -184,11 +185,11 @@ mlk_sys_init(const char *organization, const char *name)
 
 	/* SDL2. */
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 	if (TTF_Init() < 0)
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	/* OpenAL. */
 #if defined(MLK_OS_WINDOW)
@@ -197,14 +198,25 @@ mlk_sys_init(const char *organization, const char *name)
 	putenv("ALSOFT_LOGLEVEL=0");
 #endif
 
-	if (!(mlk__audio_dev = alcOpenDevice(NULL)))
-		return MLK_ERR_OPENAL;
-	if (!(mlk__audio_ctx = alcCreateContext(mlk__audio_dev, NULL)))
-		return MLK_ERR_OPENAL;
-
-	alcMakeContextCurrent(mlk__audio_ctx);
+	if (!(mlk__audio_dev = alcOpenDevice(NULL))) {
+		mlk_errf("unable to open audio device");
+		goto err;
+	}
+	if (!(mlk__audio_ctx = alcCreateContext(mlk__audio_dev, NULL))) {
+		mlk_errf("%s", alcGetError(mlk__audio_dev));
+		goto err;
+	}
+	if (alcMakeContextCurrent(mlk__audio_ctx) != ALC_TRUE) {
+		mlk_errf("%s", alcGetError(mlk__audio_dev));
+		goto err;
+	}
 
 	return 0;
+
+err:
+	audio_finish();
+
+	return -1;
 }
 
 const char *
@@ -253,16 +265,6 @@ mlk_sys_finish(void)
 	IMG_Quit();
 	SDL_Quit();
 
-	alcMakeContextCurrent(NULL);
-
-	if (mlk__audio_ctx) {
-		alcDestroyContext(mlk__audio_ctx);
-		mlk__audio_ctx = NULL;
-	}
-	if (mlk__audio_dev) {
-		alcCloseDevice(mlk__audio_dev);
-		mlk__audio_dev = NULL;
-	}
 }
 
 static int
@@ -283,7 +285,7 @@ create_audiostream(struct mlk__audiostream **ptr, SNDFILE *file, const SF_INFO *
 		free(stream->samples);
 		free(stream);
 		stream = NULL;
-		ret = sndfile_to_err(sf_error(file));
+		ret = mlk_errf("%s", sf_error(file));
 	}
 
 	alGenBuffers(1, &stream->buffer);
@@ -332,7 +334,7 @@ mlk__audiostream_openmem(struct mlk__audiostream **stream, const void *data, siz
 	};
 
 	if (!(file = sf_open_virtual(&io, SFM_READ, &info, &viodata)))
-		return sndfile_to_err(sf_error(NULL));;
+		return mlk_errf("%s", sf_strerror(NULL));
 
 	return create_audiostream(stream, file, &info);
 }

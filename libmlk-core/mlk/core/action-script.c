@@ -49,7 +49,7 @@ mlk_action_script_append(struct mlk_action_script *s, struct mlk_action *a)
 	assert(a);
 
 	if (s->length >= s->actionsz)
-		return MLK_ERR_NO_MEM;
+		return mlk_errf("no space in action script");
 
 	s->actions[s->length++] = a;
 

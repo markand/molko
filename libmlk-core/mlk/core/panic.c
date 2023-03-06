@@ -78,7 +78,7 @@ mlk_panicva(const char *fmt, va_list ap)
 }
 
 void
-mlk_panic(int err)
+mlk_panic(void)
 {
-	mlk_panicf("%s", mlk_err_string(err));
+	mlk_panicf("%s", mlk_err());
 }

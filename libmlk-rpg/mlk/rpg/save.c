@@ -38,11 +38,17 @@
 #define SQL_COMMIT      "COMMIT"
 #define SQL_ROLLBACK    "ROLLBACK"
 
-static int
+static inline int
+set_error(struct save *db)
+{
+	return mlk_errf("%s", sqlite3_errmsg(db->handle));
+}
+
+static inline int
 exec(struct save *db, const char *sql)
 {
 	if (sqlite3_exec(db->handle, sql, NULL, NULL, NULL) != SQLITE_OK)
-		return MLK_ERR_DATABASE;
+		return set_error(db);
 
 	return 0;
 }
@@ -110,14 +116,14 @@ prepare(struct save *s, struct save_stmt *stmt, const char *sql, const char *arg
 		case ' ':
 			break;
 		default:
-			return MLK_ERR_DATABASE;
+			return set_error(s);
 		}
 	}
 
 	return 0;
 
 sqlite3_err:
-	return MLK_ERR_DATABASE;
+	return set_error(s);
 }
 
 static int
@@ -127,7 +133,7 @@ extract(struct save_stmt *stmt, const char *args, va_list ap)
 
 	for (int c = 0; args && *args; ++args) {
 		if (c >= ncols)
-			return MLK_ERR_DATABASE;
+			return set_error(stmt->parent);
 
 		/* TODO: type check. */
 		switch (*args) {
@@ -148,7 +154,7 @@ extract(struct save_stmt *stmt, const char *args, va_list ap)
 		case ' ':
 			break;
 		default:
-			return MLK_ERR_DATABASE;
+			return set_error(stmt->parent);
 		}
 	}
 
@@ -189,11 +195,12 @@ save_open_path(struct save *db, const char *path, enum save_mode mode)
 	return verify(db);
 
 sqlite3_err:
+	set_error(db);
 	sqlite3_close(db->handle);
 
 	memset(db, 0, sizeof (*db));
 
-	return MLK_ERR_DATABASE;
+	return -1;
 }
 
 int

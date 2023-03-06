@@ -36,7 +36,7 @@ void
 mlk_panicva(const char *, va_list);
 
 void
-mlk_panic(int err);
+mlk_panic(void);
 
 #if defined(__cplusplus)
 }

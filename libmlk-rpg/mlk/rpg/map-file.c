@@ -56,7 +56,7 @@ parse_layer_tiles(struct context *ctx, const char *layer_name)
 	else if (strcmp(layer_name, "above") == 0)
 		layer_type = MAP_LAYER_TYPE_ABOVE;
 	else
-		return MLK_ERR_FORMAT;
+		return mlk_errf("invalid layer type: %s", layer_name);
 
 	amount = ctx->map->columns * ctx->map->rows;
 	current = 0;
@@ -125,11 +125,11 @@ parse_layer(struct context *ctx, const char *line)
 
 	/* Check if weight/height has been specified. */
 	if (ctx->map->columns == 0 || ctx->map->rows == 0)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("missing map dimensions before layer");
 
 	/* Determine layer type. */
 	if (sscanf(line, "layer|%32s", layer_name) <= 0)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("missing layer type definition");
 
 	if (strcmp(layer_name, "actions") == 0)
 		return parse_actions(ctx);
@@ -145,7 +145,7 @@ parse_tileset(struct context *ctx, const char *line)
 	struct tileset_file *tf = &mf->tileset_file;
 
 	if (!(p = strchr(line, '|')))
-		return MLK_ERR_FORMAT;
+		return mlk_errf("could not parse tileset");
 
 	snprintf(path, sizeof (path), "%s/%s", ctx->basedir, p + 1);
 
@@ -161,7 +161,7 @@ static int
 parse_title(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "title|" MAX_F(MAP_FILE_TITLE_MAX), ctx->mf->title) != 1 || strlen(ctx->mf->title) == 0)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("null map title");
 
 	ctx->map->title = ctx->mf->title;
 
@@ -172,7 +172,7 @@ static int
 parse_columns(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "columns|%u", &ctx->map->columns) != 1 || ctx->map->columns == 0)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("null map columns");
 
 	return 0;
 }
@@ -181,7 +181,7 @@ static int
 parse_rows(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "rows|%u", &ctx->map->rows) != 1 || ctx->map->rows == 0)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("null map rows");
 
 	return 0;
 }
@@ -190,7 +190,7 @@ static int
 parse_origin(struct context *ctx, const char *line)
 {
 	if (sscanf(line, "origin|%d|%d", &ctx->map->player_x, &ctx->map->player_y) != 2)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("invalid origin");
 
 	return 0;
 }
@@ -243,18 +243,18 @@ check(struct map *map)
 	 * Check that we have parsed every required components.
 	 */
 	if (!map->title)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("missing title");
 
 	/*
 	 * We don't need to check width/height because parsing layers and
 	 * tilesets already check for their presence, so only check layers.
 	 */
 	if (!map->layers[0].tiles)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("missing background layer");
 	if (!map->layers[1].tiles)
-		return MLK_ERR_FORMAT;
+		return mlk_errf("missing foreground layer");
 	if (!tileset_ok(map->tileset))
-		return MLK_ERR_FORMAT;
+		return mlk_errf("missing tileset");
 
 	return 0;
 }

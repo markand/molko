@@ -105,14 +105,13 @@ static const struct {
 static void
 load_images(void)
 {
-	int err;
 	struct mlk_texture *texture;
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(images); ++i) {
 		texture = &mlk_registry_images[images[i].index];
 
-		if ((err = mlk_image_openmem(texture, images[i].data, images[i].datasz)) < 0)
-			mlk_panic(err);
+		if (mlk_image_openmem(texture, images[i].data, images[i].datasz) < 0)
+			mlk_panic();
 	}
 }
 
@@ -121,14 +120,13 @@ load_textures_and_sprites(void)
 {
 	struct mlk_texture *texture;
 	struct mlk_sprite *sprite;
-	int err;
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(textures); ++i) {
 		texture = &mlk_registry_textures[textures[i].index];
 		sprite = &mlk_registry_sprites[textures[i].index];
 
-		if ((err = mlk_image_openmem(texture, textures[i].data, textures[i].datasz)) < 0)
-			mlk_panic(err);
+		if (mlk_image_openmem(texture, textures[i].data, textures[i].datasz) < 0)
+			mlk_panic();
 
 		if (textures[i].cellw == 0 || textures[i].cellh == 0) {
 			sprite->cellw = texture->w;
@@ -146,28 +144,26 @@ load_textures_and_sprites(void)
 static void
 load_sounds(void)
 {
-	int err;
 	struct mlk_sound *sound;
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(sounds); ++i) {
 		sound = &mlk_registry_sounds[sounds[i].index];
 
-		if ((err = mlk_sound_openmem(sound, sounds[i].data, sounds[i].datasz)) < 0)
-			mlk_panic(err);
+		if (mlk_sound_openmem(sound, sounds[i].data, sounds[i].datasz) < 0)
+			mlk_panic();
 	}
 }
 
 static void
 load_music(void)
 {
-	int err;
 	struct mlk_music *music;
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(musics); ++i) {
 		music = &mlk_registry_music[musics[i].index];
 
-		if ((err = mlk_music_openmem(music, musics[i].data, musics[i].datasz)) < 0)
-			mlk_panic(err);
+		if (mlk_music_openmem(music, musics[i].data, musics[i].datasz) < 0)
+			mlk_panic();
 	}
 }
 

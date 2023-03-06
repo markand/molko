@@ -209,7 +209,6 @@ script_right_response(struct dialog *dlg, unsigned int index)
 static void
 script_init(struct dialog *msgs, size_t msgsz)
 {
-	int err;
 	struct mlk_action *action;
 
 	mlk_action_script_init(&script);
@@ -217,8 +216,8 @@ script_init(struct dialog *msgs, size_t msgsz)
 	for (size_t i = 0; i < msgsz; ++i) {
 		action = dialog_init(&msgs[i]);
 
-		if ((err = mlk_action_script_append(&script, action)) < 0)
-			mlk_panicf("%s", mlk_err_string(err));
+		if (mlk_action_script_append(&script, action) < 0)
+			mlk_panic();
 	}
 
 	mlk_action_script_start(&script);
@@ -275,10 +274,8 @@ label_init(void)
 static void
 init(void)
 {
-	int err;
-
-	if ((err = mlk_example_init("example-action")) < 0)
-		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+	if (mlk_example_init("example-action") < 0)
+		mlk_panic();
 
 	chests_init();
 	label_init();

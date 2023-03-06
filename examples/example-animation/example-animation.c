@@ -50,10 +50,8 @@ static int completed = 1;
 static void
 init(void)
 {
-	int err;
-
-	if ((err = mlk_example_init("example-animation")) < 0)
-		mlk_panicf("mlk_example_init: %s", mlk_err_string(err));
+	if (mlk_example_init("example-animation") < 0)
+		mlk_panic();
 }
 
 static void

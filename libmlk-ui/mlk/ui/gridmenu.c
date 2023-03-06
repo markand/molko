@@ -185,7 +185,7 @@ draw(struct mlk_gridmenu_delegate *delegate, const struct mlk_gridmenu *menu)
 	struct mlk_texture tex;
 	struct mlk_font *font;
 	unsigned long color;
-	int x, y, err;
+	int x, y;
 
 	/*
 	 * Select the first top-left column based on the current selection and
@@ -211,8 +211,8 @@ draw(struct mlk_gridmenu_delegate *delegate, const struct mlk_gridmenu *menu)
 		else
 			color = style->text_color;
 
-		if ((err = mlk_font_render(font, &tex, menu->items[item], color)) < 0) {
-			mlk_tracef("unable to render grid menu item: %s", mlk_err_string(err));
+		if (mlk_font_render(font, &tex, menu->items[item], color) < 0) {
+			mlk_tracef("unable to render grid menu item: %s", mlk_err());
 			continue;
 		}
 

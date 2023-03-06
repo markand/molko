@@ -48,7 +48,7 @@ mlk_drawable_stack_add(struct mlk_drawable_stack *st, struct mlk_drawable *dw)
 		}
 	}
 
-	return MLK_ERR_NO_MEM;
+	return mlk_errf("no space in drawable stack");
 }
 
 int

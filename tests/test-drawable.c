@@ -165,7 +165,7 @@ test_stack_add(void)
 		DT_EQ_INT(mlk_drawable_stack_add(&st, &dw), 0);
 
 	/* This one should not fit in. */
-	DT_EQ_INT(mlk_drawable_stack_add(&st, &dw), MLK_ERR_NO_MEM);
+	DT_EQ_INT(mlk_drawable_stack_add(&st, &dw), -1);
 }
 
 static void

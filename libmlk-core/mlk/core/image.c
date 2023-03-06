@@ -44,7 +44,7 @@ mlk_image_open(struct mlk_texture *tex, const char *path)
 	assert(path);
 
 	if (!(tex->handle = IMG_LoadTexture(MLK__RENDERER(), path)))
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	dimensions(tex);
 
@@ -59,7 +59,7 @@ mlk_image_openmem(struct mlk_texture *tex, const void *buffer, size_t size)
 	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
 
 	if (!ops || !(tex->handle = IMG_LoadTexture_RW(MLK__RENDERER(), ops, 1)))
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	dimensions(tex);
 

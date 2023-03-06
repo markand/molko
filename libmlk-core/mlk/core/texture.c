@@ -38,7 +38,7 @@ mlk_texture_new(struct mlk_texture *tex, unsigned int w, unsigned int h)
 
 	if (!tex->handle) {
 		tex->w = tex->h = 0;
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 	}
 
 	tex->w = w;
@@ -67,7 +67,7 @@ mlk_texture_set_blend_mode(struct mlk_texture *tex, enum mlk_texture_blend blend
 	};
 
 	if (SDL_SetTextureBlendMode(tex->handle, table[blend]) < 0)
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
 }
@@ -79,7 +79,7 @@ mlk_texture_set_alpha_mod(struct mlk_texture *tex, unsigned int alpha)
 	assert(alpha <= 255);
 
 	if (SDL_SetTextureAlphaMod(tex->handle, alpha) < 0)
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
 }
@@ -90,7 +90,7 @@ mlk_texture_set_color_mod(struct mlk_texture *tex, unsigned long color)
 	assert(mlk_texture_ok(tex));
 
 	if (SDL_SetTextureColorMod(tex->handle, MLK_COLOR_R(color), MLK_COLOR_G(color), MLK_COLOR_B(color)) < 0)
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
 }
@@ -108,7 +108,7 @@ mlk_texture_draw(const struct mlk_texture *tex, int x, int y)
 	};
 
 	if (SDL_RenderCopy(MLK__RENDERER(), tex->handle, NULL, &dst) < 0)
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
 }
@@ -139,7 +139,7 @@ mlk_texture_scale(const struct mlk_texture *tex,
 	};
 
 	if (SDL_RenderCopyEx(MLK__RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE) < 0)
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
 }
@@ -165,7 +165,7 @@ mlk__texture_from_surface(struct mlk_texture *tex, SDL_Surface *surface)
 
 	if (!(tex->handle = SDL_CreateTextureFromSurface(MLK__RENDERER(), surface))) {
 		tex->w = tex->h = 0;
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 	}
 
 	tex->w = surface->w;
