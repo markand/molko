@@ -112,7 +112,7 @@ mlk_action_script_init(struct mlk_action_script *script);
  * \pre script != NULL
  * \param script the action script structure
  * \param action the action to append
- * \return 0 on success or ::MLK_ERR_NO_MEM if full.
+ * \return 0 on success or -1 on error
  */
 int
 mlk_action_script_append(struct mlk_action_script *script,

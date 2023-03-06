@@ -19,22 +19,63 @@
 #ifndef MLK_CORE_PANIC_H
 #define MLK_CORE_PANIC_H
 
+/**
+ * \file panic.h
+ * \brief Unrecoverable error handling
+ *
+ * This module is intended to be used whenever an unrecoverable error happens
+ * and the action is left to the developer.
+ *
+ * Most of the API don't call panic directly.
+ */
+
 #include <stdarg.h>
 
-#define PANIC_LINE_MAX (256)
+/**
+ * Maximum trace line
+ */
+#define PANIC_LINE_MAX (128)
 
-extern void (*mlk_panic_handler)(const char *);
+/**
+ * Default panic handler.
+ *
+ * The default handler prints the line and exit using C [abort].
+ *
+ * [abort]: https://en.cppreference.com/w/c/program/abort
+ *
+ * \param line the line to print
+ */
+extern void (*mlk_panic_handler)(const char *line);
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * Panic the game with using a [printf] format style message
+ *
+ * [printf]: https://en.cppreference.com/w/c/io/fprintf
+ *
+ * \pre fmt != NULL
+ * \param fmt the printf format string
+ */
 void
 mlk_panicf(const char *, ...);
 
+/**
+ * Similar to ::mlk_panicf but using a `va_list` instead.
+ *
+ * \pre fmt != NULL
+ * \param fmt the printf format string
+ * \param ap the variadic handle
+ */
 void
 mlk_panicva(const char *, va_list);
 
+/**
+ * Similar to ::mlk_panicf but uses ::mlk_err to retrieve the last error as the
+ * final message.
+ */
 void
 mlk_panic(void);
 

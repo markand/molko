@@ -86,7 +86,7 @@ mlk_action_stack_init(struct mlk_action_stack *stack);
  * \pre stack != NULL
  * \param stack the action stack
  * \param action the action to append
- * \return 0 on success or ::MLK_ERR_NO_MEM if full.
+ * \return 0 on success or -1 on error
  */
 int
 mlk_action_stack_add(struct mlk_action_stack *stack,

@@ -115,7 +115,7 @@ mlk_game_init(void);
  *
  * \pre state != NULL
  * \param state
- * \return 0 on success or ::MLK_ERR_NO_MEM if full.
+ * \return 0 on success or -1 on error
  */
 int
 mlk_game_push(struct mlk_state *state);

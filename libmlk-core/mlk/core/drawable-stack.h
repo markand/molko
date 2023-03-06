@@ -74,7 +74,7 @@ mlk_drawable_stack_init(struct mlk_drawable_stack *stack);
  * \pre stack != NULL
  * \param stack the drawable stack
  * \param drawable the object to append
- * \return 0 on success or ::MLK_ERR_NO_MEM if full.
+ * \return 0 on success or -1 on error
  */
 int
 mlk_drawable_stack_add(struct mlk_drawable_stack *stack,
