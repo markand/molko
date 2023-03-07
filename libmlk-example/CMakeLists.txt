@@ -60,6 +60,7 @@ set(
 	${libmlk-example_SOURCE_DIR}/assets/tilesets/world.json
 )
 
+# As they are quite small, we generate tilesets and maps through mlk-bcc too.
 mlk_maps("${MAPS}" ${libmlk-example_BINARY_DIR}/maps maps)
 mlk_tilesets("${TILESETS}" ${libmlk-example_BINARY_DIR}/tilesets tilesets)
 

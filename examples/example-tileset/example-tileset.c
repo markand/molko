@@ -45,6 +45,8 @@
 #include <mlk/example/example.h>
 #include <mlk/example/registry.h>
 
+#include <assets/tilesets/world.h>
+
 static struct mlk_tileset_loader_file loader_file;
 static struct mlk_tileset_loader loader;
 static struct mlk_tileset tileset;
@@ -113,9 +115,6 @@ init(void)
 	if (mlk_example_init("example-tileset") < 0)
 		mlk_panic();
 
-	// TODO: temporary.
-	const char *path = "/home/markand/dev/molko/build/libmlk-example/tilesets/world.tileset";
-
 	/*
 	 * Demonstrate how we can override functions to use different resources
 	 * and/or allocations.
@@ -123,12 +122,12 @@ init(void)
 	 * Images are loaded from the libmlk-example registry from RAM and
 	 * sprites animations are statically allocated.
 	 */
-	mlk_tileset_loader_file_init(&loader_file, &loader, path);
+	mlk_tileset_loader_file_init(&loader_file, &loader, "");
 	loader.init_texture = init_texture;
 	loader.init_sprite = init_sprite;
 	loader.init_animation = init_animation;
 
-	if (mlk_tileset_loader_open(&loader, &tileset, path) < 0)
+	if (mlk_tileset_loader_openmem(&loader, &tileset, assets_tilesets_world, sizeof (assets_tilesets_world)) < 0)
 		mlk_panic();
 }
 

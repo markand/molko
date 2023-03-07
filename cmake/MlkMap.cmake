@@ -18,12 +18,13 @@
 
 function(mlk_map input output)
 	set(cmd COMMAND $<TARGET_FILE:mlk-map> < ${input} > ${output})
+	get_filename_component(filename ${output} NAME)
 
 	add_custom_command(
 		OUTPUT ${output}
 		COMMAND ${cmd}
-		DEPENDS $<TARGET_FILE:mlk-map>
-		COMMENT "Generating map ${output}"
+		DEPENDS $<TARGET_FILE:mlk-map> ${input}
+		COMMENT "Generating map ${filename}"
 	)
 endfunction()
 

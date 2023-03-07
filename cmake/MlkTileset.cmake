@@ -18,12 +18,13 @@
 
 function(mlk_tileset input output)
 	set(cmd COMMAND $<TARGET_FILE:mlk-tileset> < ${input} > ${output})
+	get_filename_component(filename ${output} NAME)
 
 	add_custom_command(
 		OUTPUT ${output}
 		COMMAND ${cmd}
-		DEPENDS $<TARGET_FILE:mlk-tileset>
-		COMMENT "Generating tileset ${output}"
+		DEPENDS $<TARGET_FILE:mlk-tileset> ${input}
+		COMMENT "Generating tileset ${filename}"
 	)
 endfunction()
 

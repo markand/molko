@@ -16,9 +16,38 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+#
+# mlk_bcc(
+#   OUTPUT_VAR variable
+#   ASSETS files...
+#   [OUTPUT_DIRECTORY directory]
+# )
+#
+# Convert binary files to header files using mlk-bcc utility.
+#
+# This macro will generate all files under the OUTPUT_DIRECTORY variable which
+# defaults to ${CMAKE_CURRENT_BINARY_DIR}/assets if unset.
+#
+#
+# It will also keep the last parent directory name under the output directory
+# because most users will arrange more files under a specific file hierarchy,
+# this also avoid a file name conflict.
+#
+# Example, given the following assets files:
+#
+# - assets/sprites/foo.png
+# - assets/sounds/volume-up.wav
+# - assets/sounds/volume-down.wav
+#
+# The following files will be generated:
+#
+# - <output-directory>/assets/sprites/foo.h
+# - <output-directory>/assets/sounds/volume-up.h
+# - <output-directory>/assets/sounds/volume-down.h
+#
 macro(mlk_bcc)
 	set(options "")
-	set(oneValueArgs OUTPUTS_VAR)
+	set(oneValueArgs "OUTPUT_DIRECTORY;OUTPUTS_VAR")
 	set(multiValueArgs ASSETS)
 
 	cmake_parse_arguments(_bcc "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -29,36 +58,44 @@ macro(mlk_bcc)
 		message(FATAL_ERROR "Missing ASSETS")
 	endif ()
 
-	foreach (a ${_bcc_ASSETS})
-		cmake_path(
-			RELATIVE_PATH a
-			BASE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-			OUTPUT_VARIABLE output
-		)
-		cmake_path(GET output PARENT_PATH outputdir)
-		cmake_path(GET output EXTENSION extension)
-		cmake_path(REPLACE_EXTENSION output .h)
-		cmake_path(REMOVE_EXTENSION output OUTPUT_VARIABLE outputname)
+	if (NOT _bcc_OUTPUT_DIRECTORY)
+		set(_bcc_base_directory ${CMAKE_CURRENT_BINARY_DIR}/assets)
+	else ()
+		set(_bcc_base_directory ${_bcc_OUTPUT_DIRECTORY})
+	endif ()
 
-		if (extension MATCHES ".sql")
-			set(args "-0cs")
+	foreach (a ${_bcc_ASSETS})
+		# Determine output parent directory name.
+		get_filename_component(_bcc_dirname ${a} DIRECTORY)
+		get_filename_component(_bcc_dirname ${_bcc_dirname} NAME)
+
+		# Determine output file name.
+		cmake_path(GET a FILENAME _bcc_filename)
+		cmake_path(REPLACE_EXTENSION _bcc_filename .h)
+		set(_bcc_output_file ${_bcc_base_directory}/${_bcc_dirname}/${_bcc_filename})
+
+		# Text files are better NUL terminated.
+		cmake_path(GET a EXTENSION _bcc_extension)
+
+		if (_bcc_extension MATCHES "\\.sql")
+			set(_bcc_args "-0cs")
 		else ()
-			set(args "-cs")
+			set(_bcc_args "-cs")
 		endif ()
 
-		message("===> ${output}")
-		set(outputfile ${CMAKE_CURRENT_BINARY_DIR}/${output})
+		# This is the mlk-bcc variable to generate the C identifier.
+		set(_bcc_var "assets_${_bcc_dirname}_${_bcc_filename}")
 
 		add_custom_command(
-			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${output}
+			OUTPUT ${_bcc_output_file}
 			COMMAND
-				${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/${outputdir}
+				${CMAKE_COMMAND} -E make_directory ${_bcc_base_directory}/${_bcc_dirname}
 			COMMAND
-				$<TARGET_FILE:mlk-bcc> ${args} ${a} ${outputname} > ${outputfile}
-			COMMENT "Generating ${output}"
+				$<TARGET_FILE:mlk-bcc> ${_bcc_args} ${a} ${_bcc_var} > ${_bcc_output_file}
+			COMMENT "Generating asset ${_bcc_dirname}/${_bcc_filename}"
 			DEPENDS $<TARGET_FILE:mlk-bcc> ${a}
 		)
 
-		list(APPEND ${_bcc_OUTPUTS_VAR} ${CMAKE_CURRENT_BINARY_DIR}/${output})
+		list(APPEND ${_bcc_OUTPUTS_VAR} ${_bcc_output_file})
 	endforeach ()
 endmacro()
