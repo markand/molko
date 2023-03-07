@@ -43,6 +43,7 @@ set(
 	${libmlk-example_SOURCE_DIR}/assets/sprites/explosion.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/john-sword.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/john-walk.png
+	${libmlk-example_SOURCE_DIR}/assets/sprites/john.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/numbers.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/people.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/ui-cursor.png

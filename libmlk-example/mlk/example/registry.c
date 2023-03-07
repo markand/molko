@@ -35,6 +35,7 @@
 #include <assets/sprites/explosion.h>
 #include <assets/sprites/john-sword.h>
 #include <assets/sprites/john-walk.h>
+#include <assets/sprites/john.h>
 #include <assets/sprites/numbers.h>
 #include <assets/sprites/people.h>
 #include <assets/sprites/ui-cursor.h>
@@ -78,6 +79,7 @@ static const struct {
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_CURSOR, assets_sprites_ui_cursor, 24, 24),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_EXPLOSION, assets_sprites_explosion, 256, 256),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_WATER, assets_sprites_water, 48, 48),
+	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_JOHN, assets_sprites_john, 48, 48),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_JOHN_SWORD, assets_sprites_john_sword, 256, 256),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_JOHN_WALK, assets_sprites_john_walk, 256, 256),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_HAUNTED_WOOD, assets_images_haunted_wood, 0, 0),

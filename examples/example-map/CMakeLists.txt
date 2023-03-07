@@ -16,28 +16,18 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(examples)
+project(example-map)
 
 set(
-	DIRS
-	example-action
-	example-animation
-	example-audio
-	example-cursor
-	example-debug
-	example-drawable
-	example-font
-	example-gridmenu
-	example-label
-	example-map
-	example-message
-	example-notify
-	example-sprite
-	example-tileset
-	example-trace
-	example-ui
+	SOURCES
+	${example-map_SOURCE_DIR}/example-map.c
 )
 
-foreach (d ${DIRS})
-	add_subdirectory(${d})
-endforeach ()
+mlk_executable(
+	NAME example-map
+	FOLDER examples
+	LIBRARIES libmlk-example
+	SOURCES ${SOURCES}
+)
+
+source_group(TREE ${example-map_SOURCE_DIR} FILES ${SOURCES})

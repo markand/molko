@@ -97,8 +97,8 @@ static unsigned int orientations[16] = {
  * to check.
  */
 static int
-is_block_relevant(const struct map *map,
-                    const struct map_block *block,
+is_block_relevant(const struct mlk_map *map,
+                    const struct mlk_map_block *block,
                     int drow,
                     int dcol)
 {
@@ -130,8 +130,8 @@ is_block_relevant(const struct map *map,
  * new block coordinates with the previous one.
  */
 static int
-is_block_better(const struct map_block *now,
-                const struct map_block *new,
+is_block_better(const struct mlk_map_block *now,
+                const struct mlk_map_block *new,
                 int drow,
                 int dcol)
 {
@@ -143,7 +143,7 @@ is_block_better(const struct map_block *now,
 }
 
 static void
-center(struct map *map)
+center(struct mlk_map *map)
 {
 	map->view_x = map->player_x - (int)(map->view_w / 2);
 	map->view_y = map->player_y - (int)(map->view_h / 2);
@@ -160,7 +160,7 @@ center(struct map *map)
 }
 
 static void
-init(struct map *map)
+init(struct mlk_map *map)
 {
 	/* Adjust view. */
 	map->view_w = mlk_window.w;
@@ -178,7 +178,7 @@ init(struct map *map)
 }
 
 static void
-handle_keydown(struct map *map, const union mlk_event *event)
+handle_keydown(struct mlk_map *map, const union mlk_event *event)
 {
 	switch (event->key.key) {
 	case MLK_KEY_UP:
@@ -197,15 +197,15 @@ handle_keydown(struct map *map, const union mlk_event *event)
 		break;
 	}
 
-	map->player_angle = orientations[map->player_movement];
+	map->player_a = orientations[map->player_movement];
 }
 
 static void
-handle_keyup(struct map *map, const union mlk_event *event)
+handle_keyup(struct mlk_map *map, const union mlk_event *event)
 {
 	switch (event->key.key) {
-	case MLK_KEY_TAB:
-		map->flags ^= MAP_FLAGS_SHOW_GRID | MAP_FLAGS_SHOW_COLLIDE;
+	case MLK_KEY_F12:
+		map->flags ^= MLK_MAP_FLAGS_SHOW_GRID | MLK_MAP_FLAGS_SHOW_COLLIDE;
 		break;
 	case MLK_KEY_UP:
 		map->player_movement &= ~(MOVING_UP);
@@ -224,37 +224,39 @@ handle_keyup(struct map *map, const union mlk_event *event)
 	}
 }
 
+// TODO: merge this code in tileset maybe.
 static int
-cmp_tile(const struct tileset_tiledef *td1, const struct tileset_tiledef *td2)
+collision_cmp(const void *d1, const void *d2)
 {
-	if (td1->id < td2->id)
+	const struct mlk_tileset_collision *c1 = d1;
+	const struct mlk_tileset_collision *c2 = d2;
+
+	if (c1->id < c2->id)
 		return -1;
-	if (td1->id > td2->id)
+	if (c1->id > c2->id)
 		return 1;
 
 	return 0;
 }
 
-static struct tileset_tiledef *
-find_tiledef_by_id(const struct map *map, unsigned short id)
+static inline struct mlk_tileset_collision *
+find_collision_by_id(const struct mlk_map *map, unsigned int id)
 {
-	typedef int (*cmp)(const void *, const void *);
-
-	const struct tileset_tiledef key = {
+	const struct mlk_tileset_collision key = {
 		.id = id
 	};
 
-	return bsearch(&key, map->tileset->tiledefs, map->tileset->tiledefsz,
-	    sizeof (key), (cmp)cmp_tile);
+	return bsearch(&key, map->tileset->collisions, map->tileset->collisionsz,
+	    sizeof (key), collision_cmp);
 }
 
-static struct tileset_tiledef *
-find_tiledef_by_row_column_in_layer(const struct map *map,
-                                    const struct map_layer *layer,
+static struct mlk_tileset_collision *
+find_collision_by_row_column_in_layer(const struct mlk_map *map,
+                                    const struct mlk_map_layer *layer,
                                     int row,
                                     int col)
 {
-	unsigned short id;
+	unsigned int id;
 
 	if (row < 0 || (unsigned int)row >= map->rows ||
 	    col < 0 || (unsigned int)col >= map->columns)
@@ -263,24 +265,24 @@ find_tiledef_by_row_column_in_layer(const struct map *map,
 	if ((id = layer->tiles[col + row * map->columns]) == 0)
 		return NULL;
 
-	return find_tiledef_by_id(map, id - 1);
+	return find_collision_by_id(map, id - 1);
 }
 
-static struct tileset_tiledef *
-find_tiledef_by_row_column(const struct map *map, int row, int col)
+static struct mlk_tileset_collision *
+find_collision_by_row_column(const struct mlk_map *map, int row, int col)
 {
-	struct tileset_tiledef *tile;
+	struct mlk_tileset_collision *tc;
 
 	/* TODO: probably a for loop when we have indefinite layers. */
-	if (!(tile = find_tiledef_by_row_column_in_layer(map, &map->layers[1], row, col)))
-		tile = find_tiledef_by_row_column_in_layer(map, &map->layers[0], row, col);
+	if (!(tc = find_collision_by_row_column_in_layer(map, &map->layers[1], row, col)))
+		tc = find_collision_by_row_column_in_layer(map, &map->layers[0], row, col);
 
-	return tile;
+	return tc;
 }
 
 static void
-find_block_iterate(const struct map *map,
-                   struct map_block *block,
+find_block_iterate(const struct mlk_map *map,
+                   struct mlk_map_block *block,
                    int rowstart,
                    int rowend,
                    int colstart,
@@ -291,20 +293,21 @@ find_block_iterate(const struct map *map,
 	assert(map);
 	assert(block);
 
+	const struct mlk_tileset_collision *tc;
+	const struct mlk_map_block *b;
+	struct mlk_map_block tmp;
+
 	/* First, check with tiledefs. */
 	for (int r = rowstart; r <= rowend; ++r) {
 		for (int c = colstart; c <= colend; ++c) {
-			struct tileset_tiledef *td;
-			struct map_block tmp;
-
-			if (!(td = find_tiledef_by_row_column(map, r, c)))
+			if (!(tc = find_collision_by_row_column(map, r, c)))
 				continue;
 
 			/* Convert to absolute values. */
-			tmp.x = td->x + c * map->tileset->sprite->cellw;
-			tmp.y = td->y + r * map->tileset->sprite->cellh;
-			tmp.w = td->w;
-			tmp.h = td->h;
+			tmp.x = tc->x + c * map->tileset->sprite->cellw;
+			tmp.y = tc->y + r * map->tileset->sprite->cellh;
+			tmp.w = tc->w;
+			tmp.h = tc->h;
 
 			/* This tiledef is out of context. */
 			if (!is_block_relevant(map, &tmp, drow, dcol))
@@ -321,20 +324,20 @@ find_block_iterate(const struct map *map,
 
 	/* Now check if there are objects closer than tiledefs. */
 	for (size_t i = 0; i < map->blocksz; ++i) {
-		const struct map_block *new = &map->blocks[i];
+		b = &map->blocks[i];
 
-		if (is_block_relevant(map, new, drow, dcol) &&
-		    is_block_better(block, new, drow, dcol)) {
-			block->x = new->x;
-			block->y = new->y;
-			block->w = new->w;
-			block->h = new->h;
+		if (is_block_relevant(map, b, drow, dcol) &&
+		    is_block_better(block, b, drow, dcol)) {
+			block->x = b->x;
+			block->y = b->y;
+			block->w = b->w;
+			block->h = b->h;
 		}
 	}
 }
 
 static void
-find_collision(const struct map *map, struct map_block *block, int drow, int dcolumn)
+find_collision(const struct mlk_map *map, struct mlk_map_block *block, int drow, int dcolumn)
 {
 	assert((drow && !dcolumn) || (dcolumn && !drow));
 
@@ -386,9 +389,9 @@ find_collision(const struct map *map, struct map_block *block, int drow, int dco
 }
 
 static void
-move_x(struct map *map, int delta)
+move_x(struct mlk_map *map, int delta)
 {
-	struct map_block block;
+	struct mlk_map_block block;
 
 	find_collision(map, &block, 0, delta < 0 ? -1 : +1);
 
@@ -410,9 +413,9 @@ move_x(struct map *map, int delta)
 }
 
 static void
-move_y(struct map *map, int delta)
+move_y(struct mlk_map *map, int delta)
 {
-	struct map_block block;
+	struct mlk_map_block block;
 
 	find_collision(map, &block, delta < 0 ? -1 : +1, 0);
 
@@ -434,7 +437,7 @@ move_y(struct map *map, int delta)
 }
 
 static void
-move(struct map *map, unsigned int ticks)
+move(struct mlk_map *map, unsigned int ticks)
 {
 	/* This is the amount of pixels the player must move. */
 	const int delta = SPEED * ticks / SEC;
@@ -468,8 +471,8 @@ move(struct map *map, unsigned int ticks)
 }
 
 static inline void
-draw_layer_tile(const struct map *map,
-                const struct map_layer *layer,
+draw_layer_tile(const struct mlk_map *map,
+                const struct mlk_map_layer *layer,
                 struct mlk_texture *colbox,
                 int start_col,
                 int start_row,
@@ -478,7 +481,7 @@ draw_layer_tile(const struct map *map,
                 unsigned int r,
                 unsigned int c)
 {
-	const struct tileset_tiledef *td;
+	const struct mlk_tileset_collision *tc;
 	int index, id, sc, sr, mx, my;
 
 	index = (start_col + c) + ((start_row + r) * map->columns);
@@ -496,12 +499,13 @@ draw_layer_tile(const struct map *map,
 	mx = start_x + (int)c * (int)map->tileset->sprite->cellw;
 	my = start_y + (int)r * (int)map->tileset->sprite->cellh;
 
-	tileset_draw(map->tileset, sr, sc, mx, my);
+	mlk_tileset_draw(map->tileset, sr, sc, mx, my);
 
-	if ((td = find_tiledef_by_id(map, id)) && mlk_texture_ok(colbox))
-		mlk_texture_scale(colbox, 0, 0, 5, 5, mx + td->x, my + td->y, td->w, td->h, 0);
+	/* Draw collision box if colbox is non NULL. */
+	if ((tc = find_collision_by_id(map, id)) && mlk_texture_ok(colbox))
+		mlk_texture_scale(colbox, 0, 0, 5, 5, mx + tc->x, my + tc->y, tc->w, tc->h, 0);
 
-	if (map->flags & MAP_FLAGS_SHOW_GRID) {
+	if (map->flags & MLK_MAP_FLAGS_SHOW_GRID) {
 		mlk_painter_set_color(0x202e37ff);
 		mlk_painter_draw_line(mx, my, mx + (int)map->tileset->sprite->cellw, my);
 		mlk_painter_draw_line(
@@ -511,7 +515,7 @@ draw_layer_tile(const struct map *map,
 }
 
 static void
-draw_layer(const struct map *map, const struct map_layer *layer)
+draw_layer(const struct mlk_map *map, const struct mlk_map_layer *layer)
 {
 	assert(map);
 	assert(layer);
@@ -534,7 +538,7 @@ draw_layer(const struct map *map, const struct map_layer *layer)
 		return;
 
 	/* Show collision box if requested. */
-	if (map->flags & MAP_FLAGS_SHOW_COLLIDE && mlk_texture_new(&colbox, 16, 16) == 0) {
+	if (map->flags & MLK_MAP_FLAGS_SHOW_COLLIDE && mlk_texture_new(&colbox, 16, 16) == 0) {
 		mlk_texture_set_blend_mode(&colbox, MLK_TEXTURE_BLEND_BLEND);
 		mlk_texture_set_alpha_mod(&colbox, 100);
 		MLK_PAINTER_BEGIN(&colbox);
@@ -557,11 +561,11 @@ draw_layer(const struct map *map, const struct map_layer *layer)
 }
 
 static void
-draw_collide(const struct map *map)
+draw_collide(const struct mlk_map *map)
 {
 	struct mlk_texture box = {0};
 
-	if (map->flags & MAP_FLAGS_SHOW_COLLIDE && mlk_texture_new(&box, 64, 64) == 0) {
+	if (map->flags & MLK_MAP_FLAGS_SHOW_COLLIDE && mlk_texture_new(&box, 64, 64) == 0) {
 		/* Draw collide box around player if requested. */
 		mlk_texture_set_alpha_mod(&box, 100);
 		mlk_texture_set_blend_mode(&box, MLK_TEXTURE_BLEND_BLEND);
@@ -591,18 +595,18 @@ draw_collide(const struct map *map)
 }
 
 int
-map_init(struct map *map)
+mlk_map_init(struct mlk_map *map)
 {
 	assert(map);
 
 	init(map);
-	tileset_start(map->tileset);
+	mlk_tileset_start(map->tileset);
 
 	return 0;
 }
 
 void
-map_handle(struct map *map, const union mlk_event *ev)
+mlk_map_handle(struct mlk_map *map, const union mlk_event *ev)
 {
 	assert(map);
 	assert(ev);
@@ -617,55 +621,38 @@ map_handle(struct map *map, const union mlk_event *ev)
 	default:
 		break;
 	}
-
-	mlk_action_stack_handle(&map->astack_par, ev);
-	mlk_action_stack_handle(&map->astack_seq, ev);
 }
 
 void
-map_update(struct map *map, unsigned int ticks)
+mlk_map_update(struct mlk_map *map, unsigned int ticks)
 {
 	assert(map);
 
-	mlk_action_stack_update(&map->astack_par, ticks);
-	mlk_action_stack_update(&map->astack_seq, ticks);
-
-	tileset_update(map->tileset, ticks);
-
-	/* No movements if the sequential actions are running. */
-	if (mlk_action_stack_completed(&map->astack_seq))
-		move(map, ticks);
+	mlk_tileset_update(map->tileset, ticks);
+	move(map, ticks);
 }
 
 void
-map_draw(const struct map *map)
+mlk_map_draw(const struct mlk_map *map)
 {
 	assert(map);
 
 	/* Draw the texture about background/foreground. */
-	draw_layer(map, &map->layers[MAP_LAYER_TYPE_BACKGROUND]);
-	draw_layer(map, &map->layers[MAP_LAYER_TYPE_FOREGROUND]);
+	draw_layer(map, &map->layers[MLK_MAP_LAYER_TYPE_BG]);
+	draw_layer(map, &map->layers[MLK_MAP_LAYER_TYPE_FG]);
 
 	walksprite_draw(
 		&map->player_ws,
-		map->player_angle,
+		map->player_a,
 		map->player_x - map->view_x,
 		map->player_y - map->view_y);
 
-	draw_layer(map, &map->layers[MAP_LAYER_TYPE_ABOVE]);
+	draw_layer(map, &map->layers[MLK_MAP_LAYER_TYPE_ABOVE]);
 	draw_collide(map);
-
-	mlk_action_stack_draw(&map->astack_par);
-	mlk_action_stack_draw(&map->astack_seq);
 }
 
 void
-map_finish(struct map *map)
+mlk_map_finish(struct mlk_map *map)
 {
 	assert(map);
-
-	mlk_action_stack_finish(&map->astack_par);
-	mlk_action_stack_finish(&map->astack_seq);
-
-	memset(map, 0, sizeof (*map));
 }

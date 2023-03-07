@@ -133,6 +133,8 @@ extern "C" {
  * Open a tileset from a filesystem path.
  *
  * \pre loader != NULL
+ * \pre tileset != NULL
+ * \pre data != NULL
  * \param loader the loader
  * \param tileset the tileset destination
  * \param path the path to the tileset file
@@ -150,6 +152,8 @@ mlk_tileset_loader_open(struct mlk_tileset_loader *loader,
  * used.
  *
  * \pre loader != NULL
+ * \pre tileset != NULL
+ * \pre data != NULL
  * \param loader the loader
  * \param tileset the tileset destination
  * \param data the tileset content

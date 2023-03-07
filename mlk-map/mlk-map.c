@@ -212,8 +212,7 @@ write_layers(const json_t *layers)
 static void
 write_tileset(const json_t *tilesets)
 {
-	char path[MLK_PATH_MAX];
-	char filename[FILENAME_MAX] = {0}, *ext;
+	char path[MLK_PATH_MAX], *ext;
 	const json_t *tileset, *source;
 
 	if (json_array_size(tilesets) != 1)
@@ -227,14 +226,13 @@ write_tileset(const json_t *tilesets)
 
 	/* We need to replace the .json extension to .tileset. */
 	snprintf(path, sizeof (path), "%s", json_string_value(source));
-	snprintf(filename, sizeof (filename), "%s", mlk_util_basename(path));
 
-	if (!(ext = strstr(filename, ".json")))
+	if (!(ext = strstr(path, ".json")))
 		die("could not determine tileset extension");
 
 	*ext = '\0';
 
-	printf("tileset|%s.tileset\n", filename);
+	printf("tileset|%s.tileset\n", path);
 }
 
 int

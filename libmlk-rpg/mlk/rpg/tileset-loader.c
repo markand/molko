@@ -146,7 +146,7 @@ parse_animations(struct mlk_tileset_loader *loader,
 	size_t tileanimationsz = 0;
 
 	/* Create a format string for fscanf. */
-	snprintf(fmt, sizeof (fmt), "%%u|%%%zu[^|]|%%u", sizeof (filename));
+	snprintf(fmt, sizeof (fmt), "%%u|%%%zu[^|]|%%u", sizeof (filename) - 1);
 
 	/*
 	 * When parsing animations, we have to create three different

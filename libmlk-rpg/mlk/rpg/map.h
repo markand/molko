@@ -21,100 +21,103 @@
 
 #include <stddef.h>
 
-#include <mlk/core/action.h>
-#include <mlk/core/action-stack.h>
-
 #include "walksprite.h"
 
-struct tileset;
+struct mlk_map;
+struct mlk_tileset;
 
 union mlk_event;
 
-enum map_layer_type {
-	MAP_LAYER_TYPE_BACKGROUND,
-	MAP_LAYER_TYPE_FOREGROUND,
-	MAP_LAYER_TYPE_ABOVE,
-	MAP_LAYER_TYPE_NUM
+enum mlk_map_layer_type {
+	MLK_MAP_LAYER_TYPE_BG,
+	MLK_MAP_LAYER_TYPE_FG,
+	MLK_MAP_LAYER_TYPE_ABOVE,
+	MLK_MAP_LAYER_TYPE_LAST
 };
 
-struct map_layer {
-	unsigned short *tiles;
+struct mlk_map_layer {
+	unsigned int *tiles;
 };
 
-enum map_flags {
-	MAP_FLAGS_NONE          = 0,
-	MAP_FLAGS_SHOW_GRID     = (1 << 0),
-	MAP_FLAGS_SHOW_COLLIDE  = (1 << 2)
+enum mlk_map_flags {
+	MLK_MAP_FLAGS_NONE              = 0,
+	MLK_MAP_FLAGS_SHOW_GRID         = (1 << 0),
+	MLK_MAP_FLAGS_SHOW_COLLIDE      = (1 << 2)
 };
 
-struct map_block {
+struct mlk_map_block {
 	int x;
 	int y;
 	unsigned int w;
 	unsigned int h;
 };
 
-struct map {
-	const char *title;              /*!< (+) Map title name. */
-	unsigned int columns;           /*!< (-) Number of columns. */
-	unsigned int rows;              /*!< (-) Number of rows. */
-
-	/* Tileset. */
-	struct tileset *tileset;        /*!< (+&?) Tileset to use. */
-
-	/* View options. */
-	enum map_flags flags;           /*!< (+) View options. */
-
-	/* Extra collisions blocks. */
-	struct map_block *blocks;       /*!< (+&?) Extra collisions. */
-	size_t blocksz;                 /*!< (+) Number of collisions. */
-
-	/* List of actions. */
-	struct mlk_action_stack astack_par; /*!< (+) Parallel actions. */
-	struct mlk_action_stack astack_seq; /*!< (+) Blocking actions. */
-
-	/* Player. */
-	struct mlk_sprite *player_sprite;   /*!< (+) The sprite to use */
-	struct walksprite player_ws;    /*!< (-) Walking sprite for moving the player. */
-	int player_x;                   /*!< (+) Player position in x */
-	int player_y;                   /*!< (+) Player position in y */
-	int player_angle;               /*!< (+) Player angle (see walksprite) */
-	unsigned int player_movement;   /*!< (*) Current player movements. */
-
-	/* View to zoom/locate. */
-	int view_x;                     /*!< (+) Position in x */
-	int view_y;                     /*!< (+) Position in y */
-	unsigned int view_w;            /*!< (+) View width */
-	unsigned int view_h;            /*!< (+) View height */
-
-	/* View margin. */
-	int margin_x;                   /*!< (+) View margin in x. */
-	int margin_y;                   /*!< (+) View margin in y. */
-	unsigned int margin_w;          /*!< (+) Margin width. */
-	unsigned int margin_h;          /*!< (+) Margin height. */
-
-	/* Different tile layers. */
-	struct map_layer layers[MAP_LAYER_TYPE_NUM];
+struct mlk_map_style {
+	unsigned long grid_color;
+	unsigned long collision_color;
 };
+
+struct mlk_map_delegate {
+	void *data;
+	void (*update)(struct mlk_map_delegate *self, struct mlk_map *map, unsigned int ticks);
+	void (*draw)(struct mlk_map_delegate *self, const struct mlk_map *map);
+};
+
+struct mlk_map {
+	unsigned int columns;
+	unsigned int rows;
+
+	struct mlk_tileset *tileset;
+
+	enum mlk_map_flags flags;
+
+	const struct mlk_map_block *blocks;
+	size_t blocksz;
+
+	struct mlk_sprite *player_sprite;
+	int player_x;
+	int player_y;
+	int player_a;
+	unsigned int player_movement;
+	struct walksprite player_ws;
+
+	int view_x;
+	int view_y;
+	unsigned int view_w;
+	unsigned int view_h;
+
+	int margin_x;
+	int margin_y;
+	unsigned int margin_w;
+	unsigned int margin_h;
+
+	struct mlk_map_layer layers[MLK_MAP_LAYER_TYPE_LAST];
+
+	struct mlk_button_style *style;
+	struct mlk_button_delegate *delegate;
+};
+
+extern struct mlk_map_style mlk_map_style;
+extern struct mlk_map_delegate mlk_map_delegate;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 int
-map_init(struct map *map);
+mlk_map_init(struct mlk_map *map);
 
 void
-map_handle(struct map *map, const union mlk_event *ev);
+mlk_map_handle(struct mlk_map *map, const union mlk_event *ev);
 
 void
-map_update(struct map *map, unsigned int ticks);
+mlk_map_update(struct mlk_map *map, unsigned int ticks);
 
 void
-map_draw(const struct map *map);
+mlk_map_draw(const struct mlk_map *map);
 
 void
-map_finish(struct map *map);
+mlk_map_finish(struct mlk_map *map);
 
 #if defined(__cplusplus)
 }

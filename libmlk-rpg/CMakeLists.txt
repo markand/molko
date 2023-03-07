@@ -20,6 +20,12 @@ project(libmlk-rpg)
 
 set(
 	SOURCES
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader-file.c
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader-file.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader.c
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.c
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/message.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/message.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/property.c

@@ -61,6 +61,10 @@ struct mlk_tileset_loader_file {
 	/** \endcond MLK_PRIVATE_DECLS */
 };
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 /**
  * Fill the abstract loader with appropriate implementation.
  *
@@ -89,5 +93,9 @@ mlk_tileset_loader_file_init(struct mlk_tileset_loader_file *file,
  */
 void
 mlk_tileset_loader_file_finish(struct mlk_tileset_loader_file *file);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_RPG_TILESET_LOADER_FILE_H */
