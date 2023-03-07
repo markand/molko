@@ -46,6 +46,7 @@ macro(mlk_bcc)
 			set(args "-cs")
 		endif ()
 
+		message("===> ${output}")
 		set(outputfile ${CMAKE_CURRENT_BINARY_DIR}/${output})
 
 		add_custom_command(

@@ -31,6 +31,7 @@ enum mlk_registry_texture {
 
 	/* Animations. */
 	MLK_REGISTRY_TEXTURE_EXPLOSION,
+	MLK_REGISTRY_TEXTURE_WATER,
 
 	/* Characters. */
 	MLK_REGISTRY_TEXTURE_JOHN_WALK,
@@ -46,6 +47,9 @@ enum mlk_registry_texture {
 
 	/* Sword by Icongeek26 (https://www.flaticon.com). */
 	MLK_REGISTRY_TEXTURE_SWORD,
+
+	/* Tileset textures. */
+	MLK_REGISTRY_TEXTURE_WORLD,
 
 	/* Unused.*/
 	MLK_REGISTRY_TEXTURE_LAST

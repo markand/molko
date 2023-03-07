@@ -25,40 +25,44 @@
 #include "tileset.h"
 
 static inline int
-anim_cmp(const void *d1, const void *d2)
+animation_cmp(const void *d1, const void *d2)
 {
-	const struct tileset_animation *mtd1 = d1;
-	const struct tileset_animation *mtd2 = d2;
+	const struct mlk_tileset_animation *a1 = d1;
+	const struct mlk_tileset_animation *a2 = d2;
 
-	if (mtd1->id < mtd2->id)
+	if (a1->id < a2->id)
 		return -1;
-	if (mtd1->id > mtd2->id)
+	if (a1->id > a2->id)
 		return 1;
 
 	return 0;
 }
 
-static inline const struct tileset_animation *
-find(const struct tileset *ts, unsigned int r, unsigned int c)
+static inline const struct mlk_tileset_animation *
+find(const struct mlk_tileset *tileset, unsigned int r, unsigned int c)
 {
-	const struct tileset_animation key = {
-		.id = c + (r * ts->sprite->ncols)
+	const struct mlk_tileset_animation key = {
+		.id = c + (r * tileset->sprite->ncols)
 	};
 
-	return bsearch(&key, ts->anims, ts->animsz, sizeof (key), anim_cmp);
+	return bsearch(&key, tileset->animations, tileset->animationsz, sizeof (key), animation_cmp);
 }
 
 int
-tileset_ok(const struct tileset *ts)
+mlk_tileset_ok(const struct mlk_tileset *tileset)
 {
-	return ts && mlk_sprite_ok(ts->sprite);
+	return tileset && mlk_sprite_ok(tileset->sprite);
 }
 
 void
-tileset_start(struct tileset *ts)
+mlk_tileset_start(struct mlk_tileset *tileset)
 {
-	for (size_t i = 0; i < ts->animsz; ++i) {
-		struct tileset_animation *ta = &ts->anims[i];
+	assert(mlk_tileset_ok(tileset));
+
+	struct mlk_tileset_animation *ta;
+
+	for (size_t i = 0; i < tileset->animationsz; ++i) {
+		ta = &tileset->animations[i];
 
 		if (ta->animation)
 			mlk_animation_start(ta->animation);
@@ -66,28 +70,36 @@ tileset_start(struct tileset *ts)
 }
 
 void
-tileset_update(struct tileset *ts, unsigned int ticks)
+mlk_tileset_update(struct mlk_tileset *tileset, unsigned int ticks)
 {
-	for (size_t i = 0; i < ts->animsz; ++i) {
-		struct tileset_animation *ta = &ts->anims[i];
+	assert(mlk_tileset_ok(tileset));
+
+	struct mlk_tileset_animation *ta;
+
+	for (size_t i = 0; i < tileset->animationsz; ++i) {
+		ta = &tileset->animations[i];
 
 		if (!ta->animation)
 			continue;
 
+		/* Reset in case it ended, we loop animations. */
 		if (mlk_animation_update(ta->animation, ticks))
 			mlk_animation_start(ta->animation);
 	}
 }
 
-void
-tileset_draw(const struct tileset *ts, unsigned int r, unsigned int c, int x, int y)
+int
+mlk_tileset_draw(const struct mlk_tileset *tileset, unsigned int r, unsigned int c, int x, int y)
 {
-	assert(ts);
+	assert(mlk_tileset_ok(tileset));
 
-	const struct tileset_animation *ta;
+	const struct mlk_tileset_animation *ta;
+	int ret;
 
-	if ((ta = find(ts, r, c)))
-		mlk_animation_draw(ta->animation, x, y);
+	if ((ta = find(tileset, r, c)))
+		ret = mlk_animation_draw(ta->animation, x, y);
 	else
-		mlk_sprite_draw(ts->sprite, r, c, x, y);
+		ret = mlk_sprite_draw(tileset->sprite, r, c, x, y);
+
+	return ret;
 }

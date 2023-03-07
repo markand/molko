@@ -19,28 +19,115 @@
 #ifndef MLK_RPG_TILESET_H
 #define MLK_RPG_TILESET_H
 
+/**
+ * \file mlk/rpg/tileset.h
+ * \brief Map tileset definition
+ */
+
 #include <stddef.h>
 
+struct mlk_animation;
 struct mlk_sprite;
 
-struct tileset_tiledef {
-	unsigned short id;
-	short x;
-	short y;
-	unsigned short w;
-	unsigned short h;
+/**
+ * \struct mlk_tileset_collision
+ * \brief Describe a tile collision box.
+ */
+struct mlk_tileset_collision {
+	/**
+	 * (read-write)
+	 *
+	 * The sprite cell index.
+	 */
+	unsigned int id;
+
+	/**
+	 * (read-write)
+	 *
+	 * Beginning of collision box in x.
+	 */
+	int x;
+
+	/**
+	 * (read-write)
+	 *
+	 * Beginning of collision box in y.
+	 */
+	int y;
+
+	/**
+	 * (read-write)
+	 *
+	 * Collision box width.
+	 */
+	unsigned int w;
+
+	/**
+	 * (read-write)
+	 *
+	 * Collision box height.
+	 */
+	unsigned int h;
 };
 
-struct tileset_animation {
-	unsigned short id;
+/**
+ * \struct mlk_tileset_animation
+ * \brief Animation per tile
+ */
+struct mlk_tileset_animation {
+	/**
+	 * (read-write)
+	 *
+	 * The sprite cell index.
+	 */
+	unsigned int id;
+
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * Animation to used for this tile.
+	 */
 	struct mlk_animation *animation;
 };
 
-struct tileset {
-	struct tileset_tiledef *tiledefs;
-	size_t tiledefsz;
-	struct tileset_animation *anims;
-	size_t animsz;
+/**
+ * \struct mlk_tileset
+ * \brief Tileset structure
+ */
+struct mlk_tileset {
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Array of collision boxes per tile that MUST be order by tile id.
+	 */
+	struct mlk_tileset_collision *collisions;
+
+	/**
+	 * (read-write)
+	 *
+	 * Number of items in the ::mlk_tileset::collisions array.
+	 */
+	size_t collisionsz;
+
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Array of animations per tile that MUST be order by tile id.
+	 */
+	struct mlk_tileset_animation *animations;
+
+	/**
+	 * (read-write)
+	 *
+	 * Number of items in the ::mlk_tileset::animations array.
+	 */
+	size_t animationsz;
+
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * Sprite used to render the map.
+	 */
 	struct mlk_sprite *sprite;
 };
 
@@ -48,17 +135,47 @@ struct tileset {
 extern "C" {
 #endif
 
+/**
+ * Tells if the tileset is usable.
+ *
+ * \param tileset the tileset to check
+ * \return non-zero if the tileset structure is usable
+ */
 int
-tileset_ok(const struct tileset *);
+mlk_tileset_ok(const struct mlk_tileset *tileset);
 
+/**
+ * Start tileset animations.
+ *
+ * \pre tileset != NULL
+ * \param tileset the tileset
+ */
 void
-tileset_start(struct tileset *);
+mlk_tileset_start(struct mlk_tileset *tileset);
 
+/**
+ * Update the tileset animations.
+ *
+ * \pre tileset != NULL
+ * \param tileset the tileset
+ * \param ticks frame ticks
+ */
 void
-tileset_update(struct tileset *, unsigned int);
+mlk_tileset_update(struct mlk_tileset *tileset, unsigned int ticks);
 
-void
-tileset_draw(const struct tileset *, unsigned int, unsigned int, int, int);
+/**
+ * Draw a cell row/column into the given position.
+ *
+ * \pre tileset != NULL
+ * \param tileset the tileset
+ * \param r the cell row number
+ * \param c the cell column number
+ * \param x the x coordinate
+ * \param y the y coordinate
+ * \return 0 on success or an error code on failure
+ */
+int
+mlk_tileset_draw(const struct mlk_tileset *tileset, unsigned int r, unsigned int c, int x, int y);
 
 #if defined(__cplusplus)
 }

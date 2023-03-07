@@ -20,10 +20,6 @@ project(libmlk-rpg)
 
 set(
 	SOURCES
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-file.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-file.h
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/message.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/message.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/property.c
@@ -34,8 +30,10 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/save.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/save.h
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-file.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-file.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader-file.c
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader-file.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader.c
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/walksprite.c

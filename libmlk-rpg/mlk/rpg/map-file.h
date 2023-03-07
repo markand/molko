@@ -25,7 +25,7 @@
 
 #include "map.h"
 #include "tileset.h"
-#include "tileset-file.h"
+#include "tileset-loader.h"
 
 #define MAP_FILE_TITLE_MAX 64
 
@@ -35,7 +35,7 @@ struct map_file {
 	char title[MAP_FILE_TITLE_MAX];
 	struct map_layer layers[MAP_LAYER_TYPE_NUM];
 	struct tileset_file tileset_file;
-	struct tileset tileset;
+	struct mlk_tileset tileset;
 	struct mlk_alloc_pool blocks;
 };
 

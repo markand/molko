@@ -17,88 +17,121 @@
  */
 
 #include <mlk/core/core.h>
+#include <mlk/core/err.h>
+#include <mlk/core/sprite.h>
 #include <mlk/core/window.h>
 
-#include <mlk/rpg/tileset-file.h>
+#include <mlk/rpg/tileset-loader.h>
+#include <mlk/rpg/tileset-loader-file.h>
 #include <mlk/rpg/tileset.h>
 
 #include <dt.h>
 
-static void
-test_basics_sample(void)
+/*
+ * Convenient struct that pack all the required data.
+ */
+struct tileset {
+	struct mlk_tileset_loader_file file;
+	struct mlk_tileset_loader loader;
+	struct mlk_tileset tileset;
+};
+
+static inline int
+tileset_open(struct tileset *ts, const char *path)
 {
-	struct tileset_file loader = {0};
-	struct tileset tileset;
+	mlk_tileset_loader_file_init(&ts->file, &ts->loader, path);
 
-	DT_EQ_INT(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/sample-tileset.tileset"), 0);
-	DT_EQ_UINT(tileset.sprite->cellw, 64U);
-	DT_EQ_UINT(tileset.sprite->cellh, 32U);
+	return mlk_tileset_loader_open(&ts->loader, &ts->tileset, path);
+}
 
-	DT_EQ_UINT(tileset.tiledefsz, 4U);
-
-	DT_EQ_UINT(tileset.tiledefs[0].id, 129);
-	DT_EQ_UINT(tileset.tiledefs[0].x, 8);
-	DT_EQ_UINT(tileset.tiledefs[0].y, 0);
-	DT_EQ_UINT(tileset.tiledefs[0].w, 56);
-	DT_EQ_UINT(tileset.tiledefs[0].h, 40);
-
-	DT_EQ_UINT(tileset.tiledefs[1].id, 130);
-	DT_EQ_UINT(tileset.tiledefs[1].x, 0);
-	DT_EQ_UINT(tileset.tiledefs[1].y, 0);
-	DT_EQ_UINT(tileset.tiledefs[1].w, 62);
-	DT_EQ_UINT(tileset.tiledefs[1].h, 40);
-
-	DT_EQ_UINT(tileset.tiledefs[2].id, 132);
-	DT_EQ_UINT(tileset.tiledefs[2].x, 0);
-	DT_EQ_UINT(tileset.tiledefs[2].y, 0);
-	DT_EQ_UINT(tileset.tiledefs[2].w, 64);
-	DT_EQ_UINT(tileset.tiledefs[2].h, 40);
-
-	DT_EQ_UINT(tileset.tiledefs[3].id, 133);
-	DT_EQ_UINT(tileset.tiledefs[3].x, 0);
-	DT_EQ_UINT(tileset.tiledefs[3].y, 0);
-	DT_EQ_UINT(tileset.tiledefs[3].w, 58);
-	DT_EQ_UINT(tileset.tiledefs[3].h, 40);
-
-	tileset_file_finish(&loader);
+static inline void
+tileset_finish(struct tileset *ts)
+{
+	mlk_tileset_loader_file_finish(&ts->file);
 }
 
 static void
-test_error_tilewidth(void)
+test_basics_sample(struct tileset *ts)
 {
-	struct tileset_file loader = {0};
-	struct tileset tileset = {0};
+	DT_EQ_INT(tileset_open(ts, DIRECTORY "/maps/sample-tileset.tileset"), 0);
+	DT_EQ_UINT(ts->tileset.sprite->cellw, 64U);
+	DT_EQ_UINT(ts->tileset.sprite->cellh, 32U);
 
-	DT_EQ_INT(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tilewidth.tileset"), -1);
+	DT_ASSERT(ts->tileset.collisions);
+	DT_EQ_UINT(ts->tileset.collisionsz, 4U);
+
+	DT_EQ_UINT(ts->tileset.collisions[0].id, 129);
+	DT_EQ_UINT(ts->tileset.collisions[0].x, 8);
+	DT_EQ_UINT(ts->tileset.collisions[0].y, 0);
+	DT_EQ_UINT(ts->tileset.collisions[0].w, 56);
+	DT_EQ_UINT(ts->tileset.collisions[0].h, 40);
+
+	DT_EQ_UINT(ts->tileset.collisions[1].id, 130);
+	DT_EQ_UINT(ts->tileset.collisions[1].x, 0);
+	DT_EQ_UINT(ts->tileset.collisions[1].y, 0);
+	DT_EQ_UINT(ts->tileset.collisions[1].w, 62);
+	DT_EQ_UINT(ts->tileset.collisions[1].h, 40);
+
+	DT_EQ_UINT(ts->tileset.collisions[2].id, 132);
+	DT_EQ_UINT(ts->tileset.collisions[2].x, 0);
+	DT_EQ_UINT(ts->tileset.collisions[2].y, 0);
+	DT_EQ_UINT(ts->tileset.collisions[2].w, 64);
+	DT_EQ_UINT(ts->tileset.collisions[2].h, 40);
+
+	DT_EQ_UINT(ts->tileset.collisions[3].id, 133);
+	DT_EQ_UINT(ts->tileset.collisions[3].x, 0);
+	DT_EQ_UINT(ts->tileset.collisions[3].y, 0);
+	DT_EQ_UINT(ts->tileset.collisions[3].w, 58);
+	DT_EQ_UINT(ts->tileset.collisions[3].h, 40);
 }
 
 static void
-test_error_tileheight(void)
+test_error_tilewidth(struct tileset *ts)
 {
-	struct tileset_file loader = {0};
-	struct tileset tileset = {0};
-
-	DT_EQ_INT(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-tileheight.tileset"), -1);
+	DT_EQ_INT(tileset_open(ts, DIRECTORY "/maps/error-tilewidth.tileset"), -1);
+	DT_EQ_STR(mlk_err(), "missing tile dimensions before image");
 }
 
 static void
-test_error_image(void)
+test_error_tileheight(struct tileset *ts)
 {
-	struct tileset_file loader = {0};
-	struct tileset tileset = {0};
+	DT_EQ_INT(tileset_open(ts, DIRECTORY "/maps/error-tileheight.tileset"), -1);
+	DT_EQ_STR(mlk_err(), "missing tile dimensions before image");
+}
 
-	DT_EQ_INT(tileset_file_open(&loader, &tileset, DIRECTORY "/maps/error-image.tileset"), -1);
+static void
+test_error_image(struct tileset *ts)
+{
+	DT_EQ_INT(tileset_open(ts, DIRECTORY "/maps/error-image.tileset"), -1);
+	DT_EQ_STR(mlk_err(), "missing tileset image");
+}
+
+static void
+setup(struct tileset *ts)
+{
+	(void)ts;
+}
+
+static void
+teardown(struct tileset *ts)
+{
+	tileset_finish(ts);
 }
 
 int
 main(void)
 {
+	struct tileset ts;
+
 	if (mlk_core_init("fr.malikania", "test") < 0 || mlk_window_open("test-tileset", 100, 100) < 0)
 		return 1;
 
-	DT_RUN(test_basics_sample);
-	DT_RUN(test_error_tilewidth);
-	DT_RUN(test_error_tileheight);
-	DT_RUN(test_error_image);
+	DT_RUN_EX(test_basics_sample, setup, teardown, &ts);
+	DT_RUN_EX(test_error_tilewidth, setup, teardown, &ts);
+	DT_RUN_EX(test_error_tileheight, setup, teardown, &ts);
+	DT_RUN_EX(test_error_image, setup, teardown, &ts);
 	DT_SUMMARY();
+
+	mlk_window_finish();
+	mlk_core_finish();
 }

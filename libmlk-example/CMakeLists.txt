@@ -46,6 +46,8 @@ set(
 	${libmlk-example_SOURCE_DIR}/assets/sprites/numbers.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/people.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/ui-cursor.png
+	${libmlk-example_SOURCE_DIR}/assets/sprites/water.png
+	${libmlk-example_SOURCE_DIR}/assets/sprites/world.png
 )
 
 set(
@@ -58,14 +60,15 @@ set(
 	${libmlk-example_SOURCE_DIR}/assets/tilesets/world.json
 )
 
+mlk_maps("${MAPS}" ${libmlk-example_BINARY_DIR}/maps maps)
+mlk_tilesets("${TILESETS}" ${libmlk-example_BINARY_DIR}/tilesets tilesets)
+
 mlk_library(
 	NAME libmlk-example
 	SOURCES ${SOURCES}
-	ASSETS ${ASSETS}
+	ASSETS ${ASSETS} ${maps} ${tilesets}
 	TYPE STATIC
 	LIBRARIES libmlk-rpg
-	MAPS ${MAPS}
-	TILESETS ${TILESETS}
 	INCLUDES
 		PUBLIC
 			$<BUILD_INTERFACE:${libmlk-example_SOURCE_DIR}>

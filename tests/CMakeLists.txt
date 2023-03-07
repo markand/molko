@@ -25,7 +25,6 @@ set(
 	alloc
 	color
 	drawable
-	map
 	save
 	save-quest
 	state

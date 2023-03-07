@@ -1,6 +1,6 @@
 tilewidth|64
 image|sample-tileset.png
-tiledefs
+collisions
 129|8|0|56|40
 130|0|0|62|40
 132|0|0|64|40
