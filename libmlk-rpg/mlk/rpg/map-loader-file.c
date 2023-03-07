@@ -58,9 +58,12 @@ alloc_tiles(struct mlk_map_loader *self,
 
 static struct mlk_map_block *
 expand_blocks(struct mlk_map_loader *self,
+              struct mlk_map *map,
               struct mlk_map_block *blocks,
               size_t blocksz)
 {
+	(void)map;
+
 	struct mlk_map_loader_file *file = self->data;
 	struct mlk_map_block *ptr;
 

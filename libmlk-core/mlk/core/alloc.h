@@ -160,14 +160,6 @@ struct mlk_alloc_funcs {
 	void (*free)(void *);
 };
 
-struct mlk_alloc_pool {
-	void *data;
-	size_t elemsize;
-	size_t size;
-	size_t capacity;
-	void (*finalizer)(void *);
-};
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -310,22 +302,6 @@ mlk_alloc_getw(const void *ptr);
  */
 void
 mlk_alloc_free(void *ptr);
-
-/* alloc_pool functions. */
-void
-mlk_alloc_pool_init(struct mlk_alloc_pool *, size_t, size_t , void (*)(void *));
-
-void *
-mlk_alloc_pool_new(struct mlk_alloc_pool *);
-
-void *
-mlk_alloc_pool_get(const struct mlk_alloc_pool *, size_t);
-
-void *
-mlk_alloc_pool_shrink(struct mlk_alloc_pool *);
-
-void
-mlk_alloc_pool_finish(struct mlk_alloc_pool *);
 
 #if defined(__cplusplus)
 }

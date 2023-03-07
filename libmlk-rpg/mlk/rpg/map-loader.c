@@ -96,7 +96,7 @@ parse_objects(struct mlk_map_loader *loader,
 		 * directive has one.
 		 */
 		if (isblock) {
-			if (!(array = loader->expand_blocks(loader, blocks, blocksz + 1)))
+			if (!(array = loader->expand_blocks(loader, map, blocks, blocksz + 1)))
 				return -1;
 
 			blocks = array;

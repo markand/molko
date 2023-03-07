@@ -137,59 +137,6 @@ test_basics_expand0(void)
 }
 
 static void
-test_basics_pool_simple(void)
-{
-	struct mlk_alloc_pool pool;
-	struct point *p, *data;
-	size_t total = 0;
-
-	mlk_alloc_pool_init(&pool, 16, sizeof (*p), NULL);
-
-	DT_EQ_UINT(pool.elemsize, sizeof (*p));
-	DT_EQ_UINT(pool.size, 0);
-	DT_EQ_UINT(pool.capacity, 16);
-
-	/* Create until we reach the capacity. */
-	for (size_t i = 0; i < pool.capacity; ++i) {
-		p = mlk_alloc_pool_new(&pool);
-		p->x = (int)i + 1;
-		p->y = (int)i + 1;
-		total++;
-	}
-
-	DT_EQ_UINT(pool.size, pool.capacity);
-
-	/* Verify values are correct. */
-	for (size_t i = 0; i < pool.size; ++i) {
-		p = ((struct point *)pool.data) + i;
-
-		DT_EQ_INT(p->x, (int)i + 1);
-		DT_EQ_INT(p->y, (int)i + 1);
-	}
-
-	/* Now it should reallocate. */
-	p = mlk_alloc_pool_new(&pool);
-	p->x = 9999;
-	p->y = 9999;
-
-	DT_ASSERT(pool.capacity > pool.size);
-
-	/* Shrink it! */
-	data = mlk_alloc_pool_shrink(&pool);
-
-	/* Verify values are correct again. */
-	for (size_t i = 0; i < total; ++i) {
-		DT_EQ_INT(data[i].x, (int)i + 1);
-		DT_EQ_INT(data[i].y, (int)i + 1);
-	}
-
-	DT_EQ_PTR(pool.data, NULL);
-	DT_EQ_UINT(pool.size, 0U);
-	DT_EQ_UINT(pool.capacity, 0U);
-	DT_EQ_UINT(pool.elemsize, 0U);
-}
-
-static void
 test_basics_sdupf(void)
 {
 	char *str = mlk_alloc_sdupf("Hello %s", "David");
@@ -215,7 +162,6 @@ main(void)
 {
 	DT_RUN(test_basics_resize0);
 	DT_RUN(test_basics_expand0);
-	DT_RUN(test_basics_pool_simple);
 	DT_RUN(test_basics_sdupf);
 	DT_RUN(test_custom_count);
 	DT_SUMMARY();
