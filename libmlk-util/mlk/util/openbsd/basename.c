@@ -22,6 +22,10 @@
 #include <limits.h>
 #include <string.h>
 
+#if defined(MLK_HAVE_LIBGEN_H)
+#       include <libgen.h>
+#endif
+
 #if !defined(MLK_HAVE_BASENAME)
 
 char *
@@ -65,6 +69,14 @@ mlk_util_basename(char *path)
 	memcpy(bname, startp, len);
 	bname[len] = '\0';
 	return (bname);
+}
+
+#else
+
+char *
+mlk_util_basename(char *path)
+{
+	return basename(path);
 }
 
 #endif

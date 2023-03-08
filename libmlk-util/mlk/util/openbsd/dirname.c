@@ -22,6 +22,10 @@
 #include <limits.h>
 #include <string.h>
 
+#if defined(MLK_HAVE_LIBGEN_H)
+#       include <libgen.h>
+#endif
+
 #if !defined(MLK_HAVE_DIRNAME)
 
 char *
@@ -69,6 +73,14 @@ mlk_util_dirname(char *path)
 	memcpy(dname, path, len);
 	dname[len] = '\0';
 	return (dname);
+}
+
+#else
+
+char *
+mlk_util_dirname(char *path)
+{
+	return dirname(path);
 }
 
 #endif

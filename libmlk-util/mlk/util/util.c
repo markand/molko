@@ -16,17 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "sysconfig.h"
-
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#if defined(MLK_HAVE_LIBGEN_H)
-#       include <libgen.h>
-#endif
 
 void
 mlk_util_die(const char *fmt, ...)
@@ -40,59 +33,3 @@ mlk_util_die(const char *fmt, ...)
 	va_end(ap);
 	exit(1);
 }
-
-/*
- * The following functions are just wrapper for the native system routine if they
- * are available on the system, otherwise the symbol will be implemented in
- * openbsd/<name>.c
- */
-
-#if defined(MLK_HAVE_STRLCPY)
-
-size_t
-mlk_util_strlcpy(char *dst, const char *src, size_t dstsz)
-{
-	return strlcpy(dst, src, dstsz);
-}
-
-#endif
-
-#if defined(MLK_HAVE_STRLCAT)
-
-size_t
-mlk_util_strlcat(char *dst, const char *src, size_t dstsz)
-{
-	return strlcat(dst, src, dstsz);
-}
-
-#endif
-
-#if defined(MLK_HAVE_BASENAME)
-
-char *
-mlk_util_basename(char *path)
-{
-	return basename(path);
-}
-
-#endif
-
-#if defined(MLK_HAVE_DIRNAME)
-
-char *
-mlk_util_dirname(char *path)
-{
-	return dirname(path);
-}
-
-#endif
-
-#if defined(MLK_HAVE_FMEMOPEN)
-
-FILE *
-mlk_util_fmemopen(void *buf, size_t len, const char *type)
-{
-	return fmemopen(buf, len, type);
-}
-
-#endif

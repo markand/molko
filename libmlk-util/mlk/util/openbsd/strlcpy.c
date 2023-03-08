@@ -16,9 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stddef.h>
-
 #include "sysconfig.h"
+
+#include <stddef.h>
+#include <string.h>
 
 #if !defined(MLK_HAVE_STRLCPY)
 
@@ -50,6 +51,14 @@ mlk_util_strlcpy(char *dst, const char *src, size_t dsize)
 	}
 
 	return(src - osrc - 1);	/* count does not include NUL */
+}
+
+#else
+
+size_t
+mlk_util_strlcpy(char *dst, const char *src, size_t dstsz)
+{
+	return strlcpy(dst, src, dstsz);
 }
 
 #endif

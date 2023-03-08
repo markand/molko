@@ -16,10 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "sysconfig.h"
+
 #include <stddef.h>
 #include <string.h>
-
-#include "sysconfig.h"
 
 #if !defined(MLK_HAVE_STRLCAT)
 
@@ -56,6 +56,14 @@ mlk_util_strlcat(char *dst, const char *src, size_t dsize)
 	*dst = '\0';
 
 	return(dlen + (src - osrc));	/* count does not include NUL */
+}
+
+#else
+
+size_t
+mlk_util_strlcat(char *dst, const char *src, size_t dstsz)
+{
+	return strlcat(dst, src, dstsz);
 }
 
 #endif
