@@ -102,7 +102,12 @@ mlk_window_set_cursor(enum mlk_window_cursor cursor)
 {
 	assert(cursor < MLK_WINDOW_CURSOR_LAST);
 
-	SDL_SetCursor(cursors[cursor]);
+	if (cursor == MLK_WINDOW_CURSOR_OFF)
+		SDL_ShowCursor(0);
+	else {
+		SDL_ShowCursor(1);
+		SDL_SetCursor(cursors[cursor]);
+	}
 }
 
 void

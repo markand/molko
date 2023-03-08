@@ -35,21 +35,22 @@
 
 #include <mlk/example/example.h>
 
-static char help_text[128];
+static char help_cursor[128];
+static char help_enable[128];
 static enum mlk_window_cursor cursor = MLK_WINDOW_CURSOR_ARROW;
+static int visible = 1;
 
-static struct mlk_label help = {
+static struct mlk_label label_help_cursor = {
 	.x = 10,
 	.y = 10,
-	.text = help_text
+	.text = help_cursor
 };
 
-static void
-init(void)
-{
-	if (mlk_example_init("example-cursor") < 0)
-		mlk_panic();
-}
+static struct mlk_label label_help_enable = {
+	.x = 10,
+	.y = 30,
+	.text = help_enable
+};
 
 static void
 change(enum mlk_window_cursor cursor)
@@ -64,8 +65,31 @@ change(enum mlk_window_cursor cursor)
 		[MLK_WINDOW_CURSOR_HAND]        = "MLK_WINDOW_CURSOR_HAND"
 	};
 
-	snprintf(help_text, sizeof (help_text), "Keys: <Left>/<Right> to change cursor. Current: %s", names[cursor]);
+	snprintf(help_cursor, sizeof (help_cursor), "Keys: <Left>/<Right> to change cursor. Current: %s", names[cursor]);
 	mlk_window_set_cursor(cursor);
+}
+
+static void
+toggle(int enable)
+{
+	visible = enable;
+
+	snprintf(help_enable, sizeof (help_enable), "Keys: <Space> to toggle. Current: %s",
+	    enable ? "visible" : "hidden");
+
+	if (visible)
+		mlk_window_set_cursor(cursor);
+	else
+		mlk_window_set_cursor(MLK_WINDOW_CURSOR_OFF);
+}
+
+static void
+init(void)
+{
+	if (mlk_example_init("example-cursor") < 0)
+		mlk_panic();
+
+	toggle(1);
 }
 
 static void
@@ -81,8 +105,11 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 				change(--cursor);
 			break;
 		case MLK_KEY_RIGHT:
-			if (cursor + 1 < MLK_WINDOW_CURSOR_LAST)
+			if (cursor + 1 < MLK_WINDOW_CURSOR_OFF)
 				change(++cursor);
+			break;
+		case MLK_KEY_SPACE:
+			toggle(!visible);
 			break;
 		default:
 			break;
@@ -104,7 +131,8 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
-	mlk_label_draw(&help);
+	mlk_label_draw(&label_help_cursor);
+	mlk_label_draw(&label_help_enable);
 	mlk_painter_present();
 }
 

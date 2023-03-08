@@ -102,6 +102,11 @@ enum mlk_window_cursor {
 	MLK_WINDOW_CURSOR_HAND,
 
 	/**
+	 * Disable cursor entirely.
+	 */
+	MLK_WINDOW_CURSOR_OFF,
+
+	/**
 	 * Unused sentinel value.
 	 */
 	MLK_WINDOW_CURSOR_LAST
