@@ -33,11 +33,19 @@ init_tileset(struct mlk_map_loader *self,
 	(void)map;
 
 	struct mlk_map_loader_file *file = self->data;
+	struct mlk_tileset_loader tileset_loader;
 	char path[MLK_PATH_MAX];
 
 	snprintf(path, sizeof (path), "%s/%s", file->directory, ident);
 
-	if (mlk_tileset_loader_open(file->tileset_loader, &file->tileset, path) < 0)
+	/*
+	 * Just make sure that we don't leak in case tileset directory is listed
+	 * more than once.
+	 */
+	mlk_tileset_loader_file_finish(&file->tileset_loader_file);
+	mlk_tileset_loader_file_init(&file->tileset_loader_file, &tileset_loader, path);
+
+	if (mlk_tileset_loader_open(&tileset_loader, &file->tileset, path) < 0)
 		return NULL;
 
 	return &file->tileset;
@@ -88,14 +96,19 @@ mlk_map_loader_file_init(struct mlk_map_loader_file *file,
 
 	char filepath[MLK_PATH_MAX];
 
-	/* Determine base filename base directory. */
-	mlk_util_strlcpy(filepath, filename, sizeof (filepath));
-	mlk_util_strlcpy(file->directory, mlk_util_dirname(filepath), sizeof (file->directory));
-
-	loader->data = file;
-	loader->init_tileset = init_tileset;
-	loader->alloc_tiles = alloc_tiles;
-	loader->expand_blocks = expand_blocks;
+	if (!file->directory[0]) {
+		/* Determine base filename base directory. */
+		mlk_util_strlcpy(filepath, filename, sizeof (filepath));
+		mlk_util_strlcpy(file->directory, mlk_util_dirname(filepath), sizeof (file->directory));
+	}
+	if (!loader->data)
+		loader->data = file;
+	if (!loader->init_tileset)
+		loader->init_tileset = init_tileset;
+	if (!loader->alloc_tiles)
+		loader->alloc_tiles = alloc_tiles;
+	if (!loader->expand_blocks)
+		loader->expand_blocks = expand_blocks;
 }
 
 void
@@ -108,6 +121,7 @@ mlk_map_loader_file_finish(struct mlk_map_loader_file *file)
 		file->tiles[i] = NULL;
 	}
 
+	mlk_tileset_loader_file_finish(&file->tileset_loader_file);
 	mlk_alloc_free(file->blocks);
 	file->blocks = NULL;
 }

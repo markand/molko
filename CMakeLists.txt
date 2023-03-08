@@ -46,9 +46,9 @@ elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
 endif ()
 
 option(MLK_WITH_DOXYGEN "Enable doxygen documentation" On)
-option(MLK_WITH_EXAMPLES "Enable examples" Off)
-option(MLK_WITH_NLS "Enable NLS support" On)
-option(MLK_WITH_TESTS "Enable unit tests" Off)
+option(MLK_WITH_EXAMPLES "Enable examples" On)
+option(MLK_WITH_NLS "Enable NLS support" Off)
+option(MLK_WITH_TESTS "Enable unit tests" On)
 
 include(cmake/MlkBcc.cmake)
 include(cmake/MlkExecutable.cmake)

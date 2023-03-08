@@ -27,6 +27,7 @@
 #include <mlk/core/game.h>
 #include <mlk/core/image.h>
 #include <mlk/core/key.h>
+#include <mlk/core/maths.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
 #include <mlk/core/state.h>
@@ -35,12 +36,14 @@
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
 
+#include <mlk/ui/align.h>
 #include <mlk/ui/label.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/rpg/map-loader-file.h>
 #include <mlk/rpg/map-loader.h>
 #include <mlk/rpg/map.h>
+#include <mlk/rpg/message.h>
 #include <mlk/rpg/tileset-loader-file.h>
 #include <mlk/rpg/tileset-loader.h>
 #include <mlk/rpg/tileset.h>
@@ -58,6 +61,27 @@ static struct mlk_tileset tileset;
 static struct mlk_map_loader_file map_loader_file;
 static struct mlk_map_loader map_loader;
 static struct mlk_map map;
+
+static struct {
+	int x;
+	int y;
+	unsigned int w;
+	unsigned int h;
+	struct mlk_message message;
+} tomb = {
+	.x = 620,
+	.y = 280,
+	.w = 60,
+	.h = 100,
+	.message = {
+		.flags = MLK_MESSAGE_FLAGS_FADEIN | MLK_MESSAGE_FLAGS_FADEOUT,
+		.lines = (const char *[]) {
+			"Welcome to your tomb.",
+			"What did you expect on this island?"
+		},
+		.linesz = 2
+	}
+};
 
 static const struct {
 	const char *basename;
@@ -144,8 +168,24 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 	case MLK_EVENT_QUIT:
 		mlk_game_quit();
 		break;
+	case MLK_EVENT_KEYDOWN:
+		/* Open tomb message if we're near the location. */
+		if (tomb.message.state)
+			mlk_message_handle(&tomb.message, ev);
+		else {
+			if (ev->key.key == MLK_KEY_ENTER && mlk_maths_is_boxed(map.player_x, map.player_y, tomb.x, tomb.y, tomb.w, tomb.h)) {
+				mlk_message_query(&tomb.message, &tomb.message.w, &tomb.message.h);
+				mlk_message_start(&tomb.message);
+				mlk_align(MLK_ALIGN_TOP, &tomb.message.x, &tomb.message.y, tomb.message.w, tomb.message.h,
+				    0, 50, MLK_EXAMPLE_W, MLK_EXAMPLE_H);
+				map.player_movement = 0;
+			} else
+				mlk_map_handle(&map, ev);
+		}
+		break;
 	default:
-		mlk_map_handle(&map, ev);
+		if (!tomb.message.state)
+			mlk_map_handle(&map, ev);
 		break;
 	}
 }
@@ -156,6 +196,10 @@ update(struct mlk_state *st, unsigned int ticks)
 	(void)st;
 
 	mlk_map_update(&map, ticks);
+
+	if (tomb.message.state && mlk_message_update(&tomb.message, ticks)) {
+
+	}
 }
 
 static void
@@ -166,6 +210,10 @@ draw(struct mlk_state *st)
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_map_draw(&map);
+
+	if (tomb.message.state)
+		mlk_message_draw(&tomb.message);
+
 	mlk_painter_present();
 }
 

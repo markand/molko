@@ -27,10 +27,10 @@
 #include <mlk/util/util.h>
 
 #include "map.h"
+#include "tileset-loader-file.h"
 #include "tileset.h"
 
 struct mlk_map_loader;
-struct mlk_tileset_loader;
 
 /**
  * \struct mlk_map_loader_file
@@ -44,16 +44,16 @@ struct mlk_map_loader_file {
 	 */
 	char directory[MLK_PATH_MAX];
 
-	/**
-	 * (read-write, borrowed)
-	 *
-	 * The tileset loader to use when finding tilesets in maps.
-	 */
-	struct mlk_tileset_loader *tileset_loader;
-
 	/** \cond MLK_PRIVATE_DECLS */
 	unsigned int *tiles[MLK_MAP_LAYER_TYPE_LAST];
+
+	/*
+	 * We use a tileset file loader if init_tileset function isn't present
+	 * in this map loader.
+	 */
+	struct mlk_tileset_loader_file tileset_loader_file;
 	struct mlk_tileset tileset;
+
 	struct mlk_map_block *blocks;
 	/** \endcond MLK_PRIVATE_DECLS */
 };
