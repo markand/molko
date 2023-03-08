@@ -47,7 +47,7 @@ check_function_exists(strlcpy MLK_HAVE_STRLCPY)
 
 configure_file(
 	${libmlk-util_SOURCE_DIR}/mlk/util/sysconfig.cmake.h
-	${libmlk-util_BINARY_DIR}/sysconfig.h
+	${libmlk-util_BINARY_DIR}/mlk/util/sysconfig.h
 )
 
 mlk_library(
@@ -59,6 +59,7 @@ mlk_library(
 		PUBLIC
 			$<BUILD_INTERFACE:${libmlk-util_SOURCE_DIR}>
 			$<BUILD_INTERFACE:${libmlk-util_BINARY_DIR}>
+			$<BUILD_INTERFACE:${libmlk-util_BINARY_DIR}/mlk/util>
 )
 
 source_group(TREE ${libmlk-util_SOURCE_DIR} FILES ${SOURCES})

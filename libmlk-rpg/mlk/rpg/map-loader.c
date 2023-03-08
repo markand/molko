@@ -273,6 +273,8 @@ mlk_map_loader_open(struct mlk_map_loader *loader, struct mlk_map *map, const ch
 	return parse(loader, map, fp);
 }
 
+#if defined(MLK_HAVE_FMEMOPEN)
+
 int
 mlk_map_loader_openmem(struct mlk_map_loader *loader, struct mlk_map *map, const void *data, size_t datasz)
 {
@@ -289,3 +291,5 @@ mlk_map_loader_openmem(struct mlk_map_loader *loader, struct mlk_map *map, const
 
 	return parse(loader, map, fp);
 }
+
+#endif

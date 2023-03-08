@@ -35,7 +35,8 @@ INPUT                  = libmlk-util \
                          libmlk-ui \
                          libmlk-rpg
 EXAMPLE_PATH           = examples
-EXCLUDE                = libmlk-core/mlk/core/sys_p.h           \
+EXCLUDE                = libmlk-util/mlk/util/sysconfig.cmake.h \
+                         libmlk-core/mlk/core/sys_p.h           \
                          libmlk-core/mlk/core/texture_p.h       \
                          libmlk-core/mlk/core/window_p.h        \
                          libmlk-ui/mlk/ui/ui_p.h
@@ -54,3 +55,4 @@ HAVE_DOT               = YES
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
+PREDEFINED             = MLK_HAVE_FMEMOPEN
