@@ -86,3 +86,13 @@ mlk_util_dirname(char *path)
 }
 
 #endif
+
+#if defined(MLK_HAVE_FMEMOPEN)
+
+FILE *
+mlk_util_fmemopen(void *buf, size_t len, const char *type)
+{
+	return fmemopen(buf, len, type);
+}
+
+#endif
