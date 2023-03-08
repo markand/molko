@@ -1,5 +1,5 @@
 /*
- * util.h -- utilities
+ * util.h -- libmlk-core utilities
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -19,20 +19,52 @@
 #ifndef MLK_CORE_UTIL_H
 #define MLK_CORE_UTIL_H
 
+/**
+ * \file mlk/core/util.h
+ * \brief libmlk-core utilities
+ */
+
+/**
+ * Compute the length of an fixed size array.
+ *
+ * \param x the fixed size array
+ * \return the length
+ */
 #define MLK_UTIL_SIZE(x) (sizeof ((x)) / sizeof ((x)[0]))
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * Suspend the calling thread for the specific duration.
+ *
+ * \param duration time to sleep in milliseconds
+ */
 void
-mlk_util_delay(unsigned int);
+mlk_util_delay(unsigned int duration);
 
+/**
+ * Convenient function to create an return a string to a filesystem path using
+ * a printf format string.
+ *
+ * \pre fmt != NULL
+ * \param fmt the format string
+ * \note The returned string is static thread-local and will be modified on
+ *       subsequent calls.
+ */
 const char *
-mlk_util_pathf(const char *, ...);
+mlk_util_pathf(const char *fmt, ...);
 
+/**
+ * Compute a random number between [min-max).
+ *
+ * \param min the minimum range (included)
+ * \param max the maximum range (excluded)
+ * \return a random number
+ */
 unsigned int
-mlk_util_nrand(unsigned int, unsigned int);
+mlk_util_nrand(unsigned int min, unsigned int max);
 
 #if defined(__cplusplus)
 }

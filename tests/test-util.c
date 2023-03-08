@@ -25,7 +25,7 @@ test_basics_nrand(void)
 {
 	int found[10] = {0};
 
-	/* Only try from [2..5], util_nrand does not include upper range. */
+	/* Only try from [2..5], mlk_util_nrand does not include upper range.  */
 	for (int i = 0; i < 100000; ++i)
 		found[mlk_util_nrand(2, 6)] = 1;
 

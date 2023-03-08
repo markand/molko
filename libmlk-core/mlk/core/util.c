@@ -1,5 +1,5 @@
 /*
- * util.c -- utilities
+ * util.c -- libmlk-core utilities
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
