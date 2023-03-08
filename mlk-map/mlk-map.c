@@ -1,5 +1,5 @@
 /*
- * main.c -- convert tiled tiled JSON files into custom files
+ * mlk-map.c -- convert tiled tiled JSON files into custom files
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -18,28 +18,13 @@
 
 #include <assert.h>
 #include <limits.h>
-#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include <jansson.h>
 
 #include <mlk/util/util.h>
-
-static void
-die(const char *fmt, ...)
-{
-	assert(fmt);
-
-	va_list ap;
-
-	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
-	va_end(ap);
-	exit(1);
-}
 
 static bool
 is_layer(const char *name)
@@ -108,9 +93,9 @@ write_dimensions(const json_t *document)
 	json_t *height = json_object_get(document, "height");
 
 	if (!width || !json_is_integer(width))
-		die("missing 'width' property\n");
+		mlk_util_die("missing 'width' property\n");
 	if (!height || !json_is_integer(height))
-		die("missing 'height' property\n");
+		mlk_util_die("missing 'height' property\n");
 
 	printf("columns|%d\n", (int)json_integer_value(width));
 	printf("rows|%d\n", (int)json_integer_value(height));
@@ -129,13 +114,13 @@ write_object(const json_t *object)
 	const json_t *exec, *block;
 
 	if (!x || !json_is_number(x))
-		die("invalid 'x' property in object\n");
+		mlk_util_die("invalid 'x' property in object\n");
 	if (!y || !json_is_number(y))
-		die("invalid 'y' property in object\n");
+		mlk_util_die("invalid 'y' property in object\n");
 	if (!width || !json_is_number(width))
-		die("invalid 'width' property in object\n");
+		mlk_util_die("invalid 'width' property in object\n");
 	if (!height || !json_is_number(height))
-		die("invalid 'height' property in object\n");
+		mlk_util_die("invalid 'height' property in object\n");
 
 	/* This is optional and set to 0 if not present. */
 	block = find_property(props, "block");
@@ -165,9 +150,9 @@ write_layer(const json_t *layer)
 	size_t index;
 
 	if (!name || !json_is_string(name))
-		die("invalid 'name' property in layer");
+		mlk_util_die("invalid 'name' property in layer");
 	if (!is_layer(json_string_value(name)))
-		die("invalid 'name' layer: %s\n", json_string_value(name));
+		mlk_util_die("invalid 'name' layer: %s\n", json_string_value(name));
 
 	printf("layer|%s\n", json_string_value(name));
 
@@ -175,7 +160,7 @@ write_layer(const json_t *layer)
 	if (json_is_array(data)) {
 		json_array_foreach(data, index, tile) {
 			if (!json_is_integer(tile))
-				die("invalid 'data' property in layer\n");
+				mlk_util_die("invalid 'data' property in layer\n");
 
 			printf("%d\n", (int)json_integer_value(tile));
 		}
@@ -185,7 +170,7 @@ write_layer(const json_t *layer)
 	if (json_is_array(objects)) {
 		json_array_foreach(objects, index, object) {
 			if (!json_is_object(object))
-				die("invalid 'objects' property in layer\n");
+				mlk_util_die("invalid 'objects' property in layer\n");
 
 			write_object(object);
 		}
@@ -203,7 +188,7 @@ write_layers(const json_t *layers)
 
 	json_array_foreach(layers, index, layer) {
 		if (!json_is_object(layer))
-			die("layer is not an object\n");
+			mlk_util_die("layer is not an object\n");
 
 		write_layer(layer);
 	}
@@ -216,19 +201,19 @@ write_tileset(const json_t *tilesets)
 	const json_t *tileset, *source;
 
 	if (json_array_size(tilesets) != 1)
-		die("map must contain exactly one tileset");
+		mlk_util_die("map must contain exactly one tileset");
 
 	tileset = json_array_get(tilesets, 0);
 	source = json_object_get(tileset, "source");
 
 	if (!json_is_string(source))
-		die("invalid 'source' property in tileset\n");
+		mlk_util_die("invalid 'source' property in tileset\n");
 
 	/* We need to replace the .json extension to .tileset. */
 	snprintf(path, sizeof (path), "%s", json_string_value(source));
 
 	if (!(ext = strstr(path, ".json")))
-		die("could not determine tileset extension");
+		mlk_util_die("could not determine tileset extension");
 
 	*ext = '\0';
 
@@ -244,7 +229,7 @@ main(void)
 	document = json_loadf(stdin, 0, &error);
 
 	if (!document)
-		die("%d:%d: %s\n", error.line, error.column, error.text);
+		mlk_util_die("%d:%d: %s\n", error.line, error.column, error.text);
 
 	write_properties(json_object_get(document, "properties"));
 	write_dimensions(document);

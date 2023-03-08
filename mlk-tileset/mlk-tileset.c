@@ -1,5 +1,5 @@
 /*
- * main.c -- convert tiled tilesets JSON files into custom files
+ * mlk-tileset.c -- convert tiled tilesets JSON files into custom files
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -17,24 +17,12 @@
  */
 
 #include <assert.h>
-#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
 #include <jansson.h>
 
-static void
-die(const char *fmt, ...)
-{
-	assert(fmt);
-
-	va_list ap;
-
-	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
-	va_end(ap);
-	exit(1);
-}
+#include <mlk/util/util.h>
 
 static void
 write_dimensions(const json_t *document)
@@ -43,9 +31,9 @@ write_dimensions(const json_t *document)
 	const json_t *tileheight = json_object_get(document, "tileheight");
 
 	if (!json_is_integer(tilewidth))
-		die("invalid 'tilewidth' property\n");
+		mlk_util_die("invalid 'tilewidth' property\n");
 	if (!json_is_integer(tileheight))
-		die("invalid 'tileheight' property\n");
+		mlk_util_die("invalid 'tileheight' property\n");
 
 	printf("tilewidth|%u\n", (unsigned int)json_integer_value(tilewidth));
 	printf("tileheight|%u\n", (unsigned int)json_integer_value(tileheight));
@@ -57,7 +45,7 @@ write_image(const json_t *document)
 	const json_t *image = json_object_get(document, "image");
 
 	if (!json_is_string(image))
-		die("invalid 'image' property\n");
+		mlk_util_die("invalid 'image' property\n");
 
 	printf("image|%s\n", json_string_value(image));
 }
@@ -72,7 +60,7 @@ find_property_value(const json_t *array, const char *prop)
 		const json_t *name = json_object_get(obj, "name");
 
 		if (!name || !json_is_string(name))
-			die("invalid property object\n");
+			mlk_util_die("invalid property object\n");
 
 		if (strcmp(json_string_value(name), prop) == 0)
 			return json_object_get(obj, "value");
@@ -94,7 +82,7 @@ write_animation(const json_t *tile)
 		return;
 
 	if (!json_is_integer(id))
-		die("invalid 'id' property in tile\n");
+		mlk_util_die("invalid 'id' property in tile\n");
 
 	if (json_is_string(file)) {
 		printf("%d|%s|", (int)json_integer_value(id), json_string_value(file));
@@ -120,9 +108,9 @@ write_collision(const json_t *tile)
 		return;
 
 	if (!json_is_integer(id))
-		die("invalid 'id' property in tile\n");
+		mlk_util_die("invalid 'id' property in tile\n");
 	if (!json_is_array(objects))
-		die("invalid 'objects' property in tile\n");
+		mlk_util_die("invalid 'objects' property in tile\n");
 
 	x = json_object_get(first, "x");
 	y = json_object_get(first, "y");
@@ -131,7 +119,7 @@ write_collision(const json_t *tile)
 
 	if (!json_is_integer(x) || !json_is_integer(y) ||
 	    !json_is_integer(w) || !json_is_integer(h))
-		die("invalid collide object in tile description\n");
+		mlk_util_die("invalid collide object in tile description\n");
 
 	printf("%d|%d|%d|%d|%d\n",
 	    (int)json_integer_value(id),
@@ -154,7 +142,7 @@ write_collisions(const json_t *tiles)
 
 	json_array_foreach(tiles, index, object) {
 		if (!json_is_object(object))
-			die("tile is not an object\n");
+			mlk_util_die("tile is not an object\n");
 
 		write_collision(object);
 	}
@@ -173,7 +161,7 @@ write_animations(const json_t *tiles)
 
 	json_array_foreach(tiles, index, object) {
 		if (!json_is_object(object))
-			die("tile is not an object\n");
+			mlk_util_die("tile is not an object\n");
 
 		write_animation(object);
 	}
@@ -191,9 +179,9 @@ main(int argc, char *argv[])
 	document = json_loadf(stdin, 0, &error);
 
 	if (!document)
-		die("%d:%d: %s\n", error.line, error.column, error.text);
+		mlk_util_die("%d:%d: %s\n", error.line, error.column, error.text);
 	if (!json_is_object(document))
-		die("root value isn't an object\n");
+		mlk_util_die("root value isn't an object\n");
 
 	write_dimensions(document);
 	write_image(document);

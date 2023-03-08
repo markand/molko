@@ -86,6 +86,15 @@ extern "C" {
 #endif
 
 /**
+ * Print a fatal message and exit with code 1.
+ *
+ * \pre fmt != NULL
+ * \param fmt the printf format string
+ */
+void
+mlk_util_die(const char *fmt, ...);
+
+/**
  * Compatibility version of OpenBSD [strlcpy].
  *
  * [strlcpy]: http://man.openbsd.org/strlcpy

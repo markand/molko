@@ -26,6 +26,7 @@ set(
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/getopt.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/strlcat.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/strlcpy.c
+	${libmlk-util_SOURCE_DIR}/mlk/util/util.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/util.h
 )
 
