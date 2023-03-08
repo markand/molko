@@ -16,11 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "sysconfig.h"
+
 #include <errno.h>
 #include <limits.h>
 #include <string.h>
 
-#include <mlk/util/util.h>
+#if !defined(MLK_HAVE_BASENAME)
 
 char *
 mlk_util_basename(char *path)
@@ -64,3 +66,5 @@ mlk_util_basename(char *path)
 	bname[len] = '\0';
 	return (bname);
 }
+
+#endif

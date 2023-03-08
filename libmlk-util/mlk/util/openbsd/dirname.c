@@ -16,11 +16,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "sysconfig.h"
+
 #include <errno.h>
 #include <limits.h>
 #include <string.h>
 
-#include <mlk/util/util.h>
+#if !defined(MLK_HAVE_DIRNAME)
 
 char *
 mlk_util_dirname(char *path)
@@ -68,3 +70,5 @@ mlk_util_dirname(char *path)
 	dname[len] = '\0';
 	return (dname);
 }
+
+#endif

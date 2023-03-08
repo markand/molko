@@ -24,65 +24,19 @@
  * \brief Miscellaneous utilities and portability
  */
 
+#include "sysconfig.h"
+
 #include <limits.h>
 #include <stdio.h>
 
-/*
- * This file helps finding what are the available features accross the various
- * operating system in the landscape.
- *
- * The following macros are automatically set depending on the operating
- * system:
- *
- * - MLK_OS_WINDOWS: running on any Windows machine
- * - MLK_OS_POSIX: every mostly POSIX systems
- *
- * The following macro will be automatically defined unless the user override
- * them:
- *
- * - MLK_HAS_FMEMOPEN: defined if fmemopen function is available.
- * - MLK_HAS_SSIZE_T: defined if ssize_t typedef is available.
- */
-
-#if defined(_WIN32)
-#       define MLK_OS_WINDOWS
-#elif defined(__FreeBSD__)
-#       define MLK_OS_POSIX
-#elif defined(__DragonFly__)
-#       define MLK_OS_POSIX
-#elif defined(__OpenBSD__)
-#       define MLK_OS_POSIX
-#elif defined(__NetBSD__)
-#       define MLK_OS_POSIX
-#elif defined(__linux__)
-#       define MLK_OS_POSIX
-#elif defined(__APPLE__)
-#       define MLK_OS_POSIX
-#       define MLK_OS_APPLE
-#endif
-
-#if defined(PATH_MAX)
-#       define MLK_PATH_MAX PATH_MAX
-#elif defined(_POSIX_PATH_MAX)
-#       define MLK_PATH_MAX _POSIX_PATH_MAX
-#else
-#       define MLK_PATH_MAX 4096
-#endif
-
-#if defined(MLK_OS_POSIX) && !defined(MLK_HAS_SSIZE_T)
-#       define MLK_HAS_SSIZE_T
-#endif
-
-#if !defined(MLK_HAS_SSIZE_T)
-typedef long long int ssize_t;
-#endif
-
-#if defined(MLK_OS_POSIX) && !defined(MLK_HAS_FMEMOPEN)
-#       define MLK_HAS_FMEMOPEN
-#endif
-
 #if defined(__cplusplus)
 extern "C" {
+#endif
+
+#if defined(MLK_HAVE_PATH_MAX)
+#       define MLK_PATH_MAX PATH_MAX
+#else
+#       define MLK_PATH_MAX 1024
 #endif
 
 /**
@@ -110,6 +64,11 @@ mlk_util_strlcpy(char *dst, const char *src, size_t dstsz);
 size_t
 mlk_util_strlcat(char *dst, const char *src, size_t dstsz);
 
+/**
+ * Portable version of POSIX/C23 [fmemopen].
+ *
+ * [basename]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/fmemopen.html
+ */
 FILE *
 mlk_util_fmemopen(void *, size_t, const char *);
 

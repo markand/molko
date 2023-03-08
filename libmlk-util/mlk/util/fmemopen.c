@@ -16,9 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "sysconfig.h"
 #include "util.h"
 
-#if !defined(MLK_HAS_FMEMOPEN)
+#if !defined(MLK_HAVE_FMEMOPEN)
+
+#if defined(_WIN32)
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -62,14 +65,19 @@ mlk_util_fmemopen(void *buf, size_t size, const char *mode)
 	return fp;
 }
 
-#else /* !MLK_HAS_FMEMOPEN */
-
-#include <stdio.h>
+#else
 
 FILE *
 mlk_util_fmemopen(void *buf, size_t len, const char *type)
 {
-	return fmemopen(buf, len, type);
+	(void)buf;
+	(void)len;
+	(void)type;
+
+	/* Unsupported platform. */
+	return NULL;
 }
+
+#endif
 
 #endif

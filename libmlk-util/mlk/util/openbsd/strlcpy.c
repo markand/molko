@@ -18,6 +18,10 @@
 
 #include <stddef.h>
 
+#include "sysconfig.h"
+
+#if !defined(MLK_HAVE_STRLCPY)
+
 /*
  * Copy string src to buffer dst of size dsize.  At most dsize-1
  * chars will be copied.  Always NUL terminates (unless dsize == 0).
@@ -47,3 +51,5 @@ mlk_util_strlcpy(char *dst, const char *src, size_t dsize)
 
 	return(src - osrc - 1);	/* count does not include NUL */
 }
+
+#endif

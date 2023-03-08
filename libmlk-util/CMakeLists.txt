@@ -18,6 +18,10 @@
 
 project(libmlk-util)
 
+include(CheckFunctionExists)
+include(CheckIncludeFile)
+include(CheckSymbolExists)
+
 set(
 	SOURCES
 	${libmlk-util_SOURCE_DIR}/mlk/util/fmemopen.c
@@ -26,8 +30,24 @@ set(
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/getopt.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/strlcat.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/strlcpy.c
+	${libmlk-util_SOURCE_DIR}/mlk/util/sysconfig.cmake.h
 	${libmlk-util_SOURCE_DIR}/mlk/util/util.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/util.h
+)
+
+check_symbol_exists("PATH_MAX" "limits.h" MLK_HAVE_PATH_MAX)
+
+check_include_file("libgen.h" MLK_HAVE_LIBGEN_H)
+
+check_function_exists(basename MLK_HAVE_BASENAME)
+check_function_exists(dirname MLK_HAVE_DIRNAME)
+check_function_exists(fmemopen MLK_HAVE_FMEMOPEN)
+check_function_exists(strlcat MLK_HAVE_STRLCAT)
+check_function_exists(strlcpy MLK_HAVE_STRLCPY)
+
+configure_file(
+	${libmlk-util_SOURCE_DIR}/mlk/util/sysconfig.cmake.h
+	${libmlk-util_BINARY_DIR}/sysconfig.h
 )
 
 mlk_library(
