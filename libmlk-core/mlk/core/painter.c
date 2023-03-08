@@ -90,12 +90,10 @@ mlk_painter_draw_rectangle(int x, int y, unsigned int width, unsigned int height
 void
 mlk_painter_draw_circle(int x, int y, int radius)
 {
-	// Note that there is more to altering the bitrate of this 
-	// method than just changing this value.  See how pixels are
-	// altered at the following web page for tips:
-	//   http://www.libsdl.org/intro.en/usingvideo.html
+	double dx;
+
 	for (double dy = 1; dy <= radius; dy += 1.0) {
-		double dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
+		dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
 
 		SDL_RenderDrawLine(MLK__RENDERER(), x - dx, y + dy - radius, x + dx, y + dy - radius);
 		SDL_RenderDrawLine(MLK__RENDERER(), x - dx, y - dy + radius, x + dx, y - dy + radius);

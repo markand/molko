@@ -19,7 +19,7 @@
 #ifndef MLK_CORE_IMAGE_H
 #define MLK_CORE_IMAGE_H
 
-/*
+/**
  * \file mlk/core/image.h
  * \brief Basic image management
  */
