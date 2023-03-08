@@ -28,9 +28,15 @@ set(
 	save
 	save-quest
 	state
-	tileset
 	util
 )
+
+if (MLK_WITH_TESTS_GRAPHICAL)
+	list(
+		APPEND TESTS
+		tileset
+	)
+endif ()
 
 foreach (t ${TESTS})
 	add_executable(test-${t} ${tests_SOURCE_DIR}/test-${t}.c)
