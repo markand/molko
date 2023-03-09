@@ -21,6 +21,7 @@
 
 #cmakedefine MLK_HAVE_PATH_MAX
 
+#cmakedefine MLK_HAVE_DIRENT_H
 #cmakedefine MLK_HAVE_LIBGEN_H
 
 #cmakedefine MLK_HAVE_BASENAME

@@ -24,6 +24,7 @@ set(
 	action-script
 	alloc
 	color
+	dir
 	drawable
 	save
 	save-quest

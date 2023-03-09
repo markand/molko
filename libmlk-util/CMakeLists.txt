@@ -24,6 +24,8 @@ include(CheckSymbolExists)
 
 set(
 	SOURCES
+	${libmlk-util_SOURCE_DIR}/mlk/util/dir.c
+	${libmlk-util_SOURCE_DIR}/mlk/util/dir.h
 	${libmlk-util_SOURCE_DIR}/mlk/util/fmemopen.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/basename.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/dirname.c
@@ -38,6 +40,7 @@ set(
 check_symbol_exists("PATH_MAX" "limits.h" MLK_HAVE_PATH_MAX)
 
 check_include_file("libgen.h" MLK_HAVE_LIBGEN_H)
+check_include_file("dirent.h" MLK_HAVE_DIRENT_H)
 
 check_function_exists(basename MLK_HAVE_BASENAME)
 check_function_exists(dirname MLK_HAVE_DIRNAME)
