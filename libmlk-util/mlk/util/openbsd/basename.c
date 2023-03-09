@@ -26,6 +26,8 @@
 #       include <libgen.h>
 #endif
 
+#include <mlk/util/util.h>
+
 #if !defined(MLK_HAVE_BASENAME)
 
 char *

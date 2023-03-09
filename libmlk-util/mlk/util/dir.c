@@ -149,5 +149,5 @@ mlk_dir_next(struct mlk_dir_iter *iter)
 void
 mlk_dir_finish(struct mlk_dir_iter *iter)
 {
-	return handle_finish(iter);
+	handle_finish(iter);
 }

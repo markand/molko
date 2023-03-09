@@ -28,6 +28,8 @@
 struct mlk_debug_options mlk_debug_options = {
 #if !defined(NDEBUG)
 	.enable = 1
+#else
+    .enable = 0
 #endif
 };
 

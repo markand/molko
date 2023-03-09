@@ -34,8 +34,6 @@
  * See tileset-file.h for an implementation of this module using files.
  */
 
-#include <mlk/util/sysconfig.h>
-
 #include <stddef.h>
 
 struct mlk_animation;
@@ -147,8 +145,6 @@ mlk_tileset_loader_open(struct mlk_tileset_loader *loader,
                         struct mlk_tileset *tileset,
                         const char *path);
 
-#if defined(MLK_HAVE_FMEMOPEN)
-
 /**
  * Open a tileset from a const binary data.
  *
@@ -163,15 +159,12 @@ mlk_tileset_loader_open(struct mlk_tileset_loader *loader,
  * \param data the tileset content
  * \param datasz the tileset content length
  * \return 0 on success or an error code on failure
- * \note This function is available only if MLK_HAVE_FMEMOPEN is defined.
  */
 int
 mlk_tileset_loader_openmem(struct mlk_tileset_loader *loader,
                            struct mlk_tileset *tileset,
                            const void *data,
                            size_t datasz);
-
-#endif
 
 #if defined(__cplusplus)
 }

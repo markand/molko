@@ -26,7 +26,7 @@
 #include <string.h>
 #include <limits.h>
 
-#if defined(MLK_OS_WINDOWS)
+#if defined(_WIN32)
 #       include <shlwapi.h>
 #       include <windows.h>
 #else
@@ -80,7 +80,7 @@ user_directory(enum mlk_sys_dir kind)
 	/* Kept for future use. */
 	(void)kind;
 
-	static _Thread_local char path[MLK_PATH_MAX];
+	static MLK_THREAD_LOCAL char path[MLK_PATH_MAX];
 	char *pref;
 
 	if ((pref = SDL_GetPrefPath(info.organization, info.name))) {

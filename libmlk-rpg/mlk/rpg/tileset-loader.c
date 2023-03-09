@@ -297,8 +297,6 @@ mlk_tileset_loader_open(struct mlk_tileset_loader *loader,
 	return parse(loader, tileset, fp);
 }
 
-#if defined(MLK_HAVE_FMEMOPEN)
-
 int
 mlk_tileset_loader_openmem(struct mlk_tileset_loader *loader,
                            struct mlk_tileset *tileset,
@@ -318,5 +316,3 @@ mlk_tileset_loader_openmem(struct mlk_tileset_loader *loader,
 
 	return parse(loader, tileset, fp);
 }
-
-#endif

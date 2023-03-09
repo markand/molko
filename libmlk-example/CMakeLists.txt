@@ -67,7 +67,7 @@ mlk_tilesets("${TILESETS}" ${libmlk-example_BINARY_DIR}/tilesets tilesets)
 
 mlk_library(
 	NAME libmlk-example
-	SOURCES ${SOURCES}
+	SOURCES ${ASSETS} ${MAPS} ${TILESETS} ${SOURCES}
 	ASSETS ${ASSETS} ${maps} ${tilesets}
 	TYPE STATIC
 	LIBRARIES libmlk-rpg

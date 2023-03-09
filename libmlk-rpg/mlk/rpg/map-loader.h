@@ -19,8 +19,6 @@
 #ifndef MLK_RPG_MAP_LOADER_H
 #define MLK_RPG_MAP_LOADER_H
 
-#include <mlk/util/sysconfig.h>
-
 #include <stddef.h>
 
 enum mlk_map_layer_type;
@@ -132,8 +130,6 @@ mlk_map_loader_open(struct mlk_map_loader *loader,
                     struct mlk_map *map,
                     const char *path);
 
-#if defined(MLK_HAVE_FMEMOPEN)
-
 /**
  * Try to open a map from the given path.
  *
@@ -144,15 +140,12 @@ mlk_map_loader_open(struct mlk_map_loader *loader,
  * \param data the map content
  * \param datasz the map content length
  * \return 0 on success or -1 on error
- * \note This function is available only if MLK_HAVE_FMEMOPEN is defined.
  */
 int
 mlk_map_loader_openmem(struct mlk_map_loader *loader,
                        struct mlk_map *map,
                        const void *data,
                        size_t datasz);
-
-#endif
 
 #if defined(__cplusplus)
 }

@@ -218,9 +218,10 @@ parse_line(struct mlk_map_loader *loader,
 		{ "layer",      parse_layer             },
 	};
 
-	for (size_t i = 0; i < MLK_UTIL_SIZE(props); ++i)
+	for (size_t i = 0; i < MLK_UTIL_SIZE(props); ++i) {
 		if (strncmp(line, props[i].property, strlen(props[i].property)) == 0)
 			return props[i].read(loader, map, line, fp);
+	}
 
 	return 0;
 }
@@ -273,8 +274,6 @@ mlk_map_loader_open(struct mlk_map_loader *loader, struct mlk_map *map, const ch
 	return parse(loader, map, fp);
 }
 
-#if defined(MLK_HAVE_FMEMOPEN)
-
 int
 mlk_map_loader_openmem(struct mlk_map_loader *loader, struct mlk_map *map, const void *data, size_t datasz)
 {
@@ -291,5 +290,3 @@ mlk_map_loader_openmem(struct mlk_map_loader *loader, struct mlk_map *map, const
 
 	return parse(loader, map, fp);
 }
-
-#endif

@@ -33,6 +33,12 @@
 extern "C" {
 #endif
 
+#if defined(_MSC_VER)
+#       define MLK_THREAD_LOCAL
+#else
+#       define MLK_THREAD_LOCAL _Thread_local
+#endif
+
 #if defined(MLK_HAVE_PATH_MAX)
 #       define MLK_PATH_MAX PATH_MAX
 #else

@@ -117,7 +117,7 @@ load_images(void)
 		texture = &mlk_registry_images[images[i].index];
 
 		if (mlk_image_openmem(texture, images[i].data, images[i].datasz) < 0)
-			mlk_panic();
+			mlk_panicf("unable to open image: %s", mlk_err());
 	}
 }
 
@@ -132,7 +132,7 @@ load_textures_and_sprites(void)
 		sprite = &mlk_registry_sprites[textures[i].index];
 
 		if (mlk_image_openmem(texture, textures[i].data, textures[i].datasz) < 0)
-			mlk_panic();
+			mlk_panicf("unable to open image: %s", mlk_err());
 
 		if (textures[i].cellw == 0 || textures[i].cellh == 0) {
 			sprite->cellw = texture->w;
@@ -156,7 +156,7 @@ load_sounds(void)
 		sound = &mlk_registry_sounds[sounds[i].index];
 
 		if (mlk_sound_openmem(sound, sounds[i].data, sounds[i].datasz) < 0)
-			mlk_panic();
+			mlk_panicf("unable to open sound: %s", mlk_err());
 	}
 }
 
@@ -169,7 +169,7 @@ load_music(void)
 		music = &mlk_registry_music[musics[i].index];
 
 		if (mlk_music_openmem(music, musics[i].data, musics[i].datasz) < 0)
-			mlk_panic();
+			mlk_panicf("unable to open music: %s", mlk_err());
 	}
 }
 

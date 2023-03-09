@@ -49,11 +49,11 @@ mlk_util_fmemopen(void *buf, size_t size, const char *mode)
 	if (strchr(mode, 'b'))
 		flags |= _O_BINARY;
 
-	if (!GetTempPath(sizeof (temppath), temppath))
+	if (!GetTempPathA(sizeof (temppath), temppath))
 		return NULL;
-	if (!GetTempFileName(temppath, "MLK", 0, filename))
+	if (!GetTempFileNameA(temppath, "MLK", 0, filename))
 		return NULL;
-	if ((fd = _sopen(temppath, flags, _SH_DENYRW, _S_IREAD | _S_IWRITE)) < 0)
+	if (_sopen_s(&fd, filename, flags, _SH_DENYRW, _S_IREAD | _S_IWRITE) < 0)
 		return NULL;
 	if (!(fp = _fdopen(fd, mode))) {
 		_close(fd);

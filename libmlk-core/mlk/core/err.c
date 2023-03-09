@@ -26,7 +26,7 @@
 #define ERR_MAX         128
 #define DEFAULT_ERR     "no error"
 
-static _Thread_local char err[ERR_MAX] = DEFAULT_ERR;
+static MLK_THREAD_LOCAL char err[ERR_MAX] = DEFAULT_ERR;
 
 int
 mlk_errf(const char *fmt, ...)
