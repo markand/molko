@@ -95,13 +95,105 @@ handle_next(struct mlk_dir_iter *iter)
 
 /* }}} */
 
+#elif defined(_WIN32)
+
+/* {{{ Native Windows implementation. */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <windows.h>
+
+struct self {
+	WIN32_FIND_DATA data;
+	HANDLE handle;
+	int cached;
+};
+
+static inline int
+skip(const struct self *self)
+{
+	return strcmp(self->data.cFileName, ".")  == 0 ||
+	       strcmp(self->data.cFileName, "..") == 0;
+}
+
+static void
+handle_finish(struct mlk_dir_iter *iter)
+{
+	struct self *self = iter->handle;
+
+	if (self) {
+		FindClose(self->handle);
+		free(self);
+	}
+
+	iter->entry = NULL;
+	iter->handle = NULL;
+}
+
+static int
+handle_open(struct mlk_dir_iter *iter, const char *path)
+{
+	struct self *self;
+	char directory[MAX_PATH];
+	BOOL ret = TRUE;
+
+	snprintf(directory, sizeof (directory), "%s\\*", path);
+
+	if (!(self = calloc(1, sizeof (*self))))
+		return -1;
+	if ((self->handle = FindFirstFileA(directory, &self->data)) == INVALID_HANDLE_VALUE) {
+		free(self);
+		return -1;
+	}
+
+	/* Skip . and .. */
+	while (skip(self) && (ret = FindNextFileA(self->handle, &self->data)))
+		continue;
+
+	/* Something failed. */
+	if (!ret) {
+		handle_finish(iter);
+		return -1;
+	}
+
+	self->cached = 1;
+	iter->entry = self->data.cFileName;
+	iter->handle = self;
+
+	return 0;
+}
+
+static int
+handle_next(struct mlk_dir_iter *iter)
+{
+	struct self *self = iter->handle;
+	BOOL ret = TRUE;
+
+	/* Returning the first entry on open. */
+	if (self->cached)
+		self->cached = 0;
+	else {
+		/* The . and .. can still appear now. */
+		while ((ret = FindNextFileA(self->handle, &self->data)) && skip(self))
+			continue;
+
+		if (!ret)
+			handle_finish(iter);
+	}
+
+	return iter->entry != NULL;
+}
+
+/* }}} */
+
 #else
 
 /* {{{ No-op implementation */
 
 #include <stddef.h>
 
-int
+static int
 handle_open(struct mlk_dir_iter *iter, const char *path)
 {
 	(void)path;
@@ -112,7 +204,7 @@ handle_open(struct mlk_dir_iter *iter, const char *path)
 	return -1;
 }
 
-int
+static int
 handle_next(struct mlk_dir_iter *iter)
 {
 	(void)iter;
@@ -120,7 +212,7 @@ handle_next(struct mlk_dir_iter *iter)
 	return 0;
 }
 
-void
+static void
 handle_finish(struct mlk_dir_iter *iter)
 {
 	(void)iter;
@@ -134,6 +226,9 @@ int
 mlk_dir_open(struct mlk_dir_iter *iter, const char *path)
 {
 	assert(path);
+
+	iter->entry = NULL;
+	iter->handle = NULL;
 
 	return handle_open(iter, path);
 }
