@@ -34,7 +34,6 @@ function(mlk_library)
 
 	if (LIB_ASSETS)
 		mlk_bcc(ASSETS ${LIB_ASSETS} OUTPUTS_VAR HEADERS)
-		source_group(build/assets FILES ${HEADERS})
 	endif ()
 
 	if (LIB_LANGS AND MLK_WITH_NLS)
@@ -44,7 +43,6 @@ function(mlk_library)
 			SOURCES ${LIB_SOURCES}
 			OUTPUTS_VAR MO
 		)
-		source_group(build/nls FILES ${MO})
 	endif ()
 
 	if (LIB_MAPS)

@@ -36,4 +36,10 @@ macro(mlk_maps inputs output_directory output_var)
 		mlk_map(${i} ${output_directory}/${filename}.map)
 		list(APPEND ${output_var} ${output_directory}/${filename}.map)
 	endforeach ()
+
+	source_group(
+		TREE ${output_directory}
+		FILES ${${output_var}}
+		PREFIX build/maps
+	)
 endmacro()

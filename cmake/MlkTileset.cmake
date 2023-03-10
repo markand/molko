@@ -36,4 +36,10 @@ macro(mlk_tilesets inputs output_directory output_var)
 		mlk_tileset(${i} ${output_directory}/${filename}.tileset)
 		list(APPEND ${output_var} ${output_directory}/${filename}.tileset)
 	endforeach ()
+
+	source_group(
+		TREE ${output_directory}
+		FILES ${${output_var}}
+		PREFIX build/tilesets
+	)
 endmacro()

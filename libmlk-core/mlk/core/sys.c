@@ -265,6 +265,7 @@ mlk_sys_finish(void)
 	IMG_Quit();
 	SDL_Quit();
 
+	audio_finish();
 }
 
 static int

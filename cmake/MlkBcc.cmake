@@ -98,4 +98,10 @@ macro(mlk_bcc)
 
 		list(APPEND ${_bcc_OUTPUTS_VAR} ${_bcc_output_file})
 	endforeach ()
+
+	source_group(
+		TREE ${_bcc_base_directory}
+		FILES ${${_bcc_OUTPUTS_VAR}}
+		PREFIX build/assets
+	)
 endmacro()

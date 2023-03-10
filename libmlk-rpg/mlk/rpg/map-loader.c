@@ -237,6 +237,8 @@ check(struct mlk_map *map)
 		return mlk_errf("missing background layer");
 	if (!map->layers[1].tiles)
 		return mlk_errf("missing foreground layer");
+	if (!map->tileset)
+		return mlk_errf("missing tileset");
 
 	return 0;
 }
