@@ -35,7 +35,6 @@ struct chest {
 	void *data;
 	enum chest_state state;
 	void (*run)(struct chest *);
-	void (*finish)(struct chest *);
 
 	/* private */
 	struct mlk_animation animation;
