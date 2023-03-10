@@ -47,7 +47,7 @@ foreach (c ${SDL2_FIND_COMPONENTS})
 
 	find_library(
 		SDL2_${c}_LIBRARY
-		NAMES SDL2_${c} libSDL2_${c}
+		NAMES SDL2_${c} libSDL2_${c} SDL2_${c}d SDL2_${c}_d
 	)
 
 	if (NOT TARGET SDL2::${c} AND SDL2_${c}_LIBRARY)
