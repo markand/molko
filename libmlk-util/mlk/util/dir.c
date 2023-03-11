@@ -43,7 +43,7 @@ skip(const struct self *self)
 }
 
 static void
-handle_finish(struct mlk_dir_iter *iter)
+handle_finish(struct mlk_dir *iter)
 {
 	struct self *self = iter->handle;
 
@@ -57,7 +57,7 @@ handle_finish(struct mlk_dir_iter *iter)
 }
 
 static int
-handle_open(struct mlk_dir_iter *iter, const char *path)
+handle_open(struct mlk_dir *iter, const char *path)
 {
 	struct self *self;
 
@@ -74,7 +74,7 @@ handle_open(struct mlk_dir_iter *iter, const char *path)
 }
 
 static int
-handle_next(struct mlk_dir_iter *iter)
+handle_next(struct mlk_dir *iter)
 {
 	struct self *self = iter->handle;
 
@@ -118,7 +118,7 @@ skip(const struct self *self)
 }
 
 static void
-handle_finish(struct mlk_dir_iter *iter)
+handle_finish(struct mlk_dir *iter)
 {
 	struct self *self = iter->handle;
 
@@ -132,7 +132,7 @@ handle_finish(struct mlk_dir_iter *iter)
 }
 
 static int
-handle_open(struct mlk_dir_iter *iter, const char *path)
+handle_open(struct mlk_dir *iter, const char *path)
 {
 	struct self *self;
 	char directory[MAX_PATH];
@@ -165,7 +165,7 @@ handle_open(struct mlk_dir_iter *iter, const char *path)
 }
 
 static int
-handle_next(struct mlk_dir_iter *iter)
+handle_next(struct mlk_dir *iter)
 {
 	struct self *self = iter->handle;
 	BOOL ret = TRUE;
@@ -194,7 +194,7 @@ handle_next(struct mlk_dir_iter *iter)
 #include <stddef.h>
 
 static int
-handle_open(struct mlk_dir_iter *iter, const char *path)
+handle_open(struct mlk_dir *iter, const char *path)
 {
 	(void)path;
 
@@ -205,7 +205,7 @@ handle_open(struct mlk_dir_iter *iter, const char *path)
 }
 
 static int
-handle_next(struct mlk_dir_iter *iter)
+handle_next(struct mlk_dir *iter)
 {
 	(void)iter;
 
@@ -213,7 +213,7 @@ handle_next(struct mlk_dir_iter *iter)
 }
 
 static void
-handle_finish(struct mlk_dir_iter *iter)
+handle_finish(struct mlk_dir *iter)
 {
 	(void)iter;
 }
@@ -223,7 +223,7 @@ handle_finish(struct mlk_dir_iter *iter)
 #endif
 
 int
-mlk_dir_open(struct mlk_dir_iter *iter, const char *path)
+mlk_dir_open(struct mlk_dir *iter, const char *path)
 {
 	assert(path);
 
@@ -234,7 +234,7 @@ mlk_dir_open(struct mlk_dir_iter *iter, const char *path)
 }
 
 int
-mlk_dir_next(struct mlk_dir_iter *iter)
+mlk_dir_next(struct mlk_dir *iter)
 {
 	assert(iter);
 
@@ -242,7 +242,7 @@ mlk_dir_next(struct mlk_dir_iter *iter)
 }
 
 void
-mlk_dir_finish(struct mlk_dir_iter *iter)
+mlk_dir_finish(struct mlk_dir *iter)
 {
 	handle_finish(iter);
 }

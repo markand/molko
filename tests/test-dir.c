@@ -23,7 +23,7 @@
 static void
 test_basics(void)
 {
-	struct mlk_dir_iter iter;
+	struct mlk_dir iter;
 	int a = 0, b = 0, c = 0;
 
 	DT_EQ_INT(mlk_dir_open(&iter, DIRECTORY "/dir"), 0);
@@ -54,7 +54,7 @@ test_break(void)
 	 * This test should ensure there are no memory leaks because we break
 	 * the loop while the iterator hasn't completed.
 	 */
-	struct mlk_dir_iter iter;
+	struct mlk_dir iter;
 
 	DT_EQ_INT(mlk_dir_open(&iter, DIRECTORY "/dir"), 0);
 	DT_EQ_INT(mlk_dir_next(&iter), 1);

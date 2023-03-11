@@ -34,7 +34,7 @@
  * otherwise ::mlk_dir_finish can be used in case the loop was terminated early
  *
  * ```c
- * struct mlk_dir_iter iter;
+ * struct mlk_dir iter;
  *
  * if (mlk_dir_open(&iter, "/tmp") < 0) {
  *     fprintf(stderr, "unable to open the directory\n");
@@ -54,10 +54,10 @@ extern "C" {
 #endif
 
 /**
- * \struct mlk_dir_iter
+ * \struct mlk_dir
  * \brief Directory iterator structure
  */
-struct mlk_dir_iter {
+struct mlk_dir {
 	/**
 	 * (read-only, borrowed)
 	 *
@@ -80,7 +80,7 @@ struct mlk_dir_iter {
  * \return 0 on success or -1 on error
  */
 int
-mlk_dir_open(struct mlk_dir_iter *iter, const char *path);
+mlk_dir_open(struct mlk_dir *iter, const char *path);
 
 /**
  * Read the next directory entry.
@@ -90,7 +90,7 @@ mlk_dir_open(struct mlk_dir_iter *iter, const char *path);
  * \return 1 on read or 0 on EOF
  */
 int
-mlk_dir_next(struct mlk_dir_iter *iter);
+mlk_dir_next(struct mlk_dir *iter);
 
 /**
  * Cleanup directory iterator resources.
@@ -102,7 +102,7 @@ mlk_dir_next(struct mlk_dir_iter *iter);
  * \param iter the directory iterator
  */
 void
-mlk_dir_finish(struct mlk_dir_iter *iter);
+mlk_dir_finish(struct mlk_dir *iter);
 
 #if defined(__cplusplus)
 }
