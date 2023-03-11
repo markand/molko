@@ -36,6 +36,8 @@
 FILE *
 mlk_util_fmemopen(void *buf, size_t size, const char *mode)
 {
+	(void)mode;
+
 	char temppath[MAX_PATH + 1], filename[MAX_PATH + 1];
 	FILE *fp;
 	int fd, flags;
@@ -55,7 +57,9 @@ mlk_util_fmemopen(void *buf, size_t size, const char *mode)
 		return NULL;
 	if (_sopen_s(&fd, filename, flags, _SH_DENYRW, _S_IREAD | _S_IWRITE) < 0)
 		return NULL;
-	if (!(fp = _fdopen(fd, mode))) {
+
+	/* The mode must be ignored because this polyfill requires push back */
+	if (!(fp = _fdopen(fd, "w+"))) {
 		_close(fd);
 		return NULL;
 	}
