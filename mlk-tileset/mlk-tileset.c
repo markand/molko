@@ -27,8 +27,10 @@
 static void
 write_dimensions(const json_t *document)
 {
-	const json_t *tilewidth = json_object_get(document, "tilewidth");
-	const json_t *tileheight = json_object_get(document, "tileheight");
+	const json_t *tilewidth, *tileheight;
+
+	tilewidth = json_object_get(document, "tilewidth");
+	tileheight = json_object_get(document, "tileheight");
 
 	if (!json_is_integer(tilewidth))
 		mlk_util_die("invalid 'tilewidth' property\n");
@@ -42,7 +44,9 @@ write_dimensions(const json_t *document)
 static void
 write_image(const json_t *document)
 {
-	const json_t *image = json_object_get(document, "image");
+	const json_t *image;
+
+	image = json_object_get(document, "image");
 
 	if (!json_is_string(image))
 		mlk_util_die("invalid 'image' property\n");
@@ -53,11 +57,11 @@ write_image(const json_t *document)
 static const json_t *
 find_property_value(const json_t *array, const char *prop)
 {
-	const json_t *obj;
+	const json_t *obj, *name;
 	size_t i;
 
 	json_array_foreach(array, i, obj) {
-		const json_t *name = json_object_get(obj, "name");
+		name = json_object_get(obj, "name");
 
 		if (!name || !json_is_string(name))
 			mlk_util_die("invalid property object\n");
@@ -72,10 +76,12 @@ find_property_value(const json_t *array, const char *prop)
 static void
 write_animation(const json_t *tile)
 {
-	const json_t *id = json_object_get(tile, "id");
-	const json_t *properties = json_object_get(tile, "properties");
-	const json_t *file = find_property_value(properties, "animation-file");
-	const json_t *delay = find_property_value(properties, "animation-delay");
+	const json_t *id, *properties, *file, *delay;
+
+	id = json_object_get(tile, "id");
+	properties = json_object_get(tile, "properties");
+	file = find_property_value(properties, "animation-file");
+	delay = find_property_value(properties, "animation-delay");
 
 	/* Animations are completely optional. */
 	if (!json_is_array(properties))
@@ -97,11 +103,12 @@ write_animation(const json_t *tile)
 static void
 write_collision(const json_t *tile)
 {
-	const json_t *id = json_object_get(tile, "id");
-	const json_t *objectgroup = json_object_get(tile, "objectgroup");
-	const json_t *objects = json_object_get(objectgroup, "objects");
-	const json_t *first = json_array_get(objects, 0);
-	const json_t *x, *y, *w, *h;
+	const json_t *id, *objectgroup, *objects, *first, *x, *y, *w, *h;
+
+	id = json_object_get(tile, "id");
+	objectgroup = json_object_get(tile, "objectgroup");
+	objects = json_object_get(objectgroup, "objects");
+	first = json_array_get(objects, 0);
 
 	/* Collisions are optional. */
 	if (!json_is_object(objectgroup))
