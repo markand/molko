@@ -32,6 +32,7 @@ enum mlk_registry_texture {
 	/* Animations. */
 	MLK_REGISTRY_TEXTURE_EXPLOSION,
 	MLK_REGISTRY_TEXTURE_WATER,
+	MLK_REGISTRY_TEXTURE_CAT_RUNNING,
 
 	/* Characters. */
 	MLK_REGISTRY_TEXTURE_JOHN,

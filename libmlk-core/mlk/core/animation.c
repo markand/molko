@@ -48,6 +48,8 @@ mlk_animation_update(struct mlk_animation *an, unsigned int ticks)
 	assert(an);
 	assert(!mlk_animation_completed(an));
 
+	int complete;
+
 	an->elapsed += ticks;
 
 	if (an->elapsed < an->delay)
@@ -66,7 +68,15 @@ mlk_animation_update(struct mlk_animation *an, unsigned int ticks)
 	} else
 		an->elapsed = 0;
 
-	return mlk_animation_completed(an);
+	complete = mlk_animation_completed(an);
+
+	/* Animation looping? Reset automatically. */
+	if (complete && (an->flags & MLK_ANIMATION_FLAGS_LOOP)) {
+		mlk_animation_start(an);
+		complete = 0;
+	}
+
+	return complete;
 }
 
 int

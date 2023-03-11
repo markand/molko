@@ -31,6 +31,7 @@
 #include <assets/sounds/fire.h>
 #include <assets/sounds/open-chest.h>
 
+#include <assets/sprites/cat-running.h>
 #include <assets/sprites/chest.h>
 #include <assets/sprites/explosion.h>
 #include <assets/sprites/john-sword.h>
@@ -76,18 +77,19 @@ static const struct {
 	unsigned int cellw;
 	unsigned int cellh;
 } textures[] = {
+	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_BLACK_CAT, assets_images_black_cat, 0, 0),
+	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_CAT_RUNNING, assets_sprites_cat_running, 512, 256),
+	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_CHEST, assets_sprites_chest, 32, 32),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_CURSOR, assets_sprites_ui_cursor, 24, 24),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_EXPLOSION, assets_sprites_explosion, 256, 256),
-	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_WATER, assets_sprites_water, 48, 48),
+	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_HAUNTED_WOOD, assets_images_haunted_wood, 0, 0),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_JOHN, assets_sprites_john, 48, 48),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_JOHN_SWORD, assets_sprites_john_sword, 256, 256),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_JOHN_WALK, assets_sprites_john_walk, 256, 256),
-	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_HAUNTED_WOOD, assets_images_haunted_wood, 0, 0),
-	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_BLACK_CAT, assets_images_black_cat, 0, 0),
-	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_CHEST, assets_sprites_chest, 32, 32),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_NUMBERS, assets_sprites_numbers, 48, 48),
-	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_SWORD, assets_images_sword, 0, 0),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_PEOPLE, assets_sprites_people, 48, 48),
+	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_SWORD, assets_images_sword, 0, 0),
+	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_WATER, assets_sprites_water, 48, 48),
 	MLK_REGISTRY_TEXTURE(MLK_REGISTRY_TEXTURE_WORLD, assets_sprites_world, 48, 48)
 };
 

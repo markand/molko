@@ -36,16 +36,21 @@
 #include <mlk/example/registry.h>
 
 static struct mlk_label label = {
-	.text = "Keys: <Space> start or reset the animation.",
+	.text = "Keys: <Space> standard animation, <l> loop animation.",
 	.x = 10,
 	.y = 10,
 };
 
-static struct mlk_animation animation = {
+static struct mlk_animation explosion = {
 	.sprite = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_EXPLOSION],
-	.delay = 25
+	.delay  = 25
 };
-static int completed = 1;
+static struct mlk_animation loop = {
+	.sprite = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CAT_RUNNING],
+	.delay  = 1000 / 16,
+	.flags  = MLK_ANIMATION_FLAGS_LOOP
+};
+static struct mlk_animation *animation;
 
 static void
 init(void)
@@ -59,16 +64,25 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
 
+	int changed = 0;
+
 	switch (ev->type) {
 	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
 		case MLK_KEY_SPACE:
-			mlk_animation_start(&animation);
-			completed = mlk_animation_completed(&animation);
+			animation = &explosion;
+			changed = 1;
+			break;
+		case MLK_KEY_L:
+			animation = &loop;
+			changed = 1;
 			break;
 		default:
 			break;
 		}
+
+		if (animation && changed)
+			mlk_animation_start(animation);
 		break;
 	case MLK_EVENT_QUIT:
 		mlk_game_quit();
@@ -83,8 +97,8 @@ update(struct mlk_state *st, unsigned int ticks)
 {
 	(void)st;
 
-	if (!completed)
-		completed = mlk_animation_update(&animation, ticks);
+	if (animation && mlk_animation_update(animation, ticks))
+		animation = NULL;
 }
 
 static void
@@ -94,15 +108,15 @@ draw(struct mlk_state *st)
 
 	unsigned int cellw, cellh;
 
-	cellw = animation.sprite->cellw;
-	cellh = animation.sprite->cellh;
-
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_label_draw(&label);
 
-	if (!completed)
-		mlk_animation_draw(&animation, (mlk_window.w - cellw) / 2, (mlk_window.h - cellh) / 2);
+	if (animation) {
+		cellw = animation->sprite->cellw;
+		cellh = animation->sprite->cellh;
+		mlk_animation_draw(animation, (mlk_window.w - cellw) / 2, (mlk_window.h - cellh) / 2);
+	}
 
 	mlk_painter_present();
 }

@@ -39,6 +39,7 @@ set(
 	${libmlk-example_SOURCE_DIR}/assets/music/vabsounds-romance.ogg
 	${libmlk-example_SOURCE_DIR}/assets/sounds/fire.wav
 	${libmlk-example_SOURCE_DIR}/assets/sounds/open-chest.wav
+	${libmlk-example_SOURCE_DIR}/assets/sprites/cat-running.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/chest.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/explosion.png
 	${libmlk-example_SOURCE_DIR}/assets/sprites/john-sword.png

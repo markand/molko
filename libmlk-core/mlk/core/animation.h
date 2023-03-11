@@ -27,9 +27,30 @@
  *
  * Animations are small objects using a ::mlk_sprite to update themselves and
  * draw next frames depending on delay set.
+ *
+ * Using the ::MLK_ANIMATION_FLAGS_LOOP, animations can be permanent and they
+ * reset automatically on update.
  */
 
 struct mlk_sprite;
+
+/**
+ * \enum mlk_animation_flags
+ * \brief Animation flags.
+ *
+ * This enumeration is implemented as a bitmask.
+ */
+enum mlk_animation_flags {
+	/**
+	 * No flags, default.
+	 */
+	MLK_ANIMATION_FLAGS_NONE,
+
+	/**
+	 * Animation never ends.
+	 */
+	MLK_ANIMATION_FLAGS_LOOP = (1 << 0)
+};
 
 /**
  * \struct mlk_animation
@@ -49,6 +70,13 @@ struct mlk_animation {
 	 * Delay in milliseconds between each frame.
 	 */
 	unsigned int delay;
+
+	/**
+	 * (read-write)
+	 *
+	 * Optional animation flags.
+	 */
+	enum mlk_animation_flags flags;
 
 	/** \cond MLK_PRIVATE_DECLS */
 	unsigned int elapsed;
@@ -84,6 +112,9 @@ mlk_animation_completed(const struct mlk_animation *animation);
  * Update the animation.
  *
  * This function MUST not be called if the animation is complete.
+ *
+ * If the animation has ::MLK_ANIMATION_FLAGS_LOOP, this function will always
+ * return 0.
  *
  * \pre animation != NULL and animation is not complete
  * \param animation the animation
