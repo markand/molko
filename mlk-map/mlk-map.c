@@ -38,15 +38,15 @@ is_layer(const char *name)
 static const json_t *
 find_property(const json_t *props, const char *which)
 {
-	const json_t *obj;
+	const json_t *obj, *key, *value;
 	size_t index;
 
 	json_array_foreach(props, index, obj) {
 		if (!json_is_object(obj))
 			continue;
 
-		const json_t *key = json_object_get(obj, "name");
-		const json_t *value = json_object_get(obj, "value");
+		key = json_object_get(obj, "name");
+		value = json_object_get(obj, "value");
 
 		if (json_is_string(key) && value && strcmp(json_string_value(key), which) == 0)
 			return value;
@@ -56,19 +56,13 @@ find_property(const json_t *props, const char *which)
 }
 
 static void
-write_title(const json_t *props)
-{
-	const json_t *prop_title = find_property(props, "title");
-
-	if (prop_title && json_is_string(prop_title))
-		printf("title|%s\n", json_string_value(prop_title));
-}
-
-static void
 write_origin(const json_t *props)
 {
-	const json_t *prop_origin_x = find_property(props, "origin-x");
-	const json_t *prop_origin_y = find_property(props, "origin-y");
+	const json_t *prop_origin_x;
+	const json_t *prop_origin_y;
+
+	prop_origin_x = find_property(props, "origin-x");
+	prop_origin_y = find_property(props, "origin-y");
 
 	if (!prop_origin_x || !json_is_integer(prop_origin_x) ||
 	    !prop_origin_y || !json_is_integer(prop_origin_y))
@@ -82,15 +76,16 @@ write_origin(const json_t *props)
 static void
 write_properties(const json_t *props)
 {
-	write_title(props);
 	write_origin(props);
 }
 
 static void
 write_dimensions(const json_t *document)
 {
-	json_t *width = json_object_get(document, "width");
-	json_t *height = json_object_get(document, "height");
+	json_t *width, *height;
+
+	width = json_object_get(document, "width");
+	height = json_object_get(document, "height");
 
 	if (!width || !json_is_integer(width))
 		mlk_util_die("missing 'width' property\n");
@@ -106,12 +101,13 @@ write_object(const json_t *object)
 {
 	assert(json_is_object(object));
 
-	json_t *x = json_object_get(object, "x");
-	json_t *y = json_object_get(object, "y");
-	json_t *width = json_object_get(object, "width");
-	json_t *height = json_object_get(object, "height");
-	json_t *props = json_object_get(object, "properties");
-	const json_t *exec, *block;
+	const json_t *x, *y, *width, *height, *props, *exec, *block;
+
+	x = json_object_get(object, "x");
+	y = json_object_get(object, "y");
+	width = json_object_get(object, "width");
+	height = json_object_get(object, "height");
+	props = json_object_get(object, "properties");
 
 	if (!x || !json_is_number(x))
 		mlk_util_die("invalid 'x' property in object\n");
@@ -143,11 +139,12 @@ write_object(const json_t *object)
 static void
 write_layer(const json_t *layer)
 {
-	json_t *objects = json_object_get(layer, "objects");
-	json_t *data = json_object_get(layer, "data");
-	json_t *name = json_object_get(layer, "name");
-	json_t *tile, *object;
+	json_t *objects, *data, *name, *tile, *object;
 	size_t index;
+
+	objects = json_object_get(layer, "objects");
+	data = json_object_get(layer, "data");
+	name = json_object_get(layer, "name");
 
 	if (!name || !json_is_string(name))
 		mlk_util_die("invalid 'name' property in layer");
