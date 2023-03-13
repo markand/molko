@@ -37,7 +37,7 @@ static int findent = 1, fconst, fnull, fstatic;
 static void
 usage(void)
 {
-	fprintf(stderr, "usage: bcc [-0cs] [-I tab-indent] [-i space-indent] input variable\n");
+	fprintf(stderr, "usage: mlk-bcc [-0cs] [-I tab-indent] [-i space-indent] input variable\n");
 	exit(1);
 }
 
