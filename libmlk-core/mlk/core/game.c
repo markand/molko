@@ -109,8 +109,8 @@ mlk_game_loop(void)
 	if (mlk_window.framerate > 0)
 		frametime = 1000 / mlk_window.framerate;
 	else
-		/* Assuming 50.0 FPS. */
-		frametime = 1000.0 / 50.0;
+		/* Assuming 60.0 FPS. */
+		frametime = 1000.0 / 60.0;
 
 	while (mlk_game.state) {
 		mlk_clock_start(&clock);
@@ -129,6 +129,13 @@ mlk_game_loop(void)
 			mlk_util_delay(frametime - elapsed);
 
 		elapsed = mlk_clock_elapsed(&clock);
+
+		/*
+		 * Cap to frametime if it's too slow because it would create
+		 * unexpected results otherwise.
+		 */
+		if (elapsed > frametime)
+			elapsed = frametime;
 	}
 }
 

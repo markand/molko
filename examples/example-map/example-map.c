@@ -197,9 +197,8 @@ update(struct mlk_state *st, unsigned int ticks)
 
 	mlk_map_update(&map, ticks);
 
-	if (tomb.message.state && mlk_message_update(&tomb.message, ticks)) {
-
-	}
+	if (tomb.message.state)
+		mlk_message_update(&tomb.message, ticks);
 }
 
 static void
