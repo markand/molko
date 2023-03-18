@@ -227,7 +227,7 @@ enum mlk_key {
 	MLK_KEY_LBRACKET,
 
 	/**
-	 * Back slack (\).
+	 * Back slack (\\).
 	 */
 	MLK_KEY_BACKSLASH,
 

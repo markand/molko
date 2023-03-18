@@ -20,6 +20,7 @@
 
 #include <SDL_image.h>
 
+#include "err.h"
 #include "texture.h"
 #include "window.h"
 #include "window_p.h"

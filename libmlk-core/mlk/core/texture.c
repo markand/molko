@@ -20,6 +20,7 @@
 #include <string.h>
 
 #include "color.h"
+#include "err.h"
 #include "texture.h"
 #include "texture_p.h"
 #include "util.h"

@@ -27,7 +27,7 @@
 #include "util.h"
 
 void
-mlk_util_delay(unsigned int ms)
+mlk_util_sleep(unsigned int ms)
 {
 	SDL_Delay(ms);
 }

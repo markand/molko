@@ -42,7 +42,7 @@ extern "C" {
  * \param duration time to sleep in milliseconds
  */
 void
-mlk_util_delay(unsigned int duration);
+mlk_util_sleep(unsigned int duration);
 
 /**
  * Convenient function to create an return a string to a filesystem path using

@@ -24,8 +24,6 @@
  * \brief Basic texture management
  */
 
-#include "err.h"
-
 /**
  * \struct mlk_texture
  * \brief Texture structure

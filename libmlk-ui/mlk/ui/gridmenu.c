@@ -20,6 +20,7 @@
 #include <math.h>
 #include <string.h>
 
+#include <mlk/core/err.h>
 #include <mlk/core/event.h>
 #include <mlk/core/font.h>
 #include <mlk/core/maths.h>

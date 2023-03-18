@@ -19,8 +19,6 @@
 #ifndef MLK_ERR_H
 #define MLK_ERR_H
 
-#include <stdarg.h>
-
 /**
  * \file mlk/core/err.h
  * \brief Error handling
@@ -35,6 +33,12 @@
  *
  * [errno]: https://en.cppreference.com/w/c/error/errno
  */
+
+#include <stdarg.h>
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 /**
  * Set the error using printf format string.
@@ -57,7 +61,16 @@ mlk_errf(const char *fmt, ...);
 int
 mlk_errva(const char *fmt, va_list ap);
 
+/**
+ * Retrieve the last stored error as a string.
+ *
+ * \return the current error
+ */
 const char *
 mlk_err(void);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* !MLK_ERROR_H */
