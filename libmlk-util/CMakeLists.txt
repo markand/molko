@@ -25,7 +25,6 @@ include(CheckSymbolExists)
 set(
 	SOURCES
 	${libmlk-util_SOURCE_DIR}/mlk/util/dir.c
-	${libmlk-util_SOURCE_DIR}/mlk/util/dir.h
 	${libmlk-util_SOURCE_DIR}/mlk/util/fmemopen.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/basename.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/dirname.c
@@ -34,6 +33,12 @@ set(
 	${libmlk-util_SOURCE_DIR}/mlk/util/openbsd/strlcpy.c
 	${libmlk-util_SOURCE_DIR}/mlk/util/sysconfig.cmake.h
 	${libmlk-util_SOURCE_DIR}/mlk/util/util.c
+)
+
+set(
+	HEADERS
+	${libmlk-util_BINARY_DIR}/mlk/util/sysconfig.h
+	${libmlk-util_SOURCE_DIR}/mlk/util/dir.h
 	${libmlk-util_SOURCE_DIR}/mlk/util/util.h
 )
 
@@ -56,7 +61,9 @@ configure_file(
 mlk_library(
 	NAME libmlk-util
 	SOURCES ${SOURCES}
-	TYPE STATIC
+	INSTALL
+	HEADERS ${HEADERS}
+	HEADERS_DIRECTORY mlk/util
 	LIBRARIES ${LIBRARIES}
 	INCLUDES
 		PUBLIC

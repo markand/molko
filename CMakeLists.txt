@@ -45,11 +45,25 @@ elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS "/D_CRT_SECURE_NO_WARNINGS ${CMAKE_C_FLAGS}")
 endif ()
 
-option(MLK_WITH_DOXYGEN "Enable doxygen documentation" On)
-option(MLK_WITH_EXAMPLES "Enable examples" On)
-option(MLK_WITH_NLS "Enable NLS support" Off)
-option(MLK_WITH_TESTS "Enable unit tests" On)
-option(MLK_WITH_TESTS_GRAPHICAL "Enable unit tests that requires graphical context" On)
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+function(mlk_option name value type help)
+	set(${name} ${value} CACHE ${type} ${help})
+endfunction()
+
+mlk_option(MLK_WITH_DOXYGEN On
+    BOOL "Enable doxygen documentation")
+mlk_option(MLK_WITH_EXAMPLES On
+    BOOL "Enable examples")
+mlk_option(MLK_WITH_NLS Off
+    BOOL "Enable NLS support")
+mlk_option(MLK_WITH_TESTS On
+    BOOL "Enable unit tests")
+mlk_option(MLK_WITH_TESTS_GRAPHICAL On
+    BOOL "Enable unit tests that requires graphical context")
+mlk_option(MLK_WITH_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake"
+    STRING "Destination for CMake files")
 
 include(cmake/MlkBcc.cmake)
 include(cmake/MlkExecutable.cmake)
@@ -57,8 +71,6 @@ include(cmake/MlkLibrary.cmake)
 include(cmake/MlkMap.cmake)
 include(cmake/MlkNls.cmake)
 include(cmake/MlkTileset.cmake)
-
-include(GNUInstallDirs)
 
 find_package(SDL2 REQUIRED COMPONENTS image ttf)
 find_package(OpenAL REQUIRED)
@@ -97,3 +109,14 @@ if (MLK_WITH_EXAMPLES)
 	add_subdirectory(libmlk-example)
 	add_subdirectory(examples)
 endif ()
+
+#
+# SDL2 is not always configured using CMake on some systems which means the
+# CMake configuration file isn't provided, so use our own...
+#
+install(
+	FILES
+		${CMAKE_SOURCE_DIR}/cmake/FindSDL2.cmake
+		${CMAKE_SOURCE_DIR}/cmake/FindSndFile.cmake
+	DESTINATION "${MLK_WITH_CMAKEDIR}/mlk"
+)

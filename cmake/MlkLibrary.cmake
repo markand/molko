@@ -22,9 +22,9 @@ include(${CMAKE_CURRENT_LIST_DIR}/MlkMap.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MlkTileset.cmake)
 
 function(mlk_library)
-	set(options "")
-	set(oneValueArgs "NAME;FOLDER;TYPE")
-	set(multiValueArgs "SOURCES;ASSETS;LANGS;LIBRARIES;INCLUDES;FLAGS;OPTIONS;MAPS;TILESETS")
+	set(options "INSTALL")
+	set(oneValueArgs "NAME;FOLDER;TYPE;HEADERS_DIRECTORY")
+	set(multiValueArgs "SOURCES;ASSETS;LANGS;HEADERS;LIBRARIES;INCLUDES;FLAGS;OPTIONS;MAPS;TILESETS")
 
 	cmake_parse_arguments(LIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -75,4 +75,44 @@ function(mlk_library)
 	endif ()
 
 	set_target_properties(${LIB_NAME} PROPERTIES PREFIX "")
+
+	if (LIB_INSTALL)
+		write_basic_package_version_file(
+			${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config-version.cmake
+			VERSION ${CMAKE_PROJECT_VERSION}
+			COMPATIBILITY SameMajorVersion
+                )
+                configure_file(
+                	${CMAKE_CURRENT_SOURCE_DIR}/${LIB_NAME}-config.cmake
+                	${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config.cmake
+                	@ONLY
+                )
+		install(
+			TARGETS ${LIB_NAME}
+			EXPORT ${LIB_NAME}-targets
+			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+			LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
+			ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
+			INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+		)
+		install(
+			EXPORT ${LIB_NAME}-targets
+			FILE ${LIB_NAME}-targets.cmake
+			NAMESPACE mlk::
+			DESTINATION ${MLK_WITH_CMAKEDIR}/${LIB_NAME}
+		)
+		install(
+			FILES
+	                	${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config.cmake
+				${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config-version.cmake
+			DESTINATION ${MLK_WITH_CMAKEDIR}/${LIB_NAME}
+		)
+
+		if (LIB_HEADERS AND LIB_HEADERS_DIRECTORY)
+			install(
+				FILES ${LIB_HEADERS}
+				DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${LIB_HEADERS_DIRECTORY}
+			)
+		endif ()
+	endif ()
 endfunction()

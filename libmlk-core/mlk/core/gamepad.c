@@ -32,7 +32,7 @@ mlk_gamepad_open(struct mlk_gamepad *pad, int idx)
 	memset(pad, 0, sizeof (*pad));
 
 	if (!(pad->handle = SDL_GameControllerOpen(idx)))
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
 }
@@ -54,11 +54,11 @@ mlk_gamepad_iter_begin(struct mlk_gamepad_iter *it)
 	assert(it);
 
 	memset(it, 0, sizeof (*it));
-	it->idx = -1;
+	it->index = -1;
 
 	if ((it->end = SDL_NumJoysticks()) < 0) {
 		it->end = 0;
-		return MLK_ERR_SDL;
+		return mlk_errf("%s", SDL_GetError());
 	}
 
 	return 0;
@@ -71,16 +71,16 @@ mlk_gamepad_iter_next(struct mlk_gamepad_iter *it)
 	 * Go to the next gamepad, we need to iterate because SDL can combines
 	 * joystick and game controllers with the same API.
 	 */
-	for (++it->idx; it->idx < it->end && !SDL_IsGameController(it->idx); ++it->idx)
+	for (++it->index; it->index < it->end && !SDL_IsGameController(it->index); ++it->index)
 		continue;
 
 	/* End of iteration. */
-	if (it->idx >= it->end) {
+	if (it->index >= it->end) {
 		memset(it, 0, sizeof (*it));
 		return 0;
 	}
 
-	it->name = SDL_GameControllerNameForIndex(it->idx);
+	it->name = SDL_GameControllerNameForIndex(it->index);
 
 	return 1;
 }
