@@ -16,12 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "sysconfig.h"
+
 #include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <time.h>
 
 #include "core.h"
+#include "core_p.h"
 #include "sys.h"
 
 int
@@ -33,6 +36,10 @@ mlk_core_init(const char *organization, const char *name)
 	int err;
 
 	srand(time(NULL));
+
+#if defined(MLK_WITH_NLS)
+	bindtextdomain("libmlk-core", mlk_sys_dir(MLK_SYS_DIR_LOCALES));
+#endif
 
 	if ((err = mlk_sys_init(organization, name)) < 0)
 		return err;

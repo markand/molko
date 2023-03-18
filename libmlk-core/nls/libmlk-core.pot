@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the libmlk-core package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: libmlk-core 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-21 22:47+0200\n"
+"POT-Creation-Date: 2023-03-18 19:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,44 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /Users/markand/Dev/molko/libmlk-core/core/panic.c:30
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/panic.c:30
 #, c-format
 msgid "abort: %s\n"
 msgstr ""
 
-#: /Users/markand/Dev/molko/libmlk-core/core/panic.c:76
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/panic.c:44
 #, c-format
 msgid "abort: panic handler returned\n"
+msgstr ""
+
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/err.c:28
+msgid "no error"
+msgstr ""
+
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/action-script.c:53
+msgid "no space in action script"
+msgstr ""
+
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/action-stack.c:52
+msgid "no space in action stack"
+msgstr ""
+
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/drawable-stack.c:52
+msgid "no space in drawable stack"
+msgstr ""
+
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/game.c:57
+msgid "no space in game states stack"
+msgstr ""
+
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/alloc.c:31
+msgid "out of memory"
+msgstr ""
+
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/sys.c:203
+msgid "unable to open audio device"
+msgstr ""
+
+#: /Users/markand/Dev/mlk/molko/libmlk-core/mlk/core/err.c:57
+msgid "unknown error"
 msgstr ""

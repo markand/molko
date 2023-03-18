@@ -20,6 +20,7 @@
 #include <string.h>
 
 #include "clock.h"
+#include "core_p.h"
 #include "err.h"
 #include "event.h"
 #include "game.h"
@@ -53,7 +54,7 @@ mlk_game_push(struct mlk_state *state)
 	}
 
 	if (mlk_game.state == &mlk_game.states[mlk_game.statesz - 1])
-		return mlk_errf("no space in game states stack");
+		return mlk_errf(_("no space in game states stack"));
 
 	mlk_state_suspend(*mlk_game.state);
 	mlk_state_start(*(++mlk_game.state) = state);

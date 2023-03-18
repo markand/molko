@@ -21,6 +21,7 @@
 
 #include "action-stack.h"
 #include "action.h"
+#include "core_p.h"
 #include "err.h"
 
 #define FOREACH(st, iter) \
@@ -48,7 +49,7 @@ mlk_action_stack_add(struct mlk_action_stack *st, struct mlk_action *act)
 		}
 	}
 
-	return mlk_errf("no space in action stack");
+	return mlk_errf(_("no space in action stack"));
 }
 
 int

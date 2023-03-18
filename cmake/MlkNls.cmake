@@ -41,8 +41,9 @@ macro(mlk_nls)
 
 		add_custom_command(
 			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}.mo
-			COMMAND ${MSGFMT} -o ${CMAKE_CURRENT_BINARY_DIR}/${name}.mo ${l}
+			COMMAND NLS::msgfmt -o ${CMAKE_CURRENT_BINARY_DIR}/${name}.mo ${l}
 			COMMENT "Generating NLS translation ${name}.mo"
+			DEPENDS ${l}
 		)
 
 		list(APPEND ${_nls_OUTPUTS_VAR} ${CMAKE_CURRENT_BINARY_DIR}/${name}.mo)
@@ -55,14 +56,22 @@ macro(mlk_nls)
 		# Commands to update .po files.
 		list(
 			APPEND _nls_po_cmds
-			COMMAND ${MSGMERGE} --backup=off -qU ${l} ${CMAKE_CURRENT_SOURCE_DIR}/nls/${_nls_NAME}.pot
+			COMMAND NLS::msgmerge --backup=off -qU ${l} ${CMAKE_CURRENT_SOURCE_DIR}/nls/${_nls_NAME}.pot
 		)
 	endforeach ()
 
 	add_custom_target(
 		po-${_nls_NAME}
 		COMMAND
-			${XGETTEXT} -cj -k_ -kN_ -LC -s -o ${CMAKE_CURRENT_SOURCE_DIR}/nls/${_nls_NAME}.pot ${_nls_SOURCES}
+			NLS::xgettext
+				--package-name "${LIB_NAME}"
+				--package-version "${CMAKE_PROJECT_VERSION}"
+				-cj
+				-k_
+				-kN_
+				-LC
+				-s
+				-o ${CMAKE_CURRENT_SOURCE_DIR}/nls/${_nls_NAME}.pot ${_nls_SOURCES}
 			${_nls_po_cmds}
 		COMMENT "Updating in-source .pot and .po files"
 	)

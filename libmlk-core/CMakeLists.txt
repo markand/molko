@@ -103,6 +103,10 @@ if (M_LIBRARY)
 	list(APPEND LIBRARIES ${M_LIBRARY})
 endif ()
 
+if (MLK_WITH_NLS)
+	list(APPEND LIBRARIES Intl::Intl)
+endif ()
+
 mlk_library(
 	NAME libmlk-core
 	SOURCES ${HEADERS} ${NLS} ${SOURCES}

@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <string.h>
 
+#include "core_p.h"
 #include "drawable.h"
 #include "drawable-stack.h"
 #include "err.h"
@@ -48,7 +49,7 @@ mlk_drawable_stack_add(struct mlk_drawable_stack *st, struct mlk_drawable *dw)
 		}
 	}
 
-	return mlk_errf("no space in drawable stack");
+	return mlk_errf(_("no space in drawable stack"));
 }
 
 int

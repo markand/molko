@@ -21,12 +21,13 @@
 
 #include <mlk/util/util.h>
 
+#include "core_p.h"
 #include "err.h"
 
 #define ERR_MAX         128
-#define DEFAULT_ERR     "no error"
+#define DEFAULT_ERR     _("no error")
 
-static MLK_THREAD_LOCAL char err[ERR_MAX] = DEFAULT_ERR;
+static MLK_THREAD_LOCAL char err[ERR_MAX];
 
 int
 mlk_errf(const char *fmt, ...)
@@ -53,7 +54,7 @@ mlk_errva(const char *fmt, va_list ap)
 	ret = vsnprintf(err, sizeof (err), fmt, ap);
 
 	if (ret < 0)
-		mlk_util_strlcpy(err, "unknown error", sizeof (err));
+		mlk_util_strlcpy(err, _("unknown error"), sizeof (err));
 	else if (ret == 0)
 		mlk_util_strlcpy(err, DEFAULT_ERR, sizeof (err));
 
@@ -63,5 +64,8 @@ mlk_errva(const char *fmt, va_list ap)
 const char *
 mlk_err(void)
 {
+	if (!err[0])
+		mlk_util_strlcpy(err, DEFAULT_ERR, sizeof (err));
+
 	return err;
 }

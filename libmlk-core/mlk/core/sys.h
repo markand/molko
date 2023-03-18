@@ -34,7 +34,17 @@ enum mlk_sys_dir {
 	/**
 	 * Path to the preferred save directory.
 	 */
-	MLK_SYS_DIR_SAVE
+	MLK_SYS_DIR_SAVE,
+
+	/**
+	 * Path to NLS catalogs.
+	 */
+	MLK_SYS_DIR_LOCALES,
+
+	/**
+	 * Unused sentinel value.
+	 */
+	MLK_SYS_DIR_LAST
 };
 
 #if defined(__cplusplus)

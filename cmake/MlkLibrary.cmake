@@ -81,18 +81,18 @@ function(mlk_library)
 			${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config-version.cmake
 			VERSION ${CMAKE_PROJECT_VERSION}
 			COMPATIBILITY SameMajorVersion
-                )
-                configure_file(
-                	${CMAKE_CURRENT_SOURCE_DIR}/${LIB_NAME}-config.cmake
-                	${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config.cmake
-                	@ONLY
-                )
+		)
+ 		configure_file(
+ 			${CMAKE_CURRENT_SOURCE_DIR}/${LIB_NAME}-config.cmake
+ 			${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config.cmake
+ 			@ONLY
+ 		)
 		install(
 			TARGETS ${LIB_NAME}
 			EXPORT ${LIB_NAME}-targets
 			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-			LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
-			ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
+			LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+			ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 			INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 		)
 		install(
@@ -103,7 +103,7 @@ function(mlk_library)
 		)
 		install(
 			FILES
-	                	${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config.cmake
+				${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config.cmake
 				${CMAKE_CURRENT_BINARY_DIR}/${LIB_NAME}-config-version.cmake
 			DESTINATION ${MLK_WITH_CMAKEDIR}/${LIB_NAME}
 		)

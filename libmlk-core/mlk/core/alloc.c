@@ -24,10 +24,11 @@
 
 #include <SDL.h>
 
+#include "core_p.h"
 #include "alloc.h"
 #include "panic.h"
 
-#define OOM_MSG "out of memory"
+#define OOM_MSG _("out of memory")
 #define BLKSIZE (offsetof (struct block, data))
 
 struct block {

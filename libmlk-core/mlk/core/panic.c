@@ -20,13 +20,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "core_p.h"
 #include "err.h"
 #include "panic.h"
 
 static void
 terminate(const char *what)
 {
-	fprintf(stderr, "abort: %s\n", what);
+	fprintf(stderr, _("abort: %s\n"), what);
 	abort();
 	exit(1);
 }
@@ -40,7 +41,7 @@ alive(void)
 	 * This should not happen, if it does it means the user did not fully
 	 * satisfied the constraint of mlk_panic_handler.
 	 */
-	fprintf(stderr, "abort: panic handler returned\n");
+	fprintf(stderr, _("abort: panic handler returned\n"));
 	exit(1);
 }
 

@@ -41,6 +41,7 @@
 #include <sndfile.h>
 
 #include "alloc.h"
+#include "core_p.h"
 #include "err.h"
 #include "panic.h"
 #include "sound.h"
@@ -90,6 +91,82 @@ user_directory(enum mlk_sys_dir kind)
 		mlk_util_strlcpy(path, "./", sizeof (path));
 
 	return path;
+}
+
+static inline int
+absolute(const char *path)
+{
+#if defined(_WIN32)
+	return !PathIsRelativeA(path);
+#else
+	/* Assuming UNIX like. */
+	if (path[0] == '/')
+		return 1;
+
+	return 0;
+#endif
+}
+
+static const char *
+system_directory(const char *whichdir)
+{
+	static MLK_THREAD_LOCAL char ret[PATH_MAX];
+	char *base, *binsect, path[PATH_MAX];
+
+	/*
+	 * Some system does not provide support (shame on you OpenBSD)
+	 * to the executable path. In that case we use PREFIX+<dir>
+	 * instead unless <dir> is already absolute.
+	 */
+
+	/*
+	 * If requested directory is absolute return immediately.
+	 *
+	 * e.g. whichdir == /usr/share  -> return immediately
+	 *      whichdir == bin         -> will be computed
+	 */
+	if (absolute(whichdir))
+		return whichdir;
+
+	/*
+	 * If MLK_BINDIR is absolute then we're unable to compute whichdir which
+	 * now is mandatory relative. In that case return its whole path to the
+	 * prefix.
+	 */
+	if (absolute(MLK_BINDIR) || !(base = SDL_GetBasePath()))
+		snprintf(ret, sizeof (ret), "%s/%s", MLK_PREFIX, whichdir);
+	else {
+		/*
+		 * Decompose the path to the given special directory by
+		 * computing relative directory to it from where the
+		 * binary is located.
+		 *
+		 * Example:
+		 *
+		 *   PREFIX/bin/<executable>
+		 *   PREFIX/share/mysupergame
+		 *
+		 * The path to the data is ../share/mysupergame starting from
+		 * the binary.
+		 *
+		 * Put the base path into the path and remove the value
+		 * of MLK_BINDIR.
+		 *
+		 * Example:
+		 *   from: /usr/local/bin
+		 *   to:   /usr/local
+		 */
+		mlk_util_strlcpy(path, base, sizeof (path));
+		SDL_free(base);
+
+		/* TODO: remove using negative offset. */
+		if ((binsect = strstr(path, MLK_BINDIR)))
+			*binsect = '\0';
+
+		snprintf(ret, sizeof (ret), "%s%s", path, whichdir);
+	}
+
+	return normalize(ret);
 }
 
 static inline int
@@ -199,7 +276,7 @@ mlk_sys_init(const char *organization, const char *name)
 #endif
 
 	if (!(mlk__audio_dev = alcOpenDevice(NULL))) {
-		mlk_errf("unable to open audio device");
+		mlk_errf(_("unable to open audio device"));
 		goto err;
 	}
 	if (!(mlk__audio_ctx = alcCreateContext(mlk__audio_dev, NULL))) {
@@ -222,7 +299,18 @@ err:
 const char *
 mlk_sys_dir(enum mlk_sys_dir kind)
 {
-	return user_directory(kind);
+	assert(kind >= 0 && kind < MLK_SYS_DIR_LAST);
+
+	switch (kind) {
+	case MLK_SYS_DIR_SAVE:
+		return user_directory(kind);
+	case MLK_SYS_DIR_LOCALES:
+		return system_directory(MLK_LOCALEDIR);
+	default:
+		break;
+	}
+
+	return NULL;
 }
 
 int
