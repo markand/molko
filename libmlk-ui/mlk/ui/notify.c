@@ -30,6 +30,7 @@
 #include "align.h"
 #include "notify.h"
 #include "ui.h"
+#include "ui_p.h"
 
 #define WIDTH   (mlk_window.w / 2.5)
 #define HEIGHT  (mlk_window.h / 10)
@@ -75,7 +76,7 @@ geometry(struct geo *geo, const struct mlk_notify *n, size_t index)
 
 	/* Align icon at the left center. */
 	if (n->icon->h >= HEIGHT) {
-		mlk_tracef("notification icon is too large: %u > %u", n->icon->h, HEIGHT);
+		mlk_tracef(_("notification icon is too large: %u > %u"), n->icon->h, HEIGHT);
 		geo->icon_x = x + mlk_notify_style.padding;
 		geo->icon_y = y + mlk_notify_style.padding;
 	} else {

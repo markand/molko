@@ -19,6 +19,8 @@
 #ifndef MLK_UI_P_H
 #define MLK_UI_P_H
 
+#include "sysconfig.h"
+
 #define MLK__DELEGATE_INVOKE(d, def, f, ...)            \
 do {                                                    \
         if (d && d->f)                                  \
@@ -37,5 +39,12 @@ do {                                                    \
 
 #define MLK__STYLE(w, d)                                \
         (w->style ? w->style : &d)
+
+#if defined(MLK_WITH_NLS)
+#       include <libintl.h>
+#       define _(s) dgettext("libmlk-ui", s)
+#else
+#       define _(s) s
+#endif
 
 #endif /* !MLK_UI_P_H */

@@ -30,6 +30,7 @@
 
 #include "align.h"
 #include "ui.h"
+#include "ui_p.h"
 
 /* Default font catalog. */
 #define FONT_DEF(b, s, i)                                               \
@@ -94,7 +95,7 @@ mlk_ui_draw_text(enum mlk_align align,
 	int x, y;
 
 	if (mlk_font_render(font, &texture, text, color) < 0)
-		mlk_tracef("unable to render text: %s", mlk_err());
+		mlk_tracef(_("unable to render text: %s"), mlk_err());
 	else {
 		mlk_align(align, &x, &y, texture.w, texture.h, px, py, pw, ph);
 		mlk_texture_draw(&texture, x, y);

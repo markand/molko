@@ -1,5 +1,5 @@
 /*
- * core_p.h -- libmlk-core private definitions
+ * rpg_p.h -- libmlk-rpg private definitions
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,16 +16,17 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_CORE_P_H
-#define MLK_CORE_CORE_P_H
+#ifndef MLK_RPG_RPG_P_H
+#define MLK_RPG_RPG_P_H
 
 #include "sysconfig.h"
 
 #if defined(MLK_WITH_NLS)
 #       include <libintl.h>
-#       define _(s) dgettext("libmlk-core", s)
+#       define _(s) dgettext("libmlk-rpg", s)
 #else
 #       define _(s) s
 #endif
 
-#endif /* !MLK_CORE_CORE_P_H */
+#endif /* !MLK_RPG_RPG_P_H */
+

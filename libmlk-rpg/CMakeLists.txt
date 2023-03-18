@@ -34,6 +34,7 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/quest.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg_p.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/save.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/save.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader-file.c
@@ -43,7 +44,6 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/walksprite.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/walksprite.h
 )
 
 set(

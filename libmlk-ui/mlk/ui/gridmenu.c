@@ -87,7 +87,7 @@ geometry(struct mlk_gridmenu *menu)
 	 * is outside of the elements.
 	 */
 	if (reqw > menu->w) {
-		mlk_tracef("gridmenu width is too small: %u < %u", menu->w, reqw);
+		mlk_tracef(_("gridmenu width is too small: %u < %u"), menu->w, reqw);
 		menu->spacew = 1;
 	} else if (menu->ncols > 1) {
 		reqw -= style->padding * 2;
@@ -95,7 +95,7 @@ geometry(struct mlk_gridmenu *menu)
 	}
 
 	if (reqh > menu->h) {
-		mlk_tracef("gridmenu height is too small: %u < %u", menu->h, reqh);
+		mlk_tracef(_("gridmenu height is too small: %u < %u"), menu->h, reqh);
 		menu->spaceh = 1;
 	} else if (menu->nrows > 1) {
 		reqh -= style->padding * 2;
@@ -213,7 +213,7 @@ draw(struct mlk_gridmenu_delegate *delegate, const struct mlk_gridmenu *menu)
 			color = style->text_color;
 
 		if (mlk_font_render(font, &tex, menu->items[item], color) < 0) {
-			mlk_tracef("unable to render grid menu item: %s", mlk_err());
+			mlk_tracef(_("unable to render grid menu item: %s"), mlk_err());
 			continue;
 		}
 

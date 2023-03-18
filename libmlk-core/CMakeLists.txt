@@ -20,33 +20,34 @@ project(libmlk-core)
 
 set(
 	SOURCES
-	${libmlk-core_SOURCE_DIR}/mlk/core/game.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/sprite.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/trace.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/maths.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/sys.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/util.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/drawable-stack.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/action-script.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/state.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/texture.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/action-stack.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/action.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/alloc.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/animation.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/clock.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/core.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/core.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/core_p.h
+	${libmlk-core_SOURCE_DIR}/mlk/core/drawable-stack.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/drawable.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/err.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/event.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/font.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/painter.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/panic.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/game.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/gamepad.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/image.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/alloc.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/clock.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/action-stack.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/core.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/animation.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/err.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/maths.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/music.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/painter.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/panic.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/sound.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/event.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/drawable.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/action.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/window.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/sprite.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/state.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/sys.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/texture.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/trace.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/util.c
 )
 
 set(
