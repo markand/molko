@@ -21,29 +21,33 @@ project(libmlk-rpg)
 set(
 	SOURCES
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader-file.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader-file.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/message.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/message.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/property.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/property.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/quest.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/quest.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg_p.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/save.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/save.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader-file.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader-file.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/walksprite.c
+)
+
+set(
+	HEADERS
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader-file.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/message.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader-file.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.h
 )
 
 set(
@@ -67,7 +71,9 @@ set(
 
 mlk_library(
 	NAME libmlk-rpg
-	SOURCES ${SOURCES} ${ASSETS} ${NLS}
+	SOURCES ${SOURCES}
+	HEADERS ${HEADERS}
+	HEADERS_DIRECTORY mlk/rpg
 	LANGS ${NLS}
 	ASSETS ${ASSETS}
 	LIBRARIES
@@ -78,4 +84,4 @@ mlk_library(
 		PUBLIC $<BUILD_INTERFACE:${libmlk-rpg_SOURCE_DIR}>
 )
 
-source_group(TREE ${libmlk-rpg_SOURCE_DIR} FILES ${SOURCES} ${ASSETS} ${NLS})
+source_group(TREE ${libmlk-rpg_SOURCE_DIR} FILES ${SOURCES} ${HEADERS} ${ASSETS} ${NLS})

@@ -33,7 +33,7 @@ function(mlk_library)
 	endif ()
 
 	if (LIB_ASSETS)
-		mlk_bcc(ASSETS ${LIB_ASSETS} OUTPUTS_VAR HEADERS)
+		mlk_bcc(ASSETS ${LIB_ASSETS} OUTPUTS_VAR assets)
 	endif ()
 
 	if (LIB_LANGS AND MLK_WITH_NLS)
@@ -41,7 +41,7 @@ function(mlk_library)
 			NAME ${LIB_NAME}
 			LANGS ${LIB_LANGS}
 			SOURCES ${LIB_SOURCES}
-			OUTPUTS_VAR MO
+			OUTPUTS_VAR mo
 		)
 	endif ()
 
@@ -52,10 +52,21 @@ function(mlk_library)
 		mlk_tilesets("${LIB_TILESETS}" ${CMAKE_CURRENT_BINARY_DIR}/tilesets tilesets)
 	endif ()
 
-	add_library(${LIB_NAME} ${LIB_TYPE} ${LIB_SOURCES} ${HEADERS} ${MO} ${maps} ${tilesets})
+	add_library(
+		${LIB_NAME}
+		${LIB_TYPE}
+		${LIB_ASSETS}
+		${LIB_HEADERS}
+		${LIB_LANGS}
+		${LIB_SOURCES}
+		${assets}
+		${maps}
+		${mo}
+		${tilesets}
+	)
 
 	if (LIB_FOLDER)
-		set_target_properties(${LIB_NAME} PROPERTIES FOLDER extern)
+		set_target_properties(${LIB_NAME} PROPERTIES FOLDER ${LIB_FOLDER})
 	endif ()
 
 	if (LIB_FLAGS)

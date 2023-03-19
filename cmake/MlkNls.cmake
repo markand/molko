@@ -76,4 +76,5 @@ macro(mlk_nls)
 		COMMENT "Updating in-source .pot and .po files"
 	)
 	set_target_properties(po-${_nls_NAME} PROPERTIES FOLDER "nls")
+	source_group(build/mo FILES ${${_nls_OUTPUTS_VAR}})
 endmacro()

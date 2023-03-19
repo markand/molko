@@ -37,7 +37,6 @@ set(
 
 set(
 	HEADERS
-	${libmlk-util_BINARY_DIR}/mlk/util/sysconfig.h
 	${libmlk-util_SOURCE_DIR}/mlk/util/dir.h
 	${libmlk-util_SOURCE_DIR}/mlk/util/util.h
 )
@@ -62,7 +61,9 @@ mlk_library(
 	NAME libmlk-util
 	SOURCES ${SOURCES}
 	INSTALL
-	HEADERS ${HEADERS}
+	HEADERS
+		${HEADERS}
+		${libmlk-util_BINARY_DIR}/mlk/util/sysconfig.h
 	HEADERS_DIRECTORY mlk/util
 	LIBRARIES ${LIBRARIES}
 	INCLUDES
@@ -72,4 +73,5 @@ mlk_library(
 			$<BUILD_INTERFACE:${libmlk-util_BINARY_DIR}/mlk/util>
 )
 
-source_group(TREE ${libmlk-util_SOURCE_DIR} FILES ${SOURCES})
+source_group(TREE ${libmlk-util_SOURCE_DIR} FILES ${HEADERS} ${SOURCES})
+source_group(build ${libmlk-util_BINARY_DIR}/mlk/util/sysconfig.h)

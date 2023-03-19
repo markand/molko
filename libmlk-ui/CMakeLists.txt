@@ -21,24 +21,28 @@ project(libmlk-ui)
 set(
 	SOURCES
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/align.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/align.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/button.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/button.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/checkbox.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/checkbox.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/debug.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/debug.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/frame.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/frame.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/gridmenu.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/gridmenu.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/label.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/label.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/notify.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/notify.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui_p.h
+)
+
+set(
+	HEADERS
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/align.h
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/button.h
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/checkbox.h
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/debug.h
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/frame.h
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/gridmenu.h
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/label.h
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/notify.h
+	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui.h
 )
 
 set(
@@ -53,7 +57,9 @@ set(
 
 mlk_library(
 	NAME libmlk-ui
-	SOURCES ${SOURCES} ${ASSETS} ${NLS}
+	SOURCES ${SOURCES}
+	HEADERS ${HEADERS}
+	HEADERS_DIRECTORY mlk/ui
 	LANGS ${NLS}
 	ASSETS ${ASSETS}
 	LIBRARIES libmlk-core
@@ -62,4 +68,4 @@ mlk_library(
 		PUBLIC $<BUILD_INTERFACE:${libmlk-ui_SOURCE_DIR}>
 )
 
-source_group(TREE ${libmlk-ui_SOURCE_DIR} FILES ${SOURCES} ${ASSETS} ${NLS})
+source_group(TREE ${libmlk-ui_SOURCE_DIR} FILES ${SOURCES} ${HEADERS} ${ASSETS} ${NLS})

@@ -48,6 +48,7 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/texture.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/trace.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/util.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/window.c
 )
 
 set(
@@ -110,7 +111,7 @@ endif ()
 
 mlk_library(
 	NAME libmlk-core
-	SOURCES ${HEADERS} ${NLS} ${SOURCES}
+	SOURCES ${SOURCES}
 	HEADERS ${HEADERS}
 	HEADERS_DIRECTORY mlk/core
 	LANGS ${NLS}
@@ -130,4 +131,4 @@ mlk_library(
 			${OPENAL_INCLUDE_DIR}
 )
 
-source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${SOURCES} ${NLS})
+source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${HEADERS} ${SOURCES} ${NLS})
