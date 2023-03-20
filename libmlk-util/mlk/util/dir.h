@@ -42,7 +42,7 @@
  * }
  *
  * while (mlk_dir_next(&iter)) {
- *     printf("-> %s\n", iter->entry);
+ *     printf("-> %s\n", iter.entry);
  * }
  *
  * // At this step the directory iterator is already destroyed for convenience.
