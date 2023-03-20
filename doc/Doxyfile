@@ -36,6 +36,7 @@ INPUT                  = libmlk-util \
                          libmlk-rpg
 EXAMPLE_PATH           = examples
 EXCLUDE                = libmlk-util/mlk/util/sysconfig.cmake.h \
+                         libmlk-core/mlk/core/core_p.h          \
                          libmlk-core/mlk/core/sys_p.h           \
                          libmlk-core/mlk/core/texture_p.h       \
                          libmlk-core/mlk/core/window_p.h        \
