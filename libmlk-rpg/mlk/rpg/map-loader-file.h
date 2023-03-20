@@ -31,6 +31,8 @@
 #include "tileset.h"
 
 struct mlk_map_loader;
+struct mlk_sprite;
+struct mlk_texture;
 
 /**
  * \struct mlk_map_loader_file
@@ -46,6 +48,9 @@ struct mlk_map_loader_file {
 
 	/** \cond MLK_PRIVATE_DECLS */
 	unsigned int *tiles[MLK_MAP_LAYER_TYPE_LAST];
+
+	struct mlk_texture **textures;
+	struct mlk_sprite **sprites;
 
 	/*
 	 * We use a tileset file loader if init_tileset function isn't present

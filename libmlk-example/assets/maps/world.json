@@ -69,14 +69,29 @@
  "orientation":"orthogonal",
  "properties":[
         {
-         "name":"origin-x",
+         "name":"player-origin-x",
          "type":"int",
          "value":384
         }, 
         {
-         "name":"origin-y",
+         "name":"player-origin-y",
          "type":"int",
          "value":480
+        }, 
+        {
+         "name":"player-sprite",
+         "type":"string",
+         "value":"john.png"
+        }, 
+        {
+         "name":"player-sprite-h",
+         "type":"int",
+         "value":48
+        }, 
+        {
+         "name":"player-sprite-w",
+         "type":"int",
+         "value":48
         }, 
         {
          "name":"title",
@@ -84,7 +99,7 @@
          "value":"Isolated Island"
         }],
  "renderorder":"right-down",
- "tiledversion":"1.9.2",
+ "tiledversion":"1.10.0",
  "tileheight":48,
  "tilesets":[
         {
@@ -93,6 +108,6 @@
         }],
  "tilewidth":48,
  "type":"map",
- "version":"1.9",
+ "version":"1.10",
  "width":30
 }

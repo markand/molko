@@ -25,6 +25,8 @@ enum mlk_map_layer_type;
 
 struct mlk_map;
 struct mlk_map_block;
+struct mlk_sprite;
+struct mlk_texture;
 struct mlk_tileset;
 
 /**
@@ -55,6 +57,31 @@ struct mlk_map_loader {
 	struct mlk_tileset * (*init_tileset)(struct mlk_map_loader *self,
 	                                     struct mlk_map *map,
 	                                     const char *ident);
+
+	/**
+	 * (read-write)
+	 *
+	 * Open a texture from the given ident name.
+	 *
+	 * \param self this loader
+	 * \param ident the texture name (or path)
+	 * \return a borrowed texture or NULL on failure
+	 */
+	struct mlk_texture * (*init_texture)(struct mlk_map_loader *self,
+	                                     struct mlk_map *map,
+	                                     const char *ident);
+
+	/**
+	 * (read-write)
+	 *
+	 * Return a sprite that the loader needs.
+	 *
+	 * \param self this loader
+	 * \return a unused sprite
+	 * \return a borrowed sprite or NULL on failure
+	 */
+	struct mlk_sprite * (*init_sprite)(struct mlk_map_loader *self,
+	                                   struct mlk_map *map);
 
 	/**
 	 * (read-write)

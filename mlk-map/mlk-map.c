@@ -56,27 +56,48 @@ find_property(const json_t *props, const char *which)
 }
 
 static void
-write_origin(const json_t *props)
+write_player_origin(const json_t *props)
 {
-	const json_t *prop_origin_x;
-	const json_t *prop_origin_y;
+	const json_t *x, *y;
 
-	prop_origin_x = find_property(props, "origin-x");
-	prop_origin_y = find_property(props, "origin-y");
+	x = find_property(props, "player-origin-x");
+	y = find_property(props, "player-origin-y");
 
-	if (!prop_origin_x || !json_is_integer(prop_origin_x) ||
-	    !prop_origin_y || !json_is_integer(prop_origin_y))
+	if (!x || !json_is_integer(x) ||
+	    !y || !json_is_integer(y))
 		return;
 
-	printf("origin|%d|%d\n",
-	    (int)json_integer_value(prop_origin_x),
-	    (int)json_integer_value(prop_origin_y));
+	printf("player-origin|%d|%d\n",
+	    (int)json_integer_value(x),
+	    (int)json_integer_value(y));
+}
+
+static void
+write_player_sprite(const json_t *props)
+{
+	const json_t *sprite, *w, *h;
+
+	sprite = find_property(props, "player-sprite");
+	w = find_property(props, "player-sprite-w");
+	h = find_property(props, "player-sprite-h");
+
+	if (!sprite || !json_is_string(sprite) ||
+	    !w      || !json_is_integer(w)     ||
+	    !h      || !json_is_integer(h))
+		return;
+
+	printf("player-sprite|%d|%d|%s\n",
+	    (int)json_integer_value(w),
+	    (int)json_integer_value(h),
+	    json_string_value(sprite)
+	);
 }
 
 static void
 write_properties(const json_t *props)
 {
-	write_origin(props);
+	write_player_origin(props);
+	write_player_sprite(props);
 }
 
 static void

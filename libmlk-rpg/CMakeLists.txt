@@ -48,6 +48,7 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader-file.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/walksprite.h
 )
 
 set(

@@ -24,6 +24,7 @@
 #include <mlk/util/util.h>
 
 #include <mlk/core/err.h>
+#include <mlk/core/sprite.h>
 #include <mlk/core/trace.h>
 #include <mlk/core/util.h>
 
@@ -187,16 +188,49 @@ parse_rows(struct mlk_map_loader *loader,
 }
 
 static int
-parse_origin(struct mlk_map_loader *loader,
-             struct mlk_map *map,
-             const char *line,
-             FILE *fp)
+parse_player_origin(struct mlk_map_loader *loader,
+                    struct mlk_map *map,
+                    const char *line,
+                    FILE *fp)
 {
 	(void)loader;
 	(void)fp;
 
-	if (sscanf(line, "origin|%d|%d", &map->player_x, &map->player_y) != 2)
-		return mlk_errf("invalid origin");
+	if (sscanf(line, "player-origin|%d|%d", &map->player_x, &map->player_y) != 2)
+		return mlk_errf("invalid player origin");
+
+	return 0;
+}
+
+static int
+parse_player_sprite(struct mlk_map_loader *loader,
+                    struct mlk_map *map,
+                    const char *line,
+                    FILE *fp)
+{
+	(void)fp;
+
+	char format[32], ident[FILENAME_MAX + 1] = {0};
+	unsigned int w = 0, h = 0;
+	struct mlk_sprite *sprite;
+	struct mlk_texture *texture;
+
+	snprintf(format, sizeof (format), "player-sprite|%%u|%%u|%%%zu[^\n]", sizeof (ident) - 1);
+
+	if (sscanf(line, format, &w, &h, ident) != 3)
+		return mlk_errf("invalid player sprite");
+	if (!(texture = loader->init_texture(loader, map, ident)))
+		return -1;
+	if (!(sprite = loader->init_sprite(loader, map)))
+		return -1;
+
+	sprite->cellw = w;
+	sprite->cellh = h;
+	sprite->texture = texture;
+	mlk_sprite_init(sprite);
+
+	/* Add this sprite into the final map. */
+	map->player_sprite = sprite;
 
 	return 0;
 }
@@ -211,11 +245,12 @@ parse_line(struct mlk_map_loader *loader,
 		const char *property;
 		int (*read)(struct mlk_map_loader *, struct mlk_map *, const char *, FILE *);
 	} props[] = {
-		{ "columns",    parse_columns           },
-		{ "rows",       parse_rows              },
-		{ "tileset",    parse_tileset           },
-		{ "origin",     parse_origin            },
-		{ "layer",      parse_layer             },
+		{ "columns",            parse_columns           },
+		{ "rows",               parse_rows              },
+		{ "tileset",            parse_tileset           },
+		{ "player-origin",      parse_player_origin     },
+		{ "player-sprite",      parse_player_sprite     },
+		{ "layer",              parse_layer             },
 	};
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(props); ++i) {
