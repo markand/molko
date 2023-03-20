@@ -10,6 +10,9 @@ assets/.*\.h$
 # Qt Creator files
 ^CMakeLists\.txt\.user$
 
+# Code and friends.
+^\.vscode
+
 # vim/emacs specific.
 ^tags$
 ^tags\.lock$
