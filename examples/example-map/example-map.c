@@ -20,6 +20,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <mlk/util/util.h>
+
 #include <mlk/core/animation.h>
 #include <mlk/core/core.h>
 #include <mlk/core/err.h>
@@ -54,11 +56,9 @@
 #include <assets/maps/world.h>
 #include <assets/tilesets/world.h>
 
-static struct mlk_tileset_loader_file tileset_loader_file;
 static struct mlk_tileset_loader tileset_loader;
 static struct mlk_tileset tileset;
 
-static struct mlk_map_loader_file map_loader_file;
 static struct mlk_map_loader map_loader;
 static struct mlk_map map;
 
@@ -89,14 +89,13 @@ static const struct {
 } table_textures[] = {
 	{ "world.png",                  &mlk_registry_textures[MLK_REGISTRY_TEXTURE_WORLD] },
 	{ "animation-water.png",        &mlk_registry_textures[MLK_REGISTRY_TEXTURE_WATER] },
+	{ "john.png",                   &mlk_registry_textures[MLK_REGISTRY_TEXTURE_JOHN]  },
 	{ NULL,                         NULL                                               }
 };
 
 static struct mlk_texture *
-init_texture(struct mlk_tileset_loader *loader, const char *ident)
+find_texture(const char *ident)
 {
-	(void)loader;
-
 	char filepath[MLK_PATH_MAX], filename[FILENAME_MAX + 1];
 
 	mlk_util_strlcpy(filepath, ident, sizeof (filepath));
@@ -110,8 +109,26 @@ init_texture(struct mlk_tileset_loader *loader, const char *ident)
 	return NULL;
 }
 
+static struct mlk_texture *
+tileset_new_texture(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset, const char *ident)
+{
+	(void)loader;
+	(void)tileset;
+
+	return find_texture(ident);
+}
+
+static struct mlk_texture *
+map_new_texture(struct mlk_map_loader *loader, struct mlk_map *map, const char *ident)
+{
+	(void)loader;
+	(void)map;
+
+	return find_texture(ident);
+}
+
 struct mlk_tileset *
-init_tileset(struct mlk_map_loader *loader, struct mlk_map *map, const char *ident)
+map_new_tileset(struct mlk_map_loader *loader, struct mlk_map *map, const char *ident)
 {
 	(void)loader;
 	(void)map;
@@ -140,22 +157,21 @@ init(void)
 	 * registry which is not supported by itself in
 	 * mlk_tileset_loader_file.
 	 */
-	mlk_tileset_loader_file_init(&tileset_loader_file, &tileset_loader, "");
-	tileset_loader.init_texture = init_texture;
+	mlk_tileset_loader_file_init(&tileset_loader, "");
+	tileset_loader.new_texture = tileset_new_texture;
 
 	/*
 	 * Create our map loader. It will also search for a tileset to be found
 	 * on disk by default which we would like to avoid. We override the
 	 * init_tileset function.
 	 */
-	mlk_map_loader_file_init(&map_loader_file, &map_loader, "");
-	map_loader.init_tileset = init_tileset;
+	mlk_map_loader_file_init(&map_loader, "");
+	map_loader.new_tileset = map_new_tileset;
+	map_loader.new_texture = map_new_texture;
 
 	if (mlk_map_loader_openmem(&map_loader, &map, assets_maps_world, sizeof (assets_maps_world)) < 0)
 		mlk_panic();
 
-	// TODO: this not handled by the map yet.
-	map.player_sprite = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_JOHN];
 	mlk_map_init(&map);
 }
 
@@ -233,8 +249,9 @@ run(void)
 static void
 quit(void)
 {
-	mlk_map_loader_file_finish(&map_loader_file);
-	mlk_tileset_loader_file_finish(&tileset_loader_file);
+	mlk_map_finish(&map);
+	mlk_map_loader_file_finish(&map_loader);
+	mlk_tileset_loader_file_finish(&tileset_loader);
 	mlk_example_finish();
 }
 

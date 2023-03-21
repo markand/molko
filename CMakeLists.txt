@@ -87,6 +87,7 @@ endif ()
 
 add_subdirectory(extern/libsqlite)
 add_subdirectory(extern/libdt)
+add_subdirectory(extern/libutlist)
 
 if (MLK_WITH_DOXYGEN)
 	add_subdirectory(doc)

@@ -54,7 +54,7 @@ parse_layer_tiles(struct mlk_map_loader *loader, struct mlk_map *map, const char
 	 * The next line after a layer declaration is a list of plain integer
 	 * that fill the layer tiles.
 	 */
-	if (!(tiles = loader->alloc_tiles(loader, map, layer_type, amount)))
+	if (!(tiles = loader->new_tiles(loader, map, layer_type, amount)))
 		return -1;
 
 	for (unsigned int tile; fscanf(fp, "%u\n", &tile) && current < amount; ++current)
@@ -82,12 +82,12 @@ parse_objects(struct mlk_map_loader *loader,
 	snprintf(fmt, sizeof (fmt), "%%d|%%d|%%u|%%u|%%d|%%%zu[^\n]\n", sizeof (exec) - 1);
 
 	while (fscanf(fp, fmt, &x, &y, &w, &h, &isblock, exec) >= 5) {
-		if (!loader->load_object) {
+		if (!loader->new_object) {
 			mlk_tracef("ignoring object %d,%d,%u,%u,%d,%s", x, y, w, h, isblock, exec);
 			continue;
 		}
 
-		loader->load_object(loader, map, x, y, w, h, exec);
+		loader->new_object(loader, map, x, y, w, h, exec);
 
 		/*
 		 * Actions do not have concept of collisions because they are
@@ -151,7 +151,7 @@ parse_tileset(struct mlk_map_loader *loader,
 
 	if (!(p = strchr(line, '|')))
 		return mlk_errf("could not parse tileset");
-	if (!(map->tileset = loader->init_tileset(loader, map, p + 1)))
+	if (!(map->tileset = loader->new_tileset(loader, map, p + 1)))
 		return -1;
 
 	return 0;
@@ -219,9 +219,9 @@ parse_player_sprite(struct mlk_map_loader *loader,
 
 	if (sscanf(line, format, &w, &h, ident) != 3)
 		return mlk_errf("invalid player sprite");
-	if (!(texture = loader->init_texture(loader, map, ident)))
+	if (!(texture = loader->new_texture(loader, map, ident)))
 		return -1;
-	if (!(sprite = loader->init_sprite(loader, map)))
+	if (!(sprite = loader->new_sprite(loader, map)))
 		return -1;
 
 	sprite->cellw = w;

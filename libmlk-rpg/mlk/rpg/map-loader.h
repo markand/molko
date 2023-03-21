@@ -36,6 +36,11 @@ struct mlk_tileset;
  * This module provides a generic way to open maps. It uses a callback similar
  * to the ::mlk_tileset_loader.
  */
+
+/**
+ * \struct mlk_map_loader
+ * \brief Abstract map loader structure
+ */
 struct mlk_map_loader {
 	/**
 	 * (read-write, borrowed, optional)
@@ -54,9 +59,9 @@ struct mlk_map_loader {
 	 * \param ident the texture name (or path)
 	 * \return the tileset to use or NULL on failure
 	 */
-	struct mlk_tileset * (*init_tileset)(struct mlk_map_loader *self,
-	                                     struct mlk_map *map,
-	                                     const char *ident);
+	struct mlk_tileset * (*new_tileset)(struct mlk_map_loader *self,
+	                                    struct mlk_map *map,
+	                                    const char *ident);
 
 	/**
 	 * (read-write)
@@ -67,9 +72,9 @@ struct mlk_map_loader {
 	 * \param ident the texture name (or path)
 	 * \return a borrowed texture or NULL on failure
 	 */
-	struct mlk_texture * (*init_texture)(struct mlk_map_loader *self,
-	                                     struct mlk_map *map,
-	                                     const char *ident);
+	struct mlk_texture * (*new_texture)(struct mlk_map_loader *self,
+	                                    struct mlk_map *map,
+	                                    const char *ident);
 
 	/**
 	 * (read-write)
@@ -80,8 +85,8 @@ struct mlk_map_loader {
 	 * \return a unused sprite
 	 * \return a borrowed sprite or NULL on failure
 	 */
-	struct mlk_sprite * (*init_sprite)(struct mlk_map_loader *self,
-	                                   struct mlk_map *map);
+	struct mlk_sprite * (*new_sprite)(struct mlk_map_loader *self,
+	                                  struct mlk_map *map);
 
 	/**
 	 * (read-write)
@@ -94,10 +99,10 @@ struct mlk_map_loader {
 	 * \param n the number of tile items (rows * columns)
 	 * \return a pointer to a usable area or NULL on failure
 	 */
-	unsigned int * (*alloc_tiles)(struct mlk_map_loader *self,
-	                              struct mlk_map *map,
-	                              enum mlk_map_layer_type type,
-	                              size_t n);
+	unsigned int * (*new_tiles)(struct mlk_map_loader *self,
+	                            struct mlk_map *map,
+	                            enum mlk_map_layer_type type,
+	                            size_t n);
 
 	/**
 	 * (read-write, optional)
@@ -112,13 +117,13 @@ struct mlk_map_loader {
 	 * \param h the object height
 	 * \param argument optional data to pass to the object
 	 */
-	void (*load_object)(struct mlk_map_loader *self,
-	                    struct mlk_map *map,
-	                    int x,
-	                    int y,
-	                    unsigned int w,
-	                    unsigned int h,
-	                    const char *argument);
+	void (*new_object)(struct mlk_map_loader *self,
+	                   struct mlk_map *map,
+	                   int x,
+	                   int y,
+	                   unsigned int w,
+	                   unsigned int h,
+	                   const char *argument);
 
 	/**
 	 * (read-write)

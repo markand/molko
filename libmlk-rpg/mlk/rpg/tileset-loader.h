@@ -45,7 +45,7 @@ struct mlk_tileset_collision;
 
 /**
  * \struct mlk_tileset_loader
- * \brief Abstract loader structure
+ * \brief Abstract tileset loader structure
  *
  * All function pointers must be set.
  */
@@ -63,11 +63,13 @@ struct mlk_tileset_loader {
 	 * Open a texture from the given ident name.
 	 *
 	 * \param self this loader
+	 * \param tileset the underlying tileset being loaded
 	 * \param ident the texture name (or path)
 	 * \return a borrowed texture or NULL on failure
 	 */
-	struct mlk_texture * (*init_texture)(struct mlk_tileset_loader *self,
-	                                     const char *ident);
+	struct mlk_texture * (*new_texture)(struct mlk_tileset_loader *self,
+	                                    struct mlk_tileset *tileset,
+	                                    const char *ident);
 
 	/**
 	 * (read-write)
@@ -75,10 +77,11 @@ struct mlk_tileset_loader {
 	 * Return a sprite that the loader needs.
 	 *
 	 * \param self this loader
-	 * \return a unused sprite
+	 * \param tileset the underlying tileset being loaded
 	 * \return a borrowed sprite or NULL on failure
 	 */
-	struct mlk_sprite * (*init_sprite)(struct mlk_tileset_loader *self);
+	struct mlk_sprite * (*new_sprite)(struct mlk_tileset_loader *self,
+	                                  struct mlk_tileset *tileset);
 
 	/**
 	 * (read-write)
@@ -86,10 +89,11 @@ struct mlk_tileset_loader {
 	 * Return an animation that the loader needs.
 	 *
 	 * \param self this loader
-	 * \return a unused animation
+	 * \param tileset the underlying tileset being loaded
 	 * \return a borrowed animation or NULL on failure
 	 */
-	struct mlk_animation * (*init_animation)(struct mlk_tileset_loader *self);
+	struct mlk_animation * (*new_animation)(struct mlk_tileset_loader *self,
+	                                        struct mlk_tileset *tileset);
 
 	/**
 	 * (read-write)
@@ -97,18 +101,20 @@ struct mlk_tileset_loader {
 	 * Expand the collision array by one element.
 	 *
 	 * \param self this loader
+	 * \param tileset the underlying tileset being loaded
 	 * \param array the old array (can be NULL) to reallocate
 	 * \param arraysz the new array size (usually +1 than before)
 	 * \return a unused animation
 	 */
 	struct mlk_tileset_collision * (*expand_collisions)(struct mlk_tileset_loader *self,
+	                                                    struct mlk_tileset *tileset,
 	                                                    struct mlk_tileset_collision *array,
 	                                                    size_t arraysz);
 
 	/**
 	 * (read-write)
 	 *
-	 * Expand the animation array by one element.
+	 * Expand the tileset animation array by one element.
 	 *
 	 * \param self this loader
 	 * \param array the old array (can be NULL) to reallocate
@@ -116,6 +122,7 @@ struct mlk_tileset_loader {
 	 * \return a unused animation
 	 */
 	struct mlk_tileset_animation * (*expand_animations)(struct mlk_tileset_loader *self,
+	                                                    struct mlk_tileset *tileset,
 	                                                    struct mlk_tileset_animation *array,
 	                                                    size_t arraysz);
 

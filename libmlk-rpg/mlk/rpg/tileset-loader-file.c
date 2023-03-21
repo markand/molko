@@ -25,34 +25,45 @@
 #include <mlk/core/sprite.h>
 #include <mlk/core/texture.h>
 
+#include "loader-file_p.h"
 #include "tileset-loader-file.h"
 #include "tileset-loader.h"
 #include "tileset.h"
 
-static inline void *
-allocate(void ***array, size_t width)
+struct self {
+	/* Resources allocator. */
+	struct mlk__loader_file *loader;
+
+	/* Arrays reallocated on purpose. */
+	struct mlk_tileset_collision *tilecollisions;
+	struct mlk_tileset_animation *tileanimations;
+};
+
+static struct self *
+self_new(const char *path)
 {
-	void **ptr, *elem;
+	struct self *self;
 
-	/* Not yet allocated? Allocate a new pointer element. */
-	if (!*array)
-		ptr = mlk_alloc_new0(1, sizeof (void *));
-	else
-		ptr = mlk_alloc_expand(*array, 1);
-
-	if (!ptr)
+	if (!(self = mlk_alloc_new0(1, sizeof (*self))))
 		return NULL;
-
-	/* Now allocate the element itself because. */
-	if (!(elem = mlk_alloc_new0(1, width)))
+	if (!(self->loader = mlk__loader_file_new(path))) {
+		mlk_alloc_free(self);
 		return NULL;
+	}
 
-	/* Store it into the array of elements. */
-	ptr[mlk_alloc_getn(ptr) - 1] = elem;
-	*array = ptr;
-
-	return elem;
+	return self;
 }
+
+static void
+self_free(struct self *self)
+{
+	mlk__loader_file_free(self->loader);
+
+	/* Clear array of collisions/animations .*/
+	mlk_alloc_free(self->tilecollisions);
+	mlk_alloc_free(self->tileanimations);
+}
+
 
 static void *
 expand(void **array, size_t n, size_t w)
@@ -70,128 +81,96 @@ expand(void **array, size_t n, size_t w)
 	return ptr;
 }
 
-static void
-finish(void ***ptr, void (*finish)(void *))
-{
-	size_t len;
-
-	/* Already cleared. */
-	if (!*ptr)
-		return;
-
-	len = mlk_alloc_getn(*ptr);
-
-	for (size_t i = 0; i < len; ++i)
-		finish((*ptr)[i]);
-
-	mlk_alloc_free(*ptr);
-	*ptr = NULL;
-}
-
-static void
-finish_texture(void *element)
-{
-	mlk_texture_finish(element);
-	mlk_alloc_free(element);
-}
-
 static struct mlk_texture *
-init_texture(struct mlk_tileset_loader *self, const char *ident)
+new_texture(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset, const char *ident)
 {
-	struct mlk_tileset_loader_file *file = self->data;
-	struct mlk_texture *texture;
-	char path[MLK_PATH_MAX];
+	(void)tileset;
 
-	snprintf(path, sizeof (path), "%s/%s", file->directory, ident);
+	struct self *self = loader->data;
 
-	/* No need to deallocate, already done in finish anyway. */
-	if (!(texture = allocate((void ***)&file->textures, sizeof (struct mlk_texture))))
-		return NULL;
-	if (mlk_image_open(texture, path) < 0)
-		return NULL;
-
-	return texture;
+	return mlk__loader_file_texture_open(self->loader, ident);
 }
 
 static struct mlk_sprite *
-init_sprite(struct mlk_tileset_loader *self)
+new_sprite(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset)
 {
-	struct mlk_tileset_loader_file *file = self->data;
+	(void)tileset;
 
-	return allocate((void ***)&file->sprites, sizeof (struct mlk_sprite));
+	struct self *self = loader->data;
+
+	return mlk__loader_file_sprite_new(self->loader);
 }
 
 static struct mlk_animation *
-init_animation(struct mlk_tileset_loader *self)
+new_animation(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset)
 {
-	struct mlk_tileset_loader_file *file = self->data;
+	(void)tileset;
 
-	return allocate((void ***)&file->animations, sizeof (struct mlk_animation));
+	struct self *self = loader->data;
+
+	return mlk__loader_file_animation_new(self->loader);
 }
 
 struct mlk_tileset_collision *
-expand_collisions(struct mlk_tileset_loader *self,
+expand_collisions(struct mlk_tileset_loader *loader,
+                  struct mlk_tileset *tileset,
                   struct mlk_tileset_collision *array,
                   size_t arraysz)
 {
+	(void)tileset;
 	(void)array;
 
-	struct mlk_tileset_loader_file *file = self->data;
+	struct self *self = loader->data;
 
-	return expand((void **)&file->tilecollisions, arraysz, sizeof (struct mlk_tileset_collision));
+	return expand((void **)&self->tilecollisions, arraysz, sizeof (struct mlk_tileset_collision));
 }
 
 struct mlk_tileset_animation *
-expand_animations(struct mlk_tileset_loader *self,
+expand_animations(struct mlk_tileset_loader *loader,
+                  struct mlk_tileset *tileset,
                   struct mlk_tileset_animation *array,
                   size_t arraysz)
 {
+	(void)tileset;
 	(void)array;
 
-	struct mlk_tileset_loader_file *file = self->data;
+	struct self *self = loader->data;
 
-	return expand((void **)&file->tileanimations, arraysz, sizeof (struct mlk_tileset_animation));
+	return expand((void **)&self->tileanimations, arraysz, sizeof (struct mlk_tileset_animation));
 }
 
-void
-mlk_tileset_loader_file_init(struct mlk_tileset_loader_file *file,
-                      struct mlk_tileset_loader *loader,
-                      const char *filename)
+int
+mlk_tileset_loader_file_init(struct mlk_tileset_loader *loader, const char *filename)
 {
-	assert(file);
 	assert(loader);
 	assert(filename);
 
-	char filepath[MLK_PATH_MAX];
+	struct self *self;
 
-	memset(file, 0, sizeof (*file));
 	memset(loader, 0, sizeof (*loader));
 
-	/* Determine base filename base directory. */
-	mlk_util_strlcpy(filepath, filename, sizeof (filepath));
-	mlk_util_strlcpy(file->directory, mlk_util_dirname(filepath), sizeof (file->directory));
+	if (!(self = self_new(filename)))
+		return -1;
 
-	loader->data = file;
-	loader->init_texture = init_texture;
-	loader->init_sprite = init_sprite;
-	loader->init_animation = init_animation;
+	loader->data = self;
+	loader->new_texture = new_texture;
+	loader->new_sprite = new_sprite;
+	loader->new_animation = new_animation;
 	loader->expand_collisions = expand_collisions;
 	loader->expand_animations = expand_animations;
+
+	return 0;
 }
 
 void
-mlk_tileset_loader_file_finish(struct mlk_tileset_loader_file *file)
+mlk_tileset_loader_file_finish(struct mlk_tileset_loader *loader)
 {
-	assert(file);
+	assert(loader);
 
-	/* Finalize individual elements. */
-	finish((void ***)&file->textures, finish_texture);
-	finish((void ***)&file->sprites, mlk_alloc_free);
-	finish((void ***)&file->animations, mlk_alloc_free);
+	struct self *self = loader->data;
 
-	/* Clear array of collisions/animations .*/
-	mlk_alloc_free(file->tilecollisions);
-	mlk_alloc_free(file->tileanimations);
+	if (self)
+		self_free(self);
 
-	memset(file, 0, sizeof (*file));
+	memset(loader, 0, sizeof (*loader));
 }

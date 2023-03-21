@@ -20,6 +20,8 @@ project(libmlk-rpg)
 
 set(
 	SOURCES
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/loader-file_p.c
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/loader-file_p.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader-file.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.c
@@ -80,6 +82,7 @@ mlk_library(
 	LIBRARIES
 		libmlk-ui
 		libmlk-sqlite
+		libmlk-utlist
 	INCLUDES
 		PRIVATE $<BUILD_INTERFACE:${libmlk-rpg_BINARY_DIR}>
 		PUBLIC $<BUILD_INTERFACE:${libmlk-rpg_SOURCE_DIR}>

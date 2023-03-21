@@ -20,6 +20,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <mlk/util/util.h>
+
 #include <mlk/core/animation.h>
 #include <mlk/core/core.h>
 #include <mlk/core/err.h>
@@ -47,7 +49,6 @@
 
 #include <assets/tilesets/world.h>
 
-static struct mlk_tileset_loader_file loader_file;
 static struct mlk_tileset_loader loader;
 static struct mlk_tileset tileset;
 
@@ -70,9 +71,10 @@ static const struct {
 };
 
 static struct mlk_texture *
-init_texture(struct mlk_tileset_loader *loader, const char *ident)
+new_texture(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset, const char *ident)
 {
 	(void)loader;
+	(void)tileset;
 
 	char filepath[MLK_PATH_MAX], filename[FILENAME_MAX + 1];
 
@@ -88,9 +90,10 @@ init_texture(struct mlk_tileset_loader *loader, const char *ident)
 }
 
 static struct mlk_sprite *
-init_sprite(struct mlk_tileset_loader *loader)
+new_sprite(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset)
 {
 	(void)loader;
+	(void)tileset;
 
 	/* Just ensure we haven't reach the limit. */
 	assert(spritesz < MLK_UTIL_SIZE(sprites));
@@ -99,9 +102,10 @@ init_sprite(struct mlk_tileset_loader *loader)
 }
 
 static struct mlk_animation *
-init_animation(struct mlk_tileset_loader *loader)
+new_animation(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset)
 {
 	(void)loader;
+	(void)tileset;
 
 	/* Just ensure we haven't reach the limit. */
 	assert(animationsz < MLK_UTIL_SIZE(animations));
@@ -122,10 +126,10 @@ init(void)
 	 * Images are loaded from the libmlk-example registry from RAM and
 	 * sprites animations are statically allocated.
 	 */
-	mlk_tileset_loader_file_init(&loader_file, &loader, "");
-	loader.init_texture = init_texture;
-	loader.init_sprite = init_sprite;
-	loader.init_animation = init_animation;
+	mlk_tileset_loader_file_init(&loader, "");
+	loader.new_texture = new_texture;
+	loader.new_sprite = new_sprite;
+	loader.new_animation = new_animation;
 
 	if (mlk_tileset_loader_openmem(&loader, &tileset, assets_tilesets_world, sizeof (assets_tilesets_world)) < 0)
 		mlk_panic();
@@ -197,7 +201,7 @@ run(void)
 static void
 quit(void)
 {
-	mlk_tileset_loader_file_finish(&loader_file);
+	mlk_tileset_loader_file_finish(&loader);
 	mlk_example_finish();
 }
 

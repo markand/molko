@@ -31,59 +31,27 @@
  * the allocator functions can be changed.
  */
 
-#include <mlk/util/util.h>
-
-struct mlk_animation;
-struct mlk_sprite;
-struct mlk_texture;
-struct mlk_tileset_animation;
-struct mlk_tileset_collision;
 struct mlk_tileset_loader;
-
-/**
- * \struct mlk_tileset_loader_file
- * \brief Tileset file loader structure
- */
-struct mlk_tileset_loader_file {
-	/**
-	 * (read-only)
-	 *
-	 * Computed tileset file directory.
-	 */
-	char directory[MLK_PATH_MAX];
-
-	/** \cond MLK_PRIVATE_DECLS */
-	struct mlk_texture **textures;
-	struct mlk_sprite **sprites;
-	struct mlk_animation **animations;
-	struct mlk_tileset_collision *tilecollisions;
-	struct mlk_tileset_animation *tileanimations;
-	/** \endcond MLK_PRIVATE_DECLS */
-};
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 /**
- * Fill the abstract loader with appropriate implementation.
+ * Initialize the loader with internal functions and internal data to allocate
+ * and find appropriate resources relative to the tileset filename.
  *
- * All loader member functions will be set and ::mlk_tileset_loader::data will
- * be set to file loader.
+ * After loading the tileset with this underlying loader, it should be kept
+ * until the tileset is no longer used.
  *
- * The file and loader structure are zero'ed before being initialized.
- *
- * \pre file != NULL
  * \pre loader != NULL
  * \pre filename != NULL
- * \param file the file loader
  * \param loader the abstract loader interface
  * \param filename path to the tileset file
+ * \return 0 on success or -1 on error
  */
-void
-mlk_tileset_loader_file_init(struct mlk_tileset_loader_file *file,
-                             struct mlk_tileset_loader *loader,
-                             const char *filename);
+int
+mlk_tileset_loader_file_init(struct mlk_tileset_loader *loader, const char *filename);
 
 /**
  * Cleanup allocated resources by this file loader.
@@ -92,7 +60,7 @@ mlk_tileset_loader_file_init(struct mlk_tileset_loader_file *file,
  * \param file the file loader
  */
 void
-mlk_tileset_loader_file_finish(struct mlk_tileset_loader_file *file);
+mlk_tileset_loader_file_finish(struct mlk_tileset_loader *file);
 
 #if defined(__cplusplus)
 }

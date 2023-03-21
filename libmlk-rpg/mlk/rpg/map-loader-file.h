@@ -22,64 +22,59 @@
 /**
  * \file map-loader-file.h
  * \brief Map file loader implementation
+ *
+ * This loader implements the map loader interface from a file into a directory
+ * (usually ending with `.map` extension).  It will find and allocate resources
+ * on the go depending on the file map content.
+ *
+ * For convenience, this loader will also use ::mlk_tileset_loader for loading
+ * and associating the tileset. If this behavior is not desired the function
+ * ::mlk_map_loader::new_tileset can be overriden after calling
+ * ::mlk_map_loader_file_init.
+ *
+ * Example of use:
+ *
+ * ```c
+ * struct mlk_map_loader loader;
+ * struct mlk_map map;
+ *
+ * // The loader needs to know the map location to retrieve relative files.
+ * const char *map_path = "/path/to/world.map";
+ *
+ * // Initialize the loader, it will be filled with custom internal functions.
+ * if (mlk_map_loader_file_init(&loader, map_path) < 0)
+ *     mlk_panic();
+ *
+ * // Load the map from the file on disk.
+ * if (mlk_map_loader_open(&loader, &map, map_path) < 0)
+ *     mlk_panic();
+ *
+ * // Don't forget to initialize the map before use.
+ * mlk_map_init(&map);
+ *
+ * // Destroy the resources.
+ * mlk_map_finish(&map);
+ * mlk_map_loader_file_finish(&loader);
+ * ```
  */
-
-#include <mlk/util/util.h>
-
-#include "map.h"
-#include "tileset-loader-file.h"
-#include "tileset.h"
 
 struct mlk_map_loader;
-struct mlk_sprite;
-struct mlk_texture;
 
 /**
- * \struct mlk_map_loader_file
- * \brief Map loader file structure
- */
-struct mlk_map_loader_file {
-	/**
-	 * (read-only)
-	 *
-	 * Computed map file directory.
-	 */
-	char directory[MLK_PATH_MAX];
-
-	/** \cond MLK_PRIVATE_DECLS */
-	unsigned int *tiles[MLK_MAP_LAYER_TYPE_LAST];
-
-	struct mlk_texture **textures;
-	struct mlk_sprite **sprites;
-
-	/*
-	 * We use a tileset file loader if init_tileset function isn't present
-	 * in this map loader.
-	 */
-	struct mlk_tileset_loader_file tileset_loader_file;
-	struct mlk_tileset tileset;
-
-	struct mlk_map_block *blocks;
-	/** \endcond MLK_PRIVATE_DECLS */
-};
-
-/**
- * Initialize the map loader.
+ * Initialize the loader with internal functions and internal data to allocate
+ * and find appropriate resources relative to the map filename.
  *
- * All loader member functions will be set and ::mlk_map_loader::data will be
- * set to file loader.
+ * After loading the map with this underlying loader, it should be kept until
+ * the map is no longer used.
  *
- * \pre file != NULL
  * \pre loader != NULL
  * \pre filename != NULL
- * \param file the file loader
  * \param loader the abstract loader interface
  * \param filename path to the map file
+ * \return 0 on success or -1 on error
  */
-void
-mlk_map_loader_file_init(struct mlk_map_loader_file *file,
-                         struct mlk_map_loader *loader,
-                         const char *filename);
+int
+mlk_map_loader_file_init(struct mlk_map_loader *loader, const char *filename);
 
 /**
  * Cleanup allocated resources by this file loader.
@@ -89,6 +84,6 @@ mlk_map_loader_file_init(struct mlk_map_loader_file *file,
  * \warning the map loaded with this loader must not be used
  */
 void
-mlk_map_loader_file_finish(struct mlk_map_loader_file *file);
+mlk_map_loader_file_finish(struct mlk_map_loader *file);
 
 #endif /* !MLK_RPG_MAP_LOADER_FILE_H */

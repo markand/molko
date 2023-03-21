@@ -106,7 +106,7 @@ parse_collisions(struct mlk_tileset_loader *loader,
 	size_t collisionsz = 0;
 
 	while (fscanf(fp, "%u|%d|%d|%u|%u\n", &id, &x, &y, &w, &h) == 5) {
-		if (!(array = loader->expand_collisions(loader, collisions, collisionsz + 1)))
+		if (!(array = loader->expand_collisions(loader, tileset, collisions, collisionsz + 1)))
 			return -1;
 
 		collisions = array;
@@ -158,13 +158,13 @@ parse_animations(struct mlk_tileset_loader *loader,
 	 * 4. Link the animation to the tileset animation.
 	 */
 	while (fscanf(fp, fmt, &id, filename, &delay) == 3) {
-		if (!(texture = loader->init_texture(loader, filename)))
+		if (!(texture = loader->new_texture(loader, tileset, filename)))
 			return -1;
-		if (!(sprite = loader->init_sprite(loader)))
+		if (!(sprite = loader->new_sprite(loader, tileset)))
 			return -1;
-		if (!(animation = loader->init_animation(loader)))
+		if (!(animation = loader->new_animation(loader, tileset)))
 			return -1;
-		if (!(array = loader->expand_animations(loader, tileanimations, tileanimationsz + 1)))
+		if (!(array = loader->expand_animations(loader, tileset, tileanimations, tileanimationsz + 1)))
 			return -1;
 
 		/* Bind the texture to the new sprite. */
@@ -211,9 +211,9 @@ parse_image(struct mlk_tileset_loader *loader,
 		return mlk_errf("missing tile dimensions before image");
 	if (!(p = strchr(line, '|')))
 		return mlk_errf("could not parse image");
-	if (!(texture = loader->init_texture(loader, p + 1)))
+	if (!(texture = loader->new_texture(loader, tileset, p + 1)))
 		return -1;
-	if (!(sprite = loader->init_sprite(loader)))
+	if (!(sprite = loader->new_sprite(loader, tileset)))
 		return -1;
 
 	/* Initialize the sprite with the texture. */
