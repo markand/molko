@@ -18,7 +18,6 @@
 
 #include <assert.h>
 #include <limits.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -26,7 +25,7 @@
 
 #include <mlk/util/util.h>
 
-static bool
+static inline int
 is_layer(const char *name)
 {
 	return strcmp(name, "background") == 0 ||

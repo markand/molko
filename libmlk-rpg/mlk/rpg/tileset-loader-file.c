@@ -64,7 +64,6 @@ self_free(struct self *self)
 	mlk_alloc_free(self->tileanimations);
 }
 
-
 static void *
 expand(void **array, size_t n, size_t w)
 {

@@ -175,11 +175,8 @@ write_animations(const json_t *tiles)
 }
 
 int
-main(int argc, char *argv[])
+main(void)
 {
-	(void)argc;
-	(void)argv;
-
 	json_t *document;
 	json_error_t error;
 

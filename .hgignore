@@ -13,6 +13,9 @@ assets/.*\.h$
 # Code and friends.
 ^\.vscode
 
+# clangd
+^\.cache
+
 # vim/emacs specific.
 ^tags$
 ^tags\.lock$

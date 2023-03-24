@@ -23,7 +23,7 @@
  * \file mlk/rpg/tileset-loader-file.h
  * \brief Tileset file loader implementation
  *
- * This convenient tileset loader loads tilesets from file and its associative
+ * This convenient tileset loader loads a tileset from file and its associative
  * resources relative to the tileset file directory.
  *
  * It also allocate memory for individual element and as such must be kept
@@ -51,16 +51,17 @@ extern "C" {
  * \return 0 on success or -1 on error
  */
 int
-mlk_tileset_loader_file_init(struct mlk_tileset_loader *loader, const char *filename);
+mlk_tileset_loader_file_init(struct mlk_tileset_loader *loader,
+                             const char *filename);
 
 /**
  * Cleanup allocated resources by this file loader.
  *
- * \pre file != NULL
- * \param file the file loader
+ * \pre loader != NULL
+ * \param loader the file loader
  */
 void
-mlk_tileset_loader_file_finish(struct mlk_tileset_loader *file);
+mlk_tileset_loader_file_finish(struct mlk_tileset_loader *loader);
 
 #if defined(__cplusplus)
 }

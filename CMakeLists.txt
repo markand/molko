@@ -56,7 +56,7 @@ mlk_option(MLK_WITH_DOXYGEN On
     BOOL "Enable doxygen documentation")
 mlk_option(MLK_WITH_EXAMPLES On
     BOOL "Enable examples")
-mlk_option(MLK_WITH_NLS Off
+mlk_option(MLK_WITH_NLS On
     BOOL "Enable NLS support")
 mlk_option(MLK_WITH_TESTS On
     BOOL "Enable unit tests")
