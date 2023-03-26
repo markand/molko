@@ -23,26 +23,20 @@
 
 #include <mlk/core/core.h>
 
-struct save {
+struct mlk_save {
 	time_t created;
 	time_t updated;
 	void *handle;
 };
 
-enum save_mode {
-	SAVE_MODE_READ,
-	SAVE_MODE_WRITE
+enum mlk_save_mode {
+	MLK_SAVE_MODE_READ,
+	MLK_SAVE_MODE_WRITE
 };
 
-struct save_stmt {
+struct mlk_save_stmt {
 	struct save *parent;
 	void *handle;
-};
-
-enum save_stmt_errno {
-	SAVE_STMT_DONE,
-	SAVE_STMT_ROW,
-	SAVE_STMT_ERROR
 };
 
 #if defined(__cplusplus)
@@ -50,39 +44,39 @@ extern "C" {
 #endif
 
 int
-save_open(struct save *, unsigned int, enum save_mode);
+mlk_save_open(struct mlk_save *, unsigned int, enum mlk_save_mode);
 
 int
-save_open_path(struct save *, const char *, enum save_mode);
+mlk_save_open_path(struct mlk_save *, const char *, enum mlk_save_mode);
 
 int
-save_ok(const struct save *);
+mlk_save_ok(const struct mlk_save *);
 
 int
-save_exec(struct save *, const char *, const char *, ...);
+mlk_save_exec(struct mlk_save *, const char *, const char *, ...);
 
 void
-save_finish(struct save *);
+mlk_save_finish(struct mlk_save *);
 
 /* Prepared statements. */
 int
-save_stmt_init(struct save_stmt *, struct save *, const char *, const char *, ...);
+mlk_save_stmt_init(struct mlk_save_stmt *, struct mlk_save *, const char *, const char *, ...);
 
-enum save_stmt_errno
-save_stmt_next(struct save_stmt *, const char *, ...);
+int
+mlk_save_stmt_next(struct mlk_save_stmt *, const char *, ...);
 
 void
-save_stmt_finish(struct save_stmt *);
+mlk_save_stmt_finish(struct mlk_save_stmt *);
 
 /* Explicit transactions. */
 int
-save_tx_begin(struct save *);
+mlk_save_tx_begin(struct mlk_save *);
 
-void
-save_tx_rollback(struct save *);
+int
+mlk_save_tx_rollback(struct mlk_save *);
 
-void
-save_tx_commit(struct save *);
+int
+mlk_save_tx_commit(struct mlk_save *);
 
 #if defined(__cplusplus)
 }

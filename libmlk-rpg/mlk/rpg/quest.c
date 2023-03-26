@@ -27,56 +27,52 @@
 #include "save.h"
 
 int
-quest_save(struct quest *q, struct save *s)
+quest_save(struct quest *q, struct mlk_save *s)
 {
 	assert(q);
 	assert(s);
 
 	const struct quest_step *step;
 
-	if (save_tx_begin(s) < 0)
+	if (mlk_save_tx_begin(s) < 0)
 		return -1;
-
-	if (save_exec(s, (const char *)assets_sql_quest_save, "s", q->name) < 0) {
-		save_tx_rollback(s);
+	if (mlk_save_exec(s, (const char *)assets_sql_quest_save, "s", q->name) < 0) {
+		mlk_save_tx_rollback(s);
 		return -1;
 	}
 
 	for (size_t i = 0; i < q->stepsz; ++i) {
 		step = &q->steps[i];
 
-		if (save_exec(s, (const char *)assets_sql_quest_step_save, "ssi", q->name, step->name, step->percent) < 0) {
-			save_tx_rollback(s);
+		if (mlk_save_exec(s, (const char *)assets_sql_quest_step_save, "ssi", q->name, step->name, step->percent) < 0) {
+			mlk_save_tx_rollback(s);
 			return -1;
 		}
 	}
 
-	save_tx_commit(s);
-
-	return 0;
+	return mlk_save_tx_commit(s);
 }
 
 int
-quest_load(struct quest *q, struct save *s)
+quest_load(struct quest *q, struct mlk_save *s)
 {
 	assert(q);
 	assert(s);
 
-	struct save_stmt stmt;
+	struct mlk_save_stmt stmt;
 	struct quest_step *step;
 
 	for (size_t i = 0; i < q->stepsz; ++i) {
 		step = &q->steps[i];
 
-		if (save_stmt_init(&stmt, s, (const char *)assets_sql_quest_step_load, "s", step->name))
+		if (mlk_save_stmt_init(&stmt, s, (const char *)assets_sql_quest_step_load, "s", step->name))
 			return -1;
-
-		if (save_stmt_next(&stmt, "i", &step->percent) < 0) {
-			save_stmt_finish(&stmt);
+		if (mlk_save_stmt_next(&stmt, "i", &step->percent) < 0) {
+			mlk_save_stmt_finish(&stmt);
 			return -1;
 		}
 
-		save_stmt_finish(&stmt);
+		mlk_save_stmt_finish(&stmt);
 	}
 
 	return 0;

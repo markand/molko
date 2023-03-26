@@ -39,13 +39,19 @@
 #define SQL_ROLLBACK    "ROLLBACK"
 
 static inline int
-set_error(struct save *db)
+set_error(struct mlk_save *db)
 {
 	return mlk_errf("%s", sqlite3_errmsg(db->handle));
 }
 
+static inline const char *
+path(unsigned int idx)
+{
+	return mlk_util_pathf("%s%u.db", mlk_sys_dir(MLK_SYS_DIR_SAVE), idx);
+}
+
 static inline int
-exec(struct save *db, const char *sql)
+exec(struct mlk_save *db, const char *sql)
 {
 	if (sqlite3_exec(db->handle, sql, NULL, NULL, NULL) != SQLITE_OK)
 		return set_error(db);
@@ -53,20 +59,14 @@ exec(struct save *db, const char *sql)
 	return 0;
 }
 
-static const char *
-path(unsigned int idx)
-{
-	return mlk_util_pathf("%s%u.db", mlk_sys_dir(MLK_SYS_DIR_SAVE), idx);
-}
-
-static int
-execu(struct save *db, const unsigned char *sql)
+static inline int
+execu(struct mlk_save *db, const unsigned char *sql)
 {
 	return exec(db, (const char *)sql);
 }
 
 static int
-verify(struct save *db)
+verify(struct mlk_save *db)
 {
 	struct {
 		time_t *date;
@@ -90,7 +90,7 @@ verify(struct save *db)
 }
 
 static int
-prepare(struct save *s, struct save_stmt *stmt, const char *sql, const char *args, va_list ap)
+prepare(struct mlk_save *s, struct mlk_save_stmt *stmt, const char *sql, const char *args, va_list ap)
 {
 	stmt->parent = s;
 	stmt->handle = NULL;
@@ -127,7 +127,7 @@ sqlite3_err:
 }
 
 static int
-extract(struct save_stmt *stmt, const char *args, va_list ap)
+extract(struct mlk_save_stmt *stmt, const char *args, va_list ap)
 {
 	const int ncols = sqlite3_column_count(stmt->handle);
 
@@ -162,15 +162,15 @@ extract(struct save_stmt *stmt, const char *args, va_list ap)
 }
 
 int
-save_open(struct save *db, unsigned int idx, enum save_mode mode)
+mlk_save_open(struct mlk_save *db, unsigned int idx, enum mlk_save_mode mode)
 {
 	assert(db);
 
-	return save_open_path(db, path(idx), mode);
+	return mlk_save_open_path(db, path(idx), mode);
 }
 
 int
-save_open_path(struct save *db, const char *path, enum save_mode mode)
+mlk_save_open_path(struct mlk_save *db, const char *path, enum mlk_save_mode mode)
 {
 	assert(db);
 	assert(path);
@@ -178,7 +178,7 @@ save_open_path(struct save *db, const char *path, enum save_mode mode)
 	int flags = 0;
 
 	switch (mode) {
-	case SAVE_MODE_WRITE:
+	case MLK_SAVE_MODE_WRITE:
 		flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
 		break;
 	default:
@@ -189,7 +189,7 @@ save_open_path(struct save *db, const char *path, enum save_mode mode)
 	if (sqlite3_open_v2(path, (sqlite3**)&db->handle, flags, NULL) != SQLITE_OK)
 		goto sqlite3_err;
 
-	if (mode == SAVE_MODE_WRITE && execu(db, assets_sql_init) < 0)
+	if (mode == MLK_SAVE_MODE_WRITE && execu(db, assets_sql_init) < 0)
 		goto sqlite3_err;
 
 	return verify(db);
@@ -204,7 +204,7 @@ sqlite3_err:
 }
 
 int
-save_ok(const struct save *db)
+mlk_save_ok(const struct mlk_save *db)
 {
 	assert(db);
 
@@ -212,13 +212,13 @@ save_ok(const struct save *db)
 }
 
 int
-save_exec(struct save *db, const char *sql, const char *args, ...)
+mlk_save_exec(struct mlk_save *db, const char *sql, const char *args, ...)
 {
-	assert(save_ok(db));
+	assert(mlk_save_ok(db));
 	assert(sql);
 
-	struct save_stmt stmt;
-	enum save_stmt_errno ret;
+	struct mlk_save_stmt stmt;
+	int ret;
 	va_list ap;
 
 	va_start(ap, args);
@@ -228,14 +228,14 @@ save_exec(struct save *db, const char *sql, const char *args, ...)
 	if (ret < 0)
 		return -1;
 
-	ret = save_stmt_next(&stmt, NULL);
-	save_stmt_finish(&stmt);
+	ret = mlk_save_stmt_next(&stmt, NULL);
+	mlk_save_stmt_finish(&stmt);
 
-	return ret == SAVE_STMT_ERROR ? -1 : 0;
+	return ret;
 }
 
 void
-save_finish(struct save *db)
+mlk_save_finish(struct mlk_save *db)
 {
 	assert(db);
 
@@ -246,10 +246,10 @@ save_finish(struct save *db)
 }
 
 int
-save_stmt_init(struct save_stmt *stmt, struct save *db, const char *sql, const char *args, ...)
+mlk_save_stmt_init(struct mlk_save_stmt *stmt, struct mlk_save *db, const char *sql, const char *args, ...)
 {
 	assert(stmt);
-	assert(save_ok(db));
+	assert(mlk_save_ok(db));
 	assert(args);
 
 	va_list ap;
@@ -262,25 +262,25 @@ save_stmt_init(struct save_stmt *stmt, struct save *db, const char *sql, const c
 	return ret;
 }
 
-enum save_stmt_errno
-save_stmt_next(struct save_stmt *stmt, const char *args, ...)
+int
+mlk_save_stmt_next(struct mlk_save_stmt *stmt, const char *args, ...)
 {
 	assert(stmt);
 
 	va_list ap;
-	enum save_stmt_errno ret = SAVE_STMT_ERROR;
+	int ret = -1;
 
 	switch (sqlite3_step(stmt->handle)) {
 	case SQLITE_ROW:
 		va_start(ap, args);
 
 		if (extract(stmt, args, ap) == 0)
-			ret = SAVE_STMT_ROW;
+			ret = 1;
 
 		va_end(ap);
 		break;
 	case SQLITE_DONE:
-		ret = SAVE_STMT_DONE;
+		ret = 0;
 		break;
 	default:
 		break;
@@ -290,7 +290,7 @@ save_stmt_next(struct save_stmt *stmt, const char *args, ...)
 }
 
 void
-save_stmt_finish(struct save_stmt *stmt)
+mlk_save_stmt_finish(struct mlk_save_stmt *stmt)
 {
 	assert(stmt);
 
@@ -299,25 +299,25 @@ save_stmt_finish(struct save_stmt *stmt)
 }
 
 int
-save_tx_begin(struct save *s)
+mlk_save_tx_begin(struct mlk_save *s)
 {
-	assert(save_ok(s));
+	assert(mlk_save_ok(s));
 
-	return save_exec(s, "BEGIN EXCLUSIVE TRANSACTION", NULL);
+	return mlk_save_exec(s, SQL_BEGIN, NULL);
 }
 
-void
-save_tx_rollback(struct save *s)
+int
+mlk_save_tx_rollback(struct mlk_save *s)
 {
-	assert(save_ok(s));
+	assert(mlk_save_ok(s));
 
-	(void)save_exec(s, "ROLLBACK", NULL);
+	return mlk_save_exec(s, SQL_ROLLBACK, NULL);
 }
 
-void
-save_tx_commit(struct save *s)
+int
+mlk_save_tx_commit(struct mlk_save *s)
 {
-	assert(save_ok(s));
+	assert(mlk_save_ok(s));
 
-	(void)save_exec(s, "COMMIT", NULL);
+	return mlk_save_exec(s, SQL_COMMIT, NULL);
 }

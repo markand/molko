@@ -33,22 +33,22 @@ cleanup(void)
 static void
 test_basics_read(void)
 {
-	struct save db;
+	struct mlk_save db;
 
 	/* Non-existent should return error. */
-	DT_EQ_INT(save_open_path(&db, "1.db", SAVE_MODE_READ), -1);
-	save_finish(&db);
+	DT_EQ_INT(mlk_save_open_path(&db, "1.db", MLK_SAVE_MODE_READ), -1);
+	mlk_save_finish(&db);
 	cleanup();
 }
 
 static void
 test_basics_write(void)
 {
-	struct save db[2] = {0};
+	struct mlk_save db[2] = {0};
 
 	/* Write should work on both non-existent and existent database. */
-	DT_EQ_INT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE), 0);
-	DT_EQ_INT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE), 0);
+	DT_EQ_INT(mlk_save_open_path(&db[0], "1.db", MLK_SAVE_MODE_WRITE), 0);
+	DT_EQ_INT(mlk_save_open_path(&db[1], "2.db", MLK_SAVE_MODE_WRITE), 0);
 
 	/* Update and create date must not be 0. */
 	DT_ASSERT(db[0].created > 0);
@@ -56,19 +56,19 @@ test_basics_write(void)
 	DT_ASSERT(db[1].created > 0);
 	DT_ASSERT(db[1].updated > 0);
 
-	save_finish(&db[0]);
-	save_finish(&db[1]);
+	mlk_save_finish(&db[0]);
+	mlk_save_finish(&db[1]);
 
 	/* Should work again. */
-	DT_ASSERT(save_open_path(&db[0], "1.db", SAVE_MODE_WRITE) == 0);
-	DT_ASSERT(save_open_path(&db[1], "2.db", SAVE_MODE_WRITE) == 0);
+	DT_ASSERT(mlk_save_open_path(&db[0], "1.db", MLK_SAVE_MODE_WRITE) == 0);
+	DT_ASSERT(mlk_save_open_path(&db[1], "2.db", MLK_SAVE_MODE_WRITE) == 0);
 	DT_ASSERT(db[0].created > 0);
 	DT_ASSERT(db[0].updated > 0);
 	DT_ASSERT(db[1].created > 0);
 	DT_ASSERT(db[1].updated > 0);
 
-	save_finish(&db[0]);
-	save_finish(&db[1]);
+	mlk_save_finish(&db[0]);
+	mlk_save_finish(&db[1]);
 }
 
 #if 0

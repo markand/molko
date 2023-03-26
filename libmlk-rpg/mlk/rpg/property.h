@@ -22,7 +22,7 @@
 #define PROPERTY_KEY_MAX        (64)
 #define PROPERTY_VALUE_MAX      (1024)
 
-struct save;
+struct mlk_save;
 
 struct property {
 	char key[PROPERTY_KEY_MAX + 1];
@@ -34,13 +34,13 @@ extern "C" {
 #endif
 
 int
-property_save(const struct property *, struct save *);
+property_save(const struct property *, struct mlk_save *);
 
 int
-property_load(struct property *, struct save *);
+property_load(struct property *, struct mlk_save *);
 
 int
-property_remove(struct property *, struct save *);
+property_remove(struct property *, struct mlk_save *);
 
 #if defined(__cplusplus)
 }

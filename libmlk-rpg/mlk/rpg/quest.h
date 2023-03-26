@@ -21,7 +21,7 @@
 
 #include <stddef.h>
 
-struct save;
+struct mlk_save;
 
 struct quest_step {
 	const char *name;
@@ -41,10 +41,10 @@ extern "C" {
 #endif
 
 int
-quest_save(struct quest *, struct save *);
+quest_save(struct quest *, struct mlk_save *);
 
 int
-quest_load(struct quest *, struct save *);
+quest_load(struct quest *, struct mlk_save *);
 
 #if defined(__cplusplus)
 }

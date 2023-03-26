@@ -59,14 +59,14 @@ test_basics_load(struct save *save)
 int
 main(void)
 {
-	struct save save;
+	struct mlk_save save;
 
-	if (save_open_path(&save, "quest.db", SAVE_MODE_WRITE) < 0)
+	if (mlk_save_open_path(&save, "quest.db", MLK_SAVE_MODE_WRITE) < 0)
 		return 1;
 
 	DT_RUN(test_basics_load, &save);
 	DT_SUMMARY();
 
-	save_finish(&save);
+	mlk_save_finish(&save);
 	remove("quest.db");
 }

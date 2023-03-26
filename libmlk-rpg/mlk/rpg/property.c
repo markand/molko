@@ -26,38 +26,38 @@
 #include "save.h"
 
 int
-property_save(const struct property *p, struct save *s)
+property_save(const struct property *p, struct mlk_save *s)
 {
 	assert(p);
-	assert(save_ok(s));
+	assert(mlk_save_ok(s));
 
-	return save_exec(s, (const char *)assets_sql_property_save, "ss", p->key, p->value);
+	return mlk_save_exec(s, (const char *)assets_sql_property_save, "ss", p->key, p->value);
 }
 
 int
-property_load(struct property *p, struct save *s)
+property_load(struct property *p, struct mlk_save *s)
 {
 	assert(p);
-	assert(save_ok(s));
+	assert(mlk_save_ok(s));
 
-	struct save_stmt stmt;
-	enum save_stmt_errno ret;
+	struct mlk_save_stmt stmt;
+	int ret;
 
-	if (save_stmt_init(&stmt, s, (const char *)assets_sql_property_load, "s", p->key) < 0)
+	if (mlk_save_stmt_init(&stmt, s, (const char *)assets_sql_property_load, "s", p->key) < 0)
 		return -1;
 
-	ret = save_stmt_next(&stmt, "s", p->value, sizeof (p->value)) == SAVE_STMT_ROW;
-	save_stmt_finish(&stmt);
+	ret = mlk_save_stmt_next(&stmt, "s", p->value, sizeof (p->value)) == 1;
+	mlk_save_stmt_finish(&stmt);
 
 	return ret ? 0 : -1;
 }
 
 int
-property_remove(struct property *p, struct save *s)
+property_remove(struct property *p, struct mlk_save *s)
 {
 	assert(p);
-	assert(save_ok(s));
+	assert(mlk_save_ok(s));
 
-	return save_exec(s, (const char *)assets_sql_property_remove, "s", p->key);
+	return mlk_save_exec(s, (const char *)assets_sql_property_remove, "s", p->key);
 }
 
