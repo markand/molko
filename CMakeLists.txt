@@ -48,21 +48,24 @@ endif ()
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+#
+# Create an option MLK_WITH_<name> as cache entry.
+#
 function(mlk_option name value type help)
-	set(${name} ${value} CACHE ${type} ${help})
+	set(MLK_WITH_${name} ${value} CACHE ${type} ${help})
 endfunction()
 
-mlk_option(MLK_WITH_DOXYGEN On
+mlk_option(DOXYGEN On
     BOOL "Enable doxygen documentation")
-mlk_option(MLK_WITH_EXAMPLES On
+mlk_option(EXAMPLES On
     BOOL "Enable examples")
-mlk_option(MLK_WITH_NLS On
+mlk_option(NLS On
     BOOL "Enable NLS support")
-mlk_option(MLK_WITH_TESTS On
+mlk_option(TESTS On
     BOOL "Enable unit tests")
-mlk_option(MLK_WITH_TESTS_GRAPHICAL On
+mlk_option(TESTS_GRAPHICAL On
     BOOL "Enable unit tests that requires graphical context")
-mlk_option(MLK_WITH_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake"
+mlk_option(CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake"
     STRING "Destination for CMake files")
 
 include(cmake/MlkBcc.cmake)
