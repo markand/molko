@@ -1,5 +1,5 @@
 /*
- * save.c -- save functions
+ * save.c -- game save files support
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -280,6 +280,8 @@ mlk_save_stmt_next(struct mlk_save_stmt *stmt, const char *args, ...)
 		va_end(ap);
 		break;
 	case SQLITE_DONE:
+		/* For convenience, cleanup resource when used in a loop. */
+		mlk_save_stmt_finish(stmt);
 		ret = 0;
 		break;
 	default:

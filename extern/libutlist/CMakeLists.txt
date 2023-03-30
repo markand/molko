@@ -16,12 +16,21 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.0)
 project(libmlk-utlist)
-add_library(libmlk-utlist INTERFACE)
-target_include_directories(
-	libmlk-utlist
-	INTERFACE
-		$<BUILD_INTERFACE:${libmlk-utlist_SOURCE_DIR}>
+
+set(
+	SOURCES
+	${libmlk-utlist_SOURCE_DIR}/utlist.h
 )
-target_sources(libmlk-utlist INTERFACE ${libmlk-utlist_SOURCE_DIR}/utlist.h)
+
+mlk_library(
+	NAME libmlk-utlist
+	TYPE INTERFACE
+	SOURCES ${SOURCES}
+	FOLDER extern
+	INSTALL
+	INCLUDES
+		INTERFACE $<BUILD_INTERFACE:${libmlk-utlist_SOURCE_DIR}>
+)
+
+source_group(TREE ${libmlk-utlist_SOURCE_DIR} FILES ${SOURCES})

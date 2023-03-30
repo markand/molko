@@ -1,5 +1,5 @@
 #
-# libmlk-core-config.cmake -- export file for libmlk-core
+# libmlk-sqlite-config.cmake -- export file for libmlk-sqlite
 #
 # Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
 #
@@ -16,10 +16,4 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-include(CMakeFindDependencyMacro)
-
-find_dependency(libmlk-util)
-find_dependency(Intl)
-
-include("${CMAKE_CURRENT_LIST_DIR}/libmlk-core-targets.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/../mlk/MlkBcc.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/libmlk-sqlite-targets.cmake")

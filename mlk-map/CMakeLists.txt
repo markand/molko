@@ -25,3 +25,5 @@ mlk_executable(
 	FOLDER tools
 	INSTALL
 )
+
+add_executable(mlk::mlk-map ALIAS mlk-map)

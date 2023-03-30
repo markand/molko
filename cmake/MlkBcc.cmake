@@ -28,7 +28,6 @@
 # This macro will generate all files under the OUTPUT_DIRECTORY variable which
 # defaults to ${CMAKE_CURRENT_BINARY_DIR}/assets if unset.
 #
-#
 # It will also keep the last parent directory name under the output directory
 # because most users will arrange more files under a specific file hierarchy,
 # this also avoid a file name conflict.
@@ -91,9 +90,9 @@ macro(mlk_bcc)
 			COMMAND
 				${CMAKE_COMMAND} -E make_directory ${_bcc_base_directory}/${_bcc_dirname}
 			COMMAND
-				$<TARGET_FILE:mlk-bcc> ${_bcc_args} ${a} ${_bcc_var} > ${_bcc_output_file}
+				$<TARGET_FILE:mlk::mlk-bcc> ${_bcc_args} ${a} ${_bcc_var} > ${_bcc_output_file}
 			COMMENT "Generating asset ${_bcc_dirname}/${_bcc_filename}"
-			DEPENDS $<TARGET_FILE:mlk-bcc> ${a}
+			DEPENDS $<TARGET_FILE:mlk::mlk-bcc> ${a}
 		)
 
 		list(APPEND ${_bcc_OUTPUTS_VAR} ${_bcc_output_file})

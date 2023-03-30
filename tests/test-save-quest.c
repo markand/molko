@@ -26,7 +26,7 @@
 #include <dt.h>
 
 static void
-test_basics_load(struct save *save)
+test_basics_load(struct mlk_save *save)
 {
 	struct quest_step steps[] = {
 		{

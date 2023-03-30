@@ -27,13 +27,10 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/message.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/property.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/property.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/quest.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/quest.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg_p.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/save.c
-	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/save.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader-file.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader.c
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.c
@@ -46,7 +43,10 @@ set(
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map-loader.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/map.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/message.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/property.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/quest.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/rpg.h
+	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/save.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader-file.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset-loader.h
 	${libmlk-rpg_SOURCE_DIR}/mlk/rpg/tileset.h
@@ -79,6 +79,7 @@ mlk_library(
 	HEADERS_DIRECTORY mlk/rpg
 	LANGS ${NLS}
 	ASSETS ${ASSETS}
+	INSTALL
 	LIBRARIES
 		libmlk-ui
 		libmlk-sqlite

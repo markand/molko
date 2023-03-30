@@ -27,10 +27,10 @@ project(
 
 set_property(GLOBAL PROPERTY USE_FOLDERS On)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS On)
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH "${molko_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 	set(CMAKE_C_FLAGS "-Wall -Wextra -Wno-deprecated-declarations -Wno-unknown-pragmas ${CMAKE_C_FLAGS}")
@@ -41,7 +41,6 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 		set(CMAKE_C_FLAGS "-Wno-fixed-enum-extension ${CMAKE_C_FLAGS}")
 	endif ()
 elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
-	set(CMAKE_C_FLAGS "/W3 /wd4090 /wd4244 /wd4267 /wd4996 /wd5105 /wd6031 /wd6001 /wd26451 ${CMAKE_C_FLAGS}")
 	set(CMAKE_C_FLAGS "/D_CRT_SECURE_NO_WARNINGS ${CMAKE_C_FLAGS}")
 endif ()
 
@@ -55,19 +54,7 @@ function(mlk_option name value type help)
 	set(MLK_WITH_${name} ${value} CACHE ${type} ${help})
 endfunction()
 
-mlk_option(DOXYGEN On
-    BOOL "Enable doxygen documentation")
-mlk_option(EXAMPLES On
-    BOOL "Enable examples")
-mlk_option(NLS On
-    BOOL "Enable NLS support")
-mlk_option(TESTS On
-    BOOL "Enable unit tests")
-mlk_option(TESTS_GRAPHICAL On
-    BOOL "Enable unit tests that requires graphical context")
-mlk_option(CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake"
-    STRING "Destination for CMake files")
-
+include(cmake/MlkOptions.cmake)
 include(cmake/MlkBcc.cmake)
 include(cmake/MlkExecutable.cmake)
 include(cmake/MlkLibrary.cmake)
@@ -75,7 +62,7 @@ include(cmake/MlkMap.cmake)
 include(cmake/MlkNls.cmake)
 include(cmake/MlkTileset.cmake)
 
-find_package(SDL2 REQUIRED COMPONENTS image ttf)
+find_package(SDL2 MODULE REQUIRED COMPONENTS image ttf)
 find_package(OpenAL REQUIRED)
 find_package(SndFile REQUIRED)
 find_package(Jansson REQUIRED)
@@ -121,7 +108,10 @@ endif ()
 #
 install(
 	FILES
-		${CMAKE_SOURCE_DIR}/cmake/FindSDL2.cmake
-		${CMAKE_SOURCE_DIR}/cmake/FindSndFile.cmake
+		${molko_SOURCE_DIR}/cmake/FindSDL2.cmake
+		${molko_SOURCE_DIR}/cmake/FindSndFile.cmake
+		${molko_SOURCE_DIR}/cmake/MlkBcc.cmake
+		${molko_SOURCE_DIR}/cmake/MlkMap.cmake
+		${molko_SOURCE_DIR}/cmake/MlkTileset.cmake
 	DESTINATION "${MLK_WITH_CMAKEDIR}/mlk"
 )

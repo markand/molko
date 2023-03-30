@@ -1,5 +1,5 @@
 #
-# libmlk-core-config.cmake -- export file for libmlk-core
+# libmlk-rpg-config.cmake -- export file for libmlk-rpg
 #
 # Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
 #
@@ -18,8 +18,8 @@
 
 include(CMakeFindDependencyMacro)
 
-find_dependency(libmlk-util)
-find_dependency(Intl)
+find_dependency(libmlk-sqlite)
+find_dependency(libmlk-ui)
+find_dependency(libmlk-utlist)
 
-include("${CMAKE_CURRENT_LIST_DIR}/libmlk-core-targets.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/../mlk/MlkBcc.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/libmlk-rpg-targets.cmake")

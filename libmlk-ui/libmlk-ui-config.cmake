@@ -1,5 +1,5 @@
 #
-# libmlk-core-config.cmake -- export file for libmlk-core
+# libmlk-ui-config.cmake -- export file for libmlk-ui
 #
 # Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
 #
@@ -18,8 +18,6 @@
 
 include(CMakeFindDependencyMacro)
 
-find_dependency(libmlk-util)
-find_dependency(Intl)
+find_dependency(libmlk-core)
 
-include("${CMAKE_CURRENT_LIST_DIR}/libmlk-core-targets.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/../mlk/MlkBcc.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/libmlk-ui-targets.cmake")

@@ -25,3 +25,5 @@ mlk_executable(
 	INSTALL
 	FOLDER tools
 )
+
+add_executable(mlk::mlk-bcc ALIAS mlk-bcc)

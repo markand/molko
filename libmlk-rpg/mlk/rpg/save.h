@@ -1,5 +1,5 @@
 /*
- * save.h -- save functions
+ * save.h -- game save files support
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -19,24 +19,64 @@
 #ifndef MLK_RPG_SAVE_H
 #define MLK_RPG_SAVE_H
 
+/**
+ * \file save.h
+ * \brief Game save files support
+ */
+
 #include <time.h>
 
 #include <mlk/core/core.h>
 
+/**
+ * \struct mlk_save
+ * \brief Save file structure
+ */
 struct mlk_save {
+	/**
+	 * (read-only)
+	 *
+	 * UTC timestamp when was the file created.
+	 */
 	time_t created;
+
+	/**
+	 * (read-only)
+	 *
+	 * UTC timestamp when was the last used.
+	 */
 	time_t updated;
+
+	/** \cond MLK_PRIVATE_DECLS */
 	void *handle;
+	/** \endcond MLK_PRIVATE_DECLS */
 };
 
+/**
+ * \enum mlk_save_mode
+ * \brief Save file access mode
+ */
 enum mlk_save_mode {
+	/**
+	 * Open for read-only, fails if the file does not exist.
+	 */
 	MLK_SAVE_MODE_READ,
+
+	/**
+	 * Open for read-write, create the file if not present.
+	 */
 	MLK_SAVE_MODE_WRITE
 };
 
+/**
+ * \struct mlk_save_stmt
+ * \brief Prepared statement structure
+ */
 struct mlk_save_stmt {
-	struct save *parent;
+	/** \cond MLK_PRIVATE_DECLS */
+	struct mlk_save *parent;
 	void *handle;
+	/** \endcond MLK_PRIVATE_DECLS */
 };
 
 #if defined(__cplusplus)
