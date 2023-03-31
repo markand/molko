@@ -16,15 +16,20 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "sysconfig.h"
+
 #include <assert.h>
 #include <stddef.h>
 #include <string.h>
+
+#include <libintl.h>
 
 #include <mlk/core/err.h>
 #include <mlk/core/font.h>
 #include <mlk/core/texture.h>
 #include <mlk/core/trace.h>
 #include <mlk/core/util.h>
+#include <mlk/core/sys.h>
 
 #include <assets/fonts/opensans-regular.h>
 
@@ -69,6 +74,10 @@ mlk_ui_init(void)
 		/* Reference this font into the catalog. */
 		*fonts[i].fontaddr = &fonts[i].font;
 	}
+
+#if defined(MLK_WITH_NLS)
+	bindtextdomain("libmlk-ui", mlk_sys_dir(MLK_SYS_DIR_LOCALES));
+#endif
 
 	return 0;
 

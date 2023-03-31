@@ -16,11 +16,21 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include "sysconfig.h"
+
+#include <libintl.h>
+
+#include <mlk/core/sys.h>
+
 #include "rpg.h"
 
 int
 mlk_rpg_init(void)
 {
+#if defined(MLK_WITH_NLS)
+	bindtextdomain("libmlk-rpg", mlk_sys_dir(MLK_SYS_DIR_LOCALES));
+#endif
+
 	return 0;
 }
 

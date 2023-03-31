@@ -23,8 +23,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <libintl.h>
+
 #include "core.h"
-#include "core_p.h"
 #include "sys.h"
 
 int
