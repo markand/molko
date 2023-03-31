@@ -20,6 +20,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/MlkBcc.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MlkNls.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MlkMap.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/MlkTileset.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/MlkOptions.cmake)
 
 function(mlk_library)
 	set(options "INSTALL")

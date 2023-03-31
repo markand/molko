@@ -16,6 +16,8 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+include(${CMAKE_CURRENT_LIST_DIR}/MlkBcc.cmake)
+
 function(mlk_executable)
 	set(options "INSTALL")
 	set(oneValueArgs "NAME;FOLDER")

@@ -106,8 +106,13 @@ endif ()
 # SDL2 is not always configured using CMake on some systems which means the
 # CMake configuration file isn't provided, so use our own...
 #
+configure_file(
+	${molko_SOURCE_DIR}/cmake/MlkOptions.install.cmake
+	${molko_BINARY_DIR}/cmake/MlkOptions.cmake
+)
 install(
 	FILES
+		${molko_BINARY_DIR}/cmake/MlkOptions.cmake
 		${molko_SOURCE_DIR}/cmake/FindSDL2.cmake
 		${molko_SOURCE_DIR}/cmake/FindSndFile.cmake
 		${molko_SOURCE_DIR}/cmake/MlkBcc.cmake
