@@ -79,7 +79,7 @@ struct mlk_map {
 	int player_y;
 	int player_a;
 	unsigned int player_movement;
-	struct walksprite player_ws;
+	struct mlk_walksprite player_ws;
 
 	int view_x;
 	int view_y;

@@ -17,33 +17,30 @@
  */
 
 #include <assert.h>
-#include <string.h>
 
 #include <mlk/core/sprite.h>
 
 #include "walksprite.h"
 
 void
-walksprite_init(struct walksprite *ws, struct mlk_sprite *sprite, unsigned int delay)
+mlk_walksprite_init(struct mlk_walksprite *ws)
 {
 	assert(ws);
-	assert(sprite);
 
-	memset(ws, 0, sizeof (*ws));
-	ws->sprite = sprite;
-	ws->delay = delay;
+	mlk_walksprite_reset(ws);
 }
 
 void
-walksprite_reset(struct walksprite *ws)
+mlk_walksprite_reset(struct mlk_walksprite *ws)
 {
 	assert(ws);
 
 	ws->index = 0;
+	ws->elapsed = 0;
 }
 
 void
-walksprite_update(struct walksprite *ws, unsigned int ticks)
+mlk_walksprite_update(struct mlk_walksprite *ws, unsigned int ticks)
 {
 	assert(ws);
 
@@ -60,7 +57,10 @@ walksprite_update(struct walksprite *ws, unsigned int ticks)
 }
 
 void
-walksprite_draw(const struct walksprite *ws, unsigned int orientation, int x, int y)
+mlk_walksprite_draw(const struct mlk_walksprite *ws,
+                    unsigned int orientation,
+                    int x,
+                    int y)
 {
 	assert(ws);
 	assert(orientation < 8);

@@ -174,7 +174,9 @@ init(struct mlk_map *map)
 	center(map);
 
 	/* Final bits. */
-	walksprite_init(&map->player_ws, map->player_sprite, 150);
+	map->player_ws.sprite = map->player_sprite;
+	map->player_ws.delay = 150;
+	mlk_walksprite_init(&map->player_ws);
 }
 
 static void
@@ -467,7 +469,7 @@ move(struct mlk_map *map, unsigned int ticks)
 	if (dy)
 		move_y(map, dy * delta);
 
-	walksprite_update(&map->player_ws, ticks);
+	mlk_walksprite_update(&map->player_ws, ticks);
 }
 
 static inline void
@@ -641,7 +643,7 @@ mlk_map_draw(const struct mlk_map *map)
 	draw_layer(map, &map->layers[MLK_MAP_LAYER_TYPE_BG]);
 	draw_layer(map, &map->layers[MLK_MAP_LAYER_TYPE_FG]);
 
-	walksprite_draw(
+	mlk_walksprite_draw(
 		&map->player_ws,
 		map->player_a,
 		map->player_x - map->view_x,

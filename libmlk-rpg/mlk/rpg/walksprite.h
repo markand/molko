@@ -19,13 +19,15 @@
 #ifndef MLK_RPG_WALKSPRITE_H
 #define MLK_RPG_WALKSPRITE_H
 
-struct mlk_sprite;
-
 /**
- * \brief Sprite designed for walking entities.
+ * \file mlk/rpg/walksprite.h
+ * \brief Sprite designed for walking entities
  *
- * This structure works with sprite images that are defined as using the
- * following conventions:
+ * This module provides a convenient animation for walking entities using a
+ * specific sprite texture.
+ *
+ * The entity can have up to 8 orientation including diagonals which are defined
+ * as following:
  *
  * ```
  * 7   0   1
@@ -50,29 +52,85 @@ struct mlk_sprite;
  *  6 | ←←←←←←←←←←←←←←←←←←←←
  *  7 | ↖↖↖↖↖↖↖↖↖↖↖↖↖↖↖↖↖↖↖↖
  * ```
+ *
+ * The first column in each row should be static position which means that the
+ * entity is not moving. Using ::mlk_walksprite_reset resets the column index to
+ * this position so that you can use this module even on non-moving entities.
  */
-struct walksprite {
+
+struct mlk_sprite;
+
+/**
+ * \struct mlk_walksprite
+ * \brief Walking sprite structure
+ */
+struct mlk_walksprite {
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * Sprite file to use for animation.
+	 */
 	struct mlk_sprite *sprite;
+
+	/**
+	 * (read-write)
+	 *
+	 * Delay between each frame.
+	 */
 	unsigned int delay;
+
+	/** \cond MLK_PRIVATE_DECLS */
 	unsigned int index;
 	unsigned int elapsed;
+	/** \endcond MLK_PRIVATE_DECLS */
 };
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * Initialize the walking sprite.
+ *
+ * \pre ws != NULL
+ * \param ws walking sprite to initialize
+ */
 void
-walksprite_init(struct walksprite *, struct mlk_sprite *, unsigned int);
+mlk_walksprite_init(struct mlk_walksprite *ws);
 
+/**
+ * Reset the walking sprite to first column.
+ *
+ * \pre ws != NULL
+ * \param ws walking sprite to reset
+ */
 void
-walksprite_reset(struct walksprite *);
+mlk_walksprite_reset(struct mlk_walksprite *ws);
 
+/**
+ * Update the walking sprite, moving to the next animation if needed.
+ *
+ * \pre ws != NULL
+ * \param ws walking sprite to update
+ * \param ticks frame ticks
+ */
 void
-walksprite_update(struct walksprite *, unsigned int);
+mlk_walksprite_update(struct mlk_walksprite *ws, unsigned int ticks);
 
+/**
+ * Draw the current image frame at the given position.
+ *
+ * \pre ws != NULL
+ * \param ws walking sprite to draw
+ * \param orientation the orientation [0..7]
+ * \param x the x coordinate
+ * \param y the y coordinate
+ */
 void
-walksprite_draw(const struct walksprite *, unsigned int, int, int);
+mlk_walksprite_draw(const struct mlk_walksprite *ws,
+                    unsigned int orientation,
+                    int x,
+                    int y);
 
 #if defined(__cplusplus)
 }
