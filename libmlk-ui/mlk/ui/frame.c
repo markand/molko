@@ -17,46 +17,45 @@
  */
 
 #include <assert.h>
-#include <stddef.h>
 
 #include <mlk/core/painter.h>
 
 #include "frame.h"
-#include "ui.h"
-#include "ui_p.h"
+#include "style.h"
 
 static void
-delegate_draw(struct mlk_frame_delegate *delegate, const struct mlk_frame *frame)
+draw(struct mlk_frame_delegate *self, const struct mlk_frame *frame)
 {
-	(void)delegate;
+	(void)self;
 
-	const struct mlk_frame_style *style = MLK__STYLE(frame, mlk_frame_style);
-
-	mlk_painter_set_color(style->border_color);
+	mlk_painter_set_color(frame->style->border_color);
 	mlk_painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
-	mlk_painter_set_color(style->bg_color);
+	mlk_painter_set_color(frame->style->bg_color);
 	mlk_painter_draw_rectangle(
-		frame->x + style->border_size,
-		frame->y + style->border_size,
-		frame->w - (style->border_size * 2),
-		frame->h - (style->border_size * 2)
+		frame->x + frame->style->border_size,
+		frame->y + frame->style->border_size,
+		frame->w - (frame->style->border_size * 2),
+		frame->h - (frame->style->border_size * 2)
 	);
 }
 
-struct mlk_frame_style mlk_frame_style = {
-	.bg_color       = MLK_UI_COLOR_BG,
-	.border_color   = MLK_UI_COLOR_BORDER,
-	.border_size    = 2
-};
-
 struct mlk_frame_delegate mlk_frame_delegate = {
-	.draw           = delegate_draw
+	.draw = draw
 };
 
-int
-mlk_frame_ok(const struct mlk_frame *frame)
+void
+mlk_frame_init(struct mlk_frame *frame,
+               struct mlk_style *st,
+               struct mlk_frame_delegate *dt)
 {
-	return frame != NULL;
+	assert(frame);
+
+	frame->x = 0;
+	frame->y = 0;
+	frame->w = 0;
+	frame->h = 0;
+	frame->style = st ? st : &mlk_style;
+	frame->delegate = dt ? dt : &mlk_frame_delegate;
 }
 
 void
@@ -64,7 +63,8 @@ mlk_frame_update(struct mlk_frame *frame, unsigned int ticks)
 {
 	assert(frame);
 
-	MLK__DELEGATE_INVOKE(frame->delegate, mlk_frame_delegate, update, frame, ticks);
+	if (frame->delegate->update)
+		frame->delegate->update(frame->delegate, frame, ticks);
 }
 
 void
@@ -72,5 +72,6 @@ mlk_frame_draw(const struct mlk_frame *frame)
 {
 	assert(frame);
 
-	MLK__DELEGATE_INVOKE(frame->delegate, mlk_frame_delegate, draw, frame);
+	if (frame->delegate->draw)
+		frame->delegate->draw(frame->delegate, frame);
 }

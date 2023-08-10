@@ -19,42 +19,148 @@
 #ifndef MLK_UI_FRAME_H
 #define MLK_UI_FRAME_H
 
+/**
+ * \file mlk/ui/frame.h
+ * \brief GUI frame.
+ */
+
 struct mlk_frame;
-
-struct mlk_frame_style {
-	unsigned long bg_color;
-	unsigned long border_color;
-	unsigned long border_size;
-};
-
-struct mlk_frame_delegate {
-	void *data;
-	void (*update)(struct mlk_frame_delegate *, struct mlk_frame *, unsigned int);
-	void (*draw)(struct mlk_frame_delegate *, const struct mlk_frame *);
-};
+struct mlk_frame_delegate;
+struct mlk_style;
 
 struct mlk_frame {
-	int x, y;
-	unsigned int w, h;
-	struct mlk_frame_style *style;
+	/**
+	 * (read-write)
+	 *
+	 * Position in x.
+	 */
+	int x;
+
+	/**
+	 * (read-write)
+	 *
+	 * Position in y.
+	 */
+	int y;
+
+	/**
+	 * (read-write)
+	 *
+	 * Frame width.
+	 */
+	unsigned int w;
+
+	/**
+	 * (read-write)
+	 *
+	 * Frame height.
+	 */
+	unsigned int h;
+
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * Frame style.
+	 */
+	struct mlk_style *style;
+
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * Frame delegate.
+	 */
 	struct mlk_frame_delegate *delegate;
 };
 
-extern struct mlk_frame_style mlk_frame_style;
+/**
+ * \struct mlk_frame_delegate
+ * \brief Frame delegate.
+ */
+struct mlk_frame_delegate {
+	/*
+	 * (read-write, borrowed, optional)
+	 *
+	 * Arbitrary user data.
+	 */
+	void *data;
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Update the label.
+	 *
+	 * \param self this delegate
+	 * \param frame the frame to update
+	 * \param ticks number of ticks since last frame
+	 */
+	void (*update)(struct mlk_frame_delegate *self,
+	               struct mlk_frame *frame,
+	               unsigned int ticks);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Draw this label.
+	 *
+	 * \param self this delegate
+	 * \param frame the frame to update
+	 */
+	void (*draw)(struct mlk_frame_delegate *self,
+	             const struct mlk_frame *frame);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Cleanup this delegate associated with the label.
+	 *
+	 * \param self this delegate
+	 * \param frame the underlying frame
+	 */
+	void (*finish)(struct mlk_frame_delegate *self,
+	               struct mlk_frame *frame);
+};
+
+/**
+ * \brief Default stateless delegate for frame.
+ */
 extern struct mlk_frame_delegate mlk_frame_delegate;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-int
-mlk_frame_ok(const struct mlk_frame *frame);
+/**
+ * Initialize the frame with default values.
+ *
+ * This is not required if you use designated initializers.
+ *
+ * \pre frame != NULL
+ * \param frame the frame to default initialize
+ * \param st style to use (or NULL to use a default)
+ * \param dt delegate to use (or NULL to use a default)
+ */
+void
+mlk_frame_init(struct mlk_frame *frame,
+               struct mlk_style *st,
+               struct mlk_frame_delegate *dt);
 
+/**
+ * Invoke ::mlk_frame_delegate::update.
+ */
 void
 mlk_frame_update(struct mlk_frame *frame, unsigned int ticks);
 
+/**
+ * Invoke ::mlk_frame_delegate::draw.
+ */
 void
 mlk_frame_draw(const struct mlk_frame *frame);
+
+/**
+ * Invoke ::mlk_frame_delegate::finish.
+ */
+void
+mlk_frame_finish(struct mlk_frame *frame);
 
 #if defined(__cplusplus)
 }
