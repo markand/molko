@@ -25,7 +25,11 @@ set(
 )
 
 if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-	list(APPEND OPTIONS -Wno-unused-parameter)
+	list(APPEND OPTIONS -Wno-unused-parameter -Wno-unused-but-set-variable)
+
+	if (CMAKE_C_COMPILER_ID MATCHES "Clang")
+		list(APPEND OPTIONS -Wno-constant-logical-operand)
+	endif ()
 endif ()
 
 mlk_library(

@@ -40,6 +40,14 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 	else ()
 		set(CMAKE_C_FLAGS "-Wno-fixed-enum-extension ${CMAKE_C_FLAGS}")
 	endif ()
+
+	#
+	# For some reason, Xcode generates dozens of more warnings that are
+	# sometimes a bit too naive
+	#
+	if (CMAKE_GENERATOR MATCHES "Xcode")
+		set(CMAKE_C_FLAGS "-Wno-shorten-64-to-32 ${CMAKE_C_FLAGS}")
+	endif ()
 elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
 	set(CMAKE_C_FLAGS "/D_CRT_SECURE_NO_WARNINGS ${CMAKE_C_FLAGS}")
 endif ()
