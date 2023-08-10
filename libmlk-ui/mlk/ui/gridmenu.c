@@ -44,7 +44,7 @@ style_font(struct mlk_gridmenu_style *style)
 	if (style && style->text_font)
 		return style->text_font;
 
-	return mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
+	return &mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 }
 
 static struct index

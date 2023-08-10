@@ -48,7 +48,7 @@ style_font(const struct mlk_button *button)
 	if (style->text_font)
 		return style->text_font;
 
-	return mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
+	return &mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 }
 
 static void

@@ -20,6 +20,7 @@
 #define MLK_UI_UI_H
 
 #include <mlk/core/core.h>
+#include <mlk/core/font.h>
 
 /* TODO: make this a global variable to allow modification of default theme. */
 /* https://lospec.com/palette-list/duel */
@@ -34,14 +35,12 @@
 
 enum mlk_align;
 
-struct mlk_font;
-
 enum mlk_ui_font {
 	MLK_UI_FONT_INTERFACE,
 	MLK_UI_FONT_LAST
 };
 
-extern struct mlk_font *mlk_ui_fonts[MLK_UI_FONT_LAST];
+extern struct mlk_font mlk_ui_fonts[MLK_UI_FONT_LAST];
 
 #if defined(__cplusplus)
 extern "C" {

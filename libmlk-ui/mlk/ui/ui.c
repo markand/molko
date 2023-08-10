@@ -43,36 +43,33 @@
         .data = b,                                                      \
         .datasz = sizeof (b),                                           \
         .size = s,                                                      \
-        .fontaddr = &mlk_ui_fonts[i]                                    \
+        .font = &mlk_ui_fonts[i]                                        \
 }
 
 static struct font_def {
 	const unsigned char *data;
 	const size_t datasz;
 	unsigned int size;
-	struct mlk_font **fontaddr;
-	struct mlk_font font;
+	struct mlk_font *font;
 } fonts[MLK_UI_FONT_LAST] = {
 	FONT_DEF(assets_fonts_opensans_regular, 14, MLK_UI_FONT_INTERFACE)
 };
 
-struct mlk_font *mlk_ui_fonts[MLK_UI_FONT_LAST] = {0};
+struct mlk_font mlk_ui_fonts[MLK_UI_FONT_LAST] = {0};
 
 int
 mlk_ui_init(void)
 {
 	struct font_def *def;
-	int err;
 
 	/* Open all fonts and set the appropriate pointer address. */
 	for (size_t i = 0; i < MLK_UTIL_SIZE(fonts); ++i) {
 		def = &fonts[i];
 
-		if ((err = mlk_font_openmem(&def->font, def->data, def->datasz, def->size)) < 0)
-			goto failed;
-
-		/* Reference this font into the catalog. */
-		*fonts[i].fontaddr = &fonts[i].font;
+		if (mlk_font_openmem(def->font, def->data, def->datasz, def->size) < 0) {
+			mlk_ui_finish();
+			return -1;
+		}
 	}
 
 #if defined(MLK_WITH_NLS)
@@ -80,11 +77,6 @@ mlk_ui_init(void)
 #endif
 
 	return 0;
-
-failed:
-	mlk_ui_finish();
-
-	return err;
 }
 
 void

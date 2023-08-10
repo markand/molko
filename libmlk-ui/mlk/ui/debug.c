@@ -66,7 +66,7 @@ mlk_debugva(struct mlk_debug_report *report, const char *fmt, va_list ap)
 	vsnprintf(line, sizeof (line), fmt, ap);
 
 	// TODO: add style support.
-	font = mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
+	font = &mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 
 	if (mlk_font_render(font, &tex, line, MLK_UI_COLOR_DEBUG) < 0)
 		return;

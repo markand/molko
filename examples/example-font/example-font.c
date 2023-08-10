@@ -97,7 +97,7 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	struct mlk_font *font = mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
+	struct mlk_font *font = &mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 	struct mlk_texture tex;
 
 	mlk_painter_set_color(MLK_EXAMPLE_BG);

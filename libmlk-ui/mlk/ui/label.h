@@ -19,46 +19,167 @@
 #ifndef MLK_UI_LABEL_H
 #define MLK_UI_LABEL_H
 
-struct mlk_font;
+/**
+ * \file label.h
+ * \brief GUI label.
+ */
+
 struct mlk_label;
+struct mlk_label_delegate;
+struct mlk_style;
 
-struct mlk_label_style {
-	unsigned long color;
-	struct mlk_font *font;
-};
-
-struct mlk_label_delegate {
-	void *data;
-	int (*query)(struct mlk_label_delegate *, const struct mlk_label *, unsigned int *, unsigned int *);
-	void (*update)(struct mlk_label_delegate *, struct mlk_label *, unsigned int);
-	void (*draw)(struct mlk_label_delegate *, const struct mlk_label *);
-};
-
+/**
+ * \struct mlk_label
+ * \brief UI label text.
+ */
 struct mlk_label {
-	int x, y;
+	/**
+	 * (read-write)
+	 *
+	 * Position in x.
+	 */
+	int x;
+
+	/**
+	 * (read-write)
+	 *
+	 * Position in y.
+	 */
+	int y;
+
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * Text to show.
+	 */
 	const char *text;
-	struct mlk_label_style *style;
+
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * Label style.
+	 */
+	struct mlk_style *style;
+
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * Label delegate.
+	 */
 	struct mlk_label_delegate *delegate;
 };
 
-extern struct mlk_label_style mlk_label_style;
+/**
+ * \struct mlk_label_delegate
+ * \brief Label delegate.
+ */
+struct mlk_label_delegate {
+	/*
+	 * (read-write, borrowed, optional)
+	 *
+	 * Arbitrary user data.
+	 */
+	void *data;
+
+	/**
+	 * (read-write)
+	 *
+	 * Query required dimensions to draw this label.
+	 *
+	 * \param self this delegate
+	 * \param lbl the label to query
+	 * \param w the width destination (maybe NULL)
+	 * \param h the height destination (maybe NULL)
+	 * \return 0 on success or -1 on error
+	 */
+	int (*query)(struct mlk_label_delegate *self,
+	             const struct mlk_label *lbl,
+	             unsigned int *w,
+	             unsigned int *h);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Update the label.
+	 *
+	 * \param self this delegate
+	 * \param lbl the label to update
+	 * \param ticks number of ticks since last frame
+	 */
+	void (*update)(struct mlk_label_delegate *self,
+	               struct mlk_label *lbl,
+	               unsigned int ticks);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Draw this label.
+	 *
+	 * \param self this delegate
+	 * \param lbl the label to update
+	 */
+	void (*draw)(struct mlk_label_delegate *self,
+	             const struct mlk_label *lbl);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Cleanup this delegate associated with the label.
+	 *
+	 * \param self this delegate
+	 * \param lbl the underlying label
+	 */
+	void (*finish)(struct mlk_label_delegate *self,
+	               struct mlk_label *lbl);
+};
+
+/**
+ * \brief Default stateless delegate for label.
+ */
 extern struct mlk_label_delegate mlk_label_delegate;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-int
-mlk_label_ok(const struct mlk_label *);
-
-int
-mlk_label_query(const struct mlk_label *, unsigned int *, unsigned int *);
-
+/**
+ * Initialize the label with default values.
+ *
+ * This is not required if you use designated initializers.
+ *
+ * \pre lbl != NULL
+ * \param lbl the label to default initialize
+ * \param st style to use (or NULL to use a default)
+ * \param dt delegate to use (or NULL to use a default)
+ */
 void
-mlk_label_update(struct mlk_label *, unsigned int ticks);
+mlk_label_init(struct mlk_label *lbl,
+               struct mlk_style *st,
+               struct mlk_label_delegate *dt);
 
+/**
+ * Invoke ::mlk_label_delegate::query.
+ */
+int
+mlk_label_query(const struct mlk_label *lbl, unsigned int *w, unsigned int *h);
+
+/**
+ * Invoke ::mlk_label_delegate::update.
+ */
 void
-mlk_label_draw(const struct mlk_label *);
+mlk_label_update(struct mlk_label *lbl, unsigned int ticks);
+
+/**
+ * Invoke ::mlk_label_delegate::draw.
+ */
+void
+mlk_label_draw(const struct mlk_label *lbl);
+
+/**
+ * Invoke ::mlk_label_delegate::finish.
+ */
+void
+mlk_label_finish(struct mlk_label *lbl);
 
 #if defined(__cplusplus)
 }

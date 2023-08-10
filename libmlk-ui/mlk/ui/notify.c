@@ -35,7 +35,7 @@
 #define WIDTH   (mlk_window.w / 2.5)
 #define HEIGHT  (mlk_window.h / 10)
 #define MAX     (4)
-#define FONT    (mlk_notify_style.text_font ? mlk_notify_style.text_font : mlk_ui_fonts[MLK_UI_FONT_INTERFACE])
+#define FONT    (mlk_notify_style.text_font ? mlk_notify_style.text_font : &mlk_ui_fonts[MLK_UI_FONT_INTERFACE])
 
 struct geo {
 	const struct mlk_theme *theme;
@@ -66,7 +66,7 @@ geometry(struct geo *geo, const struct mlk_notify *n, size_t index)
 	y  = mlk_notify_style.padding * (index + 1);
 	y += HEIGHT * index;
 
-	font = mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
+	font = &mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 
 	/* Content frame. */
 	geo->frame_x = x;

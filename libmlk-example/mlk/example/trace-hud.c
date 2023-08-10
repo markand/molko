@@ -90,7 +90,7 @@ mlk_trace_hud_draw(void)
 	struct mlk_font *font;
 	unsigned fh;
 
-	font = mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
+	font = &mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
 	fh = mlk_font_height(font);
 
 	for (int i = 0; i < LINES_MAX && data.lines[i][0]; ++i) {

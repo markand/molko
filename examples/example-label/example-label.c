@@ -31,29 +31,20 @@
 
 #include <mlk/ui/align.h>
 #include <mlk/ui/label.h>
+#include <mlk/ui/style.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
 #include <mlk/example/glower.h>
 
-static struct mlk_label_style style = {
-	.color = 0x005162ff
-};
-
-/*
- * Add a glower effect to the main label in the middle.
- */
-static void main_update(struct mlk_label_delegate *, struct mlk_label *, unsigned int);
-
-static struct mlk_glower main_glower = {
+/* Custom delegate/style for glowing one. */
+static struct mlk_style style_glow;
+static struct mlk_label_delegate delegate_glow;
+static struct mlk_glower glower = {
 	.start  = 0xffce7fff,
 	.end    = 0xd58d6bff,
 	.delay  = 22
 };
-static struct mlk_label_delegate main_delegate = {
-	.update = main_update
-};
-static struct mlk_label_style main_style;
 
 static struct {
 	enum mlk_align align;
@@ -63,80 +54,89 @@ static struct {
 		.align = MLK_ALIGN_CENTER,
 		.label = {
 			.text = "The world is Malikania.",
-			.style = &main_style,
-			.delegate = &main_delegate
+			.style = &style_glow,
+			.delegate = &delegate_glow
 		}
 	},
 	{
 		.align = MLK_ALIGN_TOP_LEFT,
 		.label = {
 			.text = "Top left",
-			.style = &style
+			.style = &mlk_style,
+			.delegate = &mlk_label_delegate
 		}
 	},
 	{
 		.align = MLK_ALIGN_TOP,
 		.label = {
 			.text = "Top",
-			.style = &style
+			.style = &mlk_style,
+			.delegate = &mlk_label_delegate
 		}
 	},
 	{
 		.align = MLK_ALIGN_TOP_RIGHT,
 		.label = {
 			.text = "Top right",
-			.style = &style
+			.style = &mlk_style,
+			.delegate = &mlk_label_delegate
 		}
 	},
 	{
 		.align = MLK_ALIGN_RIGHT,
 		.label = {
 			.text = "Right",
-			.style = &style
+			.style = &mlk_style,
+			.delegate = &mlk_label_delegate
 		}
 	},
 	{
 		.align = MLK_ALIGN_BOTTOM_RIGHT,
 		.label = {
 			.text = "Bottom right",
-			.style = &style
+			.style = &mlk_style,
+			.delegate = &mlk_label_delegate
 		}
 	},
 	{
 		.align = MLK_ALIGN_BOTTOM,
 		.label = {
 			.text = "Bottom",
-			.style = &style
+			.style = &mlk_style,
+			.delegate = &mlk_label_delegate
 		}
 	},
 	{
 		.align = MLK_ALIGN_BOTTOM_LEFT,
 		.label = {
 			.text = "Bottom left",
-			.style = &style
+			.style = &mlk_style,
+			.delegate = &mlk_label_delegate
 		}
 	},
 	{
 		.align = MLK_ALIGN_LEFT,
 		.label = {
 			.text = "Left",
-			.style = &style
+			.style = &mlk_style,
+			.delegate = &mlk_label_delegate
 		}
 	}
 };
 
 static struct mlk_label mouse_label = {
 	.text = "This one follows your mouse and is not aligned.",
-	.style = &style
+	.style = &mlk_style,
+	.delegate = &mlk_label_delegate
 };
 
 static void
-main_update(struct mlk_label_delegate *delegate, struct mlk_label *label, unsigned int ticks)
+delegate_glow_update(struct mlk_label_delegate *self, struct mlk_label *label, unsigned int ticks)
 {
-	(void)delegate;
+	(void)self;
 
-	mlk_glower_update(&main_glower, ticks);
-	label->style->color = main_glower.color;
+	mlk_glower_update(&glower, ticks);
+	label->style->text_color = glower.color;
 }
 
 static void
@@ -154,7 +154,15 @@ init(void)
 		mlk_align(table[i].align, &l->x, &l->y, w, h, 0, 0, mlk_window.w, mlk_window.h);
 	}
 
-	mlk_glower_init(&main_glower);
+	mlk_glower_init(&glower);
+
+	/* Change default style. */
+	mlk_style.text_color = 0x005162ff;
+
+	/* Copy default label delegate and style and adapt. */
+	style_glow = mlk_style;
+	delegate_glow = mlk_label_delegate;
+	delegate_glow.update = delegate_glow_update;
 }
 
 static void

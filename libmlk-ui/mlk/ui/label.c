@@ -17,56 +17,34 @@
  */
 
 #include <assert.h>
-#include <string.h>
 
-#include <mlk/core/err.h>
 #include <mlk/core/font.h>
-#include <mlk/core/texture.h>
-#include <mlk/core/trace.h>
 
 #include "align.h"
 #include "label.h"
+#include "style.h"
 #include "ui.h"
-#include "ui_p.h"
-
-static inline struct mlk_font *
-style_font(const struct mlk_label *label)
-{
-	const struct mlk_label_style *style = MLK__STYLE(label, mlk_label_style);
-
-	if (style->font)
-		return style->font;
-
-	return mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
-}
 
 static int
-delegate_query(struct mlk_label_delegate *delegate, const struct mlk_label *label, unsigned int *w, unsigned *h)
+query(struct mlk_label_delegate *self,
+      const struct mlk_label *label,
+      unsigned int *w,
+      unsigned int *h)
 {
-	(void)delegate;
+	(void)self;
 
-	struct mlk_font *font;
-	int err;
-
-	font = style_font(label);
-
-	if ((err = mlk_font_query(font, label->text, w, h)) < 0)
-		return err;
-
-	return 0;
+	return mlk_font_query(label->style->text_font, label->text, w, h);
 }
 
 static void
-delegate_draw(struct mlk_label_delegate *delegate, const struct mlk_label *label)
+draw(struct mlk_label_delegate *self, const struct mlk_label *label)
 {
-	(void)delegate;
-
-	const struct mlk_label_style *style = MLK__STYLE(label, mlk_label_style);
+	(void)self;
 
 	mlk_ui_draw_text(
 		MLK_ALIGN_NONE,
-		style_font(label),
-		style->color,
+		label->style->text_font,
+		label->style->text_color,
 		label->text,
 		label->x,
 		label->y,
@@ -75,27 +53,32 @@ delegate_draw(struct mlk_label_delegate *delegate, const struct mlk_label *label
 	);
 }
 
-struct mlk_label_style mlk_label_style = {
-	.color  = MLK_UI_COLOR_TEXT
-};
-
 struct mlk_label_delegate mlk_label_delegate = {
-	.query  = delegate_query,
-	.draw   = delegate_draw
+	.query = query,
+	.draw = draw
 };
 
-int
-mlk_label_ok(const struct mlk_label *label)
+void
+mlk_label_init(struct mlk_label *lbl,
+               struct mlk_style *st,
+               struct mlk_label_delegate *dt)
 {
-	return label && label->text && strlen(label->text) > 0;
+	assert(lbl);
+
+	lbl->x = 0;
+	lbl->y = 0;
+	lbl->text = "";
+	lbl->style = st ? st : &mlk_style;
+	lbl->delegate = dt ? dt : &mlk_label_delegate;
 }
 
 int
-mlk_label_query(const struct mlk_label *label, unsigned int *w, unsigned int *h)
+mlk_label_query(const struct mlk_label *lbl, unsigned int *w, unsigned int *h)
 {
-	assert(mlk_label_ok(label));
+	assert(lbl);
 
-	MLK__DELEGATE_INVOKE_RET(label->delegate, mlk_label_delegate, query, label, w, h);
+	if (lbl->delegate->query)
+		return lbl->delegate->query(lbl->delegate, lbl, w, h);
 
 	if (w)
 		*w = 0;
@@ -106,17 +89,28 @@ mlk_label_query(const struct mlk_label *label, unsigned int *w, unsigned int *h)
 }
 
 void
-mlk_label_update(struct mlk_label *label, unsigned int ticks)
+mlk_label_update(struct mlk_label *lbl, unsigned int ticks)
 {
-	assert(mlk_label_ok(label));
+	assert(lbl);
 
-	MLK__DELEGATE_INVOKE(label->delegate, mlk_label_delegate, update, label, ticks);
+	if (lbl->delegate->update)
+		lbl->delegate->update(lbl->delegate, lbl, ticks);
 }
 
 void
-mlk_label_draw(const struct mlk_label *label)
+mlk_label_draw(const struct mlk_label *lbl)
 {
-	assert(mlk_label_ok(label));
+	assert(lbl);
 
-	MLK__DELEGATE_INVOKE(label->delegate, mlk_label_delegate, draw, label);
+	if (lbl->delegate->draw)
+		lbl->delegate->draw(lbl->delegate, lbl);
+}
+
+void
+mlk_label_finish(struct mlk_label *lbl)
+{
+	assert(lbl);
+
+	if (lbl->delegate->finish)
+		lbl->delegate->finish(lbl->delegate, lbl);
 }
