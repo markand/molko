@@ -100,10 +100,10 @@ struct mlk_frame_delegate {
 	/**
 	 * (read-write, optional)
 	 *
-	 * Draw this label.
+	 * Draw this frame.
 	 *
 	 * \param self this delegate
-	 * \param frame the frame to update
+	 * \param frame the frame to draw
 	 */
 	void (*draw)(struct mlk_frame_delegate *self,
 	             const struct mlk_frame *frame);
@@ -111,7 +111,7 @@ struct mlk_frame_delegate {
 	/**
 	 * (read-write, optional)
 	 *
-	 * Cleanup this delegate associated with the label.
+	 * Cleanup this delegate associated with the frame.
 	 *
 	 * \param self this delegate
 	 * \param frame the underlying frame
