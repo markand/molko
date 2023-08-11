@@ -125,7 +125,9 @@ static struct {
 	.autosave = {
 		.cb = {
 			.w = ELEMENT_HEIGHT,
-			.h = ELEMENT_HEIGHT
+			.h = ELEMENT_HEIGHT,
+			.delegate = &mlk_checkbox_delegate,
+			.style = &mlk_style
 		},
 		.label = {
 			.text = "Auto save game",

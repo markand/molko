@@ -17,75 +17,28 @@
  */
 
 #include <assert.h>
-#include <string.h>
 
 #include <mlk/core/event.h>
 #include <mlk/core/maths.h>
 #include <mlk/core/painter.h>
 
 #include "checkbox.h"
-#include "ui.h"
-#include "ui_p.h"
+#include "style.h"
 
-static int
+static inline int
 is_boxed(const struct mlk_checkbox *cb, const struct mlk_event_click *click)
 {
-	assert(cb);
 	assert(click && click->type == MLK_EVENT_CLICKDOWN);
 
 	return mlk_maths_is_boxed(click->x, click->y, cb->x, cb->y, cb->w, cb->h);
 }
 
-static void
-draw(struct mlk_checkbox_delegate *delegate, const struct mlk_checkbox *cb)
+static int
+handle(struct mlk_checkbox_delegate *self,
+       struct mlk_checkbox *cb,
+       const union mlk_event *ev)
 {
-	(void)delegate;
-
-	const struct mlk_checkbox_style *style = MLK__STYLE(cb, mlk_checkbox_style);
-
-	if (!style->border_size) {
-		mlk_painter_set_color(style->bg_color);
-		mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
-	} else {
-		mlk_painter_set_color(style->border_color);
-		mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
-		mlk_painter_set_color(style->bg_color);
-		mlk_painter_draw_rectangle(
-			cb->x + style->border_size,
-			cb->y + style->border_size,
-			cb->w - (style->border_size * 2),
-			cb->h - (style->border_size * 2)
-		);
-	}
-
-	if (cb->checked) {
-		mlk_painter_set_color(style->check_color);
-		mlk_painter_draw_rectangle(cb->x + 5, cb->y + 5, cb->w - 10, cb->h - 10);
-	}
-}
-
-struct mlk_checkbox_style mlk_checkbox_style = {
-	.bg_color = MLK_UI_COLOR_BG,
-	.check_color = MLK_UI_COLOR_TEXT,
-	.border_color = MLK_UI_COLOR_BORDER,
-	.border_size = 1
-};
-
-struct mlk_checkbox_delegate mlk_checkbox_delegate = {
-	.draw = draw
-};
-
-int
-mlk_checkbox_ok(const struct mlk_checkbox *cb)
-{
-	return cb != NULL;
-}
-
-int
-mlk_checkbox_handle(struct mlk_checkbox *cb, const union mlk_event *ev)
-{
-	assert(mlk_checkbox_ok(cb));
-	assert(ev);
+	(void)self;
 
 	switch (ev->type) {
 	case MLK_EVENT_CLICKDOWN:
@@ -99,18 +52,90 @@ mlk_checkbox_handle(struct mlk_checkbox *cb, const union mlk_event *ev)
 	return 0;
 }
 
+static void
+draw(struct mlk_checkbox_delegate *self, const struct mlk_checkbox *cb)
+{
+	(void)self;
+
+	const struct mlk_style_attr *attr = &cb->style->normal;
+
+	if (!attr->geo.border) {
+		mlk_painter_set_color(attr->color.bg);
+		mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
+	} else {
+		mlk_painter_set_color(attr->color.border);
+		mlk_painter_draw_rectangle(cb->x, cb->y, cb->w, cb->h);
+		mlk_painter_set_color(attr->color.bg);
+		mlk_painter_draw_rectangle(
+			cb->x + attr->geo.border,
+			cb->y + attr->geo.border,
+			cb->w - (attr->geo.border * 2),
+			cb->h - (attr->geo.border * 2)
+		);
+	}
+
+	if (cb->checked) {
+		mlk_painter_set_color(attr->color.fg);
+		mlk_painter_draw_rectangle(cb->x + 5, cb->y + 5, cb->w - 10, cb->h - 10);
+	}
+}
+
+struct mlk_checkbox_delegate mlk_checkbox_delegate = {
+	.handle = handle,
+	.draw = draw
+};
+
+void
+mlk_checkbox_init(struct mlk_checkbox *cb,
+                  struct mlk_checkbox_delegate *dt,
+                  struct mlk_style *st)
+{
+	assert(cb);
+
+	cb->x = 0;
+	cb->y = 0;
+	cb->w = 0;
+	cb->h = 0;
+	cb->checked = 0;
+	cb->delegate = dt ? dt : &mlk_checkbox_delegate;
+	cb->style = st ? st : &mlk_style;
+}
+
+int
+mlk_checkbox_handle(struct mlk_checkbox *cb, const union mlk_event *ev)
+{
+	assert(cb);
+	assert(ev);
+
+	if (cb->delegate->handle)
+		return cb->delegate->handle(cb->delegate, cb, ev);
+
+	return 0;
+}
+
 void
 mlk_checkbox_update(struct mlk_checkbox *cb, unsigned int ticks)
 {
-	assert(mlk_checkbox_ok(cb));
+	assert(cb);
 
-	MLK__DELEGATE_INVOKE(cb->delegate, mlk_checkbox_delegate, update, cb, ticks);
+	if (cb->delegate->update)
+		cb->delegate->update(cb->delegate, cb, ticks);
 }
 
 void
 mlk_checkbox_draw(const struct mlk_checkbox *cb)
 {
-	assert(mlk_checkbox_ok(cb));
+	assert(cb);
 
-	MLK__DELEGATE_INVOKE(cb->delegate, mlk_checkbox_delegate, draw, cb);
+	if (cb->delegate->draw)
+		cb->delegate->draw(cb->delegate, cb);
+}
+
+void
+mlk_checkbox_finish(struct mlk_checkbox *cb)
+{
+	assert(cb);
+
+	if (cb->delegate->finish)
+		cb->delegate->finish(cb->delegate, cb);
 }
