@@ -28,14 +28,16 @@ draw(struct mlk_frame_delegate *self, const struct mlk_frame *frame)
 {
 	(void)self;
 
-	mlk_painter_set_color(frame->style->border_color);
+	const struct mlk_style_attr *attr = &frame->style->normal;
+
+	mlk_painter_set_color(attr->color.border);
 	mlk_painter_draw_rectangle(frame->x, frame->y, frame->w, frame->h);
-	mlk_painter_set_color(frame->style->bg_color);
+	mlk_painter_set_color(attr->color.bg);
 	mlk_painter_draw_rectangle(
-		frame->x + frame->style->border_size,
-		frame->y + frame->style->border_size,
-		frame->w - (frame->style->border_size * 2),
-		frame->h - (frame->style->border_size * 2)
+		frame->x + attr->geo.border,
+		frame->y + attr->geo.border,
+		frame->w - (attr->geo.border * 2),
+		frame->h - (attr->geo.border * 2)
 	);
 }
 

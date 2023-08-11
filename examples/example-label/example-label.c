@@ -136,7 +136,7 @@ delegate_glow_update(struct mlk_label_delegate *self, struct mlk_label *label, u
 	(void)self;
 
 	mlk_glower_update(&glower, ticks);
-	label->style->text_color = glower.color;
+	label->style->normal.color.text = glower.color;
 }
 
 static void
@@ -157,7 +157,7 @@ init(void)
 	mlk_glower_init(&glower);
 
 	/* Change default style. */
-	mlk_style.text_color = 0x005162ff;
+	mlk_style.normal.color.text = 0x005162ff;
 
 	/* Copy default label delegate and style and adapt. */
 	style_glow = mlk_style;

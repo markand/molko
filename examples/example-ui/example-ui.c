@@ -35,6 +35,7 @@
 #include <mlk/ui/frame.h>
 #include <mlk/ui/label.h>
 #include <mlk/ui/notify.h>
+#include <mlk/ui/style.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
@@ -107,14 +108,18 @@ static struct {
 			.x = FRAME_ORIGIN_X,
 			.y = FRAME_ORIGIN_Y,
 			.w = FRAME_WIDTH,
-			.h = FRAME_HEIGHT
+			.h = FRAME_HEIGHT,
+			.delegate = &mlk_frame_delegate,
+			.style = &mlk_style
 		}
 	},
 	.header = {
 		.label = {
 			.text = "Preferences",
 			.x = FRAME_ORIGIN_X,
-			.y = FRAME_ORIGIN_Y
+			.y = FRAME_ORIGIN_Y,
+			.delegate = &mlk_label_delegate,
+			.style = &mlk_style
 		}
 	},
 	.autosave = {
@@ -123,7 +128,9 @@ static struct {
 			.h = ELEMENT_HEIGHT
 		},
 		.label = {
-			.text = "Auto save game"
+			.text = "Auto save game",
+			.delegate = &mlk_label_delegate,
+			.style = &mlk_style
 		}
 	},
 	.buttons = {

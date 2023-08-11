@@ -33,7 +33,7 @@ query(struct mlk_label_delegate *self,
 {
 	(void)self;
 
-	return mlk_font_query(label->style->text_font, label->text, w, h);
+	return mlk_font_query(label->style->normal.font, label->text, w, h);
 }
 
 static void
@@ -41,10 +41,12 @@ draw(struct mlk_label_delegate *self, const struct mlk_label *label)
 {
 	(void)self;
 
+	const struct mlk_style_attr *attr = &label->style->normal;
+
 	mlk_ui_draw_text(
 		MLK_ALIGN_NONE,
-		label->style->text_font,
-		label->style->text_color,
+		attr->font,
+		attr->color.text,
 		label->text,
 		label->x,
 		label->y,
