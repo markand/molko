@@ -32,13 +32,12 @@
 #include <mlk/ui/frame.h>
 #include <mlk/ui/gridmenu.h>
 #include <mlk/ui/label.h>
+#include <mlk/ui/style.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
 #include <mlk/example/glower.h>
 #include <mlk/example/registry.h>
-
-static void menu_update(struct mlk_gridmenu_delegate *, struct mlk_gridmenu *, unsigned int);
 
 static const char * const items[] = {
 	"Feu mineur",
@@ -60,21 +59,21 @@ static const char * const items[] = {
 	"Double tour"
 };
 
+static struct mlk_style style;
+
 static struct mlk_frame frame = {
 	.w = 300,
-	.h = 100
-};
-static struct mlk_gridmenu_style menu_style = {0};
-static struct mlk_gridmenu_delegate menu_delegate = {
-	.update = menu_update
+	.h = 100,
+	.delegate = &mlk_frame_delegate,
+	.style = &mlk_style
 };
 static struct mlk_gridmenu menu = {
 	.nrows = 3,
 	.ncols = 2,
 	.items = items,
 	.itemsz = MLK_UTIL_SIZE(items),
-	.style = &menu_style,
-	.delegate = &menu_delegate
+	.delegate = &mlk_gridmenu_delegate,
+	.style = &style,
 };
 static struct mlk_glower menu_glower = {
 	.start = 0x00bfa3ff,
@@ -83,13 +82,10 @@ static struct mlk_glower menu_glower = {
 };
 
 static void
-menu_update(struct mlk_gridmenu_delegate *delegate, struct mlk_gridmenu *menu, unsigned int ticks)
+update_color(unsigned int ticks)
 {
-	(void)delegate;
-	(void)menu;
-
 	mlk_glower_update(&menu_glower, ticks);
-	menu_style.selected_color = menu_glower.color;
+	style.selected.color.text = menu_glower.color;
 }
 
 static void
@@ -98,7 +94,8 @@ init(void)
 	if (mlk_example_init("example-gridmenu") < 0)
 		mlk_panic();
 
-	menu_style = mlk_gridmenu_style;
+	/* Copy style. */
+	style = mlk_style;
 	mlk_glower_init(&menu_glower);
 }
 
@@ -123,7 +120,7 @@ update(struct mlk_state *st, unsigned int ticks)
 {
 	(void)st;
 
-	mlk_glower_update(&menu_glower, ticks);
+	update_color(ticks);
 	mlk_gridmenu_update(&menu, ticks);
 }
 
