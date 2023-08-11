@@ -41,7 +41,12 @@ draw(struct mlk_label_delegate *self, const struct mlk_label *label)
 {
 	(void)self;
 
-	const struct mlk_style_attr *attr = &label->style->normal;
+	const struct mlk_style_attr *attr;
+
+	if (label->selected)
+		attr = &label->style->selected;
+	else
+		attr = &label->style->normal;
 
 	mlk_ui_draw_text(
 		MLK_ALIGN_NONE,

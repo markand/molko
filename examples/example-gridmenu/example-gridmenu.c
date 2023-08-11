@@ -61,12 +61,6 @@ static const char * const items[] = {
 
 static struct mlk_style style;
 
-static struct mlk_frame frame = {
-	.w = 300,
-	.h = 100,
-	.delegate = &mlk_frame_delegate,
-	.style = &mlk_style
-};
 static struct mlk_gridmenu menu = {
 	.nrows = 3,
 	.ncols = 2,
@@ -131,7 +125,6 @@ draw(struct mlk_state *st)
 
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
-	mlk_frame_draw(&frame);
 	mlk_gridmenu_draw(&menu);
 	mlk_painter_present();
 }
@@ -146,10 +139,7 @@ run(void)
 	};
 
 	mlk_gridmenu_resize(&menu, 0, 0, 300, 100);
-
 	mlk_align(MLK_ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, mlk_window.w, mlk_window.h);
-	frame.x = menu.x;
-	frame.y = menu.y;
 
 	mlk_game_init();
 	mlk_game_push(&state);

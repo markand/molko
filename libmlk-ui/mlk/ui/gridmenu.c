@@ -24,11 +24,12 @@
 #include <mlk/core/font.h>
 #include <mlk/core/maths.h>
 #include <mlk/core/painter.h>
-#include <mlk/core/texture.h>
 #include <mlk/core/trace.h>
 #include <mlk/core/window.h>
 
 #include "gridmenu.h"
+#include "frame.h"
+#include "label.h"
 #include "style.h"
 #include "ui_p.h"
 
@@ -185,60 +186,49 @@ handle(struct mlk_gridmenu_delegate *self,
 }
 
 static void
-draw(struct mlk_gridmenu_delegate *self, const struct mlk_gridmenu *menu)
+draw_frame(struct mlk_gridmenu_delegate *self, const struct mlk_gridmenu *menu)
 {
 	(void)self;
 
-	const struct mlk_style *st = menu->style;
-	size_t pagesz, pagenr, item, c = 0, r = 0;
-	struct mlk_texture tex;
-	struct mlk_font *font;
-	unsigned long color;
-	int x, y;
+	struct mlk_frame frame;
 
-	/*
-	 * Select the first top-left column based on the current selection and
-	 * the number of rows/columns.
-	 */
-	pagesz = menu->nrows * menu->ncols;
-	pagenr = menu->selected / pagesz;
+	mlk_frame_init(&frame, menu->style, &mlk_frame_delegate);
+	frame.x = menu->x;
+	frame.y = menu->y;
+	frame.w = menu->w;
+	frame.h = menu->h;
 
-	for (size_t i = 0; i < pagesz; ++i) {
-		item = i + pagenr * pagesz;
+	mlk_frame_draw(&frame);
+	mlk_frame_finish(&frame);
+}
 
-		if (item >= menu->itemsz || !menu->items[item])
-			continue;
+static void
+draw_item(struct mlk_gridmenu_delegate *self,
+          const struct mlk_gridmenu *menu,
+          const char *item,
+          unsigned int row,
+          unsigned int col,
+          int selected)
+{
+	(void)self;
 
-		x = (int)(menu->x + st->normal.geo.padding + (c * menu->eltw) + (c * menu->spacew));
-		y = (int)(menu->y + st->normal.geo.padding + (r * menu->elth) + (r * menu->spaceh));
+	struct mlk_label label;
 
-		if (i == menu->selected % pagesz) {
-			color = st->selected.color.text;
-			font = st->selected.font;
-		} else {
-			color = st->normal.color.text;
-			font = st->normal.font;
-		}
+	mlk_label_init(&label, menu->style, &mlk_label_delegate);
+	label.x = menu->x + menu->style->normal.geo.padding + (col * menu->eltw) + (col * menu->spacew);
+	label.y = menu->y + menu->style->normal.geo.padding + (row * menu->elth) + (row * menu->spaceh);
+	label.text = item;
+	label.selected = selected;
 
-		if (mlk_font_render(font, &tex, menu->items[item], color) < 0) {
-			mlk_tracef(_("unable to render grid menu item: %s"), mlk_err());
-			continue;
-		}
-
-		mlk_texture_draw(&tex, x, y);
-		mlk_texture_finish(&tex);
-
-		if (++c >= menu->ncols) {
-			++r;
-			c = 0;
-		}
-	}
+	mlk_label_draw(&label);
+	mlk_label_finish(&label);
 }
 
 struct mlk_gridmenu_delegate mlk_gridmenu_delegate = {
 	.resize = resize,
 	.handle = handle,
-	.draw = draw
+	.draw_frame = draw_frame,
+	.draw_item = draw_item
 };
 
 void
@@ -310,6 +300,41 @@ mlk_gridmenu_draw(const struct mlk_gridmenu *menu)
 {
 	assert(menu);
 
-	if (menu->delegate->draw)
-		menu->delegate->draw(menu->delegate, menu);
+	size_t pagesz, pagenr, item;
+	unsigned int row = 0, col = 0;
+	int selected;
+
+	if (menu->delegate->draw_frame)
+		menu->delegate->draw_frame(menu->delegate, menu);
+
+	/*
+	 * Select the first top-left column based on the current selection and
+	 * the number of rows/columns.
+	 */
+	pagesz = menu->nrows * menu->ncols;
+	pagenr = menu->selected / pagesz;
+
+	for (size_t i = 0; i < pagesz; ++i) {
+		item = i + pagenr * pagesz;
+
+		if (item >= menu->itemsz || !menu->items[item])
+			continue;
+
+		selected = i == menu->selected % pagesz;
+
+		if (menu->delegate->draw_item)
+			menu->delegate->draw_item(
+			    menu->delegate,
+			    menu,
+			    menu->items[item],
+			    row,
+			    col,
+			    selected
+			);
+
+		if (++col >= menu->ncols) {
+			++row;
+			col = 0;
+		}
+	}
 }

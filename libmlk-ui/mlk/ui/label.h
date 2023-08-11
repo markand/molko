@@ -55,6 +55,13 @@ struct mlk_label {
 	const char *text;
 
 	/**
+	 * (read-write)
+	 *
+	 * Tells if label is considered selected.
+	 */
+	int selected;
+
+	/**
 	 * (read-write, borrowed)
 	 *
 	 * Label style.

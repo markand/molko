@@ -166,13 +166,32 @@ struct mlk_gridmenu_delegate {
 	/**
 	 * (read-write, optional)
 	 *
-	 * Draw this menu.
+	 * Draw a frame box for this menu.
 	 *
 	 * \param self this delegate
-	 * \param menu the menu to draw
+	 * \param menu the underlying menu
 	 */
-	void (*draw)(struct mlk_gridmenu_delegate *self,
-	             const struct mlk_gridmenu *menu);
+	void (*draw_frame)(struct mlk_gridmenu_delegate *self,
+	                   const struct mlk_gridmenu *menu);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Draw a specific item.
+	 *
+	 * \param self this delegate
+	 * \param menu the underlying menu
+	 * \param item the item content
+	 * \param row the row number (relative)
+	 * \param col the column number (relative)
+	 * \param selected non-zero if the item is currently selected
+	 */
+	void (*draw_item)(struct mlk_gridmenu_delegate *self,
+	                  const struct mlk_gridmenu *menu,
+	                  const char *item,
+	                  unsigned int row,
+	                  unsigned int col,
+	                  int selected);
 
 	/**
 	 * (read-write, optional)
@@ -187,6 +206,9 @@ struct mlk_gridmenu_delegate {
 
 };
 
+/**
+ * \brief Default stateless delegate for gridmenu.
+ */
 extern struct mlk_gridmenu_delegate mlk_gridmenu_delegate;
 
 #if defined(__cplusplus)
@@ -238,7 +260,10 @@ void
 mlk_gridmenu_update(struct mlk_gridmenu *menu, unsigned int ticks);
 
 /**
- * Invoke ::mlk_gridmenu_delegate::draw.
+ * Invoke the functions:
+ *
+ * - ::mlk_gridmenu_delegate::draw_frame,
+ * - ::mlk_gridmenu_delegate::draw_item.
  */
 void
 mlk_gridmenu_draw(const struct mlk_gridmenu *menu);

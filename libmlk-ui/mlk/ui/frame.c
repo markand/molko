@@ -77,3 +77,12 @@ mlk_frame_draw(const struct mlk_frame *frame)
 	if (frame->delegate->draw)
 		frame->delegate->draw(frame->delegate, frame);
 }
+
+void
+mlk_frame_finish(struct mlk_frame *frame)
+{
+	assert(frame);
+
+	if (frame->delegate->finish)
+		frame->delegate->finish(frame->delegate, frame);
+}
