@@ -39,7 +39,7 @@
 
 /* Custom delegate/style for glowing one. */
 static struct mlk_style style_glow;
-static struct mlk_label_delegate delegate_glow;
+static struct mlk_label_if delegate_glow;
 static struct mlk_glower glower = {
 	.start  = 0xffce7fff,
 	.end    = 0xd58d6bff,
@@ -55,7 +55,7 @@ static struct {
 		.label = {
 			.text = "The world is Malikania.",
 			.style = &style_glow,
-			.delegate = &delegate_glow
+			.iface = &delegate_glow
 		}
 	},
 	{
@@ -63,7 +63,7 @@ static struct {
 		.label = {
 			.text = "Top left",
 			.style = &mlk_style,
-			.delegate = &mlk_label_delegate
+			.iface = &mlk_label_if
 		}
 	},
 	{
@@ -71,7 +71,7 @@ static struct {
 		.label = {
 			.text = "Top",
 			.style = &mlk_style,
-			.delegate = &mlk_label_delegate
+			.iface = &mlk_label_if
 		}
 	},
 	{
@@ -79,7 +79,7 @@ static struct {
 		.label = {
 			.text = "Top right",
 			.style = &mlk_style,
-			.delegate = &mlk_label_delegate
+			.iface = &mlk_label_if
 		}
 	},
 	{
@@ -87,7 +87,7 @@ static struct {
 		.label = {
 			.text = "Right",
 			.style = &mlk_style,
-			.delegate = &mlk_label_delegate
+			.iface = &mlk_label_if
 		}
 	},
 	{
@@ -95,7 +95,7 @@ static struct {
 		.label = {
 			.text = "Bottom right",
 			.style = &mlk_style,
-			.delegate = &mlk_label_delegate
+			.iface = &mlk_label_if
 		}
 	},
 	{
@@ -103,7 +103,7 @@ static struct {
 		.label = {
 			.text = "Bottom",
 			.style = &mlk_style,
-			.delegate = &mlk_label_delegate
+			.iface = &mlk_label_if
 		}
 	},
 	{
@@ -111,7 +111,7 @@ static struct {
 		.label = {
 			.text = "Bottom left",
 			.style = &mlk_style,
-			.delegate = &mlk_label_delegate
+			.iface = &mlk_label_if
 		}
 	},
 	{
@@ -119,7 +119,7 @@ static struct {
 		.label = {
 			.text = "Left",
 			.style = &mlk_style,
-			.delegate = &mlk_label_delegate
+			.iface = &mlk_label_if
 		}
 	}
 };
@@ -127,11 +127,11 @@ static struct {
 static struct mlk_label mouse_label = {
 	.text = "This one follows your mouse and is not aligned.",
 	.style = &mlk_style,
-	.delegate = &mlk_label_delegate
+	.iface = &mlk_label_if
 };
 
 static void
-delegate_glow_update(struct mlk_label_delegate *self, struct mlk_label *label, unsigned int ticks)
+delegate_glow_update(struct mlk_label_if *self, struct mlk_label *label, unsigned int ticks)
 {
 	(void)self;
 
@@ -147,6 +147,14 @@ init(void)
 
 	if (mlk_example_init("example-label") < 0)
 		mlk_panic();
+	
+	/* Change default style. */
+	mlk_style.normal.color.text = 0x005162ff;
+
+	/* Copy default label delegate and style and adapt. */
+	style_glow = mlk_style;
+	delegate_glow = mlk_label_if;
+	delegate_glow.update = delegate_glow_update;
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i) {
 		l = &table[i].label;
@@ -155,14 +163,6 @@ init(void)
 	}
 
 	mlk_glower_init(&glower);
-
-	/* Change default style. */
-	mlk_style.normal.color.text = 0x005162ff;
-
-	/* Copy default label delegate and style and adapt. */
-	style_glow = mlk_style;
-	delegate_glow = mlk_label_delegate;
-	delegate_glow.update = delegate_glow_update;
 }
 
 static void

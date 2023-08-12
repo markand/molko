@@ -214,7 +214,7 @@ draw_item(struct mlk_gridmenu_delegate *self,
 
 	struct mlk_label label;
 
-	mlk_label_init(&label, menu->style, &mlk_label_delegate);
+	mlk_label_init(&label, &mlk_label_if, menu->style);
 	label.x = menu->x + menu->style->normal.geo.padding + (col * menu->eltw) + (col * menu->spacew);
 	label.y = menu->y + menu->style->normal.geo.padding + (row * menu->elth) + (row * menu->spaceh);
 	label.text = item;
