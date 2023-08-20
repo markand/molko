@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <string.h>
+
 #include <SDL.h>
 
 #include "event.h"
@@ -180,28 +182,28 @@ static const struct {
 	int button;
 	enum mlk_gamepad_button value;
 } pads[] = {
-	{ SDL_CONTROLLER_BUTTON_A,              MLK_GAMEPAD_BUTTON_A            },
-	{ SDL_CONTROLLER_BUTTON_B,              MLK_GAMEPAD_BUTTON_B            },
-	{ SDL_CONTROLLER_BUTTON_X,              MLK_GAMEPAD_BUTTON_X            },
-	{ SDL_CONTROLLER_BUTTON_Y,              MLK_GAMEPAD_BUTTON_Y            },
-	{ SDL_CONTROLLER_BUTTON_BACK,           MLK_GAMEPAD_BUTTON_BACK         },
-	{ SDL_CONTROLLER_BUTTON_GUIDE,          MLK_GAMEPAD_BUTTON_LOGO         },
-	{ SDL_CONTROLLER_BUTTON_START,          MLK_GAMEPAD_BUTTON_START        },
-	{ SDL_CONTROLLER_BUTTON_LEFTSTICK,      MLK_GAMEPAD_BUTTON_LTHUMB       },
-	{ SDL_CONTROLLER_BUTTON_RIGHTSTICK,     MLK_GAMEPAD_BUTTON_RTHUMB       },
-	{ SDL_CONTROLLER_BUTTON_LEFTSHOULDER,   MLK_GAMEPAD_BUTTON_LSHOULDER    },
-	{ SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,  MLK_GAMEPAD_BUTTON_RSHOULDER    },
-	{ SDL_CONTROLLER_BUTTON_DPAD_UP,        MLK_GAMEPAD_BUTTON_UP           },
-	{ SDL_CONTROLLER_BUTTON_DPAD_DOWN,      MLK_GAMEPAD_BUTTON_DOWN         },
-	{ SDL_CONTROLLER_BUTTON_DPAD_LEFT,      MLK_GAMEPAD_BUTTON_LEFT         },
-	{ SDL_CONTROLLER_BUTTON_DPAD_RIGHT,     MLK_GAMEPAD_BUTTON_RIGHT        },
+	{ SDL_GAMEPAD_BUTTON_A,                 MLK_GAMEPAD_BUTTON_A            },
+	{ SDL_GAMEPAD_BUTTON_B,                 MLK_GAMEPAD_BUTTON_B            },
+	{ SDL_GAMEPAD_BUTTON_X,                 MLK_GAMEPAD_BUTTON_X            },
+	{ SDL_GAMEPAD_BUTTON_Y,                 MLK_GAMEPAD_BUTTON_Y            },
+	{ SDL_GAMEPAD_BUTTON_BACK,              MLK_GAMEPAD_BUTTON_BACK         },
+	{ SDL_GAMEPAD_BUTTON_GUIDE,             MLK_GAMEPAD_BUTTON_LOGO         },
+	{ SDL_GAMEPAD_BUTTON_START,             MLK_GAMEPAD_BUTTON_START        },
+	{ SDL_GAMEPAD_BUTTON_LEFT_STICK,        MLK_GAMEPAD_BUTTON_LTHUMB       },
+	{ SDL_GAMEPAD_BUTTON_RIGHT_STICK,       MLK_GAMEPAD_BUTTON_RTHUMB       },
+	{ SDL_GAMEPAD_BUTTON_LEFT_SHOULDER,     MLK_GAMEPAD_BUTTON_LSHOULDER    },
+	{ SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER,    MLK_GAMEPAD_BUTTON_RSHOULDER    },
+	{ SDL_GAMEPAD_BUTTON_DPAD_UP,           MLK_GAMEPAD_BUTTON_UP           },
+	{ SDL_GAMEPAD_BUTTON_DPAD_DOWN,         MLK_GAMEPAD_BUTTON_DOWN         },
+	{ SDL_GAMEPAD_BUTTON_DPAD_LEFT,         MLK_GAMEPAD_BUTTON_LEFT         },
+	{ SDL_GAMEPAD_BUTTON_DPAD_RIGHT,        MLK_GAMEPAD_BUTTON_RIGHT        },
 	{ -1,                                   MLK_GAMEPAD_BUTTON_UNKNOWN      }
 };
 
 static void
 convert_key(const SDL_Event *event, union mlk_event *ev)
 {
-	ev->type = event->type == SDL_KEYDOWN ? MLK_EVENT_KEYDOWN : MLK_EVENT_KEYUP;
+	ev->type = event->type == SDL_EVENT_KEY_DOWN ? MLK_EVENT_KEYDOWN : MLK_EVENT_KEYUP;
 	ev->key.key = MLK_KEY_UNKNOWN;
 
 	for (size_t i = 0; keymap[i].key != 0; ++i) {
@@ -231,7 +233,7 @@ convert_mouse(const SDL_Event *event, union mlk_event *ev)
 static void
 convert_click(const SDL_Event *event, union mlk_event *ev)
 {
-	ev->type = event->type == SDL_MOUSEBUTTONDOWN ? MLK_EVENT_CLICKDOWN : MLK_EVENT_CLICKUP;
+	ev->type = event->type == SDL_EVENT_MOUSE_BUTTON_DOWN ? MLK_EVENT_CLICKDOWN : MLK_EVENT_CLICKUP;
 	ev->click.button = MLK_MOUSE_BUTTON_NONE;
 	ev->click.x = event->button.x;
 	ev->click.y = event->button.y;
@@ -248,10 +250,10 @@ convert_click(const SDL_Event *event, union mlk_event *ev)
 static void
 convert_pad(const SDL_Event *event, union mlk_event *ev)
 {
-	ev->type = event->type == SDL_CONTROLLERBUTTONDOWN ? MLK_EVENT_PADDOWN : MLK_EVENT_PADUP;
+	ev->type = event->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ? MLK_EVENT_PADDOWN : MLK_EVENT_PADUP;
 
 	for (size_t i = 0; pads[i].value != MLK_GAMEPAD_BUTTON_UNKNOWN; ++i) {
-		if (pads[i].button == event->cbutton.button) {
+		if (pads[i].button == event->gbutton.button) {
 			ev->pad.button = pads[i].value;
 			break;
 		}
@@ -262,12 +264,12 @@ static const struct {
 	int axis;
 	enum mlk_gamepad_axis value;
 } axises[] = {
-	{ SDL_CONTROLLER_AXIS_LEFTX,            MLK_GAMEPAD_AXIS_LX             },
-	{ SDL_CONTROLLER_AXIS_LEFTY,            MLK_GAMEPAD_AXIS_LY             },
-	{ SDL_CONTROLLER_AXIS_RIGHTX,           MLK_GAMEPAD_AXIS_RX             },
-	{ SDL_CONTROLLER_AXIS_RIGHTY,           MLK_GAMEPAD_AXIS_RY             },
-	{ SDL_CONTROLLER_AXIS_TRIGGERLEFT,      MLK_GAMEPAD_AXIS_LTRIGGER       },
-	{ SDL_CONTROLLER_AXIS_TRIGGERRIGHT,     MLK_GAMEPAD_AXIS_RTRIGGER       },
+	{ SDL_GAMEPAD_AXIS_LEFTX,               MLK_GAMEPAD_AXIS_LX             },
+	{ SDL_GAMEPAD_AXIS_LEFTY,               MLK_GAMEPAD_AXIS_LY             },
+	{ SDL_GAMEPAD_AXIS_RIGHTX,              MLK_GAMEPAD_AXIS_RX             },
+	{ SDL_GAMEPAD_AXIS_RIGHTY,              MLK_GAMEPAD_AXIS_RY             },
+	{ SDL_GAMEPAD_AXIS_LEFT_TRIGGER,        MLK_GAMEPAD_AXIS_LTRIGGER       },
+	{ SDL_GAMEPAD_AXIS_RIGHT_TRIGGER,       MLK_GAMEPAD_AXIS_RTRIGGER       },
 	{ -1,                                   MLK_GAMEPAD_AXIS_UNKNOWN        }
 };
 
@@ -275,10 +277,10 @@ static void
 convert_axis(const SDL_Event *event, union mlk_event *ev)
 {
 	ev->type = MLK_EVENT_AXIS;
-	ev->axis.value = event->caxis.value;
+	ev->axis.value = event->gaxis.value;
 
 	for (size_t i = 0; axises[i].value != MLK_GAMEPAD_AXIS_UNKNOWN; ++i) {
-		if (axises[i].axis == event->caxis.axis) {
+		if (axises[i].axis == event->gaxis.axis) {
 			ev->axis.axis = axises[i].value;
 			break;
 		}
@@ -298,25 +300,25 @@ mlk_event_poll(union mlk_event *ev)
 	 */
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
-		case SDL_QUIT:
+		case SDL_EVENT_QUIT:
 			ev->type = MLK_EVENT_QUIT;
 			return 1;
-		case SDL_KEYDOWN:
-		case SDL_KEYUP:
+		case SDL_EVENT_KEY_DOWN:
+		case SDL_EVENT_KEY_UP:
 			convert_key(&event, ev);
 			return 1;
-		case SDL_MOUSEMOTION:
+		case SDL_EVENT_MOUSE_MOTION:
 			convert_mouse(&event, ev);
 			return 1;
-		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		case SDL_EVENT_MOUSE_BUTTON_UP:
 			convert_click(&event, ev);
 			return 1;
-		case SDL_CONTROLLERBUTTONDOWN:
-		case SDL_CONTROLLERBUTTONUP:
+		case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+		case SDL_EVENT_GAMEPAD_BUTTON_UP:
 			convert_pad(&event, ev);
 			return 1;
-		case SDL_CONTROLLERAXISMOTION:
+		case SDL_EVENT_GAMEPAD_AXIS_MOTION:
 			convert_axis(&event, ev);
 			return 1;
 		default:

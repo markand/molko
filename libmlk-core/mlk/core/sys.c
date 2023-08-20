@@ -260,8 +260,8 @@ mlk_sys_init(const char *organization, const char *name)
 	(void)organization;
 	(void)name;
 
-	/* SDL2. */
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
+	/* SDL. */
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMEPAD) < 0)
 		return mlk_errf("%s", SDL_GetError());
 	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
 		return mlk_errf("%s", SDL_GetError());

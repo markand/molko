@@ -101,14 +101,14 @@ mlk_texture_draw(const struct mlk_texture *tex, int x, int y)
 {
 	assert(tex);
 
-	SDL_Rect dst = {
+	SDL_FRect dst = {
 		.x = x,
 		.y = y,
 		.w = tex->w,
 		.h = tex->h
 	};
 
-	if (SDL_RenderCopy(MLK__RENDERER(), tex->handle, NULL, &dst) < 0)
+	if (SDL_RenderTexture(MLK__RENDERER(), tex->handle, NULL, &dst) < 0)
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
@@ -126,20 +126,20 @@ mlk_texture_scale(const struct mlk_texture *tex,
                   unsigned dst_h,
                   double angle)
 {
-	const SDL_Rect src = {
+	const SDL_FRect src = {
 		.x = src_x,
 		.y = src_y,
 		.w = src_w,
 		.h = src_h
 	};
-	const SDL_Rect dst = {
+	const SDL_FRect dst = {
 		.x = dst_x,
 		.y = dst_y,
 		.w = dst_w,
 		.h = dst_h
 	};
 
-	if (SDL_RenderCopyEx(MLK__RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE) < 0)
+	if (SDL_RenderTextureRotated(MLK__RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE) < 0)
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
@@ -172,7 +172,7 @@ mlk__texture_from_surface(struct mlk_texture *tex, SDL_Surface *surface)
 	tex->w = surface->w;
 	tex->h = surface->h;
 
-	SDL_FreeSurface(surface);
+	SDL_DestroySurface(surface);
 
 	return 0;
 }

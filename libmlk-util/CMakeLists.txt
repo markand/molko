@@ -65,7 +65,6 @@ mlk_library(
 		${HEADERS}
 		${libmlk-util_BINARY_DIR}/mlk/util/sysconfig.h
 	HEADERS_DIRECTORY mlk/util
-	LIBRARIES ${LIBRARIES}
 	INCLUDES
 		PUBLIC
 			$<BUILD_INTERFACE:${libmlk-util_SOURCE_DIR}>

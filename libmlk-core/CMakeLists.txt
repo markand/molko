@@ -121,9 +121,9 @@ mlk_library(
 			${LIBRARIES}
 			${OPENAL_LIBRARY}
 			SndFile::SndFile
-			SDL2::SDL2
-			SDL2::image
-			SDL2::ttf
+			SDL3::SDL3
+			SDL3_image::SDL3_image-shared
+			SDL3_ttf::SDL3_ttf-shared
 			libmlk-util
 	INCLUDES
 		PUBLIC

@@ -21,10 +21,12 @@ include(CMakeFindDependencyMacro)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../mlk;${CMAKE_MODULE_PATH}")
 
 # Local modules.
-find_dependency(SDL2 COMPONENTS ttf image)
 find_dependency(SndFile)
 
 # External modules.
 find_dependency(OpenAL)
+find_dependency(SDL3)
+find_dependency(SDL3_image)
+find_dependency(SDL3_ttf)
 
 include("${CMAKE_CURRENT_LIST_DIR}/libmlk-util-targets.cmake")

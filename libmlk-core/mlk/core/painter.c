@@ -65,19 +65,19 @@ mlk_painter_set_color(unsigned long color)
 void
 mlk_painter_draw_line(int x1, int y1, int x2, int y2)
 {
-	SDL_RenderDrawLine(MLK__RENDERER(), x1, y1, x2, y2);
+	SDL_RenderLine(MLK__RENDERER(), x1, y1, x2, y2);
 }
 
 void
 mlk_painter_draw_point(int x1, int y1)
 {
-	SDL_RenderDrawPoint(MLK__RENDERER(), x1, y1);
+	SDL_RenderPoint(MLK__RENDERER(), x1, y1);
 }
 
 void
 mlk_painter_draw_rectangle(int x, int y, unsigned int width, unsigned int height)
 {
-	const SDL_Rect rect = {
+	const SDL_FRect rect = {
 		.w = width,
 		.h = height,
 		.x = x,
@@ -95,8 +95,8 @@ mlk_painter_draw_circle(int x, int y, int radius)
 	for (double dy = 1; dy <= radius; dy += 1.0) {
 		dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
 
-		SDL_RenderDrawLine(MLK__RENDERER(), x - dx, y + dy - radius, x + dx, y + dy - radius);
-		SDL_RenderDrawLine(MLK__RENDERER(), x - dx, y - dy + radius, x + dx, y - dy + radius);
+		SDL_RenderLine(MLK__RENDERER(), x - dx, y + dy - radius, x + dx, y + dy - radius);
+		SDL_RenderLine(MLK__RENDERER(), x - dx, y - dy + radius, x + dx, y - dy + radius);
 	}
 }
 

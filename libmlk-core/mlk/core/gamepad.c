@@ -31,7 +31,7 @@ mlk_gamepad_open(struct mlk_gamepad *pad, int idx)
 
 	memset(pad, 0, sizeof (*pad));
 
-	if (!(pad->handle = SDL_GameControllerOpen(idx)))
+	if (!(pad->handle = SDL_OpenGamepad(idx)))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
@@ -43,10 +43,12 @@ mlk_gamepad_finish(struct mlk_gamepad *pad)
 	assert(pad);
 
 	if (pad->handle)
-		SDL_GameControllerClose(pad->handle);
+		SDL_CloseGamepad(pad->handle);
 
 	memset(pad, 0, sizeof (*pad));
 }
+
+#if 0
 
 int
 mlk_gamepad_iter_begin(struct mlk_gamepad_iter *it)
@@ -84,3 +86,5 @@ mlk_gamepad_iter_next(struct mlk_gamepad_iter *it)
 
 	return 1;
 }
+
+#endif

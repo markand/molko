@@ -70,10 +70,12 @@ include(cmake/MlkMap.cmake)
 include(cmake/MlkNls.cmake)
 include(cmake/MlkTileset.cmake)
 
-find_package(SDL2 MODULE REQUIRED COMPONENTS image ttf)
-find_package(OpenAL REQUIRED)
-find_package(SndFile REQUIRED)
 find_package(Jansson REQUIRED)
+find_package(OpenAL REQUIRED)
+find_package(SDL3 REQUIRED)
+find_package(SDL3_image REQUIRED)
+find_package(SDL3_ttf REQUIRED)
+find_package(SndFile REQUIRED)
 
 # POSIX math library isn't available everywhere.
 find_library(M_LIBRARY m)
@@ -110,10 +112,6 @@ if (MLK_WITH_EXAMPLES)
 	add_subdirectory(examples)
 endif ()
 
-#
-# SDL2 is not always configured using CMake on some systems which means the
-# CMake configuration file isn't provided, so use our own...
-#
 configure_file(
 	${molko_SOURCE_DIR}/cmake/MlkOptions.install.cmake
 	${molko_BINARY_DIR}/cmake/MlkOptions.cmake
@@ -121,7 +119,6 @@ configure_file(
 install(
 	FILES
 		${molko_BINARY_DIR}/cmake/MlkOptions.cmake
-		${molko_SOURCE_DIR}/cmake/FindSDL2.cmake
 		${molko_SOURCE_DIR}/cmake/FindSndFile.cmake
 		${molko_SOURCE_DIR}/cmake/MlkBcc.cmake
 		${molko_SOURCE_DIR}/cmake/MlkMap.cmake

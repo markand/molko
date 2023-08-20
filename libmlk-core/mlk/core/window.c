@@ -52,10 +52,10 @@ load_cursors(void)
 static void
 load_framerate(void)
 {
-	SDL_DisplayMode mode;
+	const SDL_DisplayMode *mode;
 
-	if (SDL_GetWindowDisplayMode(handle.win, &mode) == 0)
-		mlk_window.framerate = mode.refresh_rate;
+	if ((mode = SDL_GetCurrentDisplayMode(SDL_GetDisplayForWindow(handle.win))))
+		mlk_window.framerate = mode->refresh_rate;
 }
 
 static void
@@ -63,19 +63,19 @@ finish_cursors(void)
 {
 	for (size_t i = 0; i < MLK_UTIL_SIZE(cursors); ++i)
 		if (cursors[i])
-			SDL_FreeCursor(cursors[i]);
+			SDL_DestroyCursor(cursors[i]);
 }
 
 static int
 load_window(const char *title, unsigned int w, unsigned int h)
 {
-	return (handle.win = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, 0)) != NULL;
+	return (handle.win = SDL_CreateWindow(title, w, h, 0)) != NULL;
 }
 
 static int
 load_renderer(void)
 {
-	return (handle.renderer = SDL_CreateRenderer(handle.win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) != NULL;
+	return (handle.renderer = SDL_CreateRenderer(handle.win, NULL, 0));
 }
 
 int
@@ -103,9 +103,9 @@ mlk_window_set_cursor(enum mlk_window_cursor cursor)
 	assert(cursor < MLK_WINDOW_CURSOR_LAST);
 
 	if (cursor == MLK_WINDOW_CURSOR_OFF)
-		SDL_ShowCursor(0);
+		SDL_ShowCursor();
 	else {
-		SDL_ShowCursor(1);
+		SDL_HideCursor();
 		SDL_SetCursor(cursors[cursor]);
 	}
 }

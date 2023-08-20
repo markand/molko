@@ -9,10 +9,10 @@ Requirements
 - C23 compliant compiler.
 - [CMake][], Make build system.
 - [Jansson][], JSON parsing library.
-- [SDL2][], Multimedia library.
-- [SDL2_image][], Image loading addon for SDL2.
-- [SDL2_mixer][], Audio addon for SDL2.
-- [SDL2_ttf][], Fonts addon for SDL2.
+- [SDL3][], Multimedia library.
+- [SDL3_image][], Image loading addon for SDL3.
+- [SDL3_mixer][], Audio addon for SDL3.
+- [SDL3_ttf][], Fonts addon for SDL3.
 
 Molko's Engine is mostly written in C23 with a very limited POSIX extensions
 (including `stat`, `strlcpy`, `fmemopen`) but where support is missing fallback
@@ -65,10 +65,10 @@ The recommended way to build under macOS is to install dependencies through
 You will need the following packages:
 
 - *jansson*
-- *sdl2*
-- *sdl2_image*
-- *sdl2_mixer*
-- *sdl2_ttf*
+- *sdl3*
+- *sdl3_image*
+- *sdl3_mixer*
+- *sdl3_ttf*
 
 Platform: Windows
 -----------------
@@ -80,10 +80,10 @@ On Windows, [MSYS2][] and Visual Studio are supported.
 Once you have MSYS2 installed, simply install the following packages from the
 appropriate MinGW shell prior to the chapter above.
 
-- *mingw-w64-clang-x86_64-SDL2*
-- *mingw-w64-clang-x86_64-SDL2_image*
-- *mingw-w64-clang-x86_64-SDL2_mixer*
-- *mingw-w64-clang-x86_64-SDL2_ttf*
+- *mingw-w64-clang-x86_64-SDL3*
+- *mingw-w64-clang-x86_64-SDL3_image*
+- *mingw-w64-clang-x86_64-SDL3_mixer*
+- *mingw-w64-clang-x86_64-SDL3_ttf*
 - *mingw-w64-clang-x86_64-jansson*
 
 Note: replace `x86_64` with `i686` if you have a deprecated system or if you
@@ -109,8 +109,8 @@ running `cmake`.
 [CMake]: http://cmake.org
 [Jansson]: http://www.digip.org/jansson
 [MSYS2]: http://www.msys2.org
-[SDL2]: http://libsdl.org
-[SDL2_image]: https://www.libsdl.org/projects/SDL_image
-[SDL2_mixer]: https://www.libsdl.org/projects/SDL_mixer
-[SDL2_ttf]: https://www.libsdl.org/projects/SDL_ttf
+[SDL3]: http://libsdl.org
+[SDL3_image]: https://www.libsdl.org/projects/SDL_image
+[SDL3_mixer]: https://www.libsdl.org/projects/SDL_mixer
+[SDL3_ttf]: https://www.libsdl.org/projects/SDL_ttf
 [gettext]: https://www.gnu.org/software/gettext
