@@ -17,6 +17,7 @@
  */
 
 #include <stddef.h>
+#include <stdio.h>
 
 #include <mlk/core/core.h>
 #include <mlk/core/err.h>
@@ -44,6 +45,14 @@ static struct mlk_glower glow = {
 	.delay  = 22
 };
 
+static const char * const theme_names[] = {
+	[MLK_WINDOW_THEME_AUTO] = "auto",
+	[MLK_WINDOW_THEME_DARK] = "dark",
+	[MLK_WINDOW_THEME_LIGHT] = "light"
+};
+
+static char theme_help_text[128];
+
 static struct {
 	enum mlk_align align;
 	struct mlk_label label;
@@ -51,8 +60,14 @@ static struct {
 	{
 		.align = MLK_ALIGN_CENTER,
 		.label = {
+			.text = theme_help_text
+		}
+	},
+	{
+		.align = MLK_ALIGN_CENTER,
+		.label = {
 			.text = "The world is Malikania.",
-			.style = &style_glow,
+			.style = &style_glow
 		}
 	},
 	{
@@ -105,10 +120,6 @@ static struct {
 	}
 };
 
-static struct mlk_label mouse_label = {
-	.text = "This one follows your mouse and is not aligned."
-};
-
 static void
 style_glow_update(struct mlk_label_style *self, struct mlk_label *label, unsigned int ticks)
 {
@@ -116,6 +127,20 @@ style_glow_update(struct mlk_label_style *self, struct mlk_label *label, unsigne
 
 	mlk_glower_update(&glow, ticks);
 	self->color = glow.color;
+}
+
+static void
+set_help_text(void)
+{
+	struct mlk_label *l = &table[0].label;
+	unsigned int w, h;
+
+	snprintf(theme_help_text, sizeof (theme_help_text), "Press space to change theme (%s)",
+	    theme_names[mlk_window.theme_user]);
+
+	mlk_label_query(l, &w, &h);
+	mlk_align(MLK_ALIGN_CENTER, &l->x, &l->y, w, h, 0, 0, mlk_window.w, mlk_window.h);
+	l->y += h * 2;
 }
 
 static void
@@ -127,9 +152,6 @@ init(void)
 	if (mlk_example_init("example-label") < 0)
 		mlk_panic();
 	
-	/* Change default style for all labels. */
-	mlk_label_style->color = 0x005162ff;
-
 	/* Change the glowing style. */
 	style_glow.update = style_glow_update;
 
@@ -139,6 +161,12 @@ init(void)
 		mlk_align(table[i].align, &l->x, &l->y, w, h, 0, 0, mlk_window.w, mlk_window.h);
 	}
 
+	/* Move a bit the help text. */
+	table[0].label.y += 20;
+
+	/* Initialize theme help text. */
+	set_help_text();
+
 	mlk_glower_init(&glow);
 }
 
@@ -146,11 +174,19 @@ static void
 handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
+	
+	enum mlk_window_theme theme;
+
+	mlk_ui_handle(ev);
 
 	switch (ev->type) {
-	case MLK_EVENT_MOUSE:
-		mouse_label.x = ev->mouse.x;
-		mouse_label.y = ev->mouse.y;
+	case MLK_EVENT_KEYDOWN:
+		if (ev->key.key == MLK_KEY_SPACE) {
+			theme = (mlk_window.theme_user + 1) % MLK_WINDOW_THEME_LAST;
+			mlk_window_set_theme(theme);
+			mlk_ui_set_theme(mlk_window.theme_effective);
+			set_help_text();
+		}
 		break;
 	case MLK_EVENT_QUIT:
 		mlk_game_quit();
@@ -167,8 +203,6 @@ update(struct mlk_state *st, unsigned int ticks)
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i)
 		mlk_label_update(&table[i].label, ticks);
-
-	mlk_label_update(&mouse_label, ticks);
 }
 
 static void
@@ -176,13 +210,16 @@ draw(struct mlk_state *st)
 {
 	(void)st;
 
-	mlk_painter_set_color(MLK_EXAMPLE_BG);
+	if (mlk_window.theme_effective == MLK_WINDOW_THEME_DARK)
+		mlk_painter_set_color(0x323558ff);
+	else
+		mlk_painter_set_color(0xdcd4ffff);
+	
 	mlk_painter_clear();
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i)
 		mlk_label_draw(&table[i].label);
 
-	mlk_label_draw(&mouse_label);
 	mlk_painter_present();
 }
 

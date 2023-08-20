@@ -30,6 +30,37 @@
  */
 
 /**
+ * \enum mlk_window_theme
+ * \brief Operating system theme.
+ *
+ * This enumeration is used for both user preference and current effective theme
+ * which are two distinct things. If user selects `auto` then the effective
+ * theme will be set either to light or dark depending on the system platform.
+ */
+enum mlk_window_theme {
+	/**
+	 * Prefer the operating system user preference, if theme can't be
+	 * detected it will be set to light instead.
+	 */
+	MLK_WINDOW_THEME_AUTO,
+
+	/**
+	 * Light theme.
+	 */
+	MLK_WINDOW_THEME_LIGHT,
+
+	/**
+	 * Dark theme.
+	 */
+	MLK_WINDOW_THEME_DARK,
+	
+	/**
+	 * Unused sentinel value.
+	 */
+	MLK_WINDOW_THEME_LAST
+};
+
+/**
  * \struct mlk_window
  * \brief Window structure
  */
@@ -54,6 +85,27 @@ struct mlk_window {
 	 * Display preferred framerate. May be set to 0 if not supported.
 	 */
 	unsigned int framerate;
+
+	/**
+	 * (read-only)
+	 *
+	 * User preferred theme.
+	 *
+	 * \warning Do not set this variable manually, it won't have any effect
+	 *          use ::mlk_window_set_theme instead.
+	 */
+	enum mlk_window_theme theme_user;
+
+	/**
+	 * (read-only)
+	 *
+	 * Current effective theme depending on the user preferred setting, this
+	 * value holds either ::MLK_WINDOW_THEME_LIGHT or
+	 * ::MLK_WINDOW_THEME_DARK only.
+	 *
+	 * \warning Do not set this variable manually, it won't have any effect.
+	 */
+	enum mlk_window_theme theme_effective;
 
 	/** \cond MLK_PRIVATE_DECLS */
 	void *handle;
@@ -142,6 +194,17 @@ mlk_window_open(const char *title, unsigned int w, unsigned int h);
  */
 void
 mlk_window_set_cursor(enum mlk_window_cursor cursor);
+
+/**
+ * Select a preferred user theme for the window (auto, dark or light).
+ *
+ * This function will adjust ::mlk_window::theme_user and
+ * ::mlk_window::theme_effective.
+ *
+ * \param theme the new user theme
+ */
+void
+mlk_window_set_theme(enum mlk_window_theme theme);
 
 /**
  * Destroy the window.

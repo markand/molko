@@ -37,6 +37,7 @@
 #include "key.h"
 #include "mouse.h"
 #include "gamepad.h"
+#include "window.h"
 
 /**
  * \enum mlk_event_type
@@ -99,6 +100,11 @@ enum mlk_event_type {
 	 */
 	MLK_EVENT_AXIS,
 
+	/**
+	 * Operating system theme changed.
+	 */
+	MLK_EVENT_THEME,
+	
 	/**
 	 * Window manager quit event.
 	 *
@@ -218,6 +224,23 @@ struct mlk_event_axis {
 };
 
 /**
+ * \struct mlk_event_theme
+ * \brief Operating system theme changed
+ */
+struct mlk_event_theme {
+	/**
+	 * Set to ::MLK_EVENT_THEME.
+	 */
+	enum mlk_event_type type;
+
+	/**
+	 * New effective theme ::MLK_WINDOW_THEME_DARK or
+	 * ::MLK_WINDOW_THEME_LIGHT.
+	 */
+	enum mlk_window_theme theme;
+};
+
+/**
  * \union mlk_event
  * \brief Generic input event
  */
@@ -251,6 +274,11 @@ union mlk_event {
 	 * For ::MLK_EVENT_AXIS.
 	 */
 	struct mlk_event_axis axis;
+
+	/**
+	 * For ::MLK_EVENT_THEME.
+	 */
+	struct mlk_event_theme theme;
 };
 
 #if defined(__cplusplus)

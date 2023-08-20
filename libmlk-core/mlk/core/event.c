@@ -287,6 +287,23 @@ convert_axis(const SDL_Event *event, union mlk_event *ev)
 	}
 }
 
+static void
+convert_theme(union mlk_event *ev)
+{
+	ev->type = MLK_EVENT_THEME;
+
+	switch (SDL_GetSystemTheme()) {
+	case SDL_SYSTEM_THEME_DARK:
+		ev->theme.theme = MLK_WINDOW_THEME_DARK;
+		break;
+	default:
+		ev->theme.theme = MLK_WINDOW_THEME_LIGHT;
+		break;
+	}
+
+	mlk_window.theme_effective = ev->theme.theme;
+}
+
 int
 mlk_event_poll(union mlk_event *ev)
 {
@@ -321,8 +338,18 @@ mlk_event_poll(union mlk_event *ev)
 		case SDL_EVENT_GAMEPAD_AXIS_MOTION:
 			convert_axis(&event, ev);
 			return 1;
+		case SDL_EVENT_SYSTEM_THEME_CHANGED:
+			/*
+			 * We only report the event if the user preferrence is
+			 * set to auto because we don't need it otherwise.
+			 */
+			if (mlk_window.theme_user == MLK_WINDOW_THEME_AUTO) {
+				convert_theme(ev);
+				return 1;
+			}
+			break;
 		default:
-			continue;
+			break;
 		}
 	}
 

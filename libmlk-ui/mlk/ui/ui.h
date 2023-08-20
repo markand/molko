@@ -34,6 +34,9 @@
 #define MLK_UI_BORDER           (2)
 
 enum mlk_align;
+enum mlk_window_theme;
+
+union mlk_event;
 
 enum mlk_ui_font {
 	MLK_UI_FONT_INTERFACE,
@@ -48,6 +51,12 @@ extern "C" {
 
 int
 mlk_ui_init(void);
+
+void
+mlk_ui_handle(const union mlk_event *ev);
+
+void
+mlk_ui_set_theme(enum mlk_window_theme theme);
 
 /* TODO: probably better somewhere else? */
 void

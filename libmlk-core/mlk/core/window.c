@@ -34,7 +34,9 @@ static struct mlk__window_handle handle = {
 static SDL_Cursor *cursors[MLK_WINDOW_CURSOR_LAST];
 
 struct mlk_window mlk_window = {
-	.handle = &handle
+	.handle = &handle,
+	.theme_user = MLK_WINDOW_THEME_AUTO,
+	.theme_effective = MLK_WINDOW_THEME_LIGHT,
 };
 
 static void
@@ -75,7 +77,7 @@ load_window(const char *title, unsigned int w, unsigned int h)
 static int
 load_renderer(void)
 {
-	return (handle.renderer = SDL_CreateRenderer(handle.win, NULL, 0));
+	return (handle.renderer = SDL_CreateRenderer(handle.win, NULL, 0)) != NULL;
 }
 
 int
@@ -94,6 +96,8 @@ mlk_window_open(const char *title, unsigned int w, unsigned int h)
 	load_framerate();
 	load_cursors();
 
+	mlk_window_set_theme(mlk_window.theme_user);
+
 	return 0;
 }
 
@@ -108,6 +112,22 @@ mlk_window_set_cursor(enum mlk_window_cursor cursor)
 		SDL_HideCursor();
 		SDL_SetCursor(cursors[cursor]);
 	}
+}
+
+void
+mlk_window_set_theme(enum mlk_window_theme theme)
+{
+	assert(theme >= 0 && theme < MLK_WINDOW_THEME_LAST);
+
+	mlk_window.theme_user = theme;
+
+	if (theme == MLK_WINDOW_THEME_AUTO) {
+		if (SDL_GetSystemTheme() == SDL_SYSTEM_THEME_DARK)
+			mlk_window.theme_effective = MLK_WINDOW_THEME_DARK;
+		else
+			mlk_window.theme_effective = MLK_WINDOW_THEME_LIGHT;
+	} else
+		mlk_window.theme_effective = mlk_window.theme_user;
 }
 
 void

@@ -24,7 +24,10 @@
 
 #include <libintl.h>
 
+#include <SDL.h>
+
 #include <mlk/core/err.h>
+#include <mlk/core/event.h>
 #include <mlk/core/font.h>
 #include <mlk/core/texture.h>
 #include <mlk/core/trace.h>
@@ -34,6 +37,7 @@
 #include <assets/fonts/opensans-regular.h>
 
 #include "align.h"
+#include "label.h"
 #include "ui.h"
 #include "ui_p.h"
 
@@ -55,7 +59,8 @@ static struct font_def {
 	FONT_DEF(assets_fonts_opensans_regular, 14, MLK_UI_FONT_INTERFACE)
 };
 
-struct mlk_font mlk_ui_fonts[MLK_UI_FONT_LAST] = {0};
+/* Global fonts. */
+struct mlk_font mlk_ui_fonts[MLK_UI_FONT_LAST] = {};
 
 int
 mlk_ui_init(void)
@@ -77,6 +82,23 @@ mlk_ui_init(void)
 #endif
 
 	return 0;
+}
+
+void
+mlk_ui_handle(const union mlk_event *ev)
+{
+	if (ev->type == MLK_EVENT_THEME)
+		mlk_ui_set_theme(ev->theme.theme);
+}
+
+void
+mlk_ui_set_theme(enum mlk_window_theme theme)
+{
+	if (theme == MLK_WINDOW_THEME_DARK) {
+		mlk_label_style = &mlk_label_style_dark;
+	} else {
+		mlk_label_style = &mlk_label_style_light;
+	}
 }
 
 void
