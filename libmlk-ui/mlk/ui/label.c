@@ -22,36 +22,25 @@
 
 #include "align.h"
 #include "label.h"
-#include "style.h"
 #include "ui.h"
+#include "ui_p.h"
 
 static int
-query(struct mlk_label_if *self,
-      const struct mlk_label *label,
+query(struct mlk_label_style *self,
+      struct mlk_label *label,
       unsigned int *w,
       unsigned int *h)
 {
-	(void)self;
-
-	return mlk_font_query(label->style->normal.font, label->text, w, h);
+	return mlk_font_query(MLK__STYLE_FONT(self->font, MLK_UI_FONT_INTERFACE), label->text, w, h);
 }
 
 static void
-draw(struct mlk_label_if *self, const struct mlk_label *label)
+draw(struct mlk_label_style *self, struct mlk_label *label)
 {
-	(void)self;
-
-	const struct mlk_style_attr *attr;
-
-	if (label->selected)
-		attr = &label->style->selected;
-	else
-		attr = &label->style->normal;
-
 	mlk_ui_draw_text(
 		MLK_ALIGN_NONE,
-		attr->font,
-		attr->color.text,
+		MLK__STYLE_FONT(self->font, MLK_UI_FONT_INTERFACE),
+		self->color,
 		label->text,
 		label->x,
 		label->y,
@@ -60,64 +49,42 @@ draw(struct mlk_label_if *self, const struct mlk_label *label)
 	);
 }
 
-struct mlk_label_if mlk_label_if = {
-	.query = query,
-	.draw = draw
+struct mlk_label_style mlk_label_style_dark = {
+	.color  = 0xf5f7faff,
+	.font   = &mlk_ui_fonts[MLK_UI_FONT_INTERFACE],
+	.query  = query,
+	.draw   = draw
 };
 
-void
-mlk_label_init(struct mlk_label *lbl,
-               struct mlk_label_if *iface,
-               struct mlk_style *st)
-{
-	assert(lbl);
+struct mlk_label_style mlk_label_style_light = {
+	.color  = 0x222323ff,
+	.font   = &mlk_ui_fonts[MLK_UI_FONT_INTERFACE],
+	.query  = query,
+	.draw   = draw
+};
 
-	lbl->x = 0;
-	lbl->y = 0;
-	lbl->text = "";
-	lbl->iface = iface ? iface : &mlk_label_if;
-	lbl->style = st ? st : &mlk_style;
-}
+struct mlk_label_style *mlk_label_style = &mlk_label_style_light;
 
 int
-mlk_label_query(const struct mlk_label *lbl, unsigned int *w, unsigned int *h)
+mlk_label_query(struct mlk_label *label, unsigned int *w, unsigned int *h)
 {
-	assert(lbl);
+	assert(label);
 
-	if (lbl->iface->query)
-		return lbl->iface->query(lbl->iface, lbl, w, h);
-
-	if (w)
-		*w = 0;
-	if (h)
-		*h = 0;
-
-	return 0;
+	return MLK__STYLE_CALL(label->style, mlk_label_style, query, label, w, h);
 }
 
 void
-mlk_label_update(struct mlk_label *lbl, unsigned int ticks)
+mlk_label_update(struct mlk_label *label, unsigned int ticks)
 {
-	assert(lbl);
+	assert(label);
 
-	if (lbl->iface->update)
-		lbl->iface->update(lbl->iface, lbl, ticks);
+	MLK__STYLE_CALL(label->style, mlk_label_style, update, label, ticks);
 }
 
 void
-mlk_label_draw(const struct mlk_label *lbl)
+mlk_label_draw(struct mlk_label *label)
 {
-	assert(lbl);
+	assert(label);
 
-	if (lbl->iface->draw)
-		lbl->iface->draw(lbl->iface, lbl);
-}
-
-void
-mlk_label_finish(struct mlk_label *lbl)
-{
-	assert(lbl);
-
-	if (lbl->iface->finish)
-		lbl->iface->finish(lbl->iface, lbl);
+	MLK__STYLE_CALL(label->style, mlk_label_style, draw, label);
 }

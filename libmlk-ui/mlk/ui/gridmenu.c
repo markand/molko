@@ -211,17 +211,17 @@ draw_item(struct mlk_gridmenu_delegate *self,
           int selected)
 {
 	(void)self;
+	(void)selected;
 
-	struct mlk_label label;
+	struct mlk_label label = {};
 
-	mlk_label_init(&label, &mlk_label_if, menu->style);
 	label.x = menu->x + menu->style->normal.geo.padding + (col * menu->eltw) + (col * menu->spacew);
 	label.y = menu->y + menu->style->normal.geo.padding + (row * menu->elth) + (row * menu->spaceh);
 	label.text = item;
-	label.selected = selected;
 
 	mlk_label_draw(&label);
-	mlk_label_finish(&label);
+
+	// TODO: use a different style if selected.
 }
 
 struct mlk_gridmenu_delegate mlk_gridmenu_delegate = {

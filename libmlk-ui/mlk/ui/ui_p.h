@@ -21,6 +21,13 @@
 
 #include "sysconfig.h"
 
+#define MLK__STYLE_CALL(s, def, f, ...) \
+        ((s) && (s)->f) ? (s)->f((s), __VA_ARGS__) : (def)->f ? (def)->f((s) ? (s) : (def), __VA_ARGS__) : 0
+
+#define MLK__STYLE_FONT(f, d) \
+        f ? f : &mlk_ui_fonts[d]
+
+// TODO: DEPRECATED
 #define MLK__DELEGATE_INVOKE(d, def, f, ...)            \
 do {                                                    \
         if (d && d->f)                                  \
@@ -29,6 +36,7 @@ do {                                                    \
                 def.f(&def, __VA_ARGS__);               \
 } while (0)
 
+// TODO: DEPRECATED
 #define MLK__DELEGATE_INVOKE_RET(d, def, f, ...)        \
 do {                                                    \
         if (d && d->f)                                  \

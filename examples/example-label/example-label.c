@@ -31,16 +31,14 @@
 
 #include <mlk/ui/align.h>
 #include <mlk/ui/label.h>
-#include <mlk/ui/style.h>
 #include <mlk/ui/ui.h>
 
 #include <mlk/example/example.h>
 #include <mlk/example/glower.h>
 
 /* Custom delegate/style for glowing one. */
-static struct mlk_style style_glow;
-static struct mlk_label_if delegate_glow;
-static struct mlk_glower glower = {
+static struct mlk_label_style style_glow;
+static struct mlk_glower glow = {
 	.start  = 0xffce7fff,
 	.end    = 0xd58d6bff,
 	.delay  = 22
@@ -55,88 +53,69 @@ static struct {
 		.label = {
 			.text = "The world is Malikania.",
 			.style = &style_glow,
-			.iface = &delegate_glow
 		}
 	},
 	{
 		.align = MLK_ALIGN_TOP_LEFT,
 		.label = {
-			.text = "Top left",
-			.style = &mlk_style,
-			.iface = &mlk_label_if
+			.text = "Top left"
 		}
 	},
 	{
 		.align = MLK_ALIGN_TOP,
 		.label = {
-			.text = "Top",
-			.style = &mlk_style,
-			.iface = &mlk_label_if
+			.text = "Top"
 		}
 	},
 	{
 		.align = MLK_ALIGN_TOP_RIGHT,
 		.label = {
-			.text = "Top right",
-			.style = &mlk_style,
-			.iface = &mlk_label_if
+			.text = "Top right"
 		}
 	},
 	{
 		.align = MLK_ALIGN_RIGHT,
 		.label = {
-			.text = "Right",
-			.style = &mlk_style,
-			.iface = &mlk_label_if
+			.text = "Right"
 		}
 	},
 	{
 		.align = MLK_ALIGN_BOTTOM_RIGHT,
 		.label = {
-			.text = "Bottom right",
-			.style = &mlk_style,
-			.iface = &mlk_label_if
+			.text = "Bottom right"
 		}
 	},
 	{
 		.align = MLK_ALIGN_BOTTOM,
 		.label = {
-			.text = "Bottom",
-			.style = &mlk_style,
-			.iface = &mlk_label_if
+			.text = "Bottom"
 		}
 	},
 	{
 		.align = MLK_ALIGN_BOTTOM_LEFT,
 		.label = {
-			.text = "Bottom left",
-			.style = &mlk_style,
-			.iface = &mlk_label_if
+			.text = "Bottom left"
 		}
 	},
 	{
 		.align = MLK_ALIGN_LEFT,
 		.label = {
-			.text = "Left",
-			.style = &mlk_style,
-			.iface = &mlk_label_if
+			.text = "Left"
 		}
 	}
 };
 
 static struct mlk_label mouse_label = {
-	.text = "This one follows your mouse and is not aligned.",
-	.style = &mlk_style,
-	.iface = &mlk_label_if
+	.text = "This one follows your mouse and is not aligned."
 };
 
 static void
-delegate_glow_update(struct mlk_label_if *self, struct mlk_label *label, unsigned int ticks)
+style_glow_update(struct mlk_label_style *self, struct mlk_label *label, unsigned int ticks)
 {
-	(void)self;
+	(void)label;
 
-	mlk_glower_update(&glower, ticks);
-	label->style->normal.color.text = glower.color;
+	mlk_glower_update(&glow, ticks);
+	self->color = glow.color;
 }
 
 static void
@@ -148,13 +127,11 @@ init(void)
 	if (mlk_example_init("example-label") < 0)
 		mlk_panic();
 	
-	/* Change default style. */
-	mlk_style.normal.color.text = 0x005162ff;
+	/* Change default style for all labels. */
+	mlk_label_style->color = 0x005162ff;
 
-	/* Copy default label delegate and style and adapt. */
-	style_glow = mlk_style;
-	delegate_glow = mlk_label_if;
-	delegate_glow.update = delegate_glow_update;
+	/* Change the glowing style. */
+	style_glow.update = style_glow_update;
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i) {
 		l = &table[i].label;
@@ -162,7 +139,7 @@ init(void)
 		mlk_align(table[i].align, &l->x, &l->y, w, h, 0, 0, mlk_window.w, mlk_window.h);
 	}
 
-	mlk_glower_init(&glower);
+	mlk_glower_init(&glow);
 }
 
 static void

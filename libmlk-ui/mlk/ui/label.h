@@ -24,9 +24,9 @@
  * \brief GUI label.
  */
 
+struct mlk_font;
 struct mlk_label;
-struct mlk_label_if;
-struct mlk_style;
+struct mlk_label_style;
 
 /**
  * \struct mlk_label
@@ -55,138 +55,103 @@ struct mlk_label {
 	const char *text;
 
 	/**
-	 * (read-write)
+	 * (read-write, borrowed, optional)
 	 *
-	 * Tells if label is considered selected.
+	 * Style to use for drawing this label.
 	 */
-	int selected;
-
-	/**
-	 * (read-write, borrowed)
-	 *
-	 * Label style.
-	 */
-	struct mlk_style *style;
-
-	/**
-	 * (read-write, borrowed)
-	 *
-	 * Label interface.
-	 */
-	struct mlk_label_if *iface;
+	struct mlk_label_style *style;
 };
 
 /**
- * \struct mlk_label_if
- * \brief Label interface.
+ * \struct mlk_label_style
+ * \brief Label style.
  */
-struct mlk_label_if {
-	/*
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data.
-	 */
-	void *data;
-
+struct mlk_label_style {
 	/**
 	 * (read-write)
 	 *
-	 * Query required dimensions to draw this label.
-	 *
-	 * \param self this interface
-	 * \param lbl the label to query
-	 * \param w the width destination (maybe NULL)
-	 * \param h the height destination (maybe NULL)
-	 * \return 0 on success or -1 on error
+	 * Text color.
 	 */
-	int (*query)(struct mlk_label_if *self,
-	             const struct mlk_label *lbl,
+	unsigned long color;
+
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Font to use.
+	 */
+	struct mlk_font *font;
+
+	/**
+	 * Check the required size for this label.
+	 *
+	 * \param self this style
+	 * \param label the label to query dimensions
+	 * \param w destination width (can be NULL)
+	 * \param h destination height (can be NULL)
+	 */
+	int (*query)(struct mlk_label_style *self,
+	             struct mlk_label *label,
 	             unsigned int *w,
 	             unsigned int *h);
 
 	/**
 	 * (read-write, optional)
 	 *
-	 * Update the label.
+	 * Update this label.
 	 *
-	 * \param self this delegate
-	 * \param lbl the label to update
-	 * \param ticks number of ticks since last frame
+	 * \param self this style
+	 * \param label the label to update
+	 * \param ticks frame ticks
 	 */
-	void (*update)(struct mlk_label_if *self,
-	               struct mlk_label *lbl,
-	               unsigned int ticks);
+	void (*update)(struct mlk_label_style *self, struct mlk_label *label, unsigned int ticks);
 
 	/**
 	 * (read-write, optional)
 	 *
-	 * Draw this label.
+	 * Draw the label.
 	 *
-	 * \param self this interface
-	 * \param lbl the label to update
+	 * \param self this style
+	 * \param label the label to draw
 	 */
-	void (*draw)(struct mlk_label_if *self,
-	             const struct mlk_label *lbl);
-
-	/**
-	 * (read-write, optional)
-	 *
-	 * Cleanup data for this label.
-	 *
-	 * \param self this interface
-	 * \param lbl the underlying label
-	 */
-	void (*finish)(struct mlk_label_if *self,
-	               struct mlk_label *lbl);
+	void (*draw)(struct mlk_label_style *self, struct mlk_label *label);
 };
 
 /**
- * \brief Default stateless interface for label.
+ * \brief Dark default style for label.
  */
-extern struct mlk_label_if mlk_label_if;
+extern struct mlk_label_style mlk_label_style_dark;
+
+/**
+ * \brief Light default style for label.
+ */
+extern struct mlk_label_style mlk_label_style_light;
+
+/**
+ * \brief Default style for all labels.
+ */
+extern struct mlk_label_style *mlk_label_style;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 /**
- * Initialize the label with default values.
- *
- * This is not required if you use designated initializers.
- *
- * \pre lbl != NULL
- * \param lbl the label to default initialize
- * \param dt interface to use (or NULL to use a default)
- * \param st style to use (or NULL to use a default)
- */
-void
-mlk_label_init(struct mlk_label *lbl,
-               struct mlk_label_if *dt,
-	       struct mlk_style *st);
-
-/**
  * Invoke ::mlk_label_if::query.
  */
 int
-mlk_label_query(const struct mlk_label *lbl, unsigned int *w, unsigned int *h);
+mlk_label_query(struct mlk_label *label, unsigned int *w, unsigned int *h);
 
 /**
  * Invoke ::mlk_label_if::update.
  */
 void
-mlk_label_update(struct mlk_label *lbl, unsigned int ticks);
+mlk_label_update(struct mlk_label *label, unsigned int ticks);
 
 /**
  * Invoke ::mlk_label_if::draw.
  */
 void
-mlk_label_draw(const struct mlk_label *lbl);
-
-/**
- * Invoke ::mlk_label_if::finish.
- */
-void
-mlk_label_finish(struct mlk_label *lbl);
+mlk_label_draw(struct mlk_label *label);
 
 #if defined(__cplusplus)
 }
