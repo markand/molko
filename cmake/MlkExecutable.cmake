@@ -30,7 +30,11 @@ function(mlk_executable)
 	endif ()
 
 	if (EXE_ASSETS)
-		mlk_bcc(ASSETS ${EXE_ASSETS} OUTPUTS_VAR HEADERS)
+		mlk_bcc(
+			CONST STATIC
+			ASSETS ${EXE_ASSETS}
+			OUTPUTS_VAR HEADERS
+		)
 		source_group(build/assets FILES ${HEADERS})
 	endif ()
 

@@ -34,7 +34,11 @@ function(mlk_library)
 	endif ()
 
 	if (LIB_ASSETS)
-		mlk_bcc(ASSETS ${LIB_ASSETS} OUTPUTS_VAR assets)
+		mlk_bcc(
+			CONST STATIC
+			ASSETS ${LIB_ASSETS}
+			OUTPUTS_VAR assets
+		)
 	endif ()
 
 	if (LIB_LANGS AND MLK_WITH_NLS)

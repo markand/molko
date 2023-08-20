@@ -20,7 +20,11 @@
 # mlk_bcc(
 #   OUTPUT_VAR variable
 #   ASSETS files...
+#   [CONST]
+#   [NUL]
 #   [OUTPUT_DIRECTORY directory]
+#   [STATIC]
+#   [TYPE char]
 # )
 #
 # Convert binary files to header files using mlk-bcc utility.
@@ -45,9 +49,9 @@
 # - <output-directory>/assets/sounds/volume-down.h
 #
 macro(mlk_bcc)
-	set(options "")
+	set(options "CONST;NUL;STATIC")
 	set(oneValueArgs "OUTPUT_DIRECTORY;OUTPUTS_VAR")
-	set(multiValueArgs ASSETS)
+	set(multiValueArgs "ASSETS")
 
 	cmake_parse_arguments(_bcc "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -73,13 +77,17 @@ macro(mlk_bcc)
 		cmake_path(REPLACE_EXTENSION _bcc_filename .h)
 		set(_bcc_output_file ${_bcc_base_directory}/${_bcc_dirname}/${_bcc_filename})
 
-		# Text files are better NUL terminated.
-		cmake_path(GET a EXTENSION _bcc_extension)
-
-		if (_bcc_extension MATCHES "\\.sql")
-			set(_bcc_args "-0cs")
-		else ()
-			set(_bcc_args "-cs")
+		if (_bcc_CONST)
+			list(APPEND _bcc_args -c)
+		endif ()
+		if (_bcc_NUL)
+			list(APPEND _bcc_args -0)
+		endif ()
+		if (_bcc_STATIC)
+			list(APPEND _bcc_args -s)
+		endif ()
+		if (_bcc_TYPE)
+			list(APPEND _bcc_args -t ${_bcc_TYPE})
 		endif ()
 
 		# This is the mlk-bcc variable to generate the C identifier.

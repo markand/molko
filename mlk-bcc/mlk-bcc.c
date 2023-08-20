@@ -22,22 +22,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(__OpenBSD__)
-#       include <unistd.h>
-#endif
-
 #include "arg.h"
 
-char *argv0;
-
 static const char *charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+static const char *ftype = "unsigned char";
 static char findentchar = '\t';
 static int findent = 1, fconst, fnull, fstatic;
 
 static void
 usage(void)
 {
-	fprintf(stderr, "usage: mlk-bcc [-0cs] [-I tab-indent] [-i space-indent] input variable\n");
+	fprintf(stderr, "usage: bcc [-0cs] [-I tab-num] [-i space-num] [-t type] input variable\n");
 	exit(1);
 }
 
@@ -99,7 +94,7 @@ process(const char *input, const char *variable)
 	if (fconst)
 		printf("const ");
 
-	printf("unsigned char %s[] = {\n", variable);
+	printf("%s %s[] = {\n", ftype, variable);
 
 	for (ch = fgetc(fp); ch != EOF; ) {
 		if (col == 0)
@@ -156,6 +151,9 @@ main(int argc, char *argv[])
 		break;
 	case 's':
 		fstatic = 1;
+		break;
+	case 't':
+		ftype = EARGF(usage());
 		break;
 	default:
 		usage();
