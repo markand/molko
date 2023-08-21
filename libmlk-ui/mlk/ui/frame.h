@@ -25,8 +25,7 @@
  */
 
 struct mlk_frame;
-struct mlk_frame_delegate;
-struct mlk_style;
+struct mlk_frame_style;
 
 struct mlk_frame {
 	/**
@@ -62,21 +61,18 @@ struct mlk_frame {
 	 *
 	 * Frame style.
 	 */
-	struct mlk_style *style;
-
-	/**
-	 * (read-write, borrowed)
-	 *
-	 * Frame delegate.
-	 */
-	struct mlk_frame_delegate *delegate;
+	struct mlk_frame_style *style;
 };
 
 /**
- * \struct mlk_frame_delegate
- * \brief Frame delegate.
+ * \struct mlk_frame_style
+ * \brief Frame style.
  */
-struct mlk_frame_delegate {
+struct mlk_frame_style {
+	unsigned long background;
+	unsigned long border;
+	unsigned int border_size;
+
 	/*
 	 * (read-write, borrowed, optional)
 	 *
@@ -89,11 +85,11 @@ struct mlk_frame_delegate {
 	 *
 	 * Update the label.
 	 *
-	 * \param self this delegate
+	 * \param self this style
 	 * \param frame the frame to update
 	 * \param ticks number of ticks since last frame
 	 */
-	void (*update)(struct mlk_frame_delegate *self,
+	void (*update)(struct mlk_frame_style *self,
 	               struct mlk_frame *frame,
 	               unsigned int ticks);
 
@@ -102,65 +98,43 @@ struct mlk_frame_delegate {
 	 *
 	 * Draw this frame.
 	 *
-	 * \param self this delegate
+	 * \param self this style
 	 * \param frame the frame to draw
 	 */
-	void (*draw)(struct mlk_frame_delegate *self,
-	             const struct mlk_frame *frame);
-
-	/**
-	 * (read-write, optional)
-	 *
-	 * Cleanup this delegate associated with the frame.
-	 *
-	 * \param self this delegate
-	 * \param frame the underlying frame
-	 */
-	void (*finish)(struct mlk_frame_delegate *self,
-	               struct mlk_frame *frame);
+	void (*draw)(struct mlk_frame_style *self,
+	             struct mlk_frame *frame);
 };
 
 /**
- * \brief Default stateless delegate for frame.
+ * \brief Dark default style for frame.
  */
-extern struct mlk_frame_delegate mlk_frame_delegate;
+extern struct mlk_frame_style mlk_frame_style_dark;
+
+/**
+ * \brief Light default style for frame.
+ */
+extern struct mlk_frame_style mlk_frame_style_light;
+
+/**
+ * \brief Default style for all frames.
+ */
+extern struct mlk_frame_style *mlk_frame_style;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 /**
- * Initialize the frame with default values.
- *
- * This is not required if you use designated initializers.
- *
- * \pre frame != NULL
- * \param frame the frame to default initialize
- * \param st style to use (or NULL to use a default)
- * \param dt delegate to use (or NULL to use a default)
- */
-void
-mlk_frame_init(struct mlk_frame *frame,
-               struct mlk_style *st,
-               struct mlk_frame_delegate *dt);
-
-/**
- * Invoke ::mlk_frame_delegate::update.
+ * Invoke ::mlk_frame_style::update.
  */
 void
 mlk_frame_update(struct mlk_frame *frame, unsigned int ticks);
 
 /**
- * Invoke ::mlk_frame_delegate::draw.
+ * Invoke ::mlk_frame_style::draw.
  */
 void
-mlk_frame_draw(const struct mlk_frame *frame);
-
-/**
- * Invoke ::mlk_frame_delegate::finish.
- */
-void
-mlk_frame_finish(struct mlk_frame *frame);
+mlk_frame_draw(struct mlk_frame *frame);
 
 #if defined(__cplusplus)
 }

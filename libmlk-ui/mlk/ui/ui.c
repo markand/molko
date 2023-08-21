@@ -37,6 +37,7 @@
 #include <assets/fonts/opensans-regular.h>
 
 #include "align.h"
+#include "frame.h"
 #include "label.h"
 #include "ui.h"
 #include "ui_p.h"
@@ -96,8 +97,10 @@ mlk_ui_set_theme(enum mlk_window_theme theme)
 {
 	if (theme == MLK_WINDOW_THEME_DARK) {
 		mlk_label_style = &mlk_label_style_dark;
+		mlk_frame_style = &mlk_frame_style_dark;
 	} else {
 		mlk_label_style = &mlk_label_style_light;
+		mlk_frame_style = &mlk_frame_style_light;
 	}
 }
 

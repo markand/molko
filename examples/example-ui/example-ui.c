@@ -108,9 +108,7 @@ static struct {
 			.x = FRAME_ORIGIN_X,
 			.y = FRAME_ORIGIN_Y,
 			.w = FRAME_WIDTH,
-			.h = FRAME_HEIGHT,
-			.delegate = &mlk_frame_delegate,
-			.style = &mlk_style
+			.h = FRAME_HEIGHT
 		}
 	},
 	.header = {

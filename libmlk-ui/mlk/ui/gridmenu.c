@@ -190,16 +190,14 @@ draw_frame(struct mlk_gridmenu_delegate *self, const struct mlk_gridmenu *menu)
 {
 	(void)self;
 
-	struct mlk_frame frame;
-
-	mlk_frame_init(&frame, menu->style, &mlk_frame_delegate);
-	frame.x = menu->x;
-	frame.y = menu->y;
-	frame.w = menu->w;
-	frame.h = menu->h;
+	struct mlk_frame frame = {
+		.x = menu->x,
+		.y = menu->y,
+		.w = menu->w,
+		.h = menu->h
+	};
 
 	mlk_frame_draw(&frame);
-	mlk_frame_finish(&frame);
 }
 
 static void
