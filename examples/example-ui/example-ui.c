@@ -117,9 +117,7 @@ static struct {
 		.label = {
 			.text = "Preferences",
 			.x = FRAME_ORIGIN_X,
-			.y = FRAME_ORIGIN_Y,
-			.delegate = &mlk_label_delegate,
-			.style = &mlk_style
+			.y = FRAME_ORIGIN_Y
 		}
 	},
 	.autosave = {
@@ -130,9 +128,7 @@ static struct {
 			.style = &mlk_style
 		},
 		.label = {
-			.text = "Auto save game",
-			.delegate = &mlk_label_delegate,
-			.style = &mlk_style
+			.text = "Auto save game"
 		}
 	},
 	.buttons = {
@@ -251,6 +247,8 @@ static void
 handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
+
+	mlk_ui_handle(ev);
 
 	switch (ev->type) {
 	case MLK_EVENT_QUIT:
