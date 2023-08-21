@@ -69,11 +69,28 @@ struct mlk_frame {
  * \brief Frame style.
  */
 struct mlk_frame_style {
+	/**
+	 * (read-write)
+	 *
+	 * Background color.
+	 */
 	unsigned long background;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border color.
+	 */
 	unsigned long border;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border size.
+	 */
 	unsigned int border_size;
 
-	/*
+	/**
 	 * (read-write, borrowed, optional)
 	 *
 	 * Arbitrary user data.

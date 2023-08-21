@@ -107,9 +107,9 @@ mlk_window_set_cursor(enum mlk_window_cursor cursor)
 	assert(cursor < MLK_WINDOW_CURSOR_LAST);
 
 	if (cursor == MLK_WINDOW_CURSOR_OFF)
-		SDL_ShowCursor();
-	else {
 		SDL_HideCursor();
+	else {
+		SDL_ShowCursor();
 		SDL_SetCursor(cursors[cursor]);
 	}
 }

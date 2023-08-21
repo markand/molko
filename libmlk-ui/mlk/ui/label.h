@@ -80,6 +80,13 @@ struct mlk_label_style {
 	 * Font to use.
 	 */
 	struct mlk_font *font;
+	
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Arbitrary user data.
+	 */
+	void *data;
 
 	/**
 	 * Check the required size for this label.
@@ -136,19 +143,19 @@ extern "C" {
 #endif
 
 /**
- * Invoke ::mlk_label_if::query.
+ * Invoke ::mlk_label_style::query.
  */
 int
 mlk_label_query(struct mlk_label *label, unsigned int *w, unsigned int *h);
 
 /**
- * Invoke ::mlk_label_if::update.
+ * Invoke ::mlk_label_style::update.
  */
 void
 mlk_label_update(struct mlk_label *label, unsigned int ticks);
 
 /**
- * Invoke ::mlk_label_if::draw.
+ * Invoke ::mlk_label_style::draw.
  */
 void
 mlk_label_draw(struct mlk_label *label);
