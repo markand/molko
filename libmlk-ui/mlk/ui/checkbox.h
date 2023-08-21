@@ -25,8 +25,7 @@
  */
 
 struct mlk_checkbox;
-struct mlk_checkbox_delegate;
-struct mlk_style;
+struct mlk_checkbox_style;
 
 union mlk_event;
 
@@ -71,25 +70,39 @@ struct mlk_checkbox {
 	int checked;
 
 	/**
-	 * (read-write, borrowed)
+	 * (read-write, borrowed, optional)
 	 *
-	 * Checkbox delegate.
+	 * Style to use for drawing this checkbox.
 	 */
-	struct mlk_checkbox_delegate *delegate;
-
-	/**
-	 * (read-write, borrowed)
-	 *
-	 * Checkbox style.
-	 */
-	struct mlk_style *style;
+	struct mlk_checkbox_style *style;
 };
 
 /**
- * \struct mlk_checkbox_delegate
- * \brief Checkbox delegate.
+ * \struct mlk_checkbox_style
+ * \brief Checkbox style.
  */
-struct mlk_checkbox_delegate {
+struct mlk_checkbox_style {
+	/**
+	 * (read-write)
+	 *
+	 * Background color.
+	 */
+	unsigned long background;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border color.
+	 */
+	unsigned long border;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border size.
+	 */
+	unsigned int border_size;
+
 	/*
 	 * (read-write, borrowed, optional)
 	 *
@@ -100,27 +113,13 @@ struct mlk_checkbox_delegate {
 	/**
 	 * (read-write, optional)
 	 *
-	 * Handle an event.
-	 *
-	 * \param self this delegate
-	 * \param cb the checkbox
-	 * \param ev the event
-	 * \return the current checkbox status (1 or 0)
-	 */
-	int (*handle)(struct mlk_checkbox_delegate *self,
-	              struct mlk_checkbox *cb,
-	              const union mlk_event *ev);
-
-	/**
-	 * (read-write, optional)
-	 *
 	 * Update the checkbox.
 	 *
-	 * \param self this delegate
+	 * \param self this style
 	 * \param cb the checkbox to update
 	 * \param ticks number of ticks since last frame
 	 */
-	void (*update)(struct mlk_checkbox_delegate *self,
+	void (*update)(struct mlk_checkbox_style *self,
 	               struct mlk_checkbox *cb,
 	               unsigned int ticks);
 
@@ -129,71 +128,49 @@ struct mlk_checkbox_delegate {
 	 *
 	 * Draw this checkbox.
 	 *
-	 * \param self this delegate
+	 * \param self this style
 	 * \param cb the checkbox to update
 	 */
-	void (*draw)(struct mlk_checkbox_delegate *self,
-	             const struct mlk_checkbox *cb);
-
-	/**
-	 * (read-write, optional)
-	 *
-	 * Cleanup this delegate associated with the checkbox.
-	 *
-	 * \param self this delegate
-	 * \param cb the underlying checkbox
-	 */
-	void (*finish)(struct mlk_checkbox_delegate *self,
-	               struct mlk_checkbox *cb);
+	void (*draw)(struct mlk_checkbox_style *self,
+	             struct mlk_checkbox *cb);
 };
 
 /**
- * \brief Default stateless delegate for checkbox.
+ * \brief Dark default style for check.
  */
-extern struct mlk_checkbox_delegate mlk_checkbox_delegate;
+extern struct mlk_checkbox_style mlk_checkbox_style_dark;
+
+/**
+ * \brief Light default style for checkbox.
+ */
+extern struct mlk_checkbox_style mlk_checkbox_style_light;
+
+/**
+ * \brief Default style for all checkboxes.
+ */
+extern struct mlk_checkbox_style *mlk_checkbox_style;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 /**
- * Initialize the checkbox with default values.
- *
- * This is not required if you use designated initializers.
- *
- * \pre cb != NULL
- * \param cb the checkbox to default initialize
- * \param st style to use (or NULL to use a default)
- * \param dt delegate to use (or NULL to use a default)
- */
-void
-mlk_checkbox_init(struct mlk_checkbox *cb,
-                  struct mlk_checkbox_delegate *dt,
-                  struct mlk_style *st);
-
-/**
- * Invoke ::mlk_checkbox_delegate::update.
+ * Invoke ::mlk_checkbox_style::update.
  */
 int
 mlk_checkbox_handle(struct mlk_checkbox *cb, const union mlk_event *ev);
 
 /**
- * Invoke ::mlk_checkbox_delegate::update.
+ * Invoke ::mlk_checkbox_style::update.
  */
 void
 mlk_checkbox_update(struct mlk_checkbox *cb, unsigned int ticks);
 
 /**
- * Invoke ::mlk_checkbox_delegate::draw.
+ * Invoke ::mlk_checkbox_style::draw.
  */
 void
-mlk_checkbox_draw(const struct mlk_checkbox *cb);
-
-/**
- * Invoke ::mlk_checkbox_delegate::finish.
- */
-void
-mlk_checkbox_finish(struct mlk_checkbox *cb);
+mlk_checkbox_draw(struct mlk_checkbox *cb);
 
 #if defined(__cplusplus)
 }

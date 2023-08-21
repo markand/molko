@@ -38,6 +38,7 @@
 
 #include "align.h"
 #include "button.h"
+#include "checkbox.h"
 #include "frame.h"
 #include "label.h"
 #include "ui.h"
@@ -98,10 +99,12 @@ mlk_ui_set_theme(enum mlk_window_theme theme)
 {
 	if (theme == MLK_WINDOW_THEME_DARK) {
 		mlk_button_style = &mlk_button_style_dark;
+		mlk_checkbox_style = &mlk_checkbox_style_dark;
 		mlk_frame_style = &mlk_frame_style_dark;
 		mlk_label_style = &mlk_label_style_dark;
 	} else {
 		mlk_button_style = &mlk_button_style_light;
+		mlk_checkbox_style = &mlk_checkbox_style_light;
 		mlk_frame_style = &mlk_frame_style_light;
 		mlk_label_style = &mlk_label_style_light;
 	}
