@@ -1,5 +1,5 @@
 /*
- * button-style-glow.h -- example of glowing button
+ * color.c -- basic color routines
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,23 +16,22 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_EXAMPLE_UI_BUTTON_GLOWER_H
-#define MLK_EXAMPLE_UI_BUTTON_GLOWER_H
+#include "color.h"
+#include "util.h"
 
-#include <mlk/ui/button.h>
+unsigned long
+mlk_color_darken(unsigned long color, float perc)
+{
+	unsigned int r = MLK_COLOR_R(color) * perc;
+	unsigned int g = MLK_COLOR_G(color) * perc;
+	unsigned int b = MLK_COLOR_B(color) * perc;
+	unsigned int a = MLK_COLOR_A(color) * perc;
 
-#include <mlk/example/glower.h>
-
-#define BUTTON_STYLE_GLOW_COLOR_1       0x7da42dff
-#define BUTTON_STYLE_GLOW_COLOR_2       0xa6cc34ff
-#define BUTTON_STYLE_GLOW_DELAY         20
-
-struct button_glower {
-	struct mlk_glower glower;
-	struct mlk_button_style style;
-};
-
-void
-button_glower_init(struct button_glower *glower, struct mlk_button *button);
-
-#endif /* !MLK_EXAMPLE_UI_BUTTON_GLOWER_H */
+	return MLK_COLOR_HEX(
+		mlk_clampu(r, 0, 255),
+		mlk_clampu(g, 0, 255),
+		mlk_clampu(b, 0, 255),
+		mlk_clampu(a, 0, 255)
+	);
+	
+}

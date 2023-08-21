@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <string.h>
 
+#include <mlk/core/color.h>
 #include <mlk/core/event.h>
 #include <mlk/core/maths.h>
 #include <mlk/core/painter.h>
@@ -40,61 +41,35 @@ is_boxed(const struct mlk_button *button, const struct mlk_event_click *click)
 	    button->x, button->y, button->w, button->h);
 }
 
-static inline struct mlk_font *
-style_font(const struct mlk_button *button)
-{
-	const struct mlk_button_style *style = MLK__STYLE(button, mlk_button_style);
-
-	if (style->text_font)
-		return style->text_font;
-
-	return &mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
-}
-
 static void
-delegate_draw_frame(struct mlk_button_delegate *delegate, const struct mlk_button *button)
+draw_frame(struct mlk_button_style *self, struct mlk_button *button)
 {
-	(void)delegate;
-
-	const struct mlk_button_style *style = MLK__STYLE(button, mlk_button_style);
-	unsigned long long border_color, bg_color;
+	unsigned long background = self->background;
+	unsigned long border = self->border;
 
 	if (button->pressed) {
-		bg_color = style->pressed_bg_color;
-		border_color = style->pressed_border_color;
-	} else {
-		bg_color = style->bg_color;
-		border_color = style->border_color;
+		background = mlk_color_darken(background, 0.9);
+		border = mlk_color_darken(border, 0.9);
 	}
 
-	mlk_painter_set_color(border_color);
+	mlk_painter_set_color(border);
 	mlk_painter_draw_rectangle(button->x, button->y, button->w, button->h);
-	mlk_painter_set_color(bg_color);
+	mlk_painter_set_color(background);
 	mlk_painter_draw_rectangle(
-		button->x + style->border_size,
-		button->y + style->border_size,
-		button->w - (style->border_size * 2),
-		button->h - (style->border_size * 2)
+		button->x + self->border_size,
+		button->y + self->border_size,
+		button->w - (self->border_size * 2),
+		button->h - (self->border_size * 2)
 	);
 }
 
 static void
-delegate_draw_text(struct mlk_button_delegate *delegate, const struct mlk_button *button)
+draw_text(struct mlk_button_style *style, struct mlk_button *button)
 {
-	(void)delegate;
-
-	const struct mlk_button_style *style = MLK__STYLE(button, mlk_button_style);
-	unsigned long long text_color;
-
-	if (button->pressed)
-		text_color = style->pressed_text_color;
-	else
-		text_color = style->text_color;
-
 	mlk_ui_draw_text(
 		MLK_ALIGN_CENTER,
-		style_font(button),
-		text_color,
+		MLK__STYLE_FONT(style->font, MLK_UI_FONT_INTERFACE),
+		style->color,
 		button->text,
 		button->x,
 		button->y,
@@ -103,31 +78,25 @@ delegate_draw_text(struct mlk_button_delegate *delegate, const struct mlk_button
 	);
 }
 
-struct mlk_button_style mlk_button_style = {
-	.bg_color               = MLK_UI_COLOR_BG,
-	.pressed_bg_color       = 0xcdd2daff,
-	.border_color           = MLK_UI_COLOR_BORDER,
-	.pressed_border_color   = 0xa6aebaff,
-	.border_size            = 1,
-	.text_color             = MLK_UI_COLOR_TEXT,
-	.pressed_text_color     = MLK_UI_COLOR_TEXT
+struct mlk_button_style mlk_button_style_dark = {
+	.background = 0x222323ff,
+	.border = 0x141414ff,
+	.border_size = 2,
+	.color = 0xffffffff,
+	.draw_frame = draw_frame,
+	.draw_text = draw_text
 };
 
-struct mlk_button_delegate mlk_button_delegate = {
-	.draw_frame     = delegate_draw_frame,
-	.draw_text      = delegate_draw_text
+struct mlk_button_style mlk_button_style_light = {
+	.background = 0xf5f7faff,
+	.border = 0xcdd2daff,
+	.border_size = 2,
+	.color = 0x000000ff,
+	.draw_frame = draw_frame,
+	.draw_text = draw_text
 };
 
-int
-mlk_button_ok(const struct mlk_button *button)
-{
-	if (!button)
-		return 0;
-	if (button->text && strlen(button->text) == 0)
-		return 0;
-
-	return 1;
-}
+struct mlk_button_style *mlk_button_style = &mlk_button_style_light;
 
 int
 mlk_button_handle(struct mlk_button *button, const union mlk_event *ev)
@@ -165,16 +134,16 @@ mlk_button_update(struct mlk_button *button, unsigned int ticks)
 {
 	assert(button);
 
-	MLK__DELEGATE_INVOKE(button->delegate, mlk_button_delegate, update, button, ticks);
+	MLK__STYLE_CALL(button->style, mlk_button_style, update, button, ticks);
 }
 
 void
-mlk_button_draw(const struct mlk_button *button)
+mlk_button_draw(struct mlk_button *button)
 {
 	assert(button);
 
-	MLK__DELEGATE_INVOKE(button->delegate, mlk_button_delegate, draw_frame, button);
+	MLK__STYLE_CALL(button->style, mlk_button_style, draw_frame, button);
 
 	if (button->text)
-		MLK__DELEGATE_INVOKE(button->delegate, mlk_button_delegate, draw_text, button);
+		MLK__STYLE_CALL(button->style, mlk_button_style, draw_text, button);
 }

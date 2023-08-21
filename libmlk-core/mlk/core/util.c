@@ -52,3 +52,16 @@ mlk_util_nrand(unsigned int lower, unsigned int upper)
 
 	return (rand() % (upper - lower)) + lower;
 }
+
+intmax_t
+mlk_clampi(intmax_t v, intmax_t min, intmax_t max)
+{
+	return v < min ? min : v > max ? max : v;
+	
+}
+
+uintmax_t
+mlk_clampu(uintmax_t v, uintmax_t min, uintmax_t max)
+{
+	return v < min ? min : v > max ? max : v;
+}

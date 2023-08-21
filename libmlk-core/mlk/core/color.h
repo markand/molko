@@ -89,4 +89,7 @@
          ((b << 8)  & 0x0000ff00) |     \
          ((a)       & 0x000000ff))
 
+unsigned long
+mlk_color_darken(unsigned long color, float perc);
+
 #endif /* !MLK_CORE_COLOR_H */

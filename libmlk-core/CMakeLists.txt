@@ -26,7 +26,7 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/alloc.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/animation.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/clock.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/core.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/color.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/core.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/core_p.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/drawable-stack.c

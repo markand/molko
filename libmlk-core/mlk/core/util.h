@@ -24,6 +24,8 @@
  * \brief libmlk-core utilities
  */
 
+#include <stdint.h>
+
 /**
  * Compute the length of an fixed size array.
  *
@@ -65,6 +67,12 @@ mlk_util_pathf(const char *fmt, ...);
  */
 unsigned int
 mlk_util_nrand(unsigned int min, unsigned int max);
+
+intmax_t
+mlk_clampi(intmax_t v, intmax_t min, intmax_t max);
+
+uintmax_t
+mlk_clampu(uintmax_t v, uintmax_t min, uintmax_t max);
 
 #if defined(__cplusplus)
 }

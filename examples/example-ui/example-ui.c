@@ -135,10 +135,8 @@ static struct {
 			.h = ELEMENT_HEIGHT
 		},
 		.quit_style = {
-			.bg_color = 0x24aed6ff,
-			.pressed_bg_color = 0x328ca7ff,
-			.text_color = 0xffffffff,
-			.pressed_text_color = 0xffffffff
+			.background = 0x24aed6ff,
+			.color = 0xffffffff
 		},
 		.quit = {
 			.text = "Quit",
@@ -152,10 +150,9 @@ static struct {
 				.delay = BUTTON_STYLE_GLOW_DELAY
 			},
 			.style = {
-				.text_color = 0xffffffff,
-				.pressed_text_color = 0xffffffff,
-				.border_color = BUTTON_STYLE_GLOW_COLOR_1,
-				.pressed_border_color = BUTTON_STYLE_GLOW_COLOR_1,
+				.color = 0xffffffff,
+				.border = BUTTON_STYLE_GLOW_COLOR_1,
+				.background = BUTTON_STYLE_GLOW_COLOR_1,
 				.border_size = 2
 			}
 		},

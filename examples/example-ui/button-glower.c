@@ -21,15 +21,14 @@
 #include "button-glower.h"
 
 static void
-update(struct mlk_button_delegate *delegate, struct mlk_button *button, unsigned int ticks)
+update(struct mlk_button_style *self, struct mlk_button *button, unsigned int ticks)
 {
-	struct button_glower *glower = delegate->data;
+	struct button_glower *glower = self->data;
 
 	/* Don't update if pressed. */
 	if (!button->pressed) {
 		mlk_glower_update(&glower->glower, ticks);
-		glower->style.bg_color = glower->glower.color;
-		glower->style.pressed_bg_color = glower->glower.color;
+		glower->style.background = glower->glower.color;
 	}
 }
 
@@ -37,15 +36,13 @@ void
 button_glower_init(struct button_glower *glower, struct mlk_button *button)
 {
 	assert(glower);
+	assert(button);
 
-	glower->style.bg_color = glower->glower.start;
-	glower->style.pressed_bg_color = glower->glower.start;
-	glower->delegate.data = glower;
-	glower->delegate.update = update;
+	glower->style.background = glower->glower.start;
+	glower->style.data = glower;
+	glower->style.update = update;
 
-	/* Link this style and delegate to the button. */
 	button->style = &glower->style;
-	button->delegate = &glower->delegate;
 
 	mlk_glower_init(&glower->glower);
 }

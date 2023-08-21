@@ -22,44 +22,167 @@
 union mlk_event;
 
 struct mlk_button;
+struct mlk_button_style;
 struct mlk_font;
 
-struct mlk_button_style {
-	unsigned long bg_color;
-	unsigned long pressed_bg_color;
-	unsigned long border_color;
-	unsigned long pressed_border_color;
-	unsigned long border_size;
-	unsigned long text_color;
-	unsigned long pressed_text_color;
-	struct mlk_font *text_font;
-};
-
-struct mlk_button_delegate {
-	void *data;
-	void (*update)(struct mlk_button_delegate *delegate, struct mlk_button *button, unsigned int ticks);
-	void (*draw_frame)(struct mlk_button_delegate *delegate, const struct mlk_button *button);
-	void (*draw_text)(struct mlk_button_delegate *delegate, const struct mlk_button *button);
-};
-
 struct mlk_button {
-	int x, y;
-	unsigned int w, h;
+	/**
+	 * (read-write)
+	 *
+	 * Position in x.
+	 */
+	int x;
+
+	/**
+	 * (read-write)
+	 *
+	 * Position in y.
+	 */
+	int y;
+
+	/**
+	 * (read-write)
+	 *
+	 * Frame width.
+	 */
+	unsigned int w;
+
+	/**
+	 * (read-write)
+	 *
+	 * Frame height.
+	 */
+	unsigned int h;
+
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Button text.
+	 */
 	const char *text;
+
+	/**
+	 * (read-only)
+	 *
+	 * Indicate if the button is pressed.
+	 *
+	 * This value goes non-zero when the user clicks the button even if the
+	 * mouse is not released which is different than considered active. For
+	 * example, if the user clicks the button but release the mouse outside
+	 * of the button region it is no longer considered active and no action
+	 * should be performed.
+	 */
 	int pressed;
+
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Style to use for drawing this button.
+	 */
 	struct mlk_button_style *style;
-	struct mlk_button_delegate *delegate;
 };
 
-extern struct mlk_button_style mlk_button_style;
-extern struct mlk_button_delegate mlk_button_delegate;
+/**
+ * \struct mlk_label_button
+ * \brief Button style.
+ */
+struct mlk_button_style {
+	/**
+	 * (read-write)
+	 *
+	 * Background color.
+	 */
+	unsigned long background;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border color.
+	 */
+	unsigned long border;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border size.
+	 */
+	unsigned int border_size;
+
+	/**
+	 * (read-write)
+	 *
+	 * Text color.
+	 */
+	unsigned long color;
+
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Text font.
+	 */
+	struct mlk_font *font;
+	
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Arbitrary user data.
+	 */
+	void *data;
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Update this label.
+	 *
+	 * \param self this style
+	 * \param button the button to update
+	 * \param ticks frame ticks
+	 */
+	void (*update)(struct mlk_button_style *style,
+	               struct mlk_button *button,
+	               unsigned int ticks);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Draw bounding frame owning the button.
+	 *
+	 * \param self this style
+	 * \param button the button
+	 */
+	void (*draw_frame)(struct mlk_button_style *style,
+	                   struct mlk_button *button);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Draw the butotn text.
+	 *
+	 * \param self this style
+	 * \param button the button
+	 */
+	void (*draw_text)(struct mlk_button_style *style,
+	                  struct mlk_button *button);
+};
+
+/**
+ * \brief Dark default style for button.
+ */
+extern struct mlk_button_style mlk_button_style_dark;
+
+/**
+ * \brief Light default style for button.
+ */
+extern struct mlk_button_style mlk_button_style_light;
+
+/**
+ * \brief Default style for all labels.
+ */
+extern struct mlk_button_style *mlk_button_style;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-int
-mlk_button_ok(const struct mlk_button *);
 
 int
 mlk_button_handle(struct mlk_button *, const union mlk_event *);
@@ -68,7 +191,7 @@ void
 mlk_button_update(struct mlk_button *, unsigned int);
 
 void
-mlk_button_draw(const struct mlk_button *);
+mlk_button_draw(struct mlk_button *);
 
 #if defined(__cplusplus)
 }
