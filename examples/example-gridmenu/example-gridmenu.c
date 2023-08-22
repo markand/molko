@@ -135,7 +135,7 @@ run(void)
 		.draw = draw,
 	};
 
-	mlk_gridmenu_resize(&menu);
+	mlk_gridmenu_start(&menu);
 	mlk_align(MLK_ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, mlk_window.w, mlk_window.h);
 
 	mlk_game_init();

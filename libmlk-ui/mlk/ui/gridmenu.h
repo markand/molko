@@ -147,6 +147,13 @@ struct mlk_gridmenu_style {
 	unsigned long color_selected;
 
 	/**
+	 * (read-write)
+	 *
+	 * Padding around items.
+	 */
+	unsigned int padding;
+
+	/**
 	 * (read-write, borrowed, optional)
 	 *
 	 * Font for drawing text.
@@ -224,13 +231,16 @@ extern "C" {
 #endif
 
 /**
- * Resize the grid menu window.
+ * Prepare the grid menu before drawing.
+ *
+ * This function should be called at least once and/or when the elements are
+ * updated, the geometry or the style changes.
  *
  * \pre menu != NULL
  * \param menu the menu
  */
 void
-mlk_gridmenu_resize(struct mlk_gridmenu *menu);
+mlk_gridmenu_start(struct mlk_gridmenu *menu);
 
 /**
  * Handle an event.
