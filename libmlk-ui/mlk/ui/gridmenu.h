@@ -21,9 +21,9 @@
 
 #include <stddef.h>
 
+struct mlk_font;
 struct mlk_gridmenu;
-struct mlk_gridmenu_delegate;
-struct mlk_style;
+struct mlk_gridmenu_style;
 
 union mlk_event;
 
@@ -94,16 +94,9 @@ struct mlk_gridmenu {
 	/**
 	 * (read-write, borrowed)
 	 *
-	 * Grid menu delegate.
+	 * Style to use for drawing this menu.
 	 */
-	struct mlk_gridmenu_delegate *delegate;
-
-	/**
-	 * (read-write, borrowed)
-	 *
-	 * Grid menu style.
-	 */
-	struct mlk_style *style;
+	struct mlk_gridmenu_style *style;
 
 	/** \cond MLK_PRIVATE_DECLS */
 	unsigned int eltw;      /* maximum entry label width */
@@ -114,10 +107,52 @@ struct mlk_gridmenu {
 };
 
 /**
- * \struct mlk_gridmenu_delegate
- * \brief Grid menu delegate.
+ * \struct mlk_gridmenu_style
+ * \brief Grid menu style.
  */
-struct mlk_gridmenu_delegate {
+struct mlk_gridmenu_style {
+	/**
+	 * (read-write)
+	 *
+	 * Background color.
+	 */
+	unsigned long background;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border color.
+	 */
+	unsigned long border;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border size.
+	 */
+	unsigned int border_size;
+
+	/**
+	 * (read-write)
+	 *
+	 * Text color.
+	 */
+	unsigned long color;
+
+	/**
+	 * (read-write)
+	 *
+	 * Selected color.
+	 */
+	unsigned long color_selected;
+
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Font for drawing text.
+	 */
+	struct mlk_font *font;
+
 	/*
 	 * (read-write, borrowed, optional)
 	 *
@@ -128,38 +163,13 @@ struct mlk_gridmenu_delegate {
 	/**
 	 * (read-write, optional)
 	 *
-	 * Called after resizing the grid menu dimensions.
-	 *
-	 * \param self this delegate
-	 * \param menu the grid menu
-	 */
-	void (*resize)(struct mlk_gridmenu_delegate *self,
-	               struct mlk_gridmenu *menu);
-
-	/**
-	 * (read-write, optional)
-	 *
-	 * Handle an event.
-	 *
-	 * \param self this delegate
-	 * \param menu the menu
-	 * \param ev the event
-	 * \return non-zero if an item has been selected
-	 */
-	int (*handle)(struct mlk_gridmenu_delegate *self,
-	              struct mlk_gridmenu *menu,
-	              const union mlk_event *ev);
-
-	/**
-	 * (read-write, optional)
-	 *
 	 * Update the grid menu.
 	 *
-	 * \param self this delegate
+	 * \param self this style
 	 * \param menu the menu to update
 	 * \param ticks number of ticks since last frame
 	 */
-	void (*update)(struct mlk_gridmenu_delegate *self,
+	void (*update)(struct mlk_gridmenu_style *self,
 	               struct mlk_gridmenu *menu,
 	               unsigned int ticks);
 
@@ -168,93 +178,74 @@ struct mlk_gridmenu_delegate {
 	 *
 	 * Draw a frame box for this menu.
 	 *
-	 * \param self this delegate
+	 * \param self this style
 	 * \param menu the underlying menu
 	 */
-	void (*draw_frame)(struct mlk_gridmenu_delegate *self,
-	                   const struct mlk_gridmenu *menu);
+	void (*draw_frame)(struct mlk_gridmenu_style *self,
+	                   struct mlk_gridmenu *menu);
 
 	/**
 	 * (read-write, optional)
 	 *
 	 * Draw a specific item.
 	 *
-	 * \param self this delegate
+	 * \param self this style
 	 * \param menu the underlying menu
 	 * \param item the item content
 	 * \param row the row number (relative)
 	 * \param col the column number (relative)
 	 * \param selected non-zero if the item is currently selected
 	 */
-	void (*draw_item)(struct mlk_gridmenu_delegate *self,
-	                  const struct mlk_gridmenu *menu,
+	void (*draw_text)(struct mlk_gridmenu_style *self,
+	                  struct mlk_gridmenu *menu,
 	                  const char *item,
 	                  unsigned int row,
 	                  unsigned int col,
 	                  int selected);
-
-	/**
-	 * (read-write, optional)
-	 *
-	 * Cleanup this delegate associated with the menu.
-	 *
-	 * \param self this delegate
-	 * \param frame the underlying frame
-	 */
-	void (*finish)(struct mlk_gridmenu_delegate *self,
-	               struct mlk_gridmenu *menu);
-
 };
 
 /**
- * \brief Default stateless delegate for gridmenu.
+ * \brief Dark default style for gridmenu.
  */
-extern struct mlk_gridmenu_delegate mlk_gridmenu_delegate;
+extern struct mlk_gridmenu_style mlk_gridmenu_style_dark;
+
+/**
+ * \brief Light default style for gridmenu.
+ */
+extern struct mlk_gridmenu_style mlk_gridmenu_style_light;
+
+/**
+ * \brief Default style for all gridmenus.
+ */
+extern struct mlk_gridmenu_style *mlk_gridmenu_style;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 /**
- * Initialize the menu with default values.
- *
- * This is not required if you use designated initializers.
+ * Resize the grid menu window.
  *
  * \pre menu != NULL
- * \param menu the grid menu to default initialize
- * \param st style to use (or NULL to use a default)
- * \param dt delegate to use (or NULL to use a default)
+ * \param menu the menu
  */
 void
-mlk_gridmenu_init(struct mlk_gridmenu *menu,
-                  struct mlk_gridmenu_delegate *dt,
-                  struct mlk_style *st);
+mlk_gridmenu_resize(struct mlk_gridmenu *menu);
 
 /**
- * Copy new dimensions and then invoke ::mlk_gridmenu_delegate::resize.
+ * Handle an event.
  *
  * \pre menu != NULL
- * \param menu the menu to resize
- * \param x new position in x
- * \param y new position in y
- * \param w new width
- * \param h new height
- */
-void
-mlk_gridmenu_resize(struct mlk_gridmenu *menu,
-                    int x,
-                    int y,
-                    unsigned int w,
-                    unsigned int h);
-
-/**
- * Invoke ::mlk_gridmenu_delegate::handle.
+ * \pre ev != NULL
+ * \param menu the menu
+ * \param ev the event
+ * \return non-zero if a new item is selected, 0 otherwise
  */
 int
 mlk_gridmenu_handle(struct mlk_gridmenu *menu, const union mlk_event *ev);
 
 /**
- * Invoke ::mlk_gridmenu_delegate::update.
+ * Invoke ::mlk_gridmenu_style::update.
  */
 void
 mlk_gridmenu_update(struct mlk_gridmenu *menu, unsigned int ticks);
@@ -262,17 +253,11 @@ mlk_gridmenu_update(struct mlk_gridmenu *menu, unsigned int ticks);
 /**
  * Invoke the functions:
  *
- * - ::mlk_gridmenu_delegate::draw_frame,
- * - ::mlk_gridmenu_delegate::draw_item.
+ * - ::mlk_gridmenu_style::draw_frame,
+ * - ::mlk_gridmenu_style::draw_item.
  */
 void
-mlk_gridmenu_draw(const struct mlk_gridmenu *menu);
-
-/**
- * Invoke ::mlk_gridmenu_delegate::finish.
- */
-void
-mlk_gridmenu_finish(struct mlk_gridmenu *menu);
+mlk_gridmenu_draw(struct mlk_gridmenu *menu);
 
 #if defined(__cplusplus)
 }

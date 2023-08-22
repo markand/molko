@@ -59,15 +59,13 @@ static const char * const items[] = {
 	"Double tour"
 };
 
-static struct mlk_style style;
-
 static struct mlk_gridmenu menu = {
+	.w = 300,
+	.h = 100,
 	.nrows = 3,
 	.ncols = 2,
 	.items = items,
-	.itemsz = MLK_UTIL_SIZE(items),
-	.delegate = &mlk_gridmenu_delegate,
-	.style = &style,
+	.itemsz = MLK_UTIL_SIZE(items)
 };
 static struct mlk_glower menu_glower = {
 	.start = 0x00bfa3ff,
@@ -79,7 +77,7 @@ static void
 update_color(unsigned int ticks)
 {
 	mlk_glower_update(&menu_glower, ticks);
-	style.selected.color.text = menu_glower.color;
+	mlk_gridmenu_style->color_selected = menu_glower.color;
 }
 
 static void
@@ -89,7 +87,6 @@ init(void)
 		mlk_panic();
 
 	/* Copy style. */
-	style = mlk_style;
 	mlk_glower_init(&menu_glower);
 }
 
@@ -138,7 +135,7 @@ run(void)
 		.draw = draw,
 	};
 
-	mlk_gridmenu_resize(&menu, 0, 0, 300, 100);
+	mlk_gridmenu_resize(&menu);
 	mlk_align(MLK_ALIGN_CENTER, &menu.x, &menu.y, menu.w, menu.h, 0, 0, mlk_window.w, mlk_window.h);
 
 	mlk_game_init();

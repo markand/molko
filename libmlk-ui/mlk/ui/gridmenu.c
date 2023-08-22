@@ -27,10 +27,11 @@
 #include <mlk/core/trace.h>
 #include <mlk/core/window.h>
 
-#include "gridmenu.h"
+#include "align.h"
 #include "frame.h"
+#include "gridmenu.h"
 #include "label.h"
-#include "style.h"
+#include "ui.h"
 #include "ui_p.h"
 
 struct index {
@@ -89,7 +90,6 @@ handle_clickdown(struct mlk_gridmenu *menu, const struct mlk_event_click *click)
 {
 	assert(click->type == MLK_EVENT_CLICKDOWN);
 
-	const struct mlk_style_attr *attr = &menu->style->normal;
 	size_t pagesz, pagenr, selected, c = 0, r = 0;
 	int x, y;
 
@@ -97,8 +97,8 @@ handle_clickdown(struct mlk_gridmenu *menu, const struct mlk_event_click *click)
 	pagenr = menu->selected / pagesz;
 
 	for (size_t i = 0; i < pagesz; ++i) {
-		x = (int)(menu->x + attr->geo.padding + (c * menu->eltw) + (c * menu->spacew));
-		y = (int)(menu->y + attr->geo.padding + (r * menu->elth) + (r * menu->spaceh));
+		x = (int)(menu->x + (c * menu->eltw) + (c * menu->spacew));
+		y = (int)(menu->y + (r * menu->elth) + (r * menu->spaceh));
 
 		if (mlk_maths_is_boxed(click->x, click->y, x, y, menu->eltw, menu->elth)) {
 			selected  = c + r * menu->ncols;
@@ -120,73 +120,7 @@ handle_clickdown(struct mlk_gridmenu *menu, const struct mlk_event_click *click)
 }
 
 static void
-resize(struct mlk_gridmenu_delegate *self, struct mlk_gridmenu *menu)
-{
-	(void)self;
-
-	const struct mlk_style_attr *attr = &menu->style->normal;
-	unsigned int reqw = 0, reqh = 0, lw, lh;
-
-	/* Compute which item has the bigger width/height to create a spacing. */
-	menu->eltw = menu->elth = 0;
-	menu->spacew = menu->spaceh = 0;
-
-	for (size_t i = 0; i < menu->itemsz; ++i) {
-		if (!(menu->items[i]))
-			continue;
-
-		mlk_font_query(attr->font, menu->items[i], &lw, &lh);
-
-		menu->eltw = fmax(menu->eltw, lw);
-		menu->elth = fmax(menu->elth, lh);
-	}
-
-	/* Total texture size required to draw items. */
-	reqw = (attr->geo.padding * 3) + (menu->eltw * menu->ncols);
-	reqh = (attr->geo.padding * 3) + (menu->elth * menu->nrows);
-
-	/*
-	 * Compute spacing between elements. We remove the padding because it
-	 * is outside of the elements.
-	 */
-	if (reqw > menu->w) {
-		mlk_tracef(_("gridmenu width is too small: %u < %u"), menu->w, reqw);
-		menu->spacew = 1;
-	} else if (menu->ncols > 1) {
-		reqw -= attr->geo.padding * 2;
-		menu->spacew = (menu->w - reqw) / menu->ncols;
-	}
-
-	if (reqh > menu->h) {
-		mlk_tracef(_("gridmenu height is too small: %u < %u"), menu->h, reqh);
-		menu->spaceh = 1;
-	} else if (menu->nrows > 1) {
-		reqh -= attr->geo.padding * 2;
-		menu->spaceh = (menu->h - reqh) / menu->nrows;
-	}
-}
-
-static int
-handle(struct mlk_gridmenu_delegate *self,
-       struct mlk_gridmenu *menu,
-       const union mlk_event *ev)
-{
-	(void)self;
-
-	switch (ev->type) {
-	case MLK_EVENT_KEYDOWN:
-		return handle_keydown(menu, &ev->key);
-	case MLK_EVENT_CLICKDOWN:
-		return handle_clickdown(menu, &ev->click);
-	default:
-		break;
-	}
-
-	return 0;
-}
-
-static void
-draw_frame(struct mlk_gridmenu_delegate *self, const struct mlk_gridmenu *menu)
+draw_frame(struct mlk_gridmenu_style *self, struct mlk_gridmenu *menu)
 {
 	(void)self;
 
@@ -201,75 +135,94 @@ draw_frame(struct mlk_gridmenu_delegate *self, const struct mlk_gridmenu *menu)
 }
 
 static void
-draw_item(struct mlk_gridmenu_delegate *self,
-          const struct mlk_gridmenu *menu,
+draw_text(struct mlk_gridmenu_style *self,
+          struct mlk_gridmenu *menu,
           const char *item,
           unsigned int row,
           unsigned int col,
           int selected)
 {
-	(void)self;
-	(void)selected;
+	unsigned long color = selected ? self->color_selected : self->color;
 
-	struct mlk_label label = {};
-
-	label.x = menu->x + menu->style->normal.geo.padding + (col * menu->eltw) + (col * menu->spacew);
-	label.y = menu->y + menu->style->normal.geo.padding + (row * menu->elth) + (row * menu->spaceh);
-	label.text = item;
-
-	mlk_label_draw(&label);
-
-	// TODO: use a different style if selected.
+	mlk_ui_draw_text(
+		MLK_ALIGN_CENTER,
+		MLK__STYLE_FONT(self->font, MLK_UI_FONT_INTERFACE),
+		color,
+		item,
+		menu->x + (col * menu->eltw) + (col * menu->spacew),
+		menu->y + (row * menu->elth) + (row * menu->spaceh),
+		menu->eltw,
+		menu->elth
+	);
 }
 
-struct mlk_gridmenu_delegate mlk_gridmenu_delegate = {
-	.resize = resize,
-	.handle = handle,
+struct mlk_gridmenu_style mlk_gridmenu_style_dark = {
+	.background = 0x222323ff,
+	.border = 0x141414ff,
+	.border_size = 2,
+	.color = 0xffffffff,
+	.color_selected = 0x518822ff,
 	.draw_frame = draw_frame,
-	.draw_item = draw_item
+	.draw_text = draw_text
 };
 
-void
-mlk_gridmenu_init(struct mlk_gridmenu *menu,
-                  struct mlk_gridmenu_delegate *dt,
-                  struct mlk_style *st)
-{
-	assert(menu);
+struct mlk_gridmenu_style mlk_gridmenu_style_light = {
+	.background = 0x222323ff,
+	.border = 0x141414ff,
+	.border_size = 2,
+	.color = 0x000000ff,
+	.color_selected = 0x518822ff,
+	.draw_frame = draw_frame,
+	.draw_text = draw_text
+};
 
-	menu->x = 0;
-	menu->y = 0;
-	menu->w = 0;
-	menu->h = 0;
-	menu->items = NULL;
-	menu->itemsz = 0;
-	menu->nrows = 0;
-	menu->ncols = 0;
-	menu->delegate = dt ? dt : &mlk_gridmenu_delegate;
-	menu->style = st ? st : &mlk_style;
-
-	/* Can't be computed yet. */
-	menu->eltw = 0;
-	menu->elth = 0;
-	menu->spacew = 0;
-	menu->spaceh = 0;
-}
+struct mlk_gridmenu_style *mlk_gridmenu_style = &mlk_gridmenu_style_light;
 
 void
-mlk_gridmenu_resize(struct mlk_gridmenu *menu,
-                    int x,
-                    int y,
-                    unsigned int w,
-                    unsigned int h)
+mlk_gridmenu_resize(struct mlk_gridmenu *menu)
 {
-	assert(menu);
+	unsigned int reqw = 0, reqh = 0, lw, lh;
+	struct mlk_font *font;
 
-	menu->x = x;
-	menu->y = y;
-	menu->w = w;
-	menu->h = h;
+	/* Compute which item has the bigger width/height to create a spacing. */
+	menu->eltw = menu->elth = 0;
+	menu->spacew = menu->spaceh = 0;
 
-	if (menu->delegate->resize)
-		menu->delegate->resize(menu->delegate, menu);
+	/* Get appropriate font. */
+	if (menu->style)
+		font = MLK__STYLE_FONT(menu->style->font, MLK_UI_FONT_INTERFACE);
+	else
+		font = &mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
+
+	for (size_t i = 0; i < menu->itemsz; ++i) {
+		if (!(menu->items[i]))
+			continue;
+
+		mlk_font_query(font, menu->items[i], &lw, &lh);
+
+		menu->eltw = fmax(menu->eltw, lw);
+		menu->elth = fmax(menu->elth, lh);
+	}
+
+	/* Total texture size required to draw items. */
+	reqw = menu->eltw * menu->ncols;
+	reqh = menu->elth * menu->nrows;
+
+	/*
+	 * Compute spacing between elements. We remove the padding because it
+	 * is outside of the elements.
+	 */
+	if (reqw > menu->w) {
+		mlk_tracef(_("gridmenu width is too small: %u < %u"), menu->w, reqw);
+		menu->spacew = 1;
+	} else if (menu->ncols > 1)
+		menu->spacew = (menu->w - reqw) / menu->ncols;
+
+	if (reqh > menu->h) {
+		mlk_tracef(_("gridmenu height is too small: %u < %u"), menu->h, reqh);
+		menu->spaceh = 1;
+	} else if (menu->nrows > 1)
+		menu->spaceh = (menu->h - reqh) / menu->nrows;
 }
 
 int
@@ -278,8 +231,14 @@ mlk_gridmenu_handle(struct mlk_gridmenu *menu, const union mlk_event *ev)
 	assert(menu);
 	assert(ev);
 
-	if (menu->delegate->handle)
-		return menu->delegate->handle(menu->delegate, menu, ev);
+	switch (ev->type) {
+	case MLK_EVENT_KEYDOWN:
+		return handle_keydown(menu, &ev->key);
+	case MLK_EVENT_CLICKDOWN:
+		return handle_clickdown(menu, &ev->click);
+	default:
+		break;
+	}
 
 	return 0;
 }
@@ -289,12 +248,11 @@ mlk_gridmenu_update(struct mlk_gridmenu *menu, unsigned int ticks)
 {
 	assert(menu);
 
-	if (menu->delegate->update)
-		menu->delegate->update(menu->delegate, menu, ticks);
+	MLK__STYLE_CALL(menu->style, mlk_gridmenu_style, update, menu, ticks);
 }
 
 void
-mlk_gridmenu_draw(const struct mlk_gridmenu *menu)
+mlk_gridmenu_draw(struct mlk_gridmenu *menu)
 {
 	assert(menu);
 
@@ -302,8 +260,7 @@ mlk_gridmenu_draw(const struct mlk_gridmenu *menu)
 	unsigned int row = 0, col = 0;
 	int selected;
 
-	if (menu->delegate->draw_frame)
-		menu->delegate->draw_frame(menu->delegate, menu);
+	MLK__STYLE_CALL(menu->style, mlk_gridmenu_style, draw_frame, menu);
 
 	/*
 	 * Select the first top-left column based on the current selection and
@@ -320,15 +277,8 @@ mlk_gridmenu_draw(const struct mlk_gridmenu *menu)
 
 		selected = i == menu->selected % pagesz;
 
-		if (menu->delegate->draw_item)
-			menu->delegate->draw_item(
-			    menu->delegate,
-			    menu,
-			    menu->items[item],
-			    row,
-			    col,
-			    selected
-			);
+		MLK__STYLE_CALL(menu->style, mlk_gridmenu_style, draw_text,
+		    menu, menu->items[item], row, col, selected);
 
 		if (++col >= menu->ncols) {
 			++row;

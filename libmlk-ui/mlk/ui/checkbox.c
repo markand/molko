@@ -24,7 +24,6 @@
 #include <mlk/core/painter.h>
 
 #include "checkbox.h"
-#include "style.h"
 #include "ui_p.h"
 
 static inline int

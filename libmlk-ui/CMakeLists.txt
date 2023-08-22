@@ -28,7 +28,6 @@ set(
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/gridmenu.c
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/label.c
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/notify.c
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/style.c
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui.c
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui_p.h
 )
@@ -43,7 +42,6 @@ set(
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/gridmenu.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/label.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/notify.h
-	${libmlk-ui_SOURCE_DIR}/mlk/ui/style.h
 	${libmlk-ui_SOURCE_DIR}/mlk/ui/ui.h
 )
 
