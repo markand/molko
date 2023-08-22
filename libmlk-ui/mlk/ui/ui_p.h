@@ -46,7 +46,7 @@ do {                                                    \
 } while (0)
 
 #define MLK__STYLE(w, d)                                \
-        (w->style ? w->style : &d)
+        (w->style ? w->style : d)
 
 #if defined(MLK_WITH_NLS)
 #       include <libintl.h>

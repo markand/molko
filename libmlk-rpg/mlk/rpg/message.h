@@ -21,96 +21,332 @@
 
 #include <stddef.h>
 
-#include <mlk/core/texture.h>
-
-#define MLK_MESSAGE_DELAY_DEFAULT       (150)
-#define MLK_MESSAGE_DURATION_DEFAULT    (5000)
+#define MLK_MESSAGE_SPEED_DEFAULT       (150)
+#define MLK_MESSAGE_TIMEOUT_DEFAULT     (5000)
 
 struct mlk_font;
 struct mlk_message;
+struct mlk_message_style;
 
 union mlk_event;
 
+/**
+ * \enum mlk_message_flags
+ * \brief Message flags
+ */
 enum mlk_message_flags {
+	/**
+	 * Message closes automatically after style's duration.
+	 */
 	MLK_MESSAGE_FLAGS_AUTOMATIC     = (1 << 0),
+
+	/**
+	 * Lines can be selected by the user.
+	 */
 	MLK_MESSAGE_FLAGS_QUESTION      = (1 << 1),
+
+	/**
+	 * Add fade in animation.
+	 */
 	MLK_MESSAGE_FLAGS_FADEIN        = (1 << 2),
+
+	/**
+	 * Add fade out animation.
+	 */
 	MLK_MESSAGE_FLAGS_FADEOUT       = (1 << 3)
 };
 
+/**
+ * \enum mlk_message_state
+ * \brief Describe current message state
+ */
 enum mlk_message_state {
+	/**
+	 * Message is not ready yet.
+	 */
 	MLK_MESSAGE_STATE_NONE,
+
+	/**
+	 * Animation opening.
+	 */
 	MLK_MESSAGE_STATE_OPENING,
+
+	/**
+	 * Normal message run.
+	 */
 	MLK_MESSAGE_STATE_SHOWING,
+
+	/**
+	 * Hiding animation.
+	 */
 	MLK_MESSAGE_STATE_HIDING
 };
 
-struct mlk_message_style {
-	unsigned int padding;
-	unsigned int delay;
-	unsigned int duration;
-	unsigned long bg_color;
-	unsigned long border_color;
-	unsigned long border_size;
-	unsigned long text_color;
-	unsigned long selected_color;
-	struct mlk_font *text_font;
+struct mlk_message {
+	/**
+	 * (read-write)
+	 *
+	 * Position in x.
+	 */
+	int x;
+
+	/**
+	 * (read-write)
+	 *
+	 * Position in y.
+	 */
+	int y;
+
+	/**
+	 * (read-write)
+	 *
+	 * Menu frame width.
+	 */
+	unsigned int w;
+
+	/**
+	 * (read-write)
+	 *
+	 * Menu frame height.
+	 */
+	unsigned int h;
+
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * Lines to show.
+	 */
+	const char * const *lines;
+
+	/**
+	 * (read-write)
+	 *
+	 * Number of lines in ::mlk_message::lines.
+	 */
+	size_t linesz;
+
+	/**
+	 * (read-write)
+	 *
+	 * Selected item from the user.
+	 */
+	size_t index;
+
+	/**
+	 * (read-write)
+	 *
+	 * Optional message flags.
+	 */
+	enum mlk_message_flags flags;
+
+	/**
+	 * (read-only)
+	 *
+	 * Current message state.
+	 */
+	enum mlk_message_state state;
+
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Style to use for drawing this message.
+	 */
+	struct mlk_message_style *style;
+
+	/** \cond MLK_PRIVATE_DECLS */
+	unsigned int elapsed;   /* elapsed time in the state */
+	double scale;           /* texture scaling */
+	/** \endcond MLK_PRIVATE_DECLS */
 };
 
-struct mlk_message_delegate {
+/**
+ * \struct mlk_message_style
+ * \brief Message style.
+ */
+struct mlk_message_style {
+	/**
+	 * (read-write)
+	 *
+	 * Background color.
+	 */
+	unsigned long background;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border color.
+	 */
+	unsigned long border;
+
+	/**
+	 * (read-write)
+	 *
+	 * Border size.
+	 */
+	unsigned int border_size;
+
+	/**
+	 * (read-write)
+	 *
+	 * Text color.
+	 */
+	unsigned long color;
+
+	/**
+	 * (read-write)
+	 *
+	 * Selected color.
+	 */
+	unsigned long color_selected;
+
+	/**
+	 * (read-write)
+	 *
+	 * Left-right padding.
+	 */
+	unsigned int padding;
+
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Font for drawing text.
+	 */
+	struct mlk_font *font;
+
+	/**
+	 * (read-write)
+	 *
+	 * Message timeout in milliseconds when set to automatic.
+	 */
+	unsigned int timeout;
+
+	/**
+	 * (read-write)
+	 *
+	 * Opening/hideing animation speed in milliseconds.
+	 */
+	unsigned int speed;
+
+	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Arbitrary user data.
+	 */
 	void *data;
 
-	int (*query)(struct mlk_message_delegate *self,
-	             const struct mlk_message *message,
+	/**
+	 * (read-write, optional)
+	 *
+	 * Check the optimal dimensions for this message.
+	 *
+	 * \param self this style
+	 * \param message the message to query dimensions
+	 * \param w destination width (can be NULL)
+	 * \param h destination height (can be NULL)
+	 * \return 0 on success or -1 on error
+	 */
+	int (*query)(struct mlk_message_style *self,
+	             struct mlk_message *message,
 	             unsigned int *w,
 	             unsigned int *h);
 
-	void (*update)(struct mlk_message_delegate *self,
+	/**
+	 * (read-write, optional)
+	 *
+	 * Update this message.
+	 *
+	 * \param self this style
+	 * \param message the message to update
+	 * \param ticks frame ticks
+	 */
+	void (*update)(struct mlk_message_style *self,
 	               struct mlk_message *message,
 	               unsigned int ticks);
 
-	void (*draw)(struct mlk_message_delegate *self,
-	             const struct mlk_message *message);
+	/**
+	 * (read-write, optional)
+	 *
+	 * Draw the message.
+	 *
+	 * \param self this style
+	 * \param message the message to draw
+	 */
+	void (*draw)(struct mlk_message_style *self,
+	             struct mlk_message *message);
 };
 
-struct mlk_message {
-	int x, y;
-	unsigned int w, h;
-	const char * const *lines;
-	size_t linesz;
-	unsigned int index;
-	enum mlk_message_flags flags;
-	enum mlk_message_state state;
-	struct mlk_message_style *style;
-	struct mlk_message_delegate *delegate;
-	unsigned int elapsed;
-	double scale;
-};
+/**
+ * \brief Dark default style for message.
+ */
+extern struct mlk_message_style mlk_message_style_dark;
 
-extern struct mlk_message_style mlk_message_style;
-extern struct mlk_message_delegate mlk_message_delegate;
+/**
+ * \brief Dark default style for message.
+ */
+extern struct mlk_message_style mlk_message_style_light;
+
+/**
+ * \brief Default style for all messages.
+ */
+extern struct mlk_message_style *mlk_message_style;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * Reset the message state.
+ *
+ * This function should be called at least once or when its fields change.
+ *
+ * \pre message != NULL
+ * \param message the message to start
+ */
 void
-mlk_message_start(struct mlk_message *msg);
+mlk_message_start(struct mlk_message *message);
 
+/**
+ * Invoke ::mlk_message_style::query.
+ */
 int
-mlk_message_query(const struct mlk_message *msg, unsigned int *w, unsigned int *h);
+mlk_message_query(struct mlk_message *message, unsigned int *w, unsigned int *h);
 
+/**
+ * Handle an event.
+ *
+ * \pre message != NULL
+ * \pre ev != NULL
+ * \param message the message
+ * \param ev the event
+ */
 void
-mlk_message_handle(struct mlk_message *msg, const union mlk_event *ev);
+mlk_message_handle(struct mlk_message *message, const union mlk_event *ev);
 
+/**
+ * Invoke ::mlk_message_style::update.
+ *
+ * \return non-zero if the message has ended
+ */
 int
-mlk_message_update(struct mlk_message *msg, unsigned int ticks);
+mlk_message_update(struct mlk_message *message, unsigned int ticks);
 
+/**
+ * Invoke ::mlk_message_style::draw.
+ */
 void
-mlk_message_draw(const struct mlk_message *msg);
+mlk_message_draw(struct mlk_message *message);
 
+/**
+ * Start hiding the message.
+ *
+ * This should be called when the message has fade-out flags and the animation
+ * to close should start, keep updating and drawing until it completes.
+ *
+ * \pre message
+ * \param message the message to hide
+ */
 void
-mlk_message_hide(struct mlk_message *msg);
+mlk_message_hide(struct mlk_message *message);
 
 #if defined(__cplusplus)
 }

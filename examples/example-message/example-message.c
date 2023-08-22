@@ -291,7 +291,7 @@ custom(void)
 		"This one will destroy your eyes.",
 		"Because it use a terrible custom theme."
 	};
-	struct mlk_message_style style = mlk_message_style;
+	struct mlk_message_style style = *mlk_message_style;
 	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
@@ -301,9 +301,9 @@ custom(void)
 		.style = &style
 	};
 
-	style.bg_color = 0xf85d80ff;
-	style.border_color = 0xd94a69ff;
-	style.text_color = 0xffffffff;
+	style.background = 0xf85d80ff;
+	style.border = 0xd94a69ff;
+	style.color = 0xffffffff;
 
 	mlk_message_query(&msg, NULL, &msg.h);
 	run(&msg);
