@@ -27,25 +27,7 @@
 #define MLK__STYLE_FONT(f, d) \
         f ? f : &mlk_ui_fonts[d]
 
-// TODO: DEPRECATED
-#define MLK__DELEGATE_INVOKE(d, def, f, ...)            \
-do {                                                    \
-        if (d && d->f)                                  \
-                d->f(d, __VA_ARGS__);                   \
-        else if (def.f)                                 \
-                def.f(&def, __VA_ARGS__);               \
-} while (0)
-
-// TODO: DEPRECATED
-#define MLK__DELEGATE_INVOKE_RET(d, def, f, ...)        \
-do {                                                    \
-        if (d && d->f)                                  \
-                return d->f(d, __VA_ARGS__);            \
-        if (def.f)                                      \
-                return def.f(&def, __VA_ARGS__);        \
-} while (0)
-
-#define MLK__STYLE(w, d)                                \
+#define MLK__STYLE(w, d) \
         (w->style ? w->style : d)
 
 #if defined(MLK_WITH_NLS)
