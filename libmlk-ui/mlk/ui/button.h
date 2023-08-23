@@ -19,12 +19,21 @@
 #ifndef MLK_UI_BUTTON_H
 #define MLK_UI_BUTTON_H
 
-union mlk_event;
+/**
+ * \file mlk/ui/button.h
+ * \brief GUI button
+ */
 
 struct mlk_button;
 struct mlk_button_style;
 struct mlk_font;
 
+union mlk_event;
+
+/**
+ * \struct mlk_button
+ * \brief GUI button structure.
+ */
 struct mlk_button {
 	/**
 	 * (read-write)
@@ -83,7 +92,7 @@ struct mlk_button {
 };
 
 /**
- * \struct mlk_label_button
+ * \struct mlk_button_style
  * \brief Button style.
  */
 struct mlk_button_style {
@@ -132,7 +141,7 @@ struct mlk_button_style {
 	/**
 	 * (read-write, optional)
 	 *
-	 * Update this label.
+	 * Update this button.
 	 *
 	 * \param self this style
 	 * \param button the button to update
@@ -176,7 +185,7 @@ extern struct mlk_button_style mlk_button_style_dark;
 extern struct mlk_button_style mlk_button_style_light;
 
 /**
- * \brief Default style for all labels.
+ * \brief Default style for all buttons.
  */
 extern struct mlk_button_style *mlk_button_style;
 
@@ -184,14 +193,35 @@ extern struct mlk_button_style *mlk_button_style;
 extern "C" {
 #endif
 
+/**
+ * Handle event.
+ *
+ * \pre button != NULL
+ * \pre ev != NULL
+ * \param button the button
+ * \param ev the event
+ */
 int
-mlk_button_handle(struct mlk_button *, const union mlk_event *);
+mlk_button_handle(struct mlk_button *button, const union mlk_event *ev);
 
+/**
+ * Update the button.
+ *
+ * \pre button != NULL
+ * \param button the button update
+ * \param ticks frame ticks
+ */
 void
-mlk_button_update(struct mlk_button *, unsigned int);
+mlk_button_update(struct mlk_button *button, unsigned int ticks);
 
+/**
+ * Draw the button.
+ *
+ * \pre button != NULL
+ * \param button the button to draw
+ */
 void
-mlk_button_draw(struct mlk_button *);
+mlk_button_draw(struct mlk_button *button);
 
 #if defined(__cplusplus)
 }
