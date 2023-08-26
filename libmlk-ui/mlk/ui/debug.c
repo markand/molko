@@ -24,6 +24,26 @@
 
 #include "debug.h"
 #include "ui.h"
+#include "ui_p.h"
+
+static void
+draw(const char *line, unsigned int n)
+{
+	struct mlk_font *font;
+	struct mlk_texture tex;
+	int x, y;
+
+	font = MLK__STYLE_FONT(mlk_debug_style.font, MLK_UI_FONT_INTERFACE);
+
+	if (mlk_font_render(font, &tex, line, MLK_UI_COLOR_DEBUG) < 0)
+		return;
+
+	x = mlk_debug_style.padding;
+	y = (mlk_debug_style.padding * (n + 1)) + (tex.h * n);
+
+	mlk_texture_draw(&tex, x, y);
+	mlk_texture_finish(&tex);
+}
 
 struct mlk_debug_options mlk_debug_options = {
 #if !defined(NDEBUG)
@@ -33,14 +53,17 @@ struct mlk_debug_options mlk_debug_options = {
 #endif
 };
 
+struct mlk_debug_style mlk_debug_style = {
+	.color = MLK_UI_COLOR_DEBUG,
+	.padding = 10,
+	.draw = draw
+};
+
 void
 mlk_debugf(struct mlk_debug_report *report, const char *fmt, ...)
 {
 	assert(report);
 	assert(fmt);
-
-	if (!mlk_debug_options.enable)
-		return;
 
 	va_list ap;
 
@@ -55,27 +78,15 @@ mlk_debugva(struct mlk_debug_report *report, const char *fmt, va_list ap)
 	assert(report);
 	assert(fmt);
 
-	char line[MLK_DEBUG_LINE_MAX];
-	struct mlk_font *font;
-	struct mlk_texture tex;
-	int x, y;
+	char line[MLK_DEBUG_LINE_MAX] = {};
 
 	if (!mlk_debug_options.enable)
 		return;
 
 	vsnprintf(line, sizeof (line), fmt, ap);
 
-	// TODO: add style support.
-	font = &mlk_ui_fonts[MLK_UI_FONT_INTERFACE];
+	if (mlk_debug_style.draw)
+		mlk_debug_style.draw(line, report->count);
 
-	if (mlk_font_render(font, &tex, line, MLK_UI_COLOR_DEBUG) < 0)
-		return;
-
-	// TODO: same here.
-	x = 10;
-	y = (10 * (report->count + 1)) + (tex.h * (report->count));
 	report->count++;
-
-	mlk_texture_draw(&tex, x, y);
-	mlk_texture_finish(&tex);
 }
