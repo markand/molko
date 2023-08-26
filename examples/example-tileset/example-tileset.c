@@ -49,7 +49,7 @@
 
 #include <assets/tilesets/world.h>
 
-static struct mlk_tileset_loader loader;
+static struct mlk_tileset_loader_file loader;
 static struct mlk_tileset tileset;
 
 /*
@@ -127,11 +127,11 @@ init(void)
 	 * sprites animations are statically allocated.
 	 */
 	mlk_tileset_loader_file_init(&loader, "");
-	loader.new_texture = new_texture;
-	loader.new_sprite = new_sprite;
-	loader.new_animation = new_animation;
+	loader.iface.new_texture = new_texture;
+	loader.iface.new_sprite = new_sprite;
+	loader.iface.new_animation = new_animation;
 
-	if (mlk_tileset_loader_openmem(&loader, &tileset, assets_tilesets_world, sizeof (assets_tilesets_world)) < 0)
+	if (mlk_tileset_loader_openmem(&loader.iface, &tileset, assets_tilesets_world, sizeof (assets_tilesets_world)) < 0)
 		mlk_panic();
 }
 

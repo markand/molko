@@ -31,7 +31,26 @@
  * the allocator functions can be changed.
  */
 
-struct mlk_tileset_loader;
+#include "tileset-loader.h"
+
+struct mlk_tileset_collision;
+struct mlk_tileset_animation;
+struct mlk__loader_file;
+
+struct mlk_tileset_loader_file {
+	/**
+	 * (read-write)
+	 *
+	 * Underlying tileset loader.
+	 */
+	struct mlk_tileset_loader iface;
+	
+	/** \cond MLK_PRIVATE_DECLS */
+	struct mlk_tileset_collision *tilecollisions;
+	struct mlk_tileset_animation *tileanimations;
+	struct mlk__loader_file *lf;
+	/** \endcond MLK_PRIVATE_DECLS */
+};
 
 #if defined(__cplusplus)
 extern "C" {
@@ -44,24 +63,23 @@ extern "C" {
  * After loading the tileset with this underlying loader, it should be kept
  * until the tileset is no longer used.
  *
- * \pre loader != NULL
+ * \pre file != NULL
  * \pre filename != NULL
- * \param loader the abstract loader interface
+ * \param file the abstract loader interface
  * \param filename path to the tileset file
  * \return 0 on success or -1 on error
  */
 int
-mlk_tileset_loader_file_init(struct mlk_tileset_loader *loader,
-                             const char *filename);
+mlk_tileset_loader_file_init(struct mlk_tileset_loader_file *file, const char *filename);
 
 /**
  * Cleanup allocated resources by this file loader.
  *
- * \pre loader != NULL
- * \param loader the file loader
+ * \pre file != NULL
+ * \param file the file loader
  */
 void
-mlk_tileset_loader_file_finish(struct mlk_tileset_loader *loader);
+mlk_tileset_loader_file_finish(struct mlk_tileset_loader_file *file);
 
 #if defined(__cplusplus)
 }

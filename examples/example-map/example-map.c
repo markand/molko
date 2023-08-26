@@ -56,7 +56,7 @@
 #include <assets/maps/world.h>
 #include <assets/tilesets/world.h>
 
-static struct mlk_tileset_loader tileset_loader;
+static struct mlk_tileset_loader_file tileset_loader;
 static struct mlk_tileset tileset;
 
 static struct mlk_map_loader map_loader;
@@ -140,7 +140,7 @@ map_new_tileset(struct mlk_map_loader *loader, struct mlk_map *map, const char *
 	 */
 	mlk_tracef("Searching tileset %s", ident);
 
-	if (mlk_tileset_loader_openmem(&tileset_loader, &tileset, assets_tilesets_world, sizeof (assets_tilesets_world)) < 0)
+	if (mlk_tileset_loader_openmem(&tileset_loader.iface, &tileset, assets_tilesets_world, sizeof (assets_tilesets_world)) < 0)
 		mlk_panic();
 
 	return &tileset;
@@ -158,7 +158,7 @@ init(void)
 	 * mlk_tileset_loader_file.
 	 */
 	mlk_tileset_loader_file_init(&tileset_loader, "");
-	tileset_loader.new_texture = tileset_new_texture;
+	tileset_loader.iface.new_texture = tileset_new_texture;
 
 	/*
 	 * Create our map loader. It will also search for a tileset to be found

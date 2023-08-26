@@ -31,7 +31,7 @@
  * Convenient struct that pack all the required data.
  */
 struct tileset {
-	struct mlk_tileset_loader loader;
+	struct mlk_tileset_loader_file loader;
 	struct mlk_tileset tileset;
 };
 
@@ -40,7 +40,7 @@ tileset_open(struct tileset *ts, const char *path)
 {
 	mlk_tileset_loader_file_init(&ts->loader, path);
 
-	return mlk_tileset_loader_open(&ts->loader, &ts->tileset, path);
+	return mlk_tileset_loader_open(&ts->loader.iface, &ts->tileset, path);
 }
 
 static inline void

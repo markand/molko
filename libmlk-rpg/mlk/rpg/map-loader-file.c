@@ -46,7 +46,7 @@ struct self {
 	 * We use a tileset file loader if new_tileset function isn't present in
 	 * this map loader.
 	 */
-	struct mlk_tileset_loader tileset_loader;
+	struct mlk_tileset_loader_file tileset_loader;
 	struct mlk_tileset tileset;
 
 	/* Own allocated blocks. */
@@ -121,7 +121,7 @@ new_tileset(struct mlk_map_loader *loader,
 	mlk_tileset_loader_file_finish(&self->tileset_loader);
 	mlk_tileset_loader_file_init(&self->tileset_loader, path);
 
-	if (mlk_tileset_loader_open(&self->tileset_loader, &self->tileset, path) < 0)
+	if (mlk_tileset_loader_open(&self->tileset_loader.iface, &self->tileset, path) < 0)
 		return NULL;
 
 	return &self->tileset;

@@ -24,45 +24,15 @@
 #include <mlk/core/image.h>
 #include <mlk/core/sprite.h>
 #include <mlk/core/texture.h>
+#include <mlk/core/util.h>
 
 #include "loader-file_p.h"
 #include "tileset-loader-file.h"
 #include "tileset-loader.h"
 #include "tileset.h"
 
-struct self {
-	/* Resources allocator. */
-	struct mlk__loader_file *loader;
-
-	/* Arrays reallocated on purpose. */
-	struct mlk_tileset_collision *tilecollisions;
-	struct mlk_tileset_animation *tileanimations;
-};
-
-static struct self *
-self_new(const char *path)
-{
-	struct self *self;
-
-	if (!(self = mlk_alloc_new0(1, sizeof (*self))))
-		return NULL;
-	if (!(self->loader = mlk__loader_file_new(path))) {
-		mlk_alloc_free(self);
-		return NULL;
-	}
-
-	return self;
-}
-
-static void
-self_free(struct self *self)
-{
-	mlk__loader_file_free(self->loader);
-
-	/* Clear array of collisions/animations .*/
-	mlk_alloc_free(self->tilecollisions);
-	mlk_alloc_free(self->tileanimations);
-}
+#define THIS(loader) \
+	MLK_CONTAINER_OF(loader, struct mlk_tileset_loader_file, iface)
 
 static void *
 expand(void **array, size_t n, size_t w)
@@ -85,9 +55,9 @@ new_texture(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset, cons
 {
 	(void)tileset;
 
-	struct self *self = loader->data;
+	struct mlk_tileset_loader_file *self = THIS(loader);
 
-	return mlk__loader_file_texture_open(self->loader, ident);
+	return mlk__loader_file_texture_open(self->lf, ident);
 }
 
 static struct mlk_sprite *
@@ -95,9 +65,9 @@ new_sprite(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset)
 {
 	(void)tileset;
 
-	struct self *self = loader->data;
+	struct mlk_tileset_loader_file *self = THIS(loader);
 
-	return mlk__loader_file_sprite_new(self->loader);
+	return mlk__loader_file_sprite_new(self->lf);
 }
 
 static struct mlk_animation *
@@ -105,9 +75,9 @@ new_animation(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset)
 {
 	(void)tileset;
 
-	struct self *self = loader->data;
+	struct mlk_tileset_loader_file *self = THIS(loader);
 
-	return mlk__loader_file_animation_new(self->loader);
+	return mlk__loader_file_animation_new(self->lf);
 }
 
 struct mlk_tileset_collision *
@@ -119,7 +89,7 @@ expand_collisions(struct mlk_tileset_loader *loader,
 	(void)tileset;
 	(void)array;
 
-	struct self *self = loader->data;
+	struct mlk_tileset_loader_file *self = THIS(loader);
 
 	return expand((void **)&self->tilecollisions, arraysz, sizeof (struct mlk_tileset_collision));
 }
@@ -133,43 +103,40 @@ expand_animations(struct mlk_tileset_loader *loader,
 	(void)tileset;
 	(void)array;
 
-	struct self *self = loader->data;
+	struct mlk_tileset_loader_file *self = THIS(loader);
 
 	return expand((void **)&self->tileanimations, arraysz, sizeof (struct mlk_tileset_animation));
 }
 
 int
-mlk_tileset_loader_file_init(struct mlk_tileset_loader *loader, const char *filename)
+mlk_tileset_loader_file_init(struct mlk_tileset_loader_file *file, const char *filename)
 {
-	assert(loader);
+	assert(file);
 	assert(filename);
 
-	struct self *self;
+	memset(file, 0, sizeof (*file));
 
-	memset(loader, 0, sizeof (*loader));
-
-	if (!(self = self_new(filename)))
+	if (!(file->lf = mlk__loader_file_new(filename)))
 		return -1;
 
-	loader->data = self;
-	loader->new_texture = new_texture;
-	loader->new_sprite = new_sprite;
-	loader->new_animation = new_animation;
-	loader->expand_collisions = expand_collisions;
-	loader->expand_animations = expand_animations;
+	file->iface.new_texture = new_texture;
+	file->iface.new_sprite = new_sprite;
+	file->iface.new_animation = new_animation;
+	file->iface.expand_collisions = expand_collisions;
+	file->iface.expand_animations = expand_animations;
 
 	return 0;
 }
 
 void
-mlk_tileset_loader_file_finish(struct mlk_tileset_loader *loader)
+mlk_tileset_loader_file_finish(struct mlk_tileset_loader_file *file)
 {
-	assert(loader);
+	assert(file);
 
-	struct self *self = loader->data;
+	mlk__loader_file_free(file->lf);
 
-	if (self)
-		self_free(self);
+	mlk_alloc_free(file->tilecollisions);
+	mlk_alloc_free(file->tileanimations);
 
-	memset(loader, 0, sizeof (*loader));
+	memset(file, 0, sizeof (*file));
 }

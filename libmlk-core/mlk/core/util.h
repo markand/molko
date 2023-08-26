@@ -24,6 +24,7 @@
  * \brief libmlk-core utilities
  */
 
+#include <stddef.h>
 #include <stdint.h>
 
 /**
@@ -33,6 +34,12 @@
  * \return the length
  */
 #define MLK_UTIL_SIZE(x) (sizeof ((x)) / sizeof ((x)[0]))
+
+/**
+ * Obtain parent container from a member field.
+ */
+#define MLK_CONTAINER_OF(ptr, type, member) \
+	((type*)((char*)(1 ? (ptr) : &((type*)0)->member) - offsetof(type, member)))
 
 #if defined(__cplusplus)
 extern "C" {
