@@ -1,5 +1,5 @@
 /*
- * align.h -- user interface alignment
+ * align.h -- user interface alignment helpers
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -19,16 +19,64 @@
 #ifndef MLK_UI_ALIGN_H
 #define MLK_UI_ALIGN_H
 
+/**
+ * \file mlk/ui/align.h
+ * \brief User interface alignment helpers
+ */
+
+/**
+ * \enum mlk_align
+ * \brief Alignment selector
+ */
 enum mlk_align {
+	/**
+	 * No alignment, set coordinates to the parent coordinates.
+	 */
 	MLK_ALIGN_NONE,
+
+	/**
+	 * Align to the center.
+	 */
 	MLK_ALIGN_CENTER,
+
+	/**
+	 * Top left corner.
+	 */
 	MLK_ALIGN_TOP_LEFT,
+
+	/**
+	 * Top center.
+	 */
 	MLK_ALIGN_TOP,
+
+	/**
+	 * Top right corner.
+	 */
 	MLK_ALIGN_TOP_RIGHT,
+
+	/**
+	 * Right center (vertical).
+	 */
 	MLK_ALIGN_RIGHT,
+
+	/**
+	 * Bottom right corner.
+	 */
 	MLK_ALIGN_BOTTOM_RIGHT,
+
+	/**
+	 * Bottom center.
+	 */
 	MLK_ALIGN_BOTTOM,
+
+	/**
+	 * Bottom left corner.
+	 */
 	MLK_ALIGN_BOTTOM_LEFT,
+	
+	/**
+	 * Left center (vertical).
+	 */
 	MLK_ALIGN_LEFT
 };
 
@@ -36,16 +84,30 @@ enum mlk_align {
 extern "C" {
 #endif
 
+/**
+ * Adjust x, y coordinates according to the object dimensions inside the
+ * bounding parent box.
+ *
+ * \param align alignment selector
+ * \param x x coordinate position to adjust (can be NULL)
+ * \param y y coordinate position to adjust (can be NULL)
+ * \param w the object width
+ * \param h the object height
+ * \param px the parent rectangle x coordinate
+ * \param py the parent rectangle y coordinate
+ * \param pw the parent rectangle width
+ * \param ph the parent rectangle height
+ */
 void
-mlk_align(enum mlk_align,
-          int *,
-          int *,
-          unsigned int,
-          unsigned int,
-          int,
-          int,
-          unsigned int,
-          unsigned int);
+mlk_align(enum mlk_align align,
+          int *x,
+          int *y,
+          unsigned int w,
+          unsigned int h,
+          int px,
+          int py,
+          unsigned int pw,
+          unsigned int ph);
 
 #if defined(__cplusplus)
 }

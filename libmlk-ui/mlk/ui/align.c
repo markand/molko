@@ -1,5 +1,5 @@
 /*
- * align.h -- user interface alignment
+ * align.c -- user interface alignment helpers
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -70,8 +70,8 @@ mlk_align(enum mlk_align align,
 		SET(x, px);
 		break;
 	default:
-		*x = px;
-		*y = py;
+		SET(x, px);
+		SET(y, py);
 		break;
 	}
 }
