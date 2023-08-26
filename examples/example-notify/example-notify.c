@@ -37,7 +37,7 @@
 #include <mlk/example/registry.h>
 
 static struct mlk_label help = {
-	.text = "Keys: <Space> to generate a notification.",
+	.text = "Keys: <Space> to generate a notification, <Escape> to clear.",
 	.x = 10,
 	.y = 10
 };
@@ -62,8 +62,16 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 		mlk_game_quit();
 		break;
 	case MLK_EVENT_KEYDOWN:
-		if (ev->key.key == MLK_KEY_SPACE)
+		switch (ev->key.key) {
+		case MLK_KEY_ESCAPE:
+			mlk_notify_clear();
+			break;
+		case MLK_KEY_SPACE:
 			mlk_notify(icon, "Quest", "Quest finished.");
+			break;
+		default:
+			break;
+		}
 		break;
 	default:
 		break;
