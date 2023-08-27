@@ -46,7 +46,7 @@ tileset_open(struct tileset *ts, const char *path)
 static inline void
 tileset_finish(struct tileset *ts)
 {
-	mlk_tileset_loader_file_finish(&ts->loader);
+	mlk_tileset_loader_finish(&ts->loader.iface);
 }
 
 static void
@@ -82,6 +82,27 @@ test_basics_sample(struct tileset *ts)
 	DT_EQ_UINT(ts->tileset.collisions[3].y, 0);
 	DT_EQ_UINT(ts->tileset.collisions[3].w, 58);
 	DT_EQ_UINT(ts->tileset.collisions[3].h, 40);
+}
+
+static void
+test_basics_clear(struct tileset *ts)
+{
+	DT_EQ_INT(tileset_open(ts, DIRECTORY "/maps/sample-tileset.tileset"), 0);
+
+	/* Do not test everything, already done in basics. */
+	DT_EQ_UINT(ts->tileset.sprite->cellw, 64U);
+	DT_EQ_UINT(ts->tileset.sprite->cellh, 32U);
+
+	/* Make sure we can clear and open again. */
+	mlk_tileset_loader_clear(&ts->loader.iface, &ts->tileset);
+
+	/* Check that it was zero'ed. */
+	DT_EQ_PTR(ts->tileset.sprite, NULL);
+
+	/* Now it should open our tileset again. */
+	DT_EQ_INT(mlk_tileset_loader_open(&ts->loader.iface, &ts->tileset, DIRECTORY "/maps/sample-tileset.tileset"), 0);
+	DT_EQ_UINT(ts->tileset.sprite->cellw, 64U);
+	DT_EQ_UINT(ts->tileset.sprite->cellh, 32U);
 }
 
 static void
@@ -126,6 +147,7 @@ main(void)
 		return 1;
 
 	DT_RUN_EX(test_basics_sample, setup, teardown, &ts);
+	DT_RUN_EX(test_basics_clear, setup, teardown, &ts);
 	DT_RUN_EX(test_error_tilewidth, setup, teardown, &ts);
 	DT_RUN_EX(test_error_tileheight, setup, teardown, &ts);
 	DT_RUN_EX(test_error_image, setup, teardown, &ts);

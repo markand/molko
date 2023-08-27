@@ -1,5 +1,5 @@
 /*
- * tileset-file.c -- tileset file loader implementation
+ * tileset-loader-file.c -- tileset file loader implementation
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -34,6 +34,18 @@
 #define THIS(loader) \
 	MLK_CONTAINER_OF(loader, struct mlk_tileset_loader_file, iface)
 
+static void
+trash(struct mlk_tileset_loader_file *file)
+{
+	mlk__loader_file_clear(file->lf);
+
+	mlk_alloc_free(file->tilecollisions);
+	mlk_alloc_free(file->tileanimations);
+
+	file->tilecollisions = NULL;
+	file->tileanimations = NULL;
+}
+
 static void *
 expand(void **array, size_t n, size_t w)
 {
@@ -51,37 +63,37 @@ expand(void **array, size_t n, size_t w)
 }
 
 static struct mlk_texture *
-new_texture(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset, const char *ident)
+new_texture(struct mlk_tileset_loader *self, struct mlk_tileset *tileset, const char *ident)
 {
 	(void)tileset;
 
-	struct mlk_tileset_loader_file *self = THIS(loader);
+	struct mlk_tileset_loader_file *file = THIS(self);
 
-	return mlk__loader_file_texture_open(self->lf, ident);
+	return mlk__loader_file_texture_open(file->lf, ident);
 }
 
 static struct mlk_sprite *
-new_sprite(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset)
+new_sprite(struct mlk_tileset_loader *self, struct mlk_tileset *tileset)
 {
 	(void)tileset;
 
-	struct mlk_tileset_loader_file *self = THIS(loader);
+	struct mlk_tileset_loader_file *file = THIS(self);
 
-	return mlk__loader_file_sprite_new(self->lf);
+	return mlk__loader_file_sprite_new(file->lf);
 }
 
 static struct mlk_animation *
-new_animation(struct mlk_tileset_loader *loader, struct mlk_tileset *tileset)
+new_animation(struct mlk_tileset_loader *self, struct mlk_tileset *tileset)
 {
 	(void)tileset;
 
-	struct mlk_tileset_loader_file *self = THIS(loader);
+	struct mlk_tileset_loader_file *file = THIS(self);
 
-	return mlk__loader_file_animation_new(self->lf);
+	return mlk__loader_file_animation_new(file->lf);
 }
 
 struct mlk_tileset_collision *
-expand_collisions(struct mlk_tileset_loader *loader,
+expand_collisions(struct mlk_tileset_loader *self,
                   struct mlk_tileset *tileset,
                   struct mlk_tileset_collision *array,
                   size_t arraysz)
@@ -89,13 +101,13 @@ expand_collisions(struct mlk_tileset_loader *loader,
 	(void)tileset;
 	(void)array;
 
-	struct mlk_tileset_loader_file *self = THIS(loader);
+	struct mlk_tileset_loader_file *file = THIS(self);
 
-	return expand((void **)&self->tilecollisions, arraysz, sizeof (struct mlk_tileset_collision));
+	return expand((void **)&file->tilecollisions, arraysz, sizeof (struct mlk_tileset_collision));
 }
 
 struct mlk_tileset_animation *
-expand_animations(struct mlk_tileset_loader *loader,
+expand_animations(struct mlk_tileset_loader *self,
                   struct mlk_tileset *tileset,
                   struct mlk_tileset_animation *array,
                   size_t arraysz)
@@ -103,9 +115,30 @@ expand_animations(struct mlk_tileset_loader *loader,
 	(void)tileset;
 	(void)array;
 
-	struct mlk_tileset_loader_file *self = THIS(loader);
+	struct mlk_tileset_loader_file *file = THIS(self);
 
-	return expand((void **)&self->tileanimations, arraysz, sizeof (struct mlk_tileset_animation));
+	return expand((void **)&file->tileanimations, arraysz, sizeof (struct mlk_tileset_animation));
+}
+
+static void
+clear(struct mlk_tileset_loader *self, struct mlk_tileset *tileset)
+{
+	(void)tileset;
+
+	struct mlk_tileset_loader_file *file = THIS(self);
+
+	trash(file);
+}
+
+static void
+finish(struct mlk_tileset_loader *self)
+{
+	struct mlk_tileset_loader_file *file = THIS(self);
+
+	trash(file);
+	mlk__loader_file_free(file->lf);
+
+	file->lf = NULL;
 }
 
 int
@@ -124,19 +157,8 @@ mlk_tileset_loader_file_init(struct mlk_tileset_loader_file *file, const char *f
 	file->iface.new_animation = new_animation;
 	file->iface.expand_collisions = expand_collisions;
 	file->iface.expand_animations = expand_animations;
+	file->iface.clear = clear;
+	file->iface.finish = finish;
 
 	return 0;
-}
-
-void
-mlk_tileset_loader_file_finish(struct mlk_tileset_loader_file *file)
-{
-	assert(file);
-
-	mlk__loader_file_free(file->lf);
-
-	mlk_alloc_free(file->tilecollisions);
-	mlk_alloc_free(file->tileanimations);
-
-	memset(file, 0, sizeof (*file));
 }

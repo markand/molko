@@ -327,3 +327,25 @@ mlk_map_loader_openmem(struct mlk_map_loader *loader, struct mlk_map *map, const
 
 	return parse(loader, map, fp);
 }
+
+void
+mlk_map_loader_clear(struct mlk_map_loader *loader,
+                     struct mlk_map *map)
+{
+	assert(loader);
+	assert(map);
+
+	if (loader->clear)
+		loader->clear(loader, map);
+
+	memset(map, 0, sizeof (*map));
+}
+
+void
+mlk_map_loader_finish(struct mlk_map_loader *loader)
+{
+	assert(loader);
+
+	if (loader->finish)
+		loader->finish(loader);
+}

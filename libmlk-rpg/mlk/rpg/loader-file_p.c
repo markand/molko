@@ -161,13 +161,19 @@ mlk__loader_file_animation_new(struct mlk__loader_file *loader)
 }
 
 void
-mlk__loader_file_free(struct mlk__loader_file *loader)
+mlk__loader_file_clear(struct mlk__loader_file *loader)
 {
-	assert(loader);
-
 	free_textures(loader);
 	free_sprites(loader);
 	free_animations(loader);
+}
 
+void
+mlk__loader_file_free(struct mlk__loader_file *loader)
+{
+	if (!loader)
+		return;
+
+	mlk__loader_file_clear(loader);
 	mlk_alloc_free(loader);
 }

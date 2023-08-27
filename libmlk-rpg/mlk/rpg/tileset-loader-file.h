@@ -37,6 +37,10 @@ struct mlk_tileset_collision;
 struct mlk_tileset_animation;
 struct mlk__loader_file;
 
+/**
+ * \struct mlk_tileset_loader_file
+ * \brief Tileset loader from file.
+ */
 struct mlk_tileset_loader_file {
 	/**
 	 * (read-write)
@@ -57,29 +61,20 @@ extern "C" {
 #endif
 
 /**
- * Initialize the loader with internal functions and internal data to allocate
- * and find appropriate resources relative to the tileset filename.
+ * Initialize this file loader and the underlying abstract tileset loader
+ * interface.
  *
  * After loading the tileset with this underlying loader, it should be kept
  * until the tileset is no longer used.
  *
  * \pre file != NULL
  * \pre filename != NULL
- * \param file the abstract loader interface
+ * \param file the file loader
  * \param filename path to the tileset file
  * \return 0 on success or -1 on error
  */
 int
 mlk_tileset_loader_file_init(struct mlk_tileset_loader_file *file, const char *filename);
-
-/**
- * Cleanup allocated resources by this file loader.
- *
- * \pre file != NULL
- * \param file the file loader
- */
-void
-mlk_tileset_loader_file_finish(struct mlk_tileset_loader_file *file);
 
 #if defined(__cplusplus)
 }

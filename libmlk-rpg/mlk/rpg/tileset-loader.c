@@ -316,3 +316,25 @@ mlk_tileset_loader_openmem(struct mlk_tileset_loader *loader,
 
 	return parse(loader, tileset, fp);
 }
+
+void
+mlk_tileset_loader_clear(struct mlk_tileset_loader *loader,
+                         struct mlk_tileset *tileset)
+{
+	assert(loader);
+	assert(tileset);
+
+	if (loader->clear)
+		loader->clear(loader, tileset);
+
+	memset(tileset, 0, sizeof (*tileset));
+}
+
+void
+mlk_tileset_loader_finish(struct mlk_tileset_loader *loader)
+{
+	assert(loader);
+
+	if (loader->finish)
+		loader->finish(loader);
+}

@@ -59,7 +59,7 @@
 static struct mlk_tileset_loader_file tileset_loader;
 static struct mlk_tileset tileset;
 
-static struct mlk_map_loader map_loader;
+static struct mlk_map_loader_file map_loader;
 static struct mlk_map map;
 
 static struct {
@@ -165,11 +165,11 @@ init(void)
 	 * on disk by default which we would like to avoid. We override the
 	 * init_tileset function.
 	 */
-	mlk_map_loader_file_init(&map_loader, "");
-	map_loader.new_tileset = map_new_tileset;
-	map_loader.new_texture = map_new_texture;
+	mlk_map_loader_file_init(&map_loader, &tileset_loader.iface, "");
+	map_loader.iface.new_tileset = map_new_tileset;
+	map_loader.iface.new_texture = map_new_texture;
 
-	if (mlk_map_loader_openmem(&map_loader, &map, assets_maps_world, sizeof (assets_maps_world)) < 0)
+	if (mlk_map_loader_openmem(&map_loader.iface, &map, assets_maps_world, sizeof (assets_maps_world)) < 0)
 		mlk_panic();
 
 	mlk_map_init(&map);
@@ -250,8 +250,8 @@ static void
 quit(void)
 {
 	mlk_map_finish(&map);
-	mlk_map_loader_file_finish(&map_loader);
-	mlk_tileset_loader_file_finish(&tileset_loader);
+	mlk_map_loader_finish(&map_loader.iface);
+	mlk_tileset_loader_finish(&tileset_loader.iface);
 	mlk_example_finish();
 }
 

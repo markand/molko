@@ -140,6 +140,28 @@ struct mlk_map_loader {
                                                 struct mlk_map *map,
                                                 struct mlk_map_block *blocks,
                                                 size_t blocksz);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Cleanup resources allocated for this mao.
+	 *
+	 * This is different than finalizing the loader itself, it should be
+	 * re-usable after calling this function.
+	 *
+	 * \param self this loader
+	 * \param map the underlying map to cleanup
+	 */
+	void (*clear)(struct mlk_map_loader *self, struct mlk_map *map);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Cleanup the map loader.
+	 *
+	 * \param self this loader
+	 */
+	void (*finish)(struct mlk_map_loader *self);
 };
 
 #if defined(__cplusplus)
@@ -178,6 +200,34 @@ mlk_map_loader_openmem(struct mlk_map_loader *loader,
                        struct mlk_map *map,
                        const void *data,
                        size_t datasz);
+
+/**
+ * Cleanup data for this map.
+ *
+ * The loader is re-usable after calling this function to load a new map.
+ *
+ * Invokes ::mlk_map_loader::clear.
+ *
+ * \pre loader != NULL
+ * \param loader the loader interface
+ * \param map the map used with this loader
+ */
+void
+mlk_map_loader_clear(struct mlk_map_loader *loader, struct mlk_map *map);
+
+/**
+ * Finalize the loader itself.
+ *
+ * The underlying interface should also clear map resources by convenience
+ * if the user forgot to call ::mlk_map_loader_clear.
+ *
+ * Invokes ::mlk_map_loader::finish.
+ *
+ * \pre loader != NULL
+ * \param loader the loader to finalize
+ */
+void
+mlk_map_loader_finish(struct mlk_map_loader *loader);
 
 #if defined(__cplusplus)
 }

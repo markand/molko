@@ -41,6 +41,9 @@ struct mlk_animation *
 mlk__loader_file_animation_new(struct mlk__loader_file *loader);
 
 void
+mlk__loader_file_clear(struct mlk__loader_file *loader);
+
+void
 mlk__loader_file_free(struct mlk__loader_file *loader);
 
 #endif /* !MLK_RPG_LOADER_FILE_P_H */

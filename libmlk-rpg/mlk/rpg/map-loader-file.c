@@ -26,174 +26,152 @@
 #include <mlk/core/image.h>
 #include <mlk/core/sprite.h>
 #include <mlk/core/texture.h>
+#include <mlk/core/util.h>
 
 #include "loader-file_p.h"
 #include "map-loader-file.h"
-#include "map-loader.h"
 #include "map.h"
 #include "tileset-loader-file.h"
 #include "tileset-loader.h"
-#include "tileset.h"
 
-struct self {
-	/* Resources allocator. */
-	struct mlk__loader_file *loader;
-
-	/* Own allocated tiles. */
-	unsigned int *tiles[MLK_MAP_LAYER_TYPE_LAST];
-
-	/*
-	 * We use a tileset file loader if new_tileset function isn't present in
-	 * this map loader.
-	 */
-	struct mlk_tileset_loader_file tileset_loader;
-	struct mlk_tileset tileset;
-
-	/* Own allocated blocks. */
-	struct mlk_map_block *blocks;
-};
-
-static struct self *
-self_new(const char *path)
-{
-	struct self *self;
-
-	if (!(self = mlk_alloc_new0(1, sizeof (*self))))
-		return NULL;
-	if (!(self->loader = mlk__loader_file_new(path))) {
-		mlk_alloc_free(self);
-		return NULL;
-	}
-
-	return self;
-}
+#define THIS(loader) \
+	MLK_CONTAINER_OF(loader, struct mlk_map_loader_file, iface)
 
 static void
-self_free(struct self *self)
+trash(struct mlk_map_loader_file *file)
 {
-	mlk__loader_file_free(self->loader);
+	mlk__loader_file_clear(file->lf);
 
-	for (int i = 0; i < MLK_MAP_LAYER_TYPE_LAST; ++i)
-		mlk_alloc_free(self->tiles[i]);
+	for (int i = 0; i < MLK_MAP_LAYER_TYPE_LAST; ++i) {
+		mlk_alloc_free(file->tiles[i]);
+		file->tiles[i] = NULL;
+	}
 
-	mlk_tileset_loader_file_finish(&self->tileset_loader);
-	mlk_alloc_free(self->blocks);
+	mlk_alloc_free(file->blocks);
+
+	file->blocks = NULL;
 }
 
 static struct mlk_texture *
-new_texture(struct mlk_map_loader *loader,
-            struct mlk_map *map,
-            const char *ident)
+new_texture(struct mlk_map_loader *self, struct mlk_map *map, const char *ident)
 {
 	(void)map;
 
-	struct self *self = loader->data;
+	struct mlk_map_loader_file *file = THIS(self);
 
-	return mlk__loader_file_texture_open(self->loader, ident);
+	return mlk__loader_file_texture_open(file->lf, ident);
 }
 
 static struct mlk_sprite *
-new_sprite(struct mlk_map_loader *loader, struct mlk_map *map)
+new_sprite(struct mlk_map_loader *self, struct mlk_map *map)
 {
 	(void)map;
 
-	struct self *self = loader->data;
+	struct mlk_map_loader_file *file = THIS(self);
 
-	return mlk__loader_file_sprite_new(self->loader);
+	return mlk__loader_file_sprite_new(file->lf);
 }
 
 static struct mlk_tileset *
-new_tileset(struct mlk_map_loader *loader,
-            struct mlk_map *map,
-            const char *ident)
+new_tileset(struct mlk_map_loader *self, struct mlk_map *map, const char *ident)
 {
 	(void)map;
 
-	struct self *self = loader->data;
-	char path[MLK_PATH_MAX];
+	struct mlk_map_loader_file *file = THIS(self);
+	char path[MLK_PATH_MAX] = {};
 
-	snprintf(path, sizeof (path), "%s/%s", mlk__loader_file_directory(self->loader), ident);
+	snprintf(path, sizeof (path), "%s/%s", mlk__loader_file_directory(file->lf), ident);
 
 	/*
-	 * Just make sure that we don't leak in case tileset directory is listed
-	 * more than once.
+	 * Cleanup existing resources in case the tileset appears multiple times
+	 * in the map.
 	 */
-	mlk_tileset_loader_file_finish(&self->tileset_loader);
-	mlk_tileset_loader_file_init(&self->tileset_loader, path);
+	mlk_tileset_loader_clear(file->tileset_loader, &file->tileset);
 
-	if (mlk_tileset_loader_open(&self->tileset_loader.iface, &self->tileset, path) < 0)
+	if (mlk_tileset_loader_open(file->tileset_loader, &file->tileset, path) < 0)
 		return NULL;
 
-	return &self->tileset;
+	return &file->tileset;
 }
 
 static unsigned int *
-new_tiles(struct mlk_map_loader *loader,
+new_tiles(struct mlk_map_loader *self,
           struct mlk_map *map,
           enum mlk_map_layer_type type,
           size_t n)
 {
 	(void)map;
 
-	struct self *self = loader->data;
+	struct mlk_map_loader_file *file = THIS(self);
 
-	return self->tiles[type] = mlk_alloc_new0(n, sizeof (unsigned int));
+	return file->tiles[type] = mlk_alloc_new0(n, sizeof (unsigned int));
 }
 
 static struct mlk_map_block *
-expand_blocks(struct mlk_map_loader *loader,
+expand_blocks(struct mlk_map_loader *self,
               struct mlk_map *map,
               struct mlk_map_block *blocks,
               size_t blocksz)
 {
 	(void)map;
 
-	struct self *self = loader->data;
+	struct mlk_map_loader_file *file = THIS(self);
 	struct mlk_map_block *ptr;
 
-	if (!self->blocks)
+	if (!file->blocks)
 		ptr = mlk_alloc_new0(1, sizeof (*ptr));
 	else
-		ptr = mlk_alloc_expand(self->blocks, blocksz);
+		ptr = mlk_alloc_expand(file->blocks, blocksz);
 
 	if (ptr)
-		self->blocks = blocks;
+		file->blocks = blocks;
 
 	return ptr;
 }
 
-int
-mlk_map_loader_file_init(struct mlk_map_loader *loader, const char *filename)
+static void
+clear(struct mlk_map_loader *self, struct mlk_map *map)
 {
-	assert(loader);
-	assert(filename);
+	(void)map;
 
-	struct self *self;
+	struct mlk_map_loader_file *file = THIS(self);
 
-	memset(loader, 0, sizeof (*loader));
-
-	if (!(self = self_new(filename)))
-		return -1;
-
-	loader->data = self;
-	loader->new_tileset = new_tileset;
-	loader->new_texture = new_texture;
-	loader->new_sprite = new_sprite;
-	loader->new_tiles = new_tiles;
-	loader->expand_blocks = expand_blocks;
-
-	return 0;
+	trash(file);
 }
 
-void
-mlk_map_loader_file_finish(struct mlk_map_loader *loader)
+static void
+finish(struct mlk_map_loader *self)
 {
-	assert(loader);
+	struct mlk_map_loader_file *file = THIS(self);
 
-	struct self *self = loader->data;
+	trash(file);
+	mlk__loader_file_free(file->lf);
 
-	if (self)
-		self_free(self);
+	file->lf = NULL;
+}
 
-	memset(loader, 0, sizeof (*loader));
+int
+mlk_map_loader_file_init(struct mlk_map_loader_file *file,
+                         struct mlk_tileset_loader *tileset_loader,
+                         const char *filename)
+{
+	assert(file);
+	assert(tileset_loader);
+	assert(filename);
+
+	memset(file, 0, sizeof (*file));
+
+	if (!(file->lf = mlk__loader_file_new(filename)))
+		return -1;
+
+	file->tileset_loader = tileset_loader;
+	file->iface.new_tileset = new_tileset;
+	file->iface.new_texture = new_texture;
+	file->iface.new_sprite = new_sprite;
+	file->iface.new_tiles = new_tiles;
+	file->iface.expand_blocks = expand_blocks;
+	file->iface.clear = clear;
+	file->iface.finish = finish;
+
+	return 0;
 }

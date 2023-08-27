@@ -25,20 +25,17 @@
  *
  * This module provides a generic way to open tilesets. It uses a callback
  * system whenever an action has to be taken by the user. by itself, this
- * module does not alloate nor owns any data.
+ * module does not allocate nor owns any data.
  *
  * It is designed in mind that the loader knows how to decode a tileset data
  * format file but has no indication on how it should allocate, arrange and
  * find tileset images and other resources.
  *
- * See tileset-file.h for an implementation of this module using files.
+ * See tileset-loader-file.h for an implementation of this module using files.
  */
 
 #include <stddef.h>
 
-struct mlk_animation;
-struct mlk_sprite;
-struct mlk_texture;
 struct mlk_tileset;
 struct mlk_tileset_animations;
 struct mlk_tileset_collision;
@@ -126,6 +123,28 @@ struct mlk_tileset_loader {
 	                                                    struct mlk_tileset_animation *array,
 	                                                    size_t arraysz);
 
+	/**
+	 * (read-write, optional)
+	 *
+	 * Cleanup resources allocated for this tileset.
+	 *
+	 * This is different than finalizing the loader itself, it should be
+	 * re-usable after calling this function.
+	 *
+	 * \param self this loader
+	 * \param tileset the underlying tileset to cleanup
+	 */
+	void (*clear)(struct mlk_tileset_loader *self, struct mlk_tileset *tileset);
+
+	/**
+	 * (read-write, optional)
+	 *
+	 * Cleanup the tileset loader.
+	 *
+	 * \param self this loader
+	 */
+	void (*finish)(struct mlk_tileset_loader *self);
+
 	/** \cond MLK_PRIVATE_DECLS */
 	unsigned int tilewidth;
 	unsigned int tileheight;
@@ -172,6 +191,35 @@ mlk_tileset_loader_openmem(struct mlk_tileset_loader *loader,
                            struct mlk_tileset *tileset,
                            const void *data,
                            size_t datasz);
+
+/**
+ * Cleanup data for this tileset.
+ *
+ * The loader is re-usable after calling this function to load a new tileset.
+ *
+ * Invokes ::mlk_tileset_loader::clear.
+ *
+ * \pre loader != NULL
+ * \param loader the loader interface
+ * \param tileset the tileset used with this loader
+ */
+void
+mlk_tileset_loader_clear(struct mlk_tileset_loader *loader,
+                         struct mlk_tileset *tileset);
+
+/**
+ * Finalize the loader itself.
+ *
+ * The underlying interface should also clear tileset resources by convenience
+ * if the user forgot to call ::mlk_tileset_loader_clear.
+ *
+ * Invokes ::mlk_tileset_loader::finish.
+ *
+ * \pre loader != NULL
+ * \param loader the loader to finalize
+ */
+void
+mlk_tileset_loader_finish(struct mlk_tileset_loader *loader);
 
 #if defined(__cplusplus)
 }

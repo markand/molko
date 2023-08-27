@@ -28,21 +28,20 @@
  * on the go depending on the file map content.
  *
  * For convenience, this loader will also use ::mlk_tileset_loader for loading
- * and associating the tileset. If this behavior is not desired the function
- * ::mlk_map_loader::new_tileset can be overriden after calling
- * ::mlk_map_loader_file_init.
+ * and associating the tileset.
  *
  * Example of use:
  *
  * ```c
- * struct mlk_map_loader loader;
+ * struct mlk_tileset_loader_file tileset_loader;
+ * struct mlk_map_loader_file map_loader;
  * struct mlk_map map;
  *
  * // The loader needs to know the map location to retrieve relative files.
  * const char *map_path = "/path/to/world.map";
  *
  * // Initialize the loader, it will be filled with custom internal functions.
- * if (mlk_map_loader_file_init(&loader, map_path) < 0)
+ * if (mlk_map_loader_file_init(&map_loader, &tileset_loader.iface, map_path) < 0)
  *     mlk_panic();
  *
  * // Load the map from the file on disk.
@@ -54,11 +53,33 @@
  *
  * // Destroy the resources.
  * mlk_map_finish(&map);
- * mlk_map_loader_file_finish(&loader);
+ * mlk_map_loader_file_finish(&map_loader);
+ * mlk_tileset_loader_file_finish(&tileset_loader);
  * ```
  */
 
-struct mlk_map_loader;
+#include "map-loader.h"
+#include "map.h"
+#include "tileset.h"
+
+struct mlk_tileset_loader;
+
+struct mlk_map_loader_file {
+	/**
+	 * (read-write)
+	 *
+	 * Underlying map loader.
+	 */
+	struct mlk_map_loader iface;
+
+	/** \cond MLK_PRIVATE_DECLS */
+	unsigned int *tiles[MLK_MAP_LAYER_TYPE_LAST];
+	struct mlk_tileset_loader *tileset_loader;
+	struct mlk_tileset tileset;
+	struct mlk_map_block *blocks;
+	struct mlk__loader_file *lf;
+	/** \endcond MLK_PRIVATE_DECLS */
+};
 
 /**
  * Initialize the loader with internal functions and internal data to allocate
@@ -67,23 +88,19 @@ struct mlk_map_loader;
  * After loading the map with this underlying loader, it should be kept until
  * the map is no longer used.
  *
- * \pre loader != NULL
+ * The tileset loader is borrowed and not destroyed when this loader is
+ * destroyed, user must do it manually.
+ *
+ * \pre file != NULL
  * \pre filename != NULL
- * \param loader the abstract loader interface
+ * \param file the file loader
+ * \param tileset_loader tileset loader interface (borrowed)
  * \param filename path to the map file
  * \return 0 on success or -1 on error
  */
 int
-mlk_map_loader_file_init(struct mlk_map_loader *loader, const char *filename);
-
-/**
- * Cleanup allocated resources by this file loader.
- *
- * \pre file != NULL
- * \param file the file loader
- * \warning the map loaded with this loader must not be used
- */
-void
-mlk_map_loader_file_finish(struct mlk_map_loader *file);
+mlk_map_loader_file_init(struct mlk_map_loader_file *file,
+                         struct mlk_tileset_loader *tileset_loader,
+                         const char *filename);
 
 #endif /* !MLK_RPG_MAP_LOADER_FILE_H */

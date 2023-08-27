@@ -201,7 +201,7 @@ run(void)
 static void
 quit(void)
 {
-	mlk_tileset_loader_file_finish(&loader);
+	mlk_tileset_loader_finish(&loader.iface);
 	mlk_example_finish();
 }
 
