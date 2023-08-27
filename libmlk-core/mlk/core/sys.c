@@ -205,7 +205,7 @@ vio_seek(sf_count_t offset, int whence, void *data)
 		vio->offset += offset;
 		break;
 	case SEEK_END:
-		vio->offset = vio->datasz - offset;
+		vio->offset = vio->datasz + offset;
 		break;
 	default:
 		break;
@@ -218,6 +218,9 @@ static sf_count_t
 vio_read(void *ptr, sf_count_t count, void *data)
 {
 	struct viodata *vio = data;
+
+	if (vio->offset + (size_t)count > vio->datasz)
+		count = vio->datasz - vio->offset;
 
 	memcpy(ptr, vio->data + vio->offset, count);
 	vio->offset += count;
