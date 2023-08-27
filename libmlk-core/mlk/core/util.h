@@ -75,9 +75,19 @@ mlk_util_pathf(const char *fmt, ...);
 unsigned int
 mlk_util_nrand(unsigned int min, unsigned int max);
 
+/**
+ * Clamp a value between limits.
+ *
+ * \return v clamped to min or max depending on the current v value
+ */
 intmax_t
 mlk_clampi(intmax_t v, intmax_t min, intmax_t max);
 
+/**
+ * Clamp a value between limits.
+ *
+ * \return v clamped to min or max depending on the current v value
+ */
 uintmax_t
 mlk_clampu(uintmax_t v, uintmax_t min, uintmax_t max);
 

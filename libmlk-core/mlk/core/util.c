@@ -57,7 +57,6 @@ intmax_t
 mlk_clampi(intmax_t v, intmax_t min, intmax_t max)
 {
 	return v < min ? min : v > max ? max : v;
-	
 }
 
 uintmax_t
