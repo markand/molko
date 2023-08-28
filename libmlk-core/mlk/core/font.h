@@ -107,15 +107,6 @@ mlk_font_openmem(struct mlk_font *font,
                  unsigned int size);
 
 /**
- * Tells if the font is usable.
- *
- * \param font the font to check
- * \return non-zero if the font structure is usable
- */
-int
-mlk_font_ok(const struct mlk_font *font);
-
-/**
  * Render some text using the font and generate a texture.
  *
  * The texture destination must be deallocated once no longer used using

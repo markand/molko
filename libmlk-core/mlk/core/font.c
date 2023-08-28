@@ -58,15 +58,10 @@ mlk_font_openmem(struct mlk_font *font,
 }
 
 int
-mlk_font_ok(const struct mlk_font *font)
-{
-	return font && font->handle;
-}
-
-int
 mlk_font_render(struct mlk_font *font, struct mlk_texture *tex, const char *text, unsigned long color)
 {
-	assert(mlk_font_ok(font));
+	assert(font);
+	assert(tex);
 	assert(text);
 
 	SDL_Color fg = {
@@ -96,7 +91,7 @@ mlk_font_render(struct mlk_font *font, struct mlk_texture *tex, const char *text
 unsigned int
 mlk_font_height(const struct mlk_font *font)
 {
-	assert(mlk_font_ok(font));
+	assert(font);
 
 	return TTF_FontHeight(font->handle);
 }
@@ -104,7 +99,7 @@ mlk_font_height(const struct mlk_font *font)
 int
 mlk_font_query(const struct mlk_font *font, const char *text, unsigned int *w, unsigned int *h)
 {
-	assert(mlk_font_ok(font));
+	assert(font);
 	assert(text);
 
 	if (w)
