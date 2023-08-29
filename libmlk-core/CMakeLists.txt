@@ -19,6 +19,11 @@
 project(libmlk-core)
 
 set(
+	ASSETS
+	${libmlk-core_SOURCE_DIR}/assets/misc/gamecontrollerdb.txt
+)
+
+set(
 	SOURCES
 	${libmlk-core_SOURCE_DIR}/mlk/core/action-script.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/action-stack.c
@@ -111,6 +116,7 @@ endif ()
 
 mlk_library(
 	NAME libmlk-core
+	ASSETS ${ASSETS}
 	SOURCES ${SOURCES}
 	HEADERS ${HEADERS}
 	HEADERS_DIRECTORY mlk/core
@@ -126,9 +132,11 @@ mlk_library(
 			SDL3_ttf::SDL3_ttf-shared
 			libmlk-util
 	INCLUDES
+		PRIVATE
+			$<BUILD_INTERFACE:${libmlk-core_BINARY_DIR}>
 		PUBLIC
 			$<BUILD_INTERFACE:${libmlk-core_SOURCE_DIR}>
 			${OPENAL_INCLUDE_DIR}
 )
 
-source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${HEADERS} ${SOURCES} ${NLS})
+source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${ASSETS} ${HEADERS} ${SOURCES} ${NLS})

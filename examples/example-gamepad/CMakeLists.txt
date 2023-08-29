@@ -16,29 +16,18 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(examples)
+project(example-gamepad)
 
 set(
-	DIRS
-	example-action
-	example-animation
-	example-audio
-	example-cursor
-	example-debug
-	example-drawable
-	example-font
-	example-gamepad
-	example-gridmenu
-	example-label
-	example-map
-	example-message
-	example-notify
-	example-sprite
-	example-tileset
-	example-trace
-	example-ui
+	SOURCES
+	${example-gamepad_SOURCE_DIR}/example-gamepad.c
 )
 
-foreach (d ${DIRS})
-	add_subdirectory(${d})
-endforeach ()
+mlk_executable(
+	NAME example-gamepad
+	FOLDER examples
+	LIBRARIES libmlk-example
+	SOURCES ${SOURCES}
+)
+
+source_group(TREE ${example-gamepad_SOURCE_DIR} FILES ${SOURCES})

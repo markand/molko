@@ -24,6 +24,17 @@
 #include "err.h"
 #include "gamepad.h"
 
+static int
+end(struct mlk_gamepad_iter *it)
+{
+	if (it->list) {
+		SDL_free(it->list);
+		memset(it, 0, sizeof (*it));
+	}
+
+	return 0;
+}
+
 int
 mlk_gamepad_open(struct mlk_gamepad *pad, int idx)
 {
@@ -48,20 +59,21 @@ mlk_gamepad_finish(struct mlk_gamepad *pad)
 	memset(pad, 0, sizeof (*pad));
 }
 
-#if 0
-
 int
 mlk_gamepad_iter_begin(struct mlk_gamepad_iter *it)
 {
 	assert(it);
 
 	memset(it, 0, sizeof (*it));
-	it->index = -1;
 
-	if ((it->end = SDL_NumJoysticks()) < 0) {
-		it->end = 0;
+	if (!(it->list = SDL_GetGamepads(&it->listsz)))
 		return mlk_errf("%s", SDL_GetError());
-	}
+
+	/*
+	 * Start negative so that call to mlk_gamepad_iter_next goes to the
+	 * first gamepad.
+	 */
+	it->listit = -1;
 
 	return 0;
 }
@@ -69,22 +81,18 @@ mlk_gamepad_iter_begin(struct mlk_gamepad_iter *it)
 int
 mlk_gamepad_iter_next(struct mlk_gamepad_iter *it)
 {
-	/*
-	 * Go to the next gamepad, we need to iterate because SDL can combines
-	 * joystick and game controllers with the same API.
-	 */
-	for (++it->index; it->index < it->end && !SDL_IsGameController(it->index); ++it->index)
-		continue;
+	SDL_JoystickID *ids = it->list;
 
-	/* End of iteration. */
-	if (it->index >= it->end) {
-		memset(it, 0, sizeof (*it));
-		return 0;
-	}
+	/* End of iteration, remove everything. */
+	if (++it->listit >= it->listsz)
+		return end(it);
 
-	it->name = SDL_GameControllerNameForIndex(it->index);
+	/* Index is in the array returned by SDL_GetJoysticks. */
+	it->index = ids[it->listit];
+
+	/* Unable to fetch name? Shouldn't happen so discard silently. */
+	if (!(it->name = SDL_GetGamepadInstanceName(it->index)))
+		return end(it);
 
 	return 1;
 }
-
-#endif

@@ -16,6 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include <mlk/util/util.h>
 
 #include <sys/stat.h>
@@ -39,6 +42,8 @@
 #include <SDL_ttf.h>
 
 #include <sndfile.h>
+
+#include <assets/misc/gamecontrollerdb.h>
 
 #include "alloc.h"
 #include "core_p.h"
@@ -258,6 +263,7 @@ mlk_sys_init(const char *organization, const char *name)
 	setbuf(stderr, NULL);
 	setbuf(stdout, NULL);
 #endif
+	SDL_RWops *ops;
 
 	/* Kept for future use. */
 	(void)organization;
@@ -270,6 +276,16 @@ mlk_sys_init(const char *organization, const char *name)
 		return mlk_errf("%s", SDL_GetError());
 	if (TTF_Init() < 0)
 		return mlk_errf("%s", SDL_GetError());
+
+	/*
+	 * TODO: our bcc invocation creates a not NUL terminated array by
+	 * default so we have to create a dummy string just for this function.
+	 *
+	 * As long as our CMake macros allows better control of that, change
+	 * this ugly hack.
+	 */
+	if ((ops = SDL_RWFromConstMem(assets_misc_gamecontrollerdb, sizeof (assets_misc_gamecontrollerdb))))
+		SDL_AddGamepadMappingsFromRW(ops, 1);
 
 	/* OpenAL. */
 #if defined(MLK_OS_WINDOW)

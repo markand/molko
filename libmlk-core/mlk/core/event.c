@@ -248,13 +248,13 @@ convert_click(const SDL_Event *event, union mlk_event *ev)
 }
 
 static void
-convert_pad(const SDL_Event *event, union mlk_event *ev)
+convert_button(const SDL_Event *event, union mlk_event *ev)
 {
-	ev->type = event->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ? MLK_EVENT_PADDOWN : MLK_EVENT_PADUP;
+	ev->type = event->type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ? MLK_EVENT_BUTTONDOWN : MLK_EVENT_BUTTONUP;
 
 	for (size_t i = 0; pads[i].value != MLK_GAMEPAD_BUTTON_UNKNOWN; ++i) {
 		if (pads[i].button == event->gbutton.button) {
-			ev->pad.button = pads[i].value;
+			ev->button.button = pads[i].value;
 			break;
 		}
 	}
@@ -285,6 +285,13 @@ convert_axis(const SDL_Event *event, union mlk_event *ev)
 			break;
 		}
 	}
+}
+
+static void
+convert_gamepad(const SDL_Event *event, union mlk_event *ev)
+{
+	ev->type = SDL_EVENT_GAMEPAD_ADDED ? MLK_EVENT_GAMEPAD_ATTACH : MLK_EVENT_GAMEPAD_DETACH;
+	ev->gamepad.index = event->gdevice.which;
 }
 
 static void
@@ -333,10 +340,14 @@ mlk_event_poll(union mlk_event *ev)
 			return 1;
 		case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
 		case SDL_EVENT_GAMEPAD_BUTTON_UP:
-			convert_pad(&event, ev);
+			convert_button(&event, ev);
 			return 1;
 		case SDL_EVENT_GAMEPAD_AXIS_MOTION:
 			convert_axis(&event, ev);
+			return 1;
+		case SDL_EVENT_GAMEPAD_ADDED:
+		case SDL_EVENT_GAMEPAD_REMOVED:
+			convert_gamepad(&event, ev);
 			return 1;
 		case SDL_EVENT_SYSTEM_THEME_CHANGED:
 			/*

@@ -174,8 +174,6 @@ struct mlk_gamepad {
 	/** \endcond MLK_PRIVATE_DECLS */
 };
 
-#if 0
-
 /**
  * \struct mlk_gamepad_iter
  * \brief Iterate over all plugged gamepads.
@@ -197,7 +195,9 @@ struct mlk_gamepad_iter {
 	int index;
 
 	/** \cond MLK_PRIVATE_DECLS */
-	int end;
+	void *list;
+	int listsz;
+	int listit;
 	/** \endcond MLK_PRIVATE_DECLS */
 };
 
@@ -248,8 +248,6 @@ mlk_gamepad_iter_begin(struct mlk_gamepad_iter *iter);
  */
 int
 mlk_gamepad_iter_next(struct mlk_gamepad_iter *iter);
-
-#endif
 
 #if defined(__cplusplus)
 }

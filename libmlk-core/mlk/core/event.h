@@ -82,16 +82,16 @@ enum mlk_event_type {
 	/**
 	 * Game controller D-Pad/button press.
 	 *
-	 * Access through ::mlk_event::pad.
+	 * Access through ::mlk_event::button.
 	 */
-	MLK_EVENT_PADUP,
+	MLK_EVENT_BUTTONUP,
 
 	/**
 	 * Game controller D-Pad/button release.
 	 *
-	 * Access through ::mlk_event::pad.
+	 * Access through ::mlk_event::button.
 	 */
-	MLK_EVENT_PADDOWN,
+	MLK_EVENT_BUTTONDOWN,
 
 	/**
 	 * Game controller joystick axis motion.
@@ -99,6 +99,20 @@ enum mlk_event_type {
 	 * Access through ::mlk_event::axis.
 	 */
 	MLK_EVENT_AXIS,
+
+	/**
+	 * Game controller was added.
+	 *
+	 * Access through ::mlk_event::gamepad.
+	 */
+	MLK_EVENT_GAMEPAD_ATTACH,
+
+	/**
+	 * Game controller was removed.
+	 *
+	 * Access through ::mlk_event::gamepad.
+	 */
+	MLK_EVENT_GAMEPAD_DETACH,
 
 	/**
 	 * Operating system theme changed.
@@ -187,12 +201,12 @@ struct mlk_event_click {
 };
 
 /**
- * \struct mlk_event_pad
+ * \struct mlk_event_button
  * \brief Game controller button press/release
  */
-struct mlk_event_pad {
+struct mlk_event_button {
 	/**
-	 * Set to ::MLK_EVENT_PADDOWN or ::MLK_EVENT_PADUP.
+	 * Set to ::MLK_EVENT_BUTTONDOWN or ::MLK_EVENT_BUTTONUP.
 	 */
 	enum mlk_event_type type;
 
@@ -204,7 +218,7 @@ struct mlk_event_pad {
 
 /**
  * \struct mlk_event_axis
- * \brief Game controller joystick axis event
+ * \brief Game controller joystick axis event.
  */
 struct mlk_event_axis {
 	/**
@@ -221,6 +235,22 @@ struct mlk_event_axis {
 	 * The new value.
 	 */
 	int value;
+};
+
+/**
+ * \struct mlk_event_gamepad
+ * \brief A gamepad has been attached/detached.
+ */
+struct mlk_event_gamepad {
+	/**
+	 * Set to ::MLK_EVENT_GAMEPAD_ATTACH or ::MLK_EVENT_GAMEPAD_DETACH.
+	 */
+	enum mlk_event_type type;
+
+	/**
+	 * Device index that generated the event.
+	 */
+	int index;
 };
 
 /**
@@ -266,14 +296,19 @@ union mlk_event {
 	struct mlk_event_click click;
 
 	/**
-	 * For ::MLK_EVENT_PADDOWN, ::MLK_EVENT_PADUP.
+	 * For ::MLK_EVENT_BUTTONDOWN, ::MLK_EVENT_BUTTONUP.
 	 */
-	struct mlk_event_pad pad;
+	struct mlk_event_button button;
 
 	/**
 	 * For ::MLK_EVENT_AXIS.
 	 */
 	struct mlk_event_axis axis;
+
+	/**
+	 * For ::MLK_EVENT_GAMEPAD_ATTACH, ::MLK_EVENT_GAMEPAD_DETACH.
+	 */
+	struct mlk_event_gamepad gamepad;
 
 	/**
 	 * For ::MLK_EVENT_THEME.
