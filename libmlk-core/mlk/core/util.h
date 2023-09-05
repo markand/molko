@@ -39,7 +39,7 @@
  * Obtain parent container from a member field.
  */
 #define MLK_CONTAINER_OF(ptr, type, member) \
-	((type*)((char*)(1 ? (ptr) : &((type*)0)->member) - offsetof(type, member)))
+	((type *)((char *)(1 ? (ptr) : &((type *)0)->member) - offsetof(type, member)))
 
 #if defined(__cplusplus)
 extern "C" {

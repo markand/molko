@@ -20,7 +20,7 @@
 #define MLK_UTIL_DIR_H
 
 /**
- * \file dir.h
+ * \file mlk/util/dir.h
  * \brief Portable directory iterator
  *
  * This module provides a convenient portable directory iterator.
