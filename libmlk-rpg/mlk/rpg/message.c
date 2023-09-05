@@ -37,6 +37,12 @@
 
 #include "message.h"
 
+static inline int
+is_selectable(const struct mlk_message *msg, size_t n)
+{
+	return msg->lines[n] && ((msg->selectable >> n) & 0x1) == 1;
+}
+
 static inline struct mlk_message_style *
 get_style(struct mlk_message *msg)
 {
@@ -116,7 +122,7 @@ draw_lines(struct mlk_message *msg)
 		if (!msg->lines[i])
 			continue;
 
-		if ((msg->flags & MLK_MESSAGE_FLAGS_QUESTION) && msg->index == i)
+		if (msg->selectable && msg->selected == i && is_selectable(msg, i))
 			color = style->color_selected;
 		else
 			color = style->color;
@@ -287,6 +293,18 @@ mlk_message_start(struct mlk_message *msg)
 
 	if (msg->flags & MLK_MESSAGE_FLAGS_AUTOMATIC && style->timeout == 0)
 		mlk_tracef("message is automatic but has zero timeout");
+
+	/*
+	 * Make sure selected index goes in the range of the lines and that it
+	 * starts on a proper selectable line.
+	 */
+	if (msg->selectable) {
+		if (msg->selected >= msg->linesz || !is_selectable(msg, msg->selected))
+			msg->selected = 0;
+
+		while (!is_selectable(msg, msg->selected))
+			msg->selected++;
+	}
 }
 
 int
@@ -295,6 +313,72 @@ mlk_message_query(struct mlk_message *msg, unsigned int *w, unsigned int *h)
 	assert(msg);
 
 	return MLK__STYLE_CALL(msg->style, mlk_message_style, query, msg, w, h);
+}
+
+static inline size_t
+first(const struct mlk_message *msg)
+{
+	size_t ret = -1;
+
+	for (size_t i = 0; i < msg->linesz; ++i) {
+		if (is_selectable(msg, i)) {
+			ret = i;
+			break;
+		}
+	}
+
+	return ret;
+}
+
+static inline size_t
+last(const struct mlk_message *msg)
+{
+	size_t ret = -1;
+
+	for (size_t i = msg->linesz; i >= 0; --i) {
+		if (is_selectable(msg, i)) {
+			ret = i;
+			break;
+		}
+	}
+
+	return ret;
+}
+
+static inline size_t
+previous(const struct mlk_message *msg)
+{
+	size_t ret;
+
+	/* wrap */
+	if (msg->selected == first(msg))
+		ret = last(msg);
+	else {
+		ret = msg->selected - 1;
+
+		while (ret > 0 && !is_selectable(msg, ret))
+			ret--;
+	}
+
+	return ret;
+}
+
+static inline size_t
+next(const struct mlk_message *msg)
+{
+	size_t ret;
+
+	/* wrap */
+	if (msg->selected == last(msg))
+		ret = first(msg);
+	else {
+		ret = msg->selected + 1;
+
+		while (ret < msg->linesz && !is_selectable(msg, ret))
+			ret++;
+	}
+
+	return ret;
 }
 
 void
@@ -313,12 +397,12 @@ mlk_message_handle(struct mlk_message *msg, const union mlk_event *ev)
 
 	switch (ev->key.key) {
 	case MLK_KEY_UP:
-		if (msg->index > 0)
-			msg->index--;
+		if (msg->selectable && msg->linesz)
+			msg->selected = previous(msg);
 		break;
 	case MLK_KEY_DOWN:
-		if (msg->index + 1 < msg->linesz && msg->lines[msg->index + 1])
-			msg->index++;
+		if (msg->selectable && msg->linesz)
+			msg->selected = next(msg);
 		break;
 	case MLK_KEY_ENTER:
 		msg->state = msg->flags & MLK_MESSAGE_FLAGS_FADEOUT

@@ -207,16 +207,17 @@ static void
 question(void)
 {
 	const char * const text[] = {
-		"Okay, I've understood.",
-		"Nevermind, I'll do it again."
+		"Do you think you're brave enough to fight this Karen?",
+		"Sure I am.",
+		"No."
 	};
 	struct mlk_message msg = {
 		.x = MX,
 		.y = MY,
 		.w = MW,
 		.lines = text,
-		.linesz = 2,
-		.flags = MLK_MESSAGE_FLAGS_QUESTION
+		.linesz = 3,
+		.selectable = 0x6
 	};
 
 	mlk_message_query(&msg, NULL, &msg.h);

@@ -5,6 +5,7 @@ PROJECT_NUMBER         = "@molko_VERSION@"
 PROJECT_BRIEF          = "@molko_DESCRIPTION@"
 
 OUTPUT_DIRECTORY       = "@doc_BINARY_DIR@"
+IMAGE_PATH             = "@doc_SOURCE_DIR@/images"
 
 TAB_SIZE               = 8
 OPTIMIZE_OUTPUT_FOR_C  = YES

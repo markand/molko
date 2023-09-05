@@ -19,9 +19,35 @@
 #ifndef MLK_RPG_MESSAGE_H
 #define MLK_RPG_MESSAGE_H
 
+/**
+ * \file mlk/rpg/message.h
+ * \brief Message dialog.
+ *
+ * This module offers a message box dialog that shows several lines similar to
+ * old school RPG games.
+ *
+ * The dialog can be animated while appearing and hiding using special
+ * ::MLK_MESSAGE_FLAGS_FADEIN and ::MLK_MESSAGE_FLAGS_FADEOUT which aren't set
+ * by default.
+ *
+ * Lines can be selected by specifying a line mask as a bitmask, see
+ * ::mlk_message::selectable field for more information.
+ *
+ * Example of message dialog:
+ *
+ * \image html example-message.png
+ */
+
 #include <stddef.h>
 
+/**
+ * \brief Default message animation speed.
+ */
 #define MLK_MESSAGE_SPEED_DEFAULT       (150)
+
+/**
+ * \brief Default message automatic close duration.
+ */
 #define MLK_MESSAGE_TIMEOUT_DEFAULT     (5000)
 
 struct mlk_font;
@@ -39,11 +65,6 @@ enum mlk_message_flags {
 	 * Message closes automatically after style's duration.
 	 */
 	MLK_MESSAGE_FLAGS_AUTOMATIC     = (1 << 0),
-
-	/**
-	 * Lines can be selected by the user.
-	 */
-	MLK_MESSAGE_FLAGS_QUESTION      = (1 << 1),
 
 	/**
 	 * Add fade in animation.
@@ -82,6 +103,10 @@ enum mlk_message_state {
 	MLK_MESSAGE_STATE_HIDING
 };
 
+/**
+ * \struct mlk_message
+ * \brief Message box.
+ */
 struct mlk_message {
 	/**
 	 * (read-write)
@@ -128,9 +153,26 @@ struct mlk_message {
 	/**
 	 * (read-write)
 	 *
+	 * Tells which lines can be selected as bitmask, right most bit being
+	 * the first line in the array.
+	 *
+	 * Example:
+	 *
+	 * [0] Would you open this chest?
+	 * [1] Yes.
+	 * [2] No I prefer run away.
+	 *
+	 * Selectables optiong being 1 and 2, this field must be set to
+	 * `(1 << 1) | (1 << 2)`.
+	 */
+	size_t selectable;
+
+	/**
+	 * (read-write)
+	 *
 	 * Selected item from the user.
 	 */
-	size_t index;
+	size_t selected;
 
 	/**
 	 * (read-write)
