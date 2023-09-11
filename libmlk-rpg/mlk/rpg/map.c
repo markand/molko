@@ -503,7 +503,7 @@ draw_layer_tile(const struct mlk_map *map,
 	mlk_tileset_draw(map->tileset, sr, sc, mx, my);
 
 	/* Draw collision box if colbox is non NULL. */
-	if ((tc = find_collision_by_id(map, id)) && mlk_texture_ok(colbox))
+	if ((tc = find_collision_by_id(map, id)) && colbox)
 		mlk_texture_scale(colbox, 0, 0, 5, 5, mx + tc->x, my + tc->y, tc->w, tc->h, 0);
 
 	if (map->flags & MLK_MAP_FLAGS_SHOW_GRID) {
@@ -539,7 +539,7 @@ draw_layer(const struct mlk_map *map, const struct mlk_map_layer *layer)
 		return;
 
 	/* Show collision box if requested. */
-	if (map->flags & MLK_MAP_FLAGS_SHOW_COLLIDE && mlk_texture_new(&colbox, 16, 16) == 0) {
+	if (map->flags & MLK_MAP_FLAGS_SHOW_COLLIDE && mlk_texture_init(&colbox, 16, 16) == 0) {
 		mlk_texture_set_blend_mode(&colbox, MLK_TEXTURE_BLEND_BLEND);
 		mlk_texture_set_alpha_mod(&colbox, 100);
 		MLK_PAINTER_BEGIN(&colbox);
@@ -566,7 +566,7 @@ draw_collide(const struct mlk_map *map)
 {
 	struct mlk_texture box = {};
 
-	if (map->flags & MLK_MAP_FLAGS_SHOW_COLLIDE && mlk_texture_new(&box, 64, 64) == 0) {
+	if (map->flags & MLK_MAP_FLAGS_SHOW_COLLIDE && mlk_texture_init(&box, 64, 64) == 0) {
 		/* Draw collide box around player if requested. */
 		mlk_texture_set_alpha_mod(&box, 100);
 		mlk_texture_set_blend_mode(&box, MLK_TEXTURE_BLEND_BLEND);

@@ -28,7 +28,7 @@
 #include "window_p.h"
 
 int
-mlk_texture_new(struct mlk_texture *tex, unsigned int w, unsigned int h)
+mlk_texture_init(struct mlk_texture *tex, unsigned int w, unsigned int h)
 {
 	assert(tex);
 	assert(w);
@@ -46,12 +46,6 @@ mlk_texture_new(struct mlk_texture *tex, unsigned int w, unsigned int h)
 	tex->h = h;
 
 	return 0;
-}
-
-int
-mlk_texture_ok(const struct mlk_texture *tex)
-{
-	return tex && tex->handle && tex->w && tex->h;
 }
 
 int
@@ -76,7 +70,7 @@ mlk_texture_set_blend_mode(struct mlk_texture *tex, enum mlk_texture_blend blend
 int
 mlk_texture_set_alpha_mod(struct mlk_texture *tex, unsigned int alpha)
 {
-	assert(mlk_texture_ok(tex));
+	assert(tex);
 	assert(alpha <= 255);
 
 	if (SDL_SetTextureAlphaMod(tex->handle, alpha) < 0)
@@ -88,7 +82,7 @@ mlk_texture_set_alpha_mod(struct mlk_texture *tex, unsigned int alpha)
 int
 mlk_texture_set_color_mod(struct mlk_texture *tex, unsigned long color)
 {
-	assert(mlk_texture_ok(tex));
+	assert(tex);
 
 	if (SDL_SetTextureColorMod(tex->handle, MLK_COLOR_R(color), MLK_COLOR_G(color), MLK_COLOR_B(color)) < 0)
 		return mlk_errf("%s", SDL_GetError());

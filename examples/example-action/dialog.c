@@ -58,8 +58,8 @@ end(struct mlk_action *act)
 {
 	struct dialog *dlg = act->data;
 
-	if ((dlg->msg.flags & MLK_MESSAGE_FLAGS_QUESTION) && dlg->response)
-		dlg->response(dlg, dlg->msg.index);
+	if (dlg->msg.selectable && dlg->response)
+		dlg->response(dlg, dlg->msg.selected);
 }
 
 struct mlk_action *

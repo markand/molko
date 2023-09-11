@@ -25,7 +25,6 @@ void
 mlk_sprite_init(struct mlk_sprite *sprite)
 {
 	assert(sprite);
-	assert(mlk_texture_ok(sprite->texture));
 
 	sprite->nrows = sprite->texture->h / sprite->cellh;
 	sprite->ncols = sprite->texture->w / sprite->cellw;
@@ -34,7 +33,7 @@ mlk_sprite_init(struct mlk_sprite *sprite)
 int
 mlk_sprite_ok(const struct mlk_sprite *sprite)
 {
-	return sprite && sprite->cellw && sprite->cellh && mlk_texture_ok(sprite->texture);
+	return sprite && sprite->cellw && sprite->cellh && sprite->texture;
 }
 
 int

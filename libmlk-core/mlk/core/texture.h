@@ -109,16 +109,7 @@ extern "C" {
  * \return 0 on success or an error code on failure
  */
 int
-mlk_texture_new(struct mlk_texture *texture, unsigned int w, unsigned int h);
-
-/**
- * Tells if the texture structure is usable.
- *
- * \param texture the texture to check
- * \return non-zero if the texture structure is usable
- */
-int
-mlk_texture_ok(const struct mlk_texture *texture);
+mlk_texture_init(struct mlk_texture *texture, unsigned int w, unsigned int h);
 
 /**
  * Change color/alpha blending mode.

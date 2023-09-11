@@ -99,7 +99,7 @@ static struct dialog script_left[] = {
 	{
 		.response = script_left_response,
 		.msg = {
-			.flags = MLK_MESSAGE_FLAGS_QUESTION,
+			.selectable = 0x3,
 			.linesz = 2,
 			.lines = (const char *[]) {
 				"Of course I am",
@@ -147,7 +147,7 @@ static struct dialog script_right[] = {
 	{
 		.response = script_right_response,
 		.msg = {
-			.flags = MLK_MESSAGE_FLAGS_QUESTION,
+			.selectable = 0x3,
 			.linesz = 2,
 			.lines = (const char *[]) {
 				"Because I think there was some gold",

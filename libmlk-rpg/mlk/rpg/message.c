@@ -216,7 +216,7 @@ draw(struct mlk_message_style *self, struct mlk_message *msg)
 	(void)self;
 
 	struct mlk_texture tex;
-	int x, y, err;
+	int x, y;
 	unsigned int w, h;
 
 	if (msg->w == 0 || msg->h == 0) {
@@ -224,7 +224,7 @@ draw(struct mlk_message_style *self, struct mlk_message *msg)
 		return;
 	}
 
-	if ((err = mlk_texture_new(&tex, msg->w, msg->h)) < 0)
+	if (mlk_texture_init(&tex, msg->w, msg->h) < 0)
 		mlk_panic();
 
 	MLK_PAINTER_BEGIN(&tex);
