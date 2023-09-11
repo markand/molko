@@ -98,9 +98,9 @@ static unsigned int orientations[16] = {
  */
 static int
 is_block_relevant(const struct mlk_map *map,
-                    const struct mlk_map_block *block,
-                    int drow,
-                    int dcol)
+                  const struct mlk_map_block *block,
+                  int drow,
+                  int dcol)
 {
 	if (drow) {
 		/* Object outside of left-right bounds. */
@@ -139,7 +139,6 @@ is_block_better(const struct mlk_map_block *now,
 	        (drow > 0 && new->y < now->y) ||
 	        (dcol < 0 && new->x + new->w > now->x + now->w) ||
 		(dcol > 0 && new->x < now->x));
-
 }
 
 static void
@@ -565,7 +564,7 @@ draw_layer(const struct mlk_map *map, const struct mlk_map_layer *layer)
 static void
 draw_collide(const struct mlk_map *map)
 {
-	struct mlk_texture box = {0};
+	struct mlk_texture box = {};
 
 	if (map->flags & MLK_MAP_FLAGS_SHOW_COLLIDE && mlk_texture_new(&box, 64, 64) == 0) {
 		/* Draw collide box around player if requested. */
