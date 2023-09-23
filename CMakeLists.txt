@@ -89,6 +89,10 @@ add_subdirectory(extern/libsqlite)
 add_subdirectory(extern/libdt)
 add_subdirectory(extern/libutlist)
 
+if (MLK_WITH_JAVASCRIPT)
+	add_subdirectory(extern/libduktape)
+endif ()
+
 if (MLK_WITH_DOXYGEN)
 	add_subdirectory(doc)
 endif ()

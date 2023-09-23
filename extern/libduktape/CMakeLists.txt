@@ -1,7 +1,7 @@
 #
-# CMakeLists.txt -- CMake build system for Molko's Engine
+# CMakeLists.txt -- CMake build system for duktape
 #
-# Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
+# Copyright (c) 2016-2019 David Demelier <markand@malikania.fr>
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -16,10 +16,18 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-mlk_option(DOXYGEN On BOOL "Enable doxygen documentation")
-mlk_option(EXAMPLES On BOOL "Enable examples")
-mlk_option(NLS On BOOL "Enable NLS support")
-mlk_option(TESTS On BOOL "Enable unit tests")
-mlk_option(TESTS_GRAPHICAL On BOOL "Enable unit tests that requires graphical context")
-mlk_option(CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake" STRING "Destination for CMake files")
-mlk_option(JAVASCRIPT On BOOL "Enable Javascript bindings")
+project(libmlk-duktape)
+
+mlk_library(
+	NAME libmlk-duktape
+	FOLDER extern
+	INSTALL
+	SOURCES
+		${libmlk-duktape_SOURCE_DIR}/duk_config.h
+		${libmlk-duktape_SOURCE_DIR}/duk_module.c
+		${libmlk-duktape_SOURCE_DIR}/duk_module.h
+		${libmlk-duktape_SOURCE_DIR}/duktape.c
+		${libmlk-duktape_SOURCE_DIR}/duktape.h
+	INCLUDES
+		PUBLIC $<BUILD_INTERFACE:${libmlk-duktape_SOURCE_DIR}>
+)

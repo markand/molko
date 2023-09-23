@@ -139,4 +139,24 @@ mlk_library(
 			${OPENAL_INCLUDE_DIR}
 )
 
+if (MLK_WITH_JAVASCRIPT)
+	set(
+		JS_SOURCES
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js.h
+	)
+
+	mlk_library(
+		NAME libmlk-core-js
+		SOURCES ${JS_SOURCES}
+		INSTALL
+		LIBRARIES
+			PUBLIC
+				libmlk-duktape
+				libmlk-core
+	)
+
+	source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${JS_SOURCES})
+endif ()
+
 source_group(TREE ${libmlk-core_SOURCE_DIR} FILES ${ASSETS} ${HEADERS} ${SOURCES} ${NLS})
