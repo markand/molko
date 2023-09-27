@@ -1,7 +1,7 @@
 /*
- * sysconfig.cmake.h -- miscellaneous utilities and portability
+ * vfs.h -- (PRIVATE) virtual file system abstraction
  *
- * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
+ * Copyright (c) 2020-2022 David Demelier <markand@malikania.fr>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,26 +16,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_UTIL_SYSCONFIG_H
-#define MLK_UTIL_SYSCONFIG_H
+#ifndef MLK_CORE_VFS_P_H
+#define MLK_CORE_VFS_P_H
 
-#define MLK_PREFIX      "@CMAKE_INSTALL_PREFIX@"
-#define MLK_BINDIR      "@CMAKE_INSTALL_BINDIR@"
-#define MLK_LIBDIR      "@CMAKE_INSTALL_LIBDIR@"
-#define MLK_LOCALEDIR   "@CMAKE_INSTALL_LOCALEDIR@"
+#include <SDL.h>
 
-#cmakedefine MLK_WITH_NLS
-#cmakedefine MLK_WITH_ZIP
+struct mlk_vfs_file;
 
-#cmakedefine MLK_HAVE_PATH_MAX
+SDL_RWops *
+mlk__vfs_to_rw(struct mlk_vfs_file *);
 
-#cmakedefine MLK_HAVE_DIRENT_H
-#cmakedefine MLK_HAVE_LIBGEN_H
-
-#cmakedefine MLK_HAVE_BASENAME
-#cmakedefine MLK_HAVE_DIRNAME
-#cmakedefine MLK_HAVE_FMEMOPEN
-#cmakedefine MLK_HAVE_STRLCAT
-#cmakedefine MLK_HAVE_STRLCPY
-
-#endif /* !MLK_UTIL_SYSCONFIG_H */
+#endif /* !MLK_CORE_VFS_P_H */

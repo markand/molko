@@ -30,13 +30,15 @@ set(
 	save-quest
 	state
 	util
+	vfs-dir
 )
 
+if (MLK_WITH_ZIP)
+	list(APPEND TESTS vfs-zip)
+endif ()
+
 if (MLK_WITH_TESTS_GRAPHICAL)
-	list(
-		APPEND TESTS
-		tileset
-	)
+	list(APPEND TESTS tileset)
 endif ()
 
 foreach (t ${TESTS})

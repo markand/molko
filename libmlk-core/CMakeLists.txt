@@ -53,6 +53,10 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/texture.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/trace.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/util.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/vfs-dir.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/vfs-zip.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/vfs.c
+	${libmlk-core_SOURCE_DIR}/mlk/core/vfs_p.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/window.c
 )
 
@@ -89,6 +93,9 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/texture_p.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/trace.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/util.h
+	${libmlk-core_SOURCE_DIR}/mlk/core/vfs-dir.h
+	${libmlk-core_SOURCE_DIR}/mlk/core/vfs-zip.h
+	${libmlk-core_SOURCE_DIR}/mlk/core/vfs.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/window.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/window_p.h
 )
@@ -112,6 +119,10 @@ endif ()
 
 if (MLK_WITH_NLS)
 	list(APPEND LIBRARIES Intl::Intl)
+endif ()
+
+if (MLK_WITH_ZIP)
+	list(APPEND LIBRARIES ZIP::ZIP)
 endif ()
 
 mlk_library(

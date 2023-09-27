@@ -20,6 +20,7 @@ include(CMakeFindDependencyMacro)
 
 find_dependency(libmlk-util)
 find_dependency(Intl)
+find_dependency(ZIP)
 
 include("${CMAKE_CURRENT_LIST_DIR}/libmlk-core-targets.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/../mlk/MlkBcc.cmake")

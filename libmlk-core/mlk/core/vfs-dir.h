@@ -1,5 +1,5 @@
 /*
- * sysconfig.cmake.h -- miscellaneous utilities and portability
+ * vfs-dir.h -- VFS subsystem for directories
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,26 +16,43 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_UTIL_SYSCONFIG_H
-#define MLK_UTIL_SYSCONFIG_H
+#ifndef MLK_CORE_VFS_DIR_H
+#define MLK_CORE_VFS_DIR_H
 
-#define MLK_PREFIX      "@CMAKE_INSTALL_PREFIX@"
-#define MLK_BINDIR      "@CMAKE_INSTALL_BINDIR@"
-#define MLK_LIBDIR      "@CMAKE_INSTALL_LIBDIR@"
-#define MLK_LOCALEDIR   "@CMAKE_INSTALL_LOCALEDIR@"
+#include <mlk/util/util.h>
 
-#cmakedefine MLK_WITH_NLS
-#cmakedefine MLK_WITH_ZIP
+#include "vfs.h"
 
-#cmakedefine MLK_HAVE_PATH_MAX
+struct mlk_vfs_dir_file {
+	char path[MLK_PATH_MAX];
 
-#cmakedefine MLK_HAVE_DIRENT_H
-#cmakedefine MLK_HAVE_LIBGEN_H
+	struct mlk_vfs_file file;
 
-#cmakedefine MLK_HAVE_BASENAME
-#cmakedefine MLK_HAVE_DIRNAME
-#cmakedefine MLK_HAVE_FMEMOPEN
-#cmakedefine MLK_HAVE_STRLCAT
-#cmakedefine MLK_HAVE_STRLCPY
+	/** \cond MLK_PRIVATE_DECLS */
+	void *handle;
+	/** \endcond MLK_PRIVATE_DECLS */
+};
 
-#endif /* !MLK_UTIL_SYSCONFIG_H */
+struct mlk_vfs_dir {
+	/**
+	 * (read-only)
+	 *
+	 * Path to the directory.
+	 */
+	char path[MLK_PATH_MAX];
+
+	struct mlk_vfs vfs;
+};
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+void
+mlk_vfs_dir_init(struct mlk_vfs_dir *dir, const char *path);
+
+#if defined(__cplusplus)
+}
+#endif
+
+#endif /* !MLK_CORE_VFS_DIR_H */
