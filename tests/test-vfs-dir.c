@@ -33,7 +33,7 @@ test_basics_read(void)
 	DT_EQ_UINT(mlk_vfs_file_read(file, data, sizeof (data)), 13U);
 	DT_EQ_STR(data, "Hello World!\n");
 
-	mlk_vfs_file_free(file);
+	mlk_vfs_file_finish(file);
 	mlk_vfs_finish(&dir.vfs);
 }
 

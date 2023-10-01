@@ -29,6 +29,7 @@
 #include <stddef.h>
 
 struct mlk_texture;
+struct mlk_vfs_file;
 
 /**
  * \enum mlk_font_style
@@ -83,7 +84,7 @@ extern "C" {
  * \param font the font to open
  * \param path path to the font file (e.g. .ttf, .otf, etc)
  * \param size desired font height in pixels
- * \return 0 on success or an error code on failure
+ * \return 0 on success or -1 on error
  */
 int
 mlk_font_open(struct mlk_font *font, const char *path, unsigned int size);
@@ -98,7 +99,7 @@ mlk_font_open(struct mlk_font *font, const char *path, unsigned int size);
  * \param data the font content
  * \param datasz the font content length
  * \param size desired font height in pixels
- * \return 0 on success or an error code on failure
+ * \return 0 on success or -1 on error
  */
 int
 mlk_font_openmem(struct mlk_font *font,
@@ -107,19 +108,34 @@ mlk_font_openmem(struct mlk_font *font,
                  unsigned int size);
 
 /**
+ * Open a font from a virtual file system.
+ *
+ * The VFS file can be discarded after loading the font.
+ *
+ * \pre font != NULL
+ * \pre file != NULL
+ * \param font the font to initialize
+ * \param file the VFS file
+ * \param size desired font height in pixels
+ * \return 0 on success or -1 on error
+ */
+int
+mlk_font_openvfs(struct mlk_font *font, struct mlk_vfs_file *file, unsigned int size);
+
+/**
  * Render some text using the font and generate a texture.
  *
  * The texture destination must be deallocated once no longer used using
  * ::mlk_texture_finish.
  *
- * \pre mlk_font_ok(font)
+ * \pre font != NULL
  * \pre texture != NULL
  * \pre text != NULL && strlen(text) > 0
  * \param font the font to use
  * \param texture the texture to initialize
  * \param text the non NULL and non empty UTF-8 text
  * \param color foreground color
- * \return 0 on success or an error code on failure
+ * \return 0 on success or -1 on error
  */
 int
 mlk_font_render(struct mlk_font *font,
@@ -130,7 +146,7 @@ mlk_font_render(struct mlk_font *font,
 /**
  * Return the font height in pixels
  *
- * \pre mlk_font_ok(font)
+ * \pre font != NULL
  * \param font the font to use
  * \return the font height
  */
@@ -144,12 +160,12 @@ mlk_font_height(const struct mlk_font *font);
  *
  * If the function fails, *w and *h are set to 0.
  *
- * \pre mlk_font_ok(font)
+ * \pre font != NULL
  * \param font the font to use
  * \param text the non NULL and non empty UTF-8 text
  * \param w pointer receiving width (or NULL)
  * \param h pointer receiving height (or NULL)
- * \return 0 on success or an error code on failure
+ * \return 0 on success or -1 on error
  */
 int
 mlk_font_query(const struct mlk_font *font,

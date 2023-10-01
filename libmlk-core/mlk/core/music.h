@@ -29,6 +29,8 @@
 
 #include <stddef.h>
 
+struct mlk_vfs_file;
+
 /**
  * \enum mlk_music_flags
  * \brief Music flags
@@ -70,7 +72,7 @@ extern "C" {
  * \pre path != NULL
  * \param music the music to initialize
  * \param path the path to the music file (e.g. .ogg, .wav, .mp3, etc)
- * \return 0 on success or an error code on failure
+ * \return 0 on success or -1 on error
  */
 int
 mlk_music_open(struct mlk_music *music, const char *path);
@@ -83,29 +85,34 @@ mlk_music_open(struct mlk_music *music, const char *path);
  * \pre music != NULL
  * \pre path != NULL
  * \param music the music to initialize
- * \param data the font content
- * \param datasz the font content length
- * \return 0 on success or an error code on failure
+ * \param data the music data
+ * \param datasz the music data length
+ * \return 0 on success or -1 on error
  */
 int
 mlk_music_openmem(struct mlk_music *music, const void *data, size_t datasz);
 
 /**
- * Tells if the music structure is usable.
+ * Open a music from a virtual file system.
  *
- * \param music the music to check
- * \return non-zero if the music structure is usable
+ * The VFS file can be discarded after loading the sound.
+ *
+ * \pre music != NULL
+ * \pre file != NULL
+ * \param music the music to initialize
+ * \param file the VFS file
+ * \return 0 on success or -1 on error
  */
 int
-mlk_music_ok(const struct mlk_music *music);
+mlk_music_openvfs(struct mlk_music *music, struct mlk_vfs_file *file);
 
 /**
  * Start playing the music.
  *
- * \pre mlk_music_ok(music)
+ * \pre music != NULL
  * \param music the music to play
  * \param flags optional flags to pass
- * \return 0 on success or an error code on failure
+ * \return 0 on success or -1 on error
  */
 int
 mlk_music_play(struct mlk_music *music, enum mlk_music_flags flags);
@@ -113,7 +120,7 @@ mlk_music_play(struct mlk_music *music, enum mlk_music_flags flags);
 /**
  * Pause the music playback.
  *
- * \pre mlk_music_ok(music)
+ * \pre music != NULL
  * \param music the music to pause
  * \sa ::mlk_music_resume
  */
@@ -123,7 +130,7 @@ mlk_music_pause(struct mlk_music *music);
 /**
  * Resume the music where it was stopped.
  *
- * \pre mlk_music_ok(music)
+ * \pre music != NULL
  * \param music the music to resume
  * \sa ::mlk_music_pause
  */
@@ -135,7 +142,7 @@ mlk_music_resume(struct mlk_music *music);
  *
  * Calling ::mlk_music_resume on it will restart from the beginning.
  *
- * \pre mlk_music_ok(music)
+ * \pre music != NULL
  * \param music the music to stop
  * \sa ::mlk_music_resume
  * \sa ::mlk_music_play
@@ -148,7 +155,7 @@ mlk_music_stop(struct mlk_music *music);
  *
  * If the music is being played, it is stopped immediately.
  *
- * \pre mlk_music_ok(music)
+ * \pre music != NULL
  * \param music the music to destroy
  */
 void

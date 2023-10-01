@@ -128,6 +128,7 @@ install(
 	FILES
 		${molko_BINARY_DIR}/cmake/MlkOptions.cmake
 		${molko_SOURCE_DIR}/cmake/FindSndFile.cmake
+		${molko_SOURCE_DIR}/cmake/FindZIP.cmake
 		${molko_SOURCE_DIR}/cmake/MlkBcc.cmake
 		${molko_SOURCE_DIR}/cmake/MlkMap.cmake
 		${molko_SOURCE_DIR}/cmake/MlkTileset.cmake

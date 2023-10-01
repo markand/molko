@@ -32,7 +32,7 @@ test_basics_read(void)
 	DT_EQ_UINT(mlk_vfs_file_read(file, data, sizeof (data)), 21U);
 	DT_EQ_STR(data, "Hello from zip file!\n");
 
-	mlk_vfs_file_free(file);
+	mlk_vfs_file_finish(file);
 	mlk_vfs_finish(&zip.vfs);
 }
 

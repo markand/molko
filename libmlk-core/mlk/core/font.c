@@ -26,6 +26,8 @@
 #include "font.h"
 #include "texture_p.h"
 #include "util.h"
+#include "vfs.h"
+#include "vfs_p.h"
 
 int
 mlk_font_open(struct mlk_font *font, const char *path, unsigned int size)
@@ -52,6 +54,22 @@ mlk_font_openmem(struct mlk_font *font,
 
 	if (!(ops = SDL_RWFromConstMem(buffer, buflen)) ||
 	   (!(font->handle = TTF_OpenFontRW(ops, 1, size))))
+		return mlk_errf("%s", SDL_GetError());
+
+	return 0;
+}
+
+int
+mlk_font_openvfs(struct mlk_font *font, struct mlk_vfs_file *file, unsigned int size)
+{
+	assert(font);
+	assert(file);
+
+	SDL_RWops *ops;
+
+	if (!(ops = mlk__vfs_to_rw(file)))
+		return -1;
+	if (!(font->handle = TTF_OpenFontRW(ops, 1, size)))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;

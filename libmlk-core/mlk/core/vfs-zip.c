@@ -68,57 +68,25 @@ mkflags(const char *mode)
 static size_t
 file_read(struct mlk_vfs_file *self, void *buf, size_t bufsz)
 {
-	struct mlk_vfs_zip_file *file = MLK_VFS_ZIP_FILE(self);
-
-	return zip_fread(file->handle, buf, bufsz);
-}
-
-static int
-file_flush(struct mlk_vfs_file *self)
-{
-	(void)self;
-
-	return 0;
+	return mlk_vfs_zip_file_read(MLK_VFS_ZIP_FILE(self), buf, bufsz);
 }
 
 static void
-file_free(struct mlk_vfs_file *self)
+file_finish(struct mlk_vfs_file *self)
 {
-	struct mlk_vfs_zip_file *file = MLK_VFS_ZIP_FILE(self);
-
-	zip_fclose(file->handle);
-	mlk_alloc_free(self);
+	mlk_vfs_zip_file_finish(MLK_VFS_ZIP_FILE(self));
 }
 
 static struct mlk_vfs_file *
 vfs_open(struct mlk_vfs *self, const char *entry, const char *mode)
 {
-	(void)mode;
-
-	struct mlk_vfs_zip *zip = MLK_VFS_ZIP(self);
-	struct mlk_vfs_zip_file *file;
-
-	file = mlk_alloc_new0(1, sizeof (*file));
-
-	if (!(file->handle = zip_fopen(zip->handle, entry, 0))) {
-		mlk_errf("unable to open file in archive");
-		mlk_alloc_free(file);
-		return NULL;
-	}
-
-	file->file.read = file_read;
-	file->file.flush = file_flush;
-	file->file.free = file_free;
-
-	return &file->file;
+	return mlk_vfs_zip_open(MLK_VFS_ZIP(self), entry, mode);
 }
 
 static void
 vfs_finish(struct mlk_vfs *self)
 {
-	struct mlk_vfs_zip *zip = MLK_VFS_ZIP(self);
-
-	zip_close(zip->handle);
+	mlk_vfs_zip_finish(MLK_VFS_ZIP(self));
 }
 
 int
@@ -138,6 +106,61 @@ mlk_vfs_zip_init(struct mlk_vfs_zip *zip, const char *file, const char *mode)
 	zip->vfs.finish = vfs_finish;
 
 	return 0;
+}
+
+struct mlk_vfs_file *
+mlk_vfs_zip_open(struct mlk_vfs_zip *zip, const char *entry, const char *mode)
+{
+	(void)mode;
+
+	struct mlk_vfs_zip_file *file;
+
+	file = mlk_alloc_new0(1, sizeof (*file));
+
+	if (!(file->handle = zip_fopen(zip->handle, entry, 0))) {
+		mlk_errf("unable to open file in archive");
+		mlk_alloc_free(file);
+		return NULL;
+	}
+
+	file->file.read = file_read;
+	file->file.finish = file_finish;
+
+	return &file->file;
+}
+
+void
+mlk_vfs_zip_finish(struct mlk_vfs_zip *zip)
+{
+	assert(zip);
+
+	zip_close(zip->handle);
+	zip->handle = NULL;
+}
+
+size_t
+mlk_vfs_zip_file_read(struct mlk_vfs_zip_file *file, void *buf, size_t bufsz)
+{
+	assert(file);
+	assert(buf);
+
+	zip_int64_t rv;
+
+	if ((rv = zip_fread(file->handle, buf, bufsz)) < 0) {
+		mlk_errf("%s", zip_file_strerror(file->handle));
+		return -1;
+	}
+
+	return rv;
+}
+
+void
+mlk_vfs_zip_file_finish(struct mlk_vfs_zip_file *file)
+{
+	assert(file);
+
+	zip_fclose(file->handle);
+	mlk_alloc_free(file);
 }
 
 #endif /* !MLK_WITH_ZIP */

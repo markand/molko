@@ -34,17 +34,33 @@
  * | mlk/core/vfs-dir.h | read, write | opens file relative to a directory |
  * | mlk/core/vfs-zip.h | read        | zip archive files extractor        |
  *
+ * ## Opening mode
+ *
+ * Both VFS interfaces and function can take a `const char *` mode argument to
+ * indicate user open mode. Each implementation can take specific interface
+ * options but the following are reserved and must be understood by each:
+ *
+ * - `e`: start writing at end
+ * - `r`: open for reading
+ * - `t`: truncate file (can't be used without `w`)
+ * - `w`: open for writing (create file but keep content if exists)
+ *
+ * Mode `e` is meaning less when combined with `t`.
+ *
+ * \note In contrast to C `fopen` function, modes can be mixed which means `r`,
+ *       `w` and `rw` means read-only, write-only and read-write respectively.
+ *
  * ## Initialize a VFS
  *
- * To use this module, you must first open a VFS interface. It is usually implemented
- * using the ::MLK_CONTAINER_OF macro.
+ * To use this module, you must first open a VFS interface. It is usually
+ * implemented using the ::MLK_CONTAINER_OF macro.
  *
  * Example with mlk/core/vfs-dir.h
  *
  * ```c
  * struct mlk_vfs_dir dir;
  *
- * mlk_vfs_directory_init(&dir, "/usr/share/mario");
+ * mlk_vfs_dir_init(&dir, "/usr/share/mario");
  * ```
  *
  * The abstract interface will be located in the `vfs` field for each
@@ -60,16 +76,16 @@
  * char content[1024];
  * size_t len;
  *
- * file = mlk_vfs_open(vfs, "block.png");
+ * file = mlk_vfs_open(&dir.vfs, "block.png", "r");
  *
  * if (!file)
- *     handle_failure();
+ *     your_handle_failure_function();
  *
  * // The function does not append a NUL terminator.
  * len = mlk_vfs_file_read(file, content, sizeof (content) - 1);
  *
  * if (len == (size_t)-1)
- *     handle_failure();
+ *     your_handle_failure_function();
  *
  * // Use content freely...
  * ```
@@ -81,7 +97,7 @@
  * direct references to the VFS module.
  *
  * ```c
- * mlk_vfs_file_free(file);
+ * mlk_vfs_file_finish(file);
  * mlk_vfs_finish(&dir.vfs);
  * ```
  */
@@ -206,7 +222,7 @@ struct mlk_vfs_file {
 	 * \pre self != NULL
 	 * \param self this VFS file
 	 */
-	void (*free)(struct mlk_vfs_file *self);
+	void (*finish)(struct mlk_vfs_file *self);
 };
 
 #if defined(__cplusplus)
@@ -214,21 +230,19 @@ extern "C"
 #endif
 
 /**
- * Wrapper of ::mlk_vfs::open if not NULL.
+ * Invoke ::mlk_vfs::open if not NULL.
  */
 struct mlk_vfs_file *
-mlk_vfs_open(struct mlk_vfs *vfs,
-             const char *entry,
-             const char *mode);
+mlk_vfs_open(struct mlk_vfs *vfs, const char *entry, const char *mode);
 
 /**
- * Wrapper of ::mlk_vfs::finish if not NULL.
+ * Invoke ::mlk_vfs::finish if not NULL.
  */
 void
 mlk_vfs_finish(struct mlk_vfs *vfs);
 
 /**
- * Wrapper of ::mlk_vfs_file::read if not NULL.
+ * Invoke ::mlk_vfs_file::read if not NULL.
  */
 size_t
 mlk_vfs_file_read(struct mlk_vfs_file *file, void *buf, size_t bufsz);
@@ -243,28 +257,28 @@ mlk_vfs_file_read(struct mlk_vfs_file *file, void *buf, size_t bufsz);
  * \pre file != NULL
  * \param file this VFS file
  * \param len pointer receiving the number of bytes read (can be NULL)
- * \return the string content
+ * \return the string content (user owned)
  */
 char *
-mlk_vfs_file_aread(struct mlk_vfs_file *file, size_t *len);
+mlk_vfs_file_read_all(struct mlk_vfs_file *file, size_t *len);
 
 /**
- * Wrapper of ::mlk_vfs::finish if not NULL.
+ * Invoke ::mlk_vfs_file::finish if not NULL.
  */
 size_t
 mlk_vfs_file_write(struct mlk_vfs_file *file, void *buf, size_t bufsz);
 
 /**
- * Wrapper of ::mlk_vfs::finish if not NULL.
+ * Invoke ::mlk_vfs_file::flush if not NULL.
  */
 int
 mlk_vfs_file_flush(struct mlk_vfs_file *file);
 
 /**
- * Wrapper of ::mlk_vfs::finish if not NULL.
+ * Invoke ::mlk_vfs_file::finish if not NULL.
  */
 void
-mlk_vfs_file_free(struct mlk_vfs_file *file);
+mlk_vfs_file_finish(struct mlk_vfs_file *file);
 
 #if defined(__cplusplus)
 }

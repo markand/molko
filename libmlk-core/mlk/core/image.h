@@ -27,6 +27,7 @@
 #include <stddef.h>
 
 struct mlk_texture;
+struct mlk_vfs_file;
 
 #if defined(__cplusplus)
 extern "C" {
@@ -59,6 +60,20 @@ mlk_image_open(struct mlk_texture *texture, const char *path);
  */
 int
 mlk_image_openmem(struct mlk_texture *texture, const void *data, size_t datasz);
+
+/**
+ * Open an image from a virtual file system.
+ *
+ * The VFS file can be discarded after loading the image.
+ *
+ * \pre texture != NULL
+ * \pre file != NULL
+ * \param texture the texture to initialize
+ * \param file the VFS file
+ * \return 0 on success or -1 on error
+ */
+int
+mlk_image_openvfs(struct mlk_texture *texture, struct mlk_vfs_file *file);
 
 #if defined(__cplusplus)
 }

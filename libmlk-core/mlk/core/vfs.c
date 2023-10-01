@@ -28,9 +28,7 @@
 #include "vfs_p.h"
 
 struct mlk_vfs_file *
-mlk_vfs_open(struct mlk_vfs *vfs,
-             const char *entry,
-             const char *mode)
+mlk_vfs_open(struct mlk_vfs *vfs, const char *entry, const char *mode)
 {
 	assert(vfs);
 	assert(entry);
@@ -58,21 +56,23 @@ mlk_vfs_file_read(struct mlk_vfs_file *file, void *buf, size_t bufsz)
 }
 
 char *
-mlk_vfs_file_aread(struct mlk_vfs_file *file, size_t *outlen)
+mlk_vfs_file_read_all(struct mlk_vfs_file *file, size_t *outlen)
 {
 	char data[BUFSIZ], *str;
-	size_t nr, len = 0, cap = 128;
+	size_t nr, len = 0, cap = sizeof (data);
 
 	/* Initial allocation. */
 	str = mlk_alloc_new0(cap, 1);
 
 	while ((nr = mlk_vfs_file_read(file, data, sizeof (data))) > 0) {
 		if (nr >= cap - len) {
-			cap *= 2;
-			str  = mlk_alloc_resize(str, cap);
+			while (nr >= cap - len)
+				cap *= 2;
+
+			str = mlk_alloc_resize(str, cap);
 		}
 
-		sprintf(&str[len], "%.*s", (int)nr, data);
+		memcpy(&str[len], data, nr);
 		len += nr;
 	}
 
@@ -108,12 +108,12 @@ mlk_vfs_file_flush(struct mlk_vfs_file *file)
 }
 
 void
-mlk_vfs_file_free(struct mlk_vfs_file *file)
+mlk_vfs_file_finish(struct mlk_vfs_file *file)
 {
 	assert(file);
 
-	if (file->free)
-		file->free(file);
+	if (file->finish)
+		file->finish(file);
 }
 
 /* private */
@@ -134,7 +134,7 @@ mlk__vfs_to_rw(struct mlk_vfs_file *file)
 	char *data;
 	size_t datasz;
 
-	if (!(data = mlk_vfs_file_aread(file, &datasz)))
+	if (!(data = mlk_vfs_file_read_all(file, &datasz)))
 		return NULL;
 	if (!(ops = SDL_RWFromConstMem(data, datasz))) {
 		free(data);

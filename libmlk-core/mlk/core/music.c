@@ -19,9 +19,12 @@
 #include <assert.h>
 #include <string.h>
 
+#include "alloc.h"
 #include "err.h"
 #include "music.h"
 #include "sys_p.h"
+#include "vfs.h"
+#include "vfs_p.h"
 
 #define SOURCE(mus) ((const struct mlk__audiostream *)mus->handle)->source
 
@@ -41,6 +44,26 @@ mlk_music_openmem(struct mlk_music *mus, const void *buffer, size_t buffersz)
 	assert(buffer);
 
 	return mlk__audiostream_openmem((struct mlk__audiostream **)&mus->handle, buffer, buffersz);
+}
+
+int
+mlk_music_openvfs(struct mlk_music *music, struct mlk_vfs_file *file)
+{
+	assert(music);
+	assert(file);
+
+	char *data;
+	size_t datasz;
+	int ret = 0;
+
+	if (!(data = mlk_vfs_file_read_all(file, &datasz)))
+		return -1;
+	if (mlk__audiostream_openmem((struct mlk__audiostream **)&music->handle, data, datasz) < 0)
+		ret = -1;
+
+	mlk_alloc_free(data);
+
+	return ret;
 }
 
 int

@@ -31,6 +31,8 @@
 
 #include <stddef.h>
 
+struct mlk_vfs_file;
+
 /**
  * \struct mlk_music
  * \brief Music structure
@@ -54,7 +56,7 @@ extern "C" {
  * \pre path != NULL
  * \param sound the sound to initialize
  * \param path the path to the music file (e.g. .ogg, .wav, .mp3, etc)
- * \return 0 on success or an error code on failure
+ * \return 0 on success or -1 on error
  */
 int
 mlk_sound_open(struct mlk_sound *sound, const char *path);
@@ -67,28 +69,33 @@ mlk_sound_open(struct mlk_sound *sound, const char *path);
  * \pre music != NULL
  * \pre path != NULL
  * \param sound the sound to initialize
- * \param data the font content
- * \param datasz the font content length
- * \return 0 on success or an error code on failure
+ * \param data the sound data
+ * \param datasz the sound data length
+ * \return 0 on success or -1 on error
  */
 int
 mlk_sound_openmem(struct mlk_sound *sound, const void *data, size_t datasz);
 
 /**
- * Tells if the sound structure is usable.
+ * Open a sound from a virtual file system.
  *
- * \param sound the sound to check
- * \return non-zero if the sound structure is usable
+ * The VFS file can be discarded after loading the sound.
+ *
+ * \pre sound != NULL
+ * \pre file != NULL
+ * \param sound the sound to initialize
+ * \param file the VFS file
+ * \return 0 on success or -1 on error
  */
 int
-mlk_sound_ok(const struct mlk_sound *sound);
+mlk_sound_openvfs(struct mlk_sound *snd, struct mlk_vfs_file *file);
 
 /**
  * Start playing the sound.
  *
- * \pre mlk_sound_ok(sound)
+ * \pre sound != NULL
  * \param sound the sound to play
- * \return 0 on success or an error code on failure
+ * \return 0 on success or -1 on error
  */
 int
 mlk_sound_play(struct mlk_sound *sound);
@@ -96,7 +103,7 @@ mlk_sound_play(struct mlk_sound *sound);
 /**
  * Pause the sound playback.
  *
- * \pre mlk_sound_ok(sound)
+ * \pre sound != NULL
  * \param sound the sound to pause
  * \sa ::mlk_sound_resume
  */
@@ -106,7 +113,7 @@ mlk_sound_pause(struct mlk_sound *sound);
 /**
  * Resume the sound where it was stopped.
  *
- * \pre mlk_sound_ok(sound)
+ * \pre sound != NULL
  * \param sound the sound to resume
  * \sa ::mlk_sound_pause
  */
@@ -118,7 +125,7 @@ mlk_sound_resume(struct mlk_sound *sound);
  *
  * Calling ::mlk_sound_resume on it will restart from the beginning.
  *
- * \pre mlk_sound_ok(sound)
+ * \pre sound != NULL
  * \param sound the sound to stop
  * \sa ::mlk_sound_resume
  * \sa ::mlk_sound_play

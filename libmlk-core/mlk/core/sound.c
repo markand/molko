@@ -20,8 +20,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "alloc.h"
 #include "sound.h"
 #include "sys_p.h"
+#include "vfs.h"
 
 #define SOURCE(snd) ((const struct mlk__audiostream *)snd->handle)->source
 
@@ -44,15 +46,29 @@ mlk_sound_openmem(struct mlk_sound *snd, const void *buffer, size_t buffersz)
 }
 
 int
-mlk_sound_ok(const struct mlk_sound *snd)
+mlk_sound_openvfs(struct mlk_sound *snd, struct mlk_vfs_file *file)
 {
-	return snd && snd->handle;
+	assert(snd);
+	assert(file);
+
+	char *data;
+	size_t datasz;
+	int ret = 0;
+
+	if (!(data = mlk_vfs_file_read_all(file, &datasz)))
+		return -1;
+	if (mlk__audiostream_openmem((struct mlk__audiostream **)&snd->handle, data, datasz) < 0)
+		ret = -1;
+
+	mlk_alloc_free(data);
+
+	return ret;
 }
 
 int
 mlk_sound_play(struct mlk_sound *snd)
 {
-	assert(mlk_sound_ok(snd));
+	assert(snd);
 
 	alSourcePlay(SOURCE(snd));
 
@@ -62,7 +78,7 @@ mlk_sound_play(struct mlk_sound *snd)
 void
 mlk_sound_pause(struct mlk_sound *snd)
 {
-	assert(mlk_sound_ok(snd));
+	assert(snd);
 
 	alSourcePause(SOURCE(snd));
 }
@@ -70,7 +86,7 @@ mlk_sound_pause(struct mlk_sound *snd)
 void
 mlk_sound_resume(struct mlk_sound *snd)
 {
-	assert(mlk_sound_ok(snd));
+	assert(snd);
 
 	alSourcePlay(SOURCE(snd));
 }
@@ -78,7 +94,7 @@ mlk_sound_resume(struct mlk_sound *snd)
 void
 mlk_sound_stop(struct mlk_sound *snd)
 {
-	assert(mlk_sound_ok(snd));
+	assert(snd);
 
 	alSourceStop(SOURCE(snd));
 }
