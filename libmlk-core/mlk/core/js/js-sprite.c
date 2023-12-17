@@ -101,7 +101,7 @@ static duk_ret_t
 mlk_js_sprite_finish(duk_context *ctx)
 {
 	duk_get_prop_string(ctx, 0, SYMBOL);
-	free(duk_to_pointer(ctx, -1));
+	mlk_alloc_free(duk_to_pointer(ctx, -1));
 	duk_pop(ctx);
 	duk_del_prop_string(ctx, 0, SYMBOL);
 	duk_del_prop_string(ctx, 0, TEXTURE_REF);
@@ -112,7 +112,7 @@ mlk_js_sprite_finish(duk_context *ctx)
 static duk_ret_t
 mlk_js_sprite_draw(duk_context *ctx)
 {
-	struct sprite *sprite = mlk_js_sprite_this(ctx);
+	struct mlk_sprite *sprite = mlk_js_sprite_this(ctx);
 	unsigned int r, c;
 	int x, y;
 
@@ -148,7 +148,7 @@ static const duk_function_list_entry methods[] = {
 struct mlk_sprite *
 mlk_js_sprite_require(duk_context *ctx, duk_idx_t index)
 {
-	struct sprite *sp;
+	struct mlk_sprite *sp;
 
 	duk_get_prop_string(ctx, index, SYMBOL);
 	sp = duk_to_pointer(ctx, -1);
@@ -166,7 +166,7 @@ mlk_js_sprite_load(duk_context *ctx)
 	assert(ctx);
 
 	duk_push_global_object(ctx);
-	duk_get_prop_string(ctx, -1, "Molko");
+	duk_get_prop_string(ctx, -1, "Mlk");
 	duk_push_c_function(ctx, mlk_js_sprite_new, 3);
 	duk_push_object(ctx);
 	duk_put_function_list(ctx, -1, methods);

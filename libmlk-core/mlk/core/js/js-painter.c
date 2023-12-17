@@ -45,16 +45,6 @@ mlk_js_painter_setColor(duk_context *ctx)
 }
 
 static duk_ret_t
-mlk_js_painter_new(duk_context *ctx)
-{
-	if (!duk_is_constructor_call(ctx))
-		return duk_error(ctx, DUK_ERR_TYPE_ERROR, "Painter must be new-constructed");
-
-
-	return 0;
-}
-
-static duk_ret_t
 mlk_js_painter_clear(duk_context *ctx)
 {
 	(void)ctx;
@@ -88,7 +78,7 @@ mlk_js_painter_drawLine(duk_context *ctx)
 	} else
 		return duk_error(ctx, DUK_ERR_ERROR, "Object or 4 numbers expected");
 
-	mlk_painter_draw_line(x1, y2, x2, y2);
+	mlk_painter_draw_line(x1, y1, x2, y2);
 
 	return 0;
 }
@@ -183,7 +173,7 @@ mlk_js_painter_present(duk_context *ctx)
 	return 0;
 }
 
-static const duk_function_list_entry methods[] = {
+static const duk_function_list_entry functions[] = {
 	{ "clear",              mlk_js_painter_clear,           0               },
 	{ "drawLine",           mlk_js_painter_drawLine,        DUK_VARARGS     },
 	{ "drawPoint",          mlk_js_painter_drawPoint,       DUK_VARARGS     },
@@ -194,7 +184,7 @@ static const duk_function_list_entry methods[] = {
 };
 
 void
-js_painter_load(duk_context *ctx)
+mlk_js_painter_load(duk_context *ctx)
 {
 	assert(ctx);
 
@@ -205,7 +195,7 @@ js_painter_load(duk_context *ctx)
 	duk_push_c_function(ctx, mlk_js_painter_getColor, 0);
 	duk_push_c_function(ctx, mlk_js_painter_setColor, 1);
 	duk_def_prop(ctx, -4, DUK_DEFPROP_HAVE_GETTER | DUK_DEFPROP_HAVE_SETTER);
-	duk_put_function_list(ctx, -1, methods);
+	duk_put_function_list(ctx, -1, functions);
 	duk_put_prop_string(ctx, -2, "Painter");
 	duk_pop(ctx);
 }

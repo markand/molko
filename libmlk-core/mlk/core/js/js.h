@@ -19,16 +19,29 @@
 #ifndef MLK_CORE_JS_H
 #define MLK_CORE_JS_H
 
+#define MLK_CORE_JS_MAIN "main.js"
+
 struct mlk_js {
+	/**
+	 * (read-write, borrowed)
+	 *
+	 * VFS used to load resources.
+	 */
+	struct mlk_vfs *vfs;
 	void *handle;
 };
+
+struct mlk_vfs;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 int
-mlk_js_init(struct mlk_js *js);
+mlk_js_init(struct mlk_js *js, struct mlk_vfs *vfs);
+
+int
+mlk_js_run(struct mlk_js *js, const char *main);
 
 void
 mlk_js_finish(struct mlk_js *js);
