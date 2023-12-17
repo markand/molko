@@ -1,5 +1,5 @@
 /*
- * js.h -- javascript loader
+ * js-event.h -- event management (Javascript bindings)
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,20 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_H
-#define MLK_CORE_JS_H
+#ifndef MLK_CORE_JS_EVENT_H
+#define MLK_CORE_JS_EVENT_H
 
-struct mlk_js {
-	void *handle;
-};
+#include <duktape.h>
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-int
-mlk_js_init(struct mlk_js *js);
-
 void
-mlk_js_finish(struct mlk_js *js);
+mlk_js_event_load(duk_context *ctx);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* !MLK_CORE_JS_H */
+#endif /* !MLK_CORE_JS_EVENT_H */

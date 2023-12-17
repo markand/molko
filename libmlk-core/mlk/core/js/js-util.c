@@ -1,5 +1,5 @@
 /*
- * js.h -- javascript loader
+ * js-util.c -- utilities (Javascript bindings)
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,35 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_H
-#define MLK_CORE_JS_H
+#include <assert.h>
 
-struct mlk_js {
-	void *handle;
+#include <mlk/core/util.h>
+
+#include "js-util.h"
+#include "js.h"
+
+static duk_ret_t
+mlk_js_util_sleep(duk_context *ctx)
+{
+	mlk_util_sleep(duk_require_uint(ctx, 0));
+
+	return 0;
+}
+
+static const duk_function_list_entry functions[] = {
+	{ "sleep",      mlk_js_util_sleep,      1 },
+	{ NULL,         NULL,                   0 }
 };
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-int
-mlk_js_init(struct mlk_js *js);
-
 void
-mlk_js_finish(struct mlk_js *js);
+mlk_js_util_load(duk_context *ctx)
+{
+	assert(ctx);
 
-#if defined(__cplusplus)
+	duk_push_global_object(ctx);
+	duk_get_prop_string(ctx, -1, "Mlk");
+	duk_push_object(ctx);
+	duk_put_function_list(ctx, -1, functions);
+	duk_put_prop_string(ctx, -2, "Util");
+	duk_pop_n(ctx, 2);
 }
-#endif
-
-#endif /* !MLK_CORE_JS_H */

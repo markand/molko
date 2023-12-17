@@ -153,6 +153,28 @@ mlk_library(
 if (MLK_WITH_JAVASCRIPT)
 	set(
 		JS_SOURCES
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-animation.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-animation.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-clock.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-clock.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-event.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-event.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-font.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-font.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-music.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-music.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-painter.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-painter.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-sound.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-sound.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-sprite.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-sprite.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-texture.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-texture.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-util.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-util.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-window.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-window.h
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js.c
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js.h
 	)

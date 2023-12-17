@@ -120,6 +120,10 @@ if (MLK_WITH_EXAMPLES)
 	add_subdirectory(examples)
 endif ()
 
+if (MLK_WITH_JAVASCRIPT)
+	add_subdirectory(mlk-run)
+endif ()
+
 configure_file(
 	${molko_SOURCE_DIR}/cmake/MlkOptions.install.cmake
 	${molko_BINARY_DIR}/cmake/MlkOptions.cmake

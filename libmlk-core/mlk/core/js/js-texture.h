@@ -1,5 +1,5 @@
 /*
- * js.h -- javascript loader
+ * js-texture.h -- basic texture management (Javascript bindings)
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,28 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_H
-#define MLK_CORE_JS_H
+#ifndef MLK_CORE_JS_TEXTURE_H
+#define MLK_CORE_JS_TEXTURE_H
 
-struct mlk_js {
-	void *handle;
-};
+#include <duktape.h>
+
+struct mlk_texture;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-int
-mlk_js_init(struct mlk_js *js);
+struct mlk_texture *
+mlk_js_texture_require(duk_context *ctx, duk_idx_t index);
 
 void
-mlk_js_finish(struct mlk_js *js);
+mlk_js_texture_push(duk_context *ctx, const struct mlk_texture *tex);
+
+void
+mlk_js_texture_load(duk_context *ctx);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* !MLK_CORE_JS_H */
+#endif /* !MLK_CORE_JS_TEXTURE_H */

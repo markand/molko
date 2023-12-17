@@ -137,6 +137,7 @@ setup_properties(struct mlk_js *js)
 	duk_pop(js->handle);
 }
 
+#if 0
 static void
 setup_base(struct mlk_js *js, const char *path)
 {
@@ -150,6 +151,7 @@ setup_base(struct mlk_js *js, const char *path)
 	duk_put_prop_string(js->handle, -2, DUK_HIDDEN_SYMBOL("mlk::base"));
 	duk_pop(js->handle);
 }
+#endif
 
 int
 js_init(struct mlk_js *js)
