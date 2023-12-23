@@ -25,7 +25,6 @@
 #include <mlk/core/trace.h>
 #include <mlk/core/vfs.h>
 
-#include <duktape.h>
 #include <duk_module.h>
 
 #include "js-animation.h"
@@ -100,22 +99,6 @@ read_all(struct mlk_js *js, const char *filename, size_t *len)
 	return text;
 }
 
-static struct mlk_js *
-mlk_js_this(duk_context *ctx)
-{
-	struct mlk_js *js;
-
-	duk_push_global_stash(ctx);
-	duk_get_prop_string(ctx, -1, JS_REF);
-	js = duk_to_pointer(ctx, -1);
-	duk_pop(ctx);
-
-	if (!js)
-		duk_error(ctx, DUK_ERR_TYPE_ERROR, "Not a Javascript context");
-
-	return js;
-}
-
 static duk_ret_t
 mlk_js_print(duk_context *ctx)
 {
@@ -140,7 +123,7 @@ mlk_js_modSearch(duk_context *ctx)
 	char *text;
 	size_t textsz;
 
-	js = mlk_js_this(ctx);
+	js = mlk_js_require(ctx);
 	filename = duk_require_string(ctx, 0);
 
 	if (!(text = read_all(js, filename, &textsz)))
@@ -225,6 +208,24 @@ mlk_js_init(struct mlk_js *js, struct mlk_vfs *vfs)
 	setup_core(js);
 
 	return 0;
+}
+
+struct mlk_js *
+mlk_js_require(duk_context *ctx)
+{
+	assert(ctx);
+
+	struct mlk_js *js;
+
+	duk_push_global_stash(ctx);
+	duk_get_prop_string(ctx, -1, JS_REF);
+	js = duk_to_pointer(ctx, -1);
+	duk_pop(ctx);
+
+	if (!js)
+		duk_error(ctx, DUK_ERR_TYPE_ERROR, "Not a Javascript context");
+
+	return js;
 }
 
 int

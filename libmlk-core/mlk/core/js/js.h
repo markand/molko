@@ -21,14 +21,22 @@
 
 #define MLK_CORE_JS_MAIN "main.js"
 
+#include <duktape.h>
+
 struct mlk_js {
 	/**
-	 * (read-write, borrowed)
+	 * (read-write)
 	 *
 	 * VFS used to load resources.
 	 */
 	struct mlk_vfs *vfs;
-	void *handle;
+
+	/**
+	 * (read-write)
+	 *
+	 * Duktape context.
+	 */
+	duk_context *handle;
 };
 
 struct mlk_vfs;
@@ -39,6 +47,9 @@ extern "C" {
 
 int
 mlk_js_init(struct mlk_js *js, struct mlk_vfs *vfs);
+
+struct mlk_js *
+mlk_js_require(duk_context *ctx);
 
 int
 mlk_js_run(struct mlk_js *js, const char *main);

@@ -22,6 +22,7 @@
 #include <mlk/core/err.h>
 #include <mlk/core/image.h>
 #include <mlk/core/texture.h>
+#include <mlk/core/vfs.h>
 
 #include "js-texture.h"
 #include "js.h"
@@ -173,7 +174,7 @@ mlk_js_texture_scale(duk_context *ctx)
 	duk_pop_n(ctx, 4);
 
 	/* Angle. */
-	angle = duk_to_number(ctx, 2);
+	angle = duk_is_number(ctx, 2) ? duk_to_number(ctx, 2) : 0;
 
 	if (mlk_texture_scale(tex, srcx, srcy, srcw, srch, dstx, dsty, dstw, dsth, angle) < 0)
 		return duk_error(ctx, DUK_ERR_ERROR, "%s", mlk_err());
@@ -213,6 +214,29 @@ mlk_js_texture_fromImage(duk_context *ctx)
 	return 1;
 }
 
+static duk_ret_t
+mlk_js_texture_fromVFS(duk_context *ctx)
+{
+	const char *path = duk_require_string(ctx, 0);
+	struct mlk_vfs *vfs = mlk_js_require(ctx)->vfs;
+	struct mlk_vfs_file *file;
+	struct mlk_texture tex;
+	int rv;
+
+	if (!(file = mlk_vfs_open(vfs, path, "r")))
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", mlk_err());
+
+	rv = mlk_image_openvfs(&tex, file);
+	mlk_vfs_file_finish(file);
+
+	if (rv < 0)
+		return duk_error(ctx, DUK_ERR_ERROR, "%s", mlk_err());
+
+	mlk_js_texture_push(ctx, &tex);
+
+	return 1;
+}
+
 static const duk_function_list_entry methods[] = {
 	{ "draw",       mlk_js_texture_draw,            1 },
 	{ "scale",      mlk_js_texture_scale,           3 },
@@ -221,6 +245,7 @@ static const duk_function_list_entry methods[] = {
 
 static const duk_function_list_entry functions[] = {
 	{ "fromImage",  mlk_js_texture_fromImage,       1 },
+	{ "fromVFS",    mlk_js_texture_fromVFS,         1 },
 	{ NULL,         NULL,                           0 }
 };
 

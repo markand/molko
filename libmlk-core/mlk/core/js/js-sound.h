@@ -21,12 +21,17 @@
 
 #include <duktape.h>
 
+struct mlk_sound;
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 void
 mlk_js_sound_load(duk_context *ctx);
+
+void
+mlk_js_sound_push(duk_context *ctx, const struct mlk_sound *mus);
 
 #if defined(__cplusplus)
 }

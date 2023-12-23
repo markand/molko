@@ -121,8 +121,8 @@ mlk_vfs_file_finish(struct mlk_vfs_file *file)
 static int
 rw_vfs_file_close(SDL_RWops *context)
 {
-	free(context->hidden.mem.base);
-	free(context);
+	mlk_alloc_free(context->hidden.mem.base);
+	SDL_DestroyRW(context);
 
 	return 0;
 }
@@ -137,7 +137,7 @@ mlk__vfs_to_rw(struct mlk_vfs_file *file)
 	if (!(data = mlk_vfs_file_read_all(file, &datasz)))
 		return NULL;
 	if (!(ops = SDL_RWFromConstMem(data, datasz))) {
-		free(data);
+		mlk_alloc_free(data);
 		return mlk_errf("%s", SDL_GetError()), NULL;
 	}
 
