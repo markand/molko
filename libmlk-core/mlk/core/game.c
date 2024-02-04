@@ -18,6 +18,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include <setjmp.h>
 
 #include "clock.h"
 #include "core_p.h"
@@ -28,7 +29,16 @@
 #include "util.h"
 #include "window.h"
 
+enum {
+	JMP_OK = 0,
+	JMP_PUSH,
+	JMP_POP
+};
+
 static struct mlk_state *states[8];
+static jmp_buf game_jmp_buf;
+static int game_jmp_allowed;
+static int game_run = 1;
 
 struct mlk_game mlk_game = {
 	.states = states,
@@ -42,68 +52,33 @@ mlk_game_init(void)
 		mlk_game.states[i] = NULL;
 }
 
-int
+_Noreturn int
 mlk_game_push(struct mlk_state *state)
 {
 	assert(state);
-
-	if (!mlk_game.state) {
-		mlk_game.state = &mlk_game.states[0];
-		mlk_state_start(*mlk_game.state = state);
-		return 0;
-	}
+	assert(game_jmp_allowed);
 
 	if (mlk_game.state == &mlk_game.states[mlk_game.statesz - 1])
-		return mlk_errf(_("no space in game states stack"));
+		mlk_errf(_("no space in game states stack"));
 
-	mlk_state_suspend(*mlk_game.state);
-	mlk_state_start(*(++mlk_game.state) = state);
-
-	return 0;
+	mlk_game.state[1] = state;
+	longjmp(game_jmp_buf, JMP_PUSH);
 }
 
-void
+_Noreturn void
 mlk_game_pop(void)
 {
-	if (!mlk_game.state)
-		return;
+	assert(game_jmp_allowed);
 
-	mlk_state_end(*mlk_game.state);
-	mlk_state_finish(*mlk_game.state);
-
-	if (mlk_game.state == mlk_game.states)
-		mlk_game.state = NULL;
-	else
-		mlk_state_resume(*--mlk_game.state);
+	longjmp(game_jmp_buf, JMP_POP);
 }
 
 void
-mlk_game_handle(const union mlk_event *ev)
+mlk_game_loop(struct mlk_state *state)
 {
-	assert(ev);
+	assert(state);
 
-	if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_INPUT))
-		mlk_state_handle(*mlk_game.state, ev);
-}
-
-void
-mlk_game_update(unsigned int ticks)
-{
-	if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_UPDATE))
-		mlk_state_update(*mlk_game.state, ticks);
-}
-
-void
-mlk_game_draw(void)
-{
-	if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_DRAW))
-		mlk_state_draw(*mlk_game.state);
-}
-
-void
-mlk_game_loop(void)
-{
-	struct mlk_clock clock = {0};
+	struct mlk_clock clock = {};
 	unsigned int elapsed = 0;
 	unsigned int frametime;
 
@@ -113,36 +88,87 @@ mlk_game_loop(void)
 		/* Assuming 60.0 FPS. */
 		frametime = 1000.0 / 60.0;
 
-	while (mlk_game.state) {
-		mlk_clock_start(&clock);
+	game_jmp_allowed = 1;
 
-		for (union mlk_event ev; mlk_event_poll(&ev); )
-			mlk_game_handle(&ev);
+	while (game_run) {
+		switch (setjmp(game_jmp_buf)) {
+		case JMP_OK:
+			/* Initial entrypoint. */
+			if (!mlk_game.state) {
+				mlk_game.states[0] = state;
+				mlk_game.state = &mlk_game.states[0];
+				mlk_state_start(state);
+			}
 
-		mlk_game_update(elapsed);
-		mlk_game_draw();
+			mlk_clock_start(&clock);
 
-		/*
-		 * If vsync is enabled, it should have wait, otherwise sleep
-		 * a little to save CPU cycles.
-		 */
-		if ((elapsed = mlk_clock_elapsed(&clock)) < frametime)
-			mlk_util_sleep(frametime - elapsed);
+			for (union mlk_event ev; mlk_event_poll(&ev); ) {
+				if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_INPUT))
+					mlk_state_handle(*mlk_game.state, ev);
+			}
 
-		elapsed = mlk_clock_elapsed(&clock);
+			if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_UPDATE))
+				mlk_state_update(*mlk_game.state, ticks);
+			if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_DRAW))
+				mlk_state_draw(*mlk_game.state);
 
-		/*
-		 * Cap to frametime if it's too slow because it would create
-		 * unexpected results otherwise.
-		 */
-		if (elapsed > frametime)
-			elapsed = frametime;
+			/*
+			 * If vsync is enabled, it should have wait, otherwise
+			 * sleep a little to save CPU cycles.
+			 */
+			if ((elapsed = mlk_clock_elapsed(&clock)) < frametime)
+				mlk_util_sleep(frametime - elapsed);
+
+			elapsed = mlk_clock_elapsed(&clock);
+
+			/*
+			 * Cap to frametime if it's too slow because it would
+			 * create unexpected results otherwise.
+			 */
+			if (elapsed > frametime)
+				elapsed = frametime;
+			break;
+		case JMP_PUSH:
+			/*
+			 * We have pushed a new state, suspend should not modify
+			 * the stack because we would have a leak in the next
+			 * state being overriden without being finalized.
+			 */
+			game_jmp_allowed = 0;
+			mlk_state_suspend(*mlk_game.state);
+			game_jmp_allowed = 1;
+
+			/* Start next state. */
+			mlk_state_start(*++mlk_game.state);
+			break;
+		case JMP_POP:
+			/*
+			 * We need to finalize this state so the end/finish
+			 * functions are not allowed to modify the stack.
+			 */
+			game_jmp_allowed = 0;
+			mlk_state_end(*mlk_game.state);
+			mlk_state_finish(*mlk_game.state);
+			game_jmp_allowed = 1;
+
+			/* Resume previous state. */
+			if (mlk_game.state == mlk_game.states)
+				mlk_game.state = NULL;
+			else
+				mlk_state_resume(*--mlk_game.state);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
 void
 mlk_game_quit(void)
 {
+	game_jmp_allowed = 0;
+	game_run = 0;
+
 	for (size_t i = 0; i < mlk_game.statesz; ++i) {
 		if (mlk_game.states[i])
 			mlk_state_finish(mlk_game.states[i]);

@@ -1,5 +1,5 @@
 /*
- * js-event.h -- event management (Javascript bindings)
+ * example-states.c -- example on how states stack works
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,41 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_EVENT_H
-#define MLK_CORE_JS_EVENT_H
+#include <mlk/core/game.h>
+#include <mlk/core/panic.h>
 
-#include <duktape.h>
+#include <mlk/example/example.h>
 
-union mlk_event;
+#include "state-splash.h"
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-duk_ret_t
-mlk_js_event_push(duk_context *ctx, const union mlk_event *ev);
-
-void
-mlk_js_event_load(duk_context *ctx);
-
-#if defined(__cplusplus)
+static void
+init(void)
+{
+	if (mlk_example_init("example-states") < 0)
+		mlk_panic();
 }
-#endif
 
-#endif /* !MLK_CORE_JS_EVENT_H */
+static void
+run(void)
+{
+	mlk_game_loop(state_splash_new());
+}
+
+static void
+quit(void)
+{
+	mlk_example_finish();
+}
+
+int
+main(int argc, char **argv)
+{
+	(void)argc;
+	(void)argv;
+
+	init();
+	run();
+	quit();
+
+	return 0;
+}

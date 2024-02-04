@@ -1,5 +1,5 @@
 /*
- * js-event.h -- event management (Javascript bindings)
+ * js-game.h -- main game object (Javascript bindings)
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_EVENT_H
-#define MLK_CORE_JS_EVENT_H
-
 #include <duktape.h>
-
-union mlk_event;
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-duk_ret_t
-mlk_js_event_push(duk_context *ctx, const union mlk_event *ev);
-
 void
-mlk_js_event_load(duk_context *ctx);
+mlk_js_game_load(duk_context *ctx);
 
 #if defined(__cplusplus)
 }
 #endif
-
-#endif /* !MLK_CORE_JS_EVENT_H */

@@ -108,58 +108,34 @@ void
 mlk_game_init(void);
 
 /**
- * Try to append a new state into the game loop at the end unless the array is
- * full.
+ * Append the state into the game stack and switch to it, suspending current
+ * state.
  *
- * The state is inserted as-is and ownership is left to the caller.
+ * The function takes ownership of the state and will be finalized later.
  *
  * \pre state != NULL
- * \param state
- * \return 0 on success or -1 on error
+ * \param state the state to switch
  */
-int
+_Noreturn void
 mlk_game_push(struct mlk_state *state);
 
 /**
  * Pop the current state if any and resume the previous one.
  */
-void
+_Noreturn void
 mlk_game_pop(void);
-
-/**
- * Call the current state's mlk_state::handle function unless it is inhibited
- * or NULL.
- *
- * \pre event != NULL
- * \param event the event
- */
-void
-mlk_game_handle(const union mlk_event *event);
-
-/**
- * Call the current state's mlk_state::update function unless it is inhibited
- * or NULL.
- *
- * \param ticks frame ticks
- */
-void
-mlk_game_update(unsigned int ticks);
-
-/**
- * Call the current state's mlk_state::draw function unless it is inhibited
- * or NULL.
- */
-void
-mlk_game_draw(void);
 
 /**
  * Enter a game loop until there is no more states.
  *
  * The current implementation will perform a loop capped to a 60 FPS rate and
  * update the states with the appropriate number of ticks.
+ *
+ * \pre state != NULL
+ * \param state the first state to run
  */
 void
-mlk_game_loop(void);
+mlk_game_loop(struct mlk_state *state);
 
 /**
  * Request the game loop to stop by removing all states.

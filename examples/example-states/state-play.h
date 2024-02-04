@@ -1,5 +1,5 @@
 /*
- * js-event.h -- event management (Javascript bindings)
+ * state-play.h -- very funny game
  *
  * Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
  *
@@ -16,25 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef MLK_CORE_JS_EVENT_H
-#define MLK_CORE_JS_EVENT_H
+#ifndef STATE_PLAY_H
+#define STATE_PLAY_H
 
-#include <duktape.h>
+struct mlk_state;
 
-union mlk_event;
+struct mlk_state *
+state_play_new(void);
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-duk_ret_t
-mlk_js_event_push(duk_context *ctx, const union mlk_event *ev);
-
-void
-mlk_js_event_load(duk_context *ctx);
-
-#if defined(__cplusplus)
-}
-#endif
-
-#endif /* !MLK_CORE_JS_EVENT_H */
+#endif /* !STATE_PLAY_H */

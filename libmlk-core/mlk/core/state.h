@@ -44,6 +44,13 @@ struct mlk_state {
 	void *data;
 
 	/**
+	 * (read-write, borrowed, optional)
+	 *
+	 * Arbitrary state name for diagnostic purposes.
+	 */
+	const char *name;
+
+	/**
 	 * (read-write, optional)
 	 *
 	 * Invoked when the state starts, which is called only one time.

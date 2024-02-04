@@ -31,10 +31,12 @@
 #include "js-clock.h"
 #include "js-event.h"
 #include "js-font.h"
+#include "js-game.h"
 #include "js-music.h"
 #include "js-painter.h"
 #include "js-sound.h"
 #include "js-sprite.h"
+#include "js-state.h"
 #include "js-texture.h"
 #include "js-util.h"
 #include "js-window.h"
@@ -151,11 +153,11 @@ setup_global(struct mlk_js *js)
 	/* Create global "Mlk" property. */
 	duk_push_global_object(js->handle);
 	duk_push_object(js->handle);
-	duk_put_prop_string(js->handle, -2, "Mlk");
 	duk_push_c_function(js->handle, mlk_js_print, 1);
 	duk_put_prop_string(js->handle, -2, "print");
 	duk_push_c_function(js->handle, mlk_js_trace, 1);
 	duk_put_prop_string(js->handle, -2, "trace");
+	duk_put_prop_string(js->handle, -2, "Mlk");
 	duk_pop(js->handle);
 }
 
@@ -178,10 +180,12 @@ setup_core(struct mlk_js *js)
 	mlk_js_clock_load(js->handle);
 	mlk_js_event_load(js->handle);
 	mlk_js_font_load(js->handle);
+	mlk_js_game_load(js->handle);
 	mlk_js_music_load(js->handle);
 	mlk_js_painter_load(js->handle);
 	mlk_js_sound_load(js->handle);
 	mlk_js_sprite_load(js->handle);
+	mlk_js_state_load(js->handle);
 	mlk_js_texture_load(js->handle);
 	mlk_js_util_load(js->handle);
 	mlk_js_window_load(js->handle);

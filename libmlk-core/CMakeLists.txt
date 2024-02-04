@@ -161,6 +161,8 @@ if (MLK_WITH_JAVASCRIPT)
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-event.h
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-font.c
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-font.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-game.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-game.h
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-music.c
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-music.h
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-painter.c
@@ -169,6 +171,8 @@ if (MLK_WITH_JAVASCRIPT)
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-sound.h
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-sprite.c
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-sprite.h
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-state.c
+		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-state.h
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-texture.c
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-texture.h
 		${libmlk-core_SOURCE_DIR}/mlk/core/js/js-util.c

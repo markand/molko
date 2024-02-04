@@ -16,30 +16,32 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(examples)
+project(example-states)
 
 set(
-	DIRS
-	example-action
-	example-animation
-	example-audio
-	example-cursor
-	example-debug
-	example-drawable
-	example-font
-	example-gamepad
-	example-gridmenu
-	example-label
-	example-map
-	example-message
-	example-notify
-	example-sprite
-	example-states
-	example-tileset
-	example-trace
-	example-ui
+	SOURCES
+	${example-states_SOURCE_DIR}/example-states.c
+	${example-states_SOURCE_DIR}/state-menu.c
+	${example-states_SOURCE_DIR}/state-menu.h
+	${example-states_SOURCE_DIR}/state-play.c
+	${example-states_SOURCE_DIR}/state-play.h
+	${example-states_SOURCE_DIR}/state-splash.c
+	${example-states_SOURCE_DIR}/state-splash.h
 )
 
-foreach (d ${DIRS})
-	add_subdirectory(${d})
-endforeach ()
+set(
+	ASSETS
+	${example-states_SOURCE_DIR}/assets/fonts/breamcatcher.otf
+	${example-states_SOURCE_DIR}/assets/fonts/zenda.ttf
+	${example-states_SOURCE_DIR}/assets/images/dvd.png
+)
+
+mlk_executable(
+	NAME example-states
+	FOLDER examples
+	LIBRARIES libmlk-example
+	SOURCES ${ASSETS} ${SOURCES}
+	ASSETS ${ASSETS}
+)
+
+source_group(TREE ${example-states_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})

@@ -1,6 +1,7 @@
 -I/usr/include/SDL2
 -Iextern/libdt
 -Iextern/libsqlite
+-Iextern/libduktape
 -Ilibmlk-core
 -Ilibmlk-example
 -Ilibmlk-rpg
