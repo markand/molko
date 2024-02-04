@@ -15,6 +15,7 @@ assets/.*\.h$
 
 # clangd
 ^\.cache
+^\.clang$
 
 # vim/emacs specific.
 ^tags$
