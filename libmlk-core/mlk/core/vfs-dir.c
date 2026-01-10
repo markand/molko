@@ -186,7 +186,6 @@ mlk_vfs_dir_init(struct mlk_vfs_dir *dir, const char *path)
 	/* Remove terminator and switch to UNIX paths. */
 	normalize(dir->path);
 
-	dir->vfs.data = NULL;
 	dir->vfs.open = vfs_open;
 	dir->vfs.finish = NULL;
 }

@@ -112,13 +112,6 @@ struct mlk_vfs_file;
  */
 struct mlk_vfs {
 	/**
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data for callbacks.
-	 */
-	void *data;
-
-	/**
 	 * (read-write)
 	 *
 	 * Open the file from the VFS.

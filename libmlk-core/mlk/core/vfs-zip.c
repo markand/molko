@@ -101,7 +101,6 @@ mlk_vfs_zip_init(struct mlk_vfs_zip *zip, const char *file, const char *mode)
 		return -1;
 	}
 
-	zip->vfs.data = NULL;
 	zip->vfs.open = vfs_open;
 	zip->vfs.finish = vfs_finish;
 
