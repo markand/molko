@@ -1,7 +1,7 @@
 --
 -- character-load.sql -- load a character data
 --
--- Copyright (c) 2020-2023 David Demelier <markand@malikania.fr>
+-- Copyright (c) 2020-2026 David Demelier <markand@malikania.fr>
 --
 -- Permission to use, copy, modify, and/or distribute this software for any
 -- purpose with or without fee is hereby granted, provided that the above
