@@ -125,7 +125,7 @@ mlk_font_query(const struct mlk_font *font, const char *text, unsigned int *w, u
 	if (h)
 		*h = 0;
 
-	if (TTF_GetStringSize(font->handle, text, strlen(text), (int *)w, (int *)h) != 0)
+	if (!TTF_GetStringSize(font->handle, text, strlen(text), (int *)w, (int *)h))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;

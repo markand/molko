@@ -53,7 +53,7 @@
  * ## Initialize a VFS
  *
  * To use this module, you must first open a VFS interface. It is usually
- * implemented using the ::MLK_CONTAINER_OF macro.
+ * implemented using the ::MLK_UTIL_CONTAINER_OF macro.
  *
  * Example with mlk/core/vfs-dir.h
  *

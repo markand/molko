@@ -32,7 +32,7 @@
 #include "tileset.h"
 
 #define THIS(loader) \
-	MLK_CONTAINER_OF(loader, struct mlk_tileset_loader_file, iface)
+	MLK_UTIL_CONTAINER_OF(loader, struct mlk_tileset_loader_file, iface)
 
 static void
 trash(struct mlk_tileset_loader_file *file)

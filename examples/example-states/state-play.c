@@ -40,7 +40,7 @@
 #define LOGO       assets_images_dvd
 #define LOGO_SPEED 100
 
-#define PLAY(self) MLK_CONTAINER_OF(self, struct play, state)
+#define PLAY(self) MLK_UTIL_CONTAINER_OF(self, struct play, state)
 
 struct play {
 	struct mlk_button button_leave;

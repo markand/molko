@@ -39,7 +39,7 @@
 #define FG           0x29366fff
 #define DELAY        1000
 
-#define SPLASH(self) MLK_CONTAINER_OF(self, struct splash, state)
+#define SPLASH(self) MLK_UTIL_CONTAINER_OF(self, struct splash, state)
 
 struct splash {
 	unsigned int elapsed;
@@ -63,7 +63,7 @@ state_splash__start(struct mlk_state *self)
 	if (mlk_font_render(&font, &splash->texture, TITLE, FG) < 0)
 		mlk_panic();
 
-	mlk_align(MLK_ALIGN_CENTER, 
+	mlk_align(MLK_ALIGN_CENTER,
 	          &splash->x,
 	          &splash->y,
 	          splash->texture.w,

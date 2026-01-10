@@ -26,7 +26,7 @@
  * This module can be used to read file from a ZIP archives using the
  * mlk/core/vfs.h abstract VFS module.
  *
- * It is implemented using the ::MLK_CONTAINER_OF macro which means you can
+ * It is implemented using the ::MLK_UTIL_CONTAINER_OF macro which means you can
  * use it and derive from it to add or modify its functions.
  *
  * \note It currently supports reading files but not writing.
@@ -60,7 +60,7 @@ struct mlk_vfs_zip_file {
 	 * Abstract VFS file to implement.
 	 */
 	struct mlk_vfs_file file;
-	
+
 	/** \cond MLK_PRIVATE_DECLS */
 	void *handle;
 	/** \endcond MLK_PRIVATE_DECLS */

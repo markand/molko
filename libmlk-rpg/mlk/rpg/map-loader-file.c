@@ -35,7 +35,7 @@
 #include "tileset-loader.h"
 
 #define THIS(loader) \
-	MLK_CONTAINER_OF(loader, struct mlk_map_loader_file, iface)
+	MLK_UTIL_CONTAINER_OF(loader, struct mlk_map_loader_file, iface)
 
 static void
 trash(struct mlk_map_loader_file *file)

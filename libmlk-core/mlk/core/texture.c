@@ -27,6 +27,7 @@
 #include "window.h"
 #include "window_p.h"
 
+
 int
 mlk_texture_init(struct mlk_texture *tex, unsigned int w, unsigned int h)
 {
@@ -61,7 +62,7 @@ mlk_texture_set_blend_mode(struct mlk_texture *tex, enum mlk_texture_blend blend
 		[MLK_TEXTURE_BLEND_MODULATE] = SDL_BLENDMODE_MOD
 	};
 
-	if (SDL_SetTextureBlendMode(tex->handle, table[blend]) < 0)
+	if (!SDL_SetTextureBlendMode(tex->handle, table[blend]))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
@@ -73,7 +74,7 @@ mlk_texture_set_alpha_mod(struct mlk_texture *tex, unsigned int alpha)
 	assert(tex);
 	assert(alpha <= 255);
 
-	if (SDL_SetTextureAlphaMod(tex->handle, alpha) < 0)
+	if (!SDL_SetTextureAlphaMod(tex->handle, alpha))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
@@ -84,7 +85,7 @@ mlk_texture_set_color_mod(struct mlk_texture *tex, unsigned long color)
 {
 	assert(tex);
 
-	if (SDL_SetTextureColorMod(tex->handle, MLK_COLOR_R(color), MLK_COLOR_G(color), MLK_COLOR_B(color)) < 0)
+	if (!SDL_SetTextureColorMod(tex->handle, MLK_COLOR_R(color), MLK_COLOR_G(color), MLK_COLOR_B(color)))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
@@ -102,7 +103,7 @@ mlk_texture_draw(const struct mlk_texture *tex, int x, int y)
 		.h = tex->h
 	};
 
-	if (SDL_RenderTexture(MLK__RENDERER(), tex->handle, NULL, &dst) < 0)
+	if (!SDL_RenderTexture(MLK__RENDERER(), tex->handle, NULL, &dst))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
@@ -110,7 +111,7 @@ mlk_texture_draw(const struct mlk_texture *tex, int x, int y)
 
 int
 mlk_texture_scale(const struct mlk_texture *tex,
-                 int src_x,
+                  int src_x,
                   int src_y,
                   unsigned src_w,
                   unsigned src_h,
@@ -133,7 +134,7 @@ mlk_texture_scale(const struct mlk_texture *tex,
 		.h = dst_h
 	};
 
-	if (SDL_RenderTextureRotated(MLK__RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE) < 0)
+	if (!SDL_RenderTextureRotated(MLK__RENDERER(), tex->handle, &src, &dst, angle, NULL, SDL_FLIP_NONE))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;

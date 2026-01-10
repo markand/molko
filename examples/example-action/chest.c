@@ -79,7 +79,7 @@ chest_update(struct mlk_drawable *self, unsigned int ticks)
 static void
 chest_draw(struct mlk_drawable *self)
 {
-	const struct chest *chest = MLK_CONTAINER_OF(self, struct chest, drawable);
+	const struct chest *chest = MLK_UTIL_CONTAINER_OF(self, struct chest, drawable);
 
 	switch (chest->state) {
 	case CHEST_STATE_CLOSED:

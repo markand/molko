@@ -26,7 +26,7 @@
 #include "dialog.h"
 
 #define DIALOG(Ptr, Field) \
-        (MLK_CONTAINER_OF(Ptr, struct dialog, Field))
+        (MLK_UTIL_CONTAINER_OF(Ptr, struct dialog, Field))
 
 /* Message width is 80% of window width and height is auto computed. */
 #define QMW (MLK_EXAMPLE_W * 0.8)

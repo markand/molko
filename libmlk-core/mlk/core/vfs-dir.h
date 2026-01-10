@@ -26,7 +26,7 @@
  * This module can be used to read files relative to a filesystem directory path
  * using mlk/core/vfs.h abstract VFS module.
  *
- * It is implemented using the ::MLK_CONTAINER_OF macro which means you can
+ * It is implemented using the ::MLK_UTIL_CONTAINER_OF macro which means you can
  * use it and derive from it to add or modify its functions.
  *
  * ## Members used

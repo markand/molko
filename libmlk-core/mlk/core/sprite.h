@@ -36,8 +36,6 @@
  * available in the image.
  */
 
-#include "core.h"
-
 struct mlk_texture;
 
 /**

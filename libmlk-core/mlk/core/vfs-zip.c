@@ -32,10 +32,10 @@
 #include "vfs.h"
 
 #define MLK_VFS_ZIP_FILE(self) \
-	MLK_CONTAINER_OF(self, struct mlk_vfs_zip_file, file)
+	MLK_UTIL_CONTAINER_OF(self, struct mlk_vfs_zip_file, file)
 
 #define MLK_VFS_ZIP(self) \
-	MLK_CONTAINER_OF(self, struct mlk_vfs_zip, vfs)
+	MLK_UTIL_CONTAINER_OF(self, struct mlk_vfs_zip, vfs)
 
 static inline int
 mkflags(const char *mode)

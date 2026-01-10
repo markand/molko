@@ -30,10 +30,10 @@
 #include "vfs.h"
 
 #define MLK_VFS_DIR_FILE(self) \
-	MLK_CONTAINER_OF(self, struct mlk_vfs_dir_file, file)
+	MLK_UTIL_CONTAINER_OF(self, struct mlk_vfs_dir_file, file)
 
 #define MLK_VFS_DIR(self) \
-	MLK_CONTAINER_OF(self, struct mlk_vfs_dir, vfs)
+	MLK_UTIL_CONTAINER_OF(self, struct mlk_vfs_dir, vfs)
 
 static inline void
 normalize(char *path)

@@ -41,7 +41,7 @@
 #include <mlk/example/registry.h>
 
 #define EXPLOSION(Ptr, Field) \
-        (MLK_CONTAINER_OF(Ptr, struct explosion, Field))
+        (MLK_UTIL_CONTAINER_OF(Ptr, struct explosion, Field))
 
 static struct mlk_label help = {
 	.x = 10,

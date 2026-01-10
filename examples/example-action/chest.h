@@ -25,7 +25,7 @@
 #include <mlk/core/util.h>
 
 #define CHEST(Ptr, Field) \
-        (MLK_CONTAINER_OF(Ptr, struct chest, Field))
+        (MLK_UTIL_CONTAINER_OF(Ptr, struct chest, Field))
 
 enum chest_state {
 	CHEST_STATE_CLOSED,

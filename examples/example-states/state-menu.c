@@ -42,7 +42,7 @@
 #define LABEL_SIZE 32
 #define LABEL_TEXT "Sample Game"
 
-#define MENU(self) MLK_CONTAINER_OF(self, struct menu, state)
+#define MENU(self) MLK_UTIL_CONTAINER_OF(self, struct menu, state)
 
 struct menu {
 	struct mlk_font font_header;
