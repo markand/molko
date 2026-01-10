@@ -37,9 +37,9 @@
 #       include <string.h>
 #endif
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include <sndfile.h>
 
@@ -113,10 +113,11 @@ absolute(const char *path)
 }
 
 static const char *
-system_directory(const char *whichdir)
+system_directory(const char *)
 {
+#if 0
 	static MLK_THREAD_LOCAL char ret[PATH_MAX];
-	char *base, *binsect, path[PATH_MAX];
+	const char *base, *binsect, path[PATH_MAX];
 
 	/*
 	 * Some system does not provide support (shame on you OpenBSD)
@@ -172,6 +173,8 @@ system_directory(const char *whichdir)
 	}
 
 	return normalize(ret);
+#endif
+	return "";
 }
 
 static inline int
@@ -263,20 +266,18 @@ mlk_sys_init(const char *organization, const char *name)
 	setbuf(stderr, NULL);
 	setbuf(stdout, NULL);
 #endif
-	SDL_RWops *ops;
 
 	/* Kept for future use. */
 	(void)organization;
 	(void)name;
 
 	/* SDL. */
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMEPAD) < 0)
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMEPAD))
 		return mlk_errf("%s", SDL_GetError());
-	if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
-		return mlk_errf("%s", SDL_GetError());
-	if (TTF_Init() < 0)
+	if (!TTF_Init())
 		return mlk_errf("%s", SDL_GetError());
 
+#if 0
 	/*
 	 * TODO: our bcc invocation creates a not NUL terminated array by
 	 * default so we have to create a dummy string just for this function.
@@ -286,6 +287,7 @@ mlk_sys_init(const char *organization, const char *name)
 	 */
 	if ((ops = SDL_RWFromConstMem(assets_misc_gamecontrollerdb, sizeof (assets_misc_gamecontrollerdb))))
 		SDL_AddGamepadMappingsFromRW(ops, 1);
+#endif
 
 	/* OpenAL. */
 #if defined(MLK_OS_WINDOW)
@@ -368,10 +370,6 @@ mlk_sys_mkdir(const char *directory)
 void
 mlk_sys_finish(void)
 {
-	TTF_Quit();
-	IMG_Quit();
-	SDL_Quit();
-
 	audio_finish();
 }
 

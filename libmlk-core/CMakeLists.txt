@@ -138,7 +138,8 @@ mlk_library(
 			${LIBRARIES}
 			${OPENAL_LIBRARY}
 			SndFile::SndFile
-			SDL3::SDL3
+			SDL3::SDL3-shared
+			SDL3::Headers
 			SDL3_image::SDL3_image-shared
 			SDL3_ttf::SDL3_ttf-shared
 			libmlk-util

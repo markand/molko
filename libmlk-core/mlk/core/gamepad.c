@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "err.h"
 #include "gamepad.h"
@@ -90,9 +90,11 @@ mlk_gamepad_iter_next(struct mlk_gamepad_iter *it)
 	/* Index is in the array returned by SDL_GetJoysticks. */
 	it->index = ids[it->listit];
 
+#if 0
 	/* Unable to fetch name? Shouldn't happen so discard silently. */
-	if (!(it->name = SDL_GetGamepadInstanceName(it->index)))
+	if (!(it->name = SDL_GetGamepadName(it->index)))
 		return end(it);
+#endif
 
 	return 1;
 }

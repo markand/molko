@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include <SDL_ttf.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "color.h"
 #include "err.h"
@@ -50,10 +50,10 @@ mlk_font_openmem(struct mlk_font *font,
 	assert(font);
 	assert(buffer);
 
-	SDL_RWops *ops;
+	SDL_IOStream *ops;
 
-	if (!(ops = SDL_RWFromConstMem(buffer, buflen)) ||
-	   (!(font->handle = TTF_OpenFontRW(ops, 1, size))))
+	if (!(ops = SDL_IOFromConstMem(buffer, buflen)) ||
+	   (!(font->handle = TTF_OpenFontIO(ops, 1, size))))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
@@ -65,11 +65,11 @@ mlk_font_openvfs(struct mlk_font *font, struct mlk_vfs_file *file, unsigned int 
 	assert(font);
 	assert(file);
 
-	SDL_RWops *ops;
+	SDL_IOStream *ops;
 
 	if (!(ops = mlk__vfs_to_rw(file)))
 		return -1;
-	if (!(font->handle = TTF_OpenFontRW(ops, 1, size)))
+	if (!(font->handle = TTF_OpenFontIO(ops, 1, size)))
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;
@@ -89,18 +89,18 @@ mlk_font_render(struct mlk_font *font, struct mlk_texture *tex, const char *text
 		.a = MLK_COLOR_A(color)
 	};
 	SDL_Surface *surface;
-	SDL_Surface *(*func)(TTF_Font *, const char *, SDL_Color);
+	SDL_Surface *(*func)(TTF_Font *, const char *, size_t, SDL_Color);
 
 	switch (font->style) {
 	case MLK_FONT_STYLE_ANTIALIASED:
-		func = TTF_RenderUTF8_Blended;
+		func = TTF_RenderText_Blended;
 		break;
 	default:
-		func = TTF_RenderUTF8_Solid;
+		func = TTF_RenderText_Solid;
 		break;
 	}
 
-	if (!(surface = func(font->handle, text, fg)))
+	if (!(surface = func(font->handle, text, strlen(text), fg)))
 		return mlk_errf("%s", SDL_GetError());
 
 	return mlk__texture_from_surface(tex, surface);
@@ -111,7 +111,7 @@ mlk_font_height(const struct mlk_font *font)
 {
 	assert(font);
 
-	return TTF_FontHeight(font->handle);
+	return TTF_GetFontHeight(font->handle);
 }
 
 int
@@ -125,7 +125,7 @@ mlk_font_query(const struct mlk_font *font, const char *text, unsigned int *w, u
 	if (h)
 		*h = 0;
 
-	if (TTF_SizeUTF8(font->handle, text, (int *)w, (int *)h) != 0)
+	if (TTF_GetStringSize(font->handle, text, strlen(text), (int *)w, (int *)h) != 0)
 		return mlk_errf("%s", SDL_GetError());
 
 	return 0;

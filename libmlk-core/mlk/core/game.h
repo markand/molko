@@ -116,7 +116,7 @@ mlk_game_init(void);
  * \pre state != NULL
  * \param state the state to switch
  */
-_Noreturn void
+void
 mlk_game_push(struct mlk_state *state);
 
 /**

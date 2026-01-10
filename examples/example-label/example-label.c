@@ -151,7 +151,7 @@ init(void)
 
 	if (mlk_example_init("example-label") < 0)
 		mlk_panic();
-	
+
 	/* Change the glowing style. */
 	style_glow.update = style_glow_update;
 
@@ -174,7 +174,7 @@ static void
 handle(struct mlk_state *st, const union mlk_event *ev)
 {
 	(void)st;
-	
+
 	enum mlk_window_theme theme;
 
 	mlk_ui_handle(ev);
@@ -214,7 +214,7 @@ draw(struct mlk_state *st)
 		mlk_painter_set_color(0x323558ff);
 	else
 		mlk_painter_set_color(0xdcd4ffff);
-	
+
 	mlk_painter_clear();
 
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i)
@@ -234,7 +234,7 @@ run(void)
 
 	mlk_game_init();
 	mlk_game_push(&state);
-	mlk_game_loop();
+	mlk_game_loop(&state);
 }
 
 static void

@@ -52,7 +52,7 @@ mlk_game_init(void)
 		mlk_game.states[i] = NULL;
 }
 
-_Noreturn int
+void
 mlk_game_push(struct mlk_state *state)
 {
 	assert(state);
@@ -104,11 +104,11 @@ mlk_game_loop(struct mlk_state *state)
 
 			for (union mlk_event ev; mlk_event_poll(&ev); ) {
 				if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_INPUT))
-					mlk_state_handle(*mlk_game.state, ev);
+					mlk_state_handle(*mlk_game.state, &ev);
 			}
 
 			if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_UPDATE))
-				mlk_state_update(*mlk_game.state, ticks);
+				mlk_state_update(*mlk_game.state, elapsed);
 			if (mlk_game.state && !(mlk_game.inhibit & MLK_GAME_INHIBIT_DRAW))
 				mlk_state_draw(*mlk_game.state);
 

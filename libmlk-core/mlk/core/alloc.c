@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "core_p.h"
 #include "alloc.h"

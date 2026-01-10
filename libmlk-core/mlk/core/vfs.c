@@ -119,18 +119,21 @@ mlk_vfs_file_finish(struct mlk_vfs_file *file)
 /* private */
 
 static int
-rw_vfs_file_close(SDL_RWops *context)
+rw_vfs_file_close(SDL_IOStream *context)
 {
+#if 0
 	mlk_alloc_free(context->hidden.mem.base);
 	SDL_DestroyRW(context);
+#endif
 
 	return 0;
 }
 
-SDL_RWops *
+SDL_IOStream *
 mlk__vfs_to_rw(struct mlk_vfs_file *file)
 {
-	SDL_RWops *ops;
+#if 0
+	SDL_IOStream *ops;
 	char *data;
 	size_t datasz;
 
@@ -144,4 +147,6 @@ mlk__vfs_to_rw(struct mlk_vfs_file *file)
 	ops->close = rw_vfs_file_close;
 
 	return ops;
+#endif
+	return NULL;
 }

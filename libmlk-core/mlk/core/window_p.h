@@ -19,7 +19,7 @@
 #ifndef MLK_CORE_WINDOW_P_H
 #define MLK_CORE_WINDOW_P_H
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 struct mlk__window_handle {
 	SDL_Window *win;

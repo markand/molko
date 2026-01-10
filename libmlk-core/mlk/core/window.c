@@ -19,7 +19,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "err.h"
 #include "util.h"
@@ -42,6 +42,7 @@ struct mlk_window mlk_window = {
 static void
 load_cursors(void)
 {
+#if 0
 	cursors[MLK_WINDOW_CURSOR_ARROW] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 	cursors[MLK_WINDOW_CURSOR_EDIT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
 	cursors[MLK_WINDOW_CURSOR_WAIT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
@@ -49,6 +50,7 @@ load_cursors(void)
 	cursors[MLK_WINDOW_CURSOR_SIZE] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
 	cursors[MLK_WINDOW_CURSOR_NO] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
 	cursors[MLK_WINDOW_CURSOR_HAND] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+#endif
 }
 
 static void
@@ -77,7 +79,7 @@ load_window(const char *title, unsigned int w, unsigned int h)
 static int
 load_renderer(void)
 {
-	return (handle.renderer = SDL_CreateRenderer(handle.win, NULL, 0)) != NULL;
+	return (handle.renderer = SDL_CreateRenderer(handle.win, NULL)) != NULL;
 }
 
 int

@@ -18,7 +18,7 @@
 
 #include <assert.h>
 
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 
 #include "err.h"
 #include "texture.h"
@@ -30,9 +30,9 @@
 static void
 dimensions(struct mlk_texture *tex)
 {
-	int w, h;
+	float w, h;
 
-	if (SDL_QueryTexture(tex->handle, NULL, NULL, &w, &h) < 0)
+	if (!SDL_GetTextureSize(tex->handle, &w, &h))
 		tex->w = tex->h = 0;
 	else {
 		tex->w = w;
@@ -60,9 +60,9 @@ mlk_image_openmem(struct mlk_texture *tex, const void *buffer, size_t size)
 	assert(tex);
 	assert(buffer);
 
-	SDL_RWops *ops = SDL_RWFromConstMem(buffer, size);
+	SDL_IOStream *ops = SDL_IOFromConstMem(buffer, size);
 
-	if (!ops || !(tex->handle = IMG_LoadTexture_RW(MLK__RENDERER(), ops, 1)))
+	if (!ops || !(tex->handle = IMG_LoadTexture_IO(MLK__RENDERER(), ops, 1)))
 		return mlk_errf("%s", SDL_GetError());
 
 	dimensions(tex);
@@ -76,11 +76,11 @@ mlk_image_openvfs(struct mlk_texture *tex, struct mlk_vfs_file *file)
 	assert(tex);
 	assert(file);
 
-	SDL_RWops *ops;
+	SDL_IOStream *ops;
 
 	if (!(ops = mlk__vfs_to_rw(file)))
 		return -1;
-	if (!(tex->handle = IMG_LoadTexture_RW(MLK__RENDERER(), ops, 1)))
+	if (!(tex->handle = IMG_LoadTexture_IO(MLK__RENDERER(), ops, 1)))
 		return mlk_errf("%s", SDL_GetError());
 
 	dimensions(tex);

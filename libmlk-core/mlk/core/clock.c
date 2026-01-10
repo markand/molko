@@ -16,7 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "clock.h"
 

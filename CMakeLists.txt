@@ -16,10 +16,10 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 4.0)
 project(
 	molko
-	VERSION "0.1.0"
+	VERSION "0.2.0"
 	DESCRIPTION "Molko's Engine"
 	HOMEPAGE_URL "http://hg.malikania.fr/molko"
 	LANGUAGES "C"
@@ -90,12 +90,7 @@ if (MLK_WITH_ZIP)
 endif ()
 
 add_subdirectory(extern/libsqlite)
-add_subdirectory(extern/libdt)
 add_subdirectory(extern/libutlist)
-
-if (MLK_WITH_JAVASCRIPT)
-	add_subdirectory(extern/libduktape)
-endif ()
 
 if (MLK_WITH_DOXYGEN)
 	add_subdirectory(doc)
@@ -110,18 +105,15 @@ add_subdirectory(libmlk-core)
 add_subdirectory(libmlk-ui)
 add_subdirectory(libmlk-rpg)
 
-if (MLK_WITH_TESTS)
-	enable_testing()
-	add_subdirectory(tests)
-endif ()
+# Disable until switch to unity.
+# if (MLK_WITH_TESTS)
+# 	enable_testing()
+# 	add_subdirectory(tests)
+# endif ()
 
 if (MLK_WITH_EXAMPLES)
 	add_subdirectory(libmlk-example)
 	add_subdirectory(examples)
-endif ()
-
-if (MLK_WITH_JAVASCRIPT)
-	add_subdirectory(mlk-run)
 endif ()
 
 configure_file(

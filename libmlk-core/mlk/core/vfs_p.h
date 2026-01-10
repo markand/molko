@@ -19,11 +19,11 @@
 #ifndef MLK_CORE_VFS_P_H
 #define MLK_CORE_VFS_P_H
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 struct mlk_vfs_file;
 
-SDL_RWops *
+SDL_IOStream *
 mlk__vfs_to_rw(struct mlk_vfs_file *);
 
 #endif /* !MLK_CORE_VFS_P_H */

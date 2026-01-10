@@ -24,7 +24,7 @@
 
 #include <libintl.h>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <mlk/core/err.h>
 #include <mlk/core/event.h>

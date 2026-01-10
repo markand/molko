@@ -18,7 +18,7 @@
 
 #include <string.h>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "event.h"
 
@@ -33,12 +33,12 @@ static const struct {
 	{ SDLK_TAB,             MLK_KEY_TAB                     },
 	{ SDLK_SPACE,           MLK_KEY_SPACE                   },
 	{ SDLK_EXCLAIM,         MLK_KEY_EXCLAIM                 },
-	{ SDLK_QUOTEDBL,        MLK_KEY_DOUBLE_QUOTE            },
+	{ SDLK_DBLAPOSTROPHE,   MLK_KEY_DOUBLE_QUOTE            },
 	{ SDLK_HASH,            MLK_KEY_HASH                    },
 	{ SDLK_PERCENT,         MLK_KEY_PERCENT                 },
 	{ SDLK_DOLLAR,          MLK_KEY_DOLLAR                  },
 	{ SDLK_AMPERSAND,       MLK_KEY_AMPERSAND               },
-	{ SDLK_QUOTE,           MLK_KEY_QUOTE                   },
+	{ SDLK_APOSTROPHE,      MLK_KEY_QUOTE                   },
 	{ SDLK_LEFTPAREN,       MLK_KEY_LPAREN                  },
 	{ SDLK_RIGHTPAREN,      MLK_KEY_RPAREN                  },
 	{ SDLK_ASTERISK,        MLK_KEY_ASTERISK                },
@@ -69,33 +69,33 @@ static const struct {
 	{ SDLK_RIGHTBRACKET,    MLK_KEY_RBRACKET                },
 	{ SDLK_CARET,           MLK_KEY_CARET                   },
 	{ SDLK_UNDERSCORE,      MLK_KEY_UNDERSCORE              },
-	{ SDLK_BACKQUOTE,       MLK_KEY_BACKQUOTE               },
-	{ SDLK_a,               MLK_KEY_A                       },
-	{ SDLK_b,               MLK_KEY_B                       },
-	{ SDLK_c,               MLK_KEY_C                       },
-	{ SDLK_d,               MLK_KEY_D                       },
-	{ SDLK_e,               MLK_KEY_E                       },
-	{ SDLK_f,               MLK_KEY_F                       },
-	{ SDLK_g,               MLK_KEY_G                       },
-	{ SDLK_h,               MLK_KEY_H                       },
-	{ SDLK_i,               MLK_KEY_I                       },
-	{ SDLK_j,               MLK_KEY_J                       },
-	{ SDLK_k,               MLK_KEY_K                       },
-	{ SDLK_l,               MLK_KEY_L                       },
-	{ SDLK_m,               MLK_KEY_M                       },
-	{ SDLK_n,               MLK_KEY_N                       },
-	{ SDLK_o,               MLK_KEY_O                       },
-	{ SDLK_p,               MLK_KEY_P                       },
-	{ SDLK_q,               MLK_KEY_Q                       },
-	{ SDLK_r,               MLK_KEY_R                       },
-	{ SDLK_s,               MLK_KEY_S                       },
-	{ SDLK_t,               MLK_KEY_T                       },
-	{ SDLK_u,               MLK_KEY_U                       },
-	{ SDLK_v,               MLK_KEY_V                       },
-	{ SDLK_w,               MLK_KEY_W                       },
-	{ SDLK_x,               MLK_KEY_X                       },
-	{ SDLK_y,               MLK_KEY_Y                       },
-	{ SDLK_z,               MLK_KEY_Z                       },
+	{ SDLK_GRAVE,           MLK_KEY_BACKQUOTE               },
+	{ SDLK_A,               MLK_KEY_A                       },
+	{ SDLK_B,               MLK_KEY_B                       },
+	{ SDLK_C,               MLK_KEY_C                       },
+	{ SDLK_D,               MLK_KEY_D                       },
+	{ SDLK_E,               MLK_KEY_E                       },
+	{ SDLK_F,               MLK_KEY_F                       },
+	{ SDLK_G,               MLK_KEY_G                       },
+	{ SDLK_H,               MLK_KEY_H                       },
+	{ SDLK_I,               MLK_KEY_I                       },
+	{ SDLK_J,               MLK_KEY_J                       },
+	{ SDLK_K,               MLK_KEY_K                       },
+	{ SDLK_L,               MLK_KEY_L                       },
+	{ SDLK_M,               MLK_KEY_M                       },
+	{ SDLK_N,               MLK_KEY_N                       },
+	{ SDLK_O,               MLK_KEY_O                       },
+	{ SDLK_P,               MLK_KEY_P                       },
+	{ SDLK_Q,               MLK_KEY_Q                       },
+	{ SDLK_R,               MLK_KEY_R                       },
+	{ SDLK_S,               MLK_KEY_S                       },
+	{ SDLK_T,               MLK_KEY_T                       },
+	{ SDLK_U,               MLK_KEY_U                       },
+	{ SDLK_V,               MLK_KEY_V                       },
+	{ SDLK_W,               MLK_KEY_W                       },
+	{ SDLK_X,               MLK_KEY_X                       },
+	{ SDLK_Y,               MLK_KEY_Y                       },
+	{ SDLK_Z,               MLK_KEY_Z                       },
 	{ SDLK_CAPSLOCK,        MLK_KEY_CAPSLOCK                },
 	{ SDLK_F1,              MLK_KEY_F1                      },
 	{ SDLK_F2,              MLK_KEY_F2                      },
@@ -182,10 +182,10 @@ static const struct {
 	int button;
 	enum mlk_gamepad_button value;
 } pads[] = {
-	{ SDL_GAMEPAD_BUTTON_A,                 MLK_GAMEPAD_BUTTON_A            },
-	{ SDL_GAMEPAD_BUTTON_B,                 MLK_GAMEPAD_BUTTON_B            },
-	{ SDL_GAMEPAD_BUTTON_X,                 MLK_GAMEPAD_BUTTON_X            },
-	{ SDL_GAMEPAD_BUTTON_Y,                 MLK_GAMEPAD_BUTTON_Y            },
+	{ SDL_GAMEPAD_BUTTON_LABEL_A,           MLK_GAMEPAD_BUTTON_A            },
+	{ SDL_GAMEPAD_BUTTON_LABEL_B,           MLK_GAMEPAD_BUTTON_B            },
+	{ SDL_GAMEPAD_BUTTON_LABEL_X,           MLK_GAMEPAD_BUTTON_X            },
+	{ SDL_GAMEPAD_BUTTON_LABEL_Y,           MLK_GAMEPAD_BUTTON_Y            },
 	{ SDL_GAMEPAD_BUTTON_BACK,              MLK_GAMEPAD_BUTTON_BACK         },
 	{ SDL_GAMEPAD_BUTTON_GUIDE,             MLK_GAMEPAD_BUTTON_LOGO         },
 	{ SDL_GAMEPAD_BUTTON_START,             MLK_GAMEPAD_BUTTON_START        },
@@ -207,7 +207,7 @@ convert_key(const SDL_Event *event, union mlk_event *ev)
 	ev->key.key = MLK_KEY_UNKNOWN;
 
 	for (size_t i = 0; keymap[i].key != 0; ++i) {
-		if (keymap[i].key == event->key.keysym.sym) {
+		if (keymap[i].key == event->key.key) {
 			ev->key.key = keymap[i].value;
 			break;
 		}

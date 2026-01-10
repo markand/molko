@@ -20,7 +20,7 @@
 #include <limits.h>
 #include <stdlib.h>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <mlk/util/util.h>
 
