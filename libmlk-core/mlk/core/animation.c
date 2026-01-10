@@ -17,7 +17,6 @@
  */
 
 #include <assert.h>
-#include <string.h>
 
 #include "animation.h"
 #include "sprite.h"

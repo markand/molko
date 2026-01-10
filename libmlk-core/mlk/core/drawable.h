@@ -21,21 +21,19 @@
 
 /**
  * \file mlk/core/drawable.h
- * \brief Automatic drawable objects
+ * \brief Automatic drawable objects.
+ *
+ * This module is analogous to ::action but does not handle event and has a
+ * position on the screen.
  */
+
+#include <assert.h>
 
 /**
  * \struct mlk_drawable
  * \brief Drawable structure
  */
 struct mlk_drawable {
-	/**
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data.
-	 */
-	void *data;
-
 	/**
 	 * (read-write)
 	 *
@@ -53,13 +51,22 @@ struct mlk_drawable {
 	/**
 	 * (optional)
 	 *
+	 * Restart the drawable.
+	 *
+	 * This function should be used when the drawable can be reset in its
+	 * original form, e.g. an animation from start.
+	 */
+	void (*start)(struct mlk_drawable *self);
+
+	/**
+	 * (optional)
+	 *
 	 * Update the drawable with the given ticks since last frame.
 	 *
-	 * The callback should return non-zero if it is considered complete.
+	 * The callback should return true if it is considered complete.
 	 *
-	 * \param self this drawable
 	 * \param ticks frame ticks
-	 * \return non-zero if complete
+	 * \return true if drawable completed
 	 */
 	int (*update)(struct mlk_drawable *self, unsigned int ticks);
 
@@ -67,8 +74,6 @@ struct mlk_drawable {
 	 * (optional)
 	 *
 	 * Draw the drawable.
-	 *
-	 * \param self this drawable
 	 */
 	void (*draw)(struct mlk_drawable *self);
 
@@ -89,7 +94,8 @@ struct mlk_drawable {
 	 *
 	 * Dispose resources allocated by/for the drawable.
 	 *
-	 * \param self this drawable
+	 * This function is always called the least meaning that user is able
+	 * to free the pointer if dynamically allocated.
 	 */
 	void (*finish)(struct mlk_drawable *self);
 };
@@ -99,41 +105,66 @@ extern "C" {
 #endif
 
 /**
- * Invoke ::mlk_drawable::update function if not null.
- *
- * \pre drawable != NULL
- * \param drawable the drawable
- * \param ticks frame ticks
+ * Invoke ::mlk_drawable::start function if not null.
  */
-int
-mlk_drawable_update(struct mlk_drawable *drawable, unsigned int ticks);
+static inline void
+mlk_drawable_start(struct mlk_drawable *drawable)
+{
+	assert(drawable);
+
+	if (drawable->start)
+		drawable->start(drawable);
+}
+
+/**
+ * Invoke ::mlk_drawable::update function if not null.
+ */
+static inline int
+mlk_drawable_update(struct mlk_drawable *drawable, unsigned int ticks)
+{
+	assert(drawable);
+
+	if (drawable->update)
+		return drawable->update(drawable, ticks);
+
+	return 0;
+}
 
 /**
  * Invoke ::mlk_drawable::draw function if not null.
- *
- * \pre drawable != NULL
- * \param drawable the drawable
  */
-void
-mlk_drawable_draw(struct mlk_drawable *drawable);
+static inline void
+mlk_drawable_draw(struct mlk_drawable *drawable)
+{
+	assert(drawable);
+
+	if (drawable->draw)
+		drawable->draw(drawable);
+}
 
 /**
  * Invoke ::mlk_drawable::end function if not null.
- *
- * \pre drawable != NULL
- * \param drawable the drawable
  */
-void
-mlk_drawable_end(struct mlk_drawable *drawable);
+static inline void
+mlk_drawable_end(struct mlk_drawable *drawable)
+{
+	assert(drawable);
+
+	if (drawable->end)
+		drawable->end(drawable);
+}
 
 /**
  * Invoke ::mlk_drawable::finish function if not null.
- *
- * \pre drawable != NULL
- * \param drawable the drawable
  */
-void
-mlk_drawable_finish(struct mlk_drawable *drawable);
+static inline void
+mlk_drawable_finish(struct mlk_drawable *drawable)
+{
+	assert(drawable);
+
+	if (drawable->finish)
+		drawable->finish(drawable);
+}
 
 #if defined(__cplusplus)
 }

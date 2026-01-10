@@ -16,23 +16,20 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <mlk/core/alloc.h>
 #include <mlk/core/animation.h>
 #include <mlk/core/core.h>
+#include <mlk/core/drawable-stack.h>
+#include <mlk/core/drawable.h>
 #include <mlk/core/event.h>
 #include <mlk/core/game.h>
-#include <mlk/core/drawable.h>
-#include <mlk/core/drawable-stack.h>
+#include <mlk/core/image.h>
 #include <mlk/core/key.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
-#include <mlk/core/sys.h>
-#include <mlk/core/image.h>
 #include <mlk/core/sprite.h>
 #include <mlk/core/state.h>
+#include <mlk/core/sys.h>
 #include <mlk/core/texture.h>
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
@@ -42,6 +39,9 @@
 
 #include <mlk/example/example.h>
 #include <mlk/example/registry.h>
+
+#define EXPLOSION(Ptr, Field) \
+        (MLK_CONTAINER_OF(Ptr, struct explosion, Field))
 
 static struct mlk_label help = {
 	.x = 10,
@@ -80,25 +80,27 @@ init(void)
 }
 
 static int
-explosion_update(struct mlk_drawable *dw, unsigned int ticks)
+explosion_update(struct mlk_drawable *self, unsigned int ticks)
 {
-	struct explosion *ex = dw->data;
+	struct explosion *ex = EXPLOSION(self, dw);
 
 	return mlk_animation_update(&ex->anim, ticks);
 }
 
 static void
-explosion_draw(struct mlk_drawable *dw)
+explosion_draw(struct mlk_drawable *self)
 {
-	struct explosion *ex = dw->data;
+	struct explosion *ex = EXPLOSION(self, dw);
 
 	mlk_animation_draw(&ex->anim, ex->dw.x, ex->dw.y);
 }
 
 static void
-explosion_finish(struct mlk_drawable *dw)
+explosion_finish(struct mlk_drawable *self)
 {
-	mlk_alloc_free(dw->data);
+	struct explosion *ex = EXPLOSION(self, dw);
+
+	mlk_alloc_free(ex);
 }
 
 static void
@@ -106,7 +108,6 @@ spawn(int x, int y)
 {
 	struct explosion *ex = mlk_alloc_new0(1, sizeof (*ex));
 
-	ex->dw.data = ex;
 	ex->anim.sprite = explosion_sprite;
 	ex->anim.delay = 1000 / 60;
 	ex->dw.x = x - (int)(explosion_sprite->cellw / 2);
@@ -120,10 +121,8 @@ spawn(int x, int y)
 }
 
 static void
-handle(struct mlk_state *st, const union mlk_event *ev)
+handle(struct mlk_state *, const union mlk_event *ev)
 {
-	(void)st;
-
 	switch (ev->type) {
 	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
@@ -146,10 +145,8 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 }
 
 static void
-update(struct mlk_state *st, unsigned int ticks)
+update(struct mlk_state *, unsigned int ticks)
 {
-	(void)st;
-
 	mlk_drawable_stack_update(&stack, ticks);
 }
 
@@ -177,7 +174,6 @@ run(void)
 	mlk_drawable_stack_init(&stack);
 
 	mlk_game_init();
-	mlk_game_push(&state);
 	mlk_game_loop(&state);
 }
 

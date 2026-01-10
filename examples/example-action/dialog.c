@@ -19,10 +19,14 @@
 #include <assert.h>
 
 #include <mlk/core/coro.h>
+#include <mlk/core/util.h>
 
 #include <mlk/example/example.h>
 
 #include "dialog.h"
+
+#define DIALOG(Ptr, Field) \
+        (MLK_CONTAINER_OF(Ptr, struct dialog, Field))
 
 /* Message width is 80% of window width and height is auto computed. */
 #define QMW (MLK_EXAMPLE_W * 0.8)
@@ -32,25 +36,25 @@
 #define QMY (MLK_EXAMPLE_H * 0.2)
 
 static void
-handle(struct mlk_action *act, const union mlk_event *ev)
+handle(struct mlk_action *self, const union mlk_event *ev)
 {
-	struct dialog *dlg = act->data;
+	struct dialog *dlg = DIALOG(self, action);
 
 	mlk_message_handle(&dlg->msg, ev);
 }
 
 static int
-update(struct mlk_action *act, unsigned int ticks)
+update(struct mlk_action *self, unsigned int ticks)
 {
-	struct dialog *dlg = act->data;
+	struct dialog *dlg = DIALOG(self, action);
 
 	return mlk_message_update(&dlg->msg, ticks);
 }
 
 static void
-draw(struct mlk_action *act)
+draw(struct mlk_action *self)
 {
-	struct dialog *dlg = act->data;
+	struct dialog *dlg = DIALOG(self, action);
 
 	mlk_message_draw(&dlg->msg);
 }
@@ -76,7 +80,6 @@ dialog_restart(struct dialog *dlg)
 	mlk_message_query(&dlg->msg, NULL, &dlg->msg.h);
 	mlk_message_start(&dlg->msg);
 
-	dlg->action.data = dlg;
 	dlg->action.handle = handle;
 	dlg->action.update = update;
 	dlg->action.draw = draw;

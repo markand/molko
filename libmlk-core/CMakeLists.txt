@@ -27,7 +27,6 @@ set(
 	SOURCES
 	${libmlk-core_SOURCE_DIR}/mlk/core/action-script.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/action-stack.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/action.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/alloc.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/animation.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/clock.c
@@ -36,7 +35,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/core_p.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/coro.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/drawable-stack.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/drawable.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/err.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/event.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/font.c

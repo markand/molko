@@ -34,6 +34,8 @@
  * battles, maps, etc).
  */
 
+#include <assert.h>
+
 union mlk_event;
 
 /**
@@ -45,20 +47,9 @@ union mlk_event;
  */
 struct mlk_action {
 	/**
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data.
-	 */
-	void *data;
-
-	/**
 	 * (optional)
 	 *
-	 * Start the action.
-	 *
-	 * Use this function when the action should start.
-	 *
-	 * \param self this action
+	 * Restart the action.
 	 */
 	void (*start)(struct mlk_action *self);
 
@@ -67,8 +58,7 @@ struct mlk_action {
 	 *
 	 * Handle an event.
 	 *
-	 * \param self this action
-	 * \param event the event
+	 * \param event the last event received
 	 */
 	void (*handle)(struct mlk_action *self, const union mlk_event *event);
 
@@ -77,11 +67,10 @@ struct mlk_action {
 	 *
 	 * Update the action with the given ticks since last frame.
 	 *
-	 * The callback should return non-zero if it is considered complete.
+	 * The callback should return true if it is considered complete.
 	 *
-	 * \param self this action
 	 * \param ticks frame ticks
-	 * \return non-zero if complete
+	 * \return true if action completed
 	 */
 	int (*update)(struct mlk_action *self, unsigned int ticks);
 
@@ -89,8 +78,6 @@ struct mlk_action {
 	 * (optional)
 	 *
 	 * Draw the action.
-	 *
-	 * \param self this action
 	 */
 	void (*draw)(struct mlk_action *self);
 
@@ -101,8 +88,6 @@ struct mlk_action {
 	 *
 	 * In contrast to finish, this function should be called after the
 	 * action was considered complete.
-	 *
-	 * \param self this action
 	 */
 	void (*end)(struct mlk_action *self);
 
@@ -111,9 +96,10 @@ struct mlk_action {
 	 *
 	 * Dispose resources allocated by/for the action.
 	 *
-	 * \param self this action
+	 * This function is always called the least meaning that user is able
+	 * to free the pointer if dynamically allocated.
 	 */
-	void (*finish)(struct mlk_action *);
+	void (*finish)(struct mlk_action *self);
 };
 
 #if defined(__cplusplus)
@@ -122,59 +108,77 @@ extern "C" {
 
 /**
  * Invoke ::mlk_action::start function if not null.
- *
- * \pre action != NULL
- * \param action the action
  */
-void
-mlk_action_start(struct mlk_action *action);
+static inline void
+mlk_action_start(struct mlk_action *action)
+{
+	assert(action);
+
+	if (action->start)
+		action->start(action);
+}
 
 /**
  * Invoke ::mlk_action::handle function if not null.
- *
- * \pre action != NULL
- * \param action the action
- * \param event the event
  */
-void
-mlk_action_handle(struct mlk_action *action, const union mlk_event *event);
+static inline void
+mlk_action_handle(struct mlk_action *action, const union mlk_event *event)
+{
+	assert(action);
+
+	if (action->handle)
+		action->handle(action, event);
+}
 
 /**
  * Invoke ::mlk_action::update function if not null.
- *
- * \pre action != NULL
- * \param action the action
- * \param ticks frame ticks
  */
-int
-mlk_action_update(struct mlk_action *action, unsigned int ticks);
+static inline int
+mlk_action_update(struct mlk_action *action, unsigned int ticks)
+{
+	assert(action);
+
+	if (action->update)
+		return action->update(action, ticks);
+
+	return 0;
+}
 
 /**
  * Invoke ::mlk_action::draw function if not null.
- *
- * \pre action != NULL
- * \param action the action
  */
-void
-mlk_action_draw(struct mlk_action *action);
+static inline void
+mlk_action_draw(struct mlk_action *action)
+{
+	assert(action);
+
+	if (action->draw)
+		action->draw(action);
+}
 
 /**
  * Invoke ::mlk_action::end function if not null.
- *
- * \pre action != NULL
- * \param action the action
  */
-void
-mlk_action_end(struct mlk_action *action);
+static inline void
+mlk_action_end(struct mlk_action *action)
+{
+	assert(action);
+
+	if (action->end)
+		action->end(action);
+}
 
 /**
  * Invoke ::mlk_action::finish function if not null.
- *
- * \pre action != NULL
- * \param action the action
  */
-void
-mlk_action_finish(struct mlk_action *action);
+static inline void
+mlk_action_finish(struct mlk_action *action)
+{
+	assert(action);
+
+	if (action->finish)
+		action->finish(action);
+}
 
 #if defined(__cplusplus)
 }
