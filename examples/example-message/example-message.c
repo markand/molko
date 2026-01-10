@@ -90,7 +90,6 @@ run(struct mlk_message *msg)
 	mlk_message_start(msg);
 
 	mlk_game_init();
-	mlk_game_push(&state);
 	mlk_game_loop(&state);
 }
 

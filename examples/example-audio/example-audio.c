@@ -125,7 +125,6 @@ run(void)
 	};
 
 	mlk_game_init();
-	mlk_game_push(&state);
 	mlk_game_loop(&state);
 
 	mlk_music_finish(music);

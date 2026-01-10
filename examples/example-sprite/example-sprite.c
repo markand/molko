@@ -69,10 +69,8 @@ init(void)
 }
 
 static void
-handle(struct mlk_state *st, const union mlk_event *ev)
+handle(struct mlk_state *, const union mlk_event *ev)
 {
-	(void)st;
-
 	switch (ev->type) {
 	case MLK_EVENT_KEYDOWN:
 		switch (ev->key.key) {
@@ -107,10 +105,8 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 }
 
 static void
-draw(struct mlk_state *st)
+draw(struct mlk_state *)
 {
-	(void)st;
-
 	int x, y;
 
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
@@ -132,7 +128,6 @@ run(void)
 	changed();
 
 	mlk_game_init();
-	mlk_game_push(&state);
 	mlk_game_loop(&state);
 }
 
@@ -143,11 +138,8 @@ quit(void)
 }
 
 int
-main(int argc, char **argv)
+main(int, char **)
 {
-	(void)argc;
-	(void)argv;
-
 	init();
 	run();
 	quit();

@@ -176,10 +176,8 @@ init(void)
 }
 
 static void
-handle(struct mlk_state *st, const union mlk_event *ev)
+handle(struct mlk_state *, const union mlk_event *ev)
 {
-	(void)st;
-
 	switch (ev->type) {
 	case MLK_EVENT_QUIT:
 		mlk_game_quit();
@@ -207,10 +205,8 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 }
 
 static void
-update(struct mlk_state *st, unsigned int ticks)
+update(struct mlk_state *, unsigned int ticks)
 {
-	(void)st;
-
 	mlk_map_update(&map, ticks);
 
 	if (tomb.message.state)
@@ -218,10 +214,8 @@ update(struct mlk_state *st, unsigned int ticks)
 }
 
 static void
-draw(struct mlk_state *st)
+draw(struct mlk_state *)
 {
-	(void)st;
-
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_map_draw(&map);
@@ -242,7 +236,6 @@ run(void)
 	};
 
 	mlk_game_init();
-	mlk_game_push(&state);
 	mlk_game_loop(&state);
 }
 
@@ -256,11 +249,8 @@ quit(void)
 }
 
 int
-main(int argc, char **argv)
+main(int, char **)
 {
-	(void)argc;
-	(void)argv;
-
 	init();
 	run();
 	quit();
