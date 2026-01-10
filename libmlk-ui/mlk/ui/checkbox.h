@@ -103,13 +103,6 @@ struct mlk_checkbox_style {
 	 */
 	unsigned int border_size;
 
-	/*
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data.
-	 */
-	void *data;
-
 	/**
 	 * (read-write, optional)
 	 *

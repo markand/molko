@@ -270,13 +270,6 @@ struct mlk_message_style {
 	unsigned int speed;
 
 	/**
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data.
-	 */
-	void *data;
-
-	/**
 	 * (read-write, optional)
 	 *
 	 * Check the optimal dimensions for this message.

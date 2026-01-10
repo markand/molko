@@ -58,7 +58,6 @@ struct mlk_map_style {
 };
 
 struct mlk_map_delegate {
-	void *data;
 	void (*update)(struct mlk_map_delegate *self, struct mlk_map *map, unsigned int ticks);
 	void (*draw)(struct mlk_map_delegate *self, const struct mlk_map *map);
 };

@@ -335,7 +335,7 @@ last(const struct mlk_message *msg)
 {
 	size_t ret = -1;
 
-	for (size_t i = msg->linesz; i >= 0; --i) {
+	for (size_t i = msg->linesz; i != 0; --i) {
 		if (is_selectable(msg, i)) {
 			ret = i;
 			break;

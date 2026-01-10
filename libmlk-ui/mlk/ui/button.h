@@ -130,13 +130,6 @@ struct mlk_button_style {
 	 * Text font.
 	 */
 	struct mlk_font *font;
-	
-	/**
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data.
-	 */
-	void *data;
 
 	/**
 	 * (read-write, optional)

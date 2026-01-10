@@ -80,13 +80,6 @@ struct mlk_label_style {
 	 * Font to use.
 	 */
 	struct mlk_font *font;
-	
-	/**
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data.
-	 */
-	void *data;
 
 	/**
 	 * Check the required size for this label.

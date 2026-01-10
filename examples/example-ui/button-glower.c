@@ -18,12 +18,17 @@
 
 #include <assert.h>
 
+#include <mlk/core/util.h>
+
 #include "button-glower.h"
+
+#define BUTTON_GLOWER(Ptr, Field) \
+        (MLK_UTIL_CONTAINER_OF(Ptr, struct button_glower, Field))
 
 static void
 update(struct mlk_button_style *self, struct mlk_button *button, unsigned int ticks)
 {
-	struct button_glower *glower = self->data;
+	struct button_glower *glower = BUTTON_GLOWER(self, style);
 
 	/* Don't update if pressed. */
 	if (!button->pressed) {
@@ -39,7 +44,6 @@ button_glower_init(struct button_glower *glower, struct mlk_button *button)
 	assert(button);
 
 	glower->style.background = glower->glower.start;
-	glower->style.data = glower;
 	glower->style.update = update;
 
 	button->style = &glower->style;

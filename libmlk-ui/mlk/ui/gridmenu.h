@@ -160,13 +160,6 @@ struct mlk_gridmenu_style {
 	 */
 	struct mlk_font *font;
 
-	/*
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data.
-	 */
-	void *data;
-
 	/**
 	 * (read-write, optional)
 	 *

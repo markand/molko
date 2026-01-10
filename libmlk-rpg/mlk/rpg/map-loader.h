@@ -43,13 +43,6 @@ struct mlk_tileset;
  */
 struct mlk_map_loader {
 	/**
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data for callbacks.
-	 */
-	void *data;
-
-	/**
 	 * (read-write)
 	 *
 	 * Obtain a tileset that this map requires.

@@ -48,13 +48,6 @@ struct mlk_tileset_collision;
  */
 struct mlk_tileset_loader {
 	/**
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data for callbacks.
-	 */
-	void *data;
-
-	/**
 	 * (read-write)
 	 *
 	 * Open a texture from the given ident name.

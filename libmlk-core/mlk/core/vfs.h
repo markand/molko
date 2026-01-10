@@ -152,13 +152,6 @@ struct mlk_vfs {
  */
 struct mlk_vfs_file {
 	/**
-	 * (read-write, borrowed, optional)
-	 *
-	 * Arbitrary user data for callbacks.
-	 */
-	void *data;
-
-	/**
 	 * (read-write, optional)
 	 *
 	 * Attempt to read file entry into the buffer destination. The function
