@@ -251,6 +251,7 @@ handle(struct mlk_state *, const union mlk_event *ev)
 		break;
 	default:
 		mlk_action_stack_handle(&action_stack, ev);
+		break;
 	}
 }
 

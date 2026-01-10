@@ -20,7 +20,7 @@ project(libmlk-minicoro)
 
 set(
 	SOURCES
-	${libmlk-minicoro_SOURCE_DIR}/minicoro.h
+	${libmlk-minicoro_SOURCE_DIR}/mlk/extern/minicoro.h
 )
 
 mlk_library(
