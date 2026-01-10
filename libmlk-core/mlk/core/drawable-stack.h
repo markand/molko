@@ -27,6 +27,21 @@
 #include <stddef.h>
 
 /**
+ * \brief Declare literal array of drawables.
+ *
+ * This macro expands to an initializer for ::mlk_drawable_stack using a compound
+ * literal.
+ *
+ * \note This must be used only on a object with permanent storage.
+ */
+#define MLK_DRAWABLE_STACK_DECL(Num) {                                          \
+        .objects  = (struct mlk_drawable *[Num]) {},                            \
+        .objectsz = Num                                                         \
+}
+
+struct mlk_drawable;
+
+/**
  * \struct mlk_drawable_stack
  * \brief Drawable stack structure
  */

@@ -18,6 +18,7 @@
 
 #include <assert.h>
 
+#include <mlk/core/coro.h>
 #include <mlk/core/event.h>
 #include <mlk/core/maths.h>
 #include <mlk/core/sound.h>
@@ -30,13 +31,15 @@
 #define CHEST_DELAY 80
 
 static void
-handle(struct mlk_action *act, const union mlk_event *ev)
+chest_handle(struct mlk_action *self, const union mlk_event *ev)
 {
-	struct chest *chest = act->data;
+	struct chest *chest;
 	unsigned int cw, ch;
 
+	chest = CHEST(self, action);
+
 	/* Make sure that we don't operate on a already opened chest. */
-	if (chest->state == CHEST_STATE_OPENED)
+	if (chest->state != CHEST_STATE_CLOSED)
 		return;
 
 	/*
@@ -59,28 +62,24 @@ handle(struct mlk_action *act, const union mlk_event *ev)
 }
 
 static int
-update(struct mlk_action *act, unsigned int ticks)
+chest_update(struct mlk_drawable *self, unsigned int ticks)
 {
-	struct chest *chest = act->data;
+	struct chest *chest = CHEST(self, drawable);
 
 	if (chest->state != CHEST_STATE_OPENING)
 		return 0;
 
-	if (mlk_animation_update(&chest->animation, ticks)) {
+	if (mlk_animation_update(&chest->animation, ticks))
 		chest->state = CHEST_STATE_OPENED;
 
-		if (chest->run)
-			chest->run(chest);
-	}
-
-	/* The chest never dies. */
+	/* Chest handle dies but not its drawable. */
 	return 0;
 }
 
 static void
-draw(struct mlk_action *act)
+chest_draw(struct mlk_drawable *self)
 {
-	const struct chest *chest = act->data;
+	const struct chest *chest = MLK_CONTAINER_OF(self, struct chest, drawable);
 
 	switch (chest->state) {
 	case CHEST_STATE_CLOSED:
@@ -91,28 +90,46 @@ draw(struct mlk_action *act)
 		break;
 	case CHEST_STATE_OPENED:
 		mlk_sprite_draw(chest->animation.sprite,
-		    chest->animation.sprite->nrows - 1,
-		    chest->animation.sprite->ncols - 1,
-		    chest->x,
-		    chest->y);
+		                chest->animation.sprite->nrows - 1,
+		                chest->animation.sprite->ncols - 1,
+		                chest->x,
+		                chest->y);
 		break;
 	default:
 		break;
 	}
 }
 
-struct mlk_action *
-chest_init(struct chest *chest)
+void
+chest_pressed(const struct chest *chest)
+{
+	assert(chest);
+
+	while (chest->state == CHEST_STATE_CLOSED)
+		mlk_coro_yield();
+}
+
+void
+chest_opened(const struct chest *chest)
+{
+	assert(chest);
+
+	while (chest->state != CHEST_STATE_OPENED)
+		mlk_coro_yield();
+}
+
+void
+chest_restart(struct chest *chest)
 {
 	assert(chest);
 
 	chest->state = CHEST_STATE_CLOSED;
+
 	chest->animation.sprite = &mlk_registry_sprites[MLK_REGISTRY_TEXTURE_CHEST];
 	chest->animation.delay = CHEST_DELAY;
-	chest->action.data = chest;
-	chest->action.handle = handle;
-	chest->action.update = update;
-	chest->action.draw = draw;
 
-	return &chest->action;
+	chest->action.handle = chest_handle;
+
+	chest->drawable.update = chest_update;
+	chest->drawable.draw = chest_draw;
 }

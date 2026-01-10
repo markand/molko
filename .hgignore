@@ -6,6 +6,7 @@ assets/.*\.h$
 
 # CMake files.
 ^build
+^CMakePresets\.json$
 
 # Qt Creator files
 ^CMakeLists\.txt\.user$

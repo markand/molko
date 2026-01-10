@@ -372,6 +372,9 @@ mlk_message_handle(struct mlk_message *message, const union mlk_event *ev);
 int
 mlk_message_update(struct mlk_message *message, unsigned int ticks);
 
+int
+mlk_message_complete(const struct mlk_message *message);
+
 /**
  * Invoke ::mlk_message_style::draw.
  */

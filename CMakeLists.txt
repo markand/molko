@@ -89,6 +89,7 @@ if (MLK_WITH_ZIP)
 	find_package(ZIP REQUIRED)
 endif ()
 
+add_subdirectory(extern/libminicoro)
 add_subdirectory(extern/libsqlite)
 add_subdirectory(extern/libutlist)
 

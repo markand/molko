@@ -34,6 +34,7 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/color.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/core.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/core_p.h
+	${libmlk-core_SOURCE_DIR}/mlk/core/coro.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/drawable-stack.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/drawable.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/err.c
@@ -142,6 +143,7 @@ mlk_library(
 			SDL3::Headers
 			SDL3_image::SDL3_image-shared
 			SDL3_ttf::SDL3_ttf-shared
+			libmlk-minicoro
 			libmlk-util
 	INCLUDES
 		PRIVATE

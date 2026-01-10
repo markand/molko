@@ -71,7 +71,7 @@ mlk_library(
 	SOURCES ${ASSETS} ${MAPS} ${TILESETS} ${SOURCES}
 	ASSETS ${ASSETS} ${maps} ${tilesets}
 	TYPE STATIC
-	LIBRARIES libmlk-rpg
+	LIBRARIES libmlk-minicoro libmlk-rpg
 	INCLUDES
 		PUBLIC
 			$<BUILD_INTERFACE:${libmlk-example_SOURCE_DIR}>

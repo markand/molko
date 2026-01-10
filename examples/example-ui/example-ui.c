@@ -341,7 +341,6 @@ run(void)
 	resize();
 
 	mlk_game_init();
-	mlk_game_push(&state);
 	mlk_game_loop(&state);
 }
 

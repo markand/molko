@@ -1,0 +1,26 @@
+--- a/minicoro.h  Wed Jan  7 13:18:48 2026
++++ b/minicoro.h       Wed Jan  7 13:16:19 2026
+@@ -483,6 +483,14 @@
+   #include <windows.h>
+ #endif
+
++#if defined(__OpenBSD__)
++  #define MCO_USE_VMEM_ALLOCATOR
++#else
++  #if !defined(MAP_STACK)
++    #define MAP_STACK 0
++  #endif
++#endif
++
+ #ifndef MCO_NO_DEFAULT_ALLOCATOR
+   #if defined(MCO_USE_VMEM_ALLOCATOR) && defined(_WIN32)
+     static void* mco_alloc(size_t size, void* allocator_data) {
+@@ -500,7 +508,7 @@
+     #include <sys/mman.h>
+     static void* mco_alloc(size_t size, void* allocator_data) {
+       _MCO_UNUSED(allocator_data);
+-      void *ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++      void *ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_STACK | MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+       return ptr != MAP_FAILED ? ptr : NULL;
+     }
+     static void mco_dealloc(void* ptr, size_t size, void* allocator_data) {

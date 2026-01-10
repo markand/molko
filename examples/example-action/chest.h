@@ -21,6 +21,11 @@
 
 #include <mlk/core/action.h>
 #include <mlk/core/animation.h>
+#include <mlk/core/drawable.h>
+#include <mlk/core/util.h>
+
+#define CHEST(Ptr, Field) \
+        (MLK_CONTAINER_OF(Ptr, struct chest, Field))
 
 enum chest_state {
 	CHEST_STATE_CLOSED,
@@ -28,20 +33,31 @@ enum chest_state {
 	CHEST_STATE_OPENED
 };
 
+/**
+ * \brief Clickable chest
+ *
+ * This chest instanciate an action and drawable that user can place on the game
+ * loop to render and handle.
+ */
 struct chest {
-	/* public */
+	/* read-write */
 	int x;
 	int y;
-	void *data;
-	enum chest_state state;
-	void (*run)(struct chest *);
 
-	/* private */
+	/* read-only */
+	enum chest_state state;
 	struct mlk_animation animation;
 	struct mlk_action action;
+	struct mlk_drawable drawable;
 };
 
-struct mlk_action *
-chest_init(struct chest *chest);
+void
+chest_pressed(const struct chest *chest);
+
+void
+chest_opened(const struct chest *chest);
+
+void
+chest_restart(struct chest *chest);
 
 #endif /* !MLK_EXAMPLE_ACTION_CHEST_H */

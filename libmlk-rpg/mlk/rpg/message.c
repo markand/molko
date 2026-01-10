@@ -425,6 +425,14 @@ mlk_message_update(struct mlk_message *msg, unsigned int ticks)
 	return msg->state == MLK_MESSAGE_STATE_NONE;
 }
 
+int
+mlk_message_complete(const struct mlk_message *msg)
+{
+	assert(msg);
+
+	return msg->state == MLK_MESSAGE_STATE_NONE;
+}
+
 void
 mlk_message_draw(struct mlk_message *msg)
 {

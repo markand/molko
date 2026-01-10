@@ -24,16 +24,14 @@
 #include <mlk/rpg/message.h>
 
 struct dialog {
-	/* public */
-	void *data;
-	void (*response)(struct dialog *, unsigned int);
 	struct mlk_message msg;
-
-	/* private */
 	struct mlk_action action;
 };
 
-struct mlk_action *
-dialog_init(struct dialog *);
+void
+dialog_completed(const struct dialog *);
+
+void
+dialog_restart(struct dialog *);
 
 #endif /* !MLK_EXAMPLE_ACTION_DIALOG_H */

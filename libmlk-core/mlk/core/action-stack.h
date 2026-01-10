@@ -32,6 +32,19 @@
 
 #include <stddef.h>
 
+/**
+ * \brief Declare literal array of actions.
+ *
+ * This macro expands to an initializer for ::mlk_action_stack using a compound
+ * literal.
+ *
+ * \note This must be used only on a object with permanent storage.
+ */
+#define MLK_ACTION_STACK_DECL(Num) {                                            \
+        .actions  = (struct mlk_action *[Num]) {},                              \
+        .actionsz = Num                                                         \
+}
+
 struct mlk_action;
 
 union mlk_event;

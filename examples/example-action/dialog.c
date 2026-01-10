@@ -18,6 +18,8 @@
 
 #include <assert.h>
 
+#include <mlk/core/coro.h>
+
 #include <mlk/example/example.h>
 
 #include "dialog.h"
@@ -53,17 +55,17 @@ draw(struct mlk_action *act)
 	mlk_message_draw(&dlg->msg);
 }
 
-static void
-end(struct mlk_action *act)
+void
+dialog_completed(const struct dialog *dlg)
 {
-	struct dialog *dlg = act->data;
+	assert(dlg);
 
-	if (dlg->msg.selectable && dlg->response)
-		dlg->response(dlg, dlg->msg.selected);
+	while (!mlk_message_complete(&dlg->msg))
+		mlk_coro_yield();
 }
 
-struct mlk_action *
-dialog_init(struct dialog *dlg)
+void
+dialog_restart(struct dialog *dlg)
 {
 	assert(dlg);
 
@@ -78,7 +80,6 @@ dialog_init(struct dialog *dlg)
 	dlg->action.handle = handle;
 	dlg->action.update = update;
 	dlg->action.draw = draw;
-	dlg->action.end = end;
 
-	return &dlg->action;
+	mlk_action_start(&dlg->action);
 }
