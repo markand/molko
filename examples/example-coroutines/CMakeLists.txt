@@ -16,32 +16,33 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-project(example-states)
+project(example-coroutines)
 
 set(
 	SOURCES
-	${example-states_SOURCE_DIR}/example-states.c
-	${example-states_SOURCE_DIR}/state-menu.c
-	${example-states_SOURCE_DIR}/state-menu.h
-	${example-states_SOURCE_DIR}/state-play.c
-	${example-states_SOURCE_DIR}/state-play.h
-	${example-states_SOURCE_DIR}/state-splash.c
-	${example-states_SOURCE_DIR}/state-splash.h
+	${example-coroutines_SOURCE_DIR}/app.c
+	${example-coroutines_SOURCE_DIR}/example-coroutines.c
+	${example-coroutines_SOURCE_DIR}/state-menu.c
+	${example-coroutines_SOURCE_DIR}/state-menu.h
+	${example-coroutines_SOURCE_DIR}/state-play.c
+	${example-coroutines_SOURCE_DIR}/state-play.h
+	${example-coroutines_SOURCE_DIR}/state-splash.c
+	${example-coroutines_SOURCE_DIR}/state-splash.h
 )
 
 set(
 	ASSETS
-	${example-states_SOURCE_DIR}/assets/fonts/breamcatcher.otf
-	${example-states_SOURCE_DIR}/assets/fonts/zenda.ttf
-	${example-states_SOURCE_DIR}/assets/images/dvd.png
+	${example-coroutines_SOURCE_DIR}/assets/fonts/breamcatcher.otf
+	${example-coroutines_SOURCE_DIR}/assets/fonts/zenda.ttf
+	${example-coroutines_SOURCE_DIR}/assets/images/dvd.png
 )
 
 mlk_executable(
-	NAME example-states
+	NAME example-coroutines
 	FOLDER examples
 	LIBRARIES libmlk-example
 	SOURCES ${ASSETS} ${SOURCES}
 	ASSETS ${ASSETS}
 )
 
-source_group(TREE ${example-states_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})
+source_group(TREE ${example-coroutines_SOURCE_DIR} FILES ${ASSETS} ${SOURCES})

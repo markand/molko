@@ -23,7 +23,6 @@
 #include <mlk/core/game.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
-#include <mlk/core/state.h>
 #include <mlk/core/sys.h>
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
@@ -49,7 +48,7 @@ init(void)
 }
 
 static void
-handle(struct mlk_state *st, const union mlk_event *ev)
+handle(const union mlk_event *ev)
 {
 	switch (ev->type) {
 	case MLK_EVENT_QUIT:

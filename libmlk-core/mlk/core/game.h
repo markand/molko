@@ -29,8 +29,6 @@
 
 #include <stddef.h>
 
-struct mlk_state;
-
 union mlk_event;
 
 /**
@@ -58,10 +56,58 @@ enum mlk_game_inhibit {
 };
 
 /**
+ * \struct mlk_game_ops
+ * \brief Game loop callbacks.
+ *
+ * This structure is passed to the ::mlk_game to be called for handling,
+ * updating and drawing the game.
+ */
+struct mlk_game_ops {
+	/**
+	 * (optional)
+	 *
+	 * Invoked when the game loop is ready and starting.
+	 */
+	void (*start)(void);
+
+	/**
+	 * (optional)
+	 *
+	 * Handle an event.
+	 *
+	 * \param event the last event received
+	 */
+	void (*handle)(const union mlk_event *event);
+
+	/**
+	 * (optional)
+	 *
+	 * Update since last iteration.
+	 *
+	 * \param ticks frame ticks
+	 */
+	void (*update)(unsigned int ticks);
+
+	/**
+	 * (optional)
+	 *
+	 * Rendering callback.
+	 */
+	void (*draw)(void);
+};
+
+/**
  * \struct mlk_game
- * \brief Game structure
+ * \brief Game structure.
  */
 struct mlk_game {
+	/**
+	 * (read-write)
+	 *
+	 * Functions table to use.
+	 */
+	const struct mlk_game_ops *ops;
+
 	/**
 	 * (read-write)
 	 *
@@ -71,25 +117,6 @@ struct mlk_game {
 	 * the loop.
 	 */
 	enum mlk_game_inhibit inhibit;
-
-	/**
-	 * (read-write, borrowed)
-	 *
-	 * Array of non-owning states.
-	 */
-	struct mlk_state **states;
-
-	/**
-	 * Number of states in array ::mlk_game::states.
-	 *
-	 * \warning Changing this value must be kept in sync with the array
-	 *          dimension.
-	 */
-	size_t statesz;
-
-	/** \cond MLK_PRIVATE_DECLS */
-	struct mlk_state **state;
-	/** \endcond MLK_PRIVATE_DECLS */
 };
 
 /**
@@ -105,40 +132,16 @@ extern "C" {
  * Initialize the main game loop.
  */
 void
-mlk_game_init(void);
+mlk_game_init(const struct mlk_game_ops *ops);
 
 /**
- * Append the state into the game stack and switch to it, suspending current
- * state.
- *
- * The function takes ownership of the state and will be finalized later.
- *
- * \pre state != NULL
- * \param state the state to switch
+ * Enter game loop until user calls ::mlk_game_quit.
  */
 void
-mlk_game_push(struct mlk_state *state);
+mlk_game_loop(void);
 
 /**
- * Pop the current state if any and resume the previous one.
- */
-_Noreturn void
-mlk_game_pop(void);
-
-/**
- * Enter a game loop until there is no more states.
- *
- * The current implementation will perform a loop capped to a 60 FPS rate and
- * update the states with the appropriate number of ticks.
- *
- * \pre state != NULL
- * \param state the first state to run
- */
-void
-mlk_game_loop(struct mlk_state *state);
-
-/**
- * Request the game loop to stop by removing all states.
+ * Request to quit.
  */
 void
 mlk_game_quit(void);

@@ -1,5 +1,5 @@
 /*
- * state-menu.h -- basic main menu
+ * state-splash.h -- minimal splash screen
  *
  * Copyright (c) 2020-2026 David Demelier <markand@malikania.fr>
  *
@@ -16,12 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef STATE_MENU_H
-#define STATE_MENU_H
+#ifndef STATE_SPLASH_H
+#define STATE_SPLASH_H
 
-struct mlk_state;
+extern const struct mlk_game_ops state_splash;
 
-struct mlk_state *
-state_menu_new(void);
-
-#endif /* !STATE_MENU_H */
+#endif /* !STATE_SPLASH_H */

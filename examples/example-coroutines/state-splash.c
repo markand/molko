@@ -21,7 +21,6 @@
 #include <mlk/core/game.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
-#include <mlk/core/state.h>
 #include <mlk/core/texture.h>
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
@@ -30,6 +29,7 @@
 
 #include <assets/fonts/zenda.h>
 
+#include "app.h"
 #include "state-menu.h"
 #include "state-splash.h"
 
@@ -39,20 +39,16 @@
 #define FG           0x29366fff
 #define DELAY        1000
 
-#define SPLASH(self) MLK_UTIL_CONTAINER_OF(self, struct splash, state)
-
-struct splash {
+static struct {
 	unsigned int elapsed;
 	struct mlk_texture texture;
 	int x;
 	int y;
-	struct mlk_state state;
-};
+} splash;
 
 static void
-state_splash__start(struct mlk_state *self)
+state_splash_start(void)
 {
-	struct splash *splash = SPLASH(self);
 	struct mlk_font font;
 
 	if (mlk_font_openmem(&font, assets_fonts_zenda, sizeof (assets_fonts_zenda), SIZE) < 0)
@@ -60,14 +56,14 @@ state_splash__start(struct mlk_state *self)
 
 	font.style = MLK_FONT_STYLE_ANTIALIASED;
 
-	if (mlk_font_render(&font, &splash->texture, TITLE, FG) < 0)
+	if (mlk_font_render(&font, &splash.texture, TITLE, FG) < 0)
 		mlk_panic();
 
 	mlk_align(MLK_ALIGN_CENTER,
-	          &splash->x,
-	          &splash->y,
-	          splash->texture.w,
-	          splash->texture.h,
+	          &splash.x,
+	          &splash.y,
+	          splash.texture.w,
+	          splash.texture.h,
 	          0,
 	          0,
 	          mlk_window.w,
@@ -78,46 +74,25 @@ state_splash__start(struct mlk_state *self)
 }
 
 static void
-state_splash__update(struct mlk_state *self, unsigned int ticks)
+state_splash_update(unsigned int ticks)
 {
-	struct splash *splash = SPLASH(self);
+	splash.elapsed += ticks;
 
-	splash->elapsed += ticks;
-
-	if (splash->elapsed >= DELAY)
-		mlk_game_push(state_menu_new());
+	if (splash.elapsed >= DELAY)
+		app_switch(&state_menu);
 }
 
 static void
-state_splash__draw(struct mlk_state *self)
+state_splash_draw(void)
 {
-	struct splash *splash = SPLASH(self);
-
 	mlk_painter_set_color(BG);
 	mlk_painter_clear();
-	mlk_texture_draw(&splash->texture, splash->x, splash->y);
+	mlk_texture_draw(&splash.texture, splash.x, splash.y);
 	mlk_painter_present();
 }
 
-static void
-state_splash__finish(struct mlk_state *self)
-{
-	struct splash *splash = SPLASH(self);
-
-	mlk_texture_finish(&splash->texture);
-}
-
-struct mlk_state *
-state_splash_new(void)
-{
-	struct splash *splash;
-
-	splash = mlk_alloc_new0(1, sizeof (*splash));
-	splash->state.name = "splash";
-	splash->state.start = state_splash__start;
-	splash->state.update = state_splash__update;
-	splash->state.draw = state_splash__draw;
-	splash->state.finish = state_splash__finish;
-
-	return &splash->state;
-}
+const struct mlk_game_ops state_splash = {
+	.start  = state_splash_start,
+	.update = state_splash_update,
+	.draw   = state_splash_draw
+};

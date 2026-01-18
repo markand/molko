@@ -23,7 +23,6 @@
 #include <mlk/core/maths.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
-#include <mlk/core/state.h>
 #include <mlk/core/sys.h>
 #include <mlk/core/trace.h>
 #include <mlk/core/util.h>
@@ -237,10 +236,8 @@ headerclick(int x, int y)
 }
 
 static void
-handle(struct mlk_state *st, const union mlk_event *ev)
+handle(const union mlk_event *ev)
 {
-	(void)st;
-
 	mlk_ui_handle(ev);
 
 	switch (ev->type) {
@@ -291,10 +288,8 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 }
 
 static void
-update(struct mlk_state *st, unsigned int ticks)
+update(unsigned int ticks)
 {
-	(void)st;
-
 	mlk_button_update(&ui.buttons.quit, ticks);
 	mlk_button_update(&ui.buttons.hello, ticks);
 	mlk_button_update(&ui.buttons.download, ticks);
@@ -303,10 +298,8 @@ update(struct mlk_state *st, unsigned int ticks)
 }
 
 static void
-draw(struct mlk_state *st)
+draw(void)
 {
-	(void)st;
-
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_frame_draw(&ui.panel.frame);
@@ -332,7 +325,7 @@ init(void)
 static void
 run(void)
 {
-	struct mlk_state state = {
+	struct mlk_game_ops ops = {
 		.handle = handle,
 		.update = update,
 		.draw = draw
@@ -340,8 +333,8 @@ run(void)
 
 	resize();
 
-	mlk_game_init();
-	mlk_game_loop(&state);
+	mlk_game_init(&ops);
+	mlk_game_loop();
 }
 
 static void
@@ -351,11 +344,8 @@ quit(void)
 }
 
 int
-main(int argc, char **argv)
+main(int, char **)
 {
-	(void)argc;
-	(void)argv;
-
 	init();
 	run();
 	quit();

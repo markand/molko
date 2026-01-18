@@ -28,7 +28,6 @@
 #include <mlk/core/panic.h>
 #include <mlk/core/image.h>
 #include <mlk/core/sprite.h>
-#include <mlk/core/state.h>
 #include <mlk/core/sys.h>
 #include <mlk/core/texture.h>
 #include <mlk/core/util.h>
@@ -69,7 +68,7 @@ init(void)
 }
 
 static void
-handle(struct mlk_state *, const union mlk_event *ev)
+handle(const union mlk_event *ev)
 {
 	switch (ev->type) {
 	case MLK_EVENT_KEYDOWN:
@@ -105,7 +104,7 @@ handle(struct mlk_state *, const union mlk_event *ev)
 }
 
 static void
-draw(struct mlk_state *)
+draw(void)
 {
 	int x, y;
 
@@ -120,15 +119,15 @@ draw(struct mlk_state *)
 static void
 run(void)
 {
-	struct mlk_state state = {
+	struct mlk_game_ops ops = {
 		.handle = handle,
 		.draw = draw
 	};
 
 	changed();
 
-	mlk_game_init();
-	mlk_game_loop(&state);
+	mlk_game_init(&ops);
+	mlk_game_loop();
 }
 
 static void

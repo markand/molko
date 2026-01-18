@@ -1,5 +1,5 @@
 /*
- * example-states.c -- example on how states stack works
+ * example-coroutines.c -- example on coroutines
  *
  * Copyright (c) 2020-2026 David Demelier <markand@malikania.fr>
  *
@@ -21,19 +21,19 @@
 
 #include <mlk/example/example.h>
 
-#include "state-splash.h"
+#include "app.h"
 
 static void
 init(void)
 {
-	if (mlk_example_init("example-states") < 0)
+	if (mlk_example_init("example-coroutines") < 0)
 		mlk_panic();
 }
 
 static void
 run(void)
 {
-	mlk_game_loop(state_splash_new());
+	app_run();
 }
 
 static void
@@ -43,11 +43,8 @@ quit(void)
 }
 
 int
-main(int argc, char **argv)
+main(int, char **)
 {
-	(void)argc;
-	(void)argv;
-
 	init();
 	run();
 	quit();

@@ -1,5 +1,5 @@
 /*
- * state-splash.h -- minimal splash screen
+ * app.h -- main application file
  *
  * Copyright (c) 2020-2026 David Demelier <markand@malikania.fr>
  *
@@ -16,12 +16,36 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef STATE_SPLASH_H
-#define STATE_SPLASH_H
+#ifndef MLK_EXAMPLE_COROUTINES_APP_H
+#define MLK_EXAMPLE_COROUTINES_APP_H
 
-struct mlk_state;
+enum mlk_key;
+struct mlk_game_ops;
 
-struct mlk_state *
-state_splash_new(void);
+void
+app_switch(const struct mlk_game_ops *ops);
 
-#endif /* !STATE_SPLASH_H */
+/**
+ * Wait until a new key is pressed and store it in `*key`.
+ */
+void
+app_key_pressed(enum mlk_key *key);
+
+/**
+ * Exactly the opposite as ::app_key_pressed.
+ */
+void
+app_key_released(enum mlk_key *key);
+
+/**
+ * Wait until the mouse moved somewhere.
+ */
+void
+app_mouse_moved(int *x, int *y);
+
+void
+app_run(void);
+
+extern const struct mlk_game_ops app_game_ops;
+
+#endif /* !MLK_EXAMPLE_COROUTINES_APP_H */

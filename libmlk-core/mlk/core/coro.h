@@ -64,6 +64,8 @@ struct mlk_coro {
 	 */
 	const char *name;
 
+	size_t stack_size;
+
 	/**
 	 * (init)
 	 *
@@ -86,6 +88,29 @@ struct mlk_coro {
 	 */
 	void (*finalizer)(struct mlk_coro *self);
 
+#if 0
+	/**
+	 * (read-write)
+	 *
+	 * Next coroutine in list.
+	 */
+	struct mlk_coro *next;
+
+	/**
+	 * (read-write)
+	 *
+	 * Previous coroutine in list.
+	 */
+	struct mlk_coro *prev;
+
+	/**
+	 * (read-write)
+	 *
+	 * Parent list owned.
+	 */
+	struct mlk_coro *parent;
+#endif
+
 	/* private */
 	struct mco_coro *mco_coro;
 	struct mco_desc  mco_desc;
@@ -94,12 +119,6 @@ struct mlk_coro {
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-/**
- * Initialize private fields.
- */
-void
-mlk_coro_init(struct mlk_coro *coro);
 
 /**
  * Return current calling coroutine.
@@ -129,7 +148,7 @@ mlk_coro_resumable(const struct mlk_coro *coro);
  * \pre The coroutine must be resumable.
  */
 void
-mlk_coro_resume(struct mlk_coro *coro);
+mlk_coro_resume(struct mlk_coro *coro, const void *data, size_t size);
 
 /**
  * Create and resume the coroutine immediately.
@@ -187,6 +206,15 @@ void
 mlk_coro_pull(struct mlk_coro *from, void *data, size_t size);
 
 /**
+ * This function queue data into the coroutine into.
+ *
+ * In contrast to ::mlk_coro_push, it does not yield nor check that the
+ * coroutine storage can fit the data.
+ */
+void
+mlk_coro_queue(struct mlk_coro *into, const void *data, size_t size);
+
+/**
  * Destroy the coroutine and cleanup internal resources.
  *
  * No-op if already destroyed.
@@ -194,7 +222,7 @@ mlk_coro_pull(struct mlk_coro *from, void *data, size_t size);
  * \pre The coroutine must not be active.
  */
 void
-mlk_coro_finish(struct mlk_coro *coro);
+mlk_coro_destroy(struct mlk_coro *coro);
 
 #if defined(__cplusplus)
 }

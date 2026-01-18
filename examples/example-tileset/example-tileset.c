@@ -31,7 +31,6 @@
 #include <mlk/core/key.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
-#include <mlk/core/state.h>
 #include <mlk/core/sys.h>
 #include <mlk/core/trace.h>
 #include <mlk/core/util.h>
@@ -136,7 +135,7 @@ init(void)
 }
 
 static void
-handle(struct mlk_state *, const union mlk_event *ev)
+handle(const union mlk_event *ev)
 {
 	switch (ev->type) {
 	case MLK_EVENT_QUIT:
@@ -148,13 +147,13 @@ handle(struct mlk_state *, const union mlk_event *ev)
 }
 
 static void
-update(struct mlk_state *, unsigned int ticks)
+update(unsigned int ticks)
 {
 	mlk_tileset_update(&tileset, ticks);
 }
 
 static void
-draw(struct mlk_state *)
+draw(void)
 {
 	int nc, nr;
 
@@ -181,14 +180,14 @@ draw(struct mlk_state *)
 static void
 run(void)
 {
-	struct mlk_state state = {
+	struct mlk_game_ops ops = {
 		.handle = handle,
 		.update = update,
 		.draw = draw
 	};
 
-	mlk_game_init();
-	mlk_game_loop(&state);
+	mlk_game_init(&ops);
+	mlk_game_loop();
 }
 
 static void

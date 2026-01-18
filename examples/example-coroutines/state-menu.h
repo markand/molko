@@ -1,5 +1,5 @@
 /*
- * state-play.h -- very funny game
+ * state-menu.h -- basic main menu
  *
  * Copyright (c) 2020-2026 David Demelier <markand@malikania.fr>
  *
@@ -16,12 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef STATE_PLAY_H
-#define STATE_PLAY_H
+#ifndef STATE_MENU_H
+#define STATE_MENU_H
 
-struct mlk_state;
+extern struct mlk_game_ops state_menu;
 
-struct mlk_state *
-state_play_new(void);
-
-#endif /* !STATE_PLAY_H */
+#endif /* !STATE_MENU_H */

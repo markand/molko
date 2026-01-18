@@ -47,7 +47,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/panic.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/sound.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/sprite.c
-	${libmlk-core_SOURCE_DIR}/mlk/core/state.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/sys.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/texture.c
 	${libmlk-core_SOURCE_DIR}/mlk/core/trace.c
@@ -85,7 +84,6 @@ set(
 	${libmlk-core_SOURCE_DIR}/mlk/core/panic.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/sound.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/sprite.h
-	${libmlk-core_SOURCE_DIR}/mlk/core/state.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/sys.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/sys_p.h
 	${libmlk-core_SOURCE_DIR}/mlk/core/texture.h

@@ -28,7 +28,6 @@
 #include <mlk/core/game.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
-#include <mlk/core/state.h>
 #include <mlk/core/sys.h>
 #include <mlk/core/trace.h>
 #include <mlk/core/util.h>
@@ -179,10 +178,8 @@ handle_device(const struct mlk_event_gamepad *dev)
 }
 
 static void
-handle(struct mlk_state *st, const union mlk_event *ev)
+handle(const union mlk_event *ev)
 {
-	(void)st;
-
 	switch (ev->type) {
 	case MLK_EVENT_QUIT:
 		mlk_game_quit();
@@ -216,19 +213,14 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 }
 
 static void
-update(struct mlk_state *st, unsigned int ticks)
+update(unsigned int ticks)
 {
-	(void)st;
-	(void)ticks;
-
 	mlk_trace_hud_update(ticks);
 }
 
 static void
-draw(struct mlk_state *st)
+draw(void)
 {
-	(void)st;
-
 	struct mlk_label *l;
 
 	mlk_painter_set_color(0xdcd4ffff);
@@ -249,15 +241,14 @@ draw(struct mlk_state *st)
 static void
 run(void)
 {
-	struct mlk_state state = {
+	struct mlk_game_ops ops = {
 		.handle = handle,
 		.update = update,
 		.draw = draw
 	};
 
-	mlk_game_init();
-	mlk_game_push(&state);
-	mlk_game_loop(&state);
+	mlk_game_init(&ops);
+	mlk_game_loop();
 }
 
 static void

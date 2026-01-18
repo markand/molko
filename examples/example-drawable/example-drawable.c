@@ -28,7 +28,6 @@
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
 #include <mlk/core/sprite.h>
-#include <mlk/core/state.h>
 #include <mlk/core/sys.h>
 #include <mlk/core/texture.h>
 #include <mlk/core/util.h>
@@ -121,7 +120,7 @@ spawn(int x, int y)
 }
 
 static void
-handle(struct mlk_state *, const union mlk_event *ev)
+handle(const union mlk_event *ev)
 {
 	switch (ev->type) {
 	case MLK_EVENT_KEYDOWN:
@@ -145,16 +144,14 @@ handle(struct mlk_state *, const union mlk_event *ev)
 }
 
 static void
-update(struct mlk_state *, unsigned int ticks)
+update(unsigned int ticks)
 {
 	mlk_drawable_stack_update(&stack, ticks);
 }
 
 static void
-draw(struct mlk_state *st)
+draw(void)
 {
-	(void)st;
-
 	mlk_painter_set_color(MLK_EXAMPLE_BG);
 	mlk_painter_clear();
 	mlk_label_draw(&help);
@@ -165,7 +162,7 @@ draw(struct mlk_state *st)
 static void
 run(void)
 {
-	struct mlk_state state = {
+	struct mlk_game_ops ops = {
 		.handle = handle,
 		.update = update,
 		.draw = draw
@@ -173,8 +170,8 @@ run(void)
 
 	mlk_drawable_stack_init(&stack);
 
-	mlk_game_init();
-	mlk_game_loop(&state);
+	mlk_game_init(&ops);
+	mlk_game_loop();
 }
 
 static void

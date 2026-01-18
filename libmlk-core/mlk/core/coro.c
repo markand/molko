@@ -129,8 +129,6 @@ mlk_coro_init(struct mlk_coro *coro)
 {
 	assert(coro);
 
-	coro->mco_desc = (const struct mco_desc) {};
-	coro->mco_coro = NULL;
 }
 
 struct mlk_coro *
@@ -161,8 +159,13 @@ mlk_coro_resumable(const struct mlk_coro *coro)
 }
 
 void
-mlk_coro_resume(struct mlk_coro *coro)
+mlk_coro_resume(struct mlk_coro *coro, const void *data, size_t size)
 {
+	MLK_ASSERT_RESUMABLE(coro);
+
+	if (size)
+		mco_push(coro->mco_coro, data, size);
+
 	MLK_RESUME(coro);
 }
 
@@ -174,7 +177,7 @@ mlk_coro_spawn(struct mlk_coro *coro)
 
 	enum mco_result rc;
 
-	coro->mco_desc = mco_desc_init(mlk_coro_wrap_entry, 0);
+	coro->mco_desc = mco_desc_init(mlk_coro_wrap_entry, coro->stack_size);
 	coro->mco_desc.user_data = coro;
 
 	if ((rc = mco_create(&coro->mco_coro, &coro->mco_desc)) != MCO_SUCCESS)
@@ -232,7 +235,15 @@ mlk_coro_pull(struct mlk_coro *from, void *data, size_t size)
 }
 
 void
-mlk_coro_finish(struct mlk_coro *coro)
+mlk_coro_queue(struct mlk_coro *into, const void *data, size_t size)
+{
+	MLK_ASSERT_RESUMABLE(into);
+
+	mco_push(into->mco_coro, data, size);
+}
+
+void
+mlk_coro_destroy(struct mlk_coro *coro)
 {
 	assert(coro);
 

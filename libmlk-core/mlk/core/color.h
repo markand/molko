@@ -47,7 +47,8 @@
  * \param c the color
  * \return the red component
  */
-#define MLK_COLOR_R(c)                  ((c >> 24) & 0xff)
+#define MLK_COLOR_R(c) \
+        ((c >> 24) & 0xff)
 
 /**
  * Obtain the green component of the color c.
@@ -55,7 +56,8 @@
  * \param c the color
  * \return the green component
  */
-#define MLK_COLOR_G(c)                  ((c >> 16) & 0xff)
+#define MLK_COLOR_G(c) \
+        ((c >> 16) & 0xff)
 
 /**
  * Obtain the blue component of the color c.
@@ -63,7 +65,8 @@
  * \param c the color
  * \return the green component
  */
-#define MLK_COLOR_B(c)                  ((c >> 8) & 0xff)
+#define MLK_COLOR_B(c) \
+        ((c >> 8) & 0xff)
 
 /**
  * Obtain the alpha component of the color c.
@@ -71,7 +74,8 @@
  * \param c the color
  * \return the alpha component
  */
-#define MLK_COLOR_A(c)                  ((c) & 0xff)
+#define MLK_COLOR_A(c) \
+        ((c) & 0xff)
 
 /**
  * Create a hexadecimal color from individual red, green, blue and alpha color

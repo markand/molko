@@ -25,7 +25,6 @@
 #include <mlk/core/game.h>
 #include <mlk/core/painter.h>
 #include <mlk/core/panic.h>
-#include <mlk/core/state.h>
 #include <mlk/core/sys.h>
 #include <mlk/core/util.h>
 #include <mlk/core/window.h>
@@ -171,10 +170,8 @@ init(void)
 }
 
 static void
-handle(struct mlk_state *st, const union mlk_event *ev)
+handle(const union mlk_event *ev)
 {
-	(void)st;
-
 	enum mlk_window_theme theme;
 
 	mlk_ui_handle(ev);
@@ -197,19 +194,15 @@ handle(struct mlk_state *st, const union mlk_event *ev)
 }
 
 static void
-update(struct mlk_state *st, unsigned int ticks)
+update(unsigned int ticks)
 {
-	(void)st;
-
 	for (size_t i = 0; i < MLK_UTIL_SIZE(table); ++i)
 		mlk_label_update(&table[i].label, ticks);
 }
 
 static void
-draw(struct mlk_state *st)
+draw(void)
 {
-	(void)st;
-
 	if (mlk_window.theme_effective == MLK_WINDOW_THEME_DARK)
 		mlk_painter_set_color(0x323558ff);
 	else
@@ -226,15 +219,14 @@ draw(struct mlk_state *st)
 static void
 run(void)
 {
-	struct mlk_state state = {
+	struct mlk_game_ops ops = {
 		.handle = handle,
 		.update = update,
 		.draw = draw
 	};
 
-	mlk_game_init();
-	mlk_game_push(&state);
-	mlk_game_loop(&state);
+	mlk_game_init(&ops);
+	mlk_game_loop();
 }
 
 static void
@@ -244,11 +236,8 @@ quit(void)
 }
 
 int
-main(int argc, char **argv)
+main(int, char **)
 {
-	(void)argc;
-	(void)argv;
-
 	init();
 	run();
 	quit();

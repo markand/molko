@@ -23,6 +23,7 @@ set(
 	example-action
 	example-animation
 	example-audio
+	example-coroutines
 	example-cursor
 	example-debug
 	example-drawable
@@ -31,10 +32,8 @@ set(
 	example-gridmenu
 	example-label
 	example-map
-	example-message
 	example-notify
 	example-sprite
-	example-states
 	example-tileset
 	example-trace
 	example-ui
